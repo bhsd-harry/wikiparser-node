@@ -68,6 +68,7 @@
 		"@bhsd/common": "^0.6.6",
 		"chalk": "^4.1.2",
 		"entities": "^6.0.0",
+		"minimatch": "^10.0.1",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"devDependencies": {
@@ -99,6 +100,6 @@
 		"v8r": "^4.2.1"
 	},
 	"engines": {
-		"node": ">=18.12.0"
+		"node": ">=18.17.0"
 	}
 }

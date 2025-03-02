@@ -1,51 +1,123 @@
 /* eslint-disable n/no-process-exit */
 
-import {readFileSync, readdirSync, promises} from 'fs';
-import {resolve} from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as chalk from 'chalk';
-import Parser = require('../index');
+import {minimatch} from 'minimatch';
+import Parser from '../index';
 import type {LintError} from '../base';
 
 const man = `
 Available options:
 -c, --config <path or preset config>    Choose parser's configuration
+--ext <extension>                       Specify file extension
 --fix                                   Automatically fix problems
 -h, --help                              Print available options
 -i, --include                           Parse for inclusion
--l, --lang                              Choose i18n language
+--ignore <pattern>                      Ignore files that match the pattern
+-l, --lang <path or preset language>    Choose i18n language
 -q, --quiet                             Report errors only
+-r, --recursive                         Lint files in directories recursively
 -s, --strict                            Exit when there is an error or warning
                                         Override -q or --quiet
 -v, --version                           Print package version
 `,
 	preset = new Set(
-		readdirSync('./config').filter(file => file.endsWith('.json'))
+		fs.readdirSync('./config').filter(file => file.endsWith('.json'))
+			.map(file => file.slice(0, -5)),
+	),
+	i18n = new Set(
+		fs.readdirSync('./i18n').filter(file => file.endsWith('.json'))
 			.map(file => file.slice(0, -5)),
 	),
 	{argv} = process,
-	files: string[] = [];
-let include = false,
-	quiet = false,
-	strict = false,
-	exit = false,
+	exts: string[] = [],
+	ignorePatterns: string[] = [],
+	jobs: Promise<void>[] = [];
+let files: string[] = [],
+	exiting = false,
 	fixing = false,
+	include = false,
+	quiet = false,
+	recursive = false,
+	strict = false,
 	nErr = 0,
 	nWarn = 0,
 	nFixableErr = 0,
 	nFixableWarn = 0,
-	option: string,
-	config: string | undefined,
-	lang: string | undefined;
+	option: string;
+
+/**
+ * exit with message
+ * @param msg message
+ */
+const exit = (msg: string): never => {
+	console.error(msg);
+	process.exit(1);
+};
+
+/**
+ * throw if input is incorrect
+ * @param input input string
+ * @param opt option name
+ * @param spec option specification
+ * @throws `Error` incomplete input
+ */
+const throwOnInput = (input: string | undefined, opt: string, spec: string): input is string => {
+	if (!input || input.startsWith('-')) {
+		exit(`The option ${opt} must be followed by ${spec}`);
+	}
+	return true;
+};
 
 /**
  * throw if `-c` or `--config` option is incorrect
+ * @param config config input
  * @throws `Error` unrecognized config input
  */
-const throwOnConfig = (): void => {
-	if (!config || config.startsWith('-')) {
-		throw new Error('The option -c/--config must be followed by a path or a preset config');
-	} else if (!config.includes('/') && !preset.has(config)) {
-		throw new Error(`Unrecognized preset config: ${config}`);
+const throwOnConfig = (config: string | undefined): void => {
+	if (throwOnInput(config, '-c/--config', 'a path or a preset config')) {
+		if (!config.includes('/') && !preset.has(config)) {
+			exit(`Unrecognized preset config: ${config}`);
+		}
+		Parser.config = config;
+	}
+};
+
+/**
+ * throw if `-l` or `--lang` option is incorrect
+ * @param lang lang input
+ * @throws `Error` unrecognized lang input
+ */
+const throwOnLang = (lang: string | undefined): void => {
+	if (throwOnInput(lang, '-l/--lang', 'a path or a preset language')) {
+		if (!lang.includes('/') && !i18n.has(lang)) {
+			exit(`Unrecognized preset language: ${lang}`);
+		}
+		Parser.i18n = lang;
+	}
+};
+
+/**
+ * throw if `--ext` option is incorrect
+ * @param ext ext input
+ */
+const throwOnExt = (ext: string | undefined): void => {
+	if (throwOnInput(ext, '--ext', 'a list of file extensions joined by commas')) {
+		exts.push(...ext.split(',').map(s => {
+			const e = s.trim();
+			return e.startsWith('.') ? e : `.${e}`;
+		}));
+	}
+};
+
+/**
+ * throw if `--ignore` option is incorrect
+ * @param ignore ignore input
+ */
+const throwOnIgnore = (ignore: string | undefined): void => {
+	if (throwOnInput(ignore, '--ignore', 'a glob pattern')) {
+		ignorePatterns.push(path.join('**', ignore));
 	}
 };
 
@@ -68,8 +140,10 @@ for (let i = 2; i < argv.length; i++) {
 	switch (option) {
 		case '-c':
 		case '--config':
-			config = argv[++i];
-			throwOnConfig();
+			throwOnConfig(argv[++i]);
+			break;
+		case '--ext':
+			throwOnExt(argv[++i]);
 			break;
 		case '--fix':
 			fixing = true;
@@ -83,13 +157,20 @@ for (let i = 2; i < argv.length; i++) {
 		case '--include':
 			include = true;
 			break;
+		case '--ignore':
+			throwOnIgnore(argv[++i]);
+			break;
 		case '-l':
 		case '--lang':
-			lang = argv[++i];
+			throwOnLang(argv[++i]);
 			break;
 		case '-q':
 		case '--quiet':
 			quiet = true;
+			break;
+		case '-r':
+		case '--recursive':
+			recursive = true;
 			break;
 		case '-s':
 		case '--strict':
@@ -103,34 +184,60 @@ for (let i = 2; i < argv.length; i++) {
 			break;
 		}
 		default:
-			if (option.startsWith('--config=')) {
-				config = option.slice(9);
-				throwOnConfig();
-				break;
-			} else if (option.startsWith('--lang=')) {
-				lang = option.slice(7);
-				break;
-			} else if (option.startsWith('-')) {
-				throw new Error(`Unknown wikilint option: ${option}\n${man}`);
+			if (option.includes('=')) {
+				const j = option.indexOf('='),
+					value = option.slice(j + 1);
+				switch (option.slice(0, j)) {
+					case '--config':
+						throwOnConfig(value);
+						break;
+					case '--ext':
+						throwOnExt(value);
+						break;
+					case '--ignore':
+						throwOnIgnore(value);
+						break;
+					case '--lang':
+						throwOnLang(value);
+						break;
+					// no default
+				}
+			}
+			if (option.startsWith('-')) {
+				exit(`Unknown wikilint option: ${option}\n${man}`);
 			}
 			files.push(option);
 	}
 }
 if (files.length === 0) {
-	throw new Error('No target file is specified');
-} else if (config) {
-	Parser.config = config.includes('/') ? resolve(config) : `./config/${config}`;
-}
-if (lang) {
-	Parser.i18n = lang;
+	exit('No target file is specified');
 }
 if (quiet && strict) {
 	quiet = false;
 	console.error('-s or --strict will override -q or --quiet\n');
 }
+if (recursive) {
+	files = files.flatMap(file => {
+		if (fs.statSync(file).isFile()) {
+			return file;
+		}
+		return fs.readdirSync(file, {recursive: true, withFileTypes: true}).filter(dir => dir.isFile())
+			.map(dir => path.join(dir.parentPath, dir.name));
+	});
+}
+if (exts.length > 0) {
+	files = files.filter(file => exts.some(e => file.endsWith(e)));
+}
 
-for (const file of files) {
-	let wikitext = readFileSync(file, 'utf8'),
+for (const file of new Set(files.map(f => path.resolve(f)))) {
+	if (fs.statSync(file).isDirectory()) {
+		console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
+		exiting = true;
+		continue;
+	} else if (ignorePatterns.some(ignore => minimatch(file, ignore))) {
+		continue;
+	}
+	let wikitext = fs.readFileSync(file, 'utf8'),
 		problems = Parser.parse(wikitext, include).lint();
 	if (fixing && problems.some(({fix}) => fix)) {
 		// 倒序修复，跳过嵌套的修复
@@ -143,7 +250,7 @@ for (const file of files) {
 				start = from;
 			}
 		}
-		void promises.writeFile(file, wikitext);
+		jobs.push(fs.promises.writeFile(file, wikitext));
 		problems = Parser.parse(wikitext, include).lint();
 	}
 	const errors = problems.filter(({severity}) => severity === 'error'),
@@ -159,7 +266,7 @@ for (const file of files) {
 		nFixableWarn += nLocalFixableWarn;
 	}
 	if (problems.length > 0) {
-		console.error(`\n${chalk.underline('%s')}`, resolve(file));
+		console.error(`\n${chalk.underline('%s')}`, file);
 		const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
 			maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
 			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
@@ -176,8 +283,9 @@ for (const file of files) {
 	}
 	nErr += nLocalErr;
 	nFixableErr += nLocalFixableErr;
-	exit ||= Boolean(nLocalErr || strict && nLocalWarn);
+	exiting ||= Boolean(nLocalErr || strict && nLocalWarn);
 }
+
 if (nErr || nWarn) {
 	console.error(
 		chalk.red.bold('%s'),
@@ -195,6 +303,10 @@ if (nErr || nWarn) {
 	}
 	console.error();
 }
-if (exit) {
-	process.exitCode = 1;
-}
+
+(async () => {
+	await Promise.all(jobs);
+	if (exiting) {
+		process.exitCode = 1;
+	}
+})();
