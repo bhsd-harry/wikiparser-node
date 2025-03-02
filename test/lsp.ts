@@ -10,7 +10,7 @@ import type {
 
 /* NOT FOR BROWSER ONLY */
 
-import Parser = require('../index');
+import Parser from '../index';
 import type {
 	Token,
 	ImageParameterToken,
