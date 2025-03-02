@@ -19,9 +19,15 @@ npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 | Option | Description | Default |
 | :----- | :---------- | :------ |
 | `-c`, `--config` \<path or preset config\> | Choose parser's configuration | `default` |
+| `--cache` | Enable caching | `false` |
+| `--cache-file` \<path\> | Specify cache file | `.wikilintcache` |
+| `--ext` \<extension\> | Specify file extension<br>Can be used multiple times | all files |
+| `--fix` | Automatically fix problems | `false` |
 | `-h`, `--help` | Print available options | |
-| `-i`, `--include` | Parse for inclusion | no inclusion |
-| `-l`, `--lang` | Choose i18n language | English |
+| `-i`, `--include` | Parse for inclusion | `false` |
+| `--ignore` \<pattern\> | Ignore files matching the glob pattern<br>Can be used multiple times | |
+| `-l`, `--lang` \<path or preset language\> | Choose i18n language | English |
 | `-q`, `--quiet` | Report errors only | errors and warnings |
+| `-r`, `--recursive` | Recursively lint files | `false` |
 | `-s`, `--strict` | Exit when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
 | `-v`, `--version` | Print package version | |

@@ -2,14 +2,23 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as assert from 'assert';
 import * as chalk from 'chalk';
 import {minimatch} from 'minimatch';
 import Parser from '../index';
 import type {LintError} from '../base';
 
+declare type CacheItems = Record<string, [number, string, number, LintError[]]>;
+declare interface Cache {
+	include: CacheItems;
+	noinclude: CacheItems;
+}
+
 const man = `
 Available options:
 -c, --config <path or preset config>    Choose parser's configuration
+--cache                                 Enable caching
+--cache-file <path>                     Specify cache file
 --ext <extension>                       Specify file extension
 --fix                                   Automatically fix problems
 -h, --help                              Print available options
@@ -22,12 +31,14 @@ Available options:
                                         Override -q or --quiet
 -v, --version                           Print package version
 `,
+	root = path.join(__dirname, '..', '..'),
+	configPath = path.join(root, 'config'),
 	preset = new Set(
-		fs.readdirSync('./config').filter(file => file.endsWith('.json'))
+		fs.readdirSync(configPath).filter(file => file.endsWith('.json'))
 			.map(file => file.slice(0, -5)),
 	),
 	i18n = new Set(
-		fs.readdirSync('./i18n').filter(file => file.endsWith('.json'))
+		fs.readdirSync(path.join(root, 'i18n')).filter(file => file.endsWith('.json'))
 			.map(file => file.slice(0, -5)),
 	),
 	{argv} = process,
@@ -35,12 +46,15 @@ Available options:
 	ignorePatterns: string[] = [],
 	jobs: Promise<void>[] = [];
 let files: string[] = [],
+	cacheFile = '.wikilintcache',
+	cache: Cache | undefined,
 	exiting = false,
 	fixing = false,
 	include = false,
 	quiet = false,
 	recursive = false,
 	strict = false,
+	caching = false,
 	nErr = 0,
 	nWarn = 0,
 	nFixableErr = 0,
@@ -122,6 +136,17 @@ const throwOnIgnore = (ignore: string | undefined): void => {
 };
 
 /**
+ * throw if `--cache-file` option is incorrect
+ * @param input cache file input
+ */
+const throwOnCacheFile = (input: string | undefined): void => {
+	if (throwOnInput(input, '--cache-file', 'a path')) {
+		cacheFile = input;
+		caching = true;
+	}
+};
+
+/**
  * generate plural form if necessary
  * @param n number of items
  * @param word item name
@@ -141,6 +166,12 @@ for (let i = 2; i < argv.length; i++) {
 		case '-c':
 		case '--config':
 			throwOnConfig(argv[++i]);
+			break;
+		case '--cache':
+			caching = true;
+			break;
+		case '--cache-file':
+			throwOnCacheFile(argv[++i]);
 			break;
 		case '--ext':
 			throwOnExt(argv[++i]);
@@ -183,13 +214,17 @@ for (let i = 2; i < argv.length; i++) {
 			process.exit(0);
 			break;
 		}
-		default:
+		default: {
+			let known = true;
 			if (option.includes('=')) {
 				const j = option.indexOf('='),
 					value = option.slice(j + 1);
 				switch (option.slice(0, j)) {
 					case '--config':
 						throwOnConfig(value);
+						break;
+					case '--cache-file':
+						throwOnCacheFile(value);
 						break;
 					case '--ext':
 						throwOnExt(value);
@@ -200,13 +235,19 @@ for (let i = 2; i < argv.length; i++) {
 					case '--lang':
 						throwOnLang(value);
 						break;
-					// no default
+					default:
+						known = false;
 				}
+			} else {
+				known = false;
 			}
-			if (option.startsWith('-')) {
-				exit(`Unknown wikilint option: ${option}\n${man}`);
+			if (!known) {
+				if (option.startsWith('-')) {
+					exit(`Unknown wikilint option: ${option}\n${man}`);
+				}
+				files.push(option);
 			}
-			files.push(option);
+		}
 	}
 }
 if (files.length === 0) {
@@ -229,16 +270,55 @@ if (exts.length > 0) {
 	files = files.filter(file => exts.some(e => file.endsWith(e)));
 }
 
+if (caching) {
+	if (fs.existsSync(cacheFile)) {
+		try {
+			cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+			/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+			assert(
+				typeof cache === 'object' && cache !== null
+				&& typeof cache.include === 'object' && cache.include !== null
+				&& typeof cache.noinclude === 'object' && cache.noinclude !== null,
+			);
+			/* eslint-enable @typescript-eslint/no-unnecessary-condition */
+		} catch {
+			exit(`Invalid cache file: ${cacheFile}`);
+		}
+	} else {
+		cache = {
+			include: {},
+			noinclude: {},
+		};
+	}
+}
+let config = Parser.config as string;
+config = (
+	config.includes('/')
+		? path.resolve(Parser.config as string)
+		: path.join(configPath, Parser.config as string)
+) + (config.endsWith('.json') ? '' : '.json');
+const {mtimeMs} = fs.statSync(config),
+	obj = cache?.[include ? 'include' : 'noinclude'];
+
 for (const file of new Set(files.map(f => path.resolve(f)))) {
-	if (fs.statSync(file).isDirectory()) {
+	const stat = fs.statSync(file);
+	if (stat.isDirectory()) {
 		console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
 		exiting = true;
 		continue;
 	} else if (ignorePatterns.some(ignore => minimatch(file, ignore))) {
 		continue;
 	}
+	const fileCache = obj?.[file];
 	let wikitext = fs.readFileSync(file, 'utf8'),
+		problems: LintError[],
+		update = false;
+	if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
+		[,,, problems] = fileCache;
+	} else {
 		problems = Parser.parse(wikitext, include).lint();
+		update = true;
+	}
 	if (fixing && problems.some(({fix}) => fix)) {
 		// 倒序修复，跳过嵌套的修复
 		const fixable = (problems.map(({fix}) => fix).filter(Boolean) as LintError.Fix[])
@@ -252,6 +332,10 @@ for (const file of new Set(files.map(f => path.resolve(f)))) {
 		}
 		jobs.push(fs.promises.writeFile(file, wikitext));
 		problems = Parser.parse(wikitext, include).lint();
+		update = fixable.length > 0;
+	}
+	if (caching && update) {
+		obj![file] = [stat.mtimeMs, config, mtimeMs, problems];
 	}
 	const errors = problems.filter(({severity}) => severity === 'error'),
 		fixable = problems.filter(({fix}) => fix),
@@ -306,6 +390,9 @@ if (nErr || nWarn) {
 
 (async () => {
 	await Promise.all(jobs);
+	if (caching) {
+		fs.writeFileSync(cacheFile, JSON.stringify(cache), 'utf8');
+	}
 	if (exiting) {
 		process.exitCode = 1;
 	}
