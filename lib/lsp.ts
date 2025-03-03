@@ -661,7 +661,13 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY */
 		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
 			const textDoc = new EmbeddedCSSDocument(root, cur!, (parentNode as AttributeToken).tag);
-			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items;
+			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items.map(item => ({
+				...item,
+				textEdit: {
+					range: (item.textEdit as TextEdit).range,
+					newText: item.textEdit!.newText.replace(/\s/gu, ''),
+				},
+			}));
 
 			/* NOT FOR BROWSER ONLY END */
 		}
