@@ -72,8 +72,9 @@ export class EmbeddedJSONDocument extends EmbeddedDocument {
 	/**
 	 * @param root root token
 	 * @param token current token
+	 * @param schema JSON schema
 	 */
-	constructor(root: Token, token: Token, schema: object | undefined) {
+	constructor(root: Token, token: Token, schema?: object) {
 		super('json', root, token);
 		this.schema = schema;
 		this.jsonDoc = jsonLSP!.parseJSONDocument(this);
