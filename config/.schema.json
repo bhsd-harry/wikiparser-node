@@ -1,4 +1,5 @@
 {
+	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
 	"properties": {
 		"ext": {
@@ -47,6 +48,7 @@
 			"additionalProperties": false
 		},
 		"variable": {
+			"description": "canonical magic words as variables",
 			"type": "array",
 			"items": {
 				"type": "string",
@@ -67,10 +69,11 @@
 			"minItems": 2
 		},
 		"parserFunction": {
+			"description": "magic words as variables or parser functions",
 			"type": "array",
 			"prefixItems": [
 				{
-					"description": "case-insensitive parser functions",
+					"description": "case-insensitive variables or parser functions",
 					"type": "object",
 					"patternProperties": {
 						"^[^A-Z]+$": {
@@ -81,7 +84,7 @@
 					"additionalProperties": false
 				},
 				{
-					"description": "case-sensitive parser functions",
+					"description": "case-sensitive variables or parser functions",
 					"type": "object",
 					"properties": {
 						"!": {
@@ -163,6 +166,7 @@
 			"pattern": "^[a-z:/]+(?:\\|[a-z:/]+)*$"
 		},
 		"interwiki": {
+			"description": "interwiki prefixes",
 			"type": "array",
 			"items": {
 				"type": "string",

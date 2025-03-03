@@ -247,7 +247,10 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	getBoundingClientRect(): Dimension & Position {
 		// eslint-disable-next-line no-unused-labels
-		LSP: return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
+		LSP: return {
+			...this.#getDimension(),
+			...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!,
+		};
 	}
 
 	/** @private */
