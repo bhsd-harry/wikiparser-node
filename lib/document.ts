@@ -66,14 +66,16 @@ class EmbeddedDocument implements TextDocument {
 
 /** embedded JSON document */
 export class EmbeddedJSONDocument extends EmbeddedDocument {
+	declare schema: object | undefined;
 	declare jsonDoc: JSONDocument;
 
 	/**
 	 * @param root root token
 	 * @param token current token
 	 */
-	constructor(root: Token, token: Token) {
+	constructor(root: Token, token: Token, schema: object | undefined) {
 		super('json', root, token);
+		this.schema = schema;
 		this.jsonDoc = jsonLSP!.parseJSONDocument(this);
 	}
 }

@@ -719,8 +719,17 @@ export class LanguageService implements LanguageServiceBase {
 			jsonDiagnostics =
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
-						const textDoc = new EmbeddedJSONDocument(root, token),
-							e = await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc);
+						let schema;
+						try {
+							schema = require(path.join('..', '..', 'data', 'ext', token.name!)) as object;
+						} catch {}
+						const textDoc = new EmbeddedJSONDocument(root, token, schema),
+							e = (await jsonLSP!
+								.doValidation(textDoc, textDoc.jsonDoc, undefined, textDoc.schema))
+								.map(error => ({
+									...error,
+									source: 'json',
+								}));
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
 					[] as const;
