@@ -62,7 +62,7 @@ import type {
 
 /* NOT FOR BROWSER ONLY */
 
-import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP} from './document';
+import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags} from './document';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -90,7 +90,7 @@ declare interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
-const jsonSelector = ['templatedata', 'mapframe', 'maplink'].map(s => `ext-inner#${s}`).join(),
+const jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join(),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
 
 /* NOT FOR BROWSER ONLY END */
@@ -719,13 +719,9 @@ export class LanguageService implements LanguageServiceBase {
 			jsonDiagnostics =
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
-						let schema;
-						try {
-							schema = require(path.join('..', '..', 'data', 'ext', token.name!)) as object;
-						} catch {}
-						const textDoc = new EmbeddedJSONDocument(root, token, schema),
+						const textDoc = new EmbeddedJSONDocument(root, token),
 							e = (await jsonLSP!
-								.doValidation(textDoc, textDoc.jsonDoc, undefined, textDoc.schema))
+								.doValidation(textDoc, textDoc.jsonDoc, undefined))
 								.map(error => ({
 									...error,
 									source: 'json',
@@ -1070,6 +1066,9 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
 			const textDoc = new EmbeddedCSSDocument(root, token, (parentNode as AttributeToken).tag);
 			return cssLSP.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
+		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
+			const textDoc = new EmbeddedJSONDocument(root, token);
+			return await jsonLSP.doHover(textDoc, position, textDoc.jsonDoc) ?? undefined;
 
 			/* NOT FOR BROWSER ONLY END */
 		}
