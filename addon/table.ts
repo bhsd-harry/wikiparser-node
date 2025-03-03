@@ -124,7 +124,10 @@ TableToken.prototype.toRawCoords =
 		const rowLayout = this.getLayout({x, y})[y],
 			coords = rowLayout?.[x];
 		if (coords) {
-			return {...coords, start: coords.row === y && rowLayout[x - 1] !== coords};
+			return {
+				...coords,
+				start: coords.row === y && rowLayout[x - 1] !== coords,
+			};
 		} else if (rowLayout || y > 0) {
 			return x === rowLayout?.length
 				? {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true}

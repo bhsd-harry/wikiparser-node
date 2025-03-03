@@ -182,7 +182,11 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** position, dimension and paddings / 位置、大小和padding */
 	get style(): Position & Dimension & {padding: number} {
-		return {...this.#getPosition(), ...this.#getDimension(), padding: this.getAttribute('padding')};
+		return {
+			...this.#getPosition(),
+			...this.#getDimension(),
+			padding: this.getAttribute('padding'),
+		};
 	}
 
 	/** @private */
@@ -405,7 +409,10 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	getBoundingClientRect(): Dimension & Position {
 		// eslint-disable-next-line no-unused-labels
-		LSP: return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
+		LSP: return {
+			...this.#getDimension(),
+			...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!,
+		};
 	}
 
 	/** @private */

@@ -236,7 +236,14 @@ export abstract class ImageParameterToken extends Token {
 			this.setAttribute('name', param[1]);
 			return;
 		}
-		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, accum);
+		super(
+			str,
+			{
+				...config,
+				excludes: [...config.excludes ?? [], 'list'],
+			},
+			accum,
+		);
 		this.setAttribute('name', 'caption');
 		this.setAttribute('stage', 7);
 

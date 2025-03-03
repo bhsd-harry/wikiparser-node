@@ -734,7 +734,10 @@ export abstract class TableToken extends TrBaseToken {
 		const filter = (token: TrBaseToken): Token[] => token.childNodes.filter(isToken('table-inter'));
 		const {childNodes} = this,
 			tr = childNodes.filter(isToken<TrToken>('tr')),
-			newOpt = {...opt, nowrap: true};
+			newOpt = {
+				...opt,
+				nowrap: true,
+			};
 		return `${
 			[this, ...tr].flatMap(filter) // eslint-disable-line es-x/no-array-prototype-flat
 				.map(token => token.toHtmlInternal(newOpt).trim())

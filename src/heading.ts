@@ -178,8 +178,11 @@ export abstract class HeadingToken extends Token {
 		if (boldQuotes.length % 2) {
 			const e = generateForChild(
 					boldQuotes[boldQuotes.length - 1]!,
-					// eslint-disable-next-line @typescript-eslint/no-misused-spread
-					{...rect, start: start + level, left: rect.left + level},
+					{
+						...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
+						start: start + level,
+						left: rect.left + level,
+					},
 					'format-leakage',
 					Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
 				),

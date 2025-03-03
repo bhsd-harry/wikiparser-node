@@ -395,7 +395,10 @@ export abstract class LinkBaseToken extends Token {
 				title = link.getTitleAttr();
 			return `<a${link.interwiki && ' class="extiw"'} href="${link.getUrl()}"${title && ` title="${title}"`}>${
 				type === 'link' && length > 1
-					? lastChild.toHtmlInternal({...opt, nowrap: true})
+					? lastChild.toHtmlInternal({
+						...opt,
+						nowrap: true,
+					})
 					: sanitize(this.innerText)
 			}</a>`;
 		}

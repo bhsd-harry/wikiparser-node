@@ -85,7 +85,11 @@ export abstract class ExtToken extends TagPairToken {
 				config,
 				accum,
 			),
-			newConfig: Config = {...config, ext: del(config.ext, lcName), excludes: [...config.excludes ?? []]};
+			newConfig: Config = {
+				...config,
+				ext: del(config.ext, lcName),
+				excludes: [...config.excludes ?? []],
+			};
 		let innerToken: Token;
 		switch (lcName) {
 			case 'tab':
@@ -216,13 +220,18 @@ export abstract class ExtToken extends TagPairToken {
 				return newline(lastChild.toHtmlInternal());
 			case 'pre':
 				return `<pre${firstChild.toHtmlInternal()}>${
-					newline(lastChild.toHtmlInternal({...opt, nowrap: false}))
+					newline(lastChild.toHtmlInternal({
+						...opt,
+						nowrap: false,
+					}))
 				}</pre>`;
 			case 'poem':
 				firstChild.classList.add('poem');
 				return `<div${firstChild.toHtmlInternal()}>${
-					lastChild.toHtmlInternal({...opt, nowrap: false})
-						.replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+					lastChild.toHtmlInternal({
+						...opt,
+						nowrap: false,
+					}).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
 						.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 				}</div>`;
 			case 'gallery': {
