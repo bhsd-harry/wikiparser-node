@@ -23,11 +23,10 @@ try {
 export {jsonLSP, cssLSP};
 
 /** embedded document */
-class EmbeddedDocument implements Pick<
-	TextDocument,
-	'version' | 'languageId' | 'getText' | 'positionAt' | 'offsetAt'
-> {
+class EmbeddedDocument implements TextDocument {
 	declare languageId: string;
+	declare lineCount: number;
+	uri = '';
 	version = 0;
 	#root;
 	#content;
@@ -42,6 +41,7 @@ class EmbeddedDocument implements Pick<
 	 */
 	constructor(id: string, root: Token, token: Token, padding = ['', '']) {
 		this.languageId = id;
+		this.lineCount = root.getLines().length;
 		this.#root = root;
 		this.#content = padding[0] + String(token) + padding[1];
 		this.#offset = token.getAbsoluteIndex();
@@ -80,7 +80,7 @@ export class EmbeddedJSONDocument extends EmbeddedDocument {
 	 */
 	constructor(root: Token, token: Token) {
 		super('json', root, token);
-		this.jsonDoc = jsonLSP!.parseJSONDocument(this as Partial<TextDocument> as TextDocument);
+		this.jsonDoc = jsonLSP!.parseJSONDocument(this);
 	}
 }
 
@@ -95,7 +95,7 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 	 */
 	constructor(root: Token, token: Token, tag: string) {
 		super('css', root, token, [`${tag}{`, '}']);
-		this.styleSheet = cssLSP!.parseStylesheet(this as Partial<TextDocument> as TextDocument);
+		this.styleSheet = cssLSP!.parseStylesheet(this);
 	}
 }
 

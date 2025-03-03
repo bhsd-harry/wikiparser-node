@@ -327,7 +327,9 @@ export interface SignatureData {
 	parserFunctions: SignatureInfo[];
 }
 
-export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typeof CompletionItemKind};
+export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {
+	kind?: CompletionItemKind | keyof typeof CompletionItemKind;
+};
 
 export interface LanguageService {
 	/** @private */
