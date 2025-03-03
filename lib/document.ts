@@ -1,6 +1,11 @@
+import * as path from 'path';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
-import type {LanguageService as JSONLanguageService, JSONDocument} from 'vscode-json-languageservice';
+import type {
+	LanguageService as JSONLanguageService,
+	JSONDocument,
+	SchemaConfiguration,
+} from 'vscode-json-languageservice';
 import type {LanguageService as CSSLanguageService, Stylesheet} from 'vscode-css-languageservice';
 import type {Token} from '../internal';
 
@@ -9,6 +14,8 @@ import type {Token} from '../internal';
 import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
+
+export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
 let jsonLSP: JSONLanguageService | undefined,
 	cssLSP: CSSLanguageService | undefined;
@@ -20,6 +27,21 @@ try {
 				return (await fetch(uri)).text(); // eslint-disable-line n/no-unsupported-features/node-builtins
 			},
 		});
+	jsonLSP.configure({
+		schemas: jsonTags.map((tag): SchemaConfiguration | false => {
+			const uri = path.join('..', '..', 'data', 'ext', tag);
+			try {
+				const schema = require(uri);
+				return {
+					uri,
+					fileMatch: [tag],
+					schema,
+				};
+			} catch {
+				return false;
+			}
+		}).filter(Boolean) as SchemaConfiguration[],
+	});
 } catch {}
 try {
 	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
@@ -77,17 +99,15 @@ class EmbeddedDocument implements TextDocument {
 
 /** embedded JSON document */
 export class EmbeddedJSONDocument extends EmbeddedDocument {
-	declare schema: object | undefined;
 	declare jsonDoc: JSONDocument;
 
 	/**
 	 * @param root root token
 	 * @param token current token
-	 * @param schema JSON schema
 	 */
-	constructor(root: Token, token: Token, schema?: object) {
+	constructor(root: Token, token: Token) {
 		super('json', root, token);
-		this.schema = schema;
+		this.uri = token.name!;
 		this.jsonDoc = jsonLSP!.parseJSONDocument(this);
 	}
 }
