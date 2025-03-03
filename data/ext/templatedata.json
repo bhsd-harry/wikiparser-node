@@ -1,0 +1,184 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"interfaceText": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "object",
+					"minProperties": 1,
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			]
+		}
+	},
+	"type": "object",
+	"properties": {
+		"description": {
+			"description": "A brief description of the template. **It must be in plain text.** Once filled, it can be displayed as caption when editing a single template and perhaps in search results when users pick one of many. The default is `null`.",
+			"oneOf": [
+				{
+					"$ref": "#/definitions/interfaceText"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"params": {
+			"description": "An object that maps each parameter name of the template to a corresponding [Param object](https://www.mediawiki.org/wiki/Extension:TemplateData#Param_object) describing the properties of that parameter.",
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"label": {
+						"description": "A (very) brief name for the parameter. Try to keep under 20-ish characters.",
+						"$ref": "#/definitions/interfaceText"
+					},
+					"description": {
+						"description": "A brief description of the parameter, for users to know which to pick from an option list.",
+						"$ref": "#/definitions/interfaceText"
+					},
+					"required": {
+						"description": "Whether the parameter is required for the template to work (true if this parameter **must** be specified).",
+						"type": "boolean"
+					},
+					"suggested": {
+						"description": "Whether the parameter is suggested for the template to be useful (true if this parameter **should** be specified).",
+						"type": "boolean"
+					},
+					"deprecated": {
+						"description": "Whether the parameter is deprecated. The value can be a string of instructions giving the user guidance what instead can be done, or be simply `true`.",
+						"oneOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "boolean"
+							}
+						]
+					},
+					"aliases": {
+						"description": "List of aliases. An alias is an alternative name for the parameter that may be used instead of (not in addition to) the primary name. Aliases are not documented in a separate Parameter object. If they need more information, they should be in their own property marked \"deprecated\".",
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"default": {
+						"description": "A fixed default value used by the template if no value is assigned to the parameter, or a description thereof.",
+						"$ref": "#/definitions/interfaceText"
+					},
+					"autovalue": {
+						"description": "A dynamically-generated default value in wikitext, such as today's date or the editing user's name; this will often involve wikitext substitution, such as `{{subst:CURRENTYEAR}}`.",
+						"type": "string"
+					},
+					"example": {
+						"description": "An example text for the parameter, to help users fill in the proper value.",
+						"$ref": "#/definitions/interfaceText"
+					},
+					"type": {
+						"description": "The type of the parameter, for (soft) type hinting.",
+						"type": "string",
+						"enum": [
+							"unknown",
+							"number",
+							"string",
+							"line",
+							"boolean",
+							"date",
+							"url",
+							"wiki-page-name",
+							"wiki-file-name",
+							"wiki-template-name",
+							"wiki-user-name",
+							"content",
+							"unbalanced-wikitext"
+						]
+					},
+					"inherits": {
+						"description": "The name key of another parameter (must be a valid key in the `params` object). The current [Parameter Object](https://www.mediawiki.org/wiki/Extension:TemplateData#Param_object) will inherit properties from the specified [Parameter Object](https://www.mediawiki.org/wiki/Extension:TemplateData#Param_object), with local properties overriding the inherited ones.",
+						"type": "string"
+					},
+					"suggestedValues": {
+						"description": "An optional parameter property. Creates a list of parameter values to help users select the desired value. For the suggested values to be displayed as a combo box in VisualEditor, the parameter’s type must be set to one of the following: content, line, string, number, unknown or unbalanced wikitext.",
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"paramOrder": {
+			"description": "The logical order in which parameters should be displayed. The array contains each parameter key exactly once. Each string must be a valid key in the `params` object.",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sets": {
+			"description": "An array containing set specifications. A set is a group of parameters that should be used together. The default is []. Note that the `sets` functionality is still in development.",
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"label": {
+						"description": "A (very) brief name for the parameter. Try to keep under 20-ish characters.",
+						"$ref": "#/definitions/interfaceText"
+					},
+					"params": {
+						"description": "One or more names of parameters to include in the set (each must be a valid key in the `params` object). A parameter may be in multiple sets. Not every parameter must be in a set.",
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"format": {
+			"description": "How the template's wikitext representation SHOULD be laid out. The default is `inline`. See [custom formats](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:TemplateData#Custom_formats) for other custom formats.",
+			"type": "string"
+		},
+		"maps": {
+			"description": "An object that links a simplified name of a third party consumer of the template data (i.e. [Citoid](https://www.mediawiki.org/wiki/Citoid), [Special:MyLanguage/Wikidata](https://www.mediawiki.org/wiki/Special:MyLanguage/Wikidata), etc.) to a map object that in turn links a name of a consumer parameter to one or more corresponding names of template parameters.",
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"additionalProperties": {
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						}
+					]
+				}
+			}
+		}
+	},
+	"required": [
+		"params"
+	],
+	"additionalProperties": false
+}
