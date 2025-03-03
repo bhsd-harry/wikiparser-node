@@ -1,10 +1,12 @@
-## v1.17.0
+## v1.17.1
 
-*2025-02-27*
+*2025-03-03*
 
 **Added**
 
 - [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#buildlists) that builds all `list-range` tokens
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now provides diagnostics for inline CSS of extension tags, HTML tags and tables
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now provides diagnostics for embedded JSON in extension tags (`templatedata`, `mapframe`, `maplink`, and `graph`)
 
 **Fixed**
 

@@ -66,6 +66,14 @@ import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+/* NOT FOR BROWSER ONLY */
+
+import type {LanguageService as JSONLanguageService} from 'vscode-json-languageservice';
+import type {LanguageService as CSSLanguageService} from 'vscode-css-languageservice';
+import type {TextDocument} from 'vscode-languageserver-textdocument';
+
+/* NOT FOR BROWSER ONLY END */
+
 declare interface CompletionConfig {
 	re: RegExp;
 	ext: string[];
@@ -279,6 +287,56 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 	}
 };
 
+const jsonSelector = ['templatedata', 'mapframe', 'maplink', 'graph'].map(s => `ext-inner#${s}`).join(),
+	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+let jsonLSP: JSONLanguageService | undefined,
+	cssLSP: CSSLanguageService | undefined;
+try {
+	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
+		.getLanguageService({});
+} catch {}
+try {
+	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
+		.getCSSLanguageService();
+} catch {}
+
+/** embedded JSON/CSS document */
+class EmbeddedDocument implements Pick<TextDocument, 'version' | 'languageId' | 'getText' | 'positionAt'> {
+	declare languageId: string;
+	version = 0;
+	#root;
+	#content;
+	#offset;
+	#padding;
+
+	/**
+	 * @param id language ID
+	 * @param root root token
+	 * @param token current token
+	 * @param padding strings to pad the content
+	 */
+	constructor(id: string, root: Token, token: Token, padding = ['', '']) {
+		this.languageId = id;
+		this.#root = root;
+		this.#content = padding[0] + String(token) + padding[1];
+		this.#offset = token.getAbsoluteIndex();
+		this.#padding = padding.map(({length}) => length) as [number, number];
+	}
+
+	/** @implements */
+	getText(): string {
+		return this.#content;
+	}
+
+	/** @implements */
+	positionAt(offset: number): Position {
+		const {top, left} = this.#root.posFromIndex(
+			this.#offset + Math.max(Math.min(offset, this.#content.length - this.#padding[1]) - this.#padding[0], 0),
+		)!;
+		return {line: top, character: left};
+	}
+}
+
 /* NOT FOR BROWSER ONLY END */
 
 /** VSCode-style language service */
@@ -312,8 +370,15 @@ export class LanguageService implements LanguageServiceBase {
 		Object.setPrototypeOf(this, null);
 	}
 
-	/** @private */
-	async queue(text: string): Promise<Token> {
+	/**
+	 * 提交解析任务
+	 * @param text 源代码
+	 * @description
+	 * - 总是更新`#text`以便`#parse`完成时可以判断是否需要重新解析
+	 * - 如果已有进行中或已完成的解析，则返回该解析的结果
+	 * - 否则开始新的解析
+	 */
+	async #queue(text: string): Promise<Token> {
 		text = tidy(text);
 		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
@@ -398,7 +463,7 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
-		const root = await this.queue(text);
+		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
 			.flatMap(({type, childNodes}) => {
 				if (type !== 'attr-value' && !isPlain(childNodes)) {
@@ -524,7 +589,7 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
-		const root = await this.queue(text);
+		const root = await this.#queue(text);
 		let cur: Token | undefined;
 		if (mt?.[2]) {
 			cur = root.elementFromPoint(mt.index + mt[2].length - 1, line)!;
@@ -659,27 +724,62 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 * @param warning whether to include warnings / 是否包含警告
 	 */
-	async provideDiagnostics(text: string, warning = true): Promise<Diagnostic[]> {
-		const root = await this.queue(text),
-			errors = root.lint();
-		return (warning ? errors : errors.filter(({severity}) => severity === 'error'))
-			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
-				range: {
-					start: {line: startLine, character: startCol},
-					end: {line: endLine, character: endCol},
-				},
-				severity: severity === 'error' ? 1 : 2,
-				source: 'WikiLint',
-				code: rule,
-				message,
+	async provideDiagnostics(text: string, warning = true): Promise<DiagnosticBase[]> {
+		const root = await this.#queue(text),
+			errors = root.lint(),
+			diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
+				({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
+					range: {
+						start: {line: startLine, character: startCol},
+						end: {line: endLine, character: endCol},
+					},
+					severity: severity === 'error' ? 1 : 2,
+					source: 'WikiLint',
+					code: rule,
+					message,
 
-				/* NOT FOR BROWSER ONLY */
+					/* NOT FOR BROWSER ONLY */
 
-				data: [
-					...fix ? [getQuickFix(root, fix, true)] : [],
-					...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
-				],
-			}));
+					data: [
+						...fix ? [getQuickFix(root, fix, true)] : [],
+						...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
+					],
+				}),
+			),
+			/* eslint-disable @stylistic/operator-linebreak */
+			cssDiagnostics =
+				cssLSP ?
+					root.querySelectorAll<AttributeToken>(cssSelector)
+						.map(({lastChild, type, tag}) => [lastChild, type === 'ext-attr' ? 'div' : tag] as const)
+						.filter(([{length, firstChild}]) => length === 1 && firstChild!.type === 'text')
+						.reverse()
+						.map(([token, tag]) => {
+							const textDoc = new EmbeddedDocument(
+									'css',
+									root,
+									token,
+									[`${tag}{`, '}'],
+								) as Partial<TextDocument> as TextDocument,
+								styleSheet = cssLSP.parseStylesheet(textDoc),
+								e = cssLSP.doValidation(textDoc, styleSheet);
+							return warning ? e : e.filter(({severity}) => severity === 1);
+						}) :
+					[] as const,
+			jsonDiagnostics =
+				jsonLSP ?
+					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
+						const textDoc = new EmbeddedDocument(
+								'json',
+								root,
+								token,
+							) as Partial<TextDocument> as TextDocument,
+							jsonDoc = jsonLSP.parseJSONDocument(textDoc),
+							e = await jsonLSP.doValidation(textDoc, jsonDoc);
+						return warning ? e : e.filter(({severity}) => severity === 1);
+					})) :
+					[] as const;
+			/* eslint-enable @stylistic/operator-linebreak */
+		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
 	}
 
 	/**
@@ -689,7 +789,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			{length} = root.getLines(),
 			ranges: FoldingRange[] = [],
 			levels = new Array<number | undefined>(6),
@@ -747,7 +847,7 @@ export class LanguageService implements LanguageServiceBase {
 		const {articlePath, protocol} = Parser.getConfig(),
 			absolute = articlePath?.includes('//'),
 			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
-		return (await this.queue(text))
+		return (await this.#queue(text))
 			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
 				absolute ? ',link-target,template-name,invoke-module' : ''
 			}`)
@@ -845,7 +945,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			node = offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
@@ -876,7 +976,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			ext = node.is<ExtToken>('ext') && node.name === 'ref'
 				? node
@@ -904,7 +1004,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
 			refName = getRefName(node),
@@ -927,7 +1027,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param newName new name / 新名称
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
 			refName = getRefName(node),
@@ -978,7 +1078,7 @@ export class LanguageService implements LanguageServiceBase {
 		if (!this.data) {
 			return undefined;
 		}
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, position),
 			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			{type, parentNode, length, name} = token;
@@ -1097,7 +1197,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
 		const hints: InlayHint[] = [],
-			root = await this.queue(text);
+			root = await this.#queue(text);
 		for (const token of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke').reverse()) {
 			const {type, childNodes} = token;
 			hints.push(
@@ -1122,8 +1222,8 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param diagnostics grammar diagnostics / 语法诊断信息
 	 */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
-		return diagnostics.flatMap(
+	provideCodeAction(diagnostics: DiagnosticBase[]): CodeAction[] {
+		return diagnostics.filter((diagnostic): diagnostic is Diagnostic => diagnostic.data).flatMap(
 			diagnostic => diagnostic.data.map((data): CodeAction => ({
 				title: data.title,
 				kind: 'quickfix',
@@ -1143,7 +1243,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		const root = await this.queue(text),
+		const root = await this.#queue(text),
 			lines = root.getLines(),
 			{length} = lines,
 			symbols: DocumentSymbol[] = [],
