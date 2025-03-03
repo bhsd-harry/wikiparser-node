@@ -62,8 +62,7 @@ import type {
 
 /* NOT FOR BROWSER ONLY */
 
-import type {LanguageService as JSONLanguageService} from 'vscode-json-languageservice';
-import type {LanguageService as CSSLanguageService} from 'vscode-css-languageservice';
+import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP} from './document';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
 
 /* NOT FOR BROWSER ONLY END */
@@ -283,53 +282,6 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 
 const jsonSelector = ['templatedata', 'mapframe', 'maplink', 'graph'].map(s => `ext-inner#${s}`).join(),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
-let jsonLSP: JSONLanguageService | undefined,
-	cssLSP: CSSLanguageService | undefined;
-try {
-	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
-		.getLanguageService({});
-} catch {}
-try {
-	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
-		.getCSSLanguageService();
-} catch {}
-
-/** embedded JSON/CSS document */
-class EmbeddedDocument implements Pick<TextDocument, 'version' | 'languageId' | 'getText' | 'positionAt'> {
-	declare languageId: string;
-	version = 0;
-	#root;
-	#content;
-	#offset;
-	#padding;
-
-	/**
-	 * @param id language ID
-	 * @param root root token
-	 * @param token current token
-	 * @param padding strings to pad the content
-	 */
-	constructor(id: string, root: Token, token: Token, padding = ['', '']) {
-		this.languageId = id;
-		this.#root = root;
-		this.#content = padding[0] + String(token) + padding[1];
-		this.#offset = token.getAbsoluteIndex();
-		this.#padding = padding.map(({length}) => length) as [number, number];
-	}
-
-	/** @implements */
-	getText(): string {
-		return this.#content;
-	}
-
-	/** @implements */
-	positionAt(offset: number): Position {
-		const {top, left} = this.#root.posFromIndex(
-			this.#offset + Math.max(Math.min(offset, this.#content.length - this.#padding[1]) - this.#padding[0], 0),
-		)!;
-		return {line: top, character: left};
-	}
-}
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -746,27 +698,22 @@ export class LanguageService implements LanguageServiceBase {
 						.filter(([{length, firstChild}]) => length === 1 && firstChild!.type === 'text')
 						.reverse()
 						.map(([token, tag]) => {
-							const textDoc = new EmbeddedDocument(
-									'css',
-									root,
-									token,
-									[`${tag}{`, '}'],
-								) as Partial<TextDocument> as TextDocument,
-								styleSheet = cssLSP.parseStylesheet(textDoc),
-								e = cssLSP.doValidation(textDoc, styleSheet);
+							const textDoc = new EmbeddedCSSDocument(root, token, tag),
+								e = cssLSP!.doValidation(
+									textDoc as Partial<TextDocument> as TextDocument,
+									textDoc.styleSheet,
+								);
 							return warning ? e : e.filter(({severity}) => severity === 1);
 						}) :
 					[] as const,
 			jsonDiagnostics =
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
-						const textDoc = new EmbeddedDocument(
-								'json',
-								root,
-								token,
-							) as Partial<TextDocument> as TextDocument,
-							jsonDoc = jsonLSP.parseJSONDocument(textDoc),
-							e = await jsonLSP.doValidation(textDoc, jsonDoc);
+						const textDoc = new EmbeddedJSONDocument(root, token),
+							e = await jsonLSP!.doValidation(
+								textDoc as Partial<TextDocument> as TextDocument,
+								textDoc.jsonDoc,
+							);
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
 					[] as const;
@@ -1102,6 +1049,13 @@ export class LanguageService implements LanguageServiceBase {
 					end: positionAt(root, aIndex + token.modifier.trimEnd().length + 1),
 				};
 			}
+		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
+			const textDoc = new EmbeddedCSSDocument(root, token, (parentNode as AttributeToken).tag);
+			return cssLSP.doHover(
+				textDoc as Partial<TextDocument> as TextDocument,
+				position,
+				textDoc.styleSheet,
+			) ?? undefined;
 		}
 		return info && {
 			contents: {
