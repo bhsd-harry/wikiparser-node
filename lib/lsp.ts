@@ -96,7 +96,7 @@ declare interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
-const jsonSelector = ['templatedata', 'mapframe', 'maplink', 'graph'].map(s => `ext-inner#${s}`).join(),
+const jsonSelector = ['templatedata', 'mapframe', 'maplink'].map(s => `ext-inner#${s}`).join(),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
 
 /* NOT FOR BROWSER ONLY END */
