@@ -71,7 +71,10 @@
 	"optionalDependencies": {
 		"chalk": "^4.1.2",
 		"entities": "^6.0.0",
-		"minimatch": "^10.0.1"
+		"minimatch": "^10.0.1",
+		"vscode-css-languageservice": "^6.3.2",
+		"vscode-json-languageservice": "^5.4.3",
+		"vscode-languageserver-textdocument": "^1.0.12"
 	},
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^3.1.0",
