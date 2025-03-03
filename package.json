@@ -73,11 +73,13 @@
 	"dependencies": {
 		"@bhsd/common": "^0.6.6",
 		"@codemirror/lint": "^6.8.4",
-		"chalk": "^4.1.2",
 		"codejar-async": "^4.2.6",
-		"entities": "^6.0.0",
 		"monaco-editor": "^0.52.2",
 		"vscode-languageserver-types": "^3.17.5"
+	},
+	"optionalDependencies": {
+		"chalk": "^4.1.2",
+		"entities": "^6.0.0"
 	},
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^3.1.0",

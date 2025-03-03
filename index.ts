@@ -24,7 +24,7 @@ import type {Token} from './internal';
 
 /* NOT FOR BROWSER */
 
-import * as chalk from 'chalk';
+import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
 
 /* NOT FOR BROWSER END */
@@ -436,14 +436,24 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	warn(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.warning) {
-			console.warn(chalk.yellow(msg), ...args);
+			try {
+				const chalk: Chalk = require('chalk');
+				console.warn(chalk.yellow(msg), ...args);
+			} catch {
+				console.warn(msg, ...args);
+			}
 		}
 	},
 	/** @implements */
 	debug(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.debugging) {
-			console.debug(chalk.blue(msg), ...args);
+			try {
+				const chalk: Chalk = require('chalk');
+				console.debug(chalk.blue(msg), ...args);
+			} catch {
+				console.debug(msg, ...args);
+			}
 		}
 	},
 	error,
