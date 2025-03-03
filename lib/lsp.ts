@@ -90,6 +90,9 @@ declare interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
+const jsonSelector = ['templatedata', 'mapframe', 'maplink', 'graph'].map(s => `ext-inner#${s}`).join(),
+	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+
 /* NOT FOR BROWSER ONLY END */
 
 export const tasks = new WeakMap<object, LanguageService>();
@@ -278,9 +281,6 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 		section.range.end = {line, character: end - start};
 	}
 };
-
-const jsonSelector = ['templatedata', 'mapframe', 'maplink', 'graph'].map(s => `ext-inner#${s}`).join(),
-	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
 
 /* NOT FOR BROWSER ONLY END */
 
