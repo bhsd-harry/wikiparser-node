@@ -613,7 +613,7 @@ export class LanguageService implements LanguageServiceBase {
 			];
 		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
 			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[9] ?? cur!.toString();
+				key = mt?.[9] ?? cur!.toString().slice(0, character - cur!.getBoundingClientRect().left);
 			if (!tags.has(tag)) {
 				return undefined;
 			}
@@ -640,7 +640,8 @@ export class LanguageService implements LanguageServiceBase {
 			if (t === 'magic-word' && n !== 'invoke') {
 				return undefined;
 			}
-			const key = cur!.toString().trimStart(),
+			const index = root.indexFromPos(line, character)!,
+				key = this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
 				[module, func] = t === 'magic-word' ? transclusion.getModule() : [];
 			return key
 				? getCompletion(
