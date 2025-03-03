@@ -246,15 +246,8 @@ export class LanguageService implements LanguageServiceBase {
 		Object.setPrototypeOf(this, null);
 	}
 
-	/**
-	 * 提交解析任务
-	 * @param text 源代码
-	 * @description
-	 * - 总是更新`#text`以便`#parse`完成时可以判断是否需要重新解析
-	 * - 如果已有进行中或已完成的解析，则返回该解析的结果
-	 * - 否则开始新的解析
-	 */
-	async #queue(text: string): Promise<Token> {
+	/** @private */
+	async queue(text: string): Promise<Token> {
 		text = tidy(text);
 		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
@@ -339,7 +332,7 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
-		const root = await this.#queue(text);
+		const root = await this.queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
 			.flatMap(({type, childNodes}) => {
 				if (type !== 'attr-value' && !isPlain(childNodes)) {
@@ -463,7 +456,7 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
-		const root = await this.#queue(text);
+		const root = await this.queue(text);
 		let cur: Token | undefined;
 		if (mt?.[2]) {
 			cur = root.elementFromPoint(mt.index + mt[2].length - 1, line)!;
@@ -599,7 +592,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param warning whether to include warnings / 是否包含警告
 	 */
 	async provideDiagnostics(text: string, warning = true): Promise<Diagnostic[]> {
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			errors = root.lint();
 		return (warning ? errors : errors.filter(({severity}) => severity === 'error'))
 			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
@@ -621,7 +614,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			{length} = root.getLines(),
 			ranges: FoldingRange[] = [],
 			levels = new Array<number | undefined>(6),
@@ -678,7 +671,7 @@ export class LanguageService implements LanguageServiceBase {
 		const {articlePath, protocol} = Parser.getConfig(),
 			absolute = articlePath?.includes('//'),
 			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
-		return (await this.#queue(text))
+		return (await this.queue(text))
 			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
 				absolute ? ',link-target,template-name,invoke-module' : ''
 			}`)
@@ -776,7 +769,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			node = offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
@@ -807,7 +800,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			ext = node.is<ExtToken>('ext') && node.name === 'ref'
 				? node
@@ -835,7 +828,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
 			refName = getRefName(node),
@@ -858,7 +851,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param newName new name / 新名称
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
 			refName = getRefName(node),
@@ -909,7 +902,7 @@ export class LanguageService implements LanguageServiceBase {
 		if (!this.data) {
 			return undefined;
 		}
-		const root = await this.#queue(text),
+		const root = await this.queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, position),
 			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			{type, parentNode, length, name} = token;
@@ -1028,7 +1021,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
 		const hints: InlayHint[] = [],
-			root = await this.#queue(text);
+			root = await this.queue(text);
 		for (const token of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke').reverse()) {
 			const {type, childNodes} = token;
 			hints.push(
