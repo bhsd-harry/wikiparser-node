@@ -63,7 +63,6 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP} from './document';
-import type {TextDocument} from 'vscode-languageserver-textdocument';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -657,6 +656,13 @@ export class LanguageService implements LanguageServiceBase {
 					type === 'parameter-value' ? '=' : '',
 				)
 				: undefined;
+
+			/* NOT FOR BROWSER ONLY */
+		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
+			const textDoc = new EmbeddedCSSDocument(root, cur!, (parentNode as AttributeToken).tag);
+			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items;
+
+			/* NOT FOR BROWSER ONLY END */
 		}
 		return undefined;
 	}
@@ -699,10 +705,7 @@ export class LanguageService implements LanguageServiceBase {
 						.reverse()
 						.map(([token, tag]) => {
 							const textDoc = new EmbeddedCSSDocument(root, token, tag),
-								e = cssLSP!.doValidation(
-									textDoc as Partial<TextDocument> as TextDocument,
-									textDoc.styleSheet,
-								);
+								e = cssLSP!.doValidation(textDoc, textDoc.styleSheet);
 							return warning ? e : e.filter(({severity}) => severity === 1);
 						}) :
 					[] as const,
@@ -710,10 +713,7 @@ export class LanguageService implements LanguageServiceBase {
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
 						const textDoc = new EmbeddedJSONDocument(root, token),
-							e = await jsonLSP!.doValidation(
-								textDoc as Partial<TextDocument> as TextDocument,
-								textDoc.jsonDoc,
-							);
+							e = await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc);
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
 					[] as const;
@@ -1049,13 +1049,13 @@ export class LanguageService implements LanguageServiceBase {
 					end: positionAt(root, aIndex + token.modifier.trimEnd().length + 1),
 				};
 			}
+
+			/* NOT FOR BROWSER ONLY */
 		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
 			const textDoc = new EmbeddedCSSDocument(root, token, (parentNode as AttributeToken).tag);
-			return cssLSP.doHover(
-				textDoc as Partial<TextDocument> as TextDocument,
-				position,
-				textDoc.styleSheet,
-			) ?? undefined;
+			return cssLSP.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
+
+			/* NOT FOR BROWSER ONLY END */
 		}
 		return info && {
 			contents: {
