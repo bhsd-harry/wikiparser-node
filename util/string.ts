@@ -54,8 +54,10 @@ export const decodeHtml = (str: string): string => {
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (typeof process === 'object' && typeof process.versions?.node === 'string') {
-		const {decodeHTMLStrict}: typeof import('entities') = require('entities');
-		return decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
+		try {
+			const {decodeHTMLStrict}: typeof import('entities') = require('entities');
+			return decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
+		} catch {}
 	}
 	/* istanbul ignore next */
 
