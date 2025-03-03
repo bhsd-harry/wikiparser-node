@@ -668,6 +668,9 @@ export class LanguageService implements LanguageServiceBase {
 					newText: item.textEdit!.newText.replace(/\s/gu, ''),
 				},
 			}));
+		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(cur!.name!)) {
+			const textDoc = new EmbeddedJSONDocument(root, cur!);
+			return (await jsonLSP.doComplete(textDoc, position, textDoc.jsonDoc))?.items;
 
 			/* NOT FOR BROWSER ONLY END */
 		}
