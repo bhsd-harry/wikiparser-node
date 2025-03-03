@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as chalk from 'chalk';
-import {minimatch} from 'minimatch';
 import Parser from '../index';
 import type {LintError} from '../base';
 
@@ -300,6 +299,13 @@ config = (
 const {mtimeMs} = fs.statSync(config),
 	obj = cache?.[include ? 'include' : 'noinclude'];
 
+let minimatch: (file: string, pattern: string) => boolean;
+try {
+	({minimatch} = require('minimatch'));
+} catch {
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
+	minimatch = /** @ignore */ (file, pattern): boolean => path.matchesGlob(file, pattern);
+}
 for (const file of new Set(files.map(f => path.resolve(f)))) {
 	const stat = fs.statSync(file);
 	if (stat.isDirectory()) {

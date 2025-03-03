@@ -66,10 +66,12 @@
 	},
 	"dependencies": {
 		"@bhsd/common": "^0.6.6",
+		"vscode-languageserver-types": "^3.17.5"
+	},
+	"optionalDependencies": {
 		"chalk": "^4.1.2",
 		"entities": "^6.0.0",
-		"minimatch": "^10.0.1",
-		"vscode-languageserver-types": "^3.17.5"
+		"minimatch": "^10.0.1"
 	},
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^3.1.0",

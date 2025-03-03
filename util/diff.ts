@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import {spawn} from 'child_process';
-import * as chalk from 'chalk';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
+import type {Chalk} from 'chalk';
 
 /* istanbul ignore next */
 process.on('unhandledRejection', e => {
@@ -81,11 +81,21 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 /* istanbul ignore next */
 /** @implements */
 export const error: log = (msg, ...args) => {
-	console.error(chalk.red(msg), ...args);
+	try {
+		const chalk: Chalk = require('chalk');
+		console.error(chalk.red(msg), ...args);
+	} catch {
+		console.error(msg, ...args);
+	}
 };
 
 /* istanbul ignore next */
 /** @implements */
 export const info: log = (msg, ...args) => {
-	console.info(chalk.green(msg), ...args);
+	try {
+		const chalk: Chalk = require('chalk');
+		console.info(chalk.green(msg), ...args);
+	} catch {
+		console.info(msg, ...args);
+	}
 };
