@@ -8,7 +8,12 @@ let jsonLSP: JSONLanguageService | undefined,
 	cssLSP: CSSLanguageService | undefined;
 try {
 	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
-		.getLanguageService({});
+		.getLanguageService({
+			/** @implements */
+			async schemaRequestService(uri) {
+				return (await fetch(uri)).text(); // eslint-disable-line n/no-unsupported-features/node-builtins
+			},
+		});
 } catch {}
 try {
 	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
