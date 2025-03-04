@@ -58,42 +58,48 @@ class EmbeddedDocument implements TextDocument {
 	#root;
 	#content;
 	#offset;
-	#padding;
+	#pre;
+	#post;
 
 	/**
 	 * @param id language ID
 	 * @param root root token
 	 * @param token current token
-	 * @param padding strings to pad the content
+	 * @param pre padding before the content
+	 * @param post padding after the content
 	 */
-	constructor(id: string, root: Token, token: Token, padding = ['', '']) {
+	constructor(id: string, root: Token, token: Token, pre = '', post = '') {
 		this.languageId = id;
 		this.lineCount = root.getLines().length;
 		this.#root = root;
-		this.#content = padding[0] + String(token) + padding[1];
+		this.#content = String(token);
 		this.#offset = token.getAbsoluteIndex();
-		this.#padding = padding.map(({length}) => length) as [number, number];
+		this.#pre = pre;
+		this.#post = post;
+	}
+
+	/** 原始文本 */
+	getContent(): string {
+		return this.#content;
 	}
 
 	/** @implements */
 	getText(): string {
-		return this.#content;
+		return this.#pre + this.getContent() + this.#post;
 	}
 
 	/** @implements */
 	positionAt(offset: number): Position {
 		const {top, left} = this.#root.posFromIndex(
-			this.#offset + Math.max(Math.min(offset, this.#content.length - this.#padding[1]) - this.#padding[0], 0),
+			this.#offset + Math.max(Math.min(offset - this.#pre.length, this.#content.length), 0),
 		)!;
 		return {line: top, character: left};
 	}
 
 	/** @implements */
 	offsetAt({line, character}: Position): number {
-		return Math.min(
-			Math.max(this.#root.indexFromPos(line, character)! - this.#offset, 0) + this.#padding[0],
-			this.#content.length,
-		);
+		return Math.min(Math.max(this.#root.indexFromPos(line, character)! - this.#offset, 0), this.#content.length)
+			+ this.#pre.length;
 	}
 }
 
@@ -122,13 +128,13 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 	 */
 	constructor(root: Token, token: Token) {
 		const {type, tag} = token.parentNode as AttributeToken;
-		super('css', root, token, [`${type === 'ext-attr' ? 'div' : tag}{`, '}']);
+		super('css', root, token, `${type === 'ext-attr' ? 'div' : tag}{`, '}');
 		this.styleSheet = cssLSP!.parseStylesheet(this);
 	}
 
 	/** @override */
-	override getText(): string {
-		return super.getText().replaceAll('{', '「')
+	override getContent(): string {
+		return super.getContent().replaceAll('{', '「')
 			.replaceAll('}', '」');
 	}
 }
