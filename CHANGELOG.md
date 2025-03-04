@@ -6,6 +6,7 @@
 
 - [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#buildlists) that builds all `list-range` tokens
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics), [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now work for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`) and inline CSS
+- [`LanguageService.prototype.provideFoldingRanges`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providefoldingranges) now works for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`)
 - `Token.prototype.lint` now reports errors and warnings for inline CSS
 - [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#css) method that gets or sets the value of a CSS property
 
