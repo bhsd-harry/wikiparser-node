@@ -667,8 +667,8 @@ export class LanguageService implements LanguageServiceBase {
 				: undefined;
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
-			const textDoc = new EmbeddedCSSDocument(root, cur!, (parentNode as AttributeToken).tag);
+		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style' && cur!.length === 1) {
+			const textDoc = new EmbeddedCSSDocument(root, cur!);
 			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items.map(item => ({
 				...item,
 				textEdit: {
@@ -718,11 +718,11 @@ export class LanguageService implements LanguageServiceBase {
 			cssDiagnostics =
 				cssLSP ?
 					root.querySelectorAll<AttributeToken>(cssSelector)
-						.map(({lastChild, type, tag}) => [lastChild, type === 'ext-attr' ? 'div' : tag] as const)
-						.filter(([{length, firstChild}]) => length === 1 && firstChild!.type === 'text')
+						.map(({lastChild}) => lastChild)
+						.filter(({length, firstChild}) => length === 1 && firstChild!.type === 'text')
 						.reverse()
-						.map(([token, tag]) => {
-							const textDoc = new EmbeddedCSSDocument(root, token, tag),
+						.map(token => {
+							const textDoc = new EmbeddedCSSDocument(root, token),
 								e = cssLSP!.doValidation(textDoc, textDoc.styleSheet);
 							return warning ? e : e.filter(({severity}) => severity === 1);
 						}) :
@@ -1075,8 +1075,8 @@ export class LanguageService implements LanguageServiceBase {
 			}
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style') {
-			const textDoc = new EmbeddedCSSDocument(root, token, (parentNode as AttributeToken).tag);
+		} else if (cssLSP && type === 'attr-value' && length === 1 && parentNode!.name === 'style') {
+			const textDoc = new EmbeddedCSSDocument(root, token);
 			return cssLSP.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, token);

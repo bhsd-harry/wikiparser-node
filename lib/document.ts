@@ -7,7 +7,7 @@ import type {
 	SchemaConfiguration,
 } from 'vscode-json-languageservice';
 import type {LanguageService as CSSLanguageService, Stylesheet} from 'vscode-css-languageservice';
-import type {Token} from '../internal';
+import type {Token, AttributeToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -119,10 +119,10 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 	/**
 	 * @param root root token
 	 * @param token current token
-	 * @param tag tag name
 	 */
-	constructor(root: Token, token: Token, tag: string) {
-		super('css', root, token, [`${tag}{`, '}']);
+	constructor(root: Token, token: Token) {
+		const {type, tag} = token.parentNode as AttributeToken;
+		super('css', root, token, [`${type === 'ext-attr' ? 'div' : tag}{`, '}']);
 		this.styleSheet = cssLSP!.parseStylesheet(this);
 	}
 }
