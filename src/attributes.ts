@@ -552,9 +552,10 @@ export abstract class AttributesToken extends Token {
 	 *
 	 * 获取某一样式属性的值
 	 * @param key style property / 样式属性
+	 * @param value style property value / 样式属性值
 	 */
-	css(key: string): string | undefined {
-		return this.getAttrToken('style')?.css(key);
+	css(key: string, value?: string): string | undefined {
+		return this.getAttrToken('style')?.css(key, value);
 	}
 }
 

@@ -30,18 +30,20 @@ import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
 import {fixedToken} from '../mixin/fixed';
 
 declare interface CSSNode {
+	offset: number;
+	length: number;
 	getText(): string;
 }
-declare interface Declaration {
+declare interface Declaration extends CSSNode {
 	property: CSSNode;
 	value: CSSNode;
 }
 declare interface RuleSet {
 	declarations: {
-		children: Declaration[];
+		children?: Declaration[];
 	};
 }
-declare interface StyleSheet {
+declare interface StyleSheet extends CSSNode {
 	children: [RuleSet];
 }
 
@@ -395,15 +397,16 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/**
-	 * Get the value of a style property
+	 * Get or set the value of a style property
 	 *
-	 * 获取某一样式属性的值
+	 * 获取或设置某一样式属性的值
 	 * @param key style property / 样式属性
+	 * @param value style property value / 样式属性值
 	 * @throws `Error` 不是style属性
 	 * @throws `Error` 复杂的style属性
 	 * @throws `Error` 无CSS语言服务
 	 */
-	css(key: string): string | undefined {
+	css(key: string, value?: string): string | undefined {
 		const {name, lastChild} = this;
 		if (name !== 'style') {
 			throw new Error('Not a style attribute!');
@@ -412,8 +415,44 @@ export abstract class AttributeToken extends Token {
 		} else if (!cssLSP) {
 			throw new Error('CSS language service is not available!');
 		}
-		return (new EmbeddedCSSDocument(this.getRootNode(), lastChild).styleSheet as StyleSheet)
-			.children[0].declarations.children.find(({property}) => property.getText() === key)?.value.getText();
+		const doc = new EmbeddedCSSDocument(this.getRootNode(), lastChild),
+			styleSheet = doc.styleSheet as StyleSheet,
+			{children: [{declarations}]} = styleSheet,
+			declaration = declarations.children?.filter(({property}) => property.getText() === key) ?? [];
+		if (value === undefined) {
+			return declaration.at(-1)?.value.getText();
+		} else if (typeof value === 'number') {
+			value = String(value);
+		}
+		const style = styleSheet.getText().slice(0, -1);
+		if (!value) {
+			if (declaration.length === declarations.children?.length) {
+				this.setValue('');
+			} else if (declaration.length > 0) {
+				let output = '',
+					start = doc.pre.length;
+				for (const {offset, length} of declaration) {
+					output += style.slice(start, offset);
+					start = offset + length;
+				}
+				output += style.slice(start);
+				this.setValue(output.replace(/^\s*;\s*|;\s*(?=;)/gu, ''));
+			}
+			return undefined;
+		}
+		const hasQuote = value.includes('"');
+		if (this.#quotes[0] && value.includes(this.#quotes[0]) || hasQuote && value.includes("'")) {
+			const quote = this.#quotes[0] || '"';
+			throw new RangeError(
+				`Please consider replacing \`${quote}\` with \`${quote === '"' ? "'" : "'"}\`!`,
+			);
+		} else if (declaration.length > 0) {
+			const {value: {offset, length}} = declaration.at(-1)!;
+			this.setValue(style.slice(doc.pre.length, offset) + value + style.slice(offset + length));
+		} else {
+			this.setValue(`${style.slice(doc.pre.length)}${/;\s*$/u.test(style) ? '' : '; '}${key}: ${value}`);
+		}
+		return undefined;
 	}
 }
 

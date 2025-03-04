@@ -84,20 +84,6 @@ export const mixin = (target: Function, source: Function): void => {
 
 /* NOT FOR BROWSER */
 
-/* istanbul ignore next */
-/**
- * 定制TypeError消息
- * @param {Function} Constructor 类
- * @param method
- * @param args 可接受的参数类型
- * @throws `TypeError`
- */
-export const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(
-		`${name}.${method} method only accepts ${args.join('、')} as input parameters!`,
-	);
-};
-
 /**
  * 撤销最近一次Mutation
  * @param e 事件

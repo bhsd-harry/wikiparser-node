@@ -92,8 +92,9 @@ export interface AttributesParentBase {
 	 *
 	 * 获取某一样式属性的值
 	 * @param key style property / 样式属性
+	 * @param value style property value / 样式属性值
 	 */
-	css(key: string): string | undefined;
+	css(key: string, value?: string): string | undefined;
 }
 
 /**
@@ -184,8 +185,8 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		}
 
 		/** @implements */
-		css(key: string): string | undefined {
-			return this.#getAttributesChild().css(key);
+		css(key: string, value?: string): string | undefined {
+			return this.#getAttributesChild().css(key, value);
 		}
 	}
 	mixin(AttributesParent, constructor);
