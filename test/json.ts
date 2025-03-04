@@ -1,14 +1,23 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
 import {info} from '../util/diff';
 import type {Config, SignatureData} from '../base';
+
+declare interface Schema {
+	$schema?: string;
+	$id?: string;
+}
+
+const basePath = path.join('..', '..');
 
 const configs: Record<string, Config> = {};
 for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		info(file);
-		const config: Config = require(path.join('..', '..', 'config', file));
+		const config: Config = require(path.join(basePath, 'config', file));
 		const {html, namespaces, nsid, doubleUnderscore} = config;
 
 		// ext/variable/interwiki/redirection/variants
@@ -130,7 +139,7 @@ console.log();
 const {
 	behaviorSwitches,
 	parserFunctions,
-} = require(path.join('..', '..', 'data', 'signatures.json')) as SignatureData;
+} = require(path.join(basePath, 'data', 'signatures.json')) as SignatureData;
 const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
 		.map(s => s.toLowerCase()),
 	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]]
@@ -151,3 +160,24 @@ assert.strictEqual(parserFunctionNames.length, new Set(parserFunctionNames).size
 for (const word of parserFunctionNames) {
 	assert.ok(magicWords.includes(word), `Missing: ${word}`);
 }
+
+// JSON schema
+console.log();
+const ajv = new Ajv({allowUnionTypes: true}),
+	dataPath = path.join('data', 'ext'),
+	files = [
+		path.join('config', '.schema.json'),
+		path.join('data', '.schema.json'),
+		...fs.readdirSync(dataPath).map(file => path.join(dataPath, file)),
+	];
+addFormats(ajv);
+(async () => {
+	const schema = await (await fetch('https://json-schema.org/draft-07/schema')).json() as Schema;
+	delete schema.$schema;
+	delete schema.$id;
+	const validate = ajv.compile(schema);
+	for (const file of files) {
+		validate(require(path.join(basePath, file)));
+		info(file);
+	}
+})();
