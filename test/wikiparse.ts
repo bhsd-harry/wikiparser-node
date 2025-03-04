@@ -27,7 +27,7 @@ class MockWorker {
 
 	constructor(url: string) {
 		this.worker = (async () => {
-			const blob = await (await fetch(url)).blob(); // eslint-disable-line n/no-unsupported-features/node-builtins
+			const blob = await (await fetch(url)).blob();
 			mock.worker = new Worker(
 				String(head).replace(/^\(\)\s*=>\s*\{|\}$/gu, '') + await blob.text(),
 				{eval: true},
