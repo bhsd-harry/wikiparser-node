@@ -15,11 +15,7 @@ import type {LintError} from '../base';
 
 import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
-import {magicLinkParent} from '../mixin/magicLinkParent';
-import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
 import type {FileToken} from '../internal';
-
-export interface ExtLinkToken extends MagicLinkParentBase {}
 
 /* NOT FOR BROWSER END */
 
@@ -29,7 +25,6 @@ export interface ExtLinkToken extends MagicLinkParentBase {}
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-@magicLinkParent
 export abstract class ExtLinkToken extends Token {
 	#space;
 
@@ -62,6 +57,24 @@ export abstract class ExtLinkToken extends Token {
 
 	set innerText(text) {
 		this.setLinkText(text);
+	}
+
+	/** URL protocol / 协议 */
+	get protocol(): string | undefined {
+		return this.firstChild.protocol;
+	}
+
+	set protocol(value: string) {
+		this.firstChild.protocol = value;
+	}
+
+	/** link / 链接 */
+	get link(): string {
+		return this.firstChild.link;
+	}
+
+	set link(url) {
+		this.firstChild.link = url;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -234,6 +247,25 @@ export abstract class ExtLinkToken extends Token {
 		return `<a rel="nofollow" class="external"${
 			href === undefined ? '' : ` href="${href}"`
 		}>${innerText}</a>`;
+	}
+
+	/**
+	 * Get the URL
+	 *
+	 * 获取网址
+	 */
+	getUrl(): URL {
+		return this.firstChild.getUrl() as URL;
+	}
+
+	/**
+	 * Set the target of the link
+	 *
+	 * 设置外链目标
+	 * @param url URL containing the protocol / 含协议的网址
+	 */
+	setTarget(url: string): void {
+		this.firstChild.setTarget(url);
 	}
 }
 
