@@ -55,6 +55,7 @@
 		"prof": "node dist/test/prof.js",
 		"coverage": "nyc --cache-dir=./.cache/nyc npm test && node dist/bin/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
+		"test:clonenode": "CLONENODE=1 npm run test:unit",
 		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:end": "pkill -x http-server",

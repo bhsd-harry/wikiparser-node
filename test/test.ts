@@ -3,6 +3,19 @@ import * as path from 'path';
 import * as assert from 'assert';
 import Parser = require('../index');
 
+/* NOT FOR BROWSER */
+
+import type {Config} from '../base';
+import type {Token} from '../internal';
+
+if (process.env['CLONENODE']) {
+	const parse = Parser.parse.bind(Parser);
+	Parser.parse = /** @implements */ (...args: [string, boolean?, number?, Config?]): Token =>
+		parse(...args).cloneNode();
+}
+
+/* NOT FOR BROWSER END */
+
 Parser.warning = false;
 const allCodes = new Map<string, string[]>();
 
