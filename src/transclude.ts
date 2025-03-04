@@ -330,7 +330,7 @@ export abstract class TranscludeToken extends Token {
 			const token = args[i]!,
 				{name} = token,
 				newName = String(i + 1);
-			if (name !== newName) {
+			if (name !== newName || token === addedToken) {
 				token.setAttribute('name', newName);
 				this.getArgs(newName, false, false).add(token);
 			}
