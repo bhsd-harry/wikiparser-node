@@ -125,6 +125,12 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 		super('css', root, token, [`${type === 'ext-attr' ? 'div' : tag}{`, '}']);
 		this.styleSheet = cssLSP!.parseStylesheet(this);
 	}
+
+	/** @override */
+	override getText(): string {
+		return super.getText().replaceAll('{', '「')
+			.replaceAll('}', '」');
+	}
 }
 
 classes['EmbeddedDocument'] = __filename;
