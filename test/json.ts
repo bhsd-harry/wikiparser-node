@@ -4,11 +4,13 @@ import * as assert from 'assert';
 import {info} from '../util/diff';
 import type {Config, SignatureData} from '../base';
 
+const basePath = path.join('..', '..');
+
 const configs: Record<string, Config> = {};
 for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		info(file);
-		const config: Config = require(path.join('..', '..', 'config', file));
+		const config: Config = require(path.join(basePath, 'config', file));
 		const {html, namespaces, nsid, doubleUnderscore} = config;
 
 		// ext/variable/interwiki/redirection/variants
@@ -130,7 +132,7 @@ console.log();
 const {
 	behaviorSwitches,
 	parserFunctions,
-} = require(path.join('..', '..', 'data', 'signatures.json')) as SignatureData;
+} = require(path.join(basePath, 'data', 'signatures.json')) as SignatureData;
 const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
 		.map(s => s.toLowerCase()),
 	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]]
