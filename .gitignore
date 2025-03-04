@@ -11,7 +11,6 @@ dist/
 /.eslintcache*
 /.wikilintcache
 /.markdownlint.json
-/.schema.json
 /.nyc_output/
 /.cache/
 /wiki/

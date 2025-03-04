@@ -18,7 +18,7 @@ try {
 		.getLanguageService({
 			/** @implements */
 			async schemaRequestService(uri) {
-				return (await fetch(uri)).text(); // eslint-disable-line n/no-unsupported-features/node-builtins
+				return (await fetch(uri)).text();
 			},
 		});
 	jsonLSP.configure({

@@ -58,7 +58,7 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.6.6",
+		"@bhsd/common": "^0.6.7",
 		"@codemirror/lint": "^6.8.4",
 		"codejar-async": "^4.2.6",
 		"monaco-editor": "^0.52.2",

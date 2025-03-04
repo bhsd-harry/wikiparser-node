@@ -795,6 +795,17 @@ export class LanguageService implements LanguageServiceBase {
 				});
 			}
 		}
+
+		/* NOT FOR BROWSER ONLY */
+
+		if (jsonLSP) {
+			for (const token of root.querySelectorAll(jsonSelector)) {
+				ranges.push(...jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, token)));
+			}
+		}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return ranges;
 	}
 
