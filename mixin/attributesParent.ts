@@ -86,6 +86,14 @@ export interface AttributesParentBase {
 	 * @param force whether to force enabling or disabling / 强制开启或关闭
 	 */
 	toggleAttr(key: string, force?: boolean): void;
+
+	/**
+	 * Get the value of a style property
+	 *
+	 * 获取某一样式属性的值
+	 * @param key style property / 样式属性
+	 */
+	css(key: string): string | undefined;
 }
 
 /**
@@ -173,6 +181,11 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		/** @implements */
 		toggleAttr(key: string, force?: boolean): void {
 			this.#getAttributesChild().toggleAttr(key, force);
+		}
+
+		/** @implements */
+		css(key: string): string | undefined {
+			return this.#getAttributesChild().css(key);
 		}
 	}
 	mixin(AttributesParent, constructor);

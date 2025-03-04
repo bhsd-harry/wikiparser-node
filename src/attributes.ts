@@ -546,6 +546,16 @@ export abstract class AttributesToken extends Token {
 		);
 		return map.size === 0 ? '' : ` ${html([...map.values()], ' ')}`;
 	}
+
+	/**
+	 * Get the value of a style property
+	 *
+	 * 获取某一样式属性的值
+	 * @param key style property / 样式属性
+	 */
+	css(key: string): string | undefined {
+		return this.getAttrToken('style')?.css(key);
+	}
 }
 
 classes['AttributesToken'] = __filename;

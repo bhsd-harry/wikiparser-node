@@ -26,7 +26,24 @@ import type {AttributesToken} from '../internal';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../util/debug';
+import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
 import {fixedToken} from '../mixin/fixed';
+
+declare interface CSSNode {
+	getText(): string;
+}
+declare interface Declaration {
+	property: CSSNode;
+	value: CSSNode;
+}
+declare interface RuleSet {
+	declarations: {
+		children: Declaration[];
+	};
+}
+declare interface StyleSheet {
+	children: [RuleSet];
+}
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 
@@ -375,6 +392,28 @@ export abstract class AttributeToken extends Token {
 			return '';
 		}
 		return `${name}="${sanitizeAttr(value.replace(/\s+|&#10;/gu, name === 'id' ? '_' : ' '))}"`;
+	}
+
+	/**
+	 * Get the value of a style property
+	 *
+	 * 获取某一样式属性的值
+	 * @param key style property / 样式属性
+	 * @throws `Error` 不是style属性
+	 * @throws `Error` 复杂的style属性
+	 * @throws `Error` 无CSS语言服务
+	 */
+	css(key: string): string | undefined {
+		const {name, lastChild} = this;
+		if (name !== 'style') {
+			throw new Error('Not a style attribute!');
+		} else if (lastChild.length !== 1 || lastChild.firstChild!.type !== 'text') {
+			throw new Error('Complex style attribute!');
+		} else if (!cssLSP) {
+			throw new Error('CSS language service is not available!');
+		}
+		return (new EmbeddedCSSDocument(this.getRootNode(), lastChild).styleSheet as StyleSheet)
+			.children[0].declarations.children.find(({property}) => property.getText() === key)?.value.getText();
 	}
 }
 
