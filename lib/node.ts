@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {cache} from '../util/lint';
-import {
-	Shadow,
-} from '../util/debug';
+import {Shadow} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {Cached} from '../util/lint';
 import type {

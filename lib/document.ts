@@ -47,12 +47,12 @@ export {jsonLSP, cssLSP};
 class EmbeddedDocument implements TextDocument {
 	declare languageId: string;
 	declare lineCount: number;
+	declare pre: string;
 	uri = '';
 	version = 0;
 	#root;
 	#content;
 	#offset;
-	#pre;
 	#post;
 
 	/**
@@ -68,7 +68,7 @@ class EmbeddedDocument implements TextDocument {
 		this.#root = root;
 		this.#content = String(token);
 		this.#offset = token.getAbsoluteIndex();
-		this.#pre = pre;
+		this.pre = pre;
 		this.#post = post;
 	}
 
@@ -79,13 +79,13 @@ class EmbeddedDocument implements TextDocument {
 
 	/** @implements */
 	getText(): string {
-		return this.#pre + this.getContent() + this.#post;
+		return this.pre + this.getContent() + this.#post;
 	}
 
 	/** @implements */
 	positionAt(offset: number): Position {
 		const {top, left} = this.#root.posFromIndex(
-			this.#offset + Math.max(Math.min(offset - this.#pre.length, this.#content.length), 0),
+			this.#offset + Math.max(Math.min(offset - this.pre.length, this.#content.length), 0),
 		)!;
 		return {line: top, character: left};
 	}
@@ -93,7 +93,7 @@ class EmbeddedDocument implements TextDocument {
 	/** @implements */
 	offsetAt({line, character}: Position): number {
 		return Math.min(Math.max(this.#root.indexFromPos(line, character)! - this.#offset, 0), this.#content.length)
-			+ this.#pre.length;
+			+ this.pre.length;
 	}
 }
 
