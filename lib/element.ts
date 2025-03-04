@@ -40,7 +40,11 @@ export abstract class AstElement extends AstNode {
 		return text(this.childNodes, separator);
 	}
 
-	/** @private */
+	/**
+	 * Merge adjacent text child nodes
+	 *
+	 * 合并相邻的文本子节点
+	 */
 	normalize(): void {
 		const childNodes = this.getChildNodes();
 
