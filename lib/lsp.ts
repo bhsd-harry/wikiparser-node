@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
@@ -62,6 +61,7 @@ import type {
 
 /* NOT FOR BROWSER ONLY */
 
+import * as path from 'path';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags} from './document';
 
 /* NOT FOR BROWSER ONLY END */
@@ -90,8 +90,7 @@ declare interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
-const jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join(),
-	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+const jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join();
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -688,14 +687,35 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text),
 			errors = root.lint(),
 			diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
-				({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
+				({
+					startLine,
+					startCol,
+					endLine,
+					endCol,
+					severity,
+					rule,
+					message,
+
+					/* NOT FOR BROWSER ONLY */
+
+					fix,
+					suggestions,
+					code,
+				}): Diagnostic => ({
 					range: {
 						start: {line: startLine, character: startCol},
 						end: {line: endLine, character: endCol},
 					},
 					severity: severity === 'error' ? 1 : 2,
-					source: 'WikiLint',
-					code: rule,
+					source:
+						/* eslint-disable @stylistic/operator-linebreak */
+						rule === 'invalid-css' ?
+							'css' :
+							'WikiLint',
+					code:
+						code ??
+						/* eslint-enable @stylistic/operator-linebreak */
+						rule,
 					message,
 
 					/* NOT FOR BROWSER ONLY */
@@ -707,18 +727,6 @@ export class LanguageService implements LanguageServiceBase {
 				}),
 			),
 			/* eslint-disable @stylistic/operator-linebreak */
-			cssDiagnostics =
-				cssLSP ?
-					root.querySelectorAll<AttributeToken>(cssSelector)
-						.map(({lastChild}) => lastChild)
-						.filter(({length, firstChild}) => length === 1 && firstChild!.type === 'text')
-						.reverse()
-						.map(token => {
-							const textDoc = new EmbeddedCSSDocument(root, token),
-								e = cssLSP!.doValidation(textDoc, textDoc.styleSheet);
-							return warning ? e : e.filter(({severity}) => severity === 1);
-						}) :
-					[] as const,
 			jsonDiagnostics =
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
@@ -733,7 +741,7 @@ export class LanguageService implements LanguageServiceBase {
 					})) :
 					[] as const;
 			/* eslint-enable @stylistic/operator-linebreak */
-		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
+		return [diagnostics, jsonDiagnostics].flat(2);
 	}
 
 	/**
