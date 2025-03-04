@@ -268,7 +268,8 @@ const keys = new Set(['type', 'childNodes', 'range']);
 				// 进入highlighter时，将editor的文本同步到highlighter
 				(async () => {
 					wikiparse.print = immediatePrint;
-					for (const [i, pre] of pres.entries()) {
+					for (let i = 0; i < pres.length; i++) {
+						const pre = pres[i]!;
 						pre.classList.remove('wikiparser');
 						pre.textContent = jar.toString();
 						await wikiparse.highlight!(pre, Boolean(i), true);

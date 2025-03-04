@@ -35,7 +35,8 @@ export abstract class ArgToken extends Token {
 	constructor(parts: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		for (const [i, part] of parts.entries()) {
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i]!;
 			if (i === 0) {
 				const token = new AtomToken(part, 'arg-name', config, accum, {
 				});
@@ -95,9 +96,12 @@ export abstract class ArgToken extends Token {
 			}
 			return [e];
 		}
+		argName.setAttribute('aIndex', start + 3);
 		const errors = argName.lint(start + 3, re);
 		if (argDefault) {
-			errors.push(...argDefault.lint(start + 4 + argName.toString().length, re));
+			const index = start + 4 + argName.toString().length;
+			argDefault.setAttribute('aIndex', index);
+			errors.push(...argDefault.lint(index, re));
 		}
 		if (rest.length > 0) {
 			const rect = new BoundingRect(this, start);

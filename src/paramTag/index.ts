@@ -69,6 +69,7 @@ export abstract class ParamTagToken extends Token {
 			msg = Parser.msg('invalid parameter of <$1>', this.name),
 			errors: LintError[] = [];
 		for (const child of this.childNodes) {
+			child.setAttribute('aIndex', start);
 			const grandChildren = child.childNodes
 				.filter(({type}) => type !== 'comment' && type !== 'include' && type !== 'noinclude');
 			if (grandChildren.some(({type}) => type === 'ext')) {
