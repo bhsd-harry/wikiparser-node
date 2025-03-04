@@ -336,7 +336,7 @@ export abstract class ImageParameterToken extends Token {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new ImageParameterToken(
-				this.#syntax.replace('$1', ''),
+				this.#syntax.replace('$1', '1'),
 				this.#extension,
 				config,
 			) as this;

@@ -14,6 +14,7 @@ import type {LintError} from '../../base';
 
 /* NOT FOR BROWSER */
 
+import {Shadow} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
 import {galleryParams} from '../imageParameter';
 import type {AtomToken, ImageParameterToken} from '../../internal';
@@ -130,6 +131,22 @@ export abstract class GalleryImageToken extends FileToken {
 			child.setAttribute('name', 'invalid');
 		}
 		return super.insertAt(child, i);
+	}
+
+	override cloneNode(): this {
+		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...ImageParameterToken[]];
+		return Shadow.run(() => {
+			// @ts-expect-error abstract class
+			const token = new GalleryImageToken(
+				this.type.slice(0, -6),
+				'',
+				undefined,
+				this.getAttribute('config'),
+			) as this;
+			token.firstChild.safeReplaceWith(link);
+			token.append(...linkText);
+			return token;
+		});
 	}
 }
 

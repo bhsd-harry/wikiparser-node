@@ -450,13 +450,13 @@ export abstract class TranscludeToken extends Token {
 			const token = args[i]!,
 				{name} = token,
 				newName = String(i + 1);
-			if (name !== newName) {
+			if (name !== newName || token === addedToken) {
 				token.setAttribute('name', newName);
 				this.getArgs(newName, false, false).add(token);
 
 				/* NOT FOR BROWSER */
 
-				if (name) {
+				if (name && token !== addedToken) {
 					this.getArgs(name, false, false).delete(token);
 				}
 			}
@@ -618,6 +618,7 @@ export abstract class TranscludeToken extends Token {
 				token.removeAt(1);
 			}
 			token.append(...cloned);
+			token.afterBuild();
 			return token;
 		});
 	}

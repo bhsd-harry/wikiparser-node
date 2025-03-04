@@ -21,7 +21,6 @@ export const fixedToken = <S extends AstConstructor>(constructor: S, _?: unknown
 		}
 
 		/**
-		 * @override
 		 * @param token 待插入的子节点
 		 * @param i 插入位置
 		 */

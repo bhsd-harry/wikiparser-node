@@ -132,11 +132,10 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 		this.styleSheet = cssLSP!.parseStylesheet(this);
 	}
 
-	/** @override */
 	override getContent(): string {
 		return super.getContent().replaceAll('{', '「')
 			.replaceAll('}', '」');
 	}
 }
 
-classes['EmbeddedDocument'] = __filename;
+classes['EmbeddedCSSDocument'] = __filename;

@@ -173,7 +173,7 @@ export abstract class ExtLinkToken extends Token {
 		const [url, text] = this.cloneChildNodes() as [MagicLinkToken, Token?];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config')) as this;
+			const token = new ExtLinkToken(undefined, this.#space, '', this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(url);
 			if (text) {
 				token.insertAt(text);
