@@ -205,6 +205,10 @@ export const rules = /* #__PURE__ */ (() => {
 		'url-encoding',
 		'var-anchor',
 		'void-ext',
+
+		/* NOT FOR BROWSER ONLY */
+
+		'invalid-css',
 	] as const;
 	Object.freeze(arr);
 	return arr;
@@ -234,6 +238,10 @@ export interface LintError {
 	endCol: number;
 	fix?: LintError.Fix;
 	suggestions?: LintError.Fix[];
+
+	/* NOT FOR BROWSER ONLY */
+
+	code?: string;
 }
 
 /* PRINT ONLY */

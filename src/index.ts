@@ -87,6 +87,12 @@ import type {Range} from '../lib/ranges';
 
 /* NOT FOR BROWSER END */
 
+/* NOT FOR BROWSER ONLY */
+
+import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
+
+/* NOT FOR BROWSER ONLY END */
+
 declare interface LintIgnore {
 	line: number;
 	from: number | undefined;
@@ -643,6 +649,31 @@ export class Token extends AstElement {
 				}
 				return nearest.type !== 'from';
 			});
+
+			/* NOT FOR BROWSER ONLY */
+		} else if (
+			cssLSP && this.type === 'attr-value' && this.length === 1 && this.firstChild!.type === 'text'
+			&& (this.parentNode as AttributeToken).name === 'style'
+		) {
+			const root = this.getRootNode(),
+				textDoc = new EmbeddedCSSDocument(root, this);
+			errors.push(
+				...cssLSP.doValidation(textDoc, textDoc.styleSheet)
+					.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
+						code: code as string,
+						rule: 'invalid-css',
+						message,
+						severity: severity === 1 ? 'error' : 'warning',
+						startLine: line,
+						startCol: character,
+						startIndex: root.indexFromPos(line, character)!,
+						endLine: end.line,
+						endCol: end.character,
+						endIndex: root.indexFromPos(end.line, end.character)!,
+					})),
+			);
+
+			/* NOT FOR BROWSER ONLY END */
 		}
 		Parser.viewOnly = viewOnly;
 		return errors;
