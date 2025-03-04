@@ -202,7 +202,8 @@ export abstract class TranscludeToken extends Token {
 		}
 		const templateLike = this.isTemplate();
 		let i = 1;
-		for (const [j, part] of parts.entries()) {
+		for (let j = 0; j < parts.length; j++) {
+			const part = parts[j]!;
 			if (!(templateLike || this.name === 'switch' && j > 0 || this.name === 'tag' && j > 1)) {
 				part[0] = part.join('=');
 				part.length = 1;
@@ -606,13 +607,16 @@ export abstract class TranscludeToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new TranscludeToken(this.type === 'template' ? 'T' : first!.text(), [], config) as this;
+			const token = new TranscludeToken(this.type === 'template' ? 'T' : `${first!.text()}:`, [], config) as this;
 			if (this.#raw) {
 				token.setModifier(this.modifier);
 			} else {
 				token.setAttribute('modifier', this.modifier);
 			}
 			token.firstChild.safeReplaceWith(first as never);
+			if (this.type === 'magic-word') {
+				token.removeAt(1);
+			}
 			token.append(...cloned);
 			return token;
 		});

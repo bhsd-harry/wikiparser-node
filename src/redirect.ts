@@ -87,7 +87,9 @@ export abstract class RedirectToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return this.lastChild.lint(start + this.#pre.length + this.firstChild.toString().length);
+		const index = start + this.#pre.length + this.firstChild.toString().length;
+		this.lastChild.setAttribute('aIndex', index);
+		return this.lastChild.lint(index);
 	}
 
 	/** @private */

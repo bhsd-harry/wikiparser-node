@@ -130,8 +130,9 @@ export abstract class ConverterFlagsToken extends Token {
 			return errors;
 		}
 		const rect = new BoundingRect(this, start);
-		for (const [i, child] of this.childNodes.entries()) {
-			const flag = child.text().trim();
+		for (let i = 0; i < this.length; i++) {
+			const child = this.childNodes[i]!,
+				flag = child.text().trim();
 			if (
 				flag
 				&& !variantFlags.has(flag)

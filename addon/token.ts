@@ -370,7 +370,8 @@ Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined
 			range.setStart(this, i);
 			return range;
 		});
-	for (const [i, [index, level]] of headings.entries()) {
+	for (let i = 0; i < headings.length; i++) {
+		const [index, level] = headings[i]!;
 		for (let j = level; j < 6; j++) {
 			const last = lastHeading[j]!;
 			if (last >= 0) {

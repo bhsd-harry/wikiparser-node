@@ -160,8 +160,9 @@ TranscludeToken.prototype.fixDuplication =
 						return cmp;
 					});
 				if (ordered) {
-					for (const [i, arg] of series.entries()) {
-						const name = `${str}${i + 1}`;
+					for (let i = 0; i < series.length; i++) {
+						const arg = series[i]!,
+							name = `${str}${i + 1}`;
 						if (arg.name !== name) {
 							if (arg.name === key) {
 								remaining--;

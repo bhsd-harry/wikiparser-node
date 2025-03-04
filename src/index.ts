@@ -490,6 +490,9 @@ export class Token extends AstElement {
 			case 'acceptable':
 				this.#acceptable = value && ((): Record<string, Ranges> => getAcceptable(value as Acceptable));
 				break;
+			case 'include':
+				this.#include = value as TokenAttribute<'include'>;
+				break;
 
 				/* NOT FOR BROWSER END */
 
@@ -881,6 +884,7 @@ export class Token extends AstElement {
 			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
 			token.type = this.type;
 			token.setAttribute('stage', this.#stage);
+			token.setAttribute('include', Boolean(this.#include));
 			token.setAttribute('name', this.name);
 			token.append(...cloned);
 			token.protectChildren(...this.#protectedChildren);

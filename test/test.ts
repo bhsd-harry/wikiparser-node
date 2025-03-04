@@ -85,7 +85,9 @@ describe('Documentation tests', () => {
 		if (file.endsWith('-(EN)')) {
 			const zhFile = file.slice(0, -5);
 			describe(zhFile, () => {
-				for (const [i, code] of allCodes.get(zhFile)!.entries()) {
+				const zhCodes = allCodes.get(zhFile)!;
+				for (let i = 0; i < zhCodes.length; i++) {
+					const code = zhCodes[i]!;
 					it(code.split('\n', 1)[0]!.slice(3), () => {
 						assert.strictEqual(
 							code,

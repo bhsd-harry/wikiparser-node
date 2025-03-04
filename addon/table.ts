@@ -279,8 +279,9 @@ TableToken.prototype.insertTableCol =
 			this.getAttribute('include'),
 			this.getAttribute('config'),
 		);
-		for (const [i, rowLayout] of layout.entries()) {
-			const coords = rowLayout[x],
+		for (let i = 0; i < layout.length; i++) {
+			const rowLayout = layout[i]!,
+				coords = rowLayout[x],
 				prevCoords = x === 0 ? true : rowLayout[x - 1];
 			if (!prevCoords) {
 				continue;
@@ -558,8 +559,9 @@ TableToken.prototype.moveCol =
 		const setX = new WeakSet<TableCoords>(),
 			setRef = new WeakSet<TableCoords>(),
 			rows = this.getAllRows();
-		for (const [i, rowLayout] of layout.entries()) {
-			const coords = rowLayout[x],
+		for (let i = 0; i < layout.length; i++) {
+			const rowLayout = layout[i]!,
+				coords = rowLayout[x],
 				refCoords = rowLayout[reference],
 				start = isStartCol(rowLayout, x);
 			if (refCoords && !start && !setRef.has(refCoords)) {

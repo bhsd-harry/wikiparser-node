@@ -232,7 +232,9 @@ export abstract class TableToken extends TrBaseToken {
 		const rows = this.getAllRows(),
 			{length} = rows,
 			layout = new Layout(...emptyArray(length, () => []));
-		for (const [i, rowLayout] of layout.entries()) {
+		for (let i = 0; i < layout.length; i++) {
+			const rowLayout = layout[i]!;
+
 			/* NOT FOR BROWSER */
 
 			if (i > (stop?.row ?? stop?.y ?? NaN)) {
