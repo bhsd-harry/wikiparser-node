@@ -603,22 +603,30 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text),
 			errors = root.lint(),
 			diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
-				({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
+				({
+					startLine,
+					startCol,
+					endLine,
+					endCol,
+					severity,
+					rule,
+					message,
+				}): Diagnostic => ({
 					range: {
 						start: {line: startLine, character: startCol},
 						end: {line: endLine, character: endCol},
 					},
 					severity: severity === 'error' ? 1 : 2,
-					source: 'WikiLint',
-					code: rule,
+					source:
+						'WikiLint',
+					code:
+						rule,
 					message,
 				}),
 			),
-			cssDiagnostics =
-				[] as const,
 			jsonDiagnostics =
 				[] as const;
-		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
+		return [diagnostics, jsonDiagnostics].flat(2);
 	}
 
 	/**

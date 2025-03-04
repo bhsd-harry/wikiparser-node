@@ -2,8 +2,13 @@ import {diff, error} from '../util/diff';
 import './wikiparse';
 import type {LintError} from '../base';
 
-const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
+/* PRINT ONLY */
+
 const entities = {lt: '<', gt: '>', amp: '&'};
+
+/* PRINT ONLY END */
+
+const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 
 /**
  * 测试单个页面
