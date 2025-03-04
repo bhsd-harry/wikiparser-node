@@ -73,7 +73,8 @@ for (const [file, config] of Object.entries(configs)) {
 
 		// html/parserFunction
 		for (const key of ['html', 'parserFunction'] as const) {
-			for (const [i, arr] of config[key].entries()) {
+			for (let i = 0; i < config[key].length; i++) {
+				const arr = config[key][i]!;
 				if (Array.isArray(arr)) {
 					for (const ele of arr) {
 						assert(
@@ -94,8 +95,9 @@ for (const [file, config] of Object.entries(configs)) {
 
 		// parserFunction/doubleUnderscore
 		for (const key of ['parserFunction', 'doubleUnderscore'] as const) {
-			for (const [i, obj] of config[key].entries()) {
-				if (obj && !Array.isArray(obj)) {
+			for (let i = 0; i < config[key].length; i++) {
+				const obj = config[key][i]!;
+				if (!Array.isArray(obj)) {
 					for (const [alias, canonical] of Object.entries(obj)) {
 						assert.strictEqual(
 							(defaultConfig[key][i] as Record<string, string>)[alias],

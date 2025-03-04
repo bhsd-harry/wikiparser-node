@@ -157,7 +157,8 @@ export abstract class TableToken extends TrBaseToken {
 		const rows = this.getAllRows(),
 			{length} = rows,
 			layout = new Layout(...emptyArray(length, () => []));
-		for (const [i, rowLayout] of layout.entries()) {
+		for (let i = 0; i < layout.length; i++) {
+			const rowLayout = layout[i]!;
 			let j = 0,
 				k = 0,
 				last: boolean | undefined;
