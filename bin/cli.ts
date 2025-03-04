@@ -303,8 +303,7 @@ let minimatch: (file: string, pattern: string) => boolean;
 try {
 	({minimatch} = require('minimatch'));
 } catch {
-	// eslint-disable-next-line n/no-unsupported-features/node-builtins
-	minimatch = /** @ignore */ (file, pattern): boolean => path.matchesGlob(file, pattern);
+	minimatch = path.matchesGlob.bind(path); // eslint-disable-line n/no-unsupported-features/node-builtins
 }
 for (const file of new Set(files.map(f => path.resolve(f)))) {
 	const stat = fs.statSync(file);
