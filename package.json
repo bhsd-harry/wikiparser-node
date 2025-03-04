@@ -72,7 +72,7 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.6.6",
+		"@bhsd/common": "^0.6.7",
 		"@codemirror/lint": "^6.8.4",
 		"codejar-async": "^4.2.6",
 		"monaco-editor": "^0.52.2",
@@ -93,8 +93,6 @@
 		"@types/node": "^22.13.1",
 		"@typescript-eslint/eslint-plugin": "^8.23.0",
 		"@typescript-eslint/parser": "^8.23.0",
-		"ajv": "^8.17.1",
-		"ajv-formats": "^3.0.1",
 		"color-rgba": "^3.0.0",
 		"esbuild": "^0.25.0",
 		"eslint": "^8.57.1",
