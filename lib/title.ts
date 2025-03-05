@@ -262,13 +262,13 @@ export class Title {
 					'$1',
 					encodeURIComponent(title)
 					+ (
-						fragment === undefined
-						&& this.#redirectFragment === undefined
-							? ''
-							: `#${encodeURIComponent(
+						fragment
+						|| this.#redirectFragment
+							? `#${encodeURIComponent(
 								fragment
-								?? this.#redirectFragment!,
+								|| this.#redirectFragment!,
 							)}`
+							: ''
 					),
 				);
 			}

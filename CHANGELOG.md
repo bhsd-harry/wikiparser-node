@@ -15,6 +15,7 @@
 - [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml)
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) for attribute keys of extension tags, HTML tags and tables
 - Various issues with [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#clonenode)
+- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) now ignores an empty fragment
 
 **Changed**
 
