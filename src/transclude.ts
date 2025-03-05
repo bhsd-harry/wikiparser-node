@@ -191,12 +191,13 @@ export abstract class TranscludeToken extends Token {
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
-		const isTemplate = this.type === 'template';
-		return this.normalizeTitle(
-			this.childNodes[isTemplate ? 0 : 1].toString(true),
-			isTemplate ? 10 : 828,
-			true,
-		);
+		const isTemplate = this.type === 'template',
+			title = this.normalizeTitle(
+				this.childNodes[isTemplate ? 0 : 1].toString(true),
+				isTemplate ? 10 : 828,
+				true,
+			);
+		return title;
 	}
 
 	/**
