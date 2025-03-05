@@ -662,6 +662,7 @@ export class Token extends AstElement {
 				textDoc = new EmbeddedCSSDocument(root, this);
 			errors.push(
 				...cssLSP.doValidation(textDoc, textDoc.styleSheet)
+					.filter(({code}) => code !== 'css-ruleorselectorexpected')
 					.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
 						code: code as string,
 						rule: 'invalid-css',
