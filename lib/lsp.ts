@@ -729,7 +729,7 @@ export class LanguageService implements LanguageServiceBase {
 			/* eslint-disable @stylistic/operator-linebreak */
 			jsonDiagnostics =
 				jsonLSP ?
-					await Promise.all(root.querySelectorAll(jsonSelector).reverse().map(async token => {
+					await Promise.all(root.querySelectorAll(jsonSelector).map(async token => {
 						const textDoc = new EmbeddedJSONDocument(root, token),
 							e = (await jsonLSP!
 								.doValidation(textDoc, textDoc.jsonDoc, undefined))
@@ -1232,9 +1232,6 @@ export class LanguageService implements LanguageServiceBase {
 			names = new Set<string>(),
 			sections = new Array<DocumentSymbol | undefined>(6),
 			tokens = root.querySelectorAll<Token>('heading-title');
-		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
-			token.getRelativeIndex();
-		}
 		for (const token of tokens) {
 			const {top, height, left, width} = token.getBoundingClientRect(),
 				{level} = token.parentNode as HeadingToken;
