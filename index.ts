@@ -544,7 +544,6 @@ const def: PropertyDescriptorMap = {
 
 		/* NOT FOR BROWSER */
 
-		'conversionTable',
 		'warning',
 		'debugging',
 		'isInterwiki',

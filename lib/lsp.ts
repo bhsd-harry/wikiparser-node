@@ -739,12 +739,14 @@ export class LanguageService implements LanguageServiceBase {
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).map(async token => {
 						const textDoc = new EmbeddedJSONDocument(root, token),
-							e = (await jsonLSP!
-								.doValidation(textDoc, textDoc.jsonDoc, undefined))
-								.map(error => ({
-									...error,
-									source: 'json',
-								}));
+							severityLevel = token.name === 'templatedata' ? 'error' : 'ignore',
+							e = (await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc, {
+								comments: severityLevel,
+								trailingCommas: severityLevel,
+							})).map(error => ({
+								...error,
+								source: 'json',
+							}));
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
 					[] as const;
