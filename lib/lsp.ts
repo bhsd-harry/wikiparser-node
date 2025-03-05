@@ -749,43 +749,45 @@ export class LanguageService implements LanguageServiceBase {
 						root.querySelectorAll<AttributeToken>(cssSelector)
 							.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text')
 							.map(async token => {
-								const {tag, lastChild} = token,
+								const {type, tag, lastChild} = token,
 									{top, left, height, width} = lastChild.getBoundingClientRect();
-								return (await styleLint(await stylelint!, `${tag}{\n${lastChild.toString()}\n}`))
-									.map(({
-										rule,
-										text: msg,
-										severity,
-										line,
-										column,
-										endLine = line,
-										endColumn = column,
-									}): DiagnosticBase => {
-										if (line === 1) {
-											line = 2;
-											column = 1;
-										} else if (line === height + 2) {
-											line = height + 1;
-											column = width + 1;
-										}
-										if (endLine === 1) {
-											endLine = 2;
-											endColumn = 1;
-										} else if (endLine === height + 2) {
-											endLine = height + 1;
-											endColumn = width + 1;
-										}
-										return {
-											range: {
-												start: getEndPos(top, left, line - 1, column - 1),
-												end: getEndPos(top, left, endLine - 1, endColumn - 1),
-											},
-											severity: severity === 'error' ? 1 : 2,
-											source: 'Stylelint',
-											code: rule,
-											message: msg.slice(0, msg.lastIndexOf('(') - 1),
-										};
-									});
+								return (await styleLint(
+									await stylelint!,
+									`${type === 'ext-attr' ? 'div' : tag}{\n${lastChild.toString()}\n}`,
+								)).map(({
+									rule,
+									text: msg,
+									severity,
+									line,
+									column,
+									endLine = line,
+									endColumn = column,
+								}): DiagnosticBase => {
+									if (line === 1) {
+										line = 2;
+										column = 1;
+									} else if (line === height + 2) {
+										line = height + 1;
+										column = width + 1;
+									}
+									if (endLine === 1) {
+										endLine = 2;
+										endColumn = 1;
+									} else if (endLine === height + 2) {
+										endLine = height + 1;
+										endColumn = width + 1;
+									}
+									return {
+										range: {
+											start: getEndPos(top, left, line - 1, column - 1),
+											end: getEndPos(top, left, endLine - 1, endColumn - 1),
+										},
+										severity: severity === 'error' ? 1 : 2,
+										source: 'Stylelint',
+										code: rule,
+										message: msg.slice(0, msg.lastIndexOf('(') - 1),
+									};
+								});
 							}),
 					) :
 					[] as const,
