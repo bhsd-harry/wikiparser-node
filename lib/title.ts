@@ -170,11 +170,11 @@ export class Title {
 					'$1',
 					encodeURIComponent(title)
 					+ (
-						fragment === undefined
-							? ''
-							: `#${encodeURIComponent(
+						fragment
+							? `#${encodeURIComponent(
 								fragment
 							)}`
+							: ''
 					),
 				);
 			}
