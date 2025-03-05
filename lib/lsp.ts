@@ -1,4 +1,7 @@
-import {splitColors, numToHex} from '@bhsd/common';
+import {
+	splitColors,
+	numToHex,
+} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
 import {tidy} from '../util/string';
@@ -624,9 +627,11 @@ export class LanguageService implements LanguageServiceBase {
 					message,
 				}),
 			),
+			cssDiagnostics =
+				[] as const,
 			jsonDiagnostics =
 				[] as const;
-		return [diagnostics, jsonDiagnostics].flat(2);
+		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
 	}
 
 	/**
