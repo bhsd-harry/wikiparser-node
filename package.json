@@ -81,6 +81,7 @@
 	"optionalDependencies": {
 		"chalk": "^4.1.2",
 		"entities": "^6.0.0",
+		"stylelint": "^16.14.1",
 		"vscode-css-languageservice": "^6.3.2",
 		"vscode-json-languageservice": "^5.4.3",
 		"vscode-languageserver-textdocument": "^1.0.12"
@@ -108,7 +109,6 @@
 		"http-server": "^14.1.1",
 		"mocha": "^11.1.0",
 		"nyc": "^17.1.0",
-		"stylelint": "^16.14.1",
 		"stylelint-config-recommended": "^15.0.0",
 		"typescript": "^5.7.3",
 		"v8r": "^4.2.1"
