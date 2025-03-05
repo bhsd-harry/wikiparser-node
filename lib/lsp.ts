@@ -1,4 +1,11 @@
-import {splitColors, numToHex} from '@bhsd/common';
+import {
+	splitColors,
+	numToHex,
+
+	/* NOT FOR BROWSER ONLY */
+
+	styleLint,
+} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
 import {tidy} from '../util/string';
@@ -62,7 +69,7 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import * as path from 'path';
-import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags} from './document';
+import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -90,7 +97,8 @@ declare interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
-const jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join();
+const cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join(),
+	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join();
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -660,7 +668,7 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY */
 		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style' && cur!.length === 1) {
 			const textDoc = new EmbeddedCSSDocument(root, cur!);
-			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items.map(item => ({
+			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items.map((item): CompletionItem => ({
 				...item,
 				textEdit: {
 					range: (item.textEdit as TextEdit).range,
@@ -727,6 +735,52 @@ export class LanguageService implements LanguageServiceBase {
 				}),
 			),
 			/* eslint-disable @stylistic/operator-linebreak */
+			cssDiagnostics =
+				stylelint ?
+					await Promise.all(
+						root.querySelectorAll<AttributeToken>(cssSelector)
+							.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text')
+							.map(async token => {
+								const {tag, lastChild} = token,
+									{top, left, height, width} = lastChild.getBoundingClientRect();
+								return (await styleLint(await stylelint!, `${tag}{\n${lastChild.toString()}\n}`))
+									.map(({
+										rule,
+										text: msg,
+										severity,
+										line,
+										column,
+										endLine = line,
+										endColumn = column,
+									}): DiagnosticBase => {
+										if (line === 1) {
+											line = 2;
+											column = 1;
+										} else if (line === height + 2) {
+											line = height + 1;
+											column = width + 1;
+										}
+										if (endLine === 1) {
+											endLine = 2;
+											endColumn = 1;
+										} else if (endLine === height + 2) {
+											endLine = height + 1;
+											endColumn = width + 1;
+										}
+										return {
+											range: {
+												start: getEndPos(top, left, line - 1, column - 1),
+												end: getEndPos(top, left, endLine - 1, endColumn - 1),
+											},
+											severity: severity === 'error' ? 1 : 2,
+											source: 'Stylelint',
+											code: rule,
+											message: msg.slice(0, msg.lastIndexOf('(') - 1),
+										};
+									});
+							}),
+					) :
+					[] as const,
 			jsonDiagnostics =
 				jsonLSP ?
 					await Promise.all(root.querySelectorAll(jsonSelector).map(async token => {
@@ -735,7 +789,7 @@ export class LanguageService implements LanguageServiceBase {
 							e = (await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc, {
 								comments: severityLevel,
 								trailingCommas: severityLevel,
-							})).map(error => ({
+							})).map((error): DiagnosticBase => ({
 								...error,
 								source: 'json',
 							}));
@@ -743,7 +797,7 @@ export class LanguageService implements LanguageServiceBase {
 					})) :
 					[] as const;
 			/* eslint-enable @stylistic/operator-linebreak */
-		return [diagnostics, jsonDiagnostics].flat(2);
+		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
 	}
 
 	/**

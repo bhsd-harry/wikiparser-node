@@ -7,12 +7,14 @@ import type {
 	SchemaConfiguration,
 } from 'vscode-json-languageservice';
 import type {LanguageService as CSSLanguageService, Stylesheet} from 'vscode-css-languageservice';
+import type {PublicApi} from 'stylelint';
 import type {Token, AttributeToken} from '../internal';
 
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
 let jsonLSP: JSONLanguageService | undefined,
-	cssLSP: CSSLanguageService | undefined;
+	cssLSP: CSSLanguageService | undefined,
+	stylelint: Promise<PublicApi> | undefined;
 try {
 	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
 		.getLanguageService({
@@ -41,7 +43,10 @@ try {
 	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 		.getCSSLanguageService();
 } catch {}
-export {jsonLSP, cssLSP};
+try {
+	stylelint = eval('(async () => (await import("stylelint")).default)()'); // eslint-disable-line no-eval
+} catch {}
+export {jsonLSP, cssLSP, stylelint};
 
 /** embedded document */
 class EmbeddedDocument implements TextDocument {
