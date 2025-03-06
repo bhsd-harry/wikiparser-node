@@ -15,13 +15,7 @@ import type {
 	AST,
 } from './base';
 import type {Title} from './lib/title';
-import type {
-	LanguageService,
-
-	/* NOT FOR BROWSER ONLY */
-
-	QuickFixData,
-} from './lib/lsp';
+import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {Token} from './internal';
 
 /* NOT FOR BROWSER ONLY */
@@ -284,10 +278,7 @@ export type {
 	LintError,
 	TokenTypes,
 	LanguageService,
-	AST,
-
-	/* NOT FOR BROWSER ONLY */
-
 	QuickFixData,
+	AST,
 };
 export type * from './internal';
