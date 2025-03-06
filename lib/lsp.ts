@@ -560,7 +560,8 @@ export class LanguageService implements LanguageServiceBase {
 			];
 		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
 			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[9] ?? cur!.toString().slice(0, character - cur!.getBoundingClientRect().left);
+				key = mt?.[9]
+					?? cur!.toString().slice(0, character - root.posFromIndex(cur!.getAbsoluteIndex())!.left);
 			if (!tags.has(tag)) {
 				return undefined;
 			}
@@ -679,7 +680,7 @@ export class LanguageService implements LanguageServiceBase {
 		for (const token of tokens) {
 			const {offsetHeight} = token;
 			if (token.type === 'heading-title' || offsetHeight > 2) {
-				const {top} = token.getBoundingClientRect();
+				const {top} = root.posFromIndex(token.getAbsoluteIndex())!;
 				if (token.type === 'heading-title') {
 					const {level} = token.parentNode as HeadingToken;
 					for (let i = level - 1; i < 6; i++) {
@@ -972,7 +973,7 @@ export class LanguageService implements LanguageServiceBase {
 			f = token.toString(true).trim();
 		} else if (
 			token.is<TranscludeToken>('magic-word') && !token.modifier && length === 1
-			&& (offset > 0 || token.getBoundingClientRect().left === position.character)
+			&& (offset > 0 || root.posFromIndex(token.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);
 			f = token.firstChild.toString(true).trim();
