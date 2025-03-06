@@ -92,7 +92,7 @@ declare interface Diagnostic extends DiagnosticBase {
 
 /* NOT FOR BROWSER ONLY */
 
-declare interface QuickFixData extends TextEdit {
+export interface QuickFixData extends TextEdit {
 	title: string;
 	fix: boolean;
 }
