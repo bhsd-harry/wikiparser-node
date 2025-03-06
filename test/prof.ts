@@ -9,7 +9,7 @@ import single from './single';
 
 /* NOT FOR BROWSER ONLY */
 
-import * as inspector from 'inspector';
+import inspector from 'inspector';
 import lsp from './lsp';
 
 /* NOT FOR BROWSER ONLY END */

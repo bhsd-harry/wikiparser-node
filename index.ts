@@ -20,8 +20,8 @@ import type {Token} from './internal';
 
 /* NOT FOR BROWSER ONLY */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import {
 	error,
 } from './util/diff';

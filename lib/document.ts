@@ -1,4 +1,4 @@
-import * as path from 'path';
+import path from 'path';
 import {sanitizeInlineStyle} from '@bhsd/common';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
