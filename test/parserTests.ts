@@ -1,4 +1,4 @@
-import * as assert from 'assert/strict';
+import assert from 'assert/strict';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;

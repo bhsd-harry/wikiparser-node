@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import fs from 'fs/promises';
 import {spawn} from 'child_process';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {Chalk} from 'chalk';
