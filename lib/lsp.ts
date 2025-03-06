@@ -5,6 +5,7 @@ import {
 	/* NOT FOR BROWSER ONLY */
 
 	styleLint,
+	sanitizeInlineStyle,
 } from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
@@ -738,7 +739,9 @@ export class LanguageService implements LanguageServiceBase {
 							{top, left, height, width} = lastChild.getBoundingClientRect();
 						return (await styleLint(
 							await stylelint!,
-							`${type === 'ext-attr' ? 'div' : tag}{\n${lastChild.toString()}\n}`,
+							`${type === 'ext-attr' ? 'div' : tag}{\n${
+								sanitizeInlineStyle(lastChild.toString())
+							}\n}`,
 							cssRules,
 						)).map(({
 							rule,
