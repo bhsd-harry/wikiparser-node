@@ -30,9 +30,13 @@ export type CodeJarAsync = CodeJar & {
 
 export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) => CodeJarAsync;
 
-export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocumentSymbols' | 'provideCodeAction'> {
+export interface LanguageServiceBase extends Omit<
+	LanguageService,
+	'provideDocumentSymbols' | 'provideCodeAction' | 'findStyleTokens'
+> {
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
+	findStyleTokens(): Promise<AST[]>;
 }
 
 /* eslint-disable @typescript-eslint/method-signature-style */
