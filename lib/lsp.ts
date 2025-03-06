@@ -31,6 +31,7 @@ import type {
 	CompletionItem,
 	SignatureData,
 	SignatureInfo,
+	LintError,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
@@ -64,6 +65,12 @@ declare interface CompletionConfig {
 	params: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
+	data: QuickFixData[];
+}
+
+export interface QuickFixData extends TextEdit {
+	title: string;
+	fix: boolean;
 }
 
 export const tasks = new WeakMap<object, LanguageService>();
@@ -225,6 +232,19 @@ const getName = (token: Token): string | number | undefined => {
 			return parentNode!.name;
 	}
 };
+
+/**
+ * Get the quick fix data.
+ * @param root root token
+ * @param fix lint error fix
+ * @param preferred whether it is a preferred fix
+ */
+const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickFixData => ({
+	range: createRange(root, ...fix.range),
+	newText: fix.text,
+	title: `${preferred ? 'Fix' : 'Suggestion'}: ${fix.desc}`,
+	fix: preferred,
+});
 
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
@@ -615,6 +635,8 @@ export class LanguageService implements LanguageServiceBase {
 					severity,
 					rule,
 					message,
+					fix,
+					suggestions,
 				}): Diagnostic => ({
 					range: {
 						start: {line: startLine, character: startCol},
@@ -626,6 +648,10 @@ export class LanguageService implements LanguageServiceBase {
 					code:
 						rule,
 					message,
+					data: [
+						...fix ? [getQuickFix(root, fix, true)] : [],
+						...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
+					],
 				}),
 			),
 			cssDiagnostics =

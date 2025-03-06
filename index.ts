@@ -15,9 +15,7 @@ import type {
 	AST,
 } from './base';
 import type {Title} from './lib/title';
-import type {
-	LanguageService,
-} from './lib/lsp';
+import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
@@ -205,5 +203,6 @@ export type {
 	LintError,
 	TokenTypes,
 	LanguageService,
+	QuickFixData,
 	AST,
 };
