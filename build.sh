@@ -1,11 +1,7 @@
 #!/usr/local/bin/bash
 
-function esbuild {
-	npx esbuild $1 --charset=utf8 --target=es2023 --format=esm --outfile=dist/$2
-}
-
 rm -rf dist/
-tsc && npm run declaration && esbuild ./base.ts base.mjs && esbuild ./util/sharable.ts util/sharable.mjs
+tsc && npm run declaration && npx esbuild ./base.ts ./util/sharable.ts --charset=utf8 --target=es2023 --format=esm --outdir=dist --out-extension:.js=.mjs
 if [[ $? -eq 0 ]]
 then
 	mv dist/util/sharable.d.ts .
