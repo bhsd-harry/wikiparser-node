@@ -135,6 +135,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'constructor':
 			case 'data':
 			case 'destroy':
+			case 'findStyleTokens':
 			case 'provideDiagnostics':
 			case 'provideColorPresentations':
 			case 'provideCodeAction':

@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as assert from 'assert';
+import fs from 'fs';
+import path from 'path';
+import assert from 'assert';
 import {info} from '../util/diff';
 import type {Config, SignatureData} from '../base';
 

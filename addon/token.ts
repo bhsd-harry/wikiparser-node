@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import {classes, states} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {removeComment, removeCommentLine, decodeHtml} from '../util/string';

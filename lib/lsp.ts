@@ -4,7 +4,6 @@ import {
 
 	/* NOT FOR BROWSER ONLY */
 
-	styleLint,
 	sanitizeInlineStyle,
 } from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
@@ -72,7 +71,8 @@ import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER ONLY */
 
-import * as path from 'path';
+import path from 'path';
+import {styleLint} from '@bhsd/common/stylelint';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
 
 /* NOT FOR BROWSER ONLY END */

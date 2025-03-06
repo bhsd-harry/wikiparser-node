@@ -16,8 +16,8 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import * as assert from 'assert/strict';
-import * as EventEmitter from 'events';
+import assert from 'assert/strict';
+import {EventEmitter} from 'events';
 import {classes} from '../util/constants';
 import Parser from '../index';
 

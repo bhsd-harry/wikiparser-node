@@ -28,8 +28,8 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import {classes} from '../util/constants';
 
 declare type LinkTokens = LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken;

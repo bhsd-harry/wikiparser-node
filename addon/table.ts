@@ -1,6 +1,6 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
-import * as assert from 'assert/strict';
+import assert from 'assert/strict';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {Token} from '../src/index';

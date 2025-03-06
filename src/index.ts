@@ -78,7 +78,7 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import * as assert from 'assert/strict';
+import assert from 'assert/strict';
 import {Shadow} from '../util/debug';
 import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
