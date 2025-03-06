@@ -66,7 +66,7 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import path from 'path';
-import {styleLint} from '@bhsd/common/stylelint';
+import {styleLint} from '@bhsd/common/dist/stylelint';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
 
 /* NOT FOR BROWSER ONLY END */
