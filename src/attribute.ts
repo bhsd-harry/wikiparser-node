@@ -20,7 +20,11 @@ import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {LintError, Config} from '../base';
+import type {
+	LintError,
+	Config,
+	AST,
+} from '../base';
 import type {AttributesToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -290,6 +294,13 @@ export abstract class AttributeToken extends Token {
 	override print(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		json['tag'] = this.tag;
+		return json;
 	}
 
 	/* NOT FOR BROWSER */

@@ -9,6 +9,7 @@
 - [`LanguageService.prototype.provideFoldingRanges`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providefoldingranges) now works for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`)
 - `Token.prototype.lint` now reports errors and warnings for inline CSS
 - [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#css) method that gets or sets the value of a CSS property
+- [`AttributeToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#json) now includes the [`tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tag) property
 
 **Fixed**
 
