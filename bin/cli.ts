@@ -1,9 +1,9 @@
 /* eslint-disable n/no-process-exit */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as assert from 'assert';
-import * as chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import assert from 'assert';
+import chalk from 'chalk';
 import Parser from '../index';
 import type {LintError} from '../base';
 

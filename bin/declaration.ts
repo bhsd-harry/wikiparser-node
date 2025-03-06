@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
 
 const regex = /^declare const \w+_base:(?:.+\) &)? typeof (?:\w+\.)?(\w+)\b.+(export [^\n]+ extends )\w+\b/imsu;
 
