@@ -98,6 +98,11 @@ declare interface QuickFixData extends TextEdit {
 }
 
 const cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join(),
+	/** @see https://www.npmjs.com/package/stylelint-config-recommended */
+	cssRules = {
+		'block-no-empty': false,
+		'property-no-unknown': false,
+	},
 	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join();
 
 /* NOT FOR BROWSER ONLY END */
@@ -746,6 +751,7 @@ export class LanguageService implements LanguageServiceBase {
 								return (await styleLint(
 									await stylelint!,
 									`${type === 'ext-attr' ? 'div' : tag}{\n${lastChild.toString()}\n}`,
+									cssRules,
 								)).map(({
 									rule,
 									text: msg,
