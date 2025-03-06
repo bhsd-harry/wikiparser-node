@@ -74,6 +74,7 @@ import {classes} from '../util/constants';
 import path from 'path';
 import {styleLint} from '@bhsd/common/dist/stylelint';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
+import type {Dimension, Position as NodePosition} from './node';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -281,6 +282,27 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 });
 
 /* NOT FOR BROWSER ONLY */
+
+/**
+ * Get the position of a Stylelint error
+ * @param rect bounding client rect of the token
+ * @param bottom bottom of the style block
+ * @param line line number
+ * @param column column number
+ */
+const getStylelintPos = (rect: Dimension & NodePosition, bottom: number, line: number, column: number): Position => {
+	const {top, left, height, width} = rect,
+		start = bottom - height - 1;
+	line -= start;
+	if (line === 0) {
+		line = 1;
+		column = 0;
+	} else if (line === height + 1) {
+		line = height;
+		column = width;
+	}
+	return getEndPos(top, left, line, column);
+};
 
 /**
  * Get the end position of a section.
@@ -620,7 +642,8 @@ export class LanguageService implements LanguageServiceBase {
 			];
 		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
 			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[9] ?? cur!.toString().slice(0, character - cur!.getBoundingClientRect().left);
+				key = mt?.[9]
+					?? cur!.toString().slice(0, character - root.posFromIndex(cur!.getAbsoluteIndex())!.left);
 			if (!tags.has(tag)) {
 				return undefined;
 			}
@@ -742,16 +765,28 @@ export class LanguageService implements LanguageServiceBase {
 			/* eslint-disable @stylistic/operator-linebreak */
 			cssDiagnostics =
 				stylelint ?
-					await Promise.all(this.findStyleTokens().map(async token => {
-						const {type, tag, lastChild} = token,
-							{top, left, height, width} = lastChild.getBoundingClientRect();
-						return (await styleLint(
-							await stylelint!,
-							`${type === 'ext-attr' ? 'div' : tag}{\n${
+					await (async () => {
+						const tokens = this.findStyleTokens();
+						if (tokens.length === 0) {
+							return [];
+						}
+						const cssErrors = await styleLint(
+							await stylelint,
+							tokens.map(({type, tag, lastChild}, i) => `${type === 'ext-attr' ? 'div' : tag}#${i}{\n${
 								sanitizeInlineStyle(lastChild.toString())
-							}\n}`,
+							}\n}`).join('\n'),
 							cssRules,
-						)).map(({
+						);
+						if (cssErrors.length === 0) {
+							return [];
+						}
+						const rects = tokens.map(({lastChild}) => lastChild.getBoundingClientRect());
+						let acc = 0;
+						const bottoms = rects.map(({height}) => {
+							acc += height + 2;
+							return acc;
+						});
+						return cssErrors.map(({
 							rule,
 							text: msg,
 							severity,
@@ -760,24 +795,11 @@ export class LanguageService implements LanguageServiceBase {
 							endLine = line,
 							endColumn = column,
 						}): DiagnosticBase => {
-							if (line === 1) {
-								line = 2;
-								column = 1;
-							} else if (line === height + 2) {
-								line = height + 1;
-								column = width + 1;
-							}
-							if (endLine === 1) {
-								endLine = 2;
-								endColumn = 1;
-							} else if (endLine === height + 2) {
-								endLine = height + 1;
-								endColumn = width + 1;
-							}
+							const i = bottoms.findIndex(bottom => bottom >= line);
 							return {
 								range: {
-									start: getEndPos(top, left, line - 1, column - 1),
-									end: getEndPos(top, left, endLine - 1, endColumn - 1),
+									start: getStylelintPos(rects[i]!, bottoms[i]!, line, column - 1),
+									end: getStylelintPos(rects[i]!, bottoms[i]!, endLine, endColumn - 1),
 								},
 								severity: severity === 'error' ? 1 : 2,
 								source: 'Stylelint',
@@ -785,7 +807,7 @@ export class LanguageService implements LanguageServiceBase {
 								message: msg.slice(0, msg.lastIndexOf('(') - 1),
 							};
 						});
-					})) :
+					})() :
 					[] as const,
 			jsonDiagnostics =
 				jsonLSP ?
@@ -802,7 +824,7 @@ export class LanguageService implements LanguageServiceBase {
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
 					[] as const;
-			/* eslint-enable @stylistic/operator-linebreak */
+		/* eslint-enable @stylistic/operator-linebreak */
 		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
 	}
 
@@ -824,7 +846,7 @@ export class LanguageService implements LanguageServiceBase {
 		for (const token of tokens) {
 			const {offsetHeight} = token;
 			if (token.type === 'heading-title' || offsetHeight > 2) {
-				const {top} = token.getBoundingClientRect();
+				const {top} = root.posFromIndex(token.getAbsoluteIndex())!;
 				if (token.type === 'heading-title') {
 					const {level} = token.parentNode as HeadingToken;
 					for (let i = level - 1; i < 6; i++) {
@@ -1129,7 +1151,7 @@ export class LanguageService implements LanguageServiceBase {
 			f = token.toString(true).trim();
 		} else if (
 			token.is<TranscludeToken>('magic-word') && !token.modifier && length === 1
-			&& (offset > 0 || token.getBoundingClientRect().left === position.character)
+			&& (offset > 0 || root.posFromIndex(token.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);
 			f = token.firstChild.toString(true).trim();
