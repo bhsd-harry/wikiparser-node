@@ -103,11 +103,10 @@ declare interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
-const cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join(),
-	/** @see https://www.npmjs.com/package/stylelint-config-recommended */
-	cssRules = {
-		'block-no-empty': false,
-		'property-no-unknown': false,
+/** @see https://www.npmjs.com/package/stylelint-config-recommended */
+const cssRules = {
+		'block-no-empty': null,
+		'property-no-unknown': null,
 	},
 	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join();
 
@@ -135,7 +134,8 @@ const refTags = new Set(['ref']),
 		'heading',
 		...renameTypes,
 	]),
-	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
+	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
+	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -750,52 +750,48 @@ export class LanguageService implements LanguageServiceBase {
 			/* eslint-disable @stylistic/operator-linebreak */
 			cssDiagnostics =
 				stylelint ?
-					await Promise.all(
-						root.querySelectorAll<AttributeToken>(cssSelector)
-							.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text')
-							.map(async token => {
-								const {type, tag, lastChild} = token,
-									{top, left, height, width} = lastChild.getBoundingClientRect();
-								return (await styleLint(
-									await stylelint!,
-									`${type === 'ext-attr' ? 'div' : tag}{\n${lastChild.toString()}\n}`,
-									cssRules,
-								)).map(({
-									rule,
-									text: msg,
-									severity,
-									line,
-									column,
-									endLine = line,
-									endColumn = column,
-								}): DiagnosticBase => {
-									if (line === 1) {
-										line = 2;
-										column = 1;
-									} else if (line === height + 2) {
-										line = height + 1;
-										column = width + 1;
-									}
-									if (endLine === 1) {
-										endLine = 2;
-										endColumn = 1;
-									} else if (endLine === height + 2) {
-										endLine = height + 1;
-										endColumn = width + 1;
-									}
-									return {
-										range: {
-											start: getEndPos(top, left, line - 1, column - 1),
-											end: getEndPos(top, left, endLine - 1, endColumn - 1),
-										},
-										severity: severity === 'error' ? 1 : 2,
-										source: 'Stylelint',
-										code: rule,
-										message: msg.slice(0, msg.lastIndexOf('(') - 1),
-									};
-								});
-							}),
-					) :
+					await Promise.all(this.findStyleTokens().map(async token => {
+						const {type, tag, lastChild} = token,
+							{top, left, height, width} = lastChild.getBoundingClientRect();
+						return (await styleLint(
+							await stylelint!,
+							`${type === 'ext-attr' ? 'div' : tag}{\n${lastChild.toString()}\n}`,
+							cssRules,
+						)).map(({
+							rule,
+							text: msg,
+							severity,
+							line,
+							column,
+							endLine = line,
+							endColumn = column,
+						}): DiagnosticBase => {
+							if (line === 1) {
+								line = 2;
+								column = 1;
+							} else if (line === height + 2) {
+								line = height + 1;
+								column = width + 1;
+							}
+							if (endLine === 1) {
+								endLine = 2;
+								endColumn = 1;
+							} else if (endLine === height + 2) {
+								endLine = height + 1;
+								endColumn = width + 1;
+							}
+							return {
+								range: {
+									start: getEndPos(top, left, line - 1, column - 1),
+									end: getEndPos(top, left, endLine - 1, endColumn - 1),
+								},
+								severity: severity === 'error' ? 1 : 2,
+								source: 'Stylelint',
+								code: rule,
+								message: msg.slice(0, msg.lastIndexOf('(') - 1),
+							};
+						});
+					})) :
 					[] as const,
 			jsonDiagnostics =
 				jsonLSP ?
@@ -1266,6 +1262,12 @@ export class LanguageService implements LanguageServiceBase {
 			);
 		}
 		return hints;
+	}
+
+	/** @private */
+	findStyleTokens(): AttributeToken[] {
+		return this.#done.querySelectorAll<AttributeToken>(cssSelector)
+			.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text');
 	}
 
 	/* NOT FOR BROWSER ONLY */

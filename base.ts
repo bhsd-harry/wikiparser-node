@@ -469,6 +469,9 @@ export interface LanguageService {
 	 */
 	provideInlayHints(text: string): Promise<InlayHint[]>;
 
+	/** @private */
+	findStyleTokens(): Token[];
+
 	/* NOT FOR BROWSER ONLY */
 
 	/**
