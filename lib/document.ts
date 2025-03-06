@@ -1,4 +1,5 @@
 import * as path from 'path';
+import {sanitizeInlineStyle} from '@bhsd/common';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
 import type {
@@ -132,7 +133,6 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 	}
 
 	override getContent(): string {
-		return super.getContent().replaceAll('{', '「')
-			.replaceAll('}', '」');
+		return sanitizeInlineStyle(super.getContent());
 	}
 }
