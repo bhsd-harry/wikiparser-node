@@ -88,7 +88,8 @@ const refTags = new Set(['ref']),
 		'heading',
 		...renameTypes,
 	]),
-	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
+	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
+	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -1062,5 +1063,11 @@ export class LanguageService implements LanguageServiceBase {
 			);
 		}
 		return hints;
+	}
+
+	/** @private */
+	findStyleTokens(): AttributeToken[] {
+		return this.#done.querySelectorAll<AttributeToken>(cssSelector)
+			.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text');
 	}
 }

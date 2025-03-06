@@ -14,6 +14,7 @@ import type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
+	AST,
 } from './typings';
 
 let data: Promise<SignatureData> | undefined;
@@ -134,6 +135,11 @@ class LanguageService implements LanguageServiceBase {
 	/** @implements */
 	provideInlayHints(text: string): Promise<InlayHint[]> {
 		return wikiparse.provide('inlayHints', this.#id + 0.25, text) as Promise<InlayHint[]>;
+	}
+
+	/** @implements */
+	findStyleTokens(): Promise<AST[]> {
+		return wikiparse.provide('findStyleTokens', this.#id + 0.35) as Promise<AST[]>;
 	}
 }
 

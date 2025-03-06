@@ -77,9 +77,13 @@ export type CodeJarAsync = CodeJar & {
 
 export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) => CodeJarAsync;
 
-export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocumentSymbols' | 'provideCodeAction'> {
+export interface LanguageServiceBase extends Omit<
+	LanguageService,
+	'provideDocumentSymbols' | 'provideCodeAction' | 'findStyleTokens'
+> {
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
+	findStyleTokens(): Promise<AST[]>;
 }
 
 /* eslint-disable @typescript-eslint/method-signature-style */
@@ -112,14 +116,16 @@ declare global {
 
 	/* NOT EXPORTED */
 
-	module '/*' {
+	module '/codemirror-mediawiki/*' {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
+	}
+	module '/codejar-async/*' {
 		/** @see https://www.npmjs.com/package/codejar-async */
 		const CodeJar: (...args: unknown[]) => CodeJar;
 		export {CodeJar};
 	}
-
+	module '/wikiparser-node/extensions/*';
 	module 'https://*';
 
 	type MonacoEditor = typeof editor;

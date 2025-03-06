@@ -89,7 +89,7 @@ const workerJS = (): void => {
 	self.onmessage = ({data}: {
 		data: ['setI18N', Record<string, string>?]
 			| ['setConfig', Config]
-			| ['getConfig' | 'destroy', number]
+			| ['getConfig' | 'destroy' | 'findStyleTokens', number]
 			| ['data', number, SignatureData]
 			| ['colorPresentations', number, ColorInformation]
 			| [
@@ -214,6 +214,9 @@ const workerJS = (): void => {
 				(async () => {
 					postMessage([qid, await getLSP(qid).provideInlayHints(wikitext), wikitext]);
 				})();
+				break;
+			case 'findStyleTokens':
+				postMessage([qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
 			// no default
 		}
 	};

@@ -443,6 +443,9 @@ export interface LanguageService {
 	 * @param text source Wikitext / 源代码
 	 */
 	provideInlayHints(text: string): Promise<InlayHint[]>;
+
+	/** @private */
+	findStyleTokens(): Token[];
 }
 
 export interface Parser {

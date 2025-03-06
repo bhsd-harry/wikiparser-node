@@ -63,6 +63,9 @@ class LanguageService {
     provideInlayHints(text) {
         return wikiparse.provide('inlayHints', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.25, text);
     }
+    findStyleTokens() {
+        return wikiparse.provide('findStyleTokens', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.35);
+    }
 }
 _LanguageService_id = new WeakMap();
 wikiparse.LanguageService = LanguageService;

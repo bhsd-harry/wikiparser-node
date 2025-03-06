@@ -149,6 +149,9 @@ const workerJS = () => {
                 (async () => {
                     postMessage([qid, await getLSP(qid).provideInlayHints(wikitext), wikitext]);
                 })();
+                break;
+            case 'findStyleTokens':
+                postMessage([qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
         }
     };
 };
