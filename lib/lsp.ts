@@ -40,9 +40,6 @@ import type {
 	CompletionItem,
 	SignatureData,
 	SignatureInfo,
-
-	/* NOT FOR BROWSER ONLY */
-
 	LintError,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
@@ -90,18 +87,15 @@ declare interface CompletionConfig {
 	params: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
-
-	/* NOT FOR BROWSER ONLY */
-
 	data: QuickFixData[];
 }
-
-/* NOT FOR BROWSER ONLY */
 
 export interface QuickFixData extends TextEdit {
 	title: string;
 	fix: boolean;
 }
+
+/* NOT FOR BROWSER ONLY */
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
 const cssRules = {
@@ -272,8 +266,6 @@ const getName = (token: Token): string | number | undefined => {
 	}
 };
 
-/* NOT FOR BROWSER ONLY */
-
 /**
  * Get the quick fix data.
  * @param root root token
@@ -286,6 +278,8 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 	title: `${preferred ? 'Fix' : 'Suggestion'}: ${fix.desc}`,
 	fix: preferred,
 });
+
+/* NOT FOR BROWSER ONLY */
 
 /**
  * Get the end position of a section.
@@ -716,11 +710,11 @@ export class LanguageService implements LanguageServiceBase {
 					severity,
 					rule,
 					message,
+					fix,
+					suggestions,
 
 					/* NOT FOR BROWSER ONLY */
 
-					fix,
-					suggestions,
 					code,
 				}): Diagnostic => ({
 					range: {
@@ -738,9 +732,6 @@ export class LanguageService implements LanguageServiceBase {
 						/* eslint-enable @stylistic/operator-linebreak */
 						rule,
 					message,
-
-					/* NOT FOR BROWSER ONLY */
-
 					data: [
 						...fix ? [getQuickFix(root, fix, true)] : [],
 						...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
