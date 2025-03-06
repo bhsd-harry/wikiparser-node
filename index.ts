@@ -14,7 +14,13 @@ import type {
 	Stage,
 } from './base';
 import type {Title} from './lib/title';
-import type {LanguageService} from './lib/lsp';
+import type {
+	LanguageService,
+
+	/* NOT FOR BROWSER ONLY */
+
+	QuickFixData,
+} from './lib/lsp';
 import type {Token} from './internal';
 
 /* NOT FOR BROWSER ONLY */
@@ -277,5 +283,9 @@ export type {
 	LintError,
 	TokenTypes,
 	LanguageService,
+
+	/* NOT FOR BROWSER ONLY */
+
+	QuickFixData,
 };
 export type * from './internal';
