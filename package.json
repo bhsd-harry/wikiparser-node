@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "2.16.6",
+	"version": "2.17.1",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -65,7 +65,7 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.6.7",
+		"@bhsd/common": "^0.7.0",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
