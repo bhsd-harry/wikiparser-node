@@ -1,13 +1,13 @@
 #!/usr/local/bin/bash
 if [[ $2 == 'npm' ]]
 then
-	if [[ $(git tag -l v$1-b) ]]
+	if [[ $(git tag -l "v$1-b") ]]
 	then
 		git checkout browser bundle/bundle.[lm]*.js extensions/dist/*.js extensions/*.css
-		npm publish --tag ${3-latest}
+		npm publish --tag "${3-latest}"
 		if [[ -z $3 ]]
 		then
-			npm dist-tag add wikiparser-node@$1 browser
+			npm dist-tag add "wikiparser-node@$1" browser
 		fi
 		rm bundle/bundle.[lm]*.js extensions/dist/*.js extensions/*.css
 	else
@@ -23,7 +23,7 @@ else
 		git add -A
 		git commit -m "chore: bump version to v$1"
 		git push
-		git tag v$1
-		git push origin v$1
+		git tag "v$1"
+		git push origin "v$1"
 	fi
 fi
