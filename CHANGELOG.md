@@ -1,6 +1,6 @@
 ## v1.17.1
 
-*2025-03-06*
+*2025-03-08*
 
 **Added**
 
@@ -10,6 +10,7 @@
 - `Token.prototype.lint` now reports errors and warnings for inline CSS
 - [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#css) method that gets or sets the value of a CSS property
 - [`AttributeToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#json) now includes the [`tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tag) property
+- [`LanguageService.include`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#include) property that configures the transclusion option for parsing
 
 **Fixed**
 
