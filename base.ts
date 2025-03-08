@@ -326,6 +326,7 @@ export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {
 };
 
 export interface LanguageService {
+	include: boolean;
 	/** @private */
 	data?: SignatureData;
 
