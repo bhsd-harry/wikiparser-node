@@ -10,8 +10,8 @@ for x in extensions/*/*.js
 do
 	if [[ $x != 'extensions/dist/gh-page.js' ]]
 	then
-		bash sed.sh -i '/export {};/d' $x
-		printf '%s\n%s\n%s\n' '(() => {' "$(cat $x)" '})();' > $x
+		bash sed.sh -i '/export {};/d' "$x"
+		printf '%s\n%s\n%s\n' '(() => {' "$(cat $x)" '})();' > "$x"
 	fi
 done
 eslint --no-eslintrc -c .eslintrc.browser.cjs extensions/dist/
