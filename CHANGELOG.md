@@ -1,3 +1,11 @@
+## v1.17.2
+
+*2025-03-11*
+
+**Fixed**
+
+- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) if [Stylelint](https://npmjs.com/package/stylelint) is unavailable
+
 ## v1.17.1
 
 *2025-03-08*

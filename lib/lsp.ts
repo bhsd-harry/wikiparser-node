@@ -772,14 +772,14 @@ export class LanguageService implements LanguageServiceBase {
 			),
 			/* eslint-disable @stylistic/operator-linebreak */
 			cssDiagnostics =
-				stylelint ?
+				await stylelint ?
 					await (async () => {
 						const tokens = this.findStyleTokens();
 						if (tokens.length === 0) {
 							return [];
 						}
 						const cssErrors = await styleLint(
-							await stylelint,
+							(await stylelint)!,
 							tokens.map(({type, tag, lastChild}, i) => `${type === 'ext-attr' ? 'div' : tag}#${i}{\n${
 								sanitizeInlineStyle(lastChild.toString())
 							}\n}`).join('\n'),
