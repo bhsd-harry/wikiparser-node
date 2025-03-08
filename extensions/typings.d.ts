@@ -55,7 +55,7 @@ export interface wikiparse {
 	codejar?: codejar | Promise<codejar>;
 	Printer?: new (preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
 	Linter?: new (include?: boolean) => LinterBase;
-	LanguageService?: new () => LanguageServiceBase;
+	LanguageService?: new (include?: boolean) => LanguageServiceBase;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
 
