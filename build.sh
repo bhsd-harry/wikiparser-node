@@ -16,7 +16,7 @@ then
 	err=$(tsc --project tsconfig.dist.json 2>&1)
 	if [[ -n $err ]]
 	then
-		echo $err
+		echo "$err"
 		exit 1
 	fi
 else
