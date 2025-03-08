@@ -1,7 +1,7 @@
 #!/usr/local/bin/bash
 if [[ $2 == 'npm' ]]
 then
-	npm publish --tag ${3-latest}
+	npm publish --tag "${3-latest}"
 else
 	npm run lint && npm run build && npm test && npm run test:real
 	if [[ $? -eq 0 ]]
@@ -13,7 +13,7 @@ else
 		git add -A
 		git commit -m "chore: bump version to v$1-m"
 		git push
-		git tag v$1-m
-		git push origin v$1-m
+		git tag "v$1-m"
+		git push origin "v$1-m"
 	fi
 fi
