@@ -4,9 +4,7 @@ import type {
 	AST,
 	LanguageService,
 	wikiparse as Wikiparse,
-	ColorInformation,
-	Position,
-	SignatureData,
+	Command,
 } from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
@@ -48,13 +46,15 @@ const workerJS = (): void => {
 	/**
 	 * 获取LSP
 	 * @param qid 请求编号
+	 * @param include 是否嵌入
 	 */
-	const getLSP = (qid: number): LanguageService => {
+	const getLSP = (qid: number, include = true): LanguageService => {
 		const id = Math.floor(qid);
 		if (lsps.has(id)) {
 			return lsps.get(id)!;
 		}
 		const lsp = Parser.createLanguageService({});
+		lsp.include = include;
 		lsps.set(id, lsp);
 		return lsp;
 	};
@@ -86,34 +86,8 @@ const workerJS = (): void => {
 	};
 
 	/** @implements */
-	self.onmessage = ({data}: {
-		data: ['setI18N', Record<string, string>?]
-			| ['setConfig', Config]
-			| ['getConfig' | 'destroy' | 'findStyleTokens', number]
-			| ['data', number, SignatureData]
-			| ['colorPresentations', number, ColorInformation]
-			| [
-				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'diagnostics' | 'inlayHints',
-				number,
-				string,
-				boolean?,
-				number?,
-			]
-			| [
-				'completionItems'
-				| 'references'
-				| 'definition'
-				| 'renameLocation'
-				| 'renameEdits'
-				| 'hover'
-				| 'signatureHelp',
-				number,
-				string,
-				Position,
-				string?,
-			];
-	}): void => {
-		const [command, qid, wikitext, include, stage] = data;
+	self.onmessage = ({data}: {data: Command}): void => {
+		const [command, qid, wikitext, include, stage, newName] = data;
 		switch (command) {
 			case 'setI18N':
 				Parser.i18n = qid;
@@ -148,71 +122,79 @@ const workerJS = (): void => {
 				lsps.delete(qid);
 				break;
 			case 'data':
-				getLSP(qid).data = wikitext;
+				getLSP(qid, include).data = wikitext;
 				break;
 			case 'colorPresentations':
-				postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
+				postMessage([qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
 				break;
 			case 'documentColors':
 				(async () => {
 					postMessage(
-						[qid, await getLSP(qid).provideDocumentColors(parseColor, wikitext, false), wikitext],
+						[
+							qid,
+							await getLSP(qid, include).provideDocumentColors(parseColor, wikitext, false),
+							wikitext,
+						],
 					);
 				})();
 				break;
 			case 'foldingRanges':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideFoldingRanges(wikitext), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideFoldingRanges(wikitext), wikitext]);
 				})();
 				break;
 			case 'links':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideLinks(wikitext), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideLinks(wikitext), wikitext]);
 				})();
 				break;
 			case 'diagnostics':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideDiagnostics(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideDiagnostics(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'completionItems':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideCompletionItems(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideCompletionItems(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'references':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideReferences(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideReferences(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'definition':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideDefinition(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideDefinition(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'renameLocation':
 				(async () => {
-					postMessage([qid, await getLSP(qid).resolveRenameLocation(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).resolveRenameLocation(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'renameEdits':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideRenameEdits(wikitext, include, stage!), wikitext]);
+					postMessage([
+						qid,
+						await getLSP(qid, include).provideRenameEdits(wikitext, stage, newName!),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'hover':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideHover(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideHover(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'signatureHelp':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideSignatureHelp(wikitext, include), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideSignatureHelp(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'inlayHints':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideInlayHints(wikitext), wikitext]);
+					postMessage([qid, await getLSP(qid, include).provideInlayHints(wikitext), wikitext]);
 				})();
 				break;
 			case 'findStyleTokens':
@@ -321,7 +303,7 @@ const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[
  * @param wikitext wikitext
  * @param args 额外参数
  */
-const provide = (command: string, qid: number, wikitext: unknown, ...args: unknown[]): Promise<unknown> =>
+const provide = (command: string, qid: number, wikitext?: unknown, ...args: unknown[]): Promise<unknown> =>
 	getFeedback(command, qid, typeof wikitext === 'string', wikitext as string, ...args);
 
 /**

@@ -255,8 +255,9 @@ export class LanguageService implements LanguageServiceBase {
 	#done: Token;
 	#done2: Token;
 	#config: Config | string;
-	#config2: Config | string;
+	#include: boolean;
 	#completionConfig: CompletionConfig | undefined;
+	include = true;
 	/** @private */
 	data?: SignatureData;
 
@@ -270,6 +271,11 @@ export class LanguageService implements LanguageServiceBase {
 		Object.setPrototypeOf(this, null);
 	}
 
+	/** 检查解析设置有无更新 */
+	#checkConfig(): boolean {
+		return this.#config === Parser.config && this.#include === this.include;
+	}
+
 	/**
 	 * 提交解析任务
 	 * @param text 源代码
@@ -280,7 +286,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async #queue(text: string): Promise<Token> {
 		text = tidy(text);
-		if (this.#text === text && this.#config === Parser.config && !this.#running) {
+		if (!this.#running && this.#checkConfig() && this.#text === text) {
 			return this.#done;
 		}
 		this.#text = text;
@@ -297,9 +303,10 @@ export class LanguageService implements LanguageServiceBase {
 	async #parse(): Promise<Token> {
 		const config = Parser.getConfig();
 		this.#config = Parser.config;
+		this.#include = this.include;
 		const text = this.#text,
-			root = await Parser.partialParse(text, () => this.#text, true, config);
-		if (this.#text === text && this.#config === Parser.config) {
+			root = await Parser.partialParse(text, () => this.#text, this.include, config);
+		if (this.#checkConfig() && this.#text === text) {
 			this.#done = root;
 			this.#running = undefined;
 			return root;
@@ -320,7 +327,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async #queueSignature(text: string): Promise<Token> {
 		text = tidy(text);
-		if (this.#text2 === text && this.#config2 === Parser.config && !this.#running2) {
+		if (!this.#running2 && this.#checkConfig() && this.#text2 === text) {
 			return this.#done2;
 		}
 		this.#text2 = text;
@@ -336,10 +343,11 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async #parseSignature(): Promise<Token> {
 		const config = Parser.getConfig();
-		this.#config2 = Parser.config;
+		this.#config = Parser.config;
+		this.#include = this.include;
 		const text = this.#text2,
-			root = await Parser.partialParse(text, () => this.#text2, true, config);
-		if (this.#text2 === text && this.#config2 === Parser.config) {
+			root = await Parser.partialParse(text, () => this.#text2, this.include, config);
+		if (this.#checkConfig() && this.#text2 === text) {
 			this.#done2 = root;
 			this.#running2 = undefined;
 			return root;

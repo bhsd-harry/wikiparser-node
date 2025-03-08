@@ -8,6 +8,8 @@ declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
 wikiparse.setConfig(Parser.config);
 
+const allCodes = new Map<string, string[]>();
+
 /**
  * Mock CRLF
  * @param str LF string
@@ -27,6 +29,7 @@ describe('API tests', () => {
 							.replace('\n', ' (CRLF)\n'),
 					])
 					: codes;
+			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
@@ -68,3 +71,24 @@ describe('API tests', () => {
 setTimeout(() => {
 	void mock.worker.terminate();
 }, 1000);
+
+describe('Documentation tests', () => {
+	for (const [file, enCodes] of allCodes) {
+		if (file.endsWith('-(EN)')) {
+			const zhFile = file.slice(0, -5);
+			describe(zhFile, () => {
+				const zhCodes = allCodes.get(zhFile)!;
+				for (let i = 0; i < zhCodes.length; i++) {
+					const code = zhCodes[i]!;
+					it(code.split('\n', 1)[0]!.slice(3), () => {
+						assert.strictEqual(
+							code,
+							enCodes[i],
+							`${zhFile} is different from its English version`,
+						);
+					});
+				}
+			});
+		}
+	}
+});

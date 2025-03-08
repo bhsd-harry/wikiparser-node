@@ -1,4 +1,3 @@
-import {EventEmitter} from 'events';
 import {error, info, diff} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
@@ -7,8 +6,6 @@ import type {Config} from '../base';
 
 const i18n: Record<string, string> = require('../../i18n/zh-hans');
 wikiparse.setI18N(i18n);
-
-EventEmitter.defaultMaxListeners = 15;
 
 const {argv: [,, site = '']} = process,
 	apis = ([

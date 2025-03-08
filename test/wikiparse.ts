@@ -1,6 +1,9 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {Worker} from 'worker_threads';
+import {EventEmitter} from 'events';
 import type {} from '../extensions/typings';
+
+EventEmitter.defaultMaxListeners = 25;
 
 export const mock = {} as {worker: Worker};
 

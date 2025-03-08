@@ -22,12 +22,20 @@ let data: Promise<SignatureData> | undefined;
 /** 用于语法分析 */
 class LanguageService implements LanguageServiceBase {
 	readonly #id;
+	readonly #include;
 
-	constructor() {
+	/** @implements */
+	get include(): boolean {
+		return this.#include;
+	}
+
+	/** @param include 是否嵌入 */
+	constructor(include = true) {
 		this.#id = wikiparse.id++;
+		this.#include = include;
 		data ??= (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())();
 		(async () => {
-			wikiparse.provide('data', this.#id, await data);
+			wikiparse.provide('data', this.#id, await data, this.#include);
 		})();
 	}
 
@@ -38,22 +46,37 @@ class LanguageService implements LanguageServiceBase {
 
 	/** @implements */
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]> {
-		return wikiparse.provide('colorPresentations', this.#id, color) as Promise<ColorPresentation[]>;
+		return wikiparse.provide(
+			'colorPresentations',
+			this.#id,
+			color,
+			this.#include,
+		) as Promise<ColorPresentation[]>;
 	}
 
 	/** @implements */
 	provideDocumentColors(text: string): Promise<ColorInformation[]> {
-		return wikiparse.provide('documentColors', this.#id + 0.1, text) as Promise<ColorInformation[]>;
+		return wikiparse.provide(
+			'documentColors',
+			this.#id + 0.1,
+			text,
+			this.#include,
+		) as Promise<ColorInformation[]>;
 	}
 
 	/** @implements */
 	provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		return wikiparse.provide('foldingRanges', this.#id + 0.2, text) as Promise<FoldingRange[]>;
+		return wikiparse.provide(
+			'foldingRanges',
+			this.#id + 0.2,
+			text,
+			this.#include,
+		) as Promise<FoldingRange[]>;
 	}
 
 	/** @implements */
 	provideLinks(text: string): Promise<DocumentLink[]> {
-		return wikiparse.provide('links', this.#id + 0.3, text) as Promise<DocumentLink[]>;
+		return wikiparse.provide('links', this.#id + 0.3, text, this.#include) as Promise<DocumentLink[]>;
 	}
 
 	/** @implements */
@@ -62,6 +85,7 @@ class LanguageService implements LanguageServiceBase {
 			'completionItems',
 			this.#id + 0.4,
 			text,
+			this.#include,
 			position,
 		) as Promise<CompletionItem[] | undefined>;
 	}
@@ -72,6 +96,7 @@ class LanguageService implements LanguageServiceBase {
 			'references',
 			this.#id + 0.5,
 			text,
+			this.#include,
 			position,
 		) as Promise<Omit<Location, 'uri'>[] | undefined>;
 	}
@@ -82,6 +107,7 @@ class LanguageService implements LanguageServiceBase {
 			'definition',
 			this.#id + 0.6,
 			text,
+			this.#include,
 			position,
 		) as Promise<Omit<Location, 'uri'>[] | undefined>;
 	}
@@ -92,6 +118,7 @@ class LanguageService implements LanguageServiceBase {
 			'renameLocation',
 			this.#id + 0.7,
 			text,
+			this.#include,
 			position,
 		) as Promise<Range | undefined>;
 	}
@@ -102,6 +129,7 @@ class LanguageService implements LanguageServiceBase {
 			'renameEdits',
 			this.#id + 0.8,
 			text,
+			this.#include,
 			position,
 			newName,
 		) as Promise<WorkspaceEdit | undefined>;
@@ -113,13 +141,20 @@ class LanguageService implements LanguageServiceBase {
 			'diagnostics',
 			this.#id + 0.9,
 			wikitext,
+			this.#include,
 			warning,
 		) as Promise<ServerDiagnostic[]>;
 	}
 
 	/** @implements */
 	provideHover(text: string, position: Position): Promise<Hover | undefined> {
-		return wikiparse.provide('hover', this.#id + 0.05, text, position) as Promise<Hover | undefined>;
+		return wikiparse.provide(
+			'hover',
+			this.#id + 0.05,
+			text,
+			this.#include,
+			position,
+		) as Promise<Hover | undefined>;
 	}
 
 	/** @implements */
@@ -128,13 +163,14 @@ class LanguageService implements LanguageServiceBase {
 			'signatureHelp',
 			this.#id + 0.15,
 			text,
+			this.#include,
 			position,
 		) as Promise<SignatureHelp | undefined>;
 	}
 
 	/** @implements */
 	provideInlayHints(text: string): Promise<InlayHint[]> {
-		return wikiparse.provide('inlayHints', this.#id + 0.25, text) as Promise<InlayHint[]>;
+		return wikiparse.provide('inlayHints', this.#id + 0.25, text, this.#include) as Promise<InlayHint[]>;
 	}
 
 	/** @implements */

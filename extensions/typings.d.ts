@@ -55,6 +55,35 @@ export type {
 	InlayHint,
 };
 
+export type Command = ['setI18N', Record<string, string>?]
+	| ['setConfig', Config]
+	| ['getConfig', number]
+	| ['destroy' | 'findStyleTokens', number]
+	| ['data', number, SignatureData, boolean]
+	| ['colorPresentations', number, ColorInformation, boolean]
+	| ['diagnostics', number, string, boolean, boolean | undefined]
+	| [
+		'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'inlayHints',
+		number,
+		string,
+		boolean?,
+		number?,
+	]
+	| [
+		'completionItems'
+		| 'references'
+		| 'definition'
+		| 'renameLocation'
+		| 'renameEdits'
+		| 'hover'
+		| 'signatureHelp',
+		number,
+		string,
+		boolean,
+		Position,
+		string?,
+	];
+
 /* NOT EXPORTED END */
 
 export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
@@ -102,13 +131,13 @@ export interface wikiparse {
 	codejar?: codejar | Promise<codejar>;
 	Printer?: new (preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
 	Linter?: new (include?: boolean) => LinterBase;
-	LanguageService?: new () => LanguageServiceBase;
+	LanguageService?: new (include?: boolean) => LanguageServiceBase;
 
 	/* NOT EXPORTED */
 
 	id: number;
 	config: Config;
-	provide: (command: string, qid: number, ...args: unknown[]) => Promise<unknown>;
+	provide: (...args: Exclude<Command, ['setI18N' | 'setConfig' | 'getConfig', ...unknown[]]>) => Promise<unknown>;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
 
