@@ -14,8 +14,7 @@ import type {Token, AttributeToken} from '../internal';
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
 let jsonLSP: JSONLanguageService | undefined,
-	cssLSP: CSSLanguageService | undefined,
-	stylelint: Promise<PublicApi> | undefined;
+	cssLSP: CSSLanguageService | undefined;
 try {
 	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
 		.getLanguageService({
@@ -44,9 +43,9 @@ try {
 	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 		.getCSSLanguageService();
 } catch {}
-try {
-	stylelint = eval('(async () => (await import("stylelint")).default)()'); // eslint-disable-line no-eval
-} catch {}
+const stylelint: Promise<PublicApi | undefined> = eval( // eslint-disable-line no-eval
+	`(async()=>{try{return (await import("stylelint")).default}catch{}})()`,
+);
 export {jsonLSP, cssLSP, stylelint};
 
 /** embedded document */
