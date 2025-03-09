@@ -79,8 +79,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 
 	Parser.getConfig();
 	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
-	// eslint-disable-next-line no-eval
-	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
+	const rgba = (await import('color-rgba')).default;
 	const root = Parser.parse(content, true),
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
