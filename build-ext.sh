@@ -4,7 +4,7 @@ bash sed.sh -i -E "s|(import type .+ from '../base';)|// \1|" extensions/typings
 tsc --project extensions/tsconfig.json --module ES6 --noImplicitAny false
 tsc --project extensions/tsconfig.es7.json --module ES6 --noImplicitAny false
 tsc --project extensions/tsconfig.codejar.json --module ES2020 --noImplicitAny false
-bash sed.sh -i 's|bundle.lsp.js|bundle.es7.js|' extensions/es7/base.js
+bash sed.sh -i 's|bundle-lsp|bundle-es7|' extensions/es7/base.js
 bash sed.sh -i -E "s|// (import type .+ from '../base';)|\1|" extensions/typings.d.ts
 for x in extensions/*/*.js
 do

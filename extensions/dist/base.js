@@ -4,7 +4,7 @@ const version = '1.17.1', src = (_a = document.currentScript) === null || _a ===
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
-    importScripts('$CDN/bundle/bundle.lsp.js');
+    importScripts('$CDN/bundle/bundle-lsp.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map(), last = { include: true };
     const parse = (wikitext, include = false, stage) => {
         if (stage === undefined && last.wikitext === wikitext && last.include === include) {

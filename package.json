@@ -14,7 +14,7 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [],
-	"main": "./bundle/bundle.lsp.js",
+	"main": "./bundle/bundle-lsp.min.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,
 	"repository": {
@@ -24,8 +24,8 @@
 	"scripts": {
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
 		"build:core": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:lsp": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle.lsp.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.lsp.js",
-		"build:es7": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2016 --outfile=bundle/bundle.es7.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle.es7.js",
+		"build:lsp": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
+		"build:es7": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2016 --outfile=bundle/bundle-es7.min.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle-es7.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es7 && npm run build:lsp && npm run build:test && npm run build:css",

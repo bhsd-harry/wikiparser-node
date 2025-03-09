@@ -19,7 +19,7 @@ const version = '1.17.1',
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts('$CDN/bundle/bundle.lsp.js');
+	importScripts('$CDN/bundle/bundle-lsp.min.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'},
 		lsps = new Map<number, LanguageService>(),
 		last: {wikitext?: string, include: boolean, root?: Token} = {include: true};
