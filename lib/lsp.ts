@@ -893,14 +893,15 @@ export class LanguageService implements LanguageServiceBase {
 				if (!fs.existsSync(dir)) {
 					fs.mkdirSync(dir);
 				}
-				const [version] = /(?<=LilyPond )\S+/u
-					.exec(execFileSync(this.lilypond, ['--version'], {encoding: 'utf8'}))!;
 				for (const token of tokens) {
 					const {innerText} = token,
 						hash = createHash('sha256');
 					hash.update(innerText!);
 					const file = path.join(dir, `${hash.digest('hex')}.ly`);
-					fs.writeFileSync(file, `\\version "${version}"\n${innerText}`);
+					fs.writeFileSync(
+						file,
+						token.getAttr('raw') === undefined ? `\\score {\n${innerText}\n}` : `\n${innerText}\n`,
+					);
 					try {
 						execFileSync(this.lilypond, ['-s', '-o', dir, file], {stdio: 'pipe', encoding: 'utf8'});
 					} catch (e) {
