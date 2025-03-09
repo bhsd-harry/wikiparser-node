@@ -103,12 +103,19 @@ export interface QuickFixData extends TextEdit {
 
 /* NOT FOR BROWSER ONLY */
 
+declare interface LilyPondError {
+	line: number;
+	col: number;
+	message: string;
+}
+
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
 const cssRules = {
 		'block-no-empty': null,
 		'property-no-unknown': null,
 	},
-	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join();
+	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join(),
+	scores = new Map<string, LilyPondError[]>();
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -317,6 +324,24 @@ const getStylelintPos = (rect: Dimension & NodePosition, bottom: number, line: n
 		column = width;
 	}
 	return getEndPos(top, left, line, column);
+};
+
+/**
+ * Convert LilyPond errors to VSCode diagnostics.
+ * @param token `<score>` extension token
+ * @param errors LilyPond errors
+ */
+const getLilyPondDiagnostics = (token: ExtToken, errors: LilyPondError[]): DiagnosticBase[] => {
+	const {top, left} = token.lastChild.getBoundingClientRect();
+	return errors.map(({line, col, message}): DiagnosticBase => {
+		const pos = getEndPos(top, left, line - 1, col - 1);
+		return {
+			range: {start: pos, end: pos},
+			severity: 1,
+			source: 'LilyPond',
+			message,
+		};
+	});
 };
 
 /**
@@ -885,25 +910,34 @@ export class LanguageService implements LanguageServiceBase {
 
 		if (this.lilypond) {
 			const tokens = root.querySelectorAll<ExtToken>('ext#score').filter(token => {
-					const lang = token.getAttr('lang');
-					return (lang === undefined || lang === 'lilypond') && token.innerText;
-				}),
-				dir = path.join(__dirname, 'lilypond');
+				const lang = token.getAttr('lang');
+				return (lang === undefined || lang === 'lilypond') && token.innerText;
+			});
 			if (tokens.length > 0) {
+				const dir = path.join(__dirname, 'lilypond');
 				if (!fs.existsSync(dir)) {
 					fs.mkdirSync(dir);
 				}
 				for (const token of tokens) {
 					const {innerText} = token,
+						score = token.getAttr('raw') === undefined
+							? `\\score {\n${innerText}\n}`
+							: `\n${innerText}`,
 						hash = createHash('sha256');
-					hash.update(innerText!);
-					const file = path.join(dir, `${hash.digest('hex')}.ly`);
-					fs.writeFileSync(
-						file,
-						token.getAttr('raw') === undefined ? `\\score {\n${innerText}\n}` : `\n${innerText}\n`,
-					);
+					hash.update(score);
+					const name = hash.digest('hex');
+					if (scores.has(name)) {
+						const lilypondErrors = scores.get(name)!;
+						if (lilypondErrors.length > 0) {
+							lilypondDiagnostics.push(...getLilyPondDiagnostics(token, lilypondErrors));
+						}
+						continue;
+					}
+					const file = path.join(dir, `${name}.ly`);
+					fs.writeFileSync(file, score);
 					try {
 						execFileSync(this.lilypond, ['-s', '-o', dir, file], {stdio: 'pipe', encoding: 'utf8'});
+						scores.set(name, []);
 					} catch (e) {
 						const {stderr} = e as ExecException;
 						if (stderr) {
@@ -911,16 +945,13 @@ export class LanguageService implements LanguageServiceBase {
 									String.raw`^${file}:(\d+):(\d+): error: (.+)$`,
 									'gmu',
 								),
-								{top, left} = token.lastChild.getBoundingClientRect();
-							for (const mt of stderr.matchAll(re)) {
-								const pos = getEndPos(top, left, Number(mt[1]) - 1, Number(mt[2]) - 1);
-								lilypondDiagnostics.push({
-									range: {start: pos, end: pos},
-									severity: 1,
-									source: 'LilyPond',
-									message: mt[3]!,
-								});
-							}
+								lilypondErrors = [...stderr.matchAll(re)].map(([, line, col, msg]): LilyPondError => ({
+									line: Number(line),
+									col: Number(col),
+									message: msg!,
+								}));
+							scores.set(name, lilypondErrors);
+							lilypondDiagnostics.push(...getLilyPondDiagnostics(token, lilypondErrors));
 						}
 					}
 				}
