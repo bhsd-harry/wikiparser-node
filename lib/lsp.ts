@@ -300,7 +300,25 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 /* NOT FOR BROWSER ONLY */
 
 /**
- * Get the position of a Stylelint error
+ * Correct the position of an error.
+ * @param height
+ * @param width
+ * @param line 0-based line number
+ * @param column 0-based column number
+ */
+const adjustPos = (height: number, width: number, line: number, column: number): [number, number] => {
+	if (line === 0) {
+		line = 1;
+		column = 0;
+	} else if (line === height + 1) {
+		line = height;
+		column = width;
+	}
+	return [line, column];
+};
+
+/**
+ * Get the position of a Stylelint error.
  * @param rect bounding client rect of the token
  * @param bottom bottom of the style block
  * @param line line number
@@ -310,13 +328,7 @@ const getStylelintPos = (rect: Dimension & NodePosition, bottom: number, line: n
 	const {top, left, height, width} = rect,
 		start = bottom - height - 1;
 	line -= start;
-	if (line === 0) {
-		line = 1;
-		column = 0;
-	} else if (line === height + 1) {
-		line = height;
-		column = width;
-	}
+	[line, column] = adjustPos(height, width, line, column);
 	return getEndPos(top, left, line, column);
 };
 
@@ -328,7 +340,7 @@ const getStylelintPos = (rect: Dimension & NodePosition, bottom: number, line: n
 const getLilyPondDiagnostics = (token: ExtToken, errors: LilyPondError[]): DiagnosticBase[] => {
 	const {top, left} = token.lastChild.getBoundingClientRect();
 	return errors.map(({line, col, message}): DiagnosticBase => {
-		const pos = getEndPos(top, left, line - 1, col - 1);
+		const pos = getEndPos(top, left, line, col);
 		return {
 			range: {start: pos, end: pos},
 			severity: 1,
@@ -937,11 +949,15 @@ export class LanguageService implements LanguageServiceBase {
 									String.raw`^${file}:(\d+):(\d+): error: (.+)$`,
 									'gmu',
 								),
-								lilypondErrors = [...stderr.matchAll(re)].map(([, line, col, msg]): LilyPondError => ({
-									line: Number(line),
-									col: Number(col),
-									message: msg!,
-								}));
+								lilypondErrors = [...stderr.matchAll(re)].map(([, line, col, msg]): LilyPondError => {
+									const {offsetHeight, offsetWidth} = token.lastChild,
+										pos = adjustPos(offsetHeight, offsetWidth, Number(line) - 1, Number(col) - 1);
+									return {
+										line: pos[0],
+										col: pos[1],
+										message: msg!,
+									};
+								});
 							scores.set(name, lilypondErrors);
 							lilypondDiagnostics.push(...getLilyPondDiagnostics(token, lilypondErrors));
 						}

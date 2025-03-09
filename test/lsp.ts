@@ -10,6 +10,7 @@ import type {
 
 /* NOT FOR BROWSER ONLY */
 
+import {execSync} from 'child_process';
 import Parser from '../index';
 import type {
 	Token,
@@ -78,7 +79,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 
 	/* NOT FOR BROWSER ONLY */
 
-	lsp.lilypond = '/opt/homebrew/bin/lilypond';
+	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
 	Parser.getConfig();
 	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	const rgba = (await import('color-rgba')).default;
