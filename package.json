@@ -14,7 +14,7 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [
-		"/bundle/bundle.*.js",
+		"/bundle/bundle*.js",
 		"/extensions/typings.d.ts",
 		"/extensions/*/*.js",
 		"/extensions/*.css",
