@@ -49,9 +49,13 @@ try {
 	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 		.getCSSLanguageService();
 } catch {}
-const stylelint: Promise<PublicApi | undefined> = eval( // eslint-disable-line no-eval
-	`(async()=>{try{return (await import("stylelint")).default}catch{}})()`,
-);
+const stylelint = (async (): Promise<PublicApi | undefined> => {
+	try {
+		return (await import('stylelint')).default;
+	} catch {
+		return undefined;
+	}
+})();
 export {jsonLSP, cssLSP, stylelint};
 
 /** embedded document */
