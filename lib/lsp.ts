@@ -146,6 +146,7 @@ const createNodeRange = (token: Token): Range => {
  * @param pos.line line number
  * @param pos.character character number
  * @param extra extra text
+ * @param getDoc documentation method
  */
 const getCompletion = (
 	words: Iterable<string>,
@@ -153,17 +154,27 @@ const getCompletion = (
 	mt: string,
 	{line, character}: Position,
 	extra?: string,
-): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => ({
-	label: w,
-	kind,
-	textEdit: {
-		range: {
-			start: {line, character: character - mt.length},
-			end: {line, character},
+	getDoc?: (name: string) => SignatureInfo | undefined,
+): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => {
+	const doc = getDoc?.(w)?.description;
+	return {
+		label: w,
+		kind,
+		textEdit: {
+			range: {
+				start: {line, character: character - mt.length},
+				end: {line, character},
+			},
+			newText: w + (extra ?? ''),
 		},
-		newText: w + (extra ?? ''),
-	},
-}));
+		...doc && {
+			documentation: {
+				kind: 'markdown',
+				value: doc,
+			},
+		},
+	};
+});
 
 /**
  * Get the caret position at the position from a word.
@@ -491,7 +502,14 @@ export class LanguageService implements LanguageServiceBase {
 				closing && !curLine?.slice(character).trim().startsWith('>') ? '>' : '',
 			);
 		} else if (mt?.[4]) { // behavior switch
-			return getCompletion(switches, 'Constant', mt[4], position);
+			return getCompletion(
+				switches,
+				'Constant',
+				mt[4],
+				position,
+				'',
+				name => this.data && this.#getBehaviorSwitch(name.slice(2, -2)),
+			);
 		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
@@ -521,7 +539,16 @@ export class LanguageService implements LanguageServiceBase {
 					position,
 				)
 				: [ // parser function or template
-					...getCompletion(functions, 'Function', match, position),
+					...getCompletion(
+						functions,
+						'Function',
+						match,
+						position,
+						'',
+						name => this.data && this.#getParserFunction(
+							name.replace(/^#/u, '').toLowerCase(),
+						),
+					),
 					...match.startsWith('#')
 						? []
 						: getCompletion(
@@ -945,6 +972,14 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * 检索状态开关
+	 * @param name 魔术字名
+	 */
+	#getBehaviorSwitch(name: string): SignatureInfo | undefined {
+		return this.data!.behaviorSwitches.find(({aliases}) => aliases.includes(name));
+	}
+
+	/**
 	 * 检索解析器函数
 	 * @param name 函数名
 	 */
@@ -973,9 +1008,7 @@ export class LanguageService implements LanguageServiceBase {
 			f: string | undefined,
 			range: Range | undefined;
 		if (token.is<DoubleUnderscoreToken>('double-underscore') && offset > 0) {
-			info = this.data.behaviorSwitches.find(
-				({aliases}) => aliases.includes(token.innerText.toLowerCase()),
-			);
+			info = this.#getBehaviorSwitch(token.innerText.toLowerCase());
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
 			f = token.toString(true).trim();
