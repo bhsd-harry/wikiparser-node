@@ -71,9 +71,13 @@ import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER ONLY */
 
+import fs from 'fs';
 import path from 'path';
+import {execFileSync} from 'child_process';
+import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/common/dist/stylelint';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
+import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
 
 /* NOT FOR BROWSER ONLY END */
@@ -332,6 +336,12 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
+	/* NOT FOR BROWSER ONLY */
+
+	declare lilypond: string;
+
+	/* NOT FOR BROWSER ONLY END */
+
 	#text: string;
 	#text2: string;
 	#running: Promise<Token> | undefined;
@@ -360,6 +370,15 @@ export class LanguageService implements LanguageServiceBase {
 	/** @implements */
 	destroy(): void {
 		Object.setPrototypeOf(this, null);
+
+		/* NOT FOR BROWSER ONLY */
+
+		const dir = path.join(__dirname, 'lilypond');
+		if (fs.existsSync(dir)) {
+			for (const file of fs.readdirSync(dir)) {
+				void fs.promises.unlink(path.join(dir, file));
+			}
+		}
 	}
 
 	/** 检查解析设置有无更新 */
@@ -858,9 +877,58 @@ export class LanguageService implements LanguageServiceBase {
 							}));
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
-					[] as const;
-		/* eslint-enable @stylistic/operator-linebreak */
-		return [diagnostics, cssDiagnostics, jsonDiagnostics].flat(2);
+					[] as const,
+			/* eslint-enable @stylistic/operator-linebreak */
+			lilypondDiagnostics: DiagnosticBase[] = [];
+
+		/* NOT FOR BROWSER ONLY */
+
+		if (this.lilypond) {
+			const tokens = root.querySelectorAll<ExtToken>('ext#score').filter(token => {
+					const lang = token.getAttr('lang');
+					return (lang === undefined || lang === 'lilypond') && token.innerText;
+				}),
+				dir = path.join(__dirname, 'lilypond');
+			if (tokens.length > 0) {
+				if (!fs.existsSync(dir)) {
+					fs.mkdirSync(dir);
+				}
+				const [version] = /(?<=LilyPond )\S+/u
+					.exec(execFileSync(this.lilypond, ['--version'], {encoding: 'utf8'}))!;
+				for (const token of tokens) {
+					const {innerText} = token,
+						hash = createHash('sha256');
+					hash.update(innerText!);
+					const file = path.join(dir, `${hash.digest('hex')}.ly`);
+					fs.writeFileSync(file, `\\version "${version}"\n${innerText}`);
+					try {
+						execFileSync(this.lilypond, ['-s', '-o', dir, file], {stdio: 'pipe', encoding: 'utf8'});
+					} catch (e) {
+						const {stderr} = e as ExecException;
+						if (stderr) {
+							const re = new RegExp(
+									String.raw`^${file}:(\d+):(\d+): error: (.+)$`,
+									'gmu',
+								),
+								{top, left} = token.lastChild.getBoundingClientRect();
+							for (const mt of stderr.matchAll(re)) {
+								const pos = getEndPos(top, left, Number(mt[1]) - 1, Number(mt[2]) - 1);
+								lilypondDiagnostics.push({
+									range: {start: pos, end: pos},
+									severity: 1,
+									source: 'LilyPond',
+									message: mt[3]!,
+								});
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/* NOT FOR BROWSER ONLY END */
+
+		return [diagnostics, cssDiagnostics, jsonDiagnostics, lilypondDiagnostics].flat(2);
 	}
 
 	/**

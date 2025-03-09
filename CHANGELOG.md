@@ -5,6 +5,7 @@
 **Added**
 
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now provide documentations for suggested magic words
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now supports the `score` extension tag written in [LilyPond](https://lilypond.org)
 
 **Fixed**
 

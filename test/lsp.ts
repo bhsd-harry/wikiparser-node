@@ -80,9 +80,11 @@ const indexToPos = (
  */
 export default async ({title, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	const lsp = Parser.createLanguageService({});
 
 	/* NOT FOR BROWSER ONLY */
 
+	lsp.lilypond = '/opt/homebrew/bin/lilypond';
 	Parser.getConfig();
 	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	const rgba = (await import('color-rgba')).default;
@@ -116,16 +118,13 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 
 	/* NOT FOR BROWSER ONLY END */
 
-	const lsp = Parser.createLanguageService({});
-
-	await wrap('provideDiagnostics', title, () => {
-		void lsp.provideDiagnostics(
+	await wrap('provideInlayHints', title, () => {
+		void lsp.provideInlayHints(
 			`${content} `,
 			// content,
-			false,
 		);
 		return new Promise(resolve => {
-			resolve(lsp.provideDiagnostics(content, false));
+			resolve(lsp.provideInlayHints(content));
 		});
 	});
 
@@ -135,7 +134,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'data':
 			case 'destroy':
 			case 'findStyleTokens':
-			case 'provideDiagnostics':
+			case 'provideInlayHints':
 			case 'provideColorPresentations':
 			case 'provideCodeAction':
 				break;
@@ -181,7 +180,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			}
 			case 'provideFoldingRanges':
 			case 'provideLinks':
-			case 'provideInlayHints':
+			case 'provideDiagnostics':
 			case 'provideDocumentSymbols':
 				await wrap(method, title, () => lsp[method](content));
 				break;
