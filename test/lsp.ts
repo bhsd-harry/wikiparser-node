@@ -64,14 +64,13 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	const lsp = new wikiparse.LanguageService!();
 
-	await wrap('provideDiagnostics', title, () => {
-		void lsp.provideDiagnostics(
+	await wrap('provideInlayHints', title, () => {
+		void lsp.provideInlayHints(
 			`${content} `,
 			// content,
-			false,
 		);
 		return new Promise(resolve => {
-			resolve(lsp.provideDiagnostics(content, false));
+			resolve(lsp.provideInlayHints(content));
 		});
 	});
 
@@ -81,7 +80,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'data':
 			case 'destroy':
 			case 'findStyleTokens':
-			case 'provideDiagnostics':
+			case 'provideInlayHints':
 			case 'provideColorPresentations':
 			case 'provideReferences':
 			case 'resolveRenameLocation':
@@ -118,7 +117,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			}
 			case 'provideFoldingRanges':
 			case 'provideLinks':
-			case 'provideInlayHints':
+			case 'provideDiagnostics':
 				await wrap(method, title, () => lsp[method](content));
 				break;
 			default:
