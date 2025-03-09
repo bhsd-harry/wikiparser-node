@@ -2,6 +2,10 @@
 
 *2025-03-11*
 
+**Added**
+
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now provide documentations for suggested magic words
+
 **Fixed**
 
 - Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) if [Stylelint](https://npmjs.com/package/stylelint) is unavailable
