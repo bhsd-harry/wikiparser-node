@@ -138,7 +138,10 @@
 			"#rpos": "rpos",
 			"#sub": "sub",
 			"#count": "count",
+			"#rmatch": "rmatch",
+			"#rreplace": "rreplace",
 			"#replace": "replace",
+			"#rsplit": "rsplit",
 			"#explode": "explode",
 			"#tab": "tab",
 			"#seo": "seo",
@@ -152,9 +155,9 @@
 			"#mentor": "mentor",
 			"#property": "property",
 			"#target": "target",
-			"#section": "section",
-			"#section-x": "section-x",
-			"#section-h": "section-h",
+			"#section": "lst",
+			"#section-x": "lstx",
+			"#section-h": "lsth",
 			"#statements": "statements"
 		},
 		{
