@@ -20,14 +20,14 @@
 		"/data/",
 		"/i18n/",
 		"/coverage/badge.svg",
-		"/bin/cli.js",
+		"/bin/*.js",
 		"/dist/",
-		"!/dist/test/",
-		"!/dist/bin/coverage.js",
-		"!/dist/bin/declaration.js"
+		"!/dist/script/",
+		"!/dist/test/"
 	],
 	"bin": {
-		"wikilint": "bin/cli.js"
+		"wikilint": "bin/cli.js",
+		"getParserConfig": "bin/config.js"
 	},
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -37,7 +37,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print|text)\\b/\\1/' dist/lib/node.d.ts; node dist/bin/declaration.js",
+		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print|text)\\b/\\1/' dist/lib/node.d.ts; node dist/script/declaration.js",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build": "npm run build:core",
@@ -47,7 +47,7 @@
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && node dist/test/json.js",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"prof": "node dist/test/prof.js",
-		"coverage": "nyc --cache-dir=./.cache/nyc npm test && node dist/bin/coverage.js && open coverage/index.html",
+		"coverage": "nyc --cache-dir=./.cache/nyc npm test && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
 		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",

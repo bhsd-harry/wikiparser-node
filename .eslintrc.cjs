@@ -164,6 +164,7 @@ module.exports = {
 			files: '**/*.ts',
 			excludedFiles: [
 				'bin/*.ts',
+				'script/*.ts',
 				'test/*.ts',
 				'lib/lsp.ts',
 			],
