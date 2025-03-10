@@ -2,6 +2,7 @@
 	"include": [
 		"addon/**/*",
 		"bin/**/*",
+		"script/**/*",
 		"lib/**/*",
 		"mixin/**/*",
 		"parser/**/*",
