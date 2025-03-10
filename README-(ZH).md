@@ -57,6 +57,25 @@ npm i wikilint
 
 # 使用方法
 
+## CLI 使用方法
+
+对于维基媒体基金会托管的 MediaWiki 站点，如不同语言版本的维基百科，可以使用以下命令获取解析器配置：
+
+```sh
+npx getParserConfig <site> <script path> [force]
+# 例如：
+npx getParserConfig jawiki https://ja.wikipedia.org/w
+```
+
+生成的配置文件将保存在 `config` 目录下，然后就可以使用站点名称设置 [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config)。
+
+```javascript
+// 例如：
+Parser.config = 'jawiki';
+```
+
+## API 使用方法
+
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
 
 # 已知问题
