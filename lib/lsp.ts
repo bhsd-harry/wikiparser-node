@@ -73,7 +73,8 @@ import {classes} from '../util/constants';
 
 import fs from 'fs';
 import path from 'path';
-import {execFileSync} from 'child_process';
+import util from 'util';
+import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/common/dist/stylelint';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
@@ -962,12 +963,12 @@ export class LanguageService implements LanguageServiceBase {
 							}));
 						return warning ? e : e.filter(({severity}) => severity === 1);
 					})) :
-					[] as const,
+					[] as const;
 			/* eslint-enable @stylistic/operator-linebreak */
-			lilypondDiagnostics: DiagnosticBase[] = [];
 
 		/* NOT FOR BROWSER ONLY */
 
+		let lilypondDiagnostics: DiagnosticBase[][] = [];
 		if (this.lilypond) {
 			const tokens = root.querySelectorAll<ExtToken>('ext#score').filter(token => {
 				const lang = token.getAttr('lang');
@@ -978,33 +979,25 @@ export class LanguageService implements LanguageServiceBase {
 				if (!fs.existsSync(dir)) {
 					fs.mkdirSync(dir);
 				}
-				for (const token of tokens) {
+				lilypondDiagnostics = await Promise.all(tokens.map(async (token): Promise<DiagnosticBase[]> => {
 					const {innerText} = token,
-						score = token.getAttr('raw') === undefined
-							? `\\score {\n${innerText}\n}`
-							: `\n${innerText}`,
-						hash = createHash('sha256');
-					hash.update(score);
-					const name = hash.digest('hex');
-					if (scores.has(name)) {
-						const lilypondErrors = scores.get(name)!;
-						if (lilypondErrors.length > 0) {
-							lilypondDiagnostics.push(...getLilyPondDiagnostics(token, lilypondErrors));
-						}
-						continue;
+						score = `showLastLength = R1${
+							token.getAttr('raw') === undefined ? ` \\score {\n${innerText}\n}` : `\n${innerText}`
+						}`;
+					if (scores.has(score)) {
+						return getLilyPondDiagnostics(token, scores.get(score)!);
 					}
-					const file = path.join(dir, `${name}.ly`);
+					const hash = createHash('sha256');
+					hash.update(score);
+					const file = path.join(dir, `${hash.digest('hex')}.ly`);
 					fs.writeFileSync(file, score);
 					try {
-						execFileSync(this.lilypond, ['-s', '-o', dir, file], {stdio: 'pipe', encoding: 'utf8'});
-						scores.set(name, []);
+						await util.promisify(execFile)(this.lilypond, ['-s', '-o', dir, file]);
+						scores.set(score, []);
 					} catch (e) {
 						const {stderr} = e as ExecException;
 						if (stderr) {
-							const re = new RegExp(
-									String.raw`^${file}:(\d+):(\d+): error: (.+)$`,
-									'gmu',
-								),
+							const re = new RegExp(String.raw`^${file}:(\d+):(\d+): error: (.+)$`, 'gmu'),
 								lilypondErrors = [...stderr.matchAll(re)].map(([, line, col, msg]): LilyPondError => {
 									const {offsetHeight, offsetWidth} = token.lastChild,
 										pos = adjustPos(offsetHeight, offsetWidth, Number(line) - 1, Number(col) - 1);
@@ -1014,17 +1007,26 @@ export class LanguageService implements LanguageServiceBase {
 										message: msg!,
 									};
 								});
-							scores.set(name, lilypondErrors);
-							lilypondDiagnostics.push(...getLilyPondDiagnostics(token, lilypondErrors));
+							scores.set(score, lilypondErrors);
+							return getLilyPondDiagnostics(token, lilypondErrors);
 						}
 					}
-				}
+					return [];
+				}));
 			}
 		}
 
 		/* NOT FOR BROWSER ONLY END */
 
-		return [diagnostics, cssDiagnostics, jsonDiagnostics, lilypondDiagnostics].flat(2);
+		return [
+			diagnostics,
+			cssDiagnostics,
+			jsonDiagnostics,
+
+			/* NOT FOR BROWSER ONLY */
+
+			lilypondDiagnostics,
+		].flat(2);
 	}
 
 	/**
