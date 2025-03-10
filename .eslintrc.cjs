@@ -70,6 +70,7 @@ module.exports = {
 			2,
 			'exports',
 		],
+		'n/no-unpublished-bin': 0,
 		'unicorn/no-this-assignment': 0,
 		'unicorn/empty-brace-spaces': 0,
 		'jsdoc/require-jsdoc': [
@@ -164,6 +165,7 @@ module.exports = {
 			files: '**/*.ts',
 			excludedFiles: [
 				'bin/*.ts',
+				'script/*.ts',
 				'test/*.ts',
 				'lib/lsp.ts',
 			],

@@ -1,6 +1,7 @@
 {
 	"include": [
 		"bin/**/*",
+		"script/**/*",
 		"lib/**/*",
 		"mixin/**/*",
 		"parser/**/*",
