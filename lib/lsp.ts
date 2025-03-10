@@ -85,10 +85,6 @@ declare interface CompletionConfig {
 	switches: string[];
 	protocols: string[];
 	params: string[];
-
-	/* NOT FOR BROWSER ONLY */
-
-	lilypond: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
 	data: QuickFixData[];
@@ -372,12 +368,6 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
-	/* NOT FOR BROWSER ONLY */
-
-	declare lilypond: string;
-
-	/* NOT FOR BROWSER ONLY END */
-
 	#text: string;
 	#text2: string;
 	#running: Promise<Token> | undefined;
@@ -391,15 +381,28 @@ export class LanguageService implements LanguageServiceBase {
 	/** @private */
 	data?: SignatureData;
 
+	/* NOT FOR BROWSER ONLY */
+
+	lilypond: string;
+	lilypondData: string[];
+
+	/* NOT FOR BROWSER ONLY END */
+
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
 		tasks.set(uri, this);
 
 		/* NOT FOR BROWSER ONLY */
 
-		Object.defineProperty(this, 'data', {
-			value: require(path.join('..', '..', 'data', 'signatures')) as SignatureData,
-			enumerable: false,
+		Object.defineProperties(this, {
+			data: {
+				value: require(path.join('..', '..', 'data', 'signatures')),
+				enumerable: false,
+			},
+			lilypondData: {
+				value: require(path.join('..', '..', 'data', 'ext', 'score')),
+				enumerable: false,
+			},
 		});
 	}
 
@@ -610,10 +613,6 @@ export class LanguageService implements LanguageServiceBase {
 				protocols: protocol.split('|'),
 				params: Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1'))
 					.map(k => k.replace(/\$1$/u, '')),
-
-				/* NOT FOR BROWSER ONLY */
-
-				lilypond: require(path.join('..', '..', 'data', 'ext', 'score')) as string[],
 			};
 		}
 		return this.#completionConfig;
@@ -818,23 +817,23 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			const word = /\\?\b(?:\w|\b(?:->?|\.)|\bly:)+$/u.exec(curLine!.slice(0, character))?.[0];
 			if (word) {
-				const {lilypond} = this.#prepareCompletionConfig();
+				const {lilypondData} = this;
 				return word.startsWith('\\')
 					? getCompletion(
-						lilypond.filter(w => w.startsWith('\\')),
+						lilypondData.filter(w => w.startsWith('\\')),
 						'Function',
 						word,
 						position,
 					)
 					: [
 						...getCompletion(
-							lilypond.filter(w => /^[a-z]/u.test(w)),
+							lilypondData.filter(w => /^[a-z]/u.test(w)),
 							'Variable',
 							word,
 							position,
 						),
 						...getCompletion(
-							lilypond.filter(w => /^[A-Z]/u.test(w)),
+							lilypondData.filter(w => /^[A-Z]/u.test(w)),
 							'Class',
 							word,
 							position,
