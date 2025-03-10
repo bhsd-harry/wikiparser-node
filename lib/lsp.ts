@@ -85,6 +85,10 @@ declare interface CompletionConfig {
 	switches: string[];
 	protocols: string[];
 	params: string[];
+
+	/* NOT FOR BROWSER ONLY */
+
+	lilypond: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
 	data: QuickFixData[];
@@ -605,6 +609,10 @@ export class LanguageService implements LanguageServiceBase {
 				protocols: protocol.split('|'),
 				params: Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1'))
 					.map(k => k.replace(/\$1$/u, '')),
+
+				/* NOT FOR BROWSER ONLY */
+
+				lilypond: require(path.join('..', '..', 'data', 'ext', 'score')) as string[],
 			};
 		}
 		return this.#completionConfig;
@@ -792,6 +800,35 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(cur!.name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, cur!);
 			return (await jsonLSP.doComplete(textDoc, position, textDoc.jsonDoc))?.items;
+		} else if (type === 'ext-inner' && cur!.name === 'score') {
+			const lang = (parentNode as ExtToken).getAttr('lang');
+			if (lang === undefined || lang === 'lilypond') {
+				const word = /\\?\b(?:\w|\b(?:->?|\.)|\bly:)+$/u.exec(curLine!.slice(0, character))?.[0];
+				if (word) {
+					const {lilypond} = this.#prepareCompletionConfig();
+					return word.startsWith('\\')
+						? getCompletion(
+							lilypond.filter(w => w.startsWith('\\')),
+							'Function',
+							word,
+							position,
+						)
+						: [
+							...getCompletion(
+								lilypond.filter(w => /^[a-z]/u.test(w)),
+								'Variable',
+								word,
+								position,
+							),
+							...getCompletion(
+								lilypond.filter(w => /^[A-Z]/u.test(w)),
+								'Class',
+								word,
+								position,
+							),
+						];
+				}
+			}
 
 			/* NOT FOR BROWSER ONLY END */
 		}
