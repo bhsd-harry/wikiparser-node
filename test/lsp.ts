@@ -231,4 +231,5 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 				throw new Error(`未检测的方法：${method as string}`);
 		}
 	}
+	lsp.destroy();
 };
