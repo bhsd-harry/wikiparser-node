@@ -7,7 +7,7 @@
 			"type": "array",
 			"items": {
 				"type": "string",
-				"pattern": "^[a-z\\d_]+$"
+				"pattern": "^[a-z\\d_-]+$"
 			}
 		},
 		"html": {
