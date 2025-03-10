@@ -694,9 +694,12 @@ export class LanguageService implements LanguageServiceBase {
 			cssDiagnostics =
 				[] as const,
 			jsonDiagnostics =
-				[] as const,
-			lilypondDiagnostics: DiagnosticBase[] = [];
-		return [diagnostics, cssDiagnostics, jsonDiagnostics, lilypondDiagnostics].flat(2);
+				[] as const;
+		return [
+			diagnostics,
+			cssDiagnostics,
+			jsonDiagnostics,
+		].flat(2);
 	}
 
 	/**

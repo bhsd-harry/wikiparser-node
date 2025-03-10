@@ -89,6 +89,6 @@
 		"vscode-languageserver-textdocument": "^1.0.12"
 	},
 	"engines": {
-		"node": ">=18.12.0"
+		"node": ">=18.17.0"
 	}
 }
