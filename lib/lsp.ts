@@ -223,13 +223,14 @@ const getCompletion = (
 /**
  * Get the caret position at the position from a word.
  * @param root root token
+ * @param text source code
  * @param pos position
  * @param pos.line line number
  * @param pos.character character number
  */
-const caretPositionFromWord = (root: Token, {line, character}: Position): CaretPosition => {
+const caretPositionFromWord = (root: Token, text: string, {line, character}: Position): CaretPosition => {
 	const index = root.indexFromPos(line, character)!;
-	return root.caretPositionFromIndex(index + Number(/\w/u.test(root.toString().charAt(index))))!;
+	return root.caretPositionFromIndex(index + Number(/\w/u.test(text.charAt(index))))!;
 };
 
 /**
@@ -802,32 +803,43 @@ export class LanguageService implements LanguageServiceBase {
 			return (await jsonLSP.doComplete(textDoc, position, textDoc.jsonDoc))?.items;
 		} else if (type === 'ext-inner' && cur!.name === 'score') {
 			const lang = (parentNode as ExtToken).getAttr('lang');
-			if (lang === undefined || lang === 'lilypond') {
-				const word = /\\?\b(?:\w|\b(?:->?|\.)|\bly:)+$/u.exec(curLine!.slice(0, character))?.[0];
-				if (word) {
-					const {lilypond} = this.#prepareCompletionConfig();
-					return word.startsWith('\\')
-						? getCompletion(
-							lilypond.filter(w => w.startsWith('\\')),
-							'Function',
+			if (lang !== undefined && lang !== 'lilypond') {
+				return undefined;
+			}
+			const j = root.indexFromPos(line, character)!,
+				i = cur!.getAbsoluteIndex(),
+				before = this.#text.slice(i, j),
+				comment = before.lastIndexOf('%');
+			if (
+				comment !== -1
+				&& (before.charAt(comment + 1) === '{' || !before.slice(comment).includes('\n'))
+			) {
+				return undefined;
+			}
+			const word = /\\?\b(?:\w|\b(?:->?|\.)|\bly:)+$/u.exec(curLine!.slice(0, character))?.[0];
+			if (word) {
+				const {lilypond} = this.#prepareCompletionConfig();
+				return word.startsWith('\\')
+					? getCompletion(
+						lilypond.filter(w => w.startsWith('\\')),
+						'Function',
+						word,
+						position,
+					)
+					: [
+						...getCompletion(
+							lilypond.filter(w => /^[a-z]/u.test(w)),
+							'Variable',
 							word,
 							position,
-						)
-						: [
-							...getCompletion(
-								lilypond.filter(w => /^[a-z]/u.test(w)),
-								'Variable',
-								word,
-								position,
-							),
-							...getCompletion(
-								lilypond.filter(w => /^[A-Z]/u.test(w)),
-								'Class',
-								word,
-								position,
-							),
-						];
-				}
+						),
+						...getCompletion(
+							lilypond.filter(w => /^[A-Z]/u.test(w)),
+							'Class',
+							word,
+							position,
+						),
+					];
 			}
 
 			/* NOT FOR BROWSER ONLY END */
@@ -1182,7 +1194,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		const root = await this.#queue(text),
-			{offsetNode, offset} = caretPositionFromWord(root, position),
+			{offsetNode, offset} = caretPositionFromWord(root, this.#text, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			node = offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
 				? element.parentNode!.parentNode!
@@ -1323,7 +1335,7 @@ export class LanguageService implements LanguageServiceBase {
 			return undefined;
 		}
 		const root = await this.#queue(text),
-			{offsetNode, offset} = caretPositionFromWord(root, position),
+			{offsetNode, offset} = caretPositionFromWord(root, this.#text, position),
 			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			{type, parentNode, length, name} = token;
 		let info: SignatureData['parserFunctions'][0] | undefined,
