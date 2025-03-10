@@ -57,6 +57,25 @@ For more browser extensions, please refer to the corresponding [documentation](h
 
 # Usage
 
+## CLI usage
+
+For MediaWiki sites hosted by the Wikimedia Foundation, such as different language editions of Wikipedia, you can use the following command to obtain the parser configuration:
+
+```sh
+npx getParserConfig <site> <script path> [force]
+# For example:
+npx getParserConfig jawiki https://ja.wikipedia.org/w
+```
+
+The generated configuration file will be saved in the `config` directory. You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).
+
+```javascript
+// For example:
+Parser.config = 'jawiki';
+```
+
+## API usage
+
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).
 
 # Known issues

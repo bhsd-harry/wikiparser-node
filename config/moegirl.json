@@ -426,8 +426,8 @@
 			"#标题组成部分": "titleparts",
 			"#titleparts": "titleparts",
 			"#categorytree": "categorytree",
-			"#url解码": "urldecode",
 			"#urldecode": "urldecode",
+			"#url解码": "urldecode",
 			"#choose": "choose",
 			"#var": "var",
 			"#varexists": "varexists",
@@ -644,14 +644,14 @@
 		},
 		[
 			"msg",
-			"原始",
-			"raw"
+			"raw",
+			"原始"
 		],
 		[
-			"替代",
-			"subst",
+			"safesubst",
 			"安全替代",
-			"safesubst"
+			"subst",
+			"替代"
 		]
 	],
 	"doubleUnderscore": [
@@ -677,8 +677,8 @@
 			"目录": "toc"
 		},
 		{
-			"DISAMBIG": "DISAMBIG",
-			"消除歧义": "DISAMBIG",
+			"DISAMBIG": "DISAMBIGUATION",
+			"消除歧义": "DISAMBIGUATION",
 			"HIDDENCAT": "HIDDENCAT",
 			"隐藏分类": "HIDDENCAT",
 			"INDEX": "INDEX",
@@ -721,10 +721,10 @@
 		"无框": "frameless",
 		"upright": "upright",
 		"右上": "upright",
-		"upright=$1": "manual-upright",
-		"upright $1": "manual-upright",
-		"右上=$1": "manual-upright",
-		"右上$1": "manual-upright",
+		"upright=$1": "upright",
+		"upright $1": "upright",
+		"右上=$1": "upright",
+		"右上$1": "upright",
 		"border": "border",
 		"边框": "border",
 		"alt=$1": "alt",

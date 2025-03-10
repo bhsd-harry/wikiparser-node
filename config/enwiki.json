@@ -26,7 +26,8 @@
 		"source",
 		"syntaxhighlight",
 		"templatedata",
-		"timeline"
+		"timeline",
+		"page-collection"
 	],
 	"html": [
 		[
@@ -125,7 +126,9 @@
 		"710": "TimedText",
 		"711": "TimedText talk",
 		"828": "Module",
-		"829": "Module talk"
+		"829": "Module talk",
+		"1728": "Event",
+		"1729": "Event talk"
 	},
 	"nsid": {
 		"": 0,
@@ -147,6 +150,7 @@
 		"mediawiki": 8,
 		"mediawiki talk": 9,
 		"template": 10,
+		"tm": 10,
 		"template talk": 11,
 		"help": 12,
 		"help talk": 13,
@@ -161,7 +165,9 @@
 		"timedtext": 710,
 		"timedtext talk": 711,
 		"module": 828,
-		"module talk": 829
+		"module talk": 829,
+		"event": 1728,
+		"event talk": 1729
 	},
 	"variable": [
 		"!",
@@ -309,15 +315,15 @@
 			"#commaseparatedlist": "commaseparatedlist",
 			"#coordinates": "coordinates",
 			"#lst": "lst",
+			"#section": "lst",
 			"#lsth": "lsth",
+			"#section-h": "lsth",
 			"#lstx": "lstx",
+			"#section-x": "lstx",
 			"#assessment": "assessment",
 			"#mentor": "mentor",
 			"#property": "property",
 			"#target": "target",
-			"#section": "section",
-			"#section-x": "section-x",
-			"#section-h": "section-h",
 			"noexternallanglinks": "noexternallanglinks",
 			"#statements": "statements",
 			"numberofwikis": "numberofwikis",
@@ -423,15 +429,16 @@
 			"#interwikilink": "interwikilink",
 			"#interlanguagelink": "interlanguagelink",
 			"#timef": "timef",
-			"#timefl": "timefl"
+			"#timefl": "timefl",
+			"USERLANGUAGE": "userlanguage"
 		},
 		[
 			"msg",
 			"raw"
 		],
 		[
-			"subst",
-			"safesubst"
+			"safesubst",
+			"subst"
 		]
 	],
 	"doubleUnderscore": [
@@ -452,7 +459,7 @@
 		},
 		{
 			"EXPECTUNUSEDCATEGORY": "EXPECTUNUSEDCATEGORY",
-			"DISAMBIG": "DISAMBIG",
+			"DISAMBIG": "DISAMBIGUATION",
 			"HIDDENCAT": "HIDDENCAT",
 			"INDEX": "INDEX",
 			"NEWSECTIONLINK": "NEWSECTIONLINK",
@@ -460,7 +467,7 @@
 			"NONEWSECTIONLINK": "NONEWSECTIONLINK",
 			"STATICREDIRECT": "STATICREDIRECT",
 			"NOGLOBAL": "NOGLOBAL",
-			"EXPECTED_UNCONNECTED_PAGE": "EXPECTED_UNCONNECTED_PAGE",
+			"EXPECTED_UNCONNECTED_PAGE": "EXPECTEDUNCONNECTEDPAGE",
 			"EXPECTUNUSEDTEMPLATE": "EXPECTUNUSEDTEMPLATE"
 		}
 	],
@@ -482,8 +489,8 @@
 		"frame": "framed",
 		"frameless": "frameless",
 		"upright": "upright",
-		"upright=$1": "manual-upright",
-		"upright $1": "manual-upright",
+		"upright=$1": "upright",
+		"upright $1": "upright",
 		"border": "border",
 		"alt=$1": "alt",
 		"class=$1": "class",

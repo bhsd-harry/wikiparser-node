@@ -1,4 +1,4 @@
-## v1.17.2
+## v1.18.0
 
 *2025-03-11*
 
@@ -6,10 +6,17 @@
 
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now provide documentations for suggested magic words
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now support the `score` extension tag written in [LilyPond](https://lilypond.org)
+- New executable [`getParserConfig`](./README#cli-usage)
 
 **Fixed**
 
 - Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) if [Stylelint](https://npmjs.com/package/stylelint) is unavailable
+- Manual upright parameters (e.g., `upright=$1`) of images are not treated as upright parameters
+- The magic words `#section`, `#section-x` and `#section-h` are recognized as aliases of `#lst`, `#lstx` and `#lsth`, respectively
+
+**Changed**
+
+- The behavior switch `__DISAMBIG__` now has the name `DISAMBIGUATION`, and the behavior switch `__EXPECTED_UNCONNECTED_PAGE__` now has the name `EXPECTEDUNCONNECTEDPAGE`
 
 ## v1.17.1
 
