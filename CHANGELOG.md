@@ -1,3 +1,11 @@
+## v1.18.1
+
+*2025-03-12*
+
+**Added**
+
+- [`LanguageService.prototype.setTargetWikipedia](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#settargetwikipedia) that updates the parser configuration for a specific Wikipedia language edition
+
 ## v1.18.0
 
 *2025-03-11*

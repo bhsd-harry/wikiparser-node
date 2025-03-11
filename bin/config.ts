@@ -19,69 +19,73 @@ declare interface Response {
 	};
 }
 
-const {argv} = process,
-	[,, site,, force, old] = argv;
-let [,,, url] = argv;
-if (!site || !url) {
-	console.error('Usage: npx getParserConfig <site> <script path> [force]');
-	process.exit(1);
-} else if (/(?:\.php|\/)$/u.test(url)) {
-	url = url.slice(0, url.lastIndexOf('/'));
-}
-
-let mwConfig: MwConfig | undefined;
-const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
-	loader: {
-		/** @ignore */
-		impl(callback: () => [string, {files: Record<string, Function>}]): void {
-			Object.entries(callback()[1].files).find(([k]) => k.endsWith('.data.js'))![1]();
-		},
-		/** @ignore */
-		implement(_: string, callback: () => void): void {
-			callback();
-		},
-	},
-	config: {
-		/** @ignore */
-		set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
-			mwConfig = extCodeMirrorConfig;
-		},
-	},
-};
-
 /**
- * Converts an array to an object.
- * @param config parser configuration
- * @param config.articlePath article path
+ * Get the parser configuration for a Wikimedia Foundation project.
+ * @param site site nickname
+ * @param url script path
+ * @param force whether to overwrite the existing configuration
+ * @param old whether to target an older version of MediaWiki
  */
-const arrToObj = ({articlePath, ...obj}: Config): object => {
-	for (const [k, v] of Object.entries(obj)) {
-		if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
-			Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
-		}
+export default async (site: string, url: string, force?: boolean, old?: boolean): Promise<Config> => {
+	if (!site || !url) {
+		console.error('Usage: npx getParserConfig <site> <script path> [force]');
+		process.exit(1);
+	} else if (/(?:\.php|\/)$/u.test(url)) {
+		url = url.slice(0, url.lastIndexOf('/'));
 	}
-	return obj;
-};
 
-/**
- * Gets the aliases of magic words.
- * @param magicwords magic words
- * @param targets magic word names
- */
-const getAliases = (magicwords: MagicWord[], targets: Set<string>): string[] => magicwords
-	.filter(({name}) => targets.has(name))
-	.flatMap(({aliases}) => aliases.map(s => s.replace(/:$/u, '').toLowerCase()));
+	let mwConfig: MwConfig | undefined;
+	const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
+		loader: {
+			/** @ignore */
+			impl(callback: () => [string, {files: Record<string, Function>}]): void {
+				Object.entries(callback()[1].files).find(([k]) => k.endsWith('.data.js'))![1]();
+			},
+			/** @ignore */
+			implement(_: string, callback: () => void): void {
+				callback();
+			},
+		},
+		config: {
+			/** @ignore */
+			set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
+				mwConfig = extCodeMirrorConfig;
+			},
+		},
+	};
 
-/**
- * Filters out gadget-related namespaces.
- * @param id namespace ID
- */
-const filterGadget = (id: string | number): boolean => {
-	const n = Number(id);
-	return n < 2300 || n > 2303; // Gadget, Gadget talk, Gadget definition, Gadget definition talk
-};
+	/**
+	 * Converts an array to an object.
+	 * @param config parser configuration
+	 * @param config.articlePath article path
+	 */
+	const arrToObj = ({articlePath, ...obj}: Config): object => {
+		for (const [k, v] of Object.entries(obj)) {
+			if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
+				Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
+			}
+		}
+		return obj;
+	};
 
-(async () => {
+	/**
+	 * Gets the aliases of magic words.
+	 * @param magicwords magic words
+	 * @param targets magic word names
+	 */
+	const getAliases = (magicwords: MagicWord[], targets: Set<string>): string[] => magicwords
+		.filter(({name}) => targets.has(name))
+		.flatMap(({aliases}) => aliases.map(s => s.replace(/:$/u, '').toLowerCase()));
+
+	/**
+	 * Filters out gadget-related namespaces.
+	 * @param id namespace ID
+	 */
+	const filterGadget = (id: string | number): boolean => {
+		const n = Number(id);
+		return n < 2300 || n > 2303; // Gadget, Gadget talk, Gadget definition, Gadget definition talk
+	};
+
 	const m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror${old ? '.data' : ''}`)).text(),
 		params = {
 			action: 'query',
@@ -130,6 +134,7 @@ const filterGadget = (id: string | number): boolean => {
 		assert.deepStrictEqual(arrToObj(require(file) as Config), arrToObj(config));
 	}
 	if (force || !exists) {
-		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
+		void fs.promises.writeFile(file, `${JSON.stringify(config, null, '\t')}\n`);
 	}
-})();
+	return config;
+};
