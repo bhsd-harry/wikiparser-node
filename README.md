@@ -42,9 +42,9 @@ npx getParserConfig <site> <script path> [force]
 npx getParserConfig jawiki https://ja.wikipedia.org/w
 ```
 
-The generated configuration file will be saved in the `config` directory. You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).
+The generated configuration file will be saved in the `config` directory. You can then use the site name as the `--config` option.
 
-```javascript
-// For example:
-Parser.config = 'jawiki';
+```sh
+# For example:
+npx wikilint --config jawiki *.wiki
 ```

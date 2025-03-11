@@ -180,7 +180,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 					// 需要 +1
 					ext,
 					html,
-					imageParameter,
+					imageParameter?.name !== 'caption' && imageParameter,
 					argName,
 					templateName,
 					magicWordName,
