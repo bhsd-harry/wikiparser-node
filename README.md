@@ -31,3 +31,20 @@ npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 | `-r`, `--recursive` | Recursively lint files | `false` |
 | `-s`, `--strict` | Exit when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
 | `-v`, `--version` | Print package version | |
+
+## Configuration
+
+For MediaWiki sites hosted by the Wikimedia Foundation, such as different language editions of Wikipedia, you can use the following command to obtain the parser configuration:
+
+```sh
+npx getParserConfig <site> <script path> [force]
+# For example:
+npx getParserConfig jawiki https://ja.wikipedia.org/w
+```
+
+The generated configuration file will be saved in the `config` directory. You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).
+
+```javascript
+// For example:
+Parser.config = 'jawiki';
+```
