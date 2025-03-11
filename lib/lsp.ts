@@ -1177,8 +1177,7 @@ export class LanguageService implements LanguageServiceBase {
 						} else if (type === 'invoke-module') {
 							ns = 828;
 						}
-						const title = Parser
-							.normalizeTitle(target, ns, false, undefined, true);
+						const title = Parser.normalizeTitle(target, ns, false, this.config, true);
 						/* istanbul ignore if */
 						if (!title.valid) {
 							return false;
@@ -1599,6 +1598,7 @@ export class LanguageService implements LanguageServiceBase {
 		} catch {
 			this.config = await fetchConfig(site, `${mt[0]}/w`);
 		}
+		Object.assign(this.config!, {articlePath: `${mt[0]}/wiki/`});
 	}
 }
 
