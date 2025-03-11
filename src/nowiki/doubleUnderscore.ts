@@ -19,9 +19,10 @@ import {syntax} from '../../mixin/syntax';
 @syntax()
 @hiddenToken()
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
+	declare readonly name: string;
+
 	/* NOT FOR BROWSER */
 
-	declare readonly name: string;
 	readonly #sensitive;
 
 	/* NOT FOR BROWSER END */
@@ -36,12 +37,13 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	 */
 	constructor(word: string, sensitive: boolean, config: Config, accum?: Token[]) {
 		super(word, config, accum);
+		const lc = word.toLowerCase(),
+			{doubleUnderscore: [,, iAlias, sAlias]} = config;
+		this.setAttribute('name', (sensitive ? sAlias?.[word]?.toLowerCase() : iAlias?.[lc]) ?? lc);
 
 		/* NOT FOR BROWSER */
 
-		const lc = word.toLowerCase();
 		this.#sensitive = sensitive;
-		this.setAttribute('name', sensitive ? lc : config.doubleUnderscore[2]?.[lc] ?? lc);
 		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));
 	}
 
