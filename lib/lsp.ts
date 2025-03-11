@@ -502,7 +502,8 @@ export class LanguageService implements LanguageServiceBase {
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line],
-			mt = re.exec(curLine?.slice(0, character) ?? '');
+			mt = re.exec(curLine?.slice(0, character) ?? ''),
+			[,, iAlias = {}, sAlias = {}] = this.config!.doubleUnderscore;
 		if (mt?.[1] !== undefined) { // tag
 			const closing = mt[1].startsWith('/');
 			return getCompletion(
@@ -519,7 +520,18 @@ export class LanguageService implements LanguageServiceBase {
 				mt[4],
 				position,
 				'',
-				name => this.data && this.#getBehaviorSwitch(name.slice(2, -2)),
+				name => {
+					if (!this.data) {
+						return undefined;
+					}
+					name = name.slice(2, -2);
+					if (name in iAlias) {
+						name = iAlias[name]!;
+					} else if (name in sAlias) {
+						name = sAlias[name]!;
+					}
+					return this.#getBehaviorSwitch(name.toLowerCase());
+				},
 			);
 		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
@@ -538,7 +550,9 @@ export class LanguageService implements LanguageServiceBase {
 					position,
 				);
 			}
-			const colon = match.startsWith(':'),
+			const [insensitive, sensitive] = this.config!.parserFunction,
+				isOld = Array.isArray(sensitive),
+				colon = match.startsWith(':'),
 				str = colon ? match.slice(1).trimStart() : match;
 			return mt[2] === '[['
 				? getCompletion( // link
@@ -556,9 +570,16 @@ export class LanguageService implements LanguageServiceBase {
 						match,
 						position,
 						'',
-						name => this.data && this.#getParserFunction(
-							name.replace(/^#/u, '').toLowerCase(),
-						),
+						name => {
+							if (!this.data) {
+								return undefined;
+							} else if (name in insensitive) {
+								name = insensitive[name]!;
+							} else if (!isOld && name in sensitive) {
+								name = sensitive[name]!;
+							}
+							return this.#getParserFunction(name.toLowerCase());
+						},
 					),
 					...match.startsWith('#')
 						? []
@@ -1015,35 +1036,38 @@ export class LanguageService implements LanguageServiceBase {
 		if (!this.data) {
 			return undefined;
 		}
-		const root = await this.#queue(text),
-			{offsetNode, offset} = caretPositionFromWord(root, this.#text, position),
-			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
-			{type, parentNode, length, name} = token;
+		const root = await this.#queue(text);
+		let {offsetNode, offset} = caretPositionFromWord(root, this.#text, position);
+		if (offsetNode.type === 'text') {
+			offset += offsetNode.getRelativeIndex();
+			offsetNode = offsetNode.parentNode!;
+		}
+		const {type, parentNode, length, name} = offsetNode;
 		let info: SignatureData['parserFunctions'][0] | undefined,
 			f: string | undefined,
 			range: Range | undefined;
-		if (token.is<DoubleUnderscoreToken>('double-underscore') && offset > 0) {
-			info = this.#getBehaviorSwitch(token.innerText.toLowerCase());
+		if (offsetNode.is<DoubleUnderscoreToken>('double-underscore') && offset > 0) {
+			info = this.#getBehaviorSwitch(offsetNode.name);
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
-			f = token.toString(true).trim();
+			f = offsetNode.toString(true).trim();
 		} else if (
-			token.is<TranscludeToken>('magic-word') && !token.modifier && length === 1
-			&& (offset > 0 || root.posFromIndex(token.getAbsoluteIndex())!.left === position.character)
+			offsetNode.is<TranscludeToken>('magic-word') && !offsetNode.modifier && length === 1
+			&& (offset > 0 || root.posFromIndex(offsetNode.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);
-			f = token.firstChild.toString(true).trim();
+			f = offsetNode.firstChild.toString(true).trim();
 		} else if (
-			(token.is<TranscludeToken>('magic-word') || token.is<TranscludeToken>('template'))
-			&& token.modifier && offset >= 2 && token.getRelativeIndex(0) > offset
+			(offsetNode.is<TranscludeToken>('magic-word') || offsetNode.is<TranscludeToken>('template'))
+			&& offsetNode.modifier && offset >= 2 && offsetNode.getRelativeIndex(0) > offset
 		) {
-			f = token.modifier.trim().slice(0, -1);
+			f = offsetNode.modifier.trim().slice(0, -1);
 			info = this.#getParserFunction(f.toLowerCase());
 			if (info) {
-				const aIndex = token.getAbsoluteIndex();
+				const aIndex = offsetNode.getAbsoluteIndex();
 				range = {
 					start: positionAt(root, aIndex + 2),
-					end: positionAt(root, aIndex + token.modifier.trimEnd().length + 1),
+					end: positionAt(root, aIndex + offsetNode.modifier.trimEnd().length + 1),
 				};
 			}
 		}
@@ -1061,7 +1085,7 @@ export class LanguageService implements LanguageServiceBase {
 				)
 				+ info.description,
 			},
-			range: range ?? createNodeRange(token),
+			range: range ?? createNodeRange(offsetNode),
 		};
 	}
 

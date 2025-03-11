@@ -2,64 +2,49 @@
 	"behaviorSwitches": [
 		{
 			"aliases": [
-				"notoc",
-				"无目录",
-				"無目錄"
+				"notoc"
 			],
 			"description": "Hides the table of contents (TOC)."
 		},
 		{
 			"aliases": [
-				"forcetoc",
-				"强显目录",
-				"強制目錄"
+				"forcetoc"
 			],
 			"description": "Forces the table of contents to appear at its normal position (before the first header, overriding `__NOTOC__`)."
 		},
 		{
 			"aliases": [
-				"toc",
-				"目录",
-				"目錄"
+				"toc"
 			],
 			"description": "Places a table of contents at the word's current position (overriding `__NOTOC__`). If this is used multiple times, the table of contents will appear at the first word's position."
 		},
 		{
 			"aliases": [
-				"noeditsection",
-				"无段落编辑",
-				"无编辑段落",
-				"無段落編輯"
+				"noeditsection"
 			],
 			"description": "Hides the section edit links beside headings. Use of this in a template will extend the effect to that template, the pages it's included on, and any other templates included on the same page."
 		},
 		{
 			"aliases": [
-				"newsectionlink",
-				"新段落链接"
+				"newsectionlink"
 			],
 			"description": "Adds a link beside the \"Edit\" tab for adding a new section on a non-talk page."
 		},
 		{
 			"aliases": [
-				"nonewsectionlink",
-				"无新段落链接"
+				"nonewsectionlink"
 			],
 			"description": "Removes the link beside the \"Edit\" tab on pages in talk namespaces."
 		},
 		{
 			"aliases": [
-				"nogallery",
-				"无图库",
-				"無圖庫"
+				"nogallery"
 			],
 			"description": "Used on a category page, replaces thumbnails in the category view with normal links."
 		},
 		{
 			"aliases": [
-				"hiddencat",
-				"隐藏分类",
-				"隱藏分類"
+				"hiddencat"
 			],
 			"description": "Used on a category page, hides the category from the lists of categories in its members and subcategories (there is an option in the user preferences to show them)."
 		},
@@ -72,40 +57,32 @@
 		{
 			"aliases": [
 				"nocontentconvert",
-				"nocc",
-				"不转换内容",
-				"不轉換內容"
+				"nocc"
 			],
 			"description": "On wikis with language variants, don't perform any content language conversion in article display."
 		},
 		{
 			"aliases": [
 				"notitleconvert",
-				"notc",
-				"不转换标题",
-				"不轉換標題"
+				"notc"
 			],
 			"description": "On wikis with language variants, don't perform language conversion on the title (all other content is converted)."
 		},
 		{
 			"aliases": [
-				"index",
-				"索引"
+				"index"
 			],
 			"description": "Tell search engines to index the page."
 		},
 		{
 			"aliases": [
-				"noindex",
-				"无索引"
+				"noindex"
 			],
 			"description": "Tell search engines not to index the page (i.e. do not list in search engines' results)."
 		},
 		{
 			"aliases": [
-				"staticredirect",
-				"静态重定向",
-				"靜態重新導向"
+				"staticredirect"
 			],
 			"description": "On redirect pages, don't allow MediaWiki to automatically update the link when someone moves a page and checks \"Update any redirects that point to the original title\"."
 		},
@@ -117,29 +94,25 @@
 		},
 		{
 			"aliases": [
-				"noglobal",
-				"禁用全域用户页"
+				"noglobal"
 			],
 			"description": "Disables the global user page. If present on the central user page, will prevent it from being displayed on remote wikis, and it also determines whether a link to a user page on remote wiki should be red or blue."
 		},
 		{
 			"aliases": [
-				"disambig",
-				"消除歧义"
+				"disambig"
 			],
 			"description": "Identifies a disambiguation page."
 		},
 		{
 			"aliases": [
-				"archivedtalk",
-				"已存档讨论"
+				"archivedtalk"
 			],
 			"description": "Hides \"reply\" links from discussions on archived pages."
 		},
 		{
 			"aliases": [
-				"notalk",
-				"禁用讨论"
+				"notalk"
 			],
 			"description": "Makes a page in a talk namespace not be treated like a talk page."
 		}
@@ -147,8 +120,7 @@
 	"parserFunctions": [
 		{
 			"aliases": [
-				"localurl",
-				"本地url"
+				"localurl"
 			],
 			"signatures": [
 				[
@@ -169,8 +141,7 @@
 		},
 		{
 			"aliases": [
-				"localurle",
-				"本地urle"
+				"localurle"
 			],
 			"signatures": [
 				[
@@ -191,8 +162,7 @@
 		},
 		{
 			"aliases": [
-				"fullurl",
-				"完整url"
+				"fullurl"
 			],
 			"signatures": [
 				[
@@ -213,8 +183,7 @@
 		},
 		{
 			"aliases": [
-				"fullurle",
-				"完整url等同"
+				"fullurle"
 			],
 			"signatures": [
 				[
@@ -235,8 +204,7 @@
 		},
 		{
 			"aliases": [
-				"canonicalurl",
-				"规范url"
+				"canonicalurl"
 			],
 			"signatures": [
 				[
@@ -257,8 +225,7 @@
 		},
 		{
 			"aliases": [
-				"canonicalurle",
-				"规范url等同"
+				"canonicalurle"
 			],
 			"signatures": [
 				[
@@ -279,8 +246,7 @@
 		},
 		{
 			"aliases": [
-				"filepath",
-				"文件路径"
+				"filepath"
 			],
 			"signatures": [
 				[
@@ -310,8 +276,7 @@
 		},
 		{
 			"aliases": [
-				"urlencode",
-				"url编码"
+				"urlencode"
 			],
 			"signatures": [
 				[
@@ -351,8 +316,7 @@
 		},
 		{
 			"aliases": [
-				"anchorencode",
-				"锚编码"
+				"anchorencode"
 			],
 			"signatures": [
 				[
@@ -365,8 +329,7 @@
 		},
 		{
 			"aliases": [
-				"ns",
-				"名称空间"
+				"ns"
 			],
 			"signatures": [
 				[
@@ -384,10 +347,7 @@
 		},
 		{
 			"aliases": [
-				"nse",
-				"名称空间e",
-				"名字空间e",
-				"命名空間e"
+				"nse"
 			],
 			"signatures": [
 				[
@@ -405,8 +365,7 @@
 		},
 		{
 			"aliases": [
-				"formatnum",
-				"格式化数字"
+				"formatnum"
 			],
 			"signatures": [
 				[
@@ -438,9 +397,7 @@
 		{
 			"aliases": [
 				"#dateformat",
-				"#formatdate",
-				"#格式化日期",
-				"#日期格式化"
+				"#formatdate"
 			],
 			"signatures": [
 				[
@@ -461,8 +418,7 @@
 		},
 		{
 			"aliases": [
-				"lc",
-				"小写"
+				"lc"
 			],
 			"signatures": [
 				[
@@ -475,8 +431,7 @@
 		},
 		{
 			"aliases": [
-				"lcfirst",
-				"小写首字"
+				"lcfirst"
 			],
 			"signatures": [
 				[
@@ -489,8 +444,7 @@
 		},
 		{
 			"aliases": [
-				"uc",
-				"大写"
+				"uc"
 			],
 			"signatures": [
 				[
@@ -503,8 +457,7 @@
 		},
 		{
 			"aliases": [
-				"ucfirst",
-				"大写首字"
+				"ucfirst"
 			],
 			"signatures": [
 				[
@@ -517,8 +470,7 @@
 		},
 		{
 			"aliases": [
-				"padleft",
-				"左填充"
+				"padleft"
 			],
 			"signatures": [
 				[
@@ -545,8 +497,7 @@
 		},
 		{
 			"aliases": [
-				"padright",
-				"右填充"
+				"padright"
 			],
 			"signatures": [
 				[
@@ -586,9 +537,7 @@
 		},
 		{
 			"aliases": [
-				"#language",
-				"#语言",
-				"#語言"
+				"#language"
 			],
 			"signatures": [
 				[],
@@ -647,8 +596,7 @@
 		},
 		{
 			"aliases": [
-				"plural",
-				"复数"
+				"plural"
 			],
 			"signatures": [
 				[
@@ -667,8 +615,7 @@
 		},
 		{
 			"aliases": [
-				"grammar",
-				"语法"
+				"grammar"
 			],
 			"signatures": [
 				[
@@ -684,9 +631,7 @@
 		},
 		{
 			"aliases": [
-				"gender",
-				"性别",
-				"性別"
+				"gender"
 			],
 			"signatures": [
 				[
@@ -732,8 +677,7 @@
 		},
 		{
 			"aliases": [
-				"int",
-				"界面"
+				"int"
 			],
 			"signatures": [
 				[
@@ -803,8 +747,7 @@
 		},
 		{
 			"aliases": [
-				"#special",
-				"#特殊"
+				"#special"
 			],
 			"signatures": [
 				[
@@ -817,8 +760,7 @@
 		},
 		{
 			"aliases": [
-				"#speciale",
-				"#特殊等同"
+				"#speciale"
 			],
 			"signatures": [
 				[
@@ -831,8 +773,7 @@
 		},
 		{
 			"aliases": [
-				"#tag",
-				"#标记"
+				"#tag"
 			],
 			"signatures": [
 				[
@@ -852,10 +793,7 @@
 		},
 		{
 			"aliases": [
-				"#expr",
-				"#计算式",
-				"#表达式",
-				"#表達式"
+				"#expr"
 			],
 			"signatures": [
 				[
@@ -868,10 +806,7 @@
 		},
 		{
 			"aliases": [
-				"#if",
-				"#非空式",
-				"#若",
-				"#如果"
+				"#if"
 			],
 			"signatures": [
 				[
@@ -890,11 +825,7 @@
 		},
 		{
 			"aliases": [
-				"#ifeq",
-				"#相同式",
-				"#匹配式",
-				"#若相等",
-				"#如果相等"
+				"#ifeq"
 			],
 			"signatures": [
 				[
@@ -916,10 +847,7 @@
 		},
 		{
 			"aliases": [
-				"#iferror",
-				"#错误式",
-				"#如果错误",
-				"#如果錯誤"
+				"#iferror"
 			],
 			"signatures": [
 				[
@@ -938,9 +866,7 @@
 		},
 		{
 			"aliases": [
-				"#ifexpr",
-				"#若表达式",
-				"#若表達式"
+				"#ifexpr"
 			],
 			"signatures": [
 				[
@@ -959,10 +885,7 @@
 		},
 		{
 			"aliases": [
-				"#ifexist",
-				"#存在式",
-				"#若有",
-				"#如有"
+				"#ifexist"
 			],
 			"signatures": [
 				[
@@ -1002,13 +925,7 @@
 		},
 		{
 			"aliases": [
-				"#switch",
-				"#多选式",
-				"#多条件式",
-				"#双射式",
-				"#开关",
-				"#转换",
-				"#轉換"
+				"#switch"
 			],
 			"signatures": [
 				[
@@ -1025,9 +942,7 @@
 		},
 		{
 			"aliases": [
-				"#time",
-				"#时间",
-				"#時間"
+				"#time"
 			],
 			"signatures": [
 				[
@@ -1073,9 +988,7 @@
 		},
 		{
 			"aliases": [
-				"#timel",
-				"#时间l",
-				"#時間l"
+				"#timel"
 			],
 			"signatures": [
 				[
@@ -1171,8 +1084,7 @@
 		},
 		{
 			"aliases": [
-				"#titleparts",
-				"#标题组成部分"
+				"#titleparts"
 			],
 			"signatures": [
 				[
@@ -1315,8 +1227,7 @@
 		},
 		{
 			"aliases": [
-				"#urldecode",
-				"#url解码"
+				"#urldecode"
 			],
 			"signatures": [
 				[
@@ -1329,9 +1240,7 @@
 		},
 		{
 			"aliases": [
-				"#invoke",
-				"#调用",
-				"#調動"
+				"#invoke"
 			],
 			"signatures": [
 				[
@@ -1631,6 +1540,7 @@
 		{
 			"aliases": [
 				"msg",
+				"訊息",
 				"raw",
 				"原始"
 			],
@@ -1646,6 +1556,7 @@
 		{
 			"aliases": [
 				"subst",
+				"替換",
 				"替代"
 			],
 			"signatures": [
@@ -1660,6 +1571,7 @@
 		{
 			"aliases": [
 				"safesubst",
+				"安全替換",
 				"安全替代"
 			],
 			"signatures": [
@@ -1673,285 +1585,233 @@
 		},
 		{
 			"aliases": [
-				"currentyear",
-				"今年"
+				"currentyear"
 			],
 			"description": "Year"
 		},
 		{
 			"aliases": [
-				"localyear",
-				"本地年"
+				"localyear"
 			],
 			"description": "Year, but using the site's server config"
 		},
 		{
 			"aliases": [
 				"currentmonth",
-				"currentmonth2",
-				"本月",
-				"本月2"
+				"currentmonth2"
 			],
 			"description": "Month (zero-padded number)"
 		},
 		{
 			"aliases": [
 				"localmonth",
-				"localmonth2",
-				"本地月",
-				"本地月2"
+				"localmonth2"
 			],
 			"description": "Month (zero-padded number), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentmonth1",
-				"本月1"
+				"currentmonth1"
 			],
 			"description": "Month (unpadded number)"
 		},
 		{
 			"aliases": [
-				"localmonth1",
-				"本地月1"
+				"localmonth1"
 			],
 			"description": "Month (unpadded number), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentmonthname",
-				"本月名",
-				"本月名称"
+				"currentmonthname"
 			],
 			"description": "Month (name)"
 		},
 		{
 			"aliases": [
-				"localmonthname",
-				"本地月份名"
+				"localmonthname"
 			],
 			"description": "Month (name), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentmonthnamegen",
-				"本月名属格",
-				"本月名称属格"
+				"currentmonthnamegen"
 			],
 			"description": "Month ([genitive form](https://en.wikipedia.org/wiki/Genitive_case))"
 		},
 		{
 			"aliases": [
-				"localmonthnamegen",
-				"本地月历"
+				"localmonthnamegen"
 			],
 			"description": "Month ([genitive form](https://en.wikipedia.org/wiki/Genitive_case)), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentmonthabbrev",
-				"本月简称"
+				"currentmonthabbrev"
 			],
 			"description": "Month (abbreviation)"
 		},
 		{
 			"aliases": [
-				"localmonthabbrev",
-				"本地月缩写",
-				"本月縮寫"
+				"localmonthabbrev"
 			],
 			"description": "Month (abbreviation), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentday",
-				"今天"
+				"currentday"
 			],
 			"description": "Day of the month (unpadded number)"
 		},
 		{
 			"aliases": [
-				"localday",
-				"本地日"
+				"localday"
 			],
 			"description": "Day of the month (unpadded number), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentday2",
-				"今天2"
+				"currentday2"
 			],
 			"description": "Day of the month (zero-padded number)"
 		},
 		{
 			"aliases": [
-				"localday2",
-				"本地日2"
+				"localday2"
 			],
 			"description": "Day of the month (zero-padded number), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentdow",
-				"当前dow"
+				"currentdow"
 			],
 			"description": "Day of the week (unpadded number), 0 (for Sunday) through 6 (for Saturday)"
 		},
 		{
 			"aliases": [
-				"localdow",
-				"本地dow"
+				"localdow"
 			],
 			"description": "Day of the week (unpadded number), 0 (for Sunday) through 6 (for Saturday), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentdayname",
-				"今天名",
-				"今天名称"
+				"currentdayname"
 			],
 			"description": "Day of the week (name)"
 		},
 		{
 			"aliases": [
-				"localdayname",
-				"本地日名"
+				"localdayname"
 			],
 			"description": "Day of the week (name), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currenttime",
-				"当前时间",
-				"目前時間",
-				"此时"
+				"currenttime"
 			],
 			"description": "Time (24-hour HH:mm format)"
 		},
 		{
 			"aliases": [
-				"localtime",
-				"本地时间"
+				"localtime"
 			],
 			"description": "Time (24-hour HH:mm format), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currenthour",
-				"当前小时"
+				"currenthour"
 			],
 			"description": "Hour (24-hour zero-padded number)"
 		},
 		{
 			"aliases": [
-				"localhour",
-				"本地小时"
+				"localhour"
 			],
 			"description": "Hour (24-hour zero-padded number), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currentweek",
-				"本周"
+				"currentweek"
 			],
 			"description": "Week (number)"
 		},
 		{
 			"aliases": [
-				"localweek",
-				"本地周"
+				"localweek"
 			],
 			"description": "Week (number), but using the site's server config"
 		},
 		{
 			"aliases": [
-				"currenttimestamp",
-				"当前时间戳"
+				"currenttimestamp"
 			],
 			"description": "YYYYMMDDHHmmss timestamp"
 		},
 		{
 			"aliases": [
-				"localtimestamp",
-				"本地时间戳"
+				"localtimestamp"
 			],
 			"description": "YYYYMMDDHHmmss timestamp, but using the site's server config"
 		},
 		{
 			"aliases": [
-				"sitename",
-				"站点名称",
-				"網站名稱"
+				"sitename"
 			],
 			"description": "The wiki's site name."
 		},
 		{
 			"aliases": [
-				"server",
-				"服务器",
-				"伺服器"
+				"server"
 			],
 			"description": "Domain URL."
 		},
 		{
 			"aliases": [
-				"servername",
-				"服务器名",
-				"伺服器名稱"
+				"servername"
 			],
 			"description": "Subdomain and domain name."
 		},
 		{
 			"aliases": [
 				"dirmark",
-				"directionmark",
-				"方向标记"
+				"directionmark"
 			],
 			"description": "Outputs a Unicode directional mark that matches the wiki's default language's direction (`&lrm`; on left-to-right wikis, `&rlm`; on right-to-left wikis), useful in text with multi-directional text. Since 1.19, it depends on the [page content language](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Language#page-content-lang)."
 		},
 		{
 			"aliases": [
-				"articlepath",
-				"条目路径"
+				"articlepath"
 			],
 			"description": "Relative article path."
 		},
 		{
 			"aliases": [
-				"scriptpath",
-				"脚本路径"
+				"scriptpath"
 			],
 			"description": "Relative script path."
 		},
 		{
 			"aliases": [
-				"stylepath",
-				"样式路径"
+				"stylepath"
 			],
 			"description": "Relative style path."
 		},
 		{
 			"aliases": [
-				"currentversion",
-				"当前版本",
-				"目前版本"
+				"currentversion"
 			],
 			"description": "The wiki's MediaWiki version."
 		},
 		{
 			"aliases": [
 				"contentlanguage",
-				"contentlang",
-				"内容语言",
-				"內容語言"
+				"contentlang"
 			],
 			"description": "The wiki's default interface language."
 		},
 		{
 			"aliases": [
-				"pageid",
-				"页面id",
-				"頁面id"
+				"pageid"
 			],
 			"signatures": [
 				[],
@@ -1971,8 +1831,7 @@
 		},
 		{
 			"aliases": [
-				"protectionlevel",
-				"保护级别"
+				"protectionlevel"
 			],
 			"signatures": [
 				[
@@ -2014,8 +1873,7 @@
 		},
 		{
 			"aliases": [
-				"cascadingsources",
-				"级联来源"
+				"cascadingsources"
 			],
 			"signatures": [
 				[],
@@ -2029,8 +1887,7 @@
 		},
 		{
 			"aliases": [
-				"revisionid",
-				"修订id"
+				"revisionid"
 			],
 			"signatures": [
 				[],
@@ -2044,8 +1901,7 @@
 		},
 		{
 			"aliases": [
-				"revisionday",
-				"修订日"
+				"revisionday"
 			],
 			"signatures": [
 				[],
@@ -2059,8 +1915,7 @@
 		},
 		{
 			"aliases": [
-				"revisionday2",
-				"修订日2"
+				"revisionday2"
 			],
 			"signatures": [
 				[],
@@ -2074,8 +1929,7 @@
 		},
 		{
 			"aliases": [
-				"revisionmonth",
-				"修订月"
+				"revisionmonth"
 			],
 			"signatures": [
 				[],
@@ -2089,8 +1943,7 @@
 		},
 		{
 			"aliases": [
-				"revisionmonth1",
-				"修订月1"
+				"revisionmonth1"
 			],
 			"signatures": [
 				[],
@@ -2104,8 +1957,7 @@
 		},
 		{
 			"aliases": [
-				"revisionyear",
-				"修订年"
+				"revisionyear"
 			],
 			"signatures": [
 				[],
@@ -2119,8 +1971,7 @@
 		},
 		{
 			"aliases": [
-				"revisiontimestamp",
-				"修订时间戳"
+				"revisiontimestamp"
 			],
 			"signatures": [
 				[],
@@ -2134,9 +1985,7 @@
 		},
 		{
 			"aliases": [
-				"revisionuser",
-				"修订用户",
-				"修訂使用者"
+				"revisionuser"
 			],
 			"signatures": [
 				[],
@@ -2150,16 +1999,13 @@
 		},
 		{
 			"aliases": [
-				"revisionsize",
-				"修订大小"
+				"revisionsize"
 			],
 			"description": "The size (bytes of wikitext) of the viewed revision of the page or preview."
 		},
 		{
 			"aliases": [
-				"displaytitle",
-				"显示标题",
-				"顯示標題"
+				"displaytitle"
 			],
 			"signatures": [
 				[
@@ -2192,10 +2038,7 @@
 			"aliases": [
 				"defaultsort",
 				"defaultsortkey",
-				"defaultcategorysort",
-				"默认排序",
-				"默认排序关键字",
-				"默认分类排序"
+				"defaultcategorysort"
 			],
 			"signatures": [
 				[
@@ -2226,9 +2069,7 @@
 		},
 		{
 			"aliases": [
-				"numberofpages",
-				"页面数",
-				"頁面數"
+				"numberofpages"
 			],
 			"signatures": [
 				[],
@@ -2243,9 +2084,7 @@
 		},
 		{
 			"aliases": [
-				"numberofarticles",
-				"条目数",
-				"文章數"
+				"numberofarticles"
 			],
 			"signatures": [
 				[],
@@ -2260,9 +2099,7 @@
 		},
 		{
 			"aliases": [
-				"numberoffiles",
-				"文件数",
-				"檔案數"
+				"numberoffiles"
 			],
 			"signatures": [
 				[],
@@ -2277,8 +2114,7 @@
 		},
 		{
 			"aliases": [
-				"numberofedits",
-				"编辑数"
+				"numberofedits"
 			],
 			"signatures": [
 				[],
@@ -2293,9 +2129,7 @@
 		},
 		{
 			"aliases": [
-				"numberofusers",
-				"用户数",
-				"使用者人數量"
+				"numberofusers"
 			],
 			"signatures": [
 				[],
@@ -2310,9 +2144,7 @@
 		},
 		{
 			"aliases": [
-				"numberofadmins",
-				"管理员数",
-				"管理員數"
+				"numberofadmins"
 			],
 			"signatures": [
 				[],
@@ -2327,9 +2159,7 @@
 		},
 		{
 			"aliases": [
-				"numberofactiveusers",
-				"活跃用户数",
-				"活躍使用者人數"
+				"numberofactiveusers"
 			],
 			"signatures": [
 				[],
@@ -2345,8 +2175,7 @@
 		{
 			"aliases": [
 				"pagesincategory",
-				"pagesincat",
-				"分类中页面数"
+				"pagesincat"
 			],
 			"signatures": [
 				[
@@ -2396,8 +2225,7 @@
 		{
 			"aliases": [
 				"numberingroup",
-				"numingroup",
-				"组中用户数"
+				"numingroup"
 			],
 			"signatures": [
 				[
@@ -2419,9 +2247,7 @@
 		},
 		{
 			"aliases": [
-				"fullpagename",
-				"页面全称",
-				"完整页面名称"
+				"fullpagename"
 			],
 			"signatures": [
 				[],
@@ -2435,8 +2261,7 @@
 		},
 		{
 			"aliases": [
-				"fullpagenamee",
-				"完整页面名称等同"
+				"fullpagenamee"
 			],
 			"signatures": [
 				[],
@@ -2450,11 +2275,7 @@
 		},
 		{
 			"aliases": [
-				"pagename",
-				"页名",
-				"页面名",
-				"页面名称",
-				"頁面名稱"
+				"pagename"
 			],
 			"signatures": [
 				[],
@@ -2468,9 +2289,7 @@
 		},
 		{
 			"aliases": [
-				"pagenamee",
-				"页面名等同",
-				"页面名称等同"
+				"pagenamee"
 			],
 			"signatures": [
 				[],
@@ -2484,8 +2303,7 @@
 		},
 		{
 			"aliases": [
-				"basepagename",
-				"基础页面名称"
+				"basepagename"
 			],
 			"signatures": [
 				[],
@@ -2499,8 +2317,7 @@
 		},
 		{
 			"aliases": [
-				"basepagenamee",
-				"基础页面名称等同"
+				"basepagenamee"
 			],
 			"signatures": [
 				[],
@@ -2514,9 +2331,7 @@
 		},
 		{
 			"aliases": [
-				"rootpagename",
-				"根页面名称",
-				"根頁面名稱"
+				"rootpagename"
 			],
 			"signatures": [
 				[],
@@ -2530,9 +2345,7 @@
 		},
 		{
 			"aliases": [
-				"rootpagenamee",
-				"根页面名称等同",
-				"根頁面名稱e"
+				"rootpagenamee"
 			],
 			"signatures": [
 				[],
@@ -2546,8 +2359,7 @@
 		},
 		{
 			"aliases": [
-				"subpagename",
-				"子页面名称"
+				"subpagename"
 			],
 			"signatures": [
 				[],
@@ -2561,8 +2373,7 @@
 		},
 		{
 			"aliases": [
-				"subpagenamee",
-				"子页面名称等同"
+				"subpagenamee"
 			],
 			"signatures": [
 				[],
@@ -2577,9 +2388,7 @@
 		{
 			"aliases": [
 				"subjectpagename",
-				"articlepagename",
-				"主名字空间页面名称",
-				"条目页面名称"
+				"articlepagename"
 			],
 			"signatures": [
 				[],
@@ -2594,9 +2403,7 @@
 		{
 			"aliases": [
 				"subjectpagenamee",
-				"articlepagenamee",
-				"主名字空间页面名称等同",
-				"条目页面名称等同"
+				"articlepagenamee"
 			],
 			"signatures": [
 				[],
@@ -2610,9 +2417,7 @@
 		},
 		{
 			"aliases": [
-				"talkpagename",
-				"讨论页面名称",
-				"对话页面名称"
+				"talkpagename"
 			],
 			"signatures": [
 				[],
@@ -2626,9 +2431,7 @@
 		},
 		{
 			"aliases": [
-				"talkpagenamee",
-				"讨论页面名称等同",
-				"对话页面名称等同"
+				"talkpagenamee"
 			],
 			"signatures": [
 				[],
@@ -2642,10 +2445,7 @@
 		},
 		{
 			"aliases": [
-				"namespace",
-				"名字空间",
-				"命名空間",
-				"命名空間數"
+				"namespace"
 			],
 			"signatures": [
 				[],
@@ -2659,8 +2459,7 @@
 		},
 		{
 			"aliases": [
-				"namespacee",
-				"名字空间等同"
+				"namespacee"
 			],
 			"signatures": [
 				[],
@@ -2674,8 +2473,7 @@
 		},
 		{
 			"aliases": [
-				"namespacenumber",
-				"名字空间编号"
+				"namespacenumber"
 			],
 			"signatures": [
 				[],
@@ -2690,9 +2488,7 @@
 		{
 			"aliases": [
 				"subjectspace",
-				"articlespace",
-				"主名字空间",
-				"条目名字空间"
+				"articlespace"
 			],
 			"signatures": [
 				[],
@@ -2707,9 +2503,7 @@
 		{
 			"aliases": [
 				"subjectspacee",
-				"articlespacee",
-				"主名字空间等同",
-				"条目名字空间等同"
+				"articlespacee"
 			],
 			"signatures": [
 				[],
@@ -2723,10 +2517,7 @@
 		},
 		{
 			"aliases": [
-				"talkspace",
-				"讨论空间",
-				"讨论名字空间",
-				"對話空間"
+				"talkspace"
 			],
 			"signatures": [
 				[],
@@ -2740,9 +2531,7 @@
 		},
 		{
 			"aliases": [
-				"talkspacee",
-				"讨论空间等同",
-				"讨论名字空间等同"
+				"talkspacee"
 			],
 			"signatures": [
 				[],
@@ -2768,8 +2557,7 @@
 		},
 		{
 			"aliases": [
-				"pagesize",
-				"页面大小"
+				"pagesize"
 			],
 			"signatures": [
 				[],
