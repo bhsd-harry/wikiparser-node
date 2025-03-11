@@ -450,6 +450,14 @@ export interface LanguageService {
 	 * @param text source Wikitext / 源代码
 	 */
 	provideDocumentSymbols(text: string): Promise<DocumentSymbol[]>;
+
+	/**
+	 * Set the target Wikipedia
+	 *
+	 * 设置目标维基百科
+	 * @param wiki Wikipedia URL / 维基百科网址
+	 */
+	setTargetWikipedia(wiki: string): Promise<void>;
 }
 
 export interface Parser {
