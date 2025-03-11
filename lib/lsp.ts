@@ -422,7 +422,9 @@ export class LanguageService implements LanguageServiceBase {
 		const dir = path.join(__dirname, 'lilypond');
 		if (fs.existsSync(dir)) {
 			for (const file of fs.readdirSync(dir)) {
-				void fs.promises.unlink(path.join(dir, file));
+				try {
+					void fs.promises.unlink(path.join(dir, file));
+				} catch {}
 			}
 		}
 	}
