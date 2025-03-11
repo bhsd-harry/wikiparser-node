@@ -10,6 +10,8 @@ import type {Token} from '../index';
  */
 @hiddenToken()
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
+	declare readonly name: string;
+
 	override get type(): 'double-underscore' {
 		return 'double-underscore';
 	}
@@ -20,6 +22,9 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	 */
 	constructor(word: string, sensitive: boolean, config: Config, accum?: Token[]) {
 		super(word, config, accum);
+		const lc = word.toLowerCase(),
+			{doubleUnderscore: [,, iAlias, sAlias]} = config;
+		this.setAttribute('name', (sensitive ? sAlias?.[word]?.toLowerCase() : iAlias?.[lc]) ?? lc);
 	}
 
 	/** @private */
