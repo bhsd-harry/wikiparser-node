@@ -268,14 +268,19 @@ export class LanguageService implements LanguageServiceBase {
 	#done2: Token;
 	#config: Config | string;
 	#include: boolean;
-	#completionConfig: CompletionConfig | undefined;
+	#completionConfig: [CompletionConfig, Config] | undefined;
 	include = true;
+	/** @private */
+	config?: Config;
 	/** @private */
 	data?: SignatureData;
 
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
 		tasks.set(uri, this);
+		Object.defineProperties(this, {
+			config: {enumerable: false},
+		});
 	}
 
 	/** @implements */
@@ -285,7 +290,7 @@ export class LanguageService implements LanguageServiceBase {
 
 	/** 检查解析设置有无更新 */
 	#checkConfig(): boolean {
-		return this.#config === Parser.config && this.#include === this.include;
+		return this.#config === this.config && this.#include === this.include;
 	}
 
 	/**
@@ -313,11 +318,11 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 总是返回最新的解析结果
 	 */
 	async #parse(): Promise<Token> {
-		const config = Parser.getConfig();
-		this.#config = Parser.config;
+		this.config ??= Parser.getConfig();
+		this.#config = this.config;
 		this.#include = this.include;
 		const text = this.#text,
-			root = await Parser.partialParse(text, () => this.#text, this.include, config);
+			root = await Parser.partialParse(text, () => this.#text, this.include, this.config);
 		if (this.#checkConfig() && this.#text === text) {
 			this.#done = root;
 			this.#running = undefined;
@@ -354,11 +359,11 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 总是返回最新的解析结果
 	 */
 	async #parseSignature(): Promise<Token> {
-		const config = Parser.getConfig();
-		this.#config = Parser.config;
+		this.config ??= Parser.getConfig();
+		this.#config = this.config;
 		this.#include = this.include;
 		const text = this.#text2,
-			root = await Parser.partialParse(text, () => this.#text2, this.include, config);
+			root = await Parser.partialParse(text, () => this.#text2, this.include, this.config);
 		if (this.#checkConfig() && this.#text2 === text) {
 			this.#done2 = root;
 			this.#running2 = undefined;
@@ -432,7 +437,8 @@ export class LanguageService implements LanguageServiceBase {
 
 	/** 准备自动补全设置 */
 	#prepareCompletionConfig(): CompletionConfig {
-		if (!this.#completionConfig) {
+		if (!this.#completionConfig || this.#completionConfig[1] !== this.config) {
+			this.config ??= Parser.getConfig();
 			const {
 					nsid,
 					ext,
@@ -441,7 +447,7 @@ export class LanguageService implements LanguageServiceBase {
 					doubleUnderscore,
 					protocol,
 					img,
-				} = Parser.getConfig(),
+				} = this.config,
 				tags = new Set([ext, html].flat(2));
 			const re = new RegExp(
 				'(?:' // eslint-disable-line prefer-template
@@ -462,23 +468,27 @@ export class LanguageService implements LanguageServiceBase {
 				+ ')$',
 				'iu',
 			);
-			this.#completionConfig = {
-				re,
-				ext,
-				tags,
-				allTags: [...tags, 'onlyinclude', 'includeonly', 'noinclude'],
-				functions: [
-					Object.keys(insensitive),
-					Array.isArray(sensitive) ? /* istanbul ignore next */ sensitive : Object.keys(sensitive),
-					other,
-				].flat(2),
-				switches: (doubleUnderscore.slice(0, 2) as string[][]).flat().map(w => `__${w}__`),
-				protocols: protocol.split('|'),
-				params: Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1'))
-					.map(k => k.replace(/\$1$/u, '')),
-			};
+			this.#completionConfig = [
+				{
+					re,
+					ext,
+					tags,
+					allTags: [...tags, 'onlyinclude', 'includeonly', 'noinclude'],
+					functions: [
+						Object.keys(insensitive),
+						Array.isArray(sensitive) ? /* istanbul ignore next */ sensitive : Object.keys(sensitive),
+						other,
+					].flat(2),
+					switches: (doubleUnderscore.slice(0, 2) as string[][]).flat().map(w => `__${w}__`),
+					protocols: protocol.split('|'),
+					params: Object.keys(img)
+						.filter(k => k.endsWith('$1') || !k.includes('$1'))
+						.map(k => k.replace(/\$1$/u, '')),
+				},
+				this.config,
+			];
 		}
-		return this.#completionConfig;
+		return this.#completionConfig[0];
 	}
 
 	/**
@@ -763,7 +773,8 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
-		const {articlePath, protocol} = Parser.getConfig(),
+		this.config ??= Parser.getConfig();
+		const {articlePath, protocol} = this.config,
 			absolute = articlePath?.includes('//'),
 			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
 		return (await this.#queue(text))
