@@ -90,6 +90,7 @@ import type {Range} from '../lib/ranges';
 /* NOT FOR BROWSER ONLY */
 
 import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
+import {isCSS} from '../lib/lsp';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -654,14 +655,11 @@ export class Token extends AstElement {
 			});
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (
-			cssLSP && this.type === 'attr-value' && this.length === 1 && this.firstChild!.type === 'text'
-			&& (this.parentNode as AttributeToken).name === 'style'
-		) {
+		} else if (isCSS(this)) {
 			const root = this.getRootNode(),
 				textDoc = new EmbeddedCSSDocument(root, this);
 			errors.push(
-				...cssLSP.doValidation(textDoc, textDoc.styleSheet)
+				...cssLSP!.doValidation(textDoc, textDoc.styleSheet)
 					.filter(({code}) => code !== 'css-ruleorselectorexpected')
 					.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
 						code: code as string,

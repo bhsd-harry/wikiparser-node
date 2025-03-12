@@ -315,7 +315,7 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
  * @param token.length
  * @param token.firstChild
  */
-const isCSS = ({type, parentNode, length, firstChild}: Token): boolean | undefined =>
+export const isCSS = ({type, parentNode, length, firstChild}: Token): boolean | undefined =>
 	cssLSP && type === 'attr-value' && parentNode!.name === 'style' && length === 1 && firstChild!.type === 'text';
 
 /**
@@ -822,8 +822,7 @@ export class LanguageService implements LanguageServiceBase {
 			if (t === 'magic-word' && n !== 'invoke') {
 				return undefined;
 			}
-			const index = root.indexFromPos(line, character)!,
-				key = this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
+			const key = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart(),
 				[module, func] = t === 'magic-word' ? transclusion.getModule() : [];
 			return key
 				? getCompletion(
@@ -858,6 +857,17 @@ export class LanguageService implements LanguageServiceBase {
 					newText: item.textEdit!.newText.replace(/\s/gu, ''),
 				},
 			}));
+		} else if (
+			htmlData && type === 'attr-value'
+			&& (parentNode!.is<AttributeToken>('html-attr') || parentNode!.is<AttributeToken>('table-attr'))
+			&& cur!.length === 1 && cur!.firstChild!.type === 'text'
+		) {
+			const data = htmlData.provideValues(parentNode.tag, parentNode.name);
+			if (data.length === 0) {
+				return undefined;
+			}
+			const val = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
+			return getCompletion(data.map(({name}) => name), 'Value', val, position);
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(cur!.name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, cur!);
 			return (await jsonLSP.doComplete(textDoc, position, textDoc.jsonDoc))?.items;
@@ -866,9 +876,7 @@ export class LanguageService implements LanguageServiceBase {
 			if (lang !== undefined && lang !== 'lilypond') {
 				return undefined;
 			}
-			const j = root.indexFromPos(line, character)!,
-				i = cur!.getAbsoluteIndex(),
-				before = this.#text.slice(i, j),
+			const before = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)),
 				comment = before.lastIndexOf('%');
 			if (
 				comment !== -1
@@ -1669,7 +1677,8 @@ export class LanguageService implements LanguageServiceBase {
 		if (!mt) {
 			throw new RangeError('Invalid Wikipedia URL!');
 		}
-		const site = `${mt[1]!.toLowerCase()}wiki`;
+		const site = `${mt[1]!.toLowerCase()}wiki`,
+			{config} = Parser;
 		try {
 			Parser.config = site;
 			this.config = Parser.getConfig();
@@ -1678,6 +1687,7 @@ export class LanguageService implements LanguageServiceBase {
 			Parser.config = site;
 			this.config = Parser.getConfig();
 		}
+		Parser.config = config;
 		this.config = Object.assign(this.config, {articlePath: `${mt[0]}/wiki/`});
 	}
 }
