@@ -1662,10 +1662,13 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		const site = `${mt[1]!.toLowerCase()}wiki`;
 		try {
-			this.config = require(path.join('..', '..', 'config', site));
+			Parser.config = site;
+			this.config = Parser.getConfig();
 		} catch {
-			this.config = await fetchConfig(site, `${mt[0]}/w`);
+			await fetchConfig(site, `${mt[0]}/w`);
+			Parser.config = site;
+			this.config = Parser.getConfig();
 		}
-		Object.assign(this.config!, {articlePath: `${mt[0]}/wiki/`});
+		this.config = Object.assign(this.config, {articlePath: `${mt[0]}/wiki/`});
 	}
 }
