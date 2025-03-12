@@ -65,8 +65,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	rules,
 
 	/** @implements */
-	getConfig() {
-		const {doubleUnderscore} = this.config;
+	getConfig(config?: Config) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		const parserConfig = config ?? this.config as Config,
+			{doubleUnderscore} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
@@ -74,7 +76,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		return {
 			...minConfig,
-			...this.config,
+			...parserConfig,
 			excludes: [],
 		};
 	},
