@@ -3,7 +3,7 @@ import {
 	numToHex,
 } from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
-import {getEndPos} from '../util/lint';
+import {getEndPos, htmlData} from '../util/lint';
 import {tidy} from '../util/string';
 import Parser from '../index';
 import type {
@@ -96,6 +96,29 @@ const refTags = new Set(['ref']),
 	]),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+
+/**
+ * Check if a token is a plain attribute.
+ * @param token
+ * @param token.type
+ * @param token.parentNode
+ * @param token.length
+ * @param token.firstChild
+ * @param style whether it is a style attribute
+ */
+export const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean): boolean | undefined =>
+	type === 'attr-value' && length === 1 && firstChild!.type === 'text'
+	&& (
+		!style
+		|| parentNode!.name === 'style'
+	);
+
+/**
+ * Check if a token is an HTML attribute.
+ * @param token
+ */
+const isHtmlAttr = (token: Token): token is AttributeToken =>
+	token.type === 'html-attr' || token.type === 'table-attr';
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -679,6 +702,13 @@ export class LanguageService implements LanguageServiceBase {
 					type === 'parameter-value' ? '=' : '',
 				)
 				: undefined;
+		} else if (isAttr(cur!) && isHtmlAttr(parentNode!)) {
+			const data = htmlData.provideValues(parentNode.tag, parentNode.name);
+			if (data.length === 0) {
+				return undefined;
+			}
+			const val = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
+			return getCompletion(data.map(({name}) => name), 'Value', val, position);
 		}
 		return undefined;
 	}
@@ -1173,7 +1203,6 @@ export class LanguageService implements LanguageServiceBase {
 
 	/** @private */
 	findStyleTokens(): AttributeToken[] {
-		return this.#done.querySelectorAll<AttributeToken>(cssSelector)
-			.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text');
+		return this.#done.querySelectorAll<AttributeToken>(cssSelector).filter(({lastChild}) => isAttr(lastChild));
 	}
 }

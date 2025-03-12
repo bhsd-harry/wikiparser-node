@@ -1,4 +1,4 @@
-import {generateForChild} from '../util/lint';
+import {generateForChild, htmlData} from '../util/lint';
 import {
 	removeComment,
 	escape,
@@ -23,7 +23,8 @@ declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
-	/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u;
+	/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
+	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']);
 
 /**
  * attribute of extension and HTML tags
@@ -187,6 +188,20 @@ export abstract class AttributeToken extends Token {
 				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
 			];
 			errors.push(e);
+		} else if (type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
+			const data = htmlData.provideValues(tag, name),
+				v = String(value).toLowerCase();
+			if (data.length > 0 && data.every(({name: n}) => n !== v)) {
+				errors.push(
+					generateForChild(
+						lastChild,
+						rect,
+						'illegal-attr',
+						'illegal attribute value',
+						'warning',
+					),
+				);
+			}
 		}
 		if (obsoleteAttrs[tag]?.has(name)) {
 			errors.push(
