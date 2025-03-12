@@ -215,10 +215,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* NOT FOR BROWSER END */
 
 	/** @implements */
-	getConfig() {
+	getConfig(config?: Config) {
 		/* NOT FOR BROWSER ONLY */
 
-		if (typeof this.config === 'string') {
+		if (!config && typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
 			/* istanbul ignore if */
 			if (this.config.doubleUnderscore.length < 3 || Array.isArray(this.config.parserFunction[1])) {
@@ -248,14 +248,15 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 		/* NOT FOR BROWSER ONLY END */
 
-		const {doubleUnderscore} = this.config;
+		const parserConfig = config ?? this.config as Config,
+			{doubleUnderscore} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
 			}
 		}
 		return {
-			...this.config,
+			...parserConfig,
 			excludes: [],
 		};
 	},
