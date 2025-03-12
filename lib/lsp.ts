@@ -44,7 +44,6 @@ import type {
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
-	AstNodes,
 	Token,
 	AstText,
 	AttributeToken,
@@ -142,9 +141,9 @@ const refTags = new Set(['ref']),
 
 /**
  * Check if all child nodes are plain text or comments.
- * @param childNodes child nodes
+ * @param token
  */
-const isPlain = (childNodes: readonly AstNodes[]): boolean => childNodes.every(({type}) => plainTypes.has(type));
+const isPlain = (token: Token): boolean => token.childNodes.every(({type}) => plainTypes.has(type));
 
 /**
  * Get the position of a character in the document.
@@ -301,6 +300,17 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 });
 
 /* NOT FOR BROWSER ONLY */
+
+/**
+ * Check if a token is a plain CSS token.
+ * @param token
+ * @param token.type
+ * @param token.parentNode
+ * @param token.length
+ * @param token.firstChild
+ */
+const isCSS = ({type, parentNode, length, firstChild}: Token): boolean | undefined =>
+	cssLSP && type === 'attr-value' && parentNode!.name === 'style' && length === 1 && firstChild!.type === 'text';
 
 /**
  * Correct the position of an error.
@@ -530,9 +540,13 @@ export class LanguageService implements LanguageServiceBase {
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
-			.flatMap(({type, childNodes}) => {
-				if (type !== 'attr-value' && !isPlain(childNodes)) {
+			.flatMap(token => {
+				const {type, childNodes} = token;
+				if (type !== 'attr-value' && !isPlain(token)) {
 					return [];
+				} else if (isCSS(token)) {
+					const textDoc = new EmbeddedCSSDocument(root, token);
+					return cssLSP!.findDocumentColors(textDoc, textDoc.styleSheet);
 				}
 				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
 					.flatMap(child => {
@@ -822,9 +836,9 @@ export class LanguageService implements LanguageServiceBase {
 				: undefined;
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (cssLSP && type === 'attr-value' && parentNode!.name === 'style' && cur!.length === 1) {
+		} else if (isCSS(cur!)) {
 			const textDoc = new EmbeddedCSSDocument(root, cur!);
-			return cssLSP.doComplete(textDoc, position, textDoc.styleSheet).items.map((item): CompletionItem => ({
+			return cssLSP!.doComplete(textDoc, position, textDoc.styleSheet).items.map((item): CompletionItem => ({
 				...item,
 				textEdit: {
 					range: (item.textEdit as TextEdit).range,
@@ -1144,7 +1158,7 @@ export class LanguageService implements LanguageServiceBase {
 						|| name === 'src' && ['templatestyles', 'img'].includes(tag)
 						|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
 					)
-					|| !isPlain(childNodes)
+					|| !isPlain(token)
 				) {
 					return false;
 				}
@@ -1404,9 +1418,9 @@ export class LanguageService implements LanguageServiceBase {
 			}
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (cssLSP && type === 'attr-value' && length === 1 && parentNode!.name === 'style') {
+		} else if (isCSS(offsetNode)) {
 			const textDoc = new EmbeddedCSSDocument(root, offsetNode);
-			return cssLSP.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
+			return cssLSP!.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, offsetNode);
 			return await jsonLSP.doHover(textDoc, position, textDoc.jsonDoc) ?? undefined;
