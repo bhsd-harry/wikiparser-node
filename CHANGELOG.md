@@ -5,7 +5,8 @@
 **Added**
 
 - [`LanguageService.prototype.setTargetWikipedia](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#settargetwikipedia) that updates the parser configuration for a specific Wikipedia language edition
--[`LanguageService.prototype.provideDocumentColors](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providedocumentcolors) now supports color names in `style` attributes
+- [`LanguageService.prototype.provideDocumentColors](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providedocumentcolors) now supports color names in `style` attributes
+- [`LanguageService.prototype.provideHover](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) now supports HTML tags and attributes
 
 ## v1.18.0
 

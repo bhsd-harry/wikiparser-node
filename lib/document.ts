@@ -8,6 +8,7 @@ import type {
 	SchemaConfiguration,
 } from 'vscode-json-languageservice';
 import type {LanguageService as CSSLanguageService, Stylesheet} from 'vscode-css-languageservice';
+import type {IHTMLDataProvider} from 'vscode-html-languageservice';
 import type {PublicApi} from 'stylelint';
 import type {Token, AttributeToken} from '../internal';
 
@@ -20,7 +21,8 @@ import {classes} from '../util/constants';
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
 let jsonLSP: JSONLanguageService | undefined,
-	cssLSP: CSSLanguageService | undefined;
+	cssLSP: CSSLanguageService | undefined,
+	htmlData: IHTMLDataProvider | undefined;
 try {
 	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
 		.getLanguageService({
@@ -49,6 +51,10 @@ try {
 	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 		.getCSSLanguageService();
 } catch {}
+try {
+	htmlData = (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
+		.getDefaultHTMLDataProvider();
+} catch {}
 const stylelint = (async (): Promise<PublicApi | undefined> => {
 	try {
 		return (await import('stylelint')).default;
@@ -56,7 +62,7 @@ const stylelint = (async (): Promise<PublicApi | undefined> => {
 		return undefined;
 	}
 })();
-export {jsonLSP, cssLSP, stylelint};
+export {jsonLSP, cssLSP, htmlData, stylelint};
 
 /** embedded document */
 class EmbeddedDocument implements TextDocument {
