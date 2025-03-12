@@ -496,8 +496,9 @@ export interface Parser {
 	 * Get the current parser configuration
 	 *
 	 * 获取当前的解析设置
+	 * @param config unprocessed parser configuration / 未处理的解析设置
 	 */
-	getConfig(): Config;
+	getConfig(config?: Config): Config;
 
 	/**
 	 * Parse wikitext

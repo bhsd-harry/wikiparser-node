@@ -1671,17 +1671,13 @@ export class LanguageService implements LanguageServiceBase {
 		if (!mt) {
 			throw new RangeError('Invalid Wikipedia URL!');
 		}
-		const site = `${mt[1]!.toLowerCase()}wiki`,
-			{config} = Parser;
+		const site = `${mt[1]!.toLowerCase()}wiki`;
 		try {
-			Parser.config = site;
-			this.config = Parser.getConfig();
+			const config: Config = require(path.join('..', '..', 'config', site));
+			this.config = Parser.getConfig(config);
 		} catch {
-			await fetchConfig(site, `${mt[0]}/w`);
-			Parser.config = site;
-			this.config = Parser.getConfig();
+			this.config = Parser.getConfig(await fetchConfig(site, `${mt[0]}/w`));
 		}
-		Parser.config = config;
-		this.config = Object.assign(this.config, {articlePath: `${mt[0]}/wiki/`});
+		Object.assign(this.config, {articlePath: `${mt[0]}/wiki/`});
 	}
 }

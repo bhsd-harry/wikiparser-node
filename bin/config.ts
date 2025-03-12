@@ -26,7 +26,7 @@ declare interface Response {
  * @param force whether to overwrite the existing configuration
  * @param old whether to target an older version of MediaWiki
  */
-export default async (site: string, url: string, force?: boolean, old?: boolean): Promise<void> => {
+export default async (site: string, url: string, force?: boolean, old?: boolean): Promise<Config> => {
 	if (!site || !url) {
 		console.error('Usage: npx getParserConfig <site> <script path> [force]');
 		process.exit(1);
@@ -136,4 +136,5 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 	if (force || !exists) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
 	}
+	return config;
 };
