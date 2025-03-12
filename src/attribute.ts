@@ -17,6 +17,14 @@ import type {
 } from '../base';
 import type {AttributesToken} from '../internal';
 
+/* NOT FOR BROWSER ONLY */
+
+import {htmlData} from '../lib/document';
+
+const complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']);
+
+/* NOT FOR BROWSER ONLY END */
+
 declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
@@ -176,16 +184,6 @@ export abstract class AttributeToken extends Token {
 			const e = generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name');
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
 			errors.push(e);
-		} else if (obsoleteAttrs[tag]?.has(name)) {
-			errors.push(
-				generateForChild(
-					firstChild,
-					rect,
-					'obsolete-attr',
-					'obsolete attribute',
-					'warning',
-				),
-			);
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
@@ -195,6 +193,28 @@ export abstract class AttributeToken extends Token {
 				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
 			];
 			errors.push(e);
+
+			/* NOT FOR BROWSER ONLY */
+		} else if (htmlData && type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
+			const data = htmlData.provideValues(tag, name),
+				v = String(value).toLowerCase();
+			if (data.length > 0 && data.every(({name: n}) => n !== v)) {
+				errors.push(generateForChild(lastChild, rect, 'illegal-attr', 'illegal attribute value'));
+			}
+
+			/* NOT FOR BROWSER ONLY END */
+		}
+
+		if (obsoleteAttrs[tag]?.has(name)) {
+			errors.push(
+				generateForChild(
+					firstChild,
+					rect,
+					'obsolete-attr',
+					'obsolete attribute',
+					'warning',
+				),
+			);
 		}
 		return errors;
 	}
