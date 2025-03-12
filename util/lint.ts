@@ -2,6 +2,7 @@ import {Shadow} from './debug';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import type {Position} from 'vscode-languageserver-types';
+import type {IHTMLDataProvider, IValueData} from 'vscode-html-languageservice';
 import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
 
@@ -85,3 +86,24 @@ export const cache = <T>(store: Cached<T> | undefined, compute: () => T, update:
 	update([Shadow.rev, result]);
 	return result;
 };
+
+let htmlData: Partial<IHTMLDataProvider> & Pick<IHTMLDataProvider, 'provideValues'>;
+try {
+	htmlData = (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
+		.getDefaultHTMLDataProvider();
+} catch {
+	htmlData = {
+		/** @implements */
+		provideValues(tag, attributes): IValueData[] {
+			if (tag === 'ol' && attributes === 'type') {
+				return [{name: '1'}, {name: 'a'}, {name: 'A'}, {name: 'i'}, {name: 'I'}];
+			} else if (tag === 'th' && attributes === 'scope') {
+				return [{name: 'row'}, {name: 'col'}, {name: 'rowgroup'}, {name: 'colgroup'}];
+			} else if (attributes === 'dir') {
+				return [{name: 'ltr'}, {name: 'rtl'}, {name: 'auto'}];
+			}
+			return attributes === 'aria-hidden' ? [{name: 'true'}, {name: 'false'}] : [];
+		},
+	};
+}
+export {htmlData};

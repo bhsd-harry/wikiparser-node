@@ -64,7 +64,7 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
-import {isCSS} from '../lib/lsp';
+import {isAttr} from '../lib/lsp';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -499,7 +499,7 @@ export class Token extends AstElement {
 			});
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (isCSS(this)) {
+		} else if (isAttr(this, true)) {
 			const root = this.getRootNode(),
 				textDoc = new EmbeddedCSSDocument(root, this);
 			errors.push(
