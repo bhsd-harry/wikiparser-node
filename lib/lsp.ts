@@ -71,7 +71,7 @@ import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/common/dist/stylelint';
 import fetchConfig from '../bin/config';
-import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
+import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, htmlData, jsonTags, stylelint} from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
 
@@ -347,11 +347,12 @@ const getStylelintPos = (rect: Dimension & NodePosition, bottom: number, line: n
 
 /**
  * Convert LilyPond errors to VSCode diagnostics.
+ * @param root root token
  * @param token `<score>` extension token
  * @param errors LilyPond errors
  */
-const getLilyPondDiagnostics = (token: ExtToken, errors: LilyPondError[]): DiagnosticBase[] => {
-	const {top, left} = token.lastChild.getBoundingClientRect();
+const getLilyPondDiagnostics = (root: Token, token: ExtToken, errors: LilyPondError[]): DiagnosticBase[] => {
+	const {top, left} = root.posFromIndex(token.lastChild.getAbsoluteIndex())!;
 	return errors.map(({line, col, message}): DiagnosticBase => {
 		const pos = getEndPos(top, left, line, col);
 		return {
@@ -544,9 +545,13 @@ export class LanguageService implements LanguageServiceBase {
 				const {type, childNodes} = token;
 				if (type !== 'attr-value' && !isPlain(token)) {
 					return [];
+
+					/* NOT FOR BROWSER ONLY */
 				} else if (isCSS(token)) {
 					const textDoc = new EmbeddedCSSDocument(root, token);
 					return cssLSP!.findDocumentColors(textDoc, textDoc.styleSheet);
+
+					/* NOT FOR BROWSER ONLY END */
 				}
 				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
 					.flatMap(child => {
@@ -1024,7 +1029,7 @@ export class LanguageService implements LanguageServiceBase {
 							token.getAttr('raw') === undefined ? ` \\score {\n${innerText}\n}` : `\n${innerText}`
 						}`;
 					if (scores.has(score)) {
-						return getLilyPondDiagnostics(token, scores.get(score)!);
+						return getLilyPondDiagnostics(root, token, scores.get(score)!);
 					}
 					const hash = createHash('sha256');
 					hash.update(score);
@@ -1047,7 +1052,7 @@ export class LanguageService implements LanguageServiceBase {
 									};
 								});
 							scores.set(score, lilypondErrors);
-							return getLilyPondDiagnostics(token, lilypondErrors);
+							return getLilyPondDiagnostics(root, token, lilypondErrors);
 						}
 					}
 					return [];
@@ -1424,6 +1429,40 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, offsetNode);
 			return await jsonLSP.doHover(textDoc, position, textDoc.jsonDoc) ?? undefined;
+		} else if (htmlData) {
+			if (
+				type === 'html' && offset <= offsetNode.getRelativeIndex(0)
+				|| type === 'html-attr-dirty' && offset === 0 && parentNode!.firstChild === offsetNode
+			) {
+				const token = type === 'html' ? offsetNode : parentNode!.parentNode!,
+					data = htmlData.provideTags().find(({name: n}) => n === token.name);
+				if (data?.description) {
+					const start = positionAt(root, token.getAbsoluteIndex());
+					return {
+						contents: data.description,
+						range: {
+							start,
+							end: {
+								line: start.line,
+								character: start.character + token.getRelativeIndex(0),
+							},
+						},
+					};
+				}
+			} else if (
+				type === 'attr-key' && (
+					parentNode!.is<AttributeToken>('html-attr')
+					|| parentNode!.is<AttributeToken>('table-attr')
+				)
+			) {
+				const data = htmlData.provideAttributes(parentNode.tag).find(({name: n}) => n === parentNode.name);
+				if (data?.description) {
+					return {
+						contents: data.description,
+						range: createNodeRange(offsetNode),
+					};
+				}
+			}
 
 			/* NOT FOR BROWSER ONLY END */
 		}
