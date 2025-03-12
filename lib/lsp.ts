@@ -35,7 +35,6 @@ import type {
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
-	AstNodes,
 	Token,
 	AstText,
 	AttributeToken,
@@ -100,9 +99,9 @@ const refTags = new Set(['ref']),
 
 /**
  * Check if all child nodes are plain text or comments.
- * @param childNodes child nodes
+ * @param token
  */
-const isPlain = (childNodes: readonly AstNodes[]): boolean => childNodes.every(({type}) => plainTypes.has(type));
+const isPlain = (token: Token): boolean => token.childNodes.every(({type}) => plainTypes.has(type));
 
 /**
  * Get the position of a character in the document.
@@ -390,8 +389,9 @@ export class LanguageService implements LanguageServiceBase {
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
-			.flatMap(({type, childNodes}) => {
-				if (type !== 'attr-value' && !isPlain(childNodes)) {
+			.flatMap(token => {
+				const {type, childNodes} = token;
+				if (type !== 'attr-value' && !isPlain(token)) {
 					return [];
 				}
 				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
@@ -812,7 +812,7 @@ export class LanguageService implements LanguageServiceBase {
 						|| name === 'src' && ['templatestyles', 'img'].includes(tag)
 						|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
 					)
-					|| !isPlain(childNodes)
+					|| !isPlain(token)
 				) {
 					return false;
 				}
