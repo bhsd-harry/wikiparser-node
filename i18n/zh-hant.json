@@ -21,6 +21,7 @@
 	"HTML comment": "HTML註釋",
 	"HTML tag in table attributes": "表格屬性中的HTML標籤",
 	"illegal attribute name": "非法的屬性名",
+	"illegal attribute value": "非法的屬性值",
 	"illegal module name": "非法的模組名稱",
 	"inconsistent table layout": "不一致的表格佈局",
 	"insecure style": "不安全的樣式",

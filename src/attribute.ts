@@ -178,16 +178,6 @@ export abstract class AttributeToken extends Token {
 			const e = generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name');
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
 			errors.push(e);
-		} else if (obsoleteAttrs[tag]?.has(name)) {
-			errors.push(
-				generateForChild(
-					firstChild,
-					rect,
-					'obsolete-attr',
-					'obsolete attribute',
-					'warning',
-				),
-			);
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
@@ -197,6 +187,17 @@ export abstract class AttributeToken extends Token {
 				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
 			];
 			errors.push(e);
+		}
+		if (obsoleteAttrs[tag]?.has(name)) {
+			errors.push(
+				generateForChild(
+					firstChild,
+					rect,
+					'obsolete-attr',
+					'obsolete attribute',
+					'warning',
+				),
+			);
 		}
 		return errors;
 	}
