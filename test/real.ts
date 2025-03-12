@@ -1,7 +1,6 @@
 import {error, info, diff} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
-import type {Config} from '../base';
 
 /* NOT FOR BROWSER ONLY */
 
@@ -58,9 +57,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：\n`);
-		const parserConfig: Config = require(`../../config/${config}`);
-		Object.assign(parserConfig, {interwiki: []});
-		Parser.config = parserConfig;
+		Parser.config = config;
 		try {
 			let failed = 0;
 			for (const page of await getPages(`${url}/api.php`)) {
