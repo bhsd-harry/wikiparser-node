@@ -7,7 +7,7 @@ import {
 	sanitizeInlineStyle,
 } from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
-import {getEndPos} from '../util/lint';
+import {getEndPos, htmlData} from '../util/lint';
 import {tidy} from '../util/string';
 import Parser from '../index';
 import type {
@@ -77,7 +77,7 @@ import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/common/dist/stylelint';
 import fetchConfig from '../bin/config';
-import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, htmlData, jsonTags, stylelint} from './document';
+import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
 
@@ -144,6 +144,30 @@ const refTags = new Set(['ref']),
 	]),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+
+/**
+ * Check if a token is a plain attribute.
+ * @param token
+ * @param token.type
+ * @param token.parentNode
+ * @param token.length
+ * @param token.firstChild
+ * @param style whether it is a style attribute
+ */
+export const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean): boolean | undefined =>
+	type === 'attr-value' && length === 1 && firstChild!.type === 'text'
+	&& (
+		!style
+		|| parentNode!.name === 'style'
+		&& Boolean(cssLSP)
+	);
+
+/**
+ * Check if a token is an HTML attribute.
+ * @param token
+ */
+const isHtmlAttr = (token: Token): token is AttributeToken =>
+	token.type === 'html-attr' || token.type === 'table-attr';
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -306,17 +330,6 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 });
 
 /* NOT FOR BROWSER ONLY */
-
-/**
- * Check if a token is a plain CSS token.
- * @param token
- * @param token.type
- * @param token.parentNode
- * @param token.length
- * @param token.firstChild
- */
-export const isCSS = ({type, parentNode, length, firstChild}: Token): boolean | undefined =>
-	cssLSP && type === 'attr-value' && parentNode!.name === 'style' && length === 1 && firstChild!.type === 'text';
 
 /**
  * Correct the position of an error.
@@ -553,7 +566,7 @@ export class LanguageService implements LanguageServiceBase {
 					return [];
 
 					/* NOT FOR BROWSER ONLY */
-				} else if (isCSS(token)) {
+				} else if (isAttr(token, true)) {
 					const textDoc = new EmbeddedCSSDocument(root, token);
 					return cssLSP!.findDocumentColors(textDoc, textDoc.styleSheet);
 
@@ -848,7 +861,7 @@ export class LanguageService implements LanguageServiceBase {
 				: undefined;
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (isCSS(cur!)) {
+		} else if (isAttr(cur!, true)) {
 			const textDoc = new EmbeddedCSSDocument(root, cur!);
 			return cssLSP!.doComplete(textDoc, position, textDoc.styleSheet).items.map((item): CompletionItem => ({
 				...item,
@@ -857,17 +870,6 @@ export class LanguageService implements LanguageServiceBase {
 					newText: item.textEdit!.newText.replace(/\s/gu, ''),
 				},
 			}));
-		} else if (
-			htmlData && type === 'attr-value'
-			&& (parentNode!.is<AttributeToken>('html-attr') || parentNode!.is<AttributeToken>('table-attr'))
-			&& cur!.length === 1 && cur!.firstChild!.type === 'text'
-		) {
-			const data = htmlData.provideValues(parentNode.tag, parentNode.name);
-			if (data.length === 0) {
-				return undefined;
-			}
-			const val = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
-			return getCompletion(data.map(({name}) => name), 'Value', val, position);
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(cur!.name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, cur!);
 			return (await jsonLSP.doComplete(textDoc, position, textDoc.jsonDoc))?.items;
@@ -911,6 +913,13 @@ export class LanguageService implements LanguageServiceBase {
 			}
 
 			/* NOT FOR BROWSER ONLY END */
+		} else if (isAttr(cur!) && isHtmlAttr(parentNode!)) {
+			const data = htmlData.provideValues(parentNode.tag, parentNode.name);
+			if (data.length === 0) {
+				return undefined;
+			}
+			const val = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
+			return getCompletion(data.map(({name}) => name), 'Value', val, position);
 		}
 		return undefined;
 	}
@@ -1440,13 +1449,13 @@ export class LanguageService implements LanguageServiceBase {
 			}
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (isCSS(offsetNode)) {
+		} else if (isAttr(offsetNode, true)) {
 			const textDoc = new EmbeddedCSSDocument(root, offsetNode);
 			return cssLSP!.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, offsetNode);
 			return await jsonLSP.doHover(textDoc, position, textDoc.jsonDoc) ?? undefined;
-		} else if (htmlData) {
+		} else if (htmlData.provideTags && htmlData.provideAttributes) {
 			if (
 				type === 'html' && offset <= offsetNode.getRelativeIndex(0)
 				|| type === 'html-attr-dirty' && offset === 0 && parentNode!.firstChild === offsetNode
@@ -1466,12 +1475,7 @@ export class LanguageService implements LanguageServiceBase {
 						},
 					};
 				}
-			} else if (
-				type === 'attr-key' && (
-					parentNode!.is<AttributeToken>('html-attr')
-					|| parentNode!.is<AttributeToken>('table-attr')
-				)
-			) {
+			} else if (type === 'attr-key' && isHtmlAttr(parentNode!)) {
 				const data = htmlData.provideAttributes(parentNode.tag).find(({name: n}) => n === parentNode.name);
 				if (data?.description) {
 					return {
@@ -1586,8 +1590,7 @@ export class LanguageService implements LanguageServiceBase {
 
 	/** @private */
 	findStyleTokens(): AttributeToken[] {
-		return this.#done.querySelectorAll<AttributeToken>(cssSelector)
-			.filter(({lastChild: {length, firstChild}}) => length === 1 && firstChild!.type === 'text');
+		return this.#done.querySelectorAll<AttributeToken>(cssSelector).filter(({lastChild}) => isAttr(lastChild));
 	}
 
 	/* NOT FOR BROWSER ONLY */
