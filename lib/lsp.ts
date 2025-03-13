@@ -559,9 +559,29 @@ export class LanguageService implements LanguageServiceBase {
 		hsl = true,
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
+
+		/* NOT FOR BROWSER ONLY */
+
+		let colors: RegExp | undefined;
+		try {
+			colors = new RegExp(
+				String.raw`\b${Object.keys((await import('color-name')).default).join('|')}\b`,
+				'giu',
+			);
+		} catch {}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
 			.flatMap(token => {
-				const {type, childNodes} = token;
+				const {
+					type,
+					childNodes,
+
+					/* NOT FOR BROWSER ONLY */
+
+					parentNode,
+				} = token;
 				if (type !== 'attr-value' && !isPlain(token)) {
 					return [];
 
@@ -572,9 +592,31 @@ export class LanguageService implements LanguageServiceBase {
 
 					/* NOT FOR BROWSER ONLY END */
 				}
+
+				/* NOT FOR BROWSER ONLY */
+
+				const isStyle = colors && type === 'attr-value' && parentNode!.name === 'style';
+
+				/* NOT FOR BROWSER ONLY END */
+
 				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
 					.flatMap(child => {
-						const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
+						const {data} = child,
+							parts = splitColors(data, hsl).filter(([,,, isColor]) => isColor);
+
+						/* NOT FOR BROWSER ONLY */
+
+						if (isStyle) {
+							parts.push(
+								...[...data.matchAll(colors!)].map(
+									({index, 0: s}): [string, number, number, true] =>
+										[s, index, index + s.length, true],
+								),
+							);
+						}
+
+						/* NOT FOR BROWSER ONLY END */
+
 						if (parts.length === 0) {
 							return [];
 						}
