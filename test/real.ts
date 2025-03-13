@@ -13,6 +13,7 @@ const {argv: [,, site = '']} = process,
 		// ['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 		['Wikipedia', 'https://en.wikipedia.org/w', 'enwiki'],
+		['ウィキペディア', 'https://ja.wikipedia.org/w', 'jawiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 /**
