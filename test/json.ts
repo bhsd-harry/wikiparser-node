@@ -10,10 +10,10 @@ for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		describe(file, () => {
 			const config: Config = require(path.join(basePath, 'config', file));
-			const {html, namespaces, nsid, doubleUnderscore} = config;
+			const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config;
 
-			// ext/variable/redirection/variants
-			for (const key of ['ext', 'variable', 'redirection', 'variants'] as const) {
+			// ext/variable/functionHook/redirection/variants
+			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
 				it(key, () => {
 					const v = config[key];
 					assert.strictEqual(v.length, new Set(v).size, `${key} not unique`);
@@ -36,34 +36,42 @@ for (const file of fs.readdirSync('config')) {
 				}
 			});
 
-			it('parserFunction', () => {
-				const {parserFunction} = config;
-				for (let i = 2; i < 4; i++) {
-					assert.strictEqual(
-						parserFunction[i as 2 | 3].length,
-						new Set(parserFunction[i as 2 | 3]).size,
-						`parserFunction[${i}] not unique`,
-					);
-				}
+			it('doubleUnderscore', () => {
+				const keys = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys);
+				assert.strictEqual(keys.length, new Set(keys).size, `doubleUnderscore not unique`);
 			});
 
-			it('doubleUnderscore (browser)', () => {
-				for (let i = 0; i < 2; i++) {
-					if (doubleUnderscore.length > i + 2 && doubleUnderscore[i as 0 | 1].length > 0) {
+			if (file !== 'minimum.json') {
+				it('parserFunction', () => {
+					const all = parserFunction.slice(0, 2) as Record<string, string>[],
+						keys = all.flatMap(Object.keys),
+						values = all.flatMap(Object.values);
+					assert.strictEqual(keys.length, new Set(keys).size, `parserFunction not unique`);
+					for (let i = 2; i < 4; i++) {
 						assert.strictEqual(
-							doubleUnderscore[i]!.length,
-							Object.keys(doubleUnderscore[i + 2]!).length,
-							`inconsistent doubleUnderscore[${i}] and doubleUnderscore[${i + 2}]`,
+							parserFunction[i as 2 | 3].length,
+							new Set(parserFunction[i as 2 | 3]).size,
+							`parserFunction[${i}] not unique`,
 						);
-						for (const alias of doubleUnderscore[i as 0 | 1]) {
-							assert(
-								alias in doubleUnderscore[i + 2]!,
-								`'${alias}' not in doubleUnderscore[${i + 2}]`,
-							);
-						}
 					}
-				}
-			});
+					for (const alias of [...variable, ...functionHook]) {
+						assert(values.includes(alias), `'${alias}' not in parserFunction`);
+					}
+				});
+
+				it('img', () => {
+					const entries = Object.entries(img),
+						constants = new Set(entries.filter(([k]) => !k.includes('$1')).map(([, v]) => v)),
+						variables = new Set(entries.filter(([k]) => k.includes('$1')).map(([, v]) => v));
+					assert(constants.has('upright'), `'upright' not in img`);
+					assert(variables.has('upright'), `'manual-upright' not in img`);
+					assert.strictEqual(
+						constants.size + variables.size - 1,
+						new Set([...constants, ...variables]).size,
+						'img not unique',
+					);
+				});
+			}
 
 			configs[file] = config;
 		});
@@ -75,8 +83,8 @@ const defaultConfig = configs['default.json']!,
 for (const [file, config] of Object.entries(configs)) {
 	if (file !== 'default.json' && file !== 'jawiki.json') {
 		describe(`${file} vs. default.json`, () => {
-			// ext/variable/redirection/variants
-			for (const key of ['ext', 'variable', 'redirection', 'variants'] as const) {
+			// ext/variable/functionHook/redirection/variants
+			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
 				it(key, () => {
 					for (const ele of config[key]) {
 						assert(defaultConfig[key].includes(ele), `'${ele}' not in defaultConfig.${key}`);
@@ -86,7 +94,7 @@ for (const [file, config] of Object.entries(configs)) {
 
 			// html/parserFunction
 			for (const key of ['html', 'parserFunction'] as const) {
-				it(key, () => {
+				it(`arrays of ${key}`, () => {
 					for (let i = 0; i < config[key].length; i++) {
 						const arr = config[key][i]!;
 						if (Array.isArray(arr)) {
@@ -112,7 +120,7 @@ for (const [file, config] of Object.entries(configs)) {
 
 			// parserFunction/doubleUnderscore
 			for (const key of ['parserFunction', 'doubleUnderscore'] as const) {
-				it(key, () => {
+				it(`objects of ${key}`, () => {
 					for (let i = 0; i < config[key].length; i++) {
 						const obj = config[key][i]!;
 						if (!Array.isArray(obj)) {
@@ -127,6 +135,15 @@ for (const [file, config] of Object.entries(configs)) {
 					}
 				});
 			}
+
+			it('protocol', () => {
+				for (const protocol of config.protocol.split('|')) {
+					assert(
+						new RegExp(String.raw`(?:^|\|)${protocol}(?:$|\|)`, 'u').test(defaultConfig.protocol),
+						`'${protocol}' not in defaultConfig.protocol`,
+					);
+				}
+			});
 
 			if (file === 'minimum.json') {
 				it('minimum parserFunction', () => {

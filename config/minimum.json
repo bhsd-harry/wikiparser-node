@@ -83,6 +83,9 @@
 		"category": 14,
 		"module": 828
 	},
+	"functionHook": [
+		"msgnw"
+	],
 	"variable": [
 		"!",
 		"=",
