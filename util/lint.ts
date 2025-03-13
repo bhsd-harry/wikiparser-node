@@ -88,18 +88,27 @@ export const cache = <T>(store: Cached<T> | undefined, compute: () => T, update:
 };
 
 let htmlData: Partial<IHTMLDataProvider> & Pick<IHTMLDataProvider, 'provideValues'>;
+
+/**
+ * 获取HTML属性值可选列表
+ * @param tag 标签名
+ * @param attribute 属性名
+ */
+const provideValues = (tag: string, attribute: string): string[] => {
+	if (tag === 'ol' && attribute === 'type') {
+		return ['1', 'a', 'A', 'i', 'I'];
+	} else if (tag === 'th' && attribute === 'scope') {
+		return ['row', 'col', 'rowgroup', 'colgroup'];
+	} else if (attribute === 'dir') {
+		return ['ltr', 'rtl', 'auto'];
+	}
+	return attribute === 'aria-hidden' ? ['true', 'false'] : [];
+};
 // eslint-disable-next-line prefer-const
 htmlData = {
 	/** @implements */
-	provideValues(tag, attributes): IValueData[] {
-		if (tag === 'ol' && attributes === 'type') {
-			return [{name: '1'}, {name: 'a'}, {name: 'A'}, {name: 'i'}, {name: 'I'}];
-		} else if (tag === 'th' && attributes === 'scope') {
-			return [{name: 'row'}, {name: 'col'}, {name: 'rowgroup'}, {name: 'colgroup'}];
-		} else if (attributes === 'dir') {
-			return [{name: 'ltr'}, {name: 'rtl'}, {name: 'auto'}];
-		}
-		return attributes === 'aria-hidden' ? [{name: 'true'}, {name: 'false'}] : [];
+	provideValues(tag, attribute): IValueData[] {
+		return provideValues(tag, attribute).map(value => ({name: value}));
 	},
 };
 export {htmlData};
