@@ -413,13 +413,17 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
 			.flatMap(token => {
-				const {type, childNodes} = token;
+				const {
+					type,
+					childNodes,
+				} = token;
 				if (type !== 'attr-value' && !isPlain(token)) {
 					return [];
 				}
 				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
 					.flatMap(child => {
-						const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
+						const {data} = child,
+							parts = splitColors(data, hsl).filter(([,,, isColor]) => isColor);
 						if (parts.length === 0) {
 							return [];
 						}
