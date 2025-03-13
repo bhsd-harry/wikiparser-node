@@ -47,6 +47,18 @@
 			},
 			"additionalProperties": false
 		},
+		"functionHook": {
+			"description": "canonical magic words as parser functions",
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^[^#A-Z]+$"
+			},
+			"contains": {
+				"const": "msgnw"
+			},
+			"minItems": 1
+		},
 		"variable": {
 			"description": "canonical magic words as variables",
 			"type": "array",
@@ -237,6 +249,7 @@
 		"html",
 		"namespaces",
 		"nsid",
+		"functionHook",
 		"variable",
 		"parserFunction",
 		"doubleUnderscore",

@@ -1,3 +1,15 @@
+## v1.18.2
+
+*2025-03-14*
+
+**Added**
+
+- [`Config.functionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
+
+**Fixed**
+
+- Only function hooks are allowed to take parameters
+
 ## v1.18.1
 
 *2025-03-13*

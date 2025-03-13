@@ -221,7 +221,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (!config && typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
 			/* istanbul ignore if */
-			if (this.config.doubleUnderscore.length < 3 || Array.isArray(this.config.parserFunction[1])) {
+			if (
+				this.config.doubleUnderscore.length < 3
+				|| Array.isArray(this.config.parserFunction[1])
+				|| !('functionHook' in this.config)
+			) {
 				error(
 					`The schema (${
 						path.resolve(__dirname, '..', 'config', '.schema.json')

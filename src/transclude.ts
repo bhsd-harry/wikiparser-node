@@ -113,7 +113,7 @@ export abstract class TranscludeToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
-		const {parserFunction: [insensitive, sensitive], variable} = config,
+		const {parserFunction: [insensitive, sensitive], variable, functionHook} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
@@ -140,8 +140,9 @@ export abstract class TranscludeToken extends Token {
 				canonicalName = !isOldSchema && isSensitive
 					? sensitive[name]!
 					: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
 				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
-			if (isVar || isFunction && canonicalName) {
+			if (isFunction ? canonicalName && isFunc : isVar) {
 				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';
 				/^\s*uc\s*$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
@@ -609,14 +610,18 @@ export abstract class TranscludeToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new TranscludeToken(this.type === 'template' ? 'T' : `${first!.text()}:`, [], config) as this;
+			const token = new TranscludeToken(
+				this.type === 'template' ? 'T' : first!.text() + (cloned.length === 0 ? '' : ':'),
+				[],
+				config,
+			) as this;
 			if (this.#raw) {
 				token.setModifier(this.modifier);
 			} else {
 				token.setAttribute('modifier', this.modifier);
 			}
 			token.firstChild.safeReplaceWith(first as never);
-			if (this.type === 'magic-word') {
+			if (token.length > 1) {
 				token.removeAt(1);
 			}
 			token.append(...cloned);
