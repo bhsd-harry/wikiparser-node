@@ -15,6 +15,7 @@ declare interface Response {
 		magicwords: MagicWord[];
 		namespaces: Record<number, {name: string, canonical?: string}>;
 		namespacealiases: {id: number, alias: string}[];
+		functionhooks: string[];
 		variables?: string[];
 	};
 }
@@ -90,11 +91,11 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 		params = {
 			action: 'query',
 			meta: 'siteinfo',
-			siprop: `general|magicwords|namespaces|namespacealiases${old ? '|variables' : ''}`,
+			siprop: `general|magicwords|functionhooks|namespaces|namespacealiases${old ? '|variables' : ''}`,
 			format: 'json',
 			formatversion: '2',
 		},
-		{query: {general: {variants}, magicwords, namespaces, namespacealiases, variables}} = await (
+		{query: {general: {variants}, magicwords, namespaces, namespacealiases, functionhooks, variables}} = await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`)
 		).json() as Response;
 	eval(m); // eslint-disable-line no-eval
@@ -113,6 +114,7 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 				...ns.map(([id, canonical]) => [canonical.toLowerCase(), Number(id)]),
 				...namespacealiases.filter(({id}) => filterGadget(id)).map(({id, alias}) => [alias.toLowerCase(), id]),
 			]),
+			functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw'],
 			...old && {variable: [...variables!, '=']},
 			articlePath: '/wiki/$1',
 		};
@@ -128,13 +130,11 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 	}
 	config.parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
 	config.parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
-	const file = path.join(__dirname, dir, `${site}.json`),
-		exists = fs.existsSync(file);
-	if (exists) {
-		assert.deepStrictEqual(arrToObj(require(file) as Config), arrToObj(config));
-	}
-	if (force || !exists) {
+	const file = path.join(__dirname, dir, `${site}.json`);
+	if (force || !fs.existsSync(file)) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
+	} else {
+		assert.deepStrictEqual(arrToObj(require(file) as Config), arrToObj(config));
 	}
 	return config;
 };

@@ -66,7 +66,7 @@ export abstract class TranscludeToken extends Token {
 		}
 		super(undefined, config, accum, {
 		});
-		const {parserFunction: [insensitive, sensitive], variable} = config,
+		const {parserFunction: [insensitive, sensitive], variable, functionHook} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
@@ -93,8 +93,9 @@ export abstract class TranscludeToken extends Token {
 				canonicalName = !isOldSchema && isSensitive
 					? sensitive[name]!
 					: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
 				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
-			if (isVar || isFunction && canonicalName) {
+			if (isFunction ? canonicalName && isFunc : isVar) {
 				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';
 				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
