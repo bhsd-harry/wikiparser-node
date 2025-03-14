@@ -639,7 +639,7 @@ export class LanguageService implements LanguageServiceBase {
 			const index = root.indexFromPos(line, character)!,
 				match = mt?.[6]?.trimStart()
 					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
-				equal = this.#text.charAt(index) === '=';
+				equal = this.#text[index] === '=';
 			return [
 				...getCompletion(params, 'Property', match, position)
 					.filter(({label}) => !equal || !/[= ]$/u.test(label)),
