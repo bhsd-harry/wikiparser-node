@@ -776,55 +776,64 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			const [insensitive, sensitive] = this.config!.parserFunction,
 				isOld = Array.isArray(sensitive),
+				next = curLine!.charAt(character),
 				colon = match.startsWith(':'),
 				str = colon ? match.slice(1).trimStart() : match;
-			return mt[2] === '[['
-				? getCompletion( // link
+			if (mt[2] === '[[') { // link
+				return getCompletion(
 					root.querySelectorAll<LinkToken | FileToken | CategoryToken | RedirectTargetToken>(
 						'link,file,category,redirect-target',
 					).filter(token => token !== cur).map(({name}) => name),
 					'Folder',
 					str,
 					position,
-				)
-				: [ // parser function or template
-					...getCompletion(
-						functions,
-						'Function',
-						match,
+				);
+			}
+			// parser function or template
+			let words = functions;
+			if (next === ':') {
+				words = functions.filter(s => !s.endsWith('：'));
+			} else if (next === '：') {
+				words = functions.filter(s => s.endsWith('：')).map(s => s.slice(0, -1));
+			}
+			return [
+				...getCompletion(
+					words,
+					'Function',
+					match,
+					position,
+					'',
+					name => {
+						if (!this.data) {
+							return undefined;
+						} else if (name in insensitive) {
+							name = insensitive[name]!;
+						} else if (!isOld && name in sensitive) {
+							name = sensitive[name]!;
+						}
+						return this.#getParserFunction(name.toLowerCase());
+					},
+				),
+				...match.startsWith('#')
+					? []
+					: getCompletion(
+						root.querySelectorAll<TranscludeToken>('template').filter(token => token !== cur)
+							.map(token => {
+								const {name} = token;
+								if (colon) {
+									return name;
+								}
+								const {ns} = token.getAttribute('title');
+								if (ns === 0) {
+									return `:${name}`;
+								}
+								return ns === 10 ? name.slice(9) : name;
+							}),
+						'Folder',
+						str,
 						position,
-						'',
-						name => {
-							if (!this.data) {
-								return undefined;
-							} else if (name in insensitive) {
-								name = insensitive[name]!;
-							} else if (!isOld && name in sensitive) {
-								name = sensitive[name]!;
-							}
-							return this.#getParserFunction(name.toLowerCase());
-						},
 					),
-					...match.startsWith('#')
-						? []
-						: getCompletion(
-							root.querySelectorAll<TranscludeToken>('template').filter(token => token !== cur)
-								.map(token => {
-									const {name} = token;
-									if (colon) {
-										return name;
-									}
-									const {ns} = token.getAttribute('title');
-									if (ns === 0) {
-										return `:${name}`;
-									}
-									return ns === 10 ? name.slice(9) : name;
-								}),
-							'Folder',
-							str,
-							position,
-						),
-				];
+			];
 		}
 		let type: TokenTypes | undefined,
 			parentNode: Token | undefined;
@@ -1478,24 +1487,28 @@ export class LanguageService implements LanguageServiceBase {
 		const {type, parentNode, length, name} = offsetNode;
 		let info: SignatureData['parserFunctions'][0] | undefined,
 			f: string | undefined,
+			colon: string | undefined,
 			range: Range | undefined;
 		if (offsetNode.is<DoubleUnderscoreToken>('double-underscore') && offset > 0) {
 			info = this.#getBehaviorSwitch(offsetNode.name);
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
 			f = offsetNode.toString(true).trim();
+			colon = parentNode!.getAttribute('colon');
 		} else if (
 			offsetNode.is<TranscludeToken>('magic-word') && !offsetNode.modifier && length === 1
 			&& (offset > 0 || root.posFromIndex(offsetNode.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);
 			f = offsetNode.firstChild.toString(true).trim();
+			colon = offsetNode.getAttribute('colon');
 		} else if (
 			(offsetNode.is<TranscludeToken>('magic-word') || offsetNode.is<TranscludeToken>('template'))
 			&& offsetNode.modifier && offset >= 2 && offsetNode.getRelativeIndex(0) > offset
 		) {
 			f = offsetNode.modifier.trim().slice(0, -1);
 			info = this.#getParserFunction(f.toLowerCase());
+			colon = ':';
 			if (info) {
 				const aIndex = offsetNode.getAbsoluteIndex();
 				range = {
@@ -1549,7 +1562,7 @@ export class LanguageService implements LanguageServiceBase {
 				value: (
 					info.signatures
 						? `${info.signatures.map(
-							params => `- **{{ ${f}${params.length === 0 ? '**' : ':** '}${
+							params => `- **{{ ${f}${params.length === 0 ? '**' : `${colon}** `}${
 								params.map(({label, const: c}) => c ? label : `*${label}*`).join(' **|** ')
 							} **}}**`,
 						).join('\n')}\n\n`
@@ -1604,10 +1617,11 @@ export class LanguageService implements LanguageServiceBase {
 				break;
 			}
 		}
-		const f = firstChild.toString(true).trim();
+		const f = firstChild.toString(true).trim(),
+			colon = lastChild.getAttribute('colon');
 		return {
 			signatures: candidates.map((params): SignatureInformation => ({
-				label: `{{${f}${params.length === 0 ? '' : ':'}${
+				label: `{{${f}${params.length === 0 ? '' : colon}${
 					params.map(({label}) => label).join('|')
 				}}}`,
 				parameters: params.map(({label, const: c}): ParameterInformation => ({
