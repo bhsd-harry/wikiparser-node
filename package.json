@@ -16,7 +16,6 @@
 	"files": [
 		"/errors/README",
 		"/config/",
-		"!/config/jawiki.json",
 		"/data/",
 		"/i18n/",
 		"/coverage/badge.svg",

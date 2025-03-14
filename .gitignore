@@ -16,5 +16,4 @@ dist/
 /wiki/
 /test/*.wiki
 /test/**/*.txt
-/config/jawiki.json
 !README
