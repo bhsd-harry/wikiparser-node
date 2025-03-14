@@ -6,6 +6,7 @@
 
 - [`Config.functionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
 - [`LanguageService.prototype.provideLinks`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providelinks) now supports the `filepath` parser function
+- New preset configuration [`jawiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/jawiki.json) for Japanese Wikipedia
 
 **Fixed**
 
