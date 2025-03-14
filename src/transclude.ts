@@ -277,6 +277,8 @@ export abstract class TranscludeToken extends Token {
 				return this.modifier.length + 2 as TokenAttribute<T>;
 			case 'title':
 				return this.#title as TokenAttribute<T>;
+			case 'colon':
+				return this.#colon as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}
