@@ -28,6 +28,7 @@ declare type Child = AtomToken | SyntaxToken;
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';
+	#colon = ':';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 	#title: Title;
@@ -76,13 +77,16 @@ export abstract class TranscludeToken extends Token {
 				title = arg.join(':').slice(mt.length);
 			}
 		}
-		const isFunction = title.includes(':');
+		const colon = title.search(/[:：]/u),
+			fullWidth = title[colon] === '：',
+			isFunction = colon !== -1;
 		if (isFunction || parts.length === 0 && !this.#raw) {
-			const colon = title.indexOf(':'),
-				magicWord = colon === -1 ? title : title.slice(0, colon),
-				arg = colon === -1 ? undefined : title.slice(colon + 1),
+			const magicWord = isFunction ? title.slice(0, colon) : title,
+				arg = isFunction && title.slice(colon + 1),
 				cleaned = removeComment(magicWord),
-				name = cleaned[arg === undefined ? 'trim' : 'trimStart'](),
+				name = isFunction
+					? cleaned.slice(cleaned.search(/\S/u)) + (fullWidth ? '：' : '')
+					: cleaned.trim(),
 				lcName = name.toLowerCase(),
 				isOldSchema = Array.isArray(sensitive),
 				isSensitive = isOldSchema
@@ -91,16 +95,23 @@ export abstract class TranscludeToken extends Token {
 				canonicalName = !isOldSchema && isSensitive
 					? sensitive[name]!
 					: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
-				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
+				isFunc = isOldSchema && isSensitive
+					|| !('functionHook' in config) || functionHook.includes(canonicalName as string),
 				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
 			if (isFunction ? canonicalName && isFunc : isVar) {
-				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
+				this.setAttribute(
+					'name',
+					canonicalName || lcName.replace(/^#|：$/u, ''),
+				);
 				this.#type = 'magic-word';
+				if (fullWidth) {
+					this.#colon = '：';
+				}
 				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 					});
 				super.insertAt(token);
-				if (arg !== undefined) {
+				if (arg !== false) {
 					parts.unshift([arg]);
 				}
 				if (this.name === 'invoke') {
@@ -239,7 +250,7 @@ export abstract class TranscludeToken extends Token {
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
 				? this.firstChild.toString(skip)
-				+ (this.length === 1 ? '' : ':')
+				+ (this.length === 1 ? '' : this.#colon)
 				+ this.childNodes.slice(1).map(child => child.toString(skip)).join('|')
 				: super.toString(skip, '|')
 		}}}`;
@@ -252,7 +263,9 @@ export abstract class TranscludeToken extends Token {
 			? ''
 			: `{{${modifier}${
 				type === 'magic-word'
-					? firstChild.text() + (length === 1 ? '' : ':') + text(childNodes.slice(1), '|')
+					? firstChild.text()
+					+ (length === 1 ? '' : this.#colon)
+					+ text(childNodes.slice(1), '|')
 					: super.text('|')
 			}}}`;
 	}

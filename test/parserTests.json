@@ -6194,6 +6194,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>a<span class=\"wpb-html\">&lt;/b&gt;</span>b<span class=\"wpb-html\">&lt;b&gt;</span>c<span class=\"wpb-quote\">'''</span>d</span>"
 	},
 	{
+		"desc": "Function hook and variable",
+		"wikitext": "{{uc}}{{server:}}",
+		"html": "<p><a href=\"/index.php?title=Template:Uc&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Uc (page does not exist)\">Template:Uc</a><a href=\"/index.php?title=Template:Server:&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Server: (page does not exist)\">Template:Server:</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Template%3AUc?action=edit&redlink=1\" class=\"new\" title=\"Template:Uc (page does not exist)\">Template:Uc</a><a href=\"/wiki/Template%3AServer%3A?action=edit&redlink=1\" class=\"new\" title=\"Template:Server: (page does not exist)\">Template:Server:</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">uc</span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">server:</span>}}</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
