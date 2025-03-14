@@ -10,13 +10,14 @@ import type {Config} from '../base';
 declare interface Response {
 	query: {
 		general: {
+			articlepath: string;
 			variants?: {code: string}[];
 		};
 		magicwords: MagicWord[];
 		namespaces: Record<number, {name: string, canonical?: string}>;
 		namespacealiases: {id: number, alias: string}[];
 		functionhooks: string[];
-		variables?: string[];
+		variables: string[];
 	};
 }
 
@@ -25,9 +26,8 @@ declare interface Response {
  * @param site site nickname
  * @param url script path
  * @param force whether to overwrite the existing configuration
- * @param old whether to target an older version of MediaWiki
  */
-export default async (site: string, url: string, force?: boolean, old?: boolean): Promise<Config> => {
+export default async (site: string, url: string, force?: boolean): Promise<Config> => {
 	if (!site || !url) {
 		console.error('Usage: npx getParserConfig <site> <script path> [force]');
 		process.exit(1);
@@ -35,7 +35,8 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 		url = url.slice(0, url.lastIndexOf('/'));
 	}
 
-	let mwConfig: MwConfig | undefined;
+	let mwConfig: MwConfig | undefined,
+		done: boolean = false;
 	const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
 		loader: {
 			/** @ignore */
@@ -43,8 +44,17 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 				Object.entries(callback()[1].files).find(([k]) => k.endsWith('.data.js'))![1]();
 			},
 			/** @ignore */
-			implement(_: string, callback: () => void): void {
-				callback();
+			implement(name: string, callback: () => void): void {
+				if (!done) {
+					callback();
+				}
+				if (name.startsWith('ext.CodeMirror.data')) {
+					done = true;
+				}
+			},
+			/** @ignore */
+			state(): void {
+				//
 			},
 		},
 		config: {
@@ -87,15 +97,24 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 		return n < 2300 || n > 2303; // Gadget, Gadget talk, Gadget definition, Gadget definition talk
 	};
 
-	const m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror${old ? '.data' : ''}`)).text(),
+	const m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`)).text(),
 		params = {
 			action: 'query',
 			meta: 'siteinfo',
-			siprop: `general|magicwords|functionhooks|namespaces|namespacealiases${old ? '|variables' : ''}`,
+			siprop: 'general|magicwords|variables|functionhooks|namespaces|namespacealiases',
 			format: 'json',
 			formatversion: '2',
 		},
-		{query: {general: {variants}, magicwords, namespaces, namespacealiases, functionhooks, variables}} = await (
+		{
+			query: {
+				general: {articlepath, variants},
+				magicwords,
+				namespaces,
+				namespacealiases,
+				functionhooks,
+				variables,
+			},
+		} = await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`)
 		).json() as Response;
 	eval(m); // eslint-disable-line no-eval
@@ -115,8 +134,8 @@ export default async (site: string, url: string, force?: boolean, old?: boolean)
 				...namespacealiases.filter(({id}) => filterGadget(id)).map(({id, alias}) => [alias.toLowerCase(), id]),
 			]),
 			functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw'],
-			...old && {variable: [...variables!, '=']},
-			articlePath: '/wiki/$1',
+			variable: [...new Set([...variables, '='])],
+			articlePath: articlepath,
 		};
 	config.doubleUnderscore[0] = [];
 	config.doubleUnderscore[1] = [];
