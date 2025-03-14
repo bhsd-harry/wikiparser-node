@@ -81,7 +81,7 @@ for (const file of fs.readdirSync('config')) {
 const defaultConfig = configs['default.json']!,
 	{parserFunction, doubleUnderscore} = defaultConfig;
 for (const [file, config] of Object.entries(configs)) {
-	if (file !== 'default.json' && file !== 'jawiki.json') {
+	if (file !== 'default.json') {
 		describe(`${file} vs. default.json`, () => {
 			// ext/variable/functionHook/redirection/variants
 			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
@@ -113,7 +113,11 @@ for (const [file, config] of Object.entries(configs)) {
 			for (const key of ['namespaces', 'nsid', 'img'] as const) {
 				it(key, () => {
 					for (const [k, v] of Object.entries(config[key])) {
-						assert.strictEqual(defaultConfig[key][k], v, `'${k}' not in defaultConfig.${key}`);
+						if (file === 'jawiki.json') {
+							assert(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
+						} else {
+							assert.strictEqual(defaultConfig[key][k], v, `'${k}' not in defaultConfig.${key}`);
+						}
 					}
 				});
 			}
