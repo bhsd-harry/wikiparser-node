@@ -2,55 +2,58 @@ import path from 'path';
 import {sanitizeInlineStyle} from '@bhsd/common';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
-import type {
-	LanguageService as JSONLanguageService,
-	JSONDocument,
-	SchemaConfiguration,
-} from 'vscode-json-languageservice';
-import type {LanguageService as CSSLanguageService, Stylesheet} from 'vscode-css-languageservice';
-import type {PublicApi} from 'stylelint';
+import type {JSONDocument, SchemaConfiguration} from 'vscode-json-languageservice';
+import type {Stylesheet} from 'vscode-css-languageservice';
 import type {Token, AttributeToken} from '../internal';
 
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
-let jsonLSP: JSONLanguageService | undefined,
-	cssLSP: CSSLanguageService | undefined;
-try {
-	jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
-		.getLanguageService({
-			/** @implements */
-			async schemaRequestService(uri) {
-				return (await fetch(uri)).text();
-			},
+export const jsonLSP = (() => {
+	try {
+		const lsp = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
+			.getLanguageService({
+				/** @implements */
+				async schemaRequestService(uri) {
+					return (await fetch(uri)).text();
+				},
+			});
+		lsp.configure({
+			schemas: jsonTags.map((tag): SchemaConfiguration | false => {
+				const uri = path.join('..', '..', 'data', 'ext', tag);
+				try {
+					const schema = require(uri);
+					return {
+						uri,
+						fileMatch: [tag],
+						schema,
+					};
+				} catch {
+					return false;
+				}
+			}).filter(Boolean) as SchemaConfiguration[],
 		});
-	jsonLSP.configure({
-		schemas: jsonTags.map((tag): SchemaConfiguration | false => {
-			const uri = path.join('..', '..', 'data', 'ext', tag);
-			try {
-				const schema = require(uri);
-				return {
-					uri,
-					fileMatch: [tag],
-					schema,
-				};
-			} catch {
-				return false;
-			}
-		}).filter(Boolean) as SchemaConfiguration[],
-	});
-} catch {}
-try {
-	cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
-		.getCSSLanguageService();
-} catch {}
-const stylelint = (async (): Promise<PublicApi | undefined> => {
+		return lsp;
+	} catch {
+		return undefined;
+	}
+})();
+
+export const cssLSP = (() => {
+	try {
+		return (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
+			.getCSSLanguageService();
+	} catch {
+		return undefined;
+	}
+})();
+
+export const stylelint = (async () => {
 	try {
 		return (await import('stylelint')).default;
 	} catch {
 		return undefined;
 	}
 })();
-export {jsonLSP, cssLSP, stylelint};
 
 /** embedded document */
 class EmbeddedDocument implements TextDocument {
