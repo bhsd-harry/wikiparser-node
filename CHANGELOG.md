@@ -12,6 +12,10 @@
 - Only function hooks are allowed to take parameters
 - Localized parser functions with a full-width colon `：` instead of a half-width colon `:`
 
+**Changed**
+
+- [`LanguageService.prototype.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#resolverenamelocation) no longer supports magic words
+
 ## v1.18.1
 
 *2025-03-13*
