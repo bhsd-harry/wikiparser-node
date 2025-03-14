@@ -428,13 +428,13 @@ export class LanguageService implements LanguageServiceBase {
 		tasks.set(uri, this);
 		Object.defineProperties(this, {
 			config: {enumerable: false},
-
-			/* NOT FOR BROWSER ONLY */
-
 			data: {
 				value: require(path.join('..', '..', 'data', 'signatures')),
 				enumerable: false,
 			},
+
+			/* NOT FOR BROWSER ONLY */
+
 			lilypondData: {
 				value: require(path.join('..', '..', 'data', 'ext', 'score')),
 				enumerable: false,

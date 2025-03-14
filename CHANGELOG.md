@@ -1,12 +1,13 @@
 ## v1.18.2
 
-*2025-03-14*
+*2025-03-15*
 
 **Added**
 
 - [`Config.functionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
 - [`LanguageService.prototype.provideLinks`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providelinks) now supports the `filepath` parser function
 - New preset configuration [`jawiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/jawiki.json) for Japanese Wikipedia
+- The executable [`getParserConfig`](./README#cli-usage) now supports more MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed
 
 **Fixed**
 
