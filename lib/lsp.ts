@@ -828,7 +828,7 @@ export class LanguageService implements LanguageServiceBase {
 			const index = root.indexFromPos(line, character)!,
 				match = mt?.[6]?.trimStart()
 					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
-				equal = this.#text.charAt(index) === '=';
+				equal = this.#text[index] === '=';
 			return [
 				...getCompletion(params, 'Property', match, position)
 					.filter(({label}) => !equal || !/[= ]$/u.test(label)),
@@ -918,7 +918,7 @@ export class LanguageService implements LanguageServiceBase {
 				comment = before.lastIndexOf('%');
 			if (
 				comment !== -1
-				&& (before.charAt(comment + 1) === '{' || !before.slice(comment).includes('\n'))
+				&& (before[comment + 1] === '{' || !before.slice(comment).includes('\n'))
 			) {
 				return undefined;
 			}
