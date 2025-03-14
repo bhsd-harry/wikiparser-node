@@ -1212,12 +1212,18 @@ export class LanguageService implements LanguageServiceBase {
 			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
 		return (await this.#queue(text))
 			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
-				absolute ? ',link-target,template-name,invoke-module' : ''
+				absolute ? ',link-target,template-name,invoke-module,magic-word#filepath,magic-word#widget' : ''
 			}`)
 			.reverse()
 			.map((token): DocumentLink | false => {
+				let name: string | undefined;
+				if (token.is<TranscludeToken>('magic-word')) {
+					({name} = token);
+					token = (token.childNodes[1] as ParameterToken).lastChild; // eslint-disable-line no-param-reassign
+				}
 				const {type, parentNode, firstChild, lastChild, childNodes, length} = token,
-					{name, tag} = parentNode as AttributeToken;
+					{tag} = parentNode as AttributeToken;
+				name ??= parentNode!.name;
 				if (
 					!(
 						type !== 'attr-value'
@@ -1256,7 +1262,7 @@ export class LanguageService implements LanguageServiceBase {
 					} else if (type === 'template-name') {
 						target = parentNode!.getAttribute('title').getUrl(articlePath);
 					} else if (
-						['link-target', 'invoke-module'].includes(type)
+						['link-target', 'invoke-module', 'parameter-value'].includes(type)
 						|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
 						|| type === 'image-parameter' && !protocolRegex.test(target)
 					) {
@@ -1264,10 +1270,16 @@ export class LanguageService implements LanguageServiceBase {
 							return false;
 						}
 						let ns = 0;
-						if (type === 'attr-value') {
-							ns = 10;
-						} else if (type === 'invoke-module') {
-							ns = 828;
+						switch (type) {
+							case 'attr-value':
+								ns = 10;
+								break;
+							case 'invoke-module':
+								ns = 828;
+								break;
+							case 'parameter-value':
+								ns = name === 'filepath' ? 6 : 274;
+							// no default
 						}
 						const title = Parser.normalizeTitle(target, ns, false, this.config, true);
 						/* istanbul ignore if */
