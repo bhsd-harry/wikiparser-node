@@ -9,6 +9,7 @@
 **Fixed**
 
 - Only function hooks are allowed to take parameters
+- Localized parser functions with a full-width colon `：` instead of a half-width colon `:`
 
 ## v1.18.1
 
