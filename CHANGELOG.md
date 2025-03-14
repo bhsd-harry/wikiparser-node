@@ -5,6 +5,7 @@
 **Added**
 
 - [`Config.functionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
+- [`LanguageService.prototype.provideLinks`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providelinks) now supports the `filepath` parser function
 
 **Fixed**
 
