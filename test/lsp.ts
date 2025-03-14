@@ -97,7 +97,6 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 		renamePositions = ([
 			argName,
 			templateName,
-			magicWordName,
 		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
