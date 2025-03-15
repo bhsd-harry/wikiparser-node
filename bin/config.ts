@@ -21,6 +21,83 @@ declare interface Response {
 	};
 }
 
+declare interface Implementation {
+	files: Record<string, Function>;
+}
+
+/**
+ * Converts an array to an object.
+ * @param config parser configuration
+ * @param config.articlePath article path
+ */
+const arrToObj = ({articlePath, ...obj}: Config): object => {
+	for (const [k, v] of Object.entries(obj)) {
+		if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
+			Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
+		}
+	}
+	return obj;
+};
+
+/**
+ * Gets the aliases of magic words.
+ * @param magicwords magic words
+ * @param targets magic word names
+ */
+const getAliases = (magicwords: MagicWord[], targets: Set<string>): string[] => magicwords
+	.filter(({name}) => targets.has(name))
+	.flatMap(({aliases}) => aliases.map(s => s.replace(/:$/u, '').toLowerCase()));
+
+/**
+ * Filters out gadget-related namespaces.
+ * @param id namespace ID
+ */
+const filterGadget = (id: string | number): boolean => {
+	const n = Number(id);
+	return n < 2300 || n > 2303; // Gadget, Gadget talk, Gadget definition, Gadget definition talk
+};
+
+/**
+ * Execute the data script.
+ * @param obj MediaWiki module implementation
+ */
+const execute = (obj: Implementation): void => {
+	Object.entries(obj.files).find(([k]) => k.endsWith('.data.js'))![1]();
+};
+
+const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
+	loader: {
+		done: false,
+		/** @ignore */
+		impl(callback: () => [string, Implementation]): void {
+			execute(callback()[1]);
+		},
+		/** @ignore */
+		implement(name: string, callback: (() => void) | Implementation): void {
+			if (typeof callback === 'object') {
+				execute(callback);
+			} else if (!this.done) {
+				callback();
+			}
+			if (name.startsWith('ext.CodeMirror.data')) {
+				this.done = true;
+			}
+		},
+		/** @ignore */
+		state(): void {
+			//
+		},
+	},
+	config: {
+		/** @ignore */
+		set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
+			mwConfig = extCodeMirrorConfig;
+		},
+	},
+};
+
+let mwConfig: MwConfig | undefined;
+
 /**
  * Get the parser configuration for a Wikimedia Foundation project.
  * @param site site nickname
@@ -35,73 +112,11 @@ export default async (site: string, url: string, force?: boolean): Promise<Confi
 		url = url.slice(0, url.lastIndexOf('/'));
 	}
 
-	let mwConfig: MwConfig | undefined,
-		done: boolean = false;
-	const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
-		loader: {
-			/** @ignore */
-			impl(callback: () => [string, {files: Record<string, Function>}]): void {
-				Object.entries(callback()[1].files).find(([k]) => k.endsWith('.data.js'))![1]();
-			},
-			/** @ignore */
-			implement(name: string, callback: () => void): void {
-				if (!done) {
-					callback();
-				}
-				if (name.startsWith('ext.CodeMirror.data')) {
-					done = true;
-				}
-			},
-			/** @ignore */
-			state(): void {
-				//
-			},
-		},
-		config: {
-			/** @ignore */
-			set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
-				mwConfig = extCodeMirrorConfig;
-			},
-		},
-	};
-
-	/**
-	 * Converts an array to an object.
-	 * @param config parser configuration
-	 * @param config.articlePath article path
-	 */
-	const arrToObj = ({articlePath, ...obj}: Config): object => {
-		for (const [k, v] of Object.entries(obj)) {
-			if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
-				Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
-			}
-		}
-		return obj;
-	};
-
-	/**
-	 * Gets the aliases of magic words.
-	 * @param magicwords magic words
-	 * @param targets magic word names
-	 */
-	const getAliases = (magicwords: MagicWord[], targets: Set<string>): string[] => magicwords
-		.filter(({name}) => targets.has(name))
-		.flatMap(({aliases}) => aliases.map(s => s.replace(/:$/u, '').toLowerCase()));
-
-	/**
-	 * Filters out gadget-related namespaces.
-	 * @param id namespace ID
-	 */
-	const filterGadget = (id: string | number): boolean => {
-		const n = Number(id);
-		return n < 2300 || n > 2303; // Gadget, Gadget talk, Gadget definition, Gadget definition talk
-	};
-
 	const m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`)).text(),
 		params = {
 			action: 'query',
 			meta: 'siteinfo',
-			siprop: 'general|magicwords|variables|functionhooks|namespaces|namespacealiases',
+			siprop: 'general|magicwords|functionhooks|namespaces|namespacealiases',
 			format: 'json',
 			formatversion: '2',
 		},
@@ -112,10 +127,12 @@ export default async (site: string, url: string, force?: boolean): Promise<Confi
 				namespaces,
 				namespacealiases,
 				functionhooks,
-				variables,
 			},
 		} = await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`)
+		).json() as Response,
+		{query: {variables}} = await (
+			await fetch(`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`)
 		).json() as Response;
 	eval(m); // eslint-disable-line no-eval
 	const dir = path.join('..', '..', 'config'),
@@ -134,7 +151,6 @@ export default async (site: string, url: string, force?: boolean): Promise<Confi
 				...namespacealiases.filter(({id}) => filterGadget(id)).map(({id, alias}) => [alias.toLowerCase(), id]),
 			]),
 			functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw'],
-			variable: [...new Set([...variables, '='])],
 			articlePath: articlepath,
 		};
 	config.doubleUnderscore[0] = [];
@@ -149,6 +165,9 @@ export default async (site: string, url: string, force?: boolean): Promise<Confi
 	}
 	config.parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
 	config.parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
+	if (!config.variable) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		Object.assign(config, {variable: [...new Set([...variables, '='])]});
+	}
 	const file = path.join(__dirname, dir, `${site}.json`);
 	if (force || !fs.existsSync(file)) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
