@@ -49,7 +49,6 @@ export type {
 	Range,
 	WorkspaceEdit,
 	ServerDiagnostic,
-	SignatureData,
 	Hover,
 	SignatureHelp,
 	InlayHint,

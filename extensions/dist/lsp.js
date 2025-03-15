@@ -11,7 +11,6 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
 var _LanguageService_id, _LanguageService_include;
-let data;
 class LanguageService {
     get include() {
         return __classPrivateFieldGet(this, _LanguageService_include, "f");
@@ -21,10 +20,6 @@ class LanguageService {
         _LanguageService_include.set(this, void 0);
         __classPrivateFieldSet(this, _LanguageService_id, wikiparse.id++, "f");
         __classPrivateFieldSet(this, _LanguageService_include, include, "f");
-        data !== null && data !== void 0 ? data : (data = (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())());
-        (async () => {
-            wikiparse.provide('data', __classPrivateFieldGet(this, _LanguageService_id, "f"), await data, __classPrivateFieldGet(this, _LanguageService_include, "f"));
-        })();
     }
     destroy() {
         wikiparse.provide('destroy', __classPrivateFieldGet(this, _LanguageService_id, "f"));

@@ -10,14 +10,11 @@ import type {
 	Range,
 	WorkspaceEdit,
 	ServerDiagnostic,
-	SignatureData,
 	Hover,
 	SignatureHelp,
 	InlayHint,
 	AST,
 } from './typings';
-
-let data: Promise<SignatureData> | undefined;
 
 /** 用于语法分析 */
 class LanguageService implements LanguageServiceBase {
@@ -33,10 +30,6 @@ class LanguageService implements LanguageServiceBase {
 	constructor(include = true) {
 		this.#id = wikiparse.id++;
 		this.#include = include;
-		data ??= (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())();
-		(async () => {
-			wikiparse.provide('data', this.#id, await data, this.#include);
-		})();
 	}
 
 	/** @implements */
