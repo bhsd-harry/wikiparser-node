@@ -103,8 +103,9 @@ let mwConfig: MwConfig | undefined;
  * @param site site nickname
  * @param url script path
  * @param force whether to overwrite the existing configuration
+ * @param internal for internal use
  */
-export default async (site: string, url: string, force?: boolean): Promise<Config> => {
+export default async (site: string, url: string, force?: boolean, internal?: boolean): Promise<Config> => {
 	if (!site || !url) {
 		console.error('Usage: npx getParserConfig <site> <script path> [force]');
 		process.exit(1);
@@ -171,7 +172,7 @@ export default async (site: string, url: string, force?: boolean): Promise<Confi
 	const file = path.join(__dirname, dir, `${site}.json`);
 	if (force || !fs.existsSync(file)) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
-	} else {
+	} else if (!internal) {
 		assert.deepStrictEqual(arrToObj(require(file) as Config), arrToObj(config));
 	}
 	return config;
