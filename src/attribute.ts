@@ -468,10 +468,10 @@ export abstract class AttributeToken extends Token {
 			return undefined;
 		}
 		const hasQuote = value.includes('"');
-		if (this.#quotes[0] && value.includes(this.#quotes[0]) || hasQuote && value.includes("'")) {
+		if (this.#quotes[0] && value.includes(this.#quotes[0]) || hasQuote && value.includes(`'`)) {
 			const quote = this.#quotes[0] || '"';
 			throw new RangeError(
-				`Please consider replacing \`${quote}\` with \`${quote === '"' ? "'" : "'"}\`!`,
+				`Please consider replacing \`${quote}\` with \`${quote === '"' ? `'` : '"'}\`!`,
 			);
 		} else if (declaration.length > 0) {
 			const {value: {offset, length}} = declaration.at(-1)!;

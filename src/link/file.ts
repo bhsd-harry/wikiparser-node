@@ -529,8 +529,8 @@ export abstract class FileToken extends LinkBaseToken {
 			} catch {}
 		}
 		const a = link
-			? `<a${href && ` href="${href}"`}${hasLink ? '' : ` class="mw-file-description"`}${titleAttr}${
-				typeof link === 'string' ? ` rel="nofollow"` : ''
+			? `<a${href && ` href="${href}"`}${hasLink ? '' : ' class="mw-file-description"'}${titleAttr}${
+				typeof link === 'string' ? ' rel="nofollow"' : ''
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
 		if (type !== 'gallery-image') {

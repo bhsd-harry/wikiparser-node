@@ -102,7 +102,7 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 	if (tidy && (!bold || !italic)) {
 		// @ts-expect-error abstract class
 		new QuoteToken(
-			(bold ? '' : "'''") + (italic ? '' : "''"),
+			(bold ? '' : `'''`) + (italic ? '' : `''`),
 			{bold: !bold, italic: !italic},
 			config,
 			accum,
