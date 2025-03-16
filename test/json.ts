@@ -10,13 +10,21 @@ for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		describe(file, () => {
 			const config: Config = require(path.join(basePath, 'config', file));
-			const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config;
+			const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config,
+				magicWords = parserFunction.slice(0, 2) as Record<string, string>[],
+				magicWordKeys = magicWords.flatMap(Object.keys),
+				magicWordValues = magicWords.flatMap(Object.values<string>);
 
 			// ext/variable/functionHook/redirection/variants
 			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
 				it(key, () => {
 					const v = config[key];
 					assert.strictEqual(v.length, new Set(v).size, `${key} not unique`);
+					if (key === 'variable' || key === 'functionHook') {
+						for (const word of v) {
+							assert(magicWordValues.includes(word), `'${word}' not in parserFunction`);
+						}
+					}
 				});
 			}
 
@@ -38,15 +46,16 @@ for (const file of fs.readdirSync('config')) {
 
 			it('doubleUnderscore', () => {
 				const keys = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys);
-				assert.strictEqual(keys.length, new Set(keys).size, `doubleUnderscore not unique`);
+				assert.strictEqual(keys.length, new Set(keys).size, 'doubleUnderscore not unique');
 			});
 
 			if (file !== 'minimum.json') {
 				it('parserFunction', () => {
-					const all = parserFunction.slice(0, 2) as Record<string, string>[],
-						keys = all.flatMap(Object.keys),
-						values = all.flatMap(Object.values);
-					assert.strictEqual(keys.length, new Set(keys).size, `parserFunction not unique`);
+					assert.strictEqual(
+						magicWordKeys.length,
+						new Set(magicWordKeys).size,
+						'parserFunction not unique',
+					);
 					for (let i = 2; i < 4; i++) {
 						assert.strictEqual(
 							parserFunction[i as 2 | 3].length,
@@ -55,7 +64,7 @@ for (const file of fs.readdirSync('config')) {
 						);
 					}
 					for (const alias of [...variable, ...functionHook]) {
-						assert(values.includes(alias), `'${alias}' not in parserFunction`);
+						assert(magicWordValues.includes(alias), `'${alias}' not in parserFunction`);
 					}
 				});
 

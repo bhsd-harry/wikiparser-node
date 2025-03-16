@@ -98,6 +98,13 @@
 	],
 	"parserFunction": [
 		{
+			"msgnw": "msgnw",
+			"pageid": "pageid",
+			"articlepath": "articlepath",
+			"server": "server",
+			"servername": "servername",
+			"scriptpath": "scriptpath",
+			"stylepath": "stylepath",
 			"#language": "language",
 			"#special": "special",
 			"#speciale": "speciale",

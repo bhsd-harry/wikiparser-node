@@ -54,7 +54,7 @@ class Linter {
     async monaco(wikitext) {
         return (await this.queue(wikitext))
             .map(({ startLine, startCol, endLine, endCol, severity, message, rule }) => ({
-            source: `WikiLint`,
+            source: 'WikiLint',
             startLineNumber: startLine + 1,
             startColumn: startCol + 1,
             endLineNumber: endLine + 1,

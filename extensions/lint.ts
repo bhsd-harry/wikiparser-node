@@ -84,7 +84,7 @@ class Linter implements LinterBase {
 	async monaco(wikitext: string): Promise<editor.IMarkerData[]> {
 		return (await this.queue(wikitext))
 			.map(({startLine, startCol, endLine, endCol, severity, message, rule}): editor.IMarkerData => ({
-				source: `WikiLint`,
+				source: 'WikiLint',
 				startLineNumber: startLine + 1,
 				startColumn: startCol + 1,
 				endLineNumber: endLine + 1,
