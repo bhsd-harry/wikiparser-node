@@ -134,6 +134,14 @@ module.exports = {
 						code: 80,
 					},
 				],
+				'@stylistic/quotes': [
+					2,
+					'single',
+					{
+						allowTemplateLiterals: 'always',
+						avoidEscape: true,
+					},
+				],
 				'n/no-unsupported-features/node-builtins': 0,
 			},
 		},
