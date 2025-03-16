@@ -136,7 +136,7 @@ export abstract class HeadingToken extends Token {
 				),
 				end = start + level + innerStr.length;
 			if (rootStr.slice(e.endIndex, end).trim()) {
-				e.suggestions = [{desc: 'close', range: [end, end], text: "'''"}];
+				e.suggestions = [{desc: 'close', range: [end, end], text: `'''`}];
 			} else {
 				e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
 			}
@@ -151,7 +151,7 @@ export abstract class HeadingToken extends Token {
 				),
 				end = start + level + innerStr.length;
 			e.fix = rootStr.slice(e.endIndex, end).trim()
-				? {desc: 'close', range: [end, end], text: "''"}
+				? {desc: 'close', range: [end, end], text: `''`}
 				: {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
 			errors.push(e);
 		}
