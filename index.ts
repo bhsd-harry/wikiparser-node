@@ -68,7 +68,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	getConfig(config?: Config) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 		const parserConfig = config ?? this.config as Config,
-			{doubleUnderscore} = parserConfig;
+			{
+				doubleUnderscore,
+			} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
@@ -128,8 +130,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		wikitext = tidy(wikitext);
+		let types: Stage[] | undefined;
 		if (typeof maxStage !== 'number') {
-			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
+			types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
@@ -204,7 +207,7 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-// eslint-disable-line no-restricted-global, es-x/no-global-this
+// eslint-disable-next-line no-restricted-globals, es-x/no-global-this
 Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
 
 export default Parser;

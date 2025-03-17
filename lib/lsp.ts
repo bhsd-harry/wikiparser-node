@@ -916,7 +916,6 @@ export class LanguageService implements LanguageServiceBase {
 							// no default
 						}
 						const title = Parser.normalizeTitle(target, ns, false, this.config, true);
-						/* istanbul ignore if */
 						if (!title.valid) {
 							return false;
 						}
