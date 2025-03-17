@@ -36,6 +36,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../../util/debug';
+import {noEscape} from '../../mixin/noEscape';
 
 /* NOT FOR BROWSER END */
 
@@ -51,6 +52,7 @@ const isLink = (type: string): boolean => type === 'redirect-target' || type ===
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
+@noEscape
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;

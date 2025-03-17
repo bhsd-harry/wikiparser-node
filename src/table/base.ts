@@ -99,16 +99,11 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		});
 	}
 
-	/**
-	 * Escape the table syntax
-	 *
-	 * 转义表格语法
-	 */
-	escape(): void {
+	override escape(): void {
 		for (const child of this.childNodes) {
 			if (child instanceof SyntaxToken) {
 				escapeTable(child);
-			} else if (child instanceof TableBaseToken) {
+			} else {
 				child.escape();
 			}
 		}

@@ -7,6 +7,7 @@ import type {AstText} from '../../lib/text';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {fixedToken} from '../../mixin/fixed';
+import {noEscape} from '../../mixin/noEscape';
 
 /* NOT FOR BROWSER END */
 
@@ -25,7 +26,7 @@ declare type NowikiTypes = 'ext-inner'
  * 纯文字Token，不会被解析
  * @classdesc `{childNodes: [AstText]}`
  */
-@fixedToken
+@fixedToken @noEscape
 export abstract class NowikiBaseToken extends Token {
 	abstract override get type(): NowikiTypes;
 	declare readonly childNodes: readonly [AstText];

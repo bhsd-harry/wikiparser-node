@@ -4,6 +4,7 @@ import {Token} from './index';
 
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 
 /* NOT FOR BROWSER END */
@@ -14,6 +15,7 @@ import Parser from '../index';
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
+@noEscape
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';

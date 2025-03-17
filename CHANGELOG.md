@@ -1,3 +1,11 @@
+## v1.18.3
+
+*2025-03-18*
+
+**Added**
+
+- `AstElement.prototype.escape` method that escapes `=` and `|` characters for building a template parameter
+
 ## v1.18.2
 
 *2025-03-15*

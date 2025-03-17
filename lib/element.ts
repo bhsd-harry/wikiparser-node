@@ -24,6 +24,8 @@ import type {
 	MagicLinkToken,
 	ImageParameterToken,
 	TranscludeToken,
+	ListToken,
+	DdToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -31,6 +33,7 @@ import type {
 import fs from 'fs';
 import path from 'path';
 import {classes} from '../util/constants';
+import {html} from '../util/html';
 import {readOnly} from '../mixin/readOnly';
 
 declare type LinkTokens = LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken;
@@ -650,6 +653,34 @@ export abstract class AstElement extends AstNode {
 	 */
 	elementsFromPoint(x: number, y: number): Token[] {
 		return this.elementsFromIndex(this.indexFromPos(y, x));
+	}
+
+	/**
+	 * Escape `=` and `|`
+	 *
+	 * 转义 `=` 和 `|`
+	 */
+	escape(): void {
+		for (const child of this.childNodes) {
+			child.escape();
+		}
+	}
+
+	/** @private */
+	toHtmlInternal(opt?: HtmlOpt): string {
+		for (const child of this.childNodes) {
+			if (child.type === 'text') {
+				child.removeBlankLines();
+			}
+		}
+		for (let i = 0; i < this.length; i++) {
+			const child = this.childNodes[i]!;
+			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
+				child.getRange();
+			}
+		}
+		this.normalize();
+		return html(this.childNodes, '', opt);
 	}
 }
 

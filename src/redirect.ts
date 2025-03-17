@@ -9,6 +9,7 @@ import type {Config, LintError} from '../base';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {fixedToken} from '../mixin/fixed';
+import {noEscape} from '../mixin/noEscape';
 
 /* NOT FOR BROWSER END */
 
@@ -18,7 +19,7 @@ import {fixedToken} from '../mixin/fixed';
  * 重定向
  * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
  */
-@fixedToken
+@fixedToken @noEscape
 @hiddenToken(false, false)
 export abstract class RedirectToken extends Token {
 	readonly #pre;

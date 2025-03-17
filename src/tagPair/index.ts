@@ -6,6 +6,7 @@ import type {AstNodes} from '../../lib/node';
 
 import {classes} from '../../util/constants';
 import {fixedToken} from '../../mixin/fixed';
+import {noEscape} from '../../mixin/noEscape';
 import Parser from '../../index';
 
 /* NOT FOR BROWSER END */
@@ -15,7 +16,7 @@ import Parser from '../../index';
  *
  * 成对标签
  */
-@fixedToken
+@fixedToken @noEscape
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
 	readonly #tags: [string, string];

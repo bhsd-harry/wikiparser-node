@@ -334,13 +334,9 @@ export abstract class AttributeToken extends Token {
 		});
 	}
 
-	/**
-	 * Escape `=`
-	 *
-	 * 转义等号
-	 */
-	escape(): void {
+	override escape(): void {
 		this.#equal = '{{=}}';
+		this.lastChild.escape();
 	}
 
 	/**

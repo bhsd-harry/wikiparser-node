@@ -13,6 +13,7 @@ import type {Config} from '../base';
 import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {noEscape} from '../mixin/noEscape';
 
 /* NOT FOR BROWSER END */
 
@@ -22,6 +23,7 @@ import {classes} from '../util/constants';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
  */
+@noEscape
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;

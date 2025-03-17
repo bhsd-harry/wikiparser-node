@@ -457,21 +457,29 @@ export class AstText extends AstNode {
 	}
 
 	/**
-	 * Escape `=`
+	 * Escape `=` and `|`
 	 *
-	 * 转义 `=`
+	 * 转义 `=` 和 `|`
 	 */
 	escape(): void {
 		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
-		let i = this.data.lastIndexOf('=');
-		for (; i >= 0; i = this.data.lastIndexOf('=', i - 1)) {
+		const config = this.parentNode!.getAttribute('config');
+
+		/**
+		 * Get the last index of `=` or `|`
+		 * @param j start position from the end
+		 */
+		const lastIndexOf = (j?: number): number =>
+			Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
+		let i = lastIndexOf();
+		const callback = /** @ignore */ (): TranscludeToken =>
+			// @ts-expect-error abstract class
+			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
+		for (; i >= 0; i = lastIndexOf(i - 1)) {
 			if (i < this.length - 1) {
 				this.splitText(i + 1);
 			}
-			this.after(Shadow.run(
-				// @ts-expect-error abstract class
-				(): TranscludeToken => new TranscludeToken('=', [], this.parentNode!.getAttribute('config')),
-			));
+			this.after(Shadow.run(callback));
 			this.#setData(this.data.slice(0, i));
 		}
 	}

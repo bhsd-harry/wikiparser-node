@@ -14,6 +14,7 @@ import type {
 
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 
 /* NOT FOR BROWSER END */
@@ -24,6 +25,7 @@ import Parser from '../index';
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
  */
+@noEscape
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];

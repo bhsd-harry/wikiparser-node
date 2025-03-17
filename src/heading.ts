@@ -23,6 +23,7 @@ import {classes, states} from '../util/constants';
 import {sanitizeAlt, decodeHtml, sanitizeId} from '../util/string';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
+import {noEscape} from '../mixin/noEscape';
 
 /* NOT FOR BROWSER END */
 
@@ -32,7 +33,7 @@ import {sol} from '../mixin/sol';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-@fixedToken @sol()
+@fixedToken @sol() @noEscape
 export abstract class HeadingToken extends Token {
 	#level;
 

@@ -29,6 +29,7 @@ import type {AstText} from '../internal';
 
 /* NOT FOR BROWSER */
 
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 
 const basicMagicWords = new Map([['=', '='], ['!', '|']]);
@@ -43,6 +44,7 @@ declare type Child = AtomToken | SyntaxToken;
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
  */
+@noEscape
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';

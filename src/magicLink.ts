@@ -273,19 +273,6 @@ export abstract class MagicLinkToken extends Token {
 		return this.closest<ParameterToken>('parameter')?.getValue() === this.text();
 	}
 
-	/**
-	 * Escape `=`
-	 *
-	 * 转义 `=`
-	 */
-	escape(): void {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				child.escape();
-			}
-		}
-	}
-
 	/** @private */
 	override toHtmlInternal(): string {
 		const {type, innerText, protocol} = this;

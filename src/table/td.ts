@@ -425,7 +425,6 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/** @private */
 	override escape(): void {
 		super.escape();
 		if (this.childNodes[1].toString()) {

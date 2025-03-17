@@ -80,7 +80,6 @@ import type {
 
 import assert from 'assert/strict';
 import {Shadow} from '../util/debug';
-import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import {readOnly} from '../mixin/readOnly';
@@ -975,23 +974,6 @@ export class Token extends AstElement {
 	toHtml(): string {
 		require('../addon/token');
 		return this.toHtml();
-	}
-
-	/** @private */
-	toHtmlInternal(opt?: HtmlOpt): string {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				child.removeBlankLines();
-			}
-		}
-		for (let i = 0; i < this.length; i++) {
-			const child = this.childNodes[i]!;
-			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
-				child.getRange();
-			}
-		}
-		this.normalize();
-		return html(this.childNodes, '', opt);
 	}
 
 	/**

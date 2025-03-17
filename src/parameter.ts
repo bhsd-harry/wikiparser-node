@@ -290,19 +290,6 @@ export abstract class ParameterToken extends Token {
 		}
 		this.firstChild.replaceChildren(...root.childNodes);
 	}
-
-	/**
-	 * Ecape `=`
-	 *
-	 * 转义 `=`
-	 */
-	escape(): void {
-		for (const child of this.lastChild.childNodes) {
-			if (child.type === 'text') {
-				child.escape();
-			}
-		}
-	}
 }
 
 classes['ParameterToken'] = __filename;
