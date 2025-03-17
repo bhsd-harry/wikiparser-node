@@ -62,7 +62,7 @@
 		"test:unit": "mocha dist/test/test.js",
 		"test:clonenode": "CLONENODE=1 npm run test:unit",
 		"test:parser": "mocha dist/test/parserTests.js",
-		"test": "npm run test:unit && npm run test:parser",
+		"test": "npm run test:unit && npm run test:clonenode && npm run test:parser",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"
 	},
