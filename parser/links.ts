@@ -61,10 +61,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 			0,
 			false,
 			config,
-			true,
-			true,
-			true,
-			true,
+			{halfParsed: true, temporary: true, decode: true, selfLink: true},
 		);
 		if (!valid) {
 			s += `[[${x}`;

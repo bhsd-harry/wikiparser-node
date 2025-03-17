@@ -14,7 +14,7 @@ import type {
 	Stage,
 	AST,
 } from './base';
-import type {Title} from './lib/title';
+import type {Title, TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {Token} from './internal';
 
@@ -49,10 +49,7 @@ declare interface Parser extends ParserBase {
 		defaultNs?: number,
 		include?: boolean,
 		config?: Config,
-		temporary?: boolean,
-		halfParsed?: boolean,
-		decode?: boolean,
-		selfLink?: boolean, // eslint-disable-line @typescript-eslint/unified-signatures
+		opt?: TitleOptions, // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
@@ -142,27 +139,18 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	normalizeTitle(
-		title,
-		defaultNs = 0,
-		include?: boolean,
-		config = Parser.getConfig(),
-		temporary: boolean = false,
-		halfParsed?: boolean,
-		decode: boolean = false,
-		selfLink: boolean = false,
-	) {
+	normalizeTitle(title, defaultNs = 0, include?: boolean, config = Parser.getConfig(), opt?: TitleOptions) {
 		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		let titleObj: Title;
-		if (halfParsed) {
-			titleObj = new Title(title, defaultNs, config, temporary, decode, selfLink);
+		if (opt?.halfParsed) {
+			titleObj = new Title(title, defaultNs, config, opt);
 		} else {
 			const {Token}: typeof import('./src/index') = require('./src/index');
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config);
 				root.type = 'root';
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.toString(), defaultNs, config, temporary, decode, selfLink);
+				const t = new Title(root.toString(), defaultNs, config, opt);
 				for (const key of ['main', 'fragment'] as const) {
 					const str = t[key];
 					if (str?.includes('\0')) {

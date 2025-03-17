@@ -135,7 +135,7 @@ export abstract class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const name = removeComment(title).trim();
-			if (!this.normalizeTitle(name, 10, true, true).valid) {
+			if (!this.normalizeTitle(name, 10, {halfParsed: true, temporary: true}).valid) {
 				accum.pop();
 				throw new SyntaxError('Invalid template name');
 			}
@@ -207,7 +207,7 @@ export abstract class TranscludeToken extends Token {
 			title = this.normalizeTitle(
 				this.childNodes[isTemplate ? 0 : 1].toString(true),
 				isTemplate ? 10 : 828,
-				true,
+				{temporary: true},
 			);
 		return title;
 	}

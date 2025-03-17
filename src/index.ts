@@ -54,7 +54,7 @@ import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {LintError, TokenTypes} from '../base';
 import type {Cached} from '../util/lint';
-import type {Title} from '../lib/title';
+import type {Title, TitleOptions} from '../lib/title';
 import type {
 	AstNodes,
 	CategoryToken,
@@ -408,16 +408,8 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	normalizeTitle(
-		title: string,
-		defaultNs = 0,
-		temporary?: boolean,
-		halfParsed?: boolean,
-		decode?: boolean,
-		selfLink?: boolean,
-	): Title {
-		return Parser
-			.normalizeTitle(title, defaultNs, this.#include, this.#config, temporary, halfParsed, decode, selfLink);
+	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
+		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, opt);
 	}
 
 	/** @private */
