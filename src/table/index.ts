@@ -127,9 +127,8 @@ export abstract class TableToken extends TrBaseToken {
 	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
-			inner = halfParsed
-				? [syntax]
-				: Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
+			inner =
+				[syntax];
 		Shadow.run(() => {
 			const token = new SyntaxToken(
 				undefined,
