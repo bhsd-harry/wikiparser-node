@@ -915,7 +915,8 @@ export class LanguageService implements LanguageServiceBase {
 								ns = name === 'filepath' ? 6 : 274;
 							// no default
 						}
-						const title = Parser.normalizeTitle(target, ns, false, this.config, true);
+						const title = Parser
+							.normalizeTitle(target, ns, false, this.config, {temporary: true});
 						if (!title.valid) {
 							return false;
 						}

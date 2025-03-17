@@ -4,6 +4,13 @@ import {
 } from '../util/string';
 import type {Config} from '../base';
 
+export interface TitleOptions {
+	temporary?: boolean | undefined;
+	decode?: boolean | undefined;
+	selfLink?: boolean | undefined;
+	halfParsed?: boolean | undefined;
+}
+
 /**
  * title object of a MediaWiki page
  *
@@ -62,17 +69,13 @@ export class Title {
 	 *
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
-	 * @param decode 是否需要解码
-	 * @param selfLink 是否允许selfLink
+	 * @param config
+	 * @param opt 选项
+	 * @param opt.temporary 是否是临时标题
+	 * @param opt.decode 是否需要解码
+	 * @param opt.selfLink 是否允许selfLink
 	 */
-	constructor(
-		title: string,
-		defaultNs: number,
-		config: Config,
-		temporary: boolean,
-		decode: boolean,
-		selfLink: boolean,
-	) {
+	constructor(title: string, defaultNs: number, config: Config, {temporary, decode, selfLink}: TitleOptions = {}) {
 		const subpage = title.trim().startsWith('../');
 		if (decode && title.includes('%')) {
 			try {

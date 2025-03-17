@@ -16,9 +16,13 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 	const mt = config.regexRedirect.exec(text);
 	if (
 		mt
-		&& Parser
-			.normalizeTitle(mt[3]!, 0, false, config, true, true, true)
-			.valid
+		&& Parser.normalizeTitle(
+			mt[3]!,
+			0,
+			false,
+			config,
+			{halfParsed: true, temporary: true, decode: true},
+		).valid
 	) {
 		text = `\0${accum.length}o\x7F${text.slice(mt[0].length)}`;
 		// @ts-expect-error abstract class
