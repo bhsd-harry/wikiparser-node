@@ -113,7 +113,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* NOT FOR BROWSER ONLY END */
 
 		const parserConfig = config ?? this.config as Config,
-			{doubleUnderscore} = parserConfig;
+			{
+				doubleUnderscore,
+			} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
@@ -181,8 +183,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		wikitext = tidy(wikitext);
+		let types: Stage[] | undefined;
 		if (typeof maxStage !== 'number') {
-			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
+			types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
