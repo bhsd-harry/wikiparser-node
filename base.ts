@@ -158,7 +158,8 @@ export const stages = /* #__PURE__ */ (() => {
 		list: 10,
 		dd: 10,
 		converter: 11,
-	};
+		'list-range': 11,
+	} satisfies Partial<Record<TokenTypes, number>>;
 	Object.setPrototypeOf(obj, null);
 	return obj;
 })();

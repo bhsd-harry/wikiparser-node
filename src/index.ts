@@ -367,6 +367,8 @@ export class Token extends AstElement {
 				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
+			case 'stage':
+				return this.#stage as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}
