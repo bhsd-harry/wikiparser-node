@@ -153,7 +153,6 @@ module.exports = {
 		},
 		{
 			files: [
-				'bin/*.js',
 				'test/*.ts',
 			],
 			rules: {
