@@ -368,20 +368,20 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* istanbul ignore if */
 		if (this.debugging) {
 			let restored = root.toString(),
-				process = 'parsing';
+				proc = 'parsing';
 			if (restored === wikitext) {
 				const entities = {lt: '<', gt: '>', amp: '&'};
 				restored = root.print().replace(
 					/<[^<]+?>|&([lg]t|amp);/gu,
 					(_, s?: keyof typeof entities) => s ? entities[s] : '',
 				);
-				process = 'printing';
+				proc = 'printing';
 			}
 			if (restored !== wikitext) {
 				const {0: cur, length} = promises;
 				promises.unshift((async (): Promise<void> => {
 					await cur;
-					this.error(`Original wikitext is altered when ${process}!`);
+					this.error(`Original wikitext is altered when ${proc}!`);
 					return diff(wikitext, restored, length);
 				})());
 			}
