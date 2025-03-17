@@ -217,7 +217,6 @@ export abstract class GalleryToken extends Token {
 					// @ts-expect-error abstract class
 					new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
-			token.afterBuild();
 			return this.insertAt(token, i);
 		}
 		throw new SyntaxError(`Invalid file name: ${file}`);

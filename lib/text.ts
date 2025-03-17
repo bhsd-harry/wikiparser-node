@@ -24,6 +24,7 @@ import type {
 
 import {classes} from '../util/constants';
 import {setChildNodes, Shadow} from '../util/debug';
+import {readOnly} from '../mixin/readOnly';
 
 /* NOT FOR BROWSER END */
 
@@ -330,6 +331,7 @@ export class AstText extends AstNode {
 	 * 修改内容
 	 * @param text 新内容
 	 */
+	@readOnly()
 	#setData(text: string): void {
 		/* NOT FOR BROWSER */
 

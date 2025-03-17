@@ -640,7 +640,6 @@ export abstract class TranscludeToken extends Token {
 				token.removeAt(1);
 			}
 			token.append(...cloned);
-			token.afterBuild();
 			return token;
 		});
 	}

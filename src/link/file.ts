@@ -470,7 +470,6 @@ export abstract class FileToken extends LinkBaseToken {
 				.parse(value as string, this.getAttribute('include'), undefined, config);
 			parameter.replaceChildren(...childNodes);
 		}
-		parameter.afterBuild();
 		this.insertAt(parameter);
 	}
 

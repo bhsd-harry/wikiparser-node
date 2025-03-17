@@ -31,6 +31,7 @@ import type {
 import fs from 'fs';
 import path from 'path';
 import {classes} from '../util/constants';
+import {readOnly} from '../mixin/readOnly';
 
 declare type LinkTokens = LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken;
 
@@ -189,6 +190,7 @@ export abstract class AstElement extends AstNode {
 	 * 移除子节点
 	 * @param i position of the child node / 移除位置
 	 */
+	@readOnly()
 	removeAt(i: number): AstNodes {
 		/* NOT FOR BROWSER */
 
@@ -207,6 +209,7 @@ export abstract class AstElement extends AstNode {
 	 * @param i position to be inserted at / 插入位置
 	 * @throws `RangeError` 不能插入祖先或子节点
 	 */
+	@readOnly()
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		/* NOT FOR BROWSER */
 

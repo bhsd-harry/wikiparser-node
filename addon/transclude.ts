@@ -18,7 +18,6 @@ TranscludeToken.prototype.newAnonArg =
 			// @ts-expect-error abstract class
 			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
 		token.lastChild.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
-		token.afterBuild();
 		return this.insertAt(token);
 	};
 
@@ -42,7 +41,6 @@ TranscludeToken.prototype.setValue =
 			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
 		token.firstChild.append(...k.childNodes);
 		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
-		token.afterBuild();
 		this.insertAt(token);
 	};
 

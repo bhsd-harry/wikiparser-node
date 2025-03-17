@@ -113,7 +113,7 @@ export const encode = factory(/[<>[\]#|=]+/gu, encodeURIComponent);
 export const normalizeSpace = (token: AstNodes | undefined): void => {
 	if (token) {
 		for (const child of token.childNodes) {
-			if (child.type === 'text') {
+			if (child.type === 'text' && child.data.includes('\n')) {
 				child.replaceData(child.data.replace(/\n+/gu, ' '));
 			}
 		}

@@ -401,26 +401,31 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		const token = new Token(tidy(wikitext), config);
 		token.type = 'root';
 		let i = 0;
-		await new Promise<void>(resolve => {
-			const /** @ignore */ check = (): void => {
-					if (watch() === wikitext) {
-						i++;
-						set(parseOnce, 0);
-					} else {
-						resolve();
-					}
-				},
-				/** @ignore */ parseOnce = (): void => {
-					if (i === MAX_STAGE + 1) {
-						token.afterBuild();
-						resolve();
-					} else {
-						token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
-						check();
-					}
-				};
-			set(parseOnce, 0);
-		});
+		try {
+			await new Promise<void>(resolve => {
+				const /** @ignore */ check = (): void => {
+						if (watch() === wikitext) {
+							i++;
+							set(parseOnce, 0);
+						} else {
+							resolve();
+						}
+					},
+					/** @ignore */ parseOnce = (): void => {
+						if (i === MAX_STAGE + 1) {
+							token.afterBuild();
+							resolve();
+						} else {
+							token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
+							check();
+						}
+					};
+				set(parseOnce, 0);
+			});
+		} catch (e) /* istanbul ignore next */ {
+			Shadow.running = running;
+			throw e;
+		}
 		Shadow.running = running;
 		return token;
 	},

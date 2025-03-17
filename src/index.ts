@@ -83,6 +83,7 @@ import {Shadow} from '../util/debug';
 import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
+import {readOnly} from '../mixin/readOnly';
 import type {Range} from '../lib/ranges';
 
 /* NOT FOR BROWSER END */
@@ -573,9 +574,8 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
+	@readOnly(true)
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		const {viewOnly} = Parser;
-		Parser.viewOnly = true;
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
@@ -677,7 +677,6 @@ export class Token extends AstElement {
 
 			/* NOT FOR BROWSER ONLY END */
 		}
-		Parser.viewOnly = viewOnly;
 		return errors;
 	}
 
@@ -781,6 +780,7 @@ export class Token extends AstElement {
 	 * @param token token to be replaced with / 待替换的节点
 	 * @throws `Error` 不存在父节点
 	 */
+	@readOnly()
 	safeReplaceWith(token: this): void {
 		const {parentNode} = this;
 		if (!parentNode) {
