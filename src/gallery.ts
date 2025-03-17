@@ -60,7 +60,7 @@ export abstract class GalleryToken extends Token {
 	 * @param file 文件名
 	 */
 	#checkFile(file: string): boolean {
-		return this.normalizeTitle(file, 6, true, true, true).valid;
+		return this.normalizeTitle(file, 6, {halfParsed: true, temporary: true, decode: true}).valid;
 	}
 
 	/** @private */

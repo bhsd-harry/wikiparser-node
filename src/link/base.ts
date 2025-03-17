@@ -186,10 +186,7 @@ export abstract class LinkBaseToken extends Token {
 		return this.normalizeTitle(
 			this.firstChild.toString(true),
 			0,
-			temporary,
-			halfParsed,
-			true,
-			true,
+			{halfParsed, temporary, decode: true, selfLink: true},
 		);
 	}
 }
