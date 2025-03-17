@@ -30,7 +30,7 @@ export abstract class ConverterToken extends Token {
 	constructor(flags: readonly string[], rules: readonly [string, ...string[]], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum);
 		// @ts-expect-error abstract class
-		this.append(new ConverterFlagsToken(flags, config, accum) as ConverterFlagsToken);
+		this.insertAt(new ConverterFlagsToken(flags, config, accum) as ConverterFlagsToken);
 		const [firstRule] = rules,
 			hasColon = firstRule.includes(':'),
 			// @ts-expect-error abstract class
