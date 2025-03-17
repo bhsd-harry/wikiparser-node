@@ -24,6 +24,7 @@ import type {Token} from './internal';
 
 /* NOT FOR BROWSER */
 
+import {RedirectMap} from './lib/redirectMap';
 import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
 
@@ -147,30 +148,6 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER */
 
-/**
- * 快速规范化页面标题
- * @param title 标题
- */
-const normalizeTitle = (title: string): string =>
-	String(Parser.normalizeTitle(title, 0, false, undefined, true));
-
-/** 重定向列表 */
-class RedirectMap extends Map<string, string> {
-	/** @ignore */
-	constructor(entries?: Iterable<[string, string]>) {
-		super();
-		if (entries) {
-			for (const [k, v] of entries) {
-				this.set(k, v);
-			}
-		}
-	}
-
-	override set(key: string, value: string): this {
-		return super.set(normalizeTitle(key), normalizeTitle(value));
-	}
-}
-
 const promises = [Promise.resolve()];
 let viewOnly = false,
 	redirectMap = new RedirectMap();
@@ -202,12 +179,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	set redirects(redirects: Map<string, string>) {
-		redirectMap = new RedirectMap(redirects);
+		redirectMap = redirects instanceof RedirectMap ? redirects : new RedirectMap(redirects);
 	},
 
 	conversionTable: new Map(),
 
-	templates: new Map(),
+	templates: new RedirectMap(undefined, false),
 
 	warning: true,
 	debugging: false,
@@ -233,32 +210,37 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				);
 			}
 
-			/* NOT FOR BROWSER */
-
-			const {config: {conversionTable, redirects}} = this;
-			/* istanbul ignore if */
-			if (conversionTable) {
-				this.conversionTable = new Map(conversionTable);
-			}
-			/* istanbul ignore if */
-			if (redirects) {
-				this.redirects = new Map(redirects);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			return this.getConfig();
 		}
 
 		/* NOT FOR BROWSER ONLY END */
 
 		const parserConfig = config ?? this.config as Config,
-			{doubleUnderscore} = parserConfig;
+			{
+				doubleUnderscore,
+
+				/* NOT FOR BROWSER */
+
+				conversionTable,
+				redirects,
+			} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
 			}
 		}
+
+		/* NOT FOR BROWSER */
+
+		if (conversionTable) {
+			this.conversionTable = new Map(conversionTable);
+		}
+		if (redirects) {
+			this.redirects = new RedirectMap(redirects);
+		}
+
+		/* NOT FOR BROWSER END */
+
 		return {
 			...parserConfig,
 			excludes: [],
@@ -329,8 +311,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		wikitext = tidy(wikitext);
+		let types: Stage[] | undefined;
 		if (typeof maxStage !== 'number') {
-			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
+			types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
@@ -364,6 +347,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		});
 
 		/* NOT FOR BROWSER */
+
+		if (types?.includes('list-range')) {
+			root.buildLists();
+		}
 
 		/* istanbul ignore if */
 		if (this.debugging) {
@@ -477,7 +464,6 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 	},
 
-	/* istanbul ignore next */
 	/** @implements */
 	require(name: string): unknown {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

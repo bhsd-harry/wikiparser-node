@@ -462,11 +462,11 @@ export class Token extends AstElement {
 				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
+			case 'stage':
+				return this.#stage as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER */
 
-			case 'stage':
-				return this.#stage as TokenAttribute<T>;
 			case 'protectedChildren':
 				return this.#protectedChildren as TokenAttribute<T>;
 
