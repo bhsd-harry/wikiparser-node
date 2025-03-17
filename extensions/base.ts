@@ -86,7 +86,7 @@ const workerJS = (): void => {
 	};
 
 	/** @implements */
-	self.onmessage = ({data}: {data: Command}): void => {
+	self.onmessage = ({data}: {data: Command}): void => { // eslint-disable-line no-restricted-globals
 		const [command, qid, wikitext, include, stage, newName] = data;
 		switch (command) {
 			case 'setI18N':
