@@ -104,8 +104,7 @@ const expand = (
 						10,
 						include,
 						c,
-						true,
-						true,
+						{halfParsed: true, temporary: true},
 					);
 				if (!valid) {
 					// @ts-expect-error sparse array
@@ -155,7 +154,7 @@ const expand = (
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
 					const {valid, interwiki} = Parser
-						.normalizeTitle(var1, 0, include, config, true, true);
+						.normalizeTitle(var1, 0, include, config, {halfParsed: true, temporary: true});
 					bool = valid && !interwiki;
 				}
 				return parseIf(accum, prev, c[bool ? 2 : 3]);

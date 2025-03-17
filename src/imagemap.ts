@@ -93,7 +93,7 @@ export abstract class ImagemapToken extends Token {
 						/* NOT FOR BROWSER */
 
 						interwiki,
-					} = this.normalizeTitle(file, 0, true, true);
+					} = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true});
 				if (
 					valid
 					&& !interwiki
@@ -123,14 +123,8 @@ export abstract class ImagemapToken extends Token {
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
 					if (
-						this.normalizeTitle(
-							mtIn[1],
-							0,
-							true,
-							true,
-							false,
-							true,
-						).valid
+						this.normalizeTitle(mtIn[1], 0, {halfParsed: true, temporary: true, selfLink: true})
+							.valid
 					) {
 						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(

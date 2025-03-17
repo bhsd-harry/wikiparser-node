@@ -207,7 +207,7 @@ export abstract class MagicLinkToken extends Token {
 			if (type === 'magic-link') {
 				if (link.startsWith('ISBN')) {
 					return this
-						.normalizeTitle(`BookSources/${link.slice(5)}`, -1, true)
+						.normalizeTitle(`BookSources/${link.slice(5)}`, -1, {temporary: true})
 						.getUrl(articlePath);
 				}
 				link = link.startsWith('RFC')

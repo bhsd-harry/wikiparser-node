@@ -194,7 +194,7 @@ export abstract class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const name = removeComment(title).trim();
-			if (!this.normalizeTitle(name, 10, true, true).valid) {
+			if (!this.normalizeTitle(name, 10, {halfParsed: true, temporary: true}).valid) {
 				accum.pop();
 
 				/* NOT FOR BROWSER */
@@ -278,7 +278,7 @@ export abstract class TranscludeToken extends Token {
 			title = this.normalizeTitle(
 				this.childNodes[isTemplate ? 0 : 1].toString(true),
 				isTemplate ? 10 : 828,
-				true,
+				{temporary: true},
 			);
 		title.fragment = undefined;
 		return title;
@@ -880,7 +880,7 @@ export abstract class TranscludeToken extends Token {
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {type, name} = this;
 		if (type === 'template' && !name.startsWith('Special:')) {
-			if (this.normalizeTitle(name, 0, true, true).valid) {
+			if (this.normalizeTitle(name, 0, {halfParsed: true, temporary: true}).valid) {
 				const title = name.replaceAll('_', ' ');
 				return `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
 					title
