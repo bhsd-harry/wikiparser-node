@@ -61,6 +61,9 @@ Object.assign(globalThis, {
 	window: globalThis,
 	document: {
 		currentScript: {src},
+		createElement() {
+			//
+		},
 	},
 	Worker: MockWorker,
 	IntersectionObserver: class {},
