@@ -79,7 +79,10 @@ export class Title {
 		return this.getRedirection()[1];
 	}
 
-	/** file extension / 扩展名 */
+	/**
+	 * file extension / 扩展名
+	 * @since v1.1.0
+	 */
 	get extension(): string | undefined {
 		const {main} = this,
 			i = main.lastIndexOf('.');
@@ -215,6 +218,7 @@ export class Title {
 	 * Check if the title is a redirect
 	 *
 	 * 检测是否是重定向
+	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
 		const prefix =
@@ -250,6 +254,7 @@ export class Title {
 	 *
 	 * 生成URL
 	 * @param articlePath article path / 条目路径
+	 * @since v1.10.0
 	 */
 	getUrl(articlePath?: string): string {
 		LSP: { // eslint-disable-line no-unused-labels
@@ -334,6 +339,7 @@ export class Title {
 	 * Get the title of its subject page
 	 *
 	 * 转换为主页面
+	 * @since v1.1.0
 	 */
 	toSubjectPage(): void {
 		if (this.isTalkPage()) {
@@ -345,6 +351,7 @@ export class Title {
 	 * Get the title of its talk page
 	 *
 	 * 转换为讨论页面
+	 * @since v1.1.0
 	 */
 	toTalkPage(): void {
 		if (!this.isTalkPage()) {
@@ -356,6 +363,7 @@ export class Title {
 	 * Check if the title is a talk page
 	 *
 	 * 是否是讨论页
+	 * @since v1.1.0
 	 */
 	isTalkPage(): boolean {
 		return this.ns % 2 === 1;
@@ -365,6 +373,7 @@ export class Title {
 	 * Get the title of its base page
 	 *
 	 * 转换为上一级页面
+	 * @since v1.1.0
 	 */
 	toBasePage(): void {
 		this.main = this.main.replace(/\/[^/]*$/u, '');
@@ -374,6 +383,7 @@ export class Title {
 	 * Get the title of its root page
 	 *
 	 * 转换为根页面
+	 * @since v1.1.0
 	 */
 	toRootPage(): void {
 		this.main = this.main.replace(/\/.*/u, '');

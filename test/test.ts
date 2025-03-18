@@ -61,7 +61,7 @@ describe('API tests', () => {
 								if (code.includes('Parser.config = ')) {
 									Parser.config = 'default';
 								}
-							} catch (e) /* istanbul ignore next */ {
+							} catch (e) {
 								if (e instanceof assert.AssertionError) {
 									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
 										end = lines
