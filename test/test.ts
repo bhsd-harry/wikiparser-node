@@ -49,7 +49,7 @@ describe('API tests', () => {
 								if (code.includes('Parser.config = ')) {
 									Parser.config = require('../../config/default');
 								}
-							} catch (e) /* istanbul ignore next */ {
+							} catch (e) {
 								if (e instanceof assert.AssertionError) {
 									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
 										end = lines
@@ -70,7 +70,7 @@ describe('API tests', () => {
 
 setTimeout(() => {
 	void mock.worker.terminate();
-}, 1000);
+}, 2000);
 
 describe('Documentation tests', () => {
 	for (const [file, enCodes] of allCodes) {

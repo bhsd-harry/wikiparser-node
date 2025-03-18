@@ -36,9 +36,8 @@ export const text = (childNodes: readonly (string | AstNodes)[], separator = '')
 
 const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' ', amp: '&', quot: '"'};
 
-/* istanbul ignore next */
 /** decode HTML entities */
-const decodeHtmlBasic = factory(
+export const decodeHtmlBasic = factory(
 	/&(?:#(\d+|[Xx][\da-fA-F]+)|([lg]t|[LG]T|[lr]brac[ke]|nbsp|amp|AMP|quot|QUOT));/gu,
 	(_, code: string, name: string) => code
 		? String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code))
