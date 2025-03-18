@@ -57,7 +57,10 @@ export class Title {
 		return this.getRedirection()[1];
 	}
 
-	/** file extension / 扩展名 */
+	/**
+	 * file extension / 扩展名
+	 * @since v1.1.0
+	 */
 	get extension(): string | undefined {
 		const {main} = this,
 			i = main.lastIndexOf('.');
@@ -140,6 +143,7 @@ export class Title {
 	 * Check if the title is a redirect
 	 *
 	 * 检测是否是重定向
+	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
 		const prefix =
@@ -158,6 +162,7 @@ export class Title {
 	 *
 	 * 生成URL
 	 * @param articlePath article path / 条目路径
+	 * @since v1.10.0
 	 */
 	getUrl(articlePath?: string): string {
 		LSP: { // eslint-disable-line no-unused-labels
