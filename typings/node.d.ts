@@ -22,7 +22,6 @@ declare global {
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' | 'plain' | 'built' ? boolean :
 		T extends 'title' ? Title :
-		T extends 'colon' ? string :
 
 		/* NOT FOR BROWSER */
 
@@ -34,5 +33,5 @@ declare global {
 
 		/* NOT FOR BROWSER END */
 
-		unknown;
+		string;
 }

@@ -103,7 +103,7 @@ export const undo: AstListener = (e, data): void => {
 			setChildNodes(target.parentNode!, data.position, 1, [data.oldToken]);
 			break;
 		case 'text':
-			(target as AstText).replaceData(data.oldText);
+			(target as AstText).setAttribute('data', data.oldText);
 			break;
 		/* istanbul ignore next */
 		default:

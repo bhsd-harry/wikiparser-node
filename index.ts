@@ -47,6 +47,7 @@ import {
 /* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
+	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
 
 	/* NOT FOR BROWSER */
@@ -54,7 +55,9 @@ declare interface Parser extends ParserBase {
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 
+	/** @since v1.10.0 */
 	templateDir?: string;
+	/** @since v1.10.0 */
 	templates: Map<string, string>;
 
 	warning: boolean;
@@ -93,6 +96,7 @@ declare interface Parser extends ParserBase {
 	 *
 	 * 创建语言服务
 	 * @param uri document URI / 文档标识
+	 * @since v1.16.1
 	 */
 	createLanguageService(uri: object): LanguageService;
 

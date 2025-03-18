@@ -318,6 +318,7 @@ interface Token extends AstNode {
 	 * Generate HTML
 	 *
 	 * 生成HTML
+	 * @since v1.10.0
 	 */
 	toHtml(): string;
 }
@@ -510,6 +511,7 @@ export interface Parser {
 
 	/* NOT FOR BROWSER */
 
+	/** @since v1.9.0 */
 	viewOnly: boolean;
 
 	/* NOT FOR BROWSER END */
@@ -536,6 +538,7 @@ export interface Parser {
 	 *
 	 * 创建语言服务
 	 * @param uri document URI / 文档标识
+	 * @since v1.16.1
 	 */
 	createLanguageService(uri: object): LanguageService;
 }

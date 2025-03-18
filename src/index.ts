@@ -875,7 +875,7 @@ export class Token extends AstElement {
 			token.type = this.type;
 			token.setAttribute('stage', this.#stage);
 			token.setAttribute('include', Boolean(this.#include));
-			token.setAttribute('name', this.name);
+			token.setAttribute('name', this.name!);
 			token.append(...cloned);
 			token.protectChildren(...this.#protectedChildren);
 			return token;
