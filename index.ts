@@ -28,6 +28,7 @@ import {
 /* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
+	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
 
 	/** @private */
@@ -61,6 +62,7 @@ declare interface Parser extends ParserBase {
 	 *
 	 * 创建语言服务
 	 * @param uri document URI / 文档标识
+	 * @since v1.16.1
 	 */
 	createLanguageService(uri: object): LanguageService;
 }

@@ -403,6 +403,7 @@ export class LanguageService implements LanguageServiceBase {
 	#config: Config | string;
 	#include: boolean;
 	#completionConfig: [CompletionConfig, Config] | undefined;
+	/** @since v1.17.1 */
 	include = true;
 	/** @private */
 	config?: Config;
