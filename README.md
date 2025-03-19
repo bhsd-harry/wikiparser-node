@@ -82,6 +82,7 @@ Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Ho
 
 ## Parser
 
+1. Memory leaks may occur in rare cases.
 1. Preformatted text with a leading space is only processed by [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
 
 ## HTML conversion
