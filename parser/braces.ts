@@ -50,8 +50,19 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	 * @param s 不含内链的字符串
 	 */
 	const restore = (s: string): string => s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => linkStack[p1]!);
+
+	/**
+	 * 填入模板内容
+	 * @param text wikitext全文
+	 * @param parts 模板参数
+	 * @param lastIndex 匹配的起始位置
+	 * @param index 匹配位置
+	 */
+	const push = (text: string, parts: string[][], lastIndex: number, index: number): void => {
+		parts[parts.length - 1]!.push(restore(text.slice(lastIndex, index)));
+	};
 	wikitext = wikitext.replace(
-		/\{\{([^\n{}[]*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]/gu,
+		/\{\{([^\n{}[]*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]|-\{[^\n{}[]*\}-/gu,
 		(m, p1?: string) => {
 			if (p1 !== undefined) {
 				try {
@@ -98,14 +109,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			top: BraceExecArrayOrEmpty = stack.pop() ?? {},
 			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
 			innerEqual = syntax === '=' && topFindEqual;
-
-		/**
-		 * 填入模板内容
-		 * @param text wikitext全文
-		 */
-		const push = (text: string): void => {
-			parts![parts!.length - 1]!.push(restore(text.slice(topPos, curIndex)));
-		};
 		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
 			lastIndex = curIndex + 2;
 		} else if (syntax === '\n') { // 情形2：闭合标题或文末
@@ -124,7 +127,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
 			lastIndex = curIndex + 1;
-			push(wikitext);
+			push(wikitext, parts!, topPos!, curIndex);
 			if (syntax === '|') {
 				parts!.push([]);
 			}
@@ -136,7 +139,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 				rest = open!.length - close.length,
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-			push(wikitext);
+			push(wikitext, parts!, topPos!, curIndex);
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
