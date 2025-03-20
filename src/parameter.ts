@@ -132,7 +132,7 @@ export abstract class ParameterToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {anon: this.anon, duplicated: this.duplicated});
+		Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
 		return json;
 	}
 }
