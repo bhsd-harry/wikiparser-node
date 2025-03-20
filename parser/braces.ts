@@ -5,7 +5,8 @@ import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-const closes: Record<string, string> = {
+const MAXITER = 20_000,
+	closes: Record<string, string> = {
 		'=': String.raw`\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)`,
 		'{': String.raw`\}{2,}|\|`,
 		'-': String.raw`\}-`,
@@ -35,7 +36,8 @@ const getSymbol = (s: string): string => {
  * @param wikitext
  * @param config
  * @param accum
- * @throws TranscludeToken.constructor()
+ * @throws `RangeError` Maximum iteration exceeded
+ * @throws `TranscludeToken.constructor()`
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${
@@ -94,12 +96,16 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	let moreBraces = lastBraces + wikitext.length !== -1;
 	let regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
+		iter = 0,
 		lastIndex: number | undefined;
 	while (
 		mt
 		|| lastIndex !== undefined && lastIndex <= wikitext.length
 		&& stack[stack.length - 1]?.[0]?.startsWith('=')
 	) {
+		if (++iter > MAXITER) {
+			throw new RangeError('Maximum iteration exceeded');
+		}
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0].slice(length);
