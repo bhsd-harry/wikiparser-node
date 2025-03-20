@@ -38,7 +38,8 @@ const frame = new Map([
 		['thumbnail', 'Thumb'],
 	]),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
-	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
+	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']),
+	extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
 
 /**
  * a more sophisticated string-explode function
@@ -91,14 +92,10 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
-	/* PRINT ONLY */
-
 	/** file extension / 扩展名 */
 	get extension(): string | undefined {
 		return this.getAttribute('title').extension;
 	}
-
-	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 
@@ -217,17 +214,21 @@ export abstract class FileToken extends LinkBaseToken {
 		 * 图片参数到语法错误的映射
 		 * @param msg 消息键
 		 * @param p1 替换$1
+		 * @param severity 错误等级
 		 */
-		const generate = (msg: string, p1: string) => (arg: ImageParameterToken): LintError => {
-			const e = generateForChild(
-				arg,
-				rect,
-				'no-duplicate',
-				Parser.msg(`${msg} image $1 parameter`, p1),
-			);
-			e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
-			return e;
-		};
+		const generate = (msg: string, p1: string, severity?: LintError.Severity) =>
+			(arg: ImageParameterToken): LintError => {
+				const e = generateForChild(
+					arg,
+					rect,
+					'no-duplicate',
+					Parser.msg(`${msg} image $1 parameter`, p1),
+					severity,
+				);
+				e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
+				return e;
+			};
+		const {extension} = this;
 		for (const key of keys) {
 			if (key === 'invalid' || key === 'width' && unscaled) {
 				continue;
@@ -240,7 +241,11 @@ export abstract class FileToken extends LinkBaseToken {
 				];
 			}
 			if (relevantArgs.length > 1) {
-				errors.push(...relevantArgs.map(generate('duplicated', key)));
+				errors.push(...relevantArgs.map(generate(
+					'duplicated',
+					key,
+					key === 'caption' && extension && !extensions.has(extension) ? 'warning' : 'error',
+				)));
 			}
 		}
 		if (frameKeys.length > 1) {

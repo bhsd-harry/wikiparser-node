@@ -1,6 +1,6 @@
 ## v1.18.3
 
-*2025-03-18*
+*2025-03-21*
 
 **Added**
 
@@ -14,6 +14,7 @@
 
 - [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#duplicated) property only if it is `true`
 - [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#colspan) properties only if they are greater than `1`
+- [`FileToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#lint) now reports warnings instead of errors for duplicated `caption` parameters of an unknown file type
 
 ## v1.18.2
 
