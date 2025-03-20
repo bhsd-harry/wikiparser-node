@@ -5,8 +5,16 @@ import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-const MAXITER = 20_000,
-	closes: Record<string, string> = {
+/* NOT FOR BROWSER ONLY */
+
+import {getHeapStatistics} from 'v8';
+
+const MAXHEAP = getHeapStatistics().total_available_size * 0.9,
+	MAXITER = MAXHEAP / 2e5;
+
+/* NOT FOR BROWSER ONLY END */
+
+const closes: Record<string, string> = {
 		'=': String.raw`\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)`,
 		'{': String.raw`\}{2,}|\|`,
 		'-': String.raw`\}-`,
@@ -103,9 +111,14 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		|| lastIndex !== undefined && lastIndex <= wikitext.length
 		&& stack[stack.length - 1]?.[0]?.startsWith('=')
 	) {
-		if (++iter > MAXITER) {
+		/* NOT FOR BROWSER ONLY */
+
+		if (iter++ > MAXITER && process.memoryUsage().heapUsed > MAXHEAP) {
 			throw new RangeError('Maximum iteration exceeded');
 		}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0].slice(length);
