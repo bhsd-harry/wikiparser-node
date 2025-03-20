@@ -65,6 +65,13 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER END */
 
+	/* NOT FOR BROWSER ONLY */
+
+	/** @private */
+	lintCSS: boolean;
+
+	/* NOT FOR BROWSER ONLY END */
+
 	/** @private */
 	msg(msg: string, arg?: string): string;
 
@@ -191,6 +198,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	debugging: false,
 
 	/* NOT FOR BROWSER END */
+
+	/* NOT FOR BROWSER ONLY */
+
+	lintCSS: true,
+
+	/* NOT FOR BROWSER ONLY END */
 
 	/** @implements */
 	getConfig(config?: Config) {

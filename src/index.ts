@@ -652,7 +652,7 @@ export class Token extends AstElement {
 			});
 
 			/* NOT FOR BROWSER ONLY */
-		} else if (isAttr(this, true)) {
+		} else if (Parser.lintCSS && isAttr(this, true)) {
 			const root = this.getRootNode(),
 				textDoc = new EmbeddedCSSDocument(root, this);
 			errors.push(

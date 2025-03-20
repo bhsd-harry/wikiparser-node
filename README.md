@@ -78,6 +78,10 @@ Parser.config = 'jawiki';
 
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).
 
+# Performance
+
+A full dump scan of Chinese Wikipedia's ~2.8 million articles (parsing and linting) on a personal MacBook Air takes about 4 hours.
+
 # Known issues
 
 ## Parser

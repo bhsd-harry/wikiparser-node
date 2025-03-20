@@ -78,6 +78,10 @@ Parser.config = 'jawiki';
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
 
+# 性能
+
+在一台个人的 MacBook Air 上对中文维基百科约 280 万篇条目的一次完整扫描（解析和语法错误分析）需要约 4 小时。
+
 # 已知问题
 
 请参阅[英语版本](./README.md#known-issues)。
