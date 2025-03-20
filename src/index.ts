@@ -55,6 +55,13 @@ import {
 	classes,
 } from '../util/constants';
 import {generateForSelf, cache} from '../util/lint';
+import {
+	setChildNodes,
+
+	/* NOT FOR BROWSER */
+
+	Shadow,
+} from '../util/debug';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
@@ -79,7 +86,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import assert from 'assert/strict';
-import {Shadow} from '../util/debug';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import {readOnly} from '../mixin/readOnly';
@@ -292,7 +298,7 @@ export class Token extends AstElement {
 		const {length, firstChild} = this,
 			str = firstChild?.toString();
 		if (length === 1 && firstChild!.type === 'text' && str!.includes('\0')) {
-			this.replaceChildren(...this.buildFromStr(str!));
+			setChildNodes(this, 0, 1, this.buildFromStr(str!));
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {

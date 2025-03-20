@@ -332,8 +332,9 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
-		Object.assign(json, {subtype: this.subtype, rowspan: this.rowspan, colspan: this.colspan});
+		const json = super.json(undefined, start),
+			{rowspan, colspan} = this;
+		Object.assign(json, {subtype: this.subtype}, rowspan !== 1 && {rowspan}, colspan !== 1 && {colspan});
 		return json;
 	}
 

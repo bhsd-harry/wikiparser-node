@@ -6,6 +6,15 @@
 
 - `AstElement.prototype.escape` method that escapes `=` and `|` characters for building a template parameter
 
+**Fixed**
+
+- Stack overflow when there are too many tokens in a page
+
+**Changed**
+
+- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#duplicated) property only if it is `true`
+- [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#colspan) properties only if they are greater than `1`
+
 ## v1.18.2
 
 *2025-03-15*
