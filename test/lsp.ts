@@ -29,12 +29,17 @@ declare type Key = keyof LanguageService | 'constructor';
  * @param method 方法名
  * @param title 页面名
  * @param fn 测试指令
+ * @param summary 是否汇总
  */
-const wrap = async (method: string, title: string, fn: () => Promise<unknown>): Promise<void> => {
+const wrap = async (method: string, title: string, fn: () => Promise<unknown>, summary?: boolean): Promise<void> => {
 	try {
-		console.time(`${method}: ${title}`);
+		if (!summary) {
+			console.time(`${method}: ${title}`);
+		}
 		await fn();
-		console.timeEnd(`${method}: ${title}`);
+		if (!summary) {
+			console.timeEnd(`${method}: ${title}`);
+		}
 	} catch (e) {
 		error(`执行 ${method} 时出错！`);
 		throw e;
@@ -72,8 +77,9 @@ const indexToPos = (
  * @param page 页面
  * @param page.title 页面标题
  * @param page.content 页面源代码
+ * @param summary 是否汇总
  */
-export default async ({title, content}: SimplePage): Promise<void> => {
+export default async ({title, content}: SimplePage, summary?: boolean): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	const lsp = Parser.createLanguageService({});
 
@@ -102,6 +108,9 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 
 	/* NOT FOR BROWSER ONLY END */
 
+	if (summary) {
+		console.time('LSP');
+	}
 	await wrap('provideInlayHints', title, () => {
 		void lsp.provideInlayHints(
 			`${content} `,
@@ -110,7 +119,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 		return new Promise(resolve => {
 			resolve(lsp.provideInlayHints(content));
 		});
-	});
+	}, summary);
 
 	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype) as Key[]) {
 		switch (method) {
@@ -125,7 +134,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'setTargetWikipedia':
 				break;
 			case 'provideDocumentColors':
-				await wrap(method, title, () => lsp.provideDocumentColors(rgba, content));
+				await wrap(method, title, () => lsp.provideDocumentColors(rgba, content), summary);
 				break;
 			case 'provideCompletionItems': {
 				const positions = [
@@ -159,7 +168,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 						for (const pos of positions) {
 							check(await lsp.provideCompletionItems(content, pos), title, pos);
 						}
-					});
+					}, summary);
 				}
 				break;
 			}
@@ -167,7 +176,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'provideLinks':
 			case 'provideDiagnostics':
 			case 'provideDocumentSymbols':
-				await wrap(method, title, () => lsp[method](content));
+				await wrap(method, title, () => lsp[method](content), summary);
 				break;
 
 				/* NOT FOR BROWSER ONLY */
@@ -192,7 +201,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 						for (const pos of positions) {
 							check(await lsp.provideReferences(content, pos), title, pos);
 						}
-					});
+					}, summary);
 				}
 				break;
 			}
@@ -203,7 +212,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 						for (const pos of renamePositions) {
 							check(await lsp[method](content, pos, 'x'), title, pos);
 						}
-					});
+					}, summary);
 				}
 				break;
 			case 'provideHover': {
@@ -214,14 +223,14 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 						for (const pos of positions) {
 							check(await lsp.provideHover(content, pos), title, pos);
 						}
-					});
+					}, summary);
 				}
 				break;
 			}
 			case 'provideSignatureHelp':
 				if (parserFunctionName) {
 					const pos = indexToPos(root, parserFunctionName.nextSibling!.getAbsoluteIndex());
-					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos));
+					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos), summary);
 				}
 				break;
 
@@ -232,4 +241,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 		}
 	}
 	lsp.destroy();
+	if (summary) {
+		console.timeEnd('LSP');
+	}
 };
