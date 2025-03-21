@@ -17,7 +17,7 @@ WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext
 
 ## Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for a [VSCode extension](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) and an [ESLint plugin](https://www.npmjs.com/package/eslint-plugin-wikitext).
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VSCode extension.
 
 ## Browser-compatible
 
