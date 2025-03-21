@@ -16,12 +16,17 @@ wikiparse.setConfig({...config, articlePath: 'https://mediawiki.org/wiki/$1'});
  * @param method 方法名
  * @param title 页面名
  * @param fn 测试指令
+ * @param summary 是否汇总
  */
-const wrap = async (method: string, title: string, fn: () => Promise<unknown>): Promise<void> => {
+const wrap = async (method: string, title: string, fn: () => Promise<unknown>, summary?: boolean): Promise<void> => {
 	try {
-		console.time(`${method}: ${title}`);
+		if (!summary) {
+			console.time(`${method}: ${title}`);
+		}
 		await fn();
-		console.timeEnd(`${method}: ${title}`);
+		if (!summary) {
+			console.timeEnd(`${method}: ${title}`);
+		}
 	} catch (e) {
 		error(`执行 ${method} 时出错！`);
 		throw e;
@@ -59,11 +64,15 @@ const indexToPos = (
  * @param page 页面
  * @param page.title 页面标题
  * @param page.content 页面源代码
+ * @param summary 是否汇总
  */
-export default async ({title, content}: SimplePage): Promise<void> => {
+export default async ({title, content}: SimplePage, summary?: boolean): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	const lsp = new wikiparse.LanguageService!();
 
+	if (summary) {
+		console.time('LSP');
+	}
 	await wrap('provideInlayHints', title, () => {
 		void lsp.provideInlayHints(
 			`${content} `,
@@ -72,7 +81,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 		return new Promise(resolve => {
 			resolve(lsp.provideInlayHints(content));
 		});
-	});
+	}, summary);
 
 	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype) as Key[]) {
 		switch (method) {
@@ -91,7 +100,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'include':
 				break;
 			case 'provideDocumentColors':
-				await wrap(method, title, () => lsp.provideDocumentColors(content));
+				await wrap(method, title, () => lsp.provideDocumentColors(content), summary);
 				break;
 			case 'provideCompletionItems': {
 				const positions = [
@@ -111,18 +120,21 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 						for (const pos of positions) {
 							check(await lsp.provideCompletionItems(content, pos), title, pos);
 						}
-					});
+					}, summary);
 				}
 				break;
 			}
 			case 'provideFoldingRanges':
 			case 'provideLinks':
 			case 'provideDiagnostics':
-				await wrap(method, title, () => lsp[method](content));
+				await wrap(method, title, () => lsp[method](content), summary);
 				break;
 			default:
 				throw new Error(`未检测的方法：${method as string}`);
 		}
 	}
 	lsp.destroy();
+	if (summary) {
+		console.timeEnd('LSP');
+	}
 };
