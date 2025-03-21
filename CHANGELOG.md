@@ -9,6 +9,7 @@
 **Fixed**
 
 - Stack overflow when there are too many tokens in a page
+- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) should not report appropriate HTML tags (`<tr>`, `<td>`, `<th>` and `<caption>`) as `fostered-content`
 
 **Changed**
 
