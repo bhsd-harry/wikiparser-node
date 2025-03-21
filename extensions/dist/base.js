@@ -221,7 +221,7 @@ const splitNewLine = (html) => {
 };
 const getGutter = (container) => container.querySelector('.wikiparser-line-numbers');
 const size = (html) => {
-    const container = html.parentElement, gutter = getGutter(container);
+    const container = html.parentElement, { isContentEditable } = html, { clientHeight } = container, gutter = getGutter(container);
     if (!gutter) {
         intersectionObserver.unobserve(html);
         return;
@@ -230,6 +230,9 @@ const size = (html) => {
     const start = Number(html.dataset['start'] || 1), lines = splitNewLine(html), width = `${String(lines.length + start - 1).length + 1.5}ch`;
     html.style.marginLeft = width;
     gutter.style.width = width;
+    if (isContentEditable) {
+        gutter.style.minHeight = `${clientHeight + 1}px`;
+    }
     const sizer = document.createElement('span'), { style: { paddingLeft, paddingRight } } = html;
     sizer.className = 'wikiparser-sizer';
     sizer.style.paddingLeft = paddingLeft;
@@ -250,11 +253,10 @@ const size = (html) => {
         lastTop = top;
     }
     if (line) {
-        const noScroll = html.offsetHeight <= container.clientHeight;
-        if (html.isContentEditable) {
-            line.style.height = `${container.clientHeight}px`;
+        if (isContentEditable) {
+            line.style.height = `${clientHeight}px`;
         }
-        else if (noScroll) {
+        else if (html.offsetHeight <= clientHeight) {
             line.style.height = `${container.getBoundingClientRect().top + container.scrollHeight - lastTop}px`;
             container.style.overflowY = 'hidden';
         }

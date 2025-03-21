@@ -358,6 +358,8 @@ const getGutter = (container: HTMLElement): HTMLElement | null =>
  */
 const size = (html: HTMLElement): void => {
 	const container = html.parentElement!,
+		{isContentEditable} = html,
+		{clientHeight} = container,
 		gutter = getGutter(container);
 	if (!gutter) {
 		intersectionObserver.unobserve(html);
@@ -369,6 +371,9 @@ const size = (html: HTMLElement): void => {
 		width = `${String(lines.length + start - 1).length + 1.5}ch`;
 	html.style.marginLeft = width;
 	gutter.style.width = width;
+	if (isContentEditable) {
+		gutter.style.minHeight = `${clientHeight + 1}px`;
+	}
 	const sizer = document.createElement('span'),
 		{style: {paddingLeft, paddingRight}} = html;
 	sizer.className = 'wikiparser-sizer';
@@ -392,10 +397,9 @@ const size = (html: HTMLElement): void => {
 		lastTop = top;
 	}
 	if (line) {
-		const noScroll = html.offsetHeight <= container.clientHeight;
-		if (html.isContentEditable) {
-			line.style.height = `${container.clientHeight}px`;
-		} else if (noScroll) {
+		if (isContentEditable) {
+			line.style.height = `${clientHeight}px`;
+		} else if (html.offsetHeight <= clientHeight) {
 			line.style.height = `${container.getBoundingClientRect().top + container.scrollHeight - lastTop!}px`;
 			container.style.overflowY = 'hidden';
 		} else {
