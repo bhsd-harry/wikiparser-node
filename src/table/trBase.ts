@@ -8,6 +8,7 @@ import type {
 	AstNodes,
 	ArgToken,
 	TranscludeToken,
+	HtmlToken,
 } from '../../internal';
 
 export interface TableCoords {
@@ -17,6 +18,8 @@ export interface TableCoords {
 	readonly y?: undefined;
 	readonly start?: boolean;
 }
+
+const tableTags = new Set(['tr', 'td', 'th', 'caption']);
 
 /**
  * table row or table
@@ -39,6 +42,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 			!first
 			|| tdPattern.test(first.toString())
 			|| first.is<ArgToken>('arg') && tdPattern.test(first.default || '')
+			|| first.is<HtmlToken>('html') && tableTags.has(first.name)
 		) {
 			return errors;
 		} else if (first.is<TranscludeToken>('magic-word')) {
