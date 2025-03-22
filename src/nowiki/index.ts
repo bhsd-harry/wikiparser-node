@@ -1,8 +1,13 @@
+import {getRegex} from '@bhsd/common';
 import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
+
+const getLintRegex = getRegex(
+	name => new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'),
+);
 
 /**
  * text-only token inside an extension tag
@@ -33,7 +38,6 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			e.fix = {range: [start, e.endIndex], text: '', desc: 'empty'};
 			return [e];
 		}
-		const re = new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu');
-		return super.lint(start, re);
+		return super.lint(start, getLintRegex(name));
 	}
 }

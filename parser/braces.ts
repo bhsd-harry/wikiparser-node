@@ -1,3 +1,4 @@
+import {getRegex} from '@bhsd/common';
 import {removeComment} from '../util/string';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
@@ -21,7 +22,8 @@ const closes: Record<string, string> = {
 		'[': String.raw`\]\]`,
 	},
 	openBraces = String.raw`|\{{2,}`,
-	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]);
+	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
+	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
 
 /**
  * 获取模板或魔术字对应的字符
@@ -102,7 +104,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	);
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let moreBraces = lastBraces + wikitext.length !== -1;
-	let regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
+	let regex = getExecRegex(source + (moreBraces ? openBraces : '')),
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		iter = 0,
 		lastIndex: number | undefined;
@@ -216,11 +218,10 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 				curTop = stack[stack.length - 1];
 			}
 		}
-		regex = new RegExp(
+		regex = getExecRegex(
 			source
 			+ (moreBraces ? openBraces : '')
 			+ (curTop ? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}` : ''),
-			'gmu',
 		);
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(wikitext);
