@@ -15,10 +15,11 @@ export class SyntaxToken extends Token {
 		return this.#type;
 	}
 
-	/** @param pattern 语法正则 */
+	/**
+	 * @class
+	 */
 	constructor(
 		wikitext: string | undefined,
-		pattern: RegExp,
 		type: SyntaxTypes,
 		config?: Config,
 		accum?: Token[],

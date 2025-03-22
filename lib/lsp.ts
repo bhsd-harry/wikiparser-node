@@ -1,6 +1,7 @@
 import {
 	splitColors,
 	numToHex,
+	getRegex,
 } from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos, htmlData} from '../util/lint';
@@ -96,6 +97,7 @@ const refTags = new Set(['ref']),
 	]),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+const getLinkRegex = getRegex(protocol => new RegExp(`^(?:${protocol}|//)`, 'iu'));
 
 /**
  * Check if a token is a plain attribute.
@@ -844,7 +846,7 @@ export class LanguageService implements LanguageServiceBase {
 		this.config ??= Parser.getConfig();
 		const {articlePath, protocol} = this.config,
 			absolute = articlePath?.includes('//'),
-			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
+			protocolRegex = getLinkRegex(protocol);
 		return (await this.#queue(text))
 			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
 				absolute ? ',link-target,template-name,invoke-module,magic-word#filepath,magic-word#widget' : ''

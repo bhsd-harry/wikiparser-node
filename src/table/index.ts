@@ -16,8 +16,6 @@ import type {TableCoords} from './trBase';
 
 export type TableTokens = TableToken | TrToken | TdToken;
 
-const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
-
 /**
  * 生成一个指定长度的空数组
  * @param n 数组长度
@@ -132,7 +130,6 @@ export abstract class TableToken extends TrBaseToken {
 		Shadow.run(() => {
 			const token = new SyntaxToken(
 				undefined,
-				closingPattern,
 				'table-syntax',
 				config,
 				accum,

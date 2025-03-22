@@ -38,8 +38,12 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	) {
 		super(undefined, config, accum, acceptable);
 		this.append(
-			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
-			}),
+			new SyntaxToken(
+				syntax,
+				'table-syntax',
+				config,
+				accum,
+			),
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,
 		);
