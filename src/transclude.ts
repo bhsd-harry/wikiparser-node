@@ -107,9 +107,12 @@ export abstract class TranscludeToken extends Token {
 				if (fullWidth) {
 					this.#colon = '：';
 				}
-				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
-					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
-					});
+				const token = new SyntaxToken(
+					magicWord,
+					'magic-word-name',
+					config,
+					accum,
+				);
 				super.insertAt(token);
 				if (arg !== false) {
 					parts.unshift([arg]);

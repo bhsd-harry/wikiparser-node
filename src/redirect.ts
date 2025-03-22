@@ -43,13 +43,13 @@ export abstract class RedirectToken extends Token {
 		super(undefined, config, accum);
 		this.#pre = pre;
 		this.#post = post;
-		const pattern = new RegExp(
-			String.raw`^(?:${config.redirection.join('|')})\s*(?::\s*)?$`,
-			'iu',
-		);
 		this.append(
-			new SyntaxToken(syntax, pattern, 'redirect-syntax', config, accum, {
-			}),
+			new SyntaxToken(
+				syntax,
+				'redirect-syntax',
+				config,
+				accum,
+			),
 			// @ts-expect-error abstract class
 			new RedirectTargetToken(link, text?.slice(1), config, accum) as RedirectTargetToken,
 		);

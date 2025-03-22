@@ -1,6 +1,3 @@
-import {
-	escapeRegExp,
-} from '../../util/string';
 import {generateForChild, generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -26,24 +23,21 @@ const frame = new Map([
 
 /**
  * a more sophisticated string-explode function
- * @param start start syntax of a nested AST node
- * @param end end syntax of a nested AST node
- * @param separator syntax for explosion
  * @param str string to be exploded
  */
-const explode = (start: string, end: string, separator: string, str?: string): string[] => {
+const explode = (str?: string): string[] => {
 	if (str === undefined) {
 		return [];
 	}
-	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'gu'),
+	const regex = /-\{|\}-|\|/gu,
 		exploded: string[] = [];
 	let mt = regex.exec(str),
 		depth = 0,
 		lastIndex = 0;
 	while (mt) {
 		const {0: match, index} = mt;
-		if (match !== separator) {
-			depth += match === start ? 1 : -1;
+		if (match !== '|') {
+			depth += match === '-{' ? 1 : -1;
 		} else if (depth === 0) {
 			exploded.push(str.slice(lastIndex, index));
 			({lastIndex} = regex);
@@ -81,7 +75,7 @@ export abstract class FileToken extends LinkBaseToken {
 	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
 		const {extension} = this.getTitle(true, true);
-		this.append(...explode('-{', '}-', '|', text).map(
+		this.append(...explode(text).map(
 			// @ts-expect-error abstract class
 			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),
 		));
