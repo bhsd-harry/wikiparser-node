@@ -1,3 +1,4 @@
+import {getRegex} from '@bhsd/common';
 import {removeComment} from '../util/string';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
@@ -27,7 +28,8 @@ const closes: Record<string, string> = {
 		'[': String.raw`\]\]`,
 	},
 	openBraces = String.raw`|\{{2,}`,
-	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]);
+	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
+	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
 
 /**
  * 获取模板或魔术字对应的字符
@@ -110,7 +112,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	let moreBraces = lastBraces + wikitext.length !== -1;
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	/^((?:\0\d+[cno]\x7F)*)={1,6}|\[\[|-\{(?!\{)|\{{2,}|\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)|[|=]|\}{2,}|\}-|\]\]/gmu;
-	let regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
+	let regex = getExecRegex(source + (moreBraces ? openBraces : '')),
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		iter = 0,
 		lastIndex: number | undefined;
@@ -225,11 +227,10 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			}
 		}
 		/\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-		regex = new RegExp(
+		regex = getExecRegex(
 			source
 			+ (moreBraces ? openBraces : '')
 			+ (curTop ? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}` : ''),
-			'gmu',
 		);
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(wikitext);

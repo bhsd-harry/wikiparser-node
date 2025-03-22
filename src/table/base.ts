@@ -69,9 +69,14 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	) {
 		super(undefined, config, accum, acceptable);
 		this.append(
-			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
-				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-			}),
+			new SyntaxToken(
+				syntax,
+				pattern,
+				'table-syntax',
+				config,
+				accum,
+				{'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':'},
+			),
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,
 		);

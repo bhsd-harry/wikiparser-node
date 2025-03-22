@@ -24,6 +24,7 @@ import type {Token} from './internal';
 
 /* NOT FOR BROWSER */
 
+import {getObjRegex} from '@bhsd/common';
 import {RedirectMap} from './lib/redirectMap';
 import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
@@ -157,6 +158,10 @@ const rootRequire = (file: string, dir: string): unknown => require(
 /* NOT FOR BROWSER */
 
 const promises = [Promise.resolve()];
+/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const getInterwikiRegex = getObjRegex<string[]>(
+	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
+);
 let viewOnly = false,
 	redirectMap = new RedirectMap();
 
@@ -496,14 +501,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		if (interwiki.length > 0) {
-			/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-			const re = new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu');
-			return re.exec(
+		return interwiki.length > 0
+			? getInterwikiRegex(interwiki).exec(
 				title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
-			);
-		}
-		return null;
+			)
+			: null;
 	},
 
 	/* istanbul ignore next */

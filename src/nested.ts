@@ -18,7 +18,13 @@ import {classes} from '../util/constants';
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 
-const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']);
+const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']),
+	lintRegex = [false, true].map(article => {
+		const noinclude = article ? 'includeonly' : 'noinclude';
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		/^(?:<noinclude(?:\s[^>]*)?\/?>|<\/noinclude\s*>)$/iu;
+		return new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu');
+	}) as [RegExp, RegExp];
 
 /**
  * extension tag that has a nested structure
@@ -103,12 +109,7 @@ export abstract class NestedToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const rect = new BoundingRect(this, start),
-			noinclude = this.#regex ? 'includeonly' : 'noinclude';
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/^(?:<noinclude(?:\s[^>]*)?\/?>|<\/noinclude\s*>)$/iu;
-		const regex = typeof this.#regex === 'boolean'
-			? new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu')
-			: /^<!--[\s\S]*-->$/u;
+			regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
 		return [
 			...super.lint(start, re),
 			...this.childNodes.filter(child => {

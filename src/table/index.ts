@@ -32,11 +32,11 @@ export interface TableRenderedCoords {
 	readonly y: number;
 }
 
+const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
+
 /* NOT FOR BROWSER END */
 
 export type TableTokens = TableToken | TrToken | TdToken;
-
-const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
 /**
  * 生成一个指定长度的空数组

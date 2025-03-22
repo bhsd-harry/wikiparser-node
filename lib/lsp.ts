@@ -1,6 +1,7 @@
 import {
 	splitColors,
 	numToHex,
+	getRegex,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -117,6 +118,7 @@ const cssRules = {
 	},
 	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
+let colors: RegExp | false | undefined;
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -144,6 +146,8 @@ const refTags = new Set(['ref']),
 	]),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
+/^(?:http:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const getLinkRegex = getRegex(protocol => new RegExp(`^(?:${protocol}|//)`, 'iu'));
 
 /**
  * Check if a token is a plain attribute.
@@ -565,13 +569,16 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY */
 
-		let colors: RegExp | undefined;
+		/* eslint-disable require-atomic-updates */
 		try {
-			colors = new RegExp(
+			colors ??= new RegExp(
 				String.raw`\b${Object.keys((await import('color-name')).default).join('|')}\b`,
 				'giu',
 			);
-		} catch {}
+		} catch {
+			colors = false;
+		}
+		/* eslint-enable require-atomic-updates */
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -611,7 +618,7 @@ export class LanguageService implements LanguageServiceBase {
 
 						if (isStyle) {
 							parts.push(
-								...[...data.matchAll(colors!)].map(
+								...[...data.matchAll(colors as RegExp)].map(
 									({index, 0: s}): [string, number, number, true] =>
 										[s, index, index + s.length, true],
 								),
@@ -1225,10 +1232,9 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		this.config ??= Parser.getConfig();
-		/^(?:http:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		const {articlePath, protocol} = this.config,
 			absolute = articlePath?.includes('//'),
-			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
+			protocolRegex = getLinkRegex(protocol);
 		return (await this.#queue(text))
 			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
 				absolute ? ',link-target,template-name,invoke-module,magic-word#filepath,magic-word#widget' : ''

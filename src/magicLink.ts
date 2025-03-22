@@ -1,3 +1,4 @@
+import {getRegex} from '@bhsd/common';
 import {generateForChild, generateForSelf} from '../util/lint';
 import {zs, text, decodeNumber} from '../util/string';
 import {BoundingRect} from '../lib/rect';
@@ -42,6 +43,8 @@ const isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 /^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
 const rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
+/^(ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const getUrlRegex = getRegex(protocol => new RegExp(`^(${protocol})`, 'iu'));
 
 export interface MagicLinkToken extends SyntaxBase {}
 
@@ -141,8 +144,7 @@ export abstract class MagicLinkToken extends Token {
 		if (type === 'magic-link') {
 			pattern = url?.startsWith('ISBN') ? isbnPattern : rfcPattern;
 		} else {
-			/^(ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-			pattern = new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
+			pattern = getUrlRegex(config.protocol + (type === 'ext-link-url' ? '|//' : ''));
 		}
 		this.setAttribute('pattern', pattern);
 	}

@@ -159,10 +159,14 @@ export abstract class TranscludeToken extends Token {
 					this.#colon = '：';
 				}
 				/^\s*uc\s*$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
-					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
-						'Stage-1': ':', '!ExtToken': '',
-					});
+				const token = new SyntaxToken(
+					magicWord,
+					new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
+					'magic-word-name',
+					config,
+					accum,
+					{'Stage-1': ':', '!ExtToken': ''},
+				);
 				super.insertAt(token);
 				if (arg !== false) {
 					parts.unshift([arg]);

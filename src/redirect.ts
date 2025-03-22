@@ -6,10 +6,16 @@ import type {Config, LintError} from '../base';
 
 /* NOT FOR BROWSER */
 
+import {getObjRegex} from '@bhsd/common';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {fixedToken} from '../mixin/fixed';
 import {noEscape} from '../mixin/noEscape';
+
+/^(?:#redirect|#重定向)\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const getPattern = getObjRegex<string[]>(
+	redirection => new RegExp(String.raw`^(?:${redirection.join('|')})\s*(?::\s*)?$`, 'iu'),
+);
 
 /* NOT FOR BROWSER END */
 
@@ -62,15 +68,15 @@ export abstract class RedirectToken extends Token {
 		super(undefined, config, accum);
 		this.#pre = pre;
 		this.#post = post;
-		/^(?:#redirect|#重定向)\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-		const pattern = new RegExp(
-			String.raw`^(?:${config.redirection.join('|')})\s*(?::\s*)?$`,
-			'iu',
-		);
 		this.append(
-			new SyntaxToken(syntax, pattern, 'redirect-syntax', config, accum, {
-				AstText: ':',
-			}),
+			new SyntaxToken(
+				syntax,
+				getPattern(config.redirection),
+				'redirect-syntax',
+				config,
+				accum,
+				{AstText: ':'},
+			),
 			// @ts-expect-error abstract class
 			new RedirectTargetToken(link, text?.slice(1), config, accum) as RedirectTargetToken,
 		);

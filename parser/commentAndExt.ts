@@ -1,8 +1,10 @@
+import {getObjRegex} from '@bhsd/common';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
+import type {RegexGetter} from '@bhsd/common';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
@@ -15,36 +17,22 @@ import {parsers} from '../util/constants';
 const onlyincludeLeft = '<onlyinclude>',
 	onlyincludeRight = '</onlyinclude>',
 	{length} = onlyincludeLeft,
-	regexInclude = new WeakMap<string[], RegExp>(),
-	regexNoinclude = new WeakMap<string[], RegExp>();
-
-/**
- * 获取正则表达式
- * @param ext 扩展标签
- * @param includeOnly 是否嵌入
- */
-const getRegex = (ext: string[], includeOnly: boolean): RegExp => {
-	const regex = includeOnly ? regexInclude : regexNoinclude;
-	if (regex.has(ext)) {
-		return regex.get(ext)!;
-	}
-	const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
-		includeRegex = includeOnly ? 'noinclude' : 'includeonly';
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/<!--[\s\S]*?(?:-->|$)|<foo(?:\s[^>]*)?\/?>|<\/foo\s*>|<(bar)(\s[^>]*?)?(?:\/>|>([\s\S]*?)<\/(\1\s*)>)|<(baz)(\s[^>]*?)?(?:\/>|>([\s\S]*?)(?:<\/(baz\s*)>|$))/giu;
-	const re = new RegExp(
-		String.raw`<!--[\s\S]*?(?:-->|$)|<${
-			noincludeRegex
-		}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-			ext.join('|')
-		})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
-			includeRegex
-		})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
-		'giu',
-	);
-	regex.set(ext, re);
-	return re;
-};
+	getRegex = [false, true].map(includeOnly => {
+		const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
+			includeRegex = includeOnly ? 'noinclude' : 'includeonly';
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		/<!--[\s\S]*?(?:-->|$)|<foo(?:\s[^>]*)?\/?>|<\/foo\s*>|<(bar)(\s[^>]*?)?(?:\/>|>([\s\S]*?)<\/(\1\s*)>)|<(baz)(\s[^>]*?)?(?:\/>|>([\s\S]*?)(?:<\/(baz\s*)>|$))/giu;
+		return getObjRegex<string[]>(ext => new RegExp(
+			String.raw`<!--[\s\S]*?(?:-->|$)|<${
+				noincludeRegex
+			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
+				ext.join('|')
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
+				includeRegex
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
+			'giu',
+		));
+	}) as [RegexGetter<string[]>, RegexGetter<string[]>];
 
 /**
  * 更新`<onlyinclude>`和`</onlyinclude>`的位置
@@ -94,7 +82,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		}
 	}
 	return wikitext.replace(
-		getRegex(config.ext, includeOnly),
+		getRegex[includeOnly ? 1 : 0](config.ext),
 		(
 			substr,
 			name?: string,

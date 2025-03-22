@@ -97,9 +97,14 @@ export abstract class HeadingToken extends Token {
 		const token = new Token(input[0], config, accum);
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
-		const trail = new SyntaxToken(input[1], /^\s*$/u, 'heading-trail', config, accum, {
-			'Stage-1': ':', '!ExtToken': '',
-		});
+		const trail = new SyntaxToken(
+			input[1],
+			/^\s*$/u,
+			'heading-trail',
+			config,
+			accum,
+			{'Stage-1': ':', '!ExtToken': ''},
+		);
 		this.append(token, trail);
 	}
 

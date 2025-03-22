@@ -14,6 +14,21 @@ import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
 import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
+const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
+	antiBlockElems = 'td|th';
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/<(?:table|\/(?:td|th)|\/?(?:tr|caption|dt|dd|li))\b/iu;
+const openRegex = new RegExp(
+	String.raw`<(?:${blockElems}|\/(?:${antiBlockElems})|\/?(?:tr|caption|dt|dd|li))\b`,
+	'iu',
+);
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/<(?:\/(?:h1|h2)|td|th|\/?(?:center|blockquote|div|hr|figure))\b/iu;
+const closeRegex = new RegExp(
+	String.raw`<(?:\/(?:${blockElems})|${antiBlockElems}|\/?(?:center|blockquote|div|hr|figure))\b`,
+	'iu',
+);
+
 /**
  * 隐式换行
  * @param str 字符串
@@ -235,21 +250,7 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 		);
 		Parser.viewOnly = false;
 		states.set(expanded, {headings: new Set()});
-		const lines = expanded.toHtmlInternal().split('\n'),
-			blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
-			antiBlockElems = 'td|th';
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/<(?:table|\/(?:td|th)|\/?(?:tr|caption|dt|dd|li))\b/iu;
-		const openRegex = new RegExp(
-			String.raw`<(?:${blockElems}|\/(?:${antiBlockElems})|\/?(?:tr|caption|dt|dd|li))\b`,
-			'iu',
-		);
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/<(?:\/(?:h1|h2)|td|th|\/?(?:center|blockquote|div|hr|figure))\b/iu;
-		const closeRegex = new RegExp(
-			String.raw`<(?:\/(?:${blockElems})|${antiBlockElems}|\/?(?:center|blockquote|div|hr|figure))\b`,
-			'iu',
-		);
+		const lines = expanded.toHtmlInternal().split('\n');
 		let output = '',
 			inBlockElem = false,
 			pendingPTag: string | false = false,

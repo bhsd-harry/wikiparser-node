@@ -27,7 +27,10 @@ export class SyntaxToken extends Token {
 		return this.#type;
 	}
 
-	/** @param pattern 语法正则 */
+	/**
+	 * @class
+	 * @param pattern 语法正则
+	 */
 	constructor(
 		wikitext: string | undefined,
 		pattern: RegExp,

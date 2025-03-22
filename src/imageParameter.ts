@@ -1,3 +1,4 @@
+import {getRegex} from '@bhsd/common';
 import {
 	extUrlChar,
 	extUrlCharFirst,
@@ -30,6 +31,24 @@ import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+/^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const getUrlLikeRegex = getRegex(protocol => new RegExp(String.raw`^(?:${protocol}|//|\0\d+m\x7F)`, 'iu'));
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
+const getUrlRegex = getRegex(
+	protocol => new RegExp(String.raw`^(?:(?:${protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`, 'iu'),
+);
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/^(\s*)link=(.*)(?=$|\n)(\s*)$/u;
+/^(\s*(?!\s))(.*)px(\s*)$/u;
+/* eslint-enable @typescript-eslint/no-unused-expressions */
+const getSyntaxRegex = getRegex(syntax => new RegExp(
+	String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
+		syntax.endsWith('$1') ? '(?=$|\n)' : ''
+	}(\s*)$`,
+	'u',
+));
+
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
 /**
@@ -54,17 +73,8 @@ function validate(
 		case 'link': {
 			if (!value) {
 				return val;
-			}
-			/^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu');
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-			/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
-			const re2 = new RegExp(
-				String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
-				'iu',
-			);
-			if (re1.test(value)) {
-				return re2.test(value) && val;
+			} else if (getUrlLikeRegex(config.protocol).test(value)) {
+				return getUrlRegex(config.protocol).test(value) && val;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
@@ -192,19 +202,8 @@ export abstract class ImageParameterToken extends Token {
 	/** @param str 图片参数 */
 	constructor(str: string, extension: string | undefined, config: Config, accum?: Token[]) {
 		let mt: [string, string, string, string?] | null;
-		const regexes = Object.entries(config.img).map(([syntax, param]): [string, string, RegExp] => {
-				/* eslint-disable @typescript-eslint/no-unused-expressions */
-				/^(\s*)link=(.*)(?=$|\n)(\s*)$/u;
-				/^(\s*(?!\s))(.*)px(\s*)$/u;
-				/* eslint-enable @typescript-eslint/no-unused-expressions */
-				const re = new RegExp(
-					String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
-						syntax.endsWith('$1') ? '(?=$|\n)' : ''
-					}(\s*)$`,
-					'u',
-				);
-				return [syntax, param, re];
-			}),
+		const regexes = Object.entries(config.img)
+				.map(([syntax, param]) => [syntax, param, getSyntaxRegex(syntax)] as const),
 			param = regexes.find(([, key, regex]) => {
 				mt = regex.exec(str) as [string, string, string, string?] | null;
 				return mt
