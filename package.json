@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.18.2",
+	"version": "1.18.3",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -45,7 +45,7 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.8.1",
+		"@bhsd/common": "^0.9.0",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
