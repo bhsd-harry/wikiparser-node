@@ -25,6 +25,7 @@ import path from 'path';
 import {
 	error,
 } from './util/diff';
+import fetchConfig from './bin/config';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -73,6 +74,20 @@ declare interface Parser extends ParserBase {
 	 * @since v1.16.1
 	 */
 	createLanguageService(uri: object): LanguageService;
+
+	/* NOT FOR BROWSER ONLY */
+
+	/**
+	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
+	 *
+	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
+	 * @param site site nickname / 网站别名
+	 * @param url script path / 脚本路径
+	 * @since v1.18.4
+	 */
+	fetchConfig(site: string, url: string): Promise<Config>;
+
+	/* NOT FOR BROWSER ONLY END */
 }
 
 /* NOT FOR BROWSER ONLY */
@@ -269,6 +284,15 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			return tasks.get(uri) ?? new LanguageService(uri);
 		}
 	},
+
+	/* NOT FOR BROWSER ONLY */
+
+	/** @implements */
+	async fetchConfig(site, url) {
+		return this.getConfig(await fetchConfig(site, url, false, true));
+	},
+
+	/* NOT FOR BROWSER ONLY */
 };
 
 const def: PropertyDescriptorMap = {
