@@ -1,3 +1,11 @@
+## v1.18.4
+
+*2025-03-26*
+
+**Added**
+
+- [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#fetchconfig) method that executes the [`getParserConfig`](./README#cli-usage) executable
+
 ## v1.18.3
 
 *2025-03-24*

@@ -77,7 +77,6 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/common/dist/stylelint';
-import fetchConfig from '../bin/config';
 import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
@@ -1762,7 +1761,7 @@ export class LanguageService implements LanguageServiceBase {
 			const config: Config = require(path.join('..', '..', 'config', site));
 			this.config = Parser.getConfig(config);
 		} catch {
-			this.config = Parser.getConfig(await fetchConfig(site, `${mt[0]}/w`, false, true));
+			this.config = await Parser.fetchConfig(site, `${mt[0]}/w`);
 		}
 		Object.assign(this.config, {articlePath: `${mt[0]}/wiki/`});
 	}
