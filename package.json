@@ -58,7 +58,7 @@
 		"vscode-json-languageservice": "^5.4.3"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.23.0",
+		"@bhsd/codemirror-mediawiki": "^2.23.2",
 		"@codemirror/lint": "^6.8.4",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@stylistic/stylelint-plugin": "^3.1.2",
