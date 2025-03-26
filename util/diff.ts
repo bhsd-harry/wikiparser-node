@@ -33,7 +33,7 @@ export const cmd = (command: string, args: readonly string[]): Promise<string | 
 		shell = spawn(command, args);
 		timer = setTimeout(() => {
 			shell!.kill('SIGINT');
-		}, 60 * 1000);
+		}, 60 * 1e3);
 		let buf = '';
 		shell.stdout.on('data', data => {
 			buf += String(data);
