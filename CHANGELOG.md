@@ -9,6 +9,7 @@
 **Fixed**
 
 - More cases where potential memory leak may occur
+- Expansion of `#switch`
 
 ## v1.18.3
 

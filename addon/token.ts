@@ -177,39 +177,47 @@ const expand = (
 				return parseIf(accum, prev, c[cmp(var1, var2) ? 3 : 4]);
 			} else if (known && name === 'switch') {
 				let defaultVal = '',
-					found = false,
+					j = 2,
+
+					/**
+					 * - `1` 表示默认值
+					 * - `2` 表示匹配值
+					 */
+					found = 0,
 					transclusion = false,
 					defaultParam: Token | undefined;
-				for (let j = 2; j < length; j++) {
+				for (; j < length; j++) {
 					const {anon, value, lastChild, name: option} = c[j] as ParameterToken;
 					transclusion = /\0\d+t\x7F/u.test(anon ? value : option);
 					if (anon) {
-						if (j === length - 1) {
-							// @ts-expect-error sparse array
-							accum[accum.indexOf(lastChild)] = undefined;
-							return implicitNewLine(value, prev);
-						} else if (transclusion) {
+						if (j === length - 1) { // 位于最后的匿名参数是默认值
+							defaultParam = lastChild;
+							defaultVal = value;
+						} else if (transclusion) { // 不支持复杂参数
 							break;
-						} else {
-							found ||= cmp(var1, decodeHtml(value)) || value === '#default';
+						} else if (cmp(var1, decodeHtml(value))) { // 下一个命名参数视为匹配值
+							found = 2;
+						} else if (value === '#default' && found !== 2) { // 下一个命名参数视为默认值
+							found = 1;
 						}
-					} else if (transclusion) {
+					} else if (transclusion) { // 不支持复杂参数
 						break;
-					} else if (found || cmp(var1, decodeHtml(option))) {
+					} else if (found === 2 || cmp(var1, decodeHtml(option))) { // 第一个匹配值
 						// @ts-expect-error sparse array
 						accum[accum.indexOf(lastChild)] = undefined;
 						return implicitNewLine(value, prev);
-					} else if (option.toLowerCase() === '#default') {
-						defaultVal = value;
+					} else if (found === 1 || option.toLowerCase() === '#default') { // 更新默认值
 						defaultParam = lastChild;
+						defaultVal = value;
+						found = 0;
 					}
-					if (j === length - 1) {
-						if (defaultParam) {
-							// @ts-expect-error sparse array
-							accum[accum.indexOf(defaultParam)] = undefined;
-						}
-						return implicitNewLine(defaultVal, prev);
+				}
+				if (j === length) { // 不含复杂参数
+					if (defaultParam) {
+						// @ts-expect-error sparse array
+						accum[accum.indexOf(defaultParam)] = undefined;
 					}
+					return implicitNewLine(defaultVal, prev);
 				}
 			}
 			return m;
