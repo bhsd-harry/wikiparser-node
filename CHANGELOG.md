@@ -11,6 +11,7 @@
 
 - More cases where potential memory leak may occur
 - Expansion of `#switch`
+- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now handles arguments and a set of magic words recursively
 
 ## v1.18.3
 
