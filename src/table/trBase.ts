@@ -30,7 +30,7 @@ const isFostered = (token: AstNodes): LintError.Severity | false => {
 	const first = token.childNodes.find(child => child.text().trim());
 	if (
 		!first
-		|| first.text().trim().startsWith('!')
+		|| first.type === 'text' && first.data.trim().startsWith('!')
 		|| first.type === 'magic-word' && first.name === '!'
 		|| first.type === 'template' && tableTemplates.has(first.name!)
 		|| first.is<HtmlToken>('html') && tableTags.has(first.name)
@@ -46,7 +46,7 @@ const isFostered = (token: AstNodes): LintError.Severity | false => {
 				: severity.includes('warning') && 'warning';
 		} catch {}
 	}
-	return first.type === 'template' ? 'warning' : 'error';
+	return first.type === 'template' || first.type === 'magic-word' && first.name === 'invoke' ? 'warning' : 'error';
 };
 
 /**
