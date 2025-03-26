@@ -6,8 +6,7 @@ import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-const MAXITER = 20_000,
-	closes: Record<string, string> = {
+const closes: Record<string, string> = {
 		'=': String.raw`\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)`,
 		'{': String.raw`\}{2,}|\|`,
 		'-': String.raw`\}-`,
@@ -98,16 +97,12 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	let moreBraces = lastBraces + wikitext.length !== -1;
 	let regex = getExecRegex(source + (moreBraces ? openBraces : '')),
 		mt: BraceExecArray | null = regex.exec(wikitext),
-		iter = 0,
 		lastIndex: number | undefined;
 	while (
 		mt
 		|| lastIndex !== undefined && lastIndex <= wikitext.length
 		&& stack[stack.length - 1]?.[0]?.startsWith('=')
 	) {
-		if (++iter > MAXITER) {
-			throw new RangeError('Maximum iteration exceeded');
-		}
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0].slice(length);
