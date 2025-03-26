@@ -1112,14 +1112,14 @@ export class LanguageService implements LanguageServiceBase {
 			info = this.#getBehaviorSwitch(offsetNode.name);
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
-			f = offsetNode.toString(true).trim();
+			f = offsetNode.text().trim();
 			colon = parentNode!.getAttribute('colon');
 		} else if (
 			offsetNode.is<TranscludeToken>('magic-word') && !offsetNode.modifier && length === 1
 			&& (offset > 0 || root.posFromIndex(offsetNode.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);
-			f = offsetNode.firstChild.toString(true).trim();
+			f = offsetNode.firstChild.text().trim();
 			colon = offsetNode.getAttribute('colon');
 		} else if (
 			(offsetNode.is<TranscludeToken>('magic-word') || offsetNode.is<TranscludeToken>('template'))
@@ -1183,7 +1183,7 @@ export class LanguageService implements LanguageServiceBase {
 			candidates = info.signatures.filter(
 				params => (params.length >= n || params[params.length - 1]?.rest)
 					&& params.every(({label, const: c}, i) => {
-						const p = c && i < n && childNodes[i + 1]?.toString(true).trim();
+						const p = c && i < n && childNodes[i + 1]?.text().trim();
 						return !p || label.toLowerCase().includes(p.toLowerCase());
 					}),
 			);
@@ -1197,7 +1197,7 @@ export class LanguageService implements LanguageServiceBase {
 				break;
 			}
 		}
-		const f = firstChild.toString(true).trim(),
+		const f = firstChild.text().trim(),
 			colon = lastChild.getAttribute('colon');
 		return {
 			signatures: candidates.map((params): SignatureInformation => ({
