@@ -16,7 +16,7 @@ import {parsers} from '../util/constants';
 
 import {getHeapStatistics} from 'v8';
 
-const MAXHEAP = getHeapStatistics().total_available_size * 0.9,
+const MAXHEAP = getHeapStatistics().heap_size_limit * 0.9,
 	MAXITER = MAXHEAP / 2e5;
 
 /* NOT FOR BROWSER ONLY END */
@@ -123,8 +123,10 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	) {
 		/* NOT FOR BROWSER ONLY */
 
-		if (iter++ > MAXITER && process.memoryUsage().heapUsed > MAXHEAP) {
+		if (iter++ > MAXITER) {
 			throw new RangeError('Maximum iteration exceeded');
+		} else if (process.memoryUsage().heapUsed > MAXHEAP) {
+			throw new RangeError('Maximum heap size exceeded');
 		}
 
 		/* NOT FOR BROWSER ONLY END */
