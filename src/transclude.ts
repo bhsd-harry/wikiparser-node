@@ -208,7 +208,7 @@ export abstract class TranscludeToken extends Token {
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
 			title = this.normalizeTitle(
-				this.childNodes[isTemplate ? 0 : 1].toString(true),
+				this.childNodes[isTemplate ? 0 : 1].text(),
 				isTemplate ? 10 : 828,
 				{temporary: true},
 			);
@@ -230,7 +230,7 @@ export abstract class TranscludeToken extends Token {
 			return [
 				this.#getTitle().title,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				this.childNodes[2]?.toString(true).trim(),
+				this.childNodes[2]?.text().trim(),
 			];
 		}
 	}
