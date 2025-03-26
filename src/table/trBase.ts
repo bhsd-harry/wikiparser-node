@@ -19,7 +19,35 @@ export interface TableCoords {
 	readonly start?: boolean;
 }
 
-const tableTags = new Set(['tr', 'td', 'th', 'caption']);
+const tableTags = new Set(['tr', 'td', 'th', 'caption']),
+	tableTemplates = new Set(['Template:!!', 'Template:!-']);
+
+/**
+ * Check if the content is fostered
+ * @param token
+ */
+const isFostered = (token: AstNodes): LintError.Severity | false => {
+	const first = token.childNodes.find(child => child.text().trim());
+	if (
+		!first
+		|| first.text().trim().startsWith('!')
+		|| first.type === 'magic-word' && first.name === '!'
+		|| first.type === 'template' && tableTemplates.has(first.name!)
+		|| first.is<HtmlToken>('html') && tableTags.has(first.name)
+	) {
+		return false;
+	} else if (first.is<ArgToken>('arg')) {
+		return first.length > 1 && isFostered(first.childNodes[1]!);
+	} else if (first.is<TranscludeToken>('magic-word')) {
+		try {
+			const severity = first.getPossibleValues().map(isFostered);
+			return severity.includes('error')
+				? 'error'
+				: severity.includes('warning') && 'warning';
+		} catch {}
+	}
+	return first.type === 'template' ? 'warning' : 'error';
+};
 
 /**
  * table row or table
@@ -36,29 +64,17 @@ export abstract class TrBaseToken extends TableBaseToken {
 		if (!inter) {
 			return errors;
 		}
-		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
-		if (
-			!first
-			|| tdPattern.test(first.toString())
-			|| first.is<ArgToken>('arg') && tdPattern.test(first.default || '')
-			|| first.is<HtmlToken>('html') && tableTags.has(first.name)
-		) {
+		const severity = isFostered(inter);
+		if (!severity) {
 			return errors;
-		} else if (first.is<TranscludeToken>('magic-word')) {
-			try {
-				if (first.getPossibleValues().every(token => tdPattern.test(token.text()))) {
-					return errors;
-				}
-			} catch {}
 		}
 		const error = generateForChild(
 			inter,
 			{start},
 			'fostered-content',
 			'content to be moved out from the table',
+			severity,
 		);
-		error.severity = first.type === 'template' ? 'warning' : 'error';
 		error.startIndex++;
 		error.startLine++;
 		error.startCol = 0;
