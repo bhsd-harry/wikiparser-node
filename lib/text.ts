@@ -149,7 +149,6 @@ export class AstText extends AstNode {
 	constructor(text: string) {
 		super();
 		Object.defineProperties(this, {
-			childNodes: {enumerable: false, configurable: false},
 			data: {
 				value: text,
 
@@ -157,6 +156,10 @@ export class AstText extends AstNode {
 
 				writable: false,
 			},
+
+			/* NOT FOR BROWSER */
+
+			childNodes: {enumerable: false, configurable: false},
 		});
 	}
 

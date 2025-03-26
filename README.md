@@ -80,7 +80,7 @@ Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Ho
 
 # Performance
 
-A full dump scan of Chinese Wikipedia's ~2.8 million articles (parsing and linting) on a personal MacBook Air takes about 4 hours.
+A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million articles (parsing and linting) on a personal MacBook Air takes about 3 hours.
 
 # Known issues
 
