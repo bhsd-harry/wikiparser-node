@@ -10,8 +10,7 @@ import type {Token} from '../src/index';
 
 import {getHeapStatistics} from 'v8';
 
-const MAXHEAP = getHeapStatistics().heap_size_limit * 0.9,
-	MAXITER = MAXHEAP / 2e5;
+const MAXHEAP = getHeapStatistics().heap_size_limit * 0.9;
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -133,7 +132,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	let moreBraces = lastBraces + wikitext.length !== -1;
 	let regex = getExecRegex(source + (moreBraces ? openBraces : '')),
 		mt: BraceExecArray | null = regex.exec(wikitext),
-		iter = 0,
 		lastIndex: number | undefined;
 	while (
 		mt
@@ -142,9 +140,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	) {
 		/* NOT FOR BROWSER ONLY */
 
-		if (iter++ > MAXITER) {
-			throw new RangeError('Maximum iteration exceeded');
-		} else if (process.memoryUsage().heapUsed > MAXHEAP) {
+		if (process.memoryUsage().heapUsed > MAXHEAP) {
 			throw new RangeError('Maximum heap size exceeded');
 		}
 
