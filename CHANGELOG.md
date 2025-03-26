@@ -6,6 +6,10 @@
 
 - [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#fetchconfig) method that executes the [`getParserConfig`](./README#cli-usage) executable
 
+**Fixed**
+
+- More cases where potential memory leak may occur
+
 ## v1.18.3
 
 *2025-03-24*
