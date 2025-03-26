@@ -13,6 +13,10 @@
 - Expansion of `#switch`
 - [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now handles arguments and a set of magic words recursively
 
+**Changed**
+
+- Lowered severity of fostered content of `{{#invoke:}}` in [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint)
+
 ## v1.18.3
 
 *2025-03-24*
