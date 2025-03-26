@@ -431,7 +431,8 @@ export abstract class TranscludeToken extends Token {
 		if (type === 'template') {
 			throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
 		}
-		let start: number;
+		let start: number | undefined,
+			queue: Token[] | undefined;
 		switch (name) {
 			case 'if':
 			case 'ifexist':
@@ -442,10 +443,19 @@ export abstract class TranscludeToken extends Token {
 			case 'ifeq':
 				start = 3;
 				break;
+			case 'switch': {
+				const parameters = childNodes.slice(2) as ParameterToken[],
+					last = parameters[parameters.length - 1];
+				queue = [
+					...parameters.filter(({anon}) => !anon),
+					...last?.anon ? [last] : [],
+				].map(({lastChild}) => lastChild);
+				break;
+			}
 			default:
 				throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
 		}
-		const queue = (childNodes.slice(start, start + 2) as ParameterToken[]).map(({childNodes: [, value]}) => value);
+		queue ??= (childNodes.slice(start, start! + 2) as ParameterToken[]).map(({lastChild}) => lastChild);
 		for (let i = 0; i < queue.length;) {
 			const {length, 0: first} = queue[i]!.childNodes.filter(child => child.text().trim());
 			if (length === 0) {
