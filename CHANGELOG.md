@@ -5,6 +5,7 @@
 **Added**
 
 - [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#fetchconfig) method that executes the [`getParserConfig`](./README#cli-usage) executable
+- [`TranscludeToken.prototype.getPossibleValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#getpossiblevalues) method now supports the `#switch` parser function
 
 **Fixed**
 
