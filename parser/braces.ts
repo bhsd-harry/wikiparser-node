@@ -24,6 +24,26 @@ const closes: Record<string, string> = {
 	openBraces = String.raw`|\{{2,}`,
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
 	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
+let reReplace: RegExp;
+
+/* NOT FOR BROWSER ONLY */
+
+try {
+	reReplace = new RegExp( // eslint-disable-line prefer-regex-literals
+		String.raw`(?<!\{)\{\{((?:[^\n{}[]|\[(?!\[))*)\}\}` // eslint-disable-line prefer-template
+		+ '|'
+		+ String.raw`\{\{([^\n{}[]*)\}\}(?!\})`
+		+ '|'
+		+ String.raw`\[\[[^\n[\]{]*\]\]`
+		+ '|'
+		+ String.raw`-\{(?:[^\n{}[]|\[(?!\[))*\}-`,
+		'gu',
+	);
+} catch {
+	/* NOT FOR BROWSER ONLY END */
+
+	reReplace = /\{\{((?:[^\n{}[]|\[(?!\[))*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]|-\{(?:[^\n{}[]|\[(?!\[))*\}-/gu;
+}
 
 /**
  * 获取模板或魔术字对应的字符
@@ -73,35 +93,42 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	const push = (text: string, parts: string[][], lastIndex: number, index: number): void => {
 		parts[parts.length - 1]!.push(restore(text.slice(lastIndex, index)));
 	};
-	wikitext = wikitext.replace(
-		/\{\{([^\n{}[]*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]|-\{[^\n{}[]*\}-/gu,
-		(m, p1?: string) => {
-			if (p1 !== undefined) {
-				try {
-					const {length} = accum,
-						parts = p1.split('|');
-					// @ts-expect-error abstract class
-					new TranscludeToken(
-						parts[0]!,
-						parts.slice(1).map(part => {
-							const i = part.indexOf('=');
-							return i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)];
-						}),
-						config,
-						accum,
-					);
-					return `\0${length}${getSymbol(parts[0]!)}\x7F`;
-				} catch (e) {
-					/* istanbul ignore if */
-					if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
-						throw e;
+	let replaced: string | undefined;
+	do {
+		if (replaced !== undefined) {
+			wikitext = replaced;
+		}
+		replaced = wikitext.replace(
+			reReplace,
+			(m, p1?: string, p2?: string) => {
+				if (p1 !== undefined || typeof p2 === 'string') {
+					try {
+						const {length} = accum,
+							parts = (p1 ?? p2!).split('|');
+						// @ts-expect-error abstract class
+						new TranscludeToken(
+							restore(parts[0]!),
+							parts.slice(1).map(part => {
+								const i = part.indexOf('=');
+								return (i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)]).map(restore);
+							}),
+							config,
+							accum,
+						);
+						return `\0${length}${getSymbol(parts[0]!)}\x7F`;
+					} catch (e) {
+						/* istanbul ignore if */
+						if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
+							throw e;
+						}
 					}
 				}
-			}
-			linkStack.push(m);
-			return `\0${linkStack.length - 1}\x7F`;
-		},
-	);
+				linkStack.push(restore(m));
+				return `\0${linkStack.length - 1}\x7F`;
+			},
+		);
+	} while (replaced !== wikitext);
+	wikitext = replaced;
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let moreBraces = lastBraces + wikitext.length !== -1;
 	let regex = getExecRegex(source + (moreBraces ? openBraces : '')),
