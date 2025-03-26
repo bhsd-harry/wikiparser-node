@@ -108,7 +108,7 @@ export abstract class ArgToken extends Token {
 	/** 设置name */
 	#setName(): void {
 		// eslint-disable-next-line no-unused-labels
-		LSP: this.setAttribute('name', this.firstChild.toString(true).trim());
+		LSP: this.setAttribute('name', this.firstChild.text().trim());
 	}
 
 	/** @private */

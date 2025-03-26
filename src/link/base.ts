@@ -159,7 +159,7 @@ export abstract class LinkBaseToken extends Token {
 			const {prevTarget} = e,
 				{type} = this;
 			if (prevTarget?.type === 'link-target') {
-				const name = prevTarget.toString(true),
+				const name = prevTarget.text(),
 					titleObj = this.getTitle(),
 					{title, interwiki, ns, valid} = titleObj;
 				if (!valid) {
@@ -299,7 +299,7 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	getTitle(temporary?: boolean, halfParsed?: boolean): Title {
 		return this.normalizeTitle(
-			this.firstChild.toString(true),
+			this.firstChild.text(),
 			0,
 			{halfParsed, temporary, decode: true, selfLink: true},
 		);
