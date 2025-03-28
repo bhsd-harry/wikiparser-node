@@ -1,4 +1,4 @@
-import {getObjRegex} from '@bhsd/common';
+import {getRegex as getObjRegex} from '@bhsd/common';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';
