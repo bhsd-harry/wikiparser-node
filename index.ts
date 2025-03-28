@@ -24,7 +24,7 @@ import type {Token} from './internal';
 
 /* NOT FOR BROWSER */
 
-import {getObjRegex} from '@bhsd/common';
+import {getRegex} from '@bhsd/common';
 import {RedirectMap} from './lib/redirectMap';
 import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
@@ -174,7 +174,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 const promises = [Promise.resolve()];
 /^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const getInterwikiRegex = getObjRegex<string[]>(
+const getInterwikiRegex = getRegex<string[]>(
 	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
 );
 let viewOnly = false,

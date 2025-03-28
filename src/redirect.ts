@@ -6,14 +6,14 @@ import type {Config, LintError} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {getObjRegex} from '@bhsd/common';
+import {getRegex} from '@bhsd/common';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {fixedToken} from '../mixin/fixed';
 import {noEscape} from '../mixin/noEscape';
 
 /^(?:#redirect|#重定向)\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const getPattern = getObjRegex<string[]>(
+const getPattern = getRegex<string[]>(
 	redirection => new RegExp(String.raw`^(?:${redirection.join('|')})\s*(?::\s*)?$`, 'iu'),
 );
 
