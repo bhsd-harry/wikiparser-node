@@ -1,6 +1,6 @@
 ## v1.18.4
 
-*2025-03-29*
+*2025-04-01*
 
 **Added**
 
@@ -12,6 +12,7 @@
 - More cases where potential memory leak may occur
 - Expansion of `#switch`
 - [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now handles arguments and a set of magic words recursively
+- Stack overflow in `TableToken.prototype.getLayout`
 
 **Changed**
 
