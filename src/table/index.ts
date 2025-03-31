@@ -32,6 +32,8 @@ export const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 't
 
 /** @extends {Array<TableCoords[]>} */
 export class Layout extends Array<TableCoords[]> {
+	// @ts-expect-error abstract override
+	abstract override static from(arr: TableCoords[][]): Layout;
 }
 
 /**
@@ -152,7 +154,7 @@ export abstract class TableToken extends TrBaseToken {
 	getLayout(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
 		const rows = this.getAllRows(),
 			{length} = rows,
-			layout = new Layout(...emptyArray(length, () => []));
+			layout = Layout.from(emptyArray(length, () => []));
 		for (let i = 0; i < layout.length; i++) {
 			const rowLayout = layout[i]!;
 			let j = 0,
