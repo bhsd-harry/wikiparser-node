@@ -12,12 +12,20 @@ const closes: Record<string, string> = {
 		'-': String.raw`\}-`,
 		'[': String.raw`\]\]`,
 	},
+	lbrack = String.raw`\[(?!\[)`,
 	openBraces = String.raw`|\{{2,}`,
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
 	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
 let reReplace: RegExp;
 // eslint-disable-next-line prefer-const
-reReplace = /\{\{((?:[^\n{}[]|\[(?!\[))*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]|-\{(?:[^\n{}[]|\[(?!\[))*\}-/gu;
+reReplace = new RegExp(
+	String.raw`\{\{((?:[^\n{}[]|${lbrack})*)\}\}(?!\})` // eslint-disable-line prefer-template
+	+ '|'
+	+ String.raw`\[\[[^\n[\]{]*\]\]`
+	+ '|'
+	+ String.raw`-\{(?:[^\n{}[]|${lbrack})*\}-`,
+	'gu',
+);
 
 /**
  * 获取模板或魔术字对应的字符
