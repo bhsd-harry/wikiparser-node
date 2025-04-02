@@ -26,6 +26,7 @@ const closes: Record<string, string> = {
 		'-': String.raw`\}-`,
 		'[': String.raw`\]\]`,
 	},
+	lbrack = String.raw`\[(?!\[)`,
 	openBraces = String.raw`|\{{2,}`,
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
 	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
@@ -34,20 +35,27 @@ let reReplace: RegExp;
 /* NOT FOR BROWSER ONLY */
 
 try {
-	reReplace = new RegExp( // eslint-disable-line prefer-regex-literals
-		String.raw`(?<!\{)\{\{((?:[^\n{}[]|\[(?!\[))*)\}\}` // eslint-disable-line prefer-template
+	reReplace = new RegExp(
+		String.raw`(?<!\{)\{\{((?:[^\n{}[]|${lbrack})*)\}\}` // eslint-disable-line prefer-template
 		+ '|'
-		+ String.raw`\{\{([^\n{}[]*)\}\}(?!\})`
+		+ String.raw`\{\{((?:[^\n{}[]|${lbrack})*)\}\}(?!\})`
 		+ '|'
 		+ String.raw`\[\[[^\n[\]{]*\]\]`
 		+ '|'
-		+ String.raw`-\{(?:[^\n{}[]|\[(?!\[))*\}-`,
+		+ String.raw`-\{(?:[^\n{}[]|${lbrack})*\}-`,
 		'gu',
 	);
 } catch {
 	/* NOT FOR BROWSER ONLY END */
 
-	reReplace = /\{\{((?:[^\n{}[]|\[(?!\[))*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]|-\{(?:[^\n{}[]|\[(?!\[))*\}-/gu;
+	reReplace = new RegExp(
+		String.raw`\{\{((?:[^\n{}[]|${lbrack})*)\}\}(?!\})` // eslint-disable-line prefer-template
+		+ '|'
+		+ String.raw`\[\[[^\n[\]{]*\]\]`
+		+ '|'
+		+ String.raw`-\{(?:[^\n{}[]|${lbrack})*\}-`,
+		'gu',
+	);
 }
 
 /**
