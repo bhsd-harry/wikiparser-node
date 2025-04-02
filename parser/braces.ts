@@ -13,17 +13,18 @@ const closes: Record<string, string> = {
 		'[': String.raw`\]\]`,
 	},
 	lbrack = String.raw`\[(?!\[)`,
+	newline = String.raw`\n(?![=\0])`,
 	openBraces = String.raw`|\{{2,}`,
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
 	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
 let reReplace: RegExp;
 // eslint-disable-next-line prefer-const
 reReplace = new RegExp(
-	String.raw`\{\{((?:[^\n{}[]|${lbrack})*)\}\}(?!\})` // eslint-disable-line prefer-template
+	String.raw`\{\{((?:[^\n{}[]|${lbrack}|${newline})*)\}\}(?!\})` // eslint-disable-line prefer-template
 	+ '|'
-	+ String.raw`\[\[[^\n[\]{]*\]\]`
+	+ String.raw`\[\[(?:[^\n[\]{]|${newline})*\]\]`
 	+ '|'
-	+ String.raw`-\{(?:[^\n{}[]|${lbrack})*\}-`,
+	+ String.raw`-\{(?:[^\n{}[]|${lbrack}|${newline})*\}-`,
 	'gu',
 );
 
@@ -139,11 +140,15 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+[cn]\x7F)*)$/u
 					.exec(wikitext.slice(index, curIndex)) as [string, string, string, string] | null;
 				if (rmt) {
-					wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${wikitext.slice(curIndex)}`;
-					lastIndex = index! + 4 + String(accum.length).length;
 					rmt[2] = restore(rmt[2]);
-					// @ts-expect-error abstract class
-					new HeadingToken(rmt[1].length, rmt.slice(2) as [string, string], config, accum);
+					if (!rmt[2].includes('\n')) {
+						wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${
+							wikitext.slice(curIndex)
+						}`;
+						lastIndex = index! + 4 + String(accum.length).length;
+						// @ts-expect-error abstract class
+						new HeadingToken(rmt[1].length, rmt.slice(2) as [string, string], config, accum);
+					}
 				}
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
