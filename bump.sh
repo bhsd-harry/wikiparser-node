@@ -1,4 +1,9 @@
 #!/usr/local/bin/bash
+if (( $(ls -1q errors/* | wc -l) > 1 ))
+then
+	echo 'There are remaining error files in the "errors/" directory. Please resolve them before proceeding.'
+	exit 1
+fi
 if [[ $2 == 'npm' ]]
 then
 	if [[ $(git tag -l "v$1-b") ]]
