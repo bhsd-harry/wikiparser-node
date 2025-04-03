@@ -1,6 +1,6 @@
 ## v1.18.4
 
-*2025-04-01*
+*2025-04-03*
 
 **Added**
 
@@ -13,6 +13,7 @@
 - Expansion of `#switch`
 - [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now handles arguments and a set of magic words recursively
 - Stack overflow in `TableToken.prototype.getLayout`
+- Issue with [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) when the text contains certain unicode characters
 
 **Changed**
 
