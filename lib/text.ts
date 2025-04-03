@@ -156,13 +156,13 @@ export class AstText extends AstNode {
 			]);
 		for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 			const [, tag, prefix] = mt;
-			let {index} = mt,
-				error = mt[0].toLowerCase();
+			let {index, 0: error} = mt;
 			if (prefix && prefix !== ']') {
 				const {length} = prefix;
 				index += length;
 				error = error.slice(length);
 			}
+			error = error.toLowerCase();
 			const {0: char, length} = error,
 				magicLink = char === 'r' || char === 'p' || char === 'i';
 			if (
