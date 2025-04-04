@@ -16,14 +16,18 @@ export const getCommon = (prefix: string, lastPrefix: string): number =>
 /* NOT FOR BROWSER */
 
 declare type Prefix = '#' | '*' | ';' | ':';
+declare interface State {
+
+	/** whether a `<dt>` tag is open */
+	dt: boolean[];
+}
 
 /**
  * get next list item
  * @param char list syntax
  * @param state
- * @param state.dt whether a <dt> tag is open
  */
-const nextItem = (char: Prefix, state: {dt: boolean[]}): string => {
+const nextItem = (char: Prefix, state: State): string => {
 	if (char === '*' || char === '#') {
 		return '</li>\n<li>';
 	}
@@ -40,9 +44,8 @@ const nextItem = (char: Prefix, state: {dt: boolean[]}): string => {
  * close list item
  * @param chars list syntax
  * @param state
- * @param state.dt whether a <dt> tag is open
  */
-const closeList = (chars: string, state: {dt: boolean[]}): string => {
+const closeList = (chars: string, state: State): string => {
 	let result = '';
 	for (let i = chars.length - 1; i >= 0; i--) {
 		const char = chars[i] as Prefix;
@@ -65,9 +68,8 @@ const closeList = (chars: string, state: {dt: boolean[]}): string => {
  * open list item
  * @param chars list syntax
  * @param state
- * @param state.dt whether a <dt> tag is open
  */
-const openList = (chars: string, state: {dt: boolean[]}): string => {
+const openList = (chars: string, state: State): string => {
 	let result = '';
 	for (const char of chars) {
 		switch (char as Prefix) {
@@ -96,7 +98,7 @@ const openList = (chars: string, state: {dt: boolean[]}): string => {
 export const html = (childNodes: readonly AstNodes[], separator = '', opt?: HtmlOpt): string => {
 	let lastPrefix = '';
 	const results: string[] = [],
-		state = {dt: []};
+		state: State = {dt: []};
 	for (let j = 0; j < childNodes.length; j++) {
 		const child = childNodes[j]!;
 		let result = child.toHtmlInternal(opt);
