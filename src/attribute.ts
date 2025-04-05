@@ -94,7 +94,7 @@ export abstract class AttributeToken extends Token {
 		) {
 			const newConfig: Config = {
 				...config,
-				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
+				excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
 			});

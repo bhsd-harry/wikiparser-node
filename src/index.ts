@@ -264,7 +264,7 @@ export class Token extends AstElement {
 
 	/** 解析HTML标签 */
 	#parseHtml(): void {
-		if (this.#config.excludes?.includes('html')) {
+		if (this.#config.excludes.includes('html')) {
 			return;
 		}
 		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
@@ -273,7 +273,7 @@ export class Token extends AstElement {
 
 	/** 解析表格 */
 	#parseTable(): void {
-		if (this.#config.excludes?.includes('table')) {
+		if (this.#config.excludes.includes('table')) {
 			return;
 		}
 		const {parseTable}: typeof import('../parser/table') = require('../parser/table');
@@ -282,7 +282,7 @@ export class Token extends AstElement {
 
 	/** 解析`<hr>`和状态开关 */
 	#parseHrAndDoubleUnderscore(): void {
-		if (this.#config.excludes?.includes('hr')) {
+		if (this.#config.excludes.includes('hr')) {
 			return;
 		}
 		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore') =
@@ -304,7 +304,7 @@ export class Token extends AstElement {
 	 * @param tidy 是否整理
 	 */
 	#parseQuotes(tidy?: boolean): void {
-		if (this.#config.excludes?.includes('quote')) {
+		if (this.#config.excludes.includes('quote')) {
 			return;
 		}
 		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
@@ -317,7 +317,7 @@ export class Token extends AstElement {
 
 	/** 解析外部链接 */
 	#parseExternalLinks(): void {
-		if (this.#config.excludes?.includes('extLink')) {
+		if (this.#config.excludes.includes('extLink')) {
 			return;
 		}
 		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
@@ -326,7 +326,7 @@ export class Token extends AstElement {
 
 	/** 解析自由外链 */
 	#parseMagicLinks(): void {
-		if (this.#config.excludes?.includes('magicLink')) {
+		if (this.#config.excludes.includes('magicLink')) {
 			return;
 		}
 		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
@@ -335,7 +335,7 @@ export class Token extends AstElement {
 
 	/** 解析列表 */
 	#parseList(): void {
-		if (this.#config.excludes?.includes('list')) {
+		if (this.#config.excludes.includes('list')) {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');

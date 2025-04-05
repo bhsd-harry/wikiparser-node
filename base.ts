@@ -37,7 +37,7 @@ export interface Config {
 	readonly articlePath?: string;
 
 	/** @private */
-	readonly excludes?: string[];
+	readonly excludes: string[];
 	/** @private */
 	regexRedirect?: RegExp;
 	/** @private */
