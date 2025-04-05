@@ -32,7 +32,7 @@ export interface Config {
 	readonly articlePath?: string;
 
 	/** @private */
-	readonly excludes?: string[];
+	readonly excludes: string[];
 	/** @private */
 	inExt?: boolean;
 	/** @private */
