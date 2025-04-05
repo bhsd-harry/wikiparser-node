@@ -85,7 +85,7 @@ const getSymbol = (s: string): string => {
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${
-			config.excludes?.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
+			config.excludes.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
 		}\[\[|-\{(?!\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [],

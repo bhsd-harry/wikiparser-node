@@ -12,6 +12,34 @@ import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+declare interface Jax {
+	tex2mml(tex: string): string;
+}
+declare interface mathjax {
+	init(config: unknown): Promise<Jax>;
+}
+
+export const MathJax = (async () => {
+	try {
+		const jax: mathjax = require('mathjax');
+		return await jax.init({
+			loader: {
+				load: ['input/tex', '[tex]/mhchem'],
+			},
+			tex: {
+				packages: {'[+]': ['mhchem']},
+				/** @ignore */
+				formatError(_: unknown, error: unknown): never {
+					throw error;
+				},
+			},
+			startup: {typeset: false},
+		});
+	} catch {
+		return undefined;
+	}
+})();
+
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
 export const jsonLSP = (() => {

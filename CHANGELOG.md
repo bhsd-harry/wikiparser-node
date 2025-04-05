@@ -1,3 +1,11 @@
+## v1.19.0
+
+*2025-04-06*
+
+**Added**
+
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now supports extension tags `<math>`, `<chem>` and `<ce>` if [MathJax](https://www.mathjax.org/) is available
+
 ## v1.18.4
 
 *2025-04-03*

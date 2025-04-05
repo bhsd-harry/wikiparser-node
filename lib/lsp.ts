@@ -77,7 +77,15 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/common/dist/stylelint';
-import {EmbeddedJSONDocument, EmbeddedCSSDocument, jsonLSP, cssLSP, jsonTags, stylelint} from './document';
+import {
+	EmbeddedJSONDocument,
+	EmbeddedCSSDocument,
+	jsonLSP,
+	cssLSP,
+	jsonTags,
+	stylelint,
+	MathJax as Jax,
+} from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
 
@@ -115,7 +123,8 @@ const cssRules = {
 		'block-no-empty': null,
 		'property-no-unknown': null,
 	},
-	jsonSelector = jsonTags.map(s => `ext-inner#${s}`).join(),
+	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
+	mathSelector = ['math', 'chem', 'ce'].map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
 let colors: RegExp | false | undefined;
 
@@ -1080,18 +1089,23 @@ export class LanguageService implements LanguageServiceBase {
 					[] as const,
 			jsonDiagnostics =
 				jsonLSP ?
-					await Promise.all(root.querySelectorAll(jsonSelector).map(async token => {
-						const textDoc = new EmbeddedJSONDocument(root, token),
-							severityLevel = token.name === 'templatedata' ? 'error' : 'ignore',
-							e = (await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc, {
-								comments: severityLevel,
-								trailingCommas: severityLevel,
-							})).map((error): DiagnosticBase => ({
-								...error,
-								source: 'json',
-							}));
-						return warning ? e : e.filter(({severity}) => severity === 1);
-					})) :
+					await Promise.all(
+						root.querySelectorAll<ExtToken>(jsonSelector).map(async ({name, lastChild, selfClosing}) => {
+							if (selfClosing) {
+								return [];
+							}
+							const textDoc = new EmbeddedJSONDocument(root, lastChild),
+								severityLevel = name === 'templatedata' ? 'error' : 'ignore',
+								e = (await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc, {
+									comments: severityLevel,
+									trailingCommas: severityLevel,
+								})).map((error): DiagnosticBase => ({
+									...error,
+									source: 'json',
+								}));
+							return warning ? e : e.filter(({severity}) => severity === 1);
+						}),
+					) :
 					[] as const;
 			/* eslint-enable @stylistic/operator-linebreak */
 
@@ -1144,6 +1158,32 @@ export class LanguageService implements LanguageServiceBase {
 				}));
 			}
 		}
+		const MathJax = await Jax,
+			mathDiagnostics = MathJax
+				? root.querySelectorAll<ExtToken>(mathSelector)
+					.map(({selfClosing, innerText, lastChild, name}): DiagnosticBase[] => {
+						if (selfClosing) {
+							return [];
+						}
+						try {
+							MathJax.tex2mml(name === 'math' ? innerText! : String.raw`\ce{${innerText}}`);
+							return [];
+						} catch (e) {
+							if (e && typeof e === 'object' && 'id' in e && 'message' in e) {
+								return [
+									{
+										range: createNodeRange(lastChild),
+										severity: 1,
+										source: 'MathJax',
+										code: e.id as string,
+										message: e.message as string,
+									},
+								];
+							}
+							return [];
+						}
+					})
+				: [] as const;
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -1155,6 +1195,7 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY */
 
 			lilypondDiagnostics,
+			mathDiagnostics,
 		].flat(2);
 	}
 
@@ -1213,8 +1254,10 @@ export class LanguageService implements LanguageServiceBase {
 		/* NOT FOR BROWSER ONLY */
 
 		if (jsonLSP) {
-			for (const token of root.querySelectorAll(jsonSelector)) {
-				ranges.push(...jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, token)));
+			for (const {selfClosing, lastChild} of root.querySelectorAll<ExtToken>(jsonSelector)) {
+				if (!selfClosing) {
+					ranges.push(...jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, lastChild)));
+				}
 			}
 		}
 
