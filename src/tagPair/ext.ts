@@ -11,7 +11,6 @@ import {InputboxToken} from '../paramTag/inputbox';
 import {GalleryToken} from '../gallery';
 import {ImagemapToken} from '../imagemap';
 import {NowikiToken} from '../nowiki/index';
-import {NestedToken} from '../nested';
 import type {LintError, Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
@@ -106,12 +105,17 @@ export abstract class ExtToken extends TagPairToken {
 				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(include, inner, newConfig, accum);
 				break;
-			case 'references':
+			case 'references': {
+				// NestedToken 依赖 ExtToken
+				const {NestedToken}: typeof import('../nested') = require('../nested');
 				newConfig.excludes.push('heading');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(inner, include, ['ref'], newConfig, accum);
 				break;
-			case 'choose':
+			}
+			case 'choose': {
+				// NestedToken 依赖 ExtToken
+				const {NestedToken}: typeof import('../nested') = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -121,7 +125,10 @@ export abstract class ExtToken extends TagPairToken {
 					accum,
 				);
 				break;
-			case 'combobox':
+			}
+			case 'combobox': {
+				// NestedToken 依赖 ExtToken
+				const {NestedToken}: typeof import('../nested') = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -131,6 +138,7 @@ export abstract class ExtToken extends TagPairToken {
 					accum,
 				);
 				break;
+			}
 			case 'gallery':
 				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
