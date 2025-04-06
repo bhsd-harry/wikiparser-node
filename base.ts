@@ -57,6 +57,7 @@ export interface Config {
 	/** @private */
 	htmlElements?: Set<string>;
 }
+export type ConfigData = Omit<Config, 'excludes'>;
 
 export type TokenTypes = 'root'
 	| 'plain'
@@ -463,7 +464,7 @@ export interface LanguageService {
 }
 
 export interface Parser {
-	config: Config | string;
+	config: ConfigData | string;
 	i18n: Record<string, string>
 		| string
 		| undefined;
@@ -474,7 +475,7 @@ export interface Parser {
 	 * 获取当前的解析设置
 	 * @param config unprocessed parser configuration / 未处理的解析设置
 	 */
-	getConfig(config?: Config): Config;
+	getConfig(config?: ConfigData): Config;
 
 	/**
 	 * Parse wikitext

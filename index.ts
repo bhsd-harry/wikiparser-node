@@ -8,6 +8,7 @@ import {
 import {tidy} from './util/string';
 import type {
 	Config,
+	ConfigData,
 	LintError,
 	TokenTypes,
 	Parser as ParserBase,
@@ -116,11 +117,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* NOT FOR BROWSER ONLY END */
 
 	/** @implements */
-	getConfig(config?: Config) {
+	getConfig(config?: ConfigData) {
 		/* NOT FOR BROWSER ONLY */
 
 		if (!config && typeof this.config === 'string') {
-			this.config = rootRequire(this.config, 'config') as Config;
+			this.config = rootRequire(this.config, 'config') as ConfigData;
 			/* istanbul ignore if */
 			if (
 				this.config.doubleUnderscore.length < 3
@@ -138,7 +139,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 		/* NOT FOR BROWSER ONLY END */
 
-		const parserConfig = config ?? this.config as Config,
+		const parserConfig = config ?? this.config as ConfigData,
 			{
 				doubleUnderscore,
 			} = parserConfig;
@@ -314,6 +315,7 @@ export = Parser;
 export default Parser;
 export type {
 	Config,
+	ConfigData,
 	LintError,
 	TokenTypes,
 	LanguageService,
