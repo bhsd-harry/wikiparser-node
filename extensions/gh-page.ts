@@ -1,6 +1,6 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
 import {CodeJar} from '/codejar-async/dist/codejar.js';
-import type {Config, AST} from './typings';
+import type {ConfigData, AST} from './typings';
 
 declare global {
 	const monaco: PromiseLike<{editor: MonacoEditor}>;
@@ -36,7 +36,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		] as [HTMLPreElement, HTMLPreElement];
 
 	// Parser初始化
-	const config: Config = await (await fetch('./config/default.json')).json();
+	const config: ConfigData = await (await fetch('./config/default.json')).json();
 	Parser.config = config;
 	wikiparse.setConfig(config);
 

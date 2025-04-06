@@ -25,7 +25,7 @@ import type {
 	InlayHint,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
+import type {Config, ConfigData, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
 
 /* NOT EXPORTED */
 
@@ -34,6 +34,7 @@ import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
 export type {
 	AST,
 	Config,
+	ConfigData,
 	LintError,
 	LanguageService,
 	Action,
@@ -55,7 +56,7 @@ export type {
 };
 
 export type Command = ['setI18N', Record<string, string>?]
-	| ['setConfig', Config]
+	| ['setConfig', ConfigData]
 	| ['getConfig', number]
 	| ['destroy' | 'findStyleTokens', number]
 	| ['data', number, SignatureData, boolean]
@@ -119,7 +120,7 @@ export interface wikiparse {
 	version: string;
 	CDN: string;
 	setI18N: (i18n?: Record<string, string>) => void;
-	setConfig: (config: Config) => void;
+	setConfig: (config: ConfigData) => void;
 	getConfig: () => Promise<Config>;
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
@@ -135,7 +136,7 @@ export interface wikiparse {
 	/* NOT EXPORTED */
 
 	id: number;
-	config: Config;
+	config: ConfigData;
 	provide: (...args: Exclude<Command, ['setI18N' | 'setConfig' | 'getConfig', ...unknown[]]>) => Promise<unknown>;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */

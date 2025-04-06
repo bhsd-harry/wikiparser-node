@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import type {Config, SignatureData} from '../base';
+import type {ConfigData, SignatureData} from '../base';
 
 const basePath = path.join('..', '..');
 
-const configs: Record<string, Config> = {};
+const configs: Record<string, ConfigData> = {};
 for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		describe(file, () => {
-			const config: Config = require(path.join(basePath, 'config', file));
+			const config: ConfigData = require(path.join(basePath, 'config', file));
 			const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config,
 				magicWords = parserFunction.slice(0, 2) as Record<string, string>[],
 				magicWordKeys = magicWords.flatMap(Object.keys),

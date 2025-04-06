@@ -1,5 +1,6 @@
 import type {
 	Config,
+	ConfigData,
 	LintError,
 	AST,
 	LanguageService,
@@ -241,7 +242,7 @@ const setI18N = (i18n?: Record<string, string>): void => {
  * 更新解析设置
  * @param config 设置
  */
-const setConfig = (config: Config): void => {
+const setConfig = (config: ConfigData): void => {
 	worker.postMessage(['setConfig', config]);
 	wikiparse.config = config;
 };
@@ -448,7 +449,7 @@ const wikiparse: Wikiparse = {
 	version,
 	CDN,
 	id: 0,
-	config: {} as Config,
+	config: {} as ConfigData,
 	setI18N,
 	setConfig,
 	getConfig,

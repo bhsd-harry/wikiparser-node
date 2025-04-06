@@ -8,6 +8,7 @@ import {
 import {tidy} from './util/string';
 import type {
 	Config,
+	ConfigData,
 	LintError,
 	TokenTypes,
 	Parser as ParserBase,
@@ -64,9 +65,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	rules,
 
 	/** @implements */
-	getConfig(config?: Config) {
+	getConfig(config?: ConfigData) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-		const parserConfig = config ?? this.config as Config,
+		const parserConfig = config ?? this.config as ConfigData,
 			{
 				doubleUnderscore,
 			} = parserConfig;
@@ -203,6 +204,7 @@ Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
 export default Parser;
 export type {
 	Config,
+	ConfigData,
 	LintError,
 	TokenTypes,
 	LanguageService,

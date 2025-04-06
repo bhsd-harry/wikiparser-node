@@ -1,4 +1,4 @@
-import type {Config, LintError, Diagnostic, Action, LinterBase, editor} from './typings';
+import type {ConfigData, LintError, Diagnostic, Action, LinterBase, editor} from './typings';
 
 /** 用于语法分析 */
 class Linter implements LinterBase {
@@ -6,7 +6,7 @@ class Linter implements LinterBase {
 	#wikitext: string;
 	#running: Promise<LintError[]> | undefined;
 	#done: LintError[];
-	#config: Config;
+	#config: ConfigData;
 	include;
 
 	/** @param include 是否嵌入 */
