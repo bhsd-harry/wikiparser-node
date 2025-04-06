@@ -5,7 +5,7 @@ import fs from 'fs';
 import assert from 'assert';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/common/dist/cm';
 import type {MwConfig, MagicWord} from '@bhsd/common/dist/cm';
-import type {Config} from '../base';
+import type {ConfigData} from '../base';
 
 declare interface Response {
 	query: {
@@ -30,7 +30,7 @@ declare interface Implementation {
  * @param config parser configuration
  * @param config.articlePath article path
  */
-const arrToObj = ({articlePath, ...obj}: Config): object => {
+const arrToObj = ({articlePath, ...obj}: ConfigData): object => {
 	for (const [k, v] of Object.entries(obj)) {
 		if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
 			Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
@@ -105,7 +105,7 @@ let mwConfig: MwConfig | undefined;
  * @param force whether to overwrite the existing configuration
  * @param internal for internal use
  */
-export default async (site: string, url: string, force?: boolean, internal?: boolean): Promise<Config> => {
+export default async (site: string, url: string, force?: boolean, internal?: boolean): Promise<ConfigData> => {
 	if (!site || !url) {
 		console.error('Usage: npx getParserConfig <site> <script path> [force]');
 		process.exit(1);
@@ -142,8 +142,8 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 				[id, name],
 				...name === canonical ? [] : [[id, canonical] as const],
 			]),
-		config: Config = {
-			...getParserConfig(require(path.join(dir, 'minimum')) as Config, mwConfig!),
+		config: ConfigData = {
+			...getParserConfig(require(path.join(dir, 'minimum')) as ConfigData, mwConfig!),
 			...getKeywords(magicwords),
 			variants: getVariants(variants),
 			namespaces: Object.fromEntries(ns),
@@ -173,7 +173,7 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 	if (force || !fs.existsSync(file)) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
 	} else if (!internal) {
-		assert.deepStrictEqual(arrToObj(require(file) as Config), arrToObj(config));
+		assert.deepStrictEqual(arrToObj(require(file) as ConfigData), arrToObj(config));
 	}
 	return config;
 };

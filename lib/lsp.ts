@@ -42,6 +42,10 @@ import type {
 	SignatureData,
 	SignatureInfo,
 	LintError,
+
+	/* NOT FOR BROWSER ONLY */
+
+	ConfigData,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
@@ -1801,7 +1805,7 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		const site = `${mt[1]!.toLowerCase()}wiki`;
 		try {
-			const config: Config = require(path.join('..', '..', 'config', site));
+			const config: ConfigData = require(path.join('..', '..', 'config', site));
 			this.config = Parser.getConfig(config);
 		} catch {
 			this.config = await Parser.fetchConfig(site, `${mt[0]}/w`);
