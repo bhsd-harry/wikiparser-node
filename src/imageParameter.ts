@@ -2,6 +2,7 @@ import {getRegex} from '@bhsd/common';
 import {
 	extUrlChar,
 	extUrlCharFirst,
+	removeComment,
 	rawurldecode,
 	print,
 } from '../util/string';
@@ -42,7 +43,7 @@ function validate(
 	halfParsed?: boolean,
 	ext?: string,
 ): string | Title | boolean {
-	val = val.trim();
+	val = removeComment(val).trim();
 	let value = val.replace(key === 'link' ? /\0\d+[tq]\x7F/gu : /\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
