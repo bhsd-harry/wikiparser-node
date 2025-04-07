@@ -121,7 +121,7 @@ TranscludeToken.prototype.fixDuplication =
 					values.set(val, [arg]);
 				}
 			}
-			let noMoreAnon = anonCount === 0 || !key.trim() || isNaN(key as unknown as number);
+			let noMoreAnon = anonCount === 0 || !key.trim() || !Number.isInteger(Number(key));
 			const emptyArgs = values.get('') ?? [],
 				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);

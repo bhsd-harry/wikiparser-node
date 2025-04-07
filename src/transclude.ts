@@ -545,7 +545,7 @@ export abstract class TranscludeToken extends Token {
 
 		/* NOT FOR BROWSER */
 
-		if (exact && keyStr.trim() && !isNaN(keyStr as unknown as number)) {
+		if (exact && keyStr.trim() && Number.isInteger(Number(keyStr))) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
 			args = new Set(args);
