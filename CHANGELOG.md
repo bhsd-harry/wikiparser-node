@@ -6,6 +6,10 @@
 
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now supports extension tags `<math>`, `<chem>` and `<ce>` if [MathJax](https://www.mathjax.org/) is available
 
+**Fixed**
+
+- [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) containing comments that do not break the parameter syntax
+
 ## v1.18.4
 
 *2025-04-03*
