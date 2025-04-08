@@ -3,6 +3,7 @@ import {
 	isToken,
 } from '../util/debug';
 import {BoundingRect} from '../lib/rect';
+import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -21,6 +22,7 @@ declare type Child = GalleryImageToken | NoincludeToken;
  * `<imagemap>`
  * @classdesc `{childNodes: [...NoincludeToken[], GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)[]]}`
  */
+@multiLine
 export abstract class ImagemapToken extends Token {
 	declare readonly name: 'imagemap';
 
@@ -129,21 +131,6 @@ export abstract class ImagemapToken extends Token {
 	}
 
 	/** @private */
-	override toString(skip?: boolean): string {
-		return super.toString(skip, '\n');
-	}
-
-	/** @private */
-	override text(): string {
-		return super.text('\n').replace(/\n{2,}/gu, '\n');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
-	}
-
-	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			rect = new BoundingRect(this, start);
@@ -170,10 +157,5 @@ export abstract class ImagemapToken extends Token {
 			errors.push(generateForSelf(this, rect, 'invalid-imagemap', '<imagemap> without an image'));
 		}
 		return errors;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: '\n'});
 	}
 }
