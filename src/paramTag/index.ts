@@ -1,6 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {parseCommentAndExt} from '../../parser/commentAndExt';
+import {multiLine} from '../../mixin/multiLine';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -11,6 +12,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
  * `<dynamicpagelist>`
  * @classdesc `{childNodes: AtomToken[]}`
  */
+@multiLine
 export abstract class ParamTagToken extends Token {
 	declare readonly name: string;
 
@@ -46,21 +48,6 @@ export abstract class ParamTagToken extends Token {
 		}
 		accum.splice(accum.indexOf(this), 1);
 		accum.push(this);
-	}
-
-	/** @private */
-	override toString(skip?: boolean): string {
-		return super.toString(skip, '\n');
-	}
-
-	/** @private */
-	override text(): string {
-		return super.text('\n');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/** @private */

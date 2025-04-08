@@ -1,3 +1,4 @@
+import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
@@ -20,6 +21,7 @@ declare type Child = GalleryImageToken | NoincludeToken;
  * gallery标签
  * @classdesc `{childNodes: (GalleryImageToken|NoincludeToken|AstText)[]}`
  */
+@multiLine
 export abstract class GalleryToken extends Token {
 	declare readonly name: 'gallery';
 
@@ -62,21 +64,6 @@ export abstract class GalleryToken extends Token {
 	 */
 	#checkFile(file: string): boolean {
 		return this.normalizeTitle(file, 6, {halfParsed: true, temporary: true, decode: true}).valid;
-	}
-
-	/** @private */
-	override toString(skip?: boolean): string {
-		return super.toString(skip, '\n');
-	}
-
-	/** @private */
-	override text(): string {
-		return super.text('\n').replace(/\n\s*\n/gu, '\n');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/** @private */
