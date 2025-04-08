@@ -7,10 +7,10 @@ import {
 	rawurldecode,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
-import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {
+	Config,
 	LintError,
 } from '../../base';
 import type {Title} from '../../lib/title';
@@ -52,7 +52,7 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
 	 */
-	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, linkText?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {

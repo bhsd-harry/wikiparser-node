@@ -3,9 +3,9 @@ import {
 	extUrlCharFirst,
 } from '../util/string';
 import {generateForChild} from '../util/lint';
-import Parser from '../index';
 import {Token} from './index';
 import type {
+	Config,
 	LintError,
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
@@ -41,7 +41,7 @@ export abstract class ParameterToken extends Token {
 	 * @param key 参数名
 	 * @param value 参数值
 	 */
-	constructor(key?: string | number, value?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(key?: string | number, value?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum);
 		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, accum, {
 			}),

@@ -2,10 +2,9 @@ import {
 	MAX_STAGE,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
-import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 
 /**
  * external link
@@ -29,7 +28,7 @@ export abstract class ExtLinkToken extends Token {
 	 * @param space 空白字符
 	 * @param text 链接文字
 	 */
-	constructor(url?: string, space = '', text = '', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(url?: string, space = '', text = '', config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		const link: MagicLinkToken = url && /^\0\d+f\x7F$/u.test(url)
