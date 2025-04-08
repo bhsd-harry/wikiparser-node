@@ -122,7 +122,8 @@ const cssRules = {
 		'property-no-unknown': null,
 	},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
-	mathSelector = ['math', 'chem', 'ce'].map(s => `ext#${s}`).join(),
+	mathTags = ['math', 'chem', 'ce'],
+	mathSelector = mathTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
 let colors: RegExp | false | undefined;
 
@@ -428,25 +429,30 @@ export class LanguageService implements LanguageServiceBase {
 	/* NOT FOR BROWSER ONLY */
 
 	lilypond: string;
-	/** @private */
-	lilypondData: string[];
+	#lilypondData: string[];
+	#mathData: string[];
+	#mathSet: Set<string>;
 
 	/* NOT FOR BROWSER ONLY END */
 
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
 		tasks.set(uri, this);
+
+		/* NOT FOR BROWSER ONLY */
+
+		const dataDir = path.join('..', '..', 'data'),
+			extDir = path.join(dataDir, 'ext');
+		this.#lilypondData = require(path.join(extDir, 'score'));
+		this.#mathData = require(path.join(extDir, 'math'));
+		this.#mathSet = new Set(this.#mathData);
+
+		/* NOT FOR BROWSER ONLY END */
+
 		Object.defineProperties(this, {
 			config: {enumerable: false},
 			data: {
-				value: require(path.join('..', '..', 'data', 'signatures')),
-				enumerable: false,
-			},
-
-			/* NOT FOR BROWSER ONLY */
-
-			lilypondData: {
-				value: require(path.join('..', '..', 'data', 'ext', 'score')),
+				value: require(path.join(dataDir, 'signatures')),
 				enumerable: false,
 			},
 		});
@@ -952,28 +958,41 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			const word = /\\?\b(?:\w|\b(?:->?|\.)|\bly:)+$/u.exec(curLine!.slice(0, character))?.[0];
 			if (word) {
-				const {lilypondData} = this;
+				const data = this.#lilypondData;
 				return word.startsWith('\\')
 					? getCompletion(
-						lilypondData.filter(w => w.startsWith('\\')),
+						data.filter(w => w.startsWith('\\')),
 						'Function',
 						word,
 						position,
 					)
 					: [
 						...getCompletion(
-							lilypondData.filter(w => /^[a-z]/u.test(w)),
+							data.filter(w => /^[a-z]/u.test(w)),
 							'Variable',
 							word,
 							position,
 						),
 						...getCompletion(
-							lilypondData.filter(w => /^[A-Z]/u.test(w)),
+							data.filter(w => /^[A-Z]/u.test(w)),
 							'Class',
 							word,
 							position,
 						),
 					];
+			}
+		} else if (type === 'ext-inner' && mathTags.includes(cur!.name!)) {
+			const word = /\\\w+$/u.exec(curLine!.slice(0, character))?.[0];
+			if (word) {
+				const data = this.#mathData;
+				return getCompletion(
+					cur!.name === 'math' && (parentNode as ExtToken).getAttr('chem') !== undefined
+						? [...data, String.raw`\ce`]
+						: data,
+					'Function',
+					word,
+					position,
+				);
 			}
 
 			/* NOT FOR BROWSER ONLY END */
@@ -1154,31 +1173,43 @@ export class LanguageService implements LanguageServiceBase {
 			}
 		}
 		const MathJax = await Jax,
-			mathDiagnostics = MathJax
-				? root.querySelectorAll<ExtToken>(mathSelector)
-					.map(({selfClosing, innerText, lastChild, name}): DiagnosticBase[] => {
-						if (selfClosing) {
-							return [];
-						}
+			data = this.#mathSet,
+			mathDiagnostics = root.querySelectorAll<ExtToken>(mathSelector)
+				.map(token => {
+					const {selfClosing, innerText, lastChild, name} = token;
+					if (selfClosing) {
+						return [];
+					}
+					const hasCe = name === 'math' && token.getAttr('chem') !== undefined,
+						mathErrors: DiagnosticBase[] = [...innerText!.matchAll(/\\\w+/gu)]
+							.filter(([macro]) => !(hasCe && macro === String.raw`\ce` || data.has(macro)))
+							.map(({0: macro, index}): DiagnosticBase => {
+								const aIndex = lastChild.getAbsoluteIndex() + index;
+								return {
+									range: createRange(root, aIndex, aIndex + macro.length),
+									severity: 2,
+									source: 'MathJax',
+									code: 'UnknownMacro',
+									message: `Unknown macro "${macro}"`,
+								};
+							});
+					if (MathJax) {
 						try {
 							MathJax.tex2mml(name === 'math' ? innerText! : String.raw`\ce{${innerText}}`);
-							return [];
 						} catch (e) {
 							if (e && typeof e === 'object' && 'id' in e && 'message' in e) {
-								return [
-									{
-										range: createNodeRange(lastChild),
-										severity: 1,
-										source: 'MathJax',
-										code: e.id as string,
-										message: e.message as string,
-									},
-								];
+								mathErrors.push({
+									range: createNodeRange(lastChild),
+									severity: 1,
+									source: 'MathJax',
+									code: e.id as string,
+									message: e.message as string,
+								});
 							}
-							return [];
 						}
-					})
-				: [] as const;
+					}
+					return mathErrors;
+				});
 
 		/* NOT FOR BROWSER ONLY END */
 
