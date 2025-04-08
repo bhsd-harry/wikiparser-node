@@ -7,16 +7,12 @@ import {
 	classes,
 } from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
-import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {
+	Config,
 	LintError,
 	AST,
-
-	/* NOT FOR BROWSER */
-
-	Config,
 } from '../../base';
 import type {Cached} from '../../util/lint';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
@@ -26,6 +22,7 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 import {Shadow} from '../../util/debug';
 import {newline} from '../../util/string';
 import {fixedToken} from '../../mixin/fixed';
+import Parser from '../../index';
 
 /* NOT FOR BROWSER END */
 
@@ -125,7 +122,7 @@ export abstract class TdToken extends TableBaseToken {
 	 * @param syntax 单元格语法
 	 * @param inner 内部wikitext
 	 */
-	constructor(syntax: string, inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(syntax: string, inner?: string, config?: Config, accum: Token[] = []) {
 		let innerSyntax = /\||\0\d+!\x7F/u.exec(inner ?? ''),
 			attr = innerSyntax ? inner!.slice(0, innerSyntax.index) : '';
 		if (/\[\[|-\{/u.test(attr)) {

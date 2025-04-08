@@ -16,10 +16,10 @@ import {
 	sanitize,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
-import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../../base';
@@ -37,6 +37,7 @@ import type {
 
 import {undo, Shadow} from '../../util/debug';
 import {noEscape} from '../../mixin/noEscape';
+import Parser from '../../index';
 
 /* NOT FOR BROWSER END */
 
@@ -122,7 +123,7 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
 	 */
-	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, linkText?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 			AtomToken: 0, Token: 1,
 		});

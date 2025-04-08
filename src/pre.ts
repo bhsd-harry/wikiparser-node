@@ -5,10 +5,9 @@ import {
 
 	classes,
 } from '../util/constants';
-import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -49,7 +48,7 @@ export abstract class PreToken extends Token {
 	}
 
 	/** @class */
-	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(wikitext?: string, config?: Config, accum: Token[] = []) {
 		if (wikitext) {
 			const opening = /<nowiki>/giu,
 				closing = /<\/nowiki>/giu,

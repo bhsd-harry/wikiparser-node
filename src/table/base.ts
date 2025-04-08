@@ -1,14 +1,15 @@
 import {attributesParent} from '../../mixin/attributesParent';
-import Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
+import type {Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import Parser from '../../index';
 import type {TdToken} from '../../internal';
 
 /**
@@ -63,7 +64,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		syntax: string,
 		type: TableTypes,
 		attr?: string,
-		config = Parser.getConfig(),
+		config?: Config,
 		accum: Token[] = [],
 		acceptable?: Acceptable,
 	) {

@@ -1,4 +1,4 @@
-## v1.19.1
+## v1.20.0
 
 *2025-04-08*
 
@@ -7,6 +7,7 @@
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now supports extension tags `<math>` and `<chem>`
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>` and `<chem>`
 - Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
+- Parse the extension tag `<hiero>`
 
 ## v1.19.0
 

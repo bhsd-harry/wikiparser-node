@@ -6,15 +6,15 @@ import {
 	classes,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
-import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 
 /* NOT FOR BROWSER */
 
 import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
+import Parser from '../index';
 import type {FileToken} from '../internal';
 
 /* NOT FOR BROWSER END */
@@ -84,7 +84,7 @@ export abstract class ExtLinkToken extends Token {
 	 * @param space 空白字符
 	 * @param text 链接文字
 	 */
-	constructor(url?: string, space = '', text = '', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(url?: string, space = '', text = '', config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 			MagicLinkToken: 0, Token: 1,
 		});

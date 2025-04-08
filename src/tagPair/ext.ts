@@ -11,6 +11,7 @@ import {InputboxToken} from '../paramTag/inputbox';
 import {GalleryToken} from '../gallery';
 import {ImagemapToken} from '../imagemap';
 import {NowikiToken} from '../nowiki/index';
+import {CommentedToken} from '../commented';
 import type {LintError, Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
@@ -163,6 +164,10 @@ export abstract class ExtToken extends TagPairToken {
 			case 'imagemap':
 				// @ts-expect-error abstract class
 				innerToken = new ImagemapToken(inner, newConfig, accum);
+				break;
+			case 'hiero':
+				// @ts-expect-error abstract class
+				innerToken = new CommentedToken(inner, newConfig, accum);
 				break;
 			// 更多定制扩展的代码示例：
 			// ```

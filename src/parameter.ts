@@ -7,9 +7,9 @@ import {
 	removeCommentLine,
 } from '../util/string';
 import {generateForChild} from '../util/lint';
-import Parser from '../index';
 import {Token} from './index';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../base';
@@ -20,6 +20,7 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
+import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 
@@ -107,7 +108,7 @@ export abstract class ParameterToken extends Token {
 	 * @param key 参数名
 	 * @param value 参数值
 	 */
-	constructor(key?: string | number, value?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(key?: string | number, value?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum);
 		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, accum, {
 				'Stage-11': ':', '!HeadingToken': '',
