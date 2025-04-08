@@ -2,11 +2,10 @@ import {generateForSelf} from '../../util/lint';
 import {
 	MAX_STAGE,
 } from '../../util/constants';
-import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
-import type {LintError} from '../../base';
+import type {Config, LintError} from '../../base';
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
@@ -28,13 +27,7 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @param link 图片文件名
 	 * @param text 图片参数
 	 */
-	constructor(
-		type: GalleryTypes,
-		link: string,
-		text?: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-	) {
+	constructor(type: GalleryTypes, link: string, text?: string, config?: Config, accum: Token[] = []) {
 		let token: Token | undefined;
 		if (text !== undefined) {
 			const {length} = accum;

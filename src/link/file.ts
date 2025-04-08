@@ -4,6 +4,7 @@ import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../../base';
@@ -73,7 +74,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param text 图片参数
 	 * @param delimiter `|`
 	 */
-	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
 		const {extension} = this.getTitle(true, true);
 		this.append(...explode(text).map(

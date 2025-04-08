@@ -3,6 +3,7 @@ import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../base';
@@ -49,7 +50,7 @@ export abstract class GalleryToken extends Token {
 	/* PRINT ONLY END */
 
 	/** @param inner 标签内部wikitext */
-	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(inner?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		for (const line of inner?.split('\n') ?? []) {
