@@ -1,6 +1,6 @@
 ## v1.20.0
 
-*2025-04-08*
+*2025-04-09*
 
 **Added**
 
@@ -8,6 +8,11 @@
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>` and `<chem>`
 - Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
 - Parse the extension tag `<hiero>`
+
+**Fixed**
+
+- External links starting with `//` in `<imagemap>` are valid
+- Internal links with empty alt text in `<imagemap>` are valid
 
 ## v1.19.0
 
