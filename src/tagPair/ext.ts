@@ -89,6 +89,8 @@ export abstract class ExtToken extends TagPairToken {
 			case 'tabs':
 			case 'poll':
 			case 'seo':
+			case 'langconvert':
+			case 'phonos':
 				if (lcName === 'poem') {
 					newConfig.excludes.push('heading');
 				}
