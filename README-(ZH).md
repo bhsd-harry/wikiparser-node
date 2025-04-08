@@ -17,7 +17,7 @@ WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/)
 
 ## Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext) 插件。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VSCode 扩展。
 
 ## Browser-compatible
 
@@ -77,6 +77,10 @@ Parser.config = 'jawiki';
 ## API 使用方法
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
+
+# 性能
+
+在一台个人的 MacBook Air 上对中文维基百科约 350 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整扫描（解析和语法错误分析）需要约 3 小时。
 
 # 已知问题
 
