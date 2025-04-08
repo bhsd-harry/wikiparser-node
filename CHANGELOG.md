@@ -1,3 +1,12 @@
+## v1.19.1
+
+*2025-04-08*
+
+**Added**
+
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now supports extension tags `<math>`, `<chem>` and `<ce>`
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>`, `<chem>` and `<ce>`
+
 ## v1.19.0
 
 *2025-04-07*
