@@ -12,7 +12,7 @@ export interface SyntaxBase {
  * 满足特定语法格式的Token
  * @param pattern 语法正则
  */
-export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(constructor: S, _?: unknown): S => {
+export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(constructor: S): S => {
 	/** 满足特定语法格式的Token */
 	abstract class SyntaxToken extends constructor {
 		declare pattern: RegExp;

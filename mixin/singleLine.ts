@@ -5,7 +5,7 @@ import {mixins} from '../util/constants';
  * 不可包含换行符的类
  * @param strict 是否严格
  */
-export const singleLine = (strict = true) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
+export const singleLine = (strict = true) => <T extends AstConstructor>(constructor: T): T => {
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
 		override toString(skip?: boolean): string {

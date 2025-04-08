@@ -4,10 +4,9 @@ import type {AstNodes, AstText} from '../internal';
 
 /**
  * 不可增删子节点的类
- * @param constructor 基类
- * @param _ context
+ * @ignore
  */
-export const fixedToken = <S extends AstConstructor>(constructor: S, _?: unknown): S => {
+export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
 	/** 不可增删子节点的类 */
 	abstract class FixedToken extends constructor {
 		/** @private */

@@ -1,6 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {parseCommentAndExt} from '../../parser/commentAndExt';
+import {multiLine} from '../../mixin/multiLine';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -19,6 +20,7 @@ import {singleLine} from '../../mixin/singleLine';
  * `<dynamicpagelist>`
  * @classdesc `{childNodes: AtomToken[]}`
  */
+@multiLine
 export abstract class ParamTagToken extends Token {
 	declare readonly name: string;
 
@@ -70,21 +72,6 @@ export abstract class ParamTagToken extends Token {
 	}
 
 	/** @private */
-	override toString(skip?: boolean): string {
-		return super.toString(skip, '\n');
-	}
-
-	/** @private */
-	override text(): string {
-		return super.text('\n');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
-	}
-
-	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const rect = new BoundingRect(this, start),
 			msg = Parser.msg('invalid parameter of <$1>', this.name),
@@ -109,11 +96,6 @@ export abstract class ParamTagToken extends Token {
 			start += child.toString().length + 1;
 		}
 		return errors;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: '\n'});
 	}
 
 	/* NOT FOR BROWSER */

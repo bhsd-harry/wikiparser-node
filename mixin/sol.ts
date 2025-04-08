@@ -6,7 +6,7 @@ import type {Token} from '../src/index';
  * 只能位于行首的类
  * @param self 是否允许同类节点相邻
  */
-export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
+export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T): T => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
 		/** @implements */

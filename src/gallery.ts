@@ -1,3 +1,4 @@
+import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
@@ -33,6 +34,7 @@ declare type Child = GalleryImageToken | NoincludeToken;
  * gallery标签
  * @classdesc `{childNodes: (GalleryImageToken|NoincludeToken|AstText)[]}`
  */
+@multiLine
 export abstract class GalleryToken extends Token {
 	declare readonly name: 'gallery';
 
@@ -113,21 +115,6 @@ export abstract class GalleryToken extends Token {
 	}
 
 	/** @private */
-	override toString(skip?: boolean): string {
-		return super.toString(skip, '\n');
-	}
-
-	/** @private */
-	override text(): string {
-		return super.text('\n').replace(/\n\s*\n/gu, '\n');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
-	}
-
-	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];
@@ -175,11 +162,6 @@ export abstract class GalleryToken extends Token {
 		const widths = this.parentNode?.getAttr(key),
 			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
 		return mt && Number(mt) || 120;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: '\n'});
 	}
 
 	/** @private */
