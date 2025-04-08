@@ -1,8 +1,8 @@
 import {attributesParent} from '../../mixin/attributesParent';
-import Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
+import type {Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 declare type TableTypes = 'table' | 'tr' | 'td';
@@ -32,7 +32,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		syntax: string,
 		type: TableTypes,
 		attr?: string,
-		config = Parser.getConfig(),
+		config?: Config,
 		accum: Token[] = [],
 		acceptable?: Acceptable,
 	) {
