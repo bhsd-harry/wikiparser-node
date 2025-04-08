@@ -5,13 +5,6 @@ import {attributesParent} from '../../mixin/attributesParent';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
-import {PreToken} from '../pre';
-import {ParamTagToken} from '../paramTag/index';
-import {InputboxToken} from '../paramTag/inputbox';
-import {GalleryToken} from '../gallery';
-import {ImagemapToken} from '../imagemap';
-import {NowikiToken} from '../nowiki/index';
-import {CommentedToken} from '../commented';
 import type {LintError, Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
@@ -20,6 +13,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
+import type {GalleryToken} from '../gallery';
 
 /* NOT FOR BROWSER END */
 
@@ -111,18 +105,24 @@ export abstract class ExtToken extends TagPairToken {
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
-			case 'pre':
+			case 'pre': {
+				const {PreToken}: typeof import('../pre') = require('../pre');
 				// @ts-expect-error abstract class
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
-			case 'dynamicpagelist':
+			}
+			case 'dynamicpagelist': {
+				const {ParamTagToken}: typeof import('../paramTag/index') = require('../paramTag/index');
 				// @ts-expect-error abstract class
 				innerToken = new ParamTagToken(include, inner, newConfig, accum);
 				break;
-			case 'inputbox':
+			}
+			case 'inputbox': {
+				const {InputboxToken}: typeof import('../paramTag/inputbox') = require('../paramTag/inputbox');
 				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(include, inner, newConfig, accum);
 				break;
+			}
 			case 'references': {
 				// NestedToken 依赖 ExtToken
 				const {NestedToken}: typeof import('../nested') = require('../nested');
@@ -157,18 +157,24 @@ export abstract class ExtToken extends TagPairToken {
 				);
 				break;
 			}
-			case 'gallery':
+			case 'gallery': {
+				const {GalleryToken}: typeof import('../gallery') = require('../gallery');
 				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
-			case 'imagemap':
+			}
+			case 'imagemap': {
+				const {ImagemapToken}: typeof import('../imagemap') = require('../imagemap');
 				// @ts-expect-error abstract class
 				innerToken = new ImagemapToken(inner, newConfig, accum);
 				break;
-			case 'hiero':
+			}
+			case 'hiero': {
+				const {CommentedToken}: typeof import('../commented') = require('../commented');
 				// @ts-expect-error abstract class
 				innerToken = new CommentedToken(inner, newConfig, accum);
 				break;
+			}
 			// 更多定制扩展的代码示例：
 			// ```
 			// case 'extensionName': {
@@ -177,9 +183,11 @@ export abstract class ExtToken extends TagPairToken {
 			//   break;
 			// }
 			// ```
-			default:
+			default: {
+				const {NowikiToken}: typeof import('../nowiki/index') = require('../nowiki/index');
 				// @ts-expect-error abstract class
 				innerToken = new NowikiToken(inner, newConfig, accum);
+			}
 		}
 		innerToken.setAttribute('name', lcName);
 		if (innerToken.type === 'plain') {
