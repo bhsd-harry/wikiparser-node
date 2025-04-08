@@ -16,4 +16,5 @@
 /wiki/
 /test/*.wiki
 /test/**/*.txt
+/localStorage.json
 !README
