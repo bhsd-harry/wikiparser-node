@@ -11,6 +11,7 @@ declare global {
 		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
 		lint(): LintError[];
+		print(opt?: PrintOpt): string;
 	};
 
 	interface PrintOpt {
