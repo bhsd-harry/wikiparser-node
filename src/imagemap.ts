@@ -89,7 +89,7 @@ export abstract class ImagemapToken extends Token {
 			} else if (line.includes('[')) {
 				const i = line.indexOf('['),
 					substr = line.slice(i),
-					mtIn = /^\[\[([^|]+)(?:\|([^\]]+))?\]\][\w\s]*$/u
+					mtIn = /^\[\[([^|]+)(?:\|([^\]]*))?\]\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
 					if (
@@ -107,7 +107,8 @@ export abstract class ImagemapToken extends Token {
 						continue;
 					}
 				} else if (
-					protocols.has(substr.slice(1, substr.indexOf(':') + 1))
+					substr.startsWith('[//')
+					|| protocols.has(substr.slice(1, substr.indexOf(':') + 1))
 					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
 				) {
 					const mtEx = /^\[([^\]\s]+)(?:(\s+(?!\s))([^\]]*))?\][\w\s]*$/u
