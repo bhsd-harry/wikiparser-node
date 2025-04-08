@@ -4,8 +4,9 @@
 
 **Added**
 
-- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now supports extension tags `<math>`, `<chem>` and `<ce>`
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>`, `<chem>` and `<ce>`
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now supports extension tags `<math>` and `<chem>`
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>` and `<chem>`
+- Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
 
 ## v1.19.0
 
@@ -13,7 +14,7 @@
 
 **Added**
 
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now supports extension tags `<math>`, `<chem>` and `<ce>` if [MathJax](https://www.mathjax.org/) is available
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now supports extension tags `<math>` and `<chem>` if [MathJax](https://www.mathjax.org/) is available
 
 **Fixed**
 
