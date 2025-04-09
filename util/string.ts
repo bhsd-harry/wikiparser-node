@@ -8,6 +8,20 @@ export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})
 export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
 
 /**
+ * trim and toLowerCase
+ * @param s 字符串
+ */
+export const trimLc = (s: string): string => s.trim().toLowerCase();
+
+/**
+ * 恢复原始字符串
+ * @param s 更改后的字符串
+ * @param stack 原始字符串片段
+ */
+export const restore = (s: string, stack: string[]): string =>
+	s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => stack[p1]!);
+
+/**
  * 生成正则替换函数
  * @param regex 正则表达式
  * @param replace 替换字符串或函数

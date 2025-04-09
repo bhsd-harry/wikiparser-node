@@ -11,17 +11,6 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 export interface ExtToken extends AttributesParentBase {}
 
 /**
- * 从数组中删除指定元素
- * @param arr 数组
- * @param ele 元素
- */
-const del = <T>(arr: readonly T[], ele: T): T[] => {
-	const set = new Set(arr);
-	set.delete(ele);
-	return [...set];
-};
-
-/**
  * extension tag
  *
  * 扩展标签
@@ -66,14 +55,14 @@ export abstract class ExtToken extends TagPairToken {
 			),
 			newConfig: Config = {
 				...config,
-				ext: del(config.ext, lcName),
+				ext: config.ext.filter(e => e !== lcName),
 				excludes: [...config.excludes],
 			};
 		let innerToken: Token;
 		newConfig.inExt = true;
 		switch (lcName) {
 			case 'tab':
-				newConfig.ext = del(newConfig.ext, 'tabs');
+				newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
 				// fall through
 			case 'indicator':
 			case 'poem':
