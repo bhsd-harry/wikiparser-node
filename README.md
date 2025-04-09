@@ -88,6 +88,7 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 1. Memory leaks may occur in rare cases.
 1. Preformatted text with a leading space is only processed by [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
+1. [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate) is not supported.
 1. Invalid page name with unicode characters ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 
 ## HTML conversion

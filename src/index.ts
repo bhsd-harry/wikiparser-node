@@ -24,13 +24,13 @@
 // b: TableToken
 // c: CommentToke
 // d: ListToken
-// e: ExtToken
-// f: MagicLinkToken inside ImageParameterToken
+// e: ExtToken或OnlyincludeToken
+// f: ImageParameterToken内的MagicLinkToken
 // h: HeadingToken
 // i: RFC/PMID/ISBN
 // l: LinkToken
-// m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// n: NoIncludeToken和IncludeToken
+// m: `{{server}}`、`{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
+// n: NoIncludeToken、IncludeToken、DoubleUnderscoreToken或`{{#vardefine:}}`
 // o: RedirectToken
 // q: QuoteToken
 // r: HrToken
@@ -38,7 +38,7 @@
 // t: ArgToken或TranscludeToken
 // u: `__toc__`
 // v: ConverterToken
-// w: ExtLinkToken
+// w: ExtLinkToken或free-ext-link
 // x: HtmlToken
 
 import {
