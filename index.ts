@@ -142,10 +142,21 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		const parserConfig = config ?? this.config as ConfigData,
 			{
 				doubleUnderscore,
+				ext,
+				parserFunction,
+				variable,
 			} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
+			}
+		}
+		if (ext.includes('translate') && !variable.includes('translationlanguage')) {
+			variable.push('translationlanguage');
+			if (Array.isArray(parserFunction[1])) {
+				parserFunction[1].push('TRANSLATIONLANGUAGE');
+			} else {
+				parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
 			}
 		}
 		return {

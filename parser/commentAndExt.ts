@@ -1,6 +1,8 @@
 import {getRegex as getObjRegex} from '@bhsd/common';
+import {restore} from '../util/string';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
+import {TranslateToken} from '../src/tagPair/translate';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
@@ -73,8 +75,27 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			return str;
 		}
 	}
+	const {ext} = config,
+		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar'),
+		newConfig = {...config, ext: newExt};
+	if (ext.includes('translate')) {
+		const stack: string[] = [];
+		wikitext = wikitext.replace(/<nowiki>[\s\S]*?<\/nowiki>/giu, m => {
+			stack.push(m);
+			return `\0${stack.length - 1}\x7F`;
+		}).replace(
+			/<translate( nowrap)?>([\s\S]+)?<\/translate>/gu,
+			(_, p1: string | undefined, p2: string) => {
+				const l = accum.length;
+				// @ts-expect-error abstract class
+				new TranslateToken(p1, restore(p2, stack), newConfig, accum);
+				return `\0${l}e\x7F`;
+			},
+		);
+		wikitext = restore(wikitext, stack);
+	}
 	return wikitext.replace(
-		getRegex[includeOnly ? 1 : 0](config.ext),
+		getRegex[includeOnly ? 1 : 0](newExt),
 		(
 			substr,
 			name?: string,
@@ -91,7 +112,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			if (name) {
 				ch = 'e';
 				// @ts-expect-error abstract class
-				new ExtToken(name, attr, inner, closing, config, include, accum);
+				new ExtToken(name, attr, inner, closing, newConfig, include, accum);
 			} else if (substr.startsWith('<!--')) {
 				ch = 'c';
 				const closed = substr.endsWith('-->');

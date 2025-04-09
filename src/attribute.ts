@@ -1,6 +1,7 @@
 import {generateForChild, htmlData} from '../util/lint';
 import {
 	removeComment,
+	trimLc,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -110,7 +111,7 @@ export abstract class AttributeToken extends Token {
 		this.#equal = equal;
 		this.#quotes = [...quotes];
 		this.#tag = tag;
-		this.setAttribute('name', removeComment(key).trim().toLowerCase());
+		this.setAttribute('name', trimLc(removeComment(key)));
 	}
 
 	/** @private */
@@ -121,7 +122,7 @@ export abstract class AttributeToken extends Token {
 		if (this.parentNode) {
 			this.#tag = this.parentNode.name;
 		}
-		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
+		this.setAttribute('name', trimLc(this.firstChild.text()));
 		super.afterBuild();
 	}
 

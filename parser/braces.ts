@@ -1,5 +1,5 @@
 import {getRegex} from '@bhsd/common';
-import {removeComment} from '../util/string';
+import {removeComment, restore, trimLc} from '../util/string';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';
@@ -58,7 +58,7 @@ try {
  * @param s 模板或魔术字名
  */
 const getSymbol = (s: string): string => {
-	const name = removeComment(s).trim().toLowerCase();
+	const name = trimLc(removeComment(s));
 	if (marks.has(name)) {
 		return marks.get(name)!; // 标记{{!}}等
 	} else if (/^(?:filepath|(?:full|canonical)urle?):./u.test(name)) {
@@ -86,12 +86,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		linkStack: string[] = [];
 
 	/**
-	 * 恢复内链
-	 * @param s 不含内链的字符串
-	 */
-	const restore = (s: string): string => s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => linkStack[p1]!);
-
-	/**
 	 * 填入模板内容
 	 * @param text wikitext全文
 	 * @param parts 模板参数
@@ -99,7 +93,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	 * @param index 匹配位置
 	 */
 	const push = (text: string, parts: string[][], lastIndex: number, index: number): void => {
-		parts[parts.length - 1]!.push(restore(text.slice(lastIndex, index)));
+		parts[parts.length - 1]!.push(restore(text.slice(lastIndex, index), linkStack));
 	};
 	let replaced: string | undefined;
 	do {
@@ -115,10 +109,11 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 							parts = (p1 ?? p2!).split('|');
 						// @ts-expect-error abstract class
 						new TranscludeToken(
-							restore(parts[0]!),
+							restore(parts[0]!, linkStack),
 							parts.slice(1).map(part => {
 								const i = part.indexOf('=');
-								return (i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)]).map(restore);
+								return (i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)])
+									.map(s => restore(s, linkStack));
 							}),
 							config,
 							accum,
@@ -131,7 +126,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						}
 					}
 				}
-				linkStack.push(restore(m));
+				linkStack.push(restore(m, linkStack));
 				return `\0${linkStack.length - 1}\x7F`;
 			},
 		);
@@ -173,7 +168,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+[cn]\x7F)*)$/u
 					.exec(wikitext.slice(index, curIndex)) as [string, string, string, string] | null;
 				if (rmt) {
-					rmt[2] = restore(rmt[2]);
+					rmt[2] = restore(rmt[2], linkStack);
 					if (!rmt[2].includes('\n')) {
 						wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${
 							wikitext.slice(curIndex)
@@ -264,5 +259,5 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(wikitext);
 	}
-	return restore(wikitext);
+	return restore(wikitext, linkStack);
 };

@@ -1,6 +1,7 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {
 	removeComment,
+	trimLc,
 } from '../util/string';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -126,7 +127,7 @@ export abstract class AttributesToken extends Token {
 	getAttrTokens(key?: string): AttributeToken[] {
 		return this.childNodes.filter(
 			(child): child is AttributeToken =>
-				child instanceof AttributeToken && (!key || child.name === key.toLowerCase().trim()),
+				child instanceof AttributeToken && (!key || child.name === trimLc(key)),
 		);
 	}
 
