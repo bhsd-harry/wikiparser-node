@@ -15,6 +15,7 @@ import {classes} from '../../util/constants';
 const getLintRegex = getRegex(
 	name => new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'),
 );
+const voidExt = new Set(['templatestyles', 'section', 'languages']);
 
 /**
  * text-only token inside an extension tag
@@ -43,7 +44,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name, firstChild: {data}} = this;
-		if ((name === 'templatestyles' || name === 'section') && data) {
+		if (voidExt.has(name) && data) {
 			const e = generateForSelf(
 				this,
 				{start},
