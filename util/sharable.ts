@@ -183,6 +183,7 @@ export const commonHtmlAttrs = new Set([
 		templatedata: empty,
 		timeline: new Set(['method', 'font']),
 		quiz: new Set(['display', 'shuffleanswers', 'points', 'shuffle', 'case']),
+		languages: empty,
 	}))(),
 	obsoleteAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 		table: obsoleteTableAttrs,
