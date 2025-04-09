@@ -1,6 +1,7 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {
 	removeComment,
+	trimLc,
 
 	/* NOT FOR BROWSER */
 
@@ -224,7 +225,7 @@ export abstract class AttributesToken extends Token {
 	getAttrTokens(key?: string): AttributeToken[] {
 		return this.childNodes.filter(
 			(child): child is AttributeToken =>
-				child instanceof AttributeToken && (!key || child.name === key.toLowerCase().trim()),
+				child instanceof AttributeToken && (!key || child.name === trimLc(key)),
 		);
 	}
 
@@ -413,7 +414,7 @@ export abstract class AttributesToken extends Token {
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
 	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
-		if (typeof keyOrProp !== 'string') {
+		if (typeof keyOrProp === 'object') {
 			for (const [key, val] of Object.entries(keyOrProp)) {
 				this.setAttr(key, val);
 			}
@@ -423,7 +424,7 @@ export abstract class AttributesToken extends Token {
 		if (type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		}
-		const key = keyOrProp.toLowerCase().trim(),
+		const key = trimLc(keyOrProp),
 			attr = this.getAttrToken(key);
 		if (attr) {
 			attr.setValue(value!);
@@ -493,7 +494,7 @@ export abstract class AttributesToken extends Token {
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key: string, force?: boolean): void {
-		key = key.toLowerCase().trim();
+		key = trimLc(key);
 		const attr = this.getAttrToken(key);
 		if (attr && attr.getValue() !== true) {
 			throw new RangeError(`${key} attribute is not Boolean!`);

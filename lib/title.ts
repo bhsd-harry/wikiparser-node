@@ -1,6 +1,7 @@
 import {
 	decodeHtml,
 	rawurldecode,
+	trimLc,
 
 	/* NOT FOR BROWSER */
 
@@ -166,7 +167,7 @@ export class Title {
 
 			const m = title.split(':');
 			if (m.length > 1) {
-				const k = m[0]!.trim().toLowerCase(),
+				const k = trimLc(m[0]!),
 					id = Object.prototype.hasOwnProperty.call(config.nsid, k) && config.nsid[k];
 				if (id) {
 					ns = id;

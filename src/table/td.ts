@@ -20,7 +20,7 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {newline} from '../../util/string';
+import {trimLc, newline} from '../../util/string';
 import {fixedToken} from '../../mixin/fixed';
 import Parser from '../../index';
 
@@ -317,7 +317,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
-		key = key.toLowerCase().trim() as T;
+		key = trimLc(key) as T;
 		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
 	}
 
@@ -410,7 +410,7 @@ export abstract class TdToken extends TableBaseToken {
 			}
 			return;
 		}
-		const key = keyOrProp.toLowerCase().trim() as T;
+		const key = trimLc(keyOrProp) as T;
 		let v: string | boolean;
 		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
 			v = value === 1 ? false : String(value);

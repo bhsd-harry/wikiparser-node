@@ -12,7 +12,7 @@ export interface SyntaxToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 
-declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
+declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax' | 'translate-attr';
 
 /**
  * plain token that satisfies specific grammar syntax
