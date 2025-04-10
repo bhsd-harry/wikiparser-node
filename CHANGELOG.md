@@ -9,6 +9,7 @@
 - Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
 - Parse the extension tag `<hiero>`
 - Parse [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate)
+- New preset configuration [`mediawikiwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/mediawikiwiki.json) for MediaWiki Wiki
 
 **Fixed**
 

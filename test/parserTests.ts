@@ -1,6 +1,5 @@
 import assert from 'assert/strict';
 import Parser from '../index';
-import {getConfig} from './translate';
 
 declare interface Test {
 	desc: string;
@@ -8,8 +7,6 @@ declare interface Test {
 	print?: string;
 	render?: string;
 }
-
-const config = getConfig(Parser);
 
 /* NOT FOR BROWSER */
 
@@ -53,7 +50,7 @@ describe('Parser tests', () => {
 		) {
 			it(desc, () => {
 				const root =
-					Parser.parse(wikitext, false, undefined, config);
+					Parser.parse(wikitext);
 
 				/* NOT FOR BROWSER */
 

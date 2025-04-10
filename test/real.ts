@@ -24,6 +24,7 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 		['Wikipedia', 'https://en.wikipedia.org/w', 'enwiki'],
 		['ウィキペディア', 'https://ja.wikipedia.org/w', 'jawiki'],
+		['MediaWiki', 'https://www.mediawiki.org/w', 'mediawikiwiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 /**

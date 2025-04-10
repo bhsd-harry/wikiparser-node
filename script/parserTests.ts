@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
-import {getConfig} from '../test/translate';
 
 declare interface Test {
 	desc: string;
@@ -87,8 +86,7 @@ const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 			'pst',
 		].join('|')
 	}|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*)|pst )+$`, 'u'),
-	files = new Set(fs.readdirSync('test/core/')),
-	config = getConfig(Parser);
+	files = new Set(fs.readdirSync('test/core/'));
 files.delete('parserTests.txt');
 for (const file of ['parserTests.txt', ...files]) {
 	tests.push({desc: file.slice(0, -4)});
@@ -116,7 +114,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			continue;
 		}
 		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,
-			root = Parser.parse(wikitext, false, undefined, config),
+			root = Parser.parse(wikitext),
 			t: Test = {desc, wikitext};
 		if (/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test) && (!test.includes('options') || re.test(test))) {
 			t.html = html!;
