@@ -1,18 +1,13 @@
-import {trimLc} from '../../util/string';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {SyntaxToken} from '../syntax';
 import type {Config} from '../../base';
-import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /**
  * `<translate>`
  * @classdesc `{childNodes: [SyntaxToken, Token]}`
  */
-export abstract class TranslateToken extends TagPairToken implements Omit<
-	AttributesParentBase,
-	'className' | 'classList' | 'id' | 'css'
-> {
+export abstract class TranslateToken extends TagPairToken {
 	declare name: 'translate';
 	declare closed: true;
 	declare selfClosing: false;
@@ -43,11 +38,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		this.seal('selfClosing', true);
 	}
 
-	/** 是否有nowrap属性 */
-	#isNowrap(): boolean {
-		return this.firstChild.toString() === ' nowrap';
-	}
-
 	/** @private */
 	override toString(skip?: boolean): string {
 		return skip ? this.lastChild.toString(true) : super.toString();
@@ -56,10 +46,5 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	/** @private */
 	override text(): string {
 		return this.lastChild.text();
-	}
-
-	/** @implements */
-	getAttr(key: string): true | undefined {
-		return trimLc(key) === 'nowrap' && this.#isNowrap() || undefined;
 	}
 }
