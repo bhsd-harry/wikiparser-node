@@ -1,14 +1,14 @@
-import {trimLc} from '../../util/string';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {SyntaxToken} from '../syntax';
 import type {Config} from '../../base';
-import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import {trimLc} from '../../util/string';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER END */
 
@@ -69,11 +69,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		this.seal('selfClosing', true);
 	}
 
-	/** 是否有nowrap属性 */
-	#isNowrap(): boolean {
-		return this.firstChild.toString() === ' nowrap';
-	}
-
 	/** @private */
 	override toString(skip?: boolean): string {
 		return skip ? this.lastChild.toString(true) : super.toString();
@@ -84,12 +79,12 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		return this.lastChild.text();
 	}
 
-	/** @implements */
-	getAttr(key: string): true | undefined {
-		return trimLc(key) === 'nowrap' && this.#isNowrap() || undefined;
-	}
-
 	/* NOT FOR BROWSER */
+
+	/** 是否有nowrap属性 */
+	#isNowrap(): boolean {
+		return this.firstChild.toString() === ' nowrap';
+	}
 
 	/**
 	 * 设置nowrap属性
@@ -97,6 +92,11 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	 */
 	#setNowrap(nowrap: unknown): void {
 		this.firstChild.setText(nowrap ? ' nowrap' : '');
+	}
+
+	/** @implements */
+	getAttr(key: string): true | undefined {
+		return trimLc(key) === 'nowrap' && this.#isNowrap() || undefined;
 	}
 
 	/** @implements */
