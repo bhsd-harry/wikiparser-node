@@ -1,5 +1,6 @@
 import assert from 'assert/strict';
 import Parser from '../index';
+import {getConfig} from './translate';
 
 declare interface Test {
 	desc: string;
@@ -7,6 +8,8 @@ declare interface Test {
 	print?: string;
 	render?: string;
 }
+
+const config = getConfig(Parser);
 
 /* PRINT ONLY */
 
@@ -27,7 +30,8 @@ describe('Parser tests', () => {
 		) {
 			it(desc, () => {
 				const root =
-					Parser.parse(wikitext);
+					Parser.parse(wikitext, false, undefined, config);
+
 				try {
 					if (print) {
 						assert.deepStrictEqual(split(root.print()), split(print));
