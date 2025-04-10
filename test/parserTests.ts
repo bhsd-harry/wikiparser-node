@@ -1,5 +1,4 @@
 import assert from 'assert/strict';
-import {getConfig} from './translate';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;
@@ -11,8 +10,6 @@ declare interface Test {
 	print?: string;
 	render?: string;
 }
-
-const config = getConfig(Parser);
 
 /* PRINT ONLY */
 
@@ -34,7 +31,7 @@ describe('Parser tests', () => {
 		) {
 			it(desc, () => {
 				const root =
-					Parser.parse(wikitext, false, undefined, config);
+					Parser.parse(wikitext);
 
 				try {
 					if (print) {

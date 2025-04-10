@@ -156,6 +156,7 @@
 			"#tab": "tab",
 			"#seo": "seo",
 			"#babel": "babel",
+			"#translation": "translation",
 			"#commaseparatedlist": "commaseparatedlist",
 			"#coordinates": "coordinates",
 			"#lst": "lst",
@@ -168,7 +169,10 @@
 			"#section": "lst",
 			"#section-x": "lstx",
 			"#section-h": "lsth",
-			"#statements": "statements"
+			"#statements": "statements",
+			"#useliquidthreads": "useliquidthreads",
+			"#lqtpagelimit": "lqtpagelimit",
+			"#chart": "chart"
 		},
 		{
 			"!": "!",
