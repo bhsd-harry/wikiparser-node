@@ -180,6 +180,7 @@ export class Token extends AstElement {
 			'td-inner',
 			'ext-inner',
 			'list-range',
+			'translate-inner',
 		];
 		if (!plainTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);

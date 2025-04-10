@@ -64,7 +64,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 			),
 			innerToken = new Token(inner, config, accum);
 		innerToken.type = 'translate-inner';
-		super('translate', attrToken, innerToken, '</translate>', config, accum);
+		super('translate', attrToken, innerToken, 'translate', config, accum);
 		this.seal('closed', true);
 		this.seal('selfClosing', true);
 	}
