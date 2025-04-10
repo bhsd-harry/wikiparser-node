@@ -1,6 +1,7 @@
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {SyntaxToken} from '../syntax';
+import {NoincludeToken} from '../nowiki/noinclude';
 import type {Config} from '../../base';
 
 /**
@@ -24,14 +25,33 @@ export abstract class TranslateToken extends TagPairToken {
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
 	 */
-	constructor(attr?: string, inner?: string, config?: Config, accum?: Token[]) {
+	constructor(attr?: string, inner?: string, config?: Config, accum: Token[] = []) {
 		const attrToken = new SyntaxToken(
-				attr,
-				'translate-attr',
-				config,
-				accum,
-			),
-			innerToken = new Token(inner, config, accum);
+			attr,
+			'translate-attr',
+			config,
+			accum,
+		);
+		inner = inner?.replace(
+			/(<tvar\|[^>]+>)([\s\S]*?)(<\/>)/gu,
+			(_, p1: string, p2: string, p3: string) => {
+				// @ts-expect-error abstract class
+				new NoincludeToken(p1, config, accum);
+				// @ts-expect-error abstract class
+				new NoincludeToken(p3, config, accum);
+				return `\0${accum.length - 1}n\x7F${p2}\0${accum.length}n\x7F`;
+			},
+		).replace(
+			/(<tvar\s+name\s*=(?:\s*(?:(["'])[\s\S]*?\2|[^"'\s>]+))?\s*>)([\s\S]*?)(<\/tvar\s*>)/giu,
+			(_, p1: string, __, p3: string, p4: string) => {
+				// @ts-expect-error abstract class
+				new NoincludeToken(p1, config, accum);
+				// @ts-expect-error abstract class
+				new NoincludeToken(p4, config, accum);
+				return `\0${accum.length - 1}n\x7F${p3}\0${accum.length}n\x7F`;
+			},
+		);
+		const innerToken = new Token(inner, config, accum);
 		innerToken.type = 'translate-inner';
 		super('translate', attrToken, innerToken, 'translate', config, accum);
 		this.seal('closed', true);
