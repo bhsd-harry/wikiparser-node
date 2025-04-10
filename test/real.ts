@@ -20,7 +20,6 @@ Parser.i18n = i18n;
 const {argv: [,, site = '']} = process,
 	apis = ([
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
-		// ['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 		['Wikipedia', 'https://en.wikipedia.org/w', 'enwiki'],
 		['ウィキペディア', 'https://ja.wikipedia.org/w', 'jawiki'],
@@ -30,15 +29,16 @@ const {argv: [,, site = '']} = process,
 /**
  * 获取最近更改的页面源代码
  * @param url api.php网址
+ * @param config 解析器配置名
  */
-const getPages = async (url: string): Promise<SimplePage[]> => {
+const getPages = async (url: string, config: string): Promise<SimplePage[]> => {
 	const qs = {
 		action: 'query',
 		format: 'json',
 		formatversion: '2',
 		errorformat: 'plaintext',
 		generator: 'recentchanges',
-		grcnamespace: '0|10',
+		grcnamespace: config === 'mediawikiwiki' ? '0|10|12|100|102|104|106' : '0|10',
 		grclimit: '10',
 		grctype: 'edit|new',
 		prop: 'revisions',
@@ -62,7 +62,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 		Parser.config = config;
 		try {
 			let failed = 0;
-			for (const page of await getPages(`${url}/api.php`)) {
+			for (const page of await getPages(`${url}/api.php`, config)) {
 				const {pageid, title, content} = page;
 				try {
 					const errors = await single(page);
