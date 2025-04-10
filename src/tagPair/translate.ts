@@ -20,7 +20,7 @@ import type {CommentToken} from '../../internal';
  */
 export abstract class TranslateToken extends TagPairToken implements Omit<
 	AttributesParentBase,
-	'className' | 'classList' | 'id' | 'css'
+	'attributes' | 'className' | 'classList' | 'id' | 'getAttrNames' | 'getAttrs' | 'css'
 > {
 	declare name: 'translate';
 	declare closed: true;
@@ -41,15 +41,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	override get type(): 'translate' {
 		return 'translate';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** @implements */
-	get attributes(): {nowrap?: true} {
-		return this.getAttrs();
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param attr 标签属性
@@ -100,12 +91,27 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		return this.lastChild.text();
 	}
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	/** 是否有nowrap属性 */
 	#isNowrap(): boolean {
 		return this.firstChild.toString() === ' nowrap';
 	}
+
+	/** @private */
+	override print(): string {
+		return `<span class="wpb-ext">&lt;translate${
+			this.#isNowrap()
+				? '<span class="wpb-ext-attrs"> <span class="wpb-ext-attr">'
+				+ '<span class="wpb-attr-key">nowrap</span>'
+				+ '</span></span>'
+				: ''
+		}&gt;${this.lastChild.print({class: 'ext-inner'})}&lt;/translate&gt;</span>`;
+	}
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * 设置nowrap属性
@@ -123,16 +129,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	/** @implements */
 	hasAttr(key: string): boolean {
 		return trimLc(key) === 'nowrap' && this.#isNowrap();
-	}
-
-	/** @implements */
-	getAttrNames(): Set<string> {
-		return new Set(this.#isNowrap() ? ['nowrap'] : undefined);
-	}
-
-	/** @implements */
-	getAttrs(): {nowrap?: true} {
-		return this.#isNowrap() ? {nowrap: true} : {};
 	}
 
 	/** @implements */
