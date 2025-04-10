@@ -8,6 +8,7 @@
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>` and `<chem>`
 - Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
 - Parse the extension tag `<hiero>`
+- Parse [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate)
 
 **Fixed**
 

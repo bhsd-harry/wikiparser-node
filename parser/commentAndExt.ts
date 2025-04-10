@@ -92,11 +92,11 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			stack.push(m);
 			return `\0${stack.length - 1}\x7F`;
 		}).replace(
-			/<translate( nowrap)?>([\s\S]+)?<\/translate>/gu,
-			(_, p1: string | undefined, p2: string) => {
+			/<translate( nowrap)?>([\s\S]+?)?<\/translate>/gu,
+			(_, p1: string | undefined, p2: string | undefined) => {
 				const l = accum.length;
 				// @ts-expect-error abstract class
-				new TranslateToken(p1, restore(p2, stack), newConfig, accum);
+				new TranslateToken(p1, p2 && restore(p2, stack), newConfig, accum);
 				return `\0${l}e\x7F`;
 			},
 		);
