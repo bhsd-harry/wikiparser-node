@@ -17,6 +17,7 @@
 	"files": [
 		"/errors/README",
 		"/config/",
+		"!/config/mediawikiwiki.json",
 		"/data/",
 		"/i18n/",
 		"/coverage/badge.svg",
