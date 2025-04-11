@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import assert from 'assert';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/common/dist/cm';
+import {error} from '../util/diff';
 import type {MwConfig, MagicWord} from '@bhsd/common/dist/cm';
 import type {ConfigData} from '../base';
 
@@ -30,7 +31,7 @@ declare interface Implementation {
  * @param config parser configuration
  * @param config.articlePath article path
  */
-const arrToObj = ({articlePath, ...obj}: ConfigData): object => {
+const arrToObj = ({articlePath, ...obj}: ConfigData): Record<string, unknown> => {
 	for (const [k, v] of Object.entries(obj)) {
 		if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
 			Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
@@ -107,7 +108,7 @@ let mwConfig: MwConfig | undefined;
  */
 export default async (site: string, url: string, force?: boolean, internal?: boolean): Promise<ConfigData> => {
 	if (!site || !url) {
-		console.error('Usage: npx getParserConfig <site> <script path> [force]');
+		error('Usage: npx getParserConfig <site> <script path> [force]');
 		process.exit(1);
 	} else if (/(?:\.php|\/)$/u.test(url)) {
 		url = url.slice(0, url.lastIndexOf('/'));
@@ -131,11 +132,11 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 			},
 		} = await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`)
-		).json() as Response,
-		{query: {variables}} = await (
-			await fetch(`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`)
 		).json() as Response;
 	eval(m); // eslint-disable-line no-eval
+	if (!mwConfig) {
+		throw new RangeError('Extension:CodeMirror is not installed!');
+	}
 	const dir = path.join('..', '..', 'config'),
 		ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
 			.flatMap(([id, {name, canonical = ''}]): (readonly [string, string])[] => [
@@ -143,7 +144,7 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 				...name === canonical ? [] : [[id, canonical] as const],
 			]),
 		config: ConfigData = {
-			...getParserConfig(require(path.join(dir, 'minimum')) as ConfigData, mwConfig!),
+			...getParserConfig(require(path.join(dir, 'minimum')) as ConfigData, mwConfig),
 			...getKeywords(magicwords),
 			variants: getVariants(variants),
 			namespaces: Object.fromEntries(ns),
@@ -157,6 +158,14 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 	config.doubleUnderscore[0] = [];
 	config.doubleUnderscore[1] = [];
 	Object.assign(config.parserFunction[0], getConfig(magicwords, ({name}) => name === 'msgnw'));
+	config.parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
+	config.parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
+	if (!mwConfig.variableIDs) {
+		const {query: {variables}} = await (
+			await fetch(`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`)
+		).json() as Response;
+		Object.assign(config, {variable: [...new Set([...variables, '='])]});
+	}
 	if ('#choose' in config.parserFunction[0]) {
 		delete config.parserFunction[0]['choose'];
 		const i = config.variable.indexOf('choose');
@@ -164,16 +173,24 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 			config.variable.splice(i, 1);
 		}
 	}
-	config.parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
-	config.parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
-	if (!config.variable) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-		Object.assign(config, {variable: [...new Set([...variables, '='])]});
-	}
 	const file = path.join(__dirname, dir, `${site}.json`);
 	if (force || !fs.existsSync(file)) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
 	} else if (!internal) {
-		assert.deepStrictEqual(arrToObj(require(file) as ConfigData), arrToObj(config));
+		const oldConfig = arrToObj(require(file) as ConfigData),
+			newConfig = arrToObj(config);
+		for (const [k, v] of Object.entries(newConfig)) {
+			try {
+				assert.deepStrictEqual(oldConfig[k], v);
+			} catch (e) {
+				if (e instanceof assert.AssertionError) {
+					error(`Configuration mismatch for "${k}"`);
+					delete e.actual;
+					delete e.expected;
+				}
+				throw e;
+			}
+		}
 	}
 	return config;
 };
