@@ -86,8 +86,6 @@ declare interface Parser extends ParserBase {
 	 * @since v1.18.4
 	 */
 	fetchConfig(site: string, url: string): Promise<Config>;
-
-	/* NOT FOR BROWSER ONLY END */
 }
 
 /* NOT FOR BROWSER ONLY */
