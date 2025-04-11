@@ -3,8 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import chalk from 'chalk';
 import Parser from '../index';
+import type {Chalk} from 'chalk';
 import type {LintError} from '../base';
 
 declare type CacheItems = Record<string, [number, string, number, LintError[]]>;
@@ -12,6 +12,21 @@ declare interface Cache {
 	include: CacheItems;
 	noinclude: CacheItems;
 }
+
+const chalk = ((): Chalk => {
+	try {
+		return require('chalk');
+	} catch {
+		const f = ((text: string): string => text) as Chalk,
+			proxy = new Proxy(f, {
+				/** @private */
+				get(): Chalk {
+					return proxy;
+				},
+			});
+		return proxy;
+	}
+})();
 
 const man = `
 Available options:
