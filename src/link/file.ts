@@ -160,7 +160,7 @@ export abstract class FileToken extends LinkBaseToken {
 
 		const {extension} = this.getTitle(true, true);
 		/-\{|\}-|\|/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-		this.append(...explode(text).map(
+		this.safeAppend(explode(text).map(
 			// @ts-expect-error abstract class
 			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),
 		));
@@ -465,7 +465,7 @@ export abstract class FileToken extends LinkBaseToken {
 		if (free) {
 			const {childNodes} = Parser
 				.parse(value as string, this.getAttribute('include'), undefined, config);
-			parameter.replaceChildren(...childNodes);
+			parameter.safeReplaceChildren(childNodes);
 		}
 		this.insertAt(parameter);
 	}

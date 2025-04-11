@@ -500,13 +500,8 @@ export abstract class AstNode implements AstNodeBase {
 		return true;
 	}
 
-	/**
-	 * 在当前节点前后插入兄弟节点
-	 * @param nodes 插入节点
-	 * @param offset 插入的相对位置
-	 * @throws `Error` 不存在父节点
-	 */
-	#insertAdjacent(nodes: readonly (AstNodes | string)[], offset: number): void {
+	/** @private */
+	insertAdjacent(nodes: readonly (AstNodes | string)[], offset: number): void {
 		const {parentNode} = this;
 		/* istanbul ignore if */
 		if (!parentNode) {
@@ -525,7 +520,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param nodes nodes to be inserted / 插入节点
 	 */
 	after(...nodes: (AstNodes | string)[]): void {
-		this.#insertAdjacent(nodes, 1);
+		this.insertAdjacent(nodes, 1);
 	}
 
 	/**
@@ -535,7 +530,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param nodes nodes to be inserted / 插入节点
 	 */
 	before(...nodes: (AstNodes | string)[]): void {
-		this.#insertAdjacent(nodes, 0);
+		this.insertAdjacent(nodes, 0);
 	}
 
 	/**
@@ -554,7 +549,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param nodes nodes to be inserted / 插入节点
 	 */
 	replaceWith(...nodes: (AstNodes | string)[]): void {
-		this.after(...nodes);
+		this.insertAdjacent(nodes, 1);
 		this.remove();
 	}
 

@@ -180,7 +180,7 @@ export abstract class GalleryToken extends Token {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new GalleryToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

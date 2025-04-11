@@ -15,6 +15,7 @@
 - External links starting with `//` in `<imagemap>` are valid
 - Internal links with empty alt text in `<imagemap>` are valid
 - The executable [`getParserConfig`](./README#cli-usage) for MediaWiki sites not [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
+- More potential stack overflow issues
 
 ## v1.19.0
 

@@ -30,7 +30,7 @@ declare global {
 		getAttribute<T extends string>(key: T): TokenAttribute<T>;
 		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
 		addEventListener(events: string | string[], listener: (...args: any[]) => void): void;
-		replaceChildren(...elements: (AstNodes | string)[]): void;
+		safeReplaceChildren(elements: readonly (AstNodes | string)[]): void;
 		constructorError(msg: string): never;
 		seal(key: string, permanent?: boolean): void;
 		toHtmlInternal(opt?: HtmlOpt): string;

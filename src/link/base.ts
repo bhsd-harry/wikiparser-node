@@ -329,7 +329,7 @@ export abstract class LinkBaseToken extends Token {
 			const C = this.constructor as new (...args: any[]) => this,
 				token = new C('', undefined, this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(link);
-			token.append(...linkText);
+			token.safeAppend(linkText);
 			return token;
 		});
 	}
@@ -346,7 +346,7 @@ export abstract class LinkBaseToken extends Token {
 			token = Shadow.run(() => new AtomToken(undefined, 'link-target', config, [], {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			}));
-		token.append(...childNodes);
+		token.safeAppend(childNodes);
 		this.firstChild.safeReplaceWith(token);
 	}
 
@@ -384,7 +384,7 @@ export abstract class LinkBaseToken extends Token {
 			});
 			this.insertAt(root);
 		} else {
-			this.lastChild.replaceChildren(...root.childNodes);
+			this.lastChild.safeReplaceChildren(root.childNodes);
 		}
 	}
 

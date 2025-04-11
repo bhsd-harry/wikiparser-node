@@ -883,7 +883,7 @@ export class Token extends AstElement {
 			token.setAttribute('stage', this.#stage);
 			token.setAttribute('include', Boolean(this.#include));
 			token.setAttribute('name', this.name!);
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			token.protectChildren(...this.#protectedChildren);
 			return token;
 		});
@@ -959,7 +959,8 @@ export class Token extends AstElement {
 		if (this.getAttribute('plain')) {
 			for (const child of this.childNodes) {
 				if (child.type !== 'text' && child.getAttribute('plain')) {
-					child.replaceWith(...child.childNodes);
+					child.insertAdjacent(child.childNodes, 1);
+					child.remove();
 				}
 			}
 		}

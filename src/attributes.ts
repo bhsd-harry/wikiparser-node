@@ -356,7 +356,7 @@ export abstract class AttributesToken extends Token {
 				this.name,
 				this.getAttribute('config'),
 			) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

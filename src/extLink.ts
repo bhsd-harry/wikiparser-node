@@ -215,7 +215,7 @@ export abstract class ExtLinkToken extends Token {
 			});
 			this.insertAt(root);
 		} else {
-			this.lastChild.replaceChildren(...root.childNodes);
+			this.lastChild.safeReplaceChildren(root.childNodes);
 		}
 		this.#space ||= ' ';
 	}
@@ -235,7 +235,7 @@ export abstract class ExtLinkToken extends Token {
 				);
 			if (i !== -1) {
 				const after = childNodes.slice(i);
-				this.after(...after);
+				this.insertAdjacent(after, 1);
 			}
 			innerText = lastChild.toHtmlInternal(opt);
 		} else {

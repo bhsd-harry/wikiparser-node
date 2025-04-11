@@ -135,7 +135,7 @@ export abstract class GalleryImageToken extends FileToken {
 				this.getAttribute('config'),
 			) as this;
 			token.firstChild.safeReplaceWith(link);
-			token.append(...linkText);
+			token.safeAppend(linkText);
 			return token;
 		});
 	}

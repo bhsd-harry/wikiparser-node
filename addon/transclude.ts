@@ -39,7 +39,7 @@ TranscludeToken.prototype.setValue =
 			v = Parser.parse(value, include, undefined, config),
 			// @ts-expect-error abstract class
 			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
-		token.firstChild.append(...k.childNodes);
+		token.firstChild.safeAppend(k.childNodes);
 		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
 		this.insertAt(token);
 	};
@@ -53,7 +53,7 @@ TranscludeToken.prototype.replaceTemplate =
 		}
 		const {childNodes} = Parser
 			.parse(title, this.getAttribute('include'), 2, this.getAttribute('config'));
-		(this.firstChild as AtomToken).replaceChildren(...childNodes);
+		(this.firstChild as AtomToken).safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.replaceModule =
@@ -74,7 +74,7 @@ TranscludeToken.prototype.replaceModule =
 			return;
 		}
 		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, config);
-		(this.childNodes[1] as AtomToken).replaceChildren(...childNodes);
+		(this.childNodes[1] as AtomToken).safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.replaceFunction =
@@ -97,7 +97,7 @@ TranscludeToken.prototype.replaceFunction =
 			return;
 		}
 		const {childNodes} = Parser.parse(func, this.getAttribute('include'), 2, config);
-		(this.childNodes[2] as AtomToken).replaceChildren(...childNodes);
+		(this.childNodes[2] as AtomToken).safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.fixDuplication =

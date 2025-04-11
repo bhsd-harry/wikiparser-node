@@ -655,7 +655,7 @@ export abstract class TranscludeToken extends Token {
 			if (token.length > 1) {
 				token.removeAt(1);
 			}
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

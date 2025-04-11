@@ -33,7 +33,7 @@ export class HiddenToken extends Token {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
 			const token = new HiddenToken(undefined, this.getAttribute('config'), []) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

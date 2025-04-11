@@ -229,7 +229,7 @@ export abstract class MagicLinkToken extends Token {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new MagicLinkToken(undefined, this.type, this.getAttribute('config')) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			token.setAttribute('pattern', this.pattern);
 			return token;
 		});
@@ -263,7 +263,7 @@ export abstract class MagicLinkToken extends Token {
 	setTarget(url: string): void {
 		const {childNodes} = Parser
 			.parse(url, this.getAttribute('include'), 2, this.getAttribute('config'));
-		this.replaceChildren(...childNodes);
+		this.safeReplaceChildren(childNodes);
 	}
 
 	/**

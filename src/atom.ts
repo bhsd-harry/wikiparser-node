@@ -68,7 +68,7 @@ export class AtomToken extends Token {
 			acceptable = this.getAcceptable();
 		return Shadow.run(() => {
 			const token = new AtomToken(undefined, this.type, config, [], acceptable) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

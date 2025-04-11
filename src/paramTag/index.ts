@@ -105,7 +105,7 @@ export abstract class ParamTagToken extends Token {
 		return Shadow.run(() => {
 			const C = this.constructor as new (...args: any[]) => this,
 				token = new C(this.getAttribute('include'), undefined, this.getAttribute('config'));
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

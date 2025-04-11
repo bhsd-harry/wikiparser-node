@@ -257,7 +257,7 @@ export abstract class ParameterToken extends Token {
 	setValue(value: string): void {
 		const {childNodes} = Parser
 			.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config'));
-		this.lastChild.replaceChildren(...childNodes);
+		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
 	/**
@@ -289,7 +289,7 @@ export abstract class ParameterToken extends Token {
 				throw new RangeError(`Parameter renaming causes duplicated parameters: ${name}`);
 			}
 		}
-		this.firstChild.replaceChildren(...root.childNodes);
+		this.firstChild.safeReplaceChildren(root.childNodes);
 	}
 }
 

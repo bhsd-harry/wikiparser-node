@@ -77,7 +77,7 @@ export abstract class HeadingToken extends Token {
 		}
 		const {childNodes} = Parser
 			.parse(text, this.getAttribute('include'), undefined, this.getAttribute('config'));
-		this.firstChild.replaceChildren(...childNodes);
+		this.firstChild.safeReplaceChildren(childNodes);
 	}
 
 	/** id attribute / id属性 */

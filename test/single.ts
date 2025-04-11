@@ -45,14 +45,17 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 		error('解析过程中不可逆地修改了原始文本！');
 		return diff(content, parsed, pageid);
 	}
-	const set = new Set<string>();
-	for (const t of token.querySelectorAll('')) {
-		if (!t.getAttribute('built')) {
-			set.add(`${t.type}#${t.name ?? ''}`);
+
+	if (method === undefined) {
+		const set = new Set<string>();
+		for (const t of token.querySelectorAll('')) {
+			if (!t.getAttribute('built')) {
+				set.add(`${t.type}#${t.name ?? ''}`);
+			}
 		}
-	}
-	if (set.size > 0) {
-		error('未构建的节点：', set);
+		if (set.size > 0) {
+			error('未构建的节点：', set);
+		}
 	}
 
 	/* NOT FOR BROWSER ONLY END */

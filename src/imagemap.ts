@@ -230,7 +230,7 @@ export abstract class ImagemapToken extends Token {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new ImagemapToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

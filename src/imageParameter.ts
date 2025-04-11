@@ -339,7 +339,7 @@ export abstract class ImageParameterToken extends Token {
 				this.#extension,
 				config,
 			) as this;
-			token.replaceChildren(...cloned);
+			token.safeReplaceChildren(cloned);
 			return token;
 		});
 	}
@@ -381,7 +381,7 @@ export abstract class ImageParameterToken extends Token {
 			const include = this.getAttribute('include'),
 				config = this.getAttribute('config'),
 				{childNodes} = Parser.parse(value, include, name === 'caption' ? undefined : 5, config);
-			this.replaceChildren(...childNodes);
+			this.safeReplaceChildren(childNodes);
 		}
 	}
 

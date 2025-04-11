@@ -185,7 +185,7 @@ export abstract class ArgToken extends Token {
 			// @ts-expect-error abstract class
 			const token = new ArgToken([''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(name);
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}
@@ -244,7 +244,7 @@ export abstract class ArgToken extends Token {
 	setName(name: string): void {
 		const {childNodes} = Parser
 			.parse(name, this.getAttribute('include'), 2, this.getAttribute('config'));
-		this.firstChild.replaceChildren(...childNodes);
+		this.firstChild.safeReplaceChildren(childNodes);
 	}
 
 	/**
@@ -262,7 +262,7 @@ export abstract class ArgToken extends Token {
 				.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config')),
 			{childNodes: [, oldDefault]} = this;
 		if (oldDefault) {
-			oldDefault.replaceChildren(...root.childNodes);
+			oldDefault.safeReplaceChildren(root.childNodes);
 		} else {
 			root.type = 'arg-default';
 			this.insertAt(root);

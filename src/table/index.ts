@@ -221,7 +221,7 @@ export abstract class TableToken extends TrBaseToken {
 				}
 			});
 		}
-		(this.lastChild as SyntaxToken).replaceChildren(...inner);
+		(this.lastChild as SyntaxToken).safeReplaceChildren(inner);
 	}
 
 	/**

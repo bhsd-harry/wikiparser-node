@@ -243,7 +243,7 @@ export abstract class ConverterRuleToken extends Token {
 	setTo(to: string): void {
 		const {childNodes} = Parser
 			.parse(to, this.getAttribute('include'), undefined, this.getAttribute('config'));
-		this.lastChild.replaceChildren(...childNodes);
+		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
 	/**
@@ -281,7 +281,7 @@ export abstract class ConverterRuleToken extends Token {
 				0,
 			);
 		}
-		this.firstChild.replaceChildren(...childNodes);
+		this.firstChild.safeReplaceChildren(childNodes);
 	}
 
 	/**

@@ -66,7 +66,7 @@ export abstract class ConverterFlagsToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: ':',
 		});
-		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
+		this.safeAppend(flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
 	/** @private */
@@ -163,7 +163,7 @@ export abstract class ConverterFlagsToken extends Token {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new ConverterFlagsToken([], this.getAttribute('config')) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

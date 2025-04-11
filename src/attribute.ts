@@ -376,7 +376,7 @@ export abstract class AttributeToken extends Token {
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[type] + 1, config);
-		lastChild.replaceChildren(...childNodes);
+		lastChild.safeReplaceChildren(childNodes);
 		if (value.includes('"')) {
 			this.#quotes = [`'`, `'`] as const;
 		} else if (value.includes(`'`) || !this.#quotes[0]) {
@@ -399,7 +399,7 @@ export abstract class AttributeToken extends Token {
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(key, this.getAttribute('include'), stages[this.type] + 1, config);
-		this.firstChild.replaceChildren(...childNodes);
+		this.firstChild.safeReplaceChildren(childNodes);
 	}
 
 	/** @private */

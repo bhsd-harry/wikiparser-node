@@ -134,7 +134,7 @@ export abstract class ConverterToken extends Token {
 			const token = new ConverterToken([], [''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(flags);
 			token.removeAt(1);
-			token.append(...rules);
+			token.safeAppend(rules);
 			return token;
 		});
 	}

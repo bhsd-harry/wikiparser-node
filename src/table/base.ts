@@ -24,7 +24,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
 		).join(''),
 		{childNodes} = Parser
 			.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
-	syntax.replaceChildren(...childNodes);
+	syntax.safeReplaceChildren(childNodes);
 };
 
 /* NOT FOR BROWSER END */
@@ -99,7 +99,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 			if (token.is<TdToken>('td')) { // TdToken
 				token.childNodes[2].safeReplaceWith(cloned[0]!);
 			} else {
-				token.append(...cloned);
+				token.safeAppend(cloned);
 			}
 			return token;
 		});

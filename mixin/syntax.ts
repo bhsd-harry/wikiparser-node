@@ -37,10 +37,10 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
 		}
 
-		override replaceChildren(...elements: (AstNodes | string)[]): void {
+		override safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
 			if (Shadow.running || this.pattern.test(text(elements))) {
 				Shadow.run(() => {
-					super.replaceChildren(...elements);
+					super.safeReplaceChildren(elements);
 				});
 			}
 		}

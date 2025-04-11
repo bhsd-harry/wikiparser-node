@@ -76,7 +76,7 @@ export abstract class CommentedToken extends Token {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new CommentedToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
+			token.safeAppend(cloned);
 			return token;
 		});
 	}

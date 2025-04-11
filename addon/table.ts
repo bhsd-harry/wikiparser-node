@@ -104,6 +104,20 @@ const fill = (y: number, rowToken: TrBaseToken, layout: Layout, maxCol: number, 
 	});
 };
 
+/**
+ * 计算最大列数
+ * @param layout 表格布局
+ */
+const getMaxCol = (layout: Layout): number => {
+	let maxCol = 0;
+	for (const {length} of layout) {
+		if (maxCol < length) {
+			maxCol = length;
+		}
+	}
+	return maxCol;
+};
+
 TableToken.prototype.printLayout =
 	/** @implements */
 	function(): void {
@@ -170,7 +184,7 @@ TableToken.prototype.fillTableRow =
 	function(y, inner, subtype, attr): void {
 		const rowToken = this.getNthRow(y)!,
 			layout = this.getLayout({y}),
-			maxCol = Math.max(...layout.map(({length}) => length)),
+			maxCol = getMaxCol(layout),
 			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		fill(y, rowToken, layout, maxCol, token);
 	};
@@ -180,7 +194,7 @@ TableToken.prototype.fillTable =
 	function(inner, subtype, attr): void {
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
-			maxCol = Math.max(...layout.map(({length}) => length)),
+			maxCol = getMaxCol(layout),
 			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let y = 0; y < rowTokens.length; y++) {
 			fill(y, rowTokens[y]!, layout, maxCol, token);
@@ -244,7 +258,7 @@ TableToken.prototype.insertTableRow =
 			const td = token.insertTableCell(inner, {row: 0, column: 0}, subtype, innerAttr),
 				set = new WeakSet<TableCoords>(),
 				layout = this.getLayout({y}),
-				maxCol = Math.max(...layout.map(({length}) => length)),
+				maxCol = getMaxCol(layout),
 				rowLayout = layout[y]!;
 			Shadow.run(() => {
 				for (let i = 0; i < maxCol; i++) {
@@ -267,8 +281,13 @@ TableToken.prototype.insertTableCol =
 	/** @implements */
 	function(x, inner, subtype, attr): void {
 		const layout = this.getLayout(),
-			rowLength = layout.map(({length}) => length),
-			minCol = Math.min(...rowLength);
+			rowLength = layout.map(({length}) => length);
+		let minCol = Infinity;
+		for (const length of rowLength) {
+			if (minCol > length) {
+				minCol = length;
+			}
+		}
 		if (x > minCol) {
 			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} column(s)!`);
 		}
@@ -351,7 +370,7 @@ TableToken.prototype.mergeCells =
 	/** @implements */
 	function(xlim, ylim): TdToken {
 		const layout = this.getLayout(),
-			maxCol = Math.max(...layout.map(({length}) => length)),
+			maxCol = getMaxCol(layout),
 			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort(compare) as [number, number],
 			[ymin, ymax] = ylim.map(y => y < 0 ? y + layout.length : y).sort(compare) as [number, number],
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
