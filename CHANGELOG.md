@@ -1,6 +1,6 @@
 ## v1.20.0
 
-*2025-04-09*
+*2025-04-11*
 
 **Added**
 
@@ -9,12 +9,12 @@
 - Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
 - Parse the extension tag `<hiero>`
 - Parse [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate)
-- New preset configuration [`mediawikiwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/mediawikiwiki.json) for MediaWiki Wiki
 
 **Fixed**
 
 - External links starting with `//` in `<imagemap>` are valid
 - Internal links with empty alt text in `<imagemap>` are valid
+- The executable [`getParserConfig`](./README#cli-usage) for MediaWiki sites not [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
 
 ## v1.19.0
 
