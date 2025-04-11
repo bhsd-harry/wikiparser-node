@@ -143,14 +143,14 @@ export abstract class AstElement extends AstNode {
 	 * @param condition 条件
 	 */
 	#getElementsBy<T>(condition: TokenPredicate<T>): T[] {
-		const descendants: T[] = [];
+		let descendants: T[] = [];
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {
 				continue;
 			} else if (condition(child)) {
 				descendants.push(child);
 			}
-			descendants.push(...child.#getElementsBy(condition));
+			descendants = [...descendants, ...child.#getElementsBy(condition)];
 		}
 		return descendants;
 	}
@@ -173,6 +173,11 @@ export abstract class AstElement extends AstNode {
 	 * @param elements nodes to be inserted / 插入节点
 	 */
 	append(...elements: (AstNodes | string)[]): void {
+		this.safeAppend(elements);
+	}
+
+	/** @private */
+	safeAppend(elements: readonly (AstNodes | string)[]): void {
 		for (const element of elements) {
 			this.insertAt(element as AstNodes);
 		}
@@ -185,10 +190,15 @@ export abstract class AstElement extends AstNode {
 	 * @param elements nodes to be inserted / 新的子节点
 	 */
 	replaceChildren(...elements: (AstNodes | string)[]): void {
+		this.safeReplaceChildren(elements);
+	}
+
+	/** @private */
+	safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
 		for (let i = this.length - 1; i >= 0; i--) {
 			this.removeAt(i);
 		}
-		this.append(...elements);
+		this.safeAppend(elements);
 	}
 
 	/**

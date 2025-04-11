@@ -1716,11 +1716,12 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
-		const hints: InlayHint[] = [],
-			root = await this.#queue(text);
+		const root = await this.#queue(text);
+		let hints: InlayHint[] = [];
 		for (const token of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke').reverse()) {
 			const {type, childNodes} = token;
-			hints.push(
+			hints = [
+				...hints,
 				...(childNodes.slice(type === 'template' ? 1 : 3) as ParameterToken[]).filter(({anon}) => anon)
 					.reverse()
 					.map((parameter): InlayHint => ({
@@ -1728,7 +1729,7 @@ export class LanguageService implements LanguageServiceBase {
 						label: `${parameter.name}=`,
 						kind: 2,
 					})),
-			);
+			];
 		}
 		return hints;
 	}

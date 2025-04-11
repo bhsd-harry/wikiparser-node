@@ -137,6 +137,4 @@ export abstract class GalleryToken extends Token {
 		Object.assign(json, {widths: this.widths, heights: this.heights});
 		return json;
 	}
-
-	/* PRINT ONLY END */
 }

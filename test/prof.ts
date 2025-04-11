@@ -16,7 +16,7 @@ import lsp from './lsp';
 
 const content = readFileSync('test/page.wiki', 'utf8'),
 	session = new inspector.Session(),
-	{argv: [,, count, method]} = process;
+	{argv: [,, count, method = '']} = process;
 session.connect();
 session.post('Profiler.enable', () => {
 	session.post('Profiler.start', () => {
