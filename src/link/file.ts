@@ -77,7 +77,7 @@ export abstract class FileToken extends LinkBaseToken {
 	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
 		const {extension} = this.getTitle(true, true);
-		this.append(...explode(text).map(
+		this.safeAppend(explode(text).map(
 			// @ts-expect-error abstract class
 			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),
 		));

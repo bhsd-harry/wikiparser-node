@@ -29,7 +29,7 @@ const wrap = async (
 };
 
 const content = readFileSync('test/page.wiki', 'utf8'),
-	{argv: [,, count, method]} = process;
+	{argv: [,, count, method = '']} = process;
 (async () => {
 	for (let i = 0; i < (Number(count) || 10); i++) {
 		const page: SimplePage = {content, ns: 0, pageid: 0, title: `Pass ${i}`};
