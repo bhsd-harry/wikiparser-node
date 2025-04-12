@@ -40,7 +40,6 @@ export abstract class GalleryImageToken extends FileToken {
 		super(link, token?.toString(), config, accum);
 		this.setAttribute('bracket', false);
 		this.privateType = `${type}-image`;
-		this.seal('privateType', true);
 	}
 
 	/** @private */
