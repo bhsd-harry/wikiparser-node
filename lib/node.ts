@@ -251,14 +251,6 @@ export abstract class AstNode implements AstNodeBase {
 		};
 	}
 
-	/** @private */
-	seal(key: string, permanent?: boolean): void {
-		Object.defineProperty(this, key, {
-			enumerable: !permanent && Boolean(this[key as keyof this]),
-			configurable: true,
-		});
-	}
-
 	/**
 	 * Whether to be of a certain type
 	 *
@@ -291,5 +283,15 @@ export abstract class AstNode implements AstNodeBase {
 				this.#lines = value;
 			},
 		);
+	}
+
+	/* PRINT ONLY */
+
+	/** @private */
+	seal(key: string, permanent?: boolean): void {
+		Object.defineProperty(this, key, {
+			enumerable: !permanent && Boolean(this[key as keyof this]),
+			configurable: true,
+		});
 	}
 }
