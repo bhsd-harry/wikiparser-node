@@ -1,11 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {
-	isToken,
-
-	/* NOT FOR BROWSER */
-
-	Shadow,
-} from '../util/debug';
+import {isToken} from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
@@ -27,6 +21,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 import {singleLine} from '../mixin/singleLine';
 
 /* NOT FOR BROWSER END */
@@ -45,7 +40,7 @@ export abstract class ImagemapToken extends Token {
 	abstract override get firstChild(): Child | undefined;
 	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -54,7 +49,7 @@ export abstract class ImagemapToken extends Token {
 	abstract override get firstElementChild(): Child | undefined;
 	abstract override get lastElementChild(): Child | ImagemapLinkToken | undefined;
 	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -226,13 +221,8 @@ export abstract class ImagemapToken extends Token {
 	}
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new ImagemapToken(undefined, this.getAttribute('config')) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		// @ts-expect-error abstract class
+		return cloneNode(this, () => new ImagemapToken(undefined, this.getAttribute('config')));
 	}
 }
 

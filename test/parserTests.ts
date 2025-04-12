@@ -1,25 +1,12 @@
 import assert from 'assert/strict';
 import Parser from '../index';
 
-declare interface Test {
-	desc: string;
-	wikitext?: string;
-	print?: string;
-	render?: string;
-}
-
 /* NOT FOR BROWSER */
 
-const redirects: Record<string, string> = {
-	'File:Redirect_to_foobar.jpg': 'File:Foobar.jpg',
-	'Template:Redirect_to_foo': 'Template:Foo',
-	'Template:Templateredirect': 'Template:Templatesimple',
-};
+import {prepare} from '../script/util';
+import type {Test} from '../script/util';
 
-Parser.viewOnly = true;
-Parser.warning = false;
-Parser.templateDir = './test/templates';
-Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
+prepare(Parser);
 
 /**
  * 合并`wpb-list`元素

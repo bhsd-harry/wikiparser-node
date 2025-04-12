@@ -2,8 +2,8 @@ import {Token} from './index';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 
@@ -67,12 +67,10 @@ export class OnlyincludeToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			const token = new OnlyincludeToken(undefined, this.getAttribute('config')) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		return cloneNode(
+			this,
+			() => new OnlyincludeToken(undefined, this.getAttribute('config')) as this,
+		);
 	}
 }
 

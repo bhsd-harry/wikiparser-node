@@ -86,6 +86,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import assert from 'assert/strict';
+import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import {readOnly} from '../mixin/readOnly';
@@ -980,19 +981,39 @@ export class Token extends AstElement {
 	}
 
 	/**
+	 * 构建列表
+	 * @param recursive 是否递归
+	 */
+	#buildLists(recursive?: boolean): void {
+		for (let i = 0; i < this.length; i++) {
+			const child = this.childNodes[i]!;
+			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
+				child.getRange();
+			} else if (recursive && child.type !== 'text') {
+				child.#buildLists(true);
+			}
+		}
+	}
+
+	/**
 	 * Build lists
 	 *
 	 * 构建列表
 	 */
 	buildLists(): void {
-		for (let i = 0; i < this.length; i++) {
-			const child = this.childNodes[i]!;
-			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
-				child.getRange();
-			} else if (child.type !== 'text') {
-				child.buildLists();
+		this.#buildLists(true);
+	}
+
+	/** @private */
+	toHtmlInternal(opt?: HtmlOpt): string {
+		for (const child of this.childNodes) {
+			if (child.type === 'text') {
+				child.removeBlankLines();
 			}
 		}
+		this.#buildLists();
+		this.normalize();
+		return html(this.childNodes, '', opt);
 	}
 }
 

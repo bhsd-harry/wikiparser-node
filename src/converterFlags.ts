@@ -9,6 +9,7 @@ import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -159,13 +160,8 @@ export abstract class ConverterFlagsToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new ConverterFlagsToken([], this.getAttribute('config')) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		// @ts-expect-error abstract class
+		return cloneNode(this, () => new ConverterFlagsToken([], this.getAttribute('config')));
 	}
 
 	/**

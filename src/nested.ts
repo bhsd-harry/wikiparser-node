@@ -13,6 +13,7 @@ import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeTo
 
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -41,7 +42,7 @@ export abstract class NestedToken extends Token {
 	abstract override get firstChild(): Child | undefined;
 	abstract override get lastChild(): Child | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -49,7 +50,7 @@ export abstract class NestedToken extends Token {
 	abstract override get children(): Child[];
 	abstract override get firstElementChild(): Child | undefined;
 	abstract override get lastElementChild(): Child | undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
@@ -152,14 +153,11 @@ export abstract class NestedToken extends Token {
 	}
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Shadow.run(() => {
+		return cloneNode(
+			this,
 			// @ts-expect-error abstract class
-			const token = new NestedToken(undefined, this.#regex, this.#tags, config) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+			() => new NestedToken(undefined, this.#regex, this.#tags, this.getAttribute('config')),
+		);
 	}
 }
 

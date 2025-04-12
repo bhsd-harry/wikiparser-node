@@ -22,7 +22,7 @@ import type {
 
 import {Shadow, isToken} from '../util/debug';
 import {classes} from '../util/constants';
-import {html} from '../util/html';
+import {html, cloneNode} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -42,7 +42,7 @@ export abstract class GalleryToken extends Token {
 	abstract override get firstChild(): Child | AstText | undefined;
 	abstract override get lastChild(): Child | AstText | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -51,7 +51,7 @@ export abstract class GalleryToken extends Token {
 	abstract override get firstElementChild(): Child | undefined;
 	abstract override get lastElementChild(): Child | undefined;
 	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -179,13 +179,8 @@ export abstract class GalleryToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new GalleryToken(undefined, this.getAttribute('config')) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		// @ts-expect-error abstract class
+		return cloneNode(this, () => new GalleryToken(undefined, this.getAttribute('config')));
 	}
 
 	/**

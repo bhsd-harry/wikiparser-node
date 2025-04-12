@@ -2,26 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
+import {prepare} from './util';
+import type {Test} from './util';
 
-declare interface Test {
-	desc: string;
-	wikitext?: string;
-	html?: string;
-	print?: string;
-	render?: string;
-}
-
-const redirects: Record<string, string> = {
-	'File:Redirect_to_foobar.jpg': 'File:Foobar.jpg',
-	'Template:Redirect_to_foo': 'Template:Foo',
-	'Template:Templateredirect': 'Template:Templatesimple',
-};
-
-Parser.viewOnly = true;
+prepare(Parser);
 Parser.debugging = true;
-Parser.warning = false;
-Parser.templateDir = './test/templates';
-Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 
 const tests: Test[] = [],
 	regex = {

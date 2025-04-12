@@ -43,7 +43,7 @@ export abstract class ParameterToken extends Token {
 	abstract override get lastChild(): Token;
 	abstract override get parentNode(): TranscludeToken | undefined;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
+	abstract override get previousSibling(): AtomToken | SyntaxToken | this | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -52,7 +52,7 @@ export abstract class ParameterToken extends Token {
 	abstract override get lastElementChild(): Token;
 	abstract override get parentElement(): TranscludeToken | undefined;
 	abstract override get nextElementSibling(): this | undefined;
-	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
+	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 

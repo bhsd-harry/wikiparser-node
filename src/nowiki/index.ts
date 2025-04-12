@@ -26,13 +26,13 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	declare readonly name: string;
 
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */

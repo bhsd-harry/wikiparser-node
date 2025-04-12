@@ -3,8 +3,8 @@ import {Token} from './index';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 import type {Config} from '../base';
 
 /* NOT FOR BROWSER END */
@@ -30,12 +30,10 @@ export class HiddenToken extends Token {
 	}
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			const token = new HiddenToken(undefined, this.getAttribute('config'), []) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		return cloneNode(
+			this,
+			() => new HiddenToken(undefined, this.getAttribute('config'), []) as this,
+		);
 	}
 }
 

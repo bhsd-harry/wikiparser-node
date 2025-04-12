@@ -3,8 +3,8 @@ import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -63,14 +63,13 @@ export class AtomToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config'),
-			acceptable = this.getAcceptable();
-		return Shadow.run(() => {
-			const token = new AtomToken(undefined, this.type, config, [], acceptable) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		return cloneNode(this, () => new AtomToken(
+			undefined,
+			this.type,
+			this.getAttribute('config'),
+			[],
+			this.getAcceptable(),
+		) as this);
 	}
 }
 

@@ -10,8 +10,8 @@ import type {AttributesToken, ExtToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import {cloneNode} from '../../util/html';
 import {singleLine} from '../../mixin/singleLine';
 
 /* NOT FOR BROWSER END */
@@ -28,7 +28,7 @@ export abstract class ParamTagToken extends Token {
 	abstract override get firstChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -37,7 +37,7 @@ export abstract class ParamTagToken extends Token {
 	abstract override get firstElementChild(): AtomToken | undefined;
 	abstract override get lastElementChild(): AtomToken | undefined;
 	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -104,12 +104,9 @@ export abstract class ParamTagToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			const C = this.constructor as new (...args: any[]) => this,
-				token = new C(this.getAttribute('include'), undefined, this.getAttribute('config'));
-			token.safeAppend(cloned);
-			return token;
+		return cloneNode(this, () => {
+			const C = this.constructor as new (...args: any[]) => this;
+			return new C(this.getAttribute('include'), undefined, this.getAttribute('config'));
 		});
 	}
 }

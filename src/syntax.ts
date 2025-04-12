@@ -3,8 +3,8 @@ import type {Config, LintError} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {cloneNode} from '../util/html';
 import {syntax} from '../mixin/syntax';
 import type {SyntaxBase} from '../mixin/syntax';
 
@@ -55,14 +55,14 @@ export class SyntaxToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config'),
-			acceptable = this.getAcceptable();
-		return Shadow.run(() => {
-			const token = new SyntaxToken(undefined, this.pattern, this.type, config, [], acceptable) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		return cloneNode(this, () => new SyntaxToken(
+			undefined,
+			this.pattern,
+			this.type,
+			this.getAttribute('config'),
+			[],
+			this.getAcceptable(),
+		) as this);
 	}
 }
 

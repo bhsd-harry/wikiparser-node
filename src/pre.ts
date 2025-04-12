@@ -12,7 +12,7 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
+import {cloneNode} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -29,7 +29,7 @@ export abstract class PreToken extends Token {
 	abstract override get firstChild(): AstText | Child | undefined;
 	abstract override get lastChild(): AstText | Child | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -37,7 +37,7 @@ export abstract class PreToken extends Token {
 	abstract override get children(): Child[];
 	abstract override get firstElementChild(): Child | undefined;
 	abstract override get lastElementChild(): Child | undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
@@ -97,13 +97,8 @@ export abstract class PreToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new PreToken(undefined, this.getAttribute('config')) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		// @ts-expect-error abstract class
+		return cloneNode(this, () => new PreToken(undefined, this.getAttribute('config')));
 	}
 }
 

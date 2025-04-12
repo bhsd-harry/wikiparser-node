@@ -6,7 +6,7 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {Shadow} from '../util/debug';
+import {cloneNode} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -15,13 +15,11 @@ import {Shadow} from '../util/debug';
  * @classdesc `{childNodes: (AstText|CommentToken)[]}`
  */
 export abstract class CommentedToken extends Token {
-	declare readonly name: 'hiero';
-
 	declare readonly childNodes: readonly (AstText | CommentToken)[];
 	abstract override get firstChild(): AstText | CommentToken | undefined;
 	abstract override get lastChild(): AstText | CommentToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -29,7 +27,7 @@ export abstract class CommentedToken extends Token {
 	abstract override get children(): CommentToken[];
 	abstract override get firstElementChild(): CommentToken | undefined;
 	abstract override get lastElementChild(): CommentToken | undefined;
-	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
@@ -72,13 +70,8 @@ export abstract class CommentedToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new CommentedToken(undefined, this.getAttribute('config')) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+		// @ts-expect-error abstract class
+		return cloneNode(this, () => new CommentedToken(undefined, this.getAttribute('config')));
 	}
 }
 

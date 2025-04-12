@@ -20,7 +20,7 @@ import type {TableTokens} from './table/index';
 
 /* NOT FOR BROWSER */
 
-import {html} from '../util/html';
+import {html, cloneNode} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 
@@ -347,18 +347,11 @@ export abstract class AttributesToken extends Token {
 	}
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
+		return cloneNode(
+			this,
 			// @ts-expect-error abstract class
-			const token = new AttributesToken(
-				undefined,
-				this.type,
-				this.name,
-				this.getAttribute('config'),
-			) as this;
-			token.safeAppend(cloned);
-			return token;
-		});
+			() => new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')),
+		);
 	}
 
 	/**

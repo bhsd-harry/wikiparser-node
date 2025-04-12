@@ -113,13 +113,13 @@ export abstract class ImageParameterToken extends Token {
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get previousSibling(): AtomToken | this;
+	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get parentElement(): FileToken | undefined;
 	abstract override get nextElementSibling(): this | undefined;
-	abstract override get previousElementSibling(): AtomToken | this;
+	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 
