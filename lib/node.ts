@@ -409,26 +409,6 @@ export abstract class AstNode implements AstNodeBase {
 		};
 	}
 
-	/** @private */
-	seal(key: string, permanent?: boolean): void {
-		/* NOT FOR BROWSER */
-
-		if (!permanent) {
-			this.#optional.add(key);
-		}
-
-		/* NOT FOR BROWSER END */
-
-		Object.defineProperty(this, key, {
-			enumerable: !permanent && Boolean(this[key as keyof this]),
-			configurable: true,
-
-			/* NOT FOR BROWSER */
-
-			writable: false,
-		});
-	}
-
 	/**
 	 * Whether to be of a certain type
 	 *
@@ -462,6 +442,30 @@ export abstract class AstNode implements AstNodeBase {
 			},
 		);
 	}
+
+	/* PRINT ONLY */
+
+	/** @private */
+	seal(key: string, permanent?: boolean): void {
+		/* NOT FOR BROWSER */
+
+		if (!permanent) {
+			this.#optional.add(key);
+		}
+
+		/* NOT FOR BROWSER END */
+
+		Object.defineProperty(this, key, {
+			enumerable: !permanent && Boolean(this[key as keyof this]),
+			configurable: true,
+
+			/* NOT FOR BROWSER */
+
+			writable: false,
+		});
+	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 

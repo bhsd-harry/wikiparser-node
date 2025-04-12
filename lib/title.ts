@@ -202,6 +202,9 @@ export class Title {
 		if (!this.#path.includes('$1')) {
 			this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
 		}
+
+		/* PRINT ONLY */
+
 		if (!temporary) {
 			Object.defineProperties(this, {
 				encoded: {enumerable: false, writable: false},
