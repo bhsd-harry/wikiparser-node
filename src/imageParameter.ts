@@ -165,10 +165,12 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @private */
+	override isPlain(): boolean {
+		return this.name === 'caption';
+	}
+
+	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		if (key === 'plain') {
-			return (this.name === 'caption') as TokenAttribute<T>;
-		}
 		return key === 'padding'
 			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
 			: super.getAttribute(key);
