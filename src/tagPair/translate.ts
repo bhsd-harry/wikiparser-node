@@ -54,6 +54,9 @@ export abstract class TranslateToken extends TagPairToken {
 		const innerToken = new Token(inner, config, accum);
 		innerToken.type = 'translate-inner';
 		super('translate', attrToken, innerToken, 'translate', config, accum);
+
+		/* PRINT ONLY */
+
 		this.seal('closed', true);
 		this.seal('selfClosing', true);
 	}
