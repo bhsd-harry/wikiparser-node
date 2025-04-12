@@ -11,6 +11,7 @@ import {
 	BuildMethod,
 } from '../util/constants';
 import {BoundingRect} from '../lib/rect';
+import {gapped} from '../mixin/gapped';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
@@ -27,6 +28,7 @@ declare type Child = AtomToken | SyntaxToken;
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
  */
+@gapped()
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';
@@ -290,11 +292,6 @@ export abstract class TranscludeToken extends Token {
 			default:
 				return super.getAttribute(key);
 		}
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/** @private */
