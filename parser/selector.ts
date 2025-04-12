@@ -27,8 +27,11 @@ import type {AttributesParentBase} from '../mixin/attributesParent';
  * @param name
  */
 const basic = (selector: string, type: string, name?: string): boolean => {
-	const [t, ...names] = selector.split('#');
-	return (!t || t === type) && names.every(n => n === name);
+	if (selector.includes('#')) {
+		const [t, ...names] = selector.split('#');
+		return (!t || t === type) && names.every(n => n === name);
+	}
+	return !selector || selector === type;
 };
 
 /* NOT FOR BROWSER */
