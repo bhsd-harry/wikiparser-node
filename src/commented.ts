@@ -8,13 +8,11 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
  * @classdesc `{childNodes: (AstText|CommentToken)[]}`
  */
 export abstract class CommentedToken extends Token {
-	declare readonly name: 'hiero';
-
 	declare readonly childNodes: readonly (AstText | CommentToken)[];
 	abstract override get firstChild(): AstText | CommentToken | undefined;
 	abstract override get lastChild(): AstText | CommentToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	override get type(): 'ext-inner' {

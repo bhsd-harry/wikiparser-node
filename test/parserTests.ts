@@ -1,11 +1,5 @@
 import Parser from '../index';
-
-declare interface Test {
-	desc: string;
-	wikitext?: string;
-	print?: string;
-	render?: string;
-}
+import type {Test} from '../script/util';
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {

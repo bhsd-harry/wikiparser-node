@@ -19,7 +19,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	declare readonly name: string;
 
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	override get type(): 'ext-inner' {
