@@ -89,7 +89,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 				const l = accum.length;
 				// @ts-expect-error abstract class
 				new TranslateToken(p1, p2 && restore(p2, stack), newConfig, accum);
-				return `\0${l}e\x7F`;
+				return `\0${l}g\x7F`;
 			},
 		);
 		wikitext = restore(wikitext, stack);
