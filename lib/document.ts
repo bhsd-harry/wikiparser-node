@@ -81,6 +81,15 @@ export const cssLSP = (() => {
 	}
 })();
 
+export const htmlData = (() => {
+	try {
+		return (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
+			.getDefaultHTMLDataProvider();
+	} catch {
+		return undefined;
+	}
+})();
+
 export const stylelint = (async () => {
 	try {
 		return (await import('stylelint')).default;

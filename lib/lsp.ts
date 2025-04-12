@@ -8,7 +8,7 @@ import {
 	sanitizeInlineStyle,
 } from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
-import {getEndPos, htmlData} from '../util/lint';
+import {getEndPos, provideValues} from '../util/lint';
 import {tidy} from '../util/string';
 import Parser from '../index';
 import type {
@@ -87,6 +87,7 @@ import {
 	jsonLSP,
 	cssLSP,
 	jsonTags,
+	htmlData,
 	stylelint,
 	MathJax as Jax,
 } from './document';
@@ -1006,12 +1007,12 @@ export class LanguageService implements LanguageServiceBase {
 
 			/* NOT FOR BROWSER ONLY END */
 		} else if (isAttr(cur!) && isHtmlAttr(parentNode!)) {
-			const data = htmlData.provideValues(parentNode.tag, parentNode.name);
+			const data = provideValues(parentNode.tag, parentNode.name);
 			if (data.length === 0) {
 				return undefined;
 			}
 			const val = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
-			return getCompletion(data.map(({name}) => name), 'Value', val, position);
+			return getCompletion(data, 'Value', val, position);
 		}
 		return undefined;
 	}
@@ -1611,7 +1612,7 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
 			const textDoc = new EmbeddedJSONDocument(root, offsetNode);
 			return await jsonLSP.doHover(textDoc, position, textDoc.jsonDoc) ?? undefined;
-		} else if (htmlData.provideTags && htmlData.provideAttributes) {
+		} else if (htmlData) {
 			if (
 				type === 'html' && offset <= offsetNode.getRelativeIndex(0)
 				|| type === 'html-attr-dirty' && offset === 0 && parentNode!.firstChild === offsetNode
