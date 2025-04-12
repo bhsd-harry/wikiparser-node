@@ -15,7 +15,7 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
  *
  * 图库图片
  */
-@padded(0)
+@padded('')
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';
