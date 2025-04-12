@@ -88,11 +88,7 @@ export class AstText extends AstNode {
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
-		Object.defineProperties(this, {
-			data: {
-				value: text,
-			},
-		});
+		this.data = text;
 	}
 
 	/** @private */

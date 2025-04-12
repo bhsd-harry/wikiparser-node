@@ -91,12 +91,12 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 			case 'findStyleTokens':
 			case 'provideInlayHints':
 			case 'provideColorPresentations':
+			case 'provideDefinition':
 			case 'provideReferences':
 			case 'resolveRenameLocation':
 			case 'provideRenameEdits':
 			case 'provideHover':
 			case 'provideSignatureHelp':
-			case 'provideDefinition':
 			case 'include':
 				break;
 			case 'provideDocumentColors':
