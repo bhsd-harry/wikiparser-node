@@ -109,17 +109,19 @@ export abstract class HeadingToken extends Token {
 			if (innerStr === '=') {
 				//
 			} else if (unbalancedStart) {
-				const [extra] = /^=+/u.exec(innerStr)!;
-				e.suggestions = [
-					{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''},
-					{desc: `h${level + extra.length}`, range: [e.endIndex, e.endIndex], text: extra},
-				];
+				const [extra] = /^=+/u.exec(innerStr)!,
+					newLevel = level + extra.length;
+				e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''}];
+				if (newLevel < 7) {
+					e.suggestions.push({desc: `h${newLevel}`, range: [e.endIndex, e.endIndex], text: extra});
+				}
 			} else {
-				const extra = /[^=](=+)$/u.exec(innerStr)![1]!;
-				e.suggestions = [
-					{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''},
-					{desc: `h${level + extra.length}`, range: [e.startIndex, e.startIndex], text: extra},
-				];
+				const extra = /[^=](=+)$/u.exec(innerStr)![1]!,
+					newLevel = level + extra.length;
+				e.suggestions = [{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''}];
+				if (newLevel < 7) {
+					e.suggestions.push({desc: `h${newLevel}`, range: [e.startIndex, e.startIndex], text: extra});
+				}
 			}
 			errors.push(e);
 		}
