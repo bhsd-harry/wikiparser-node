@@ -1,10 +1,10 @@
 import assert from 'assert/strict';
 import Parser from '../index';
+import type {Test} from '../script/util';
 
 /* NOT FOR BROWSER */
 
 import {prepare} from '../script/util';
-import type {Test} from '../script/util';
 
 prepare(Parser);
 

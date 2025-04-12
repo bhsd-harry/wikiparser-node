@@ -3,6 +3,7 @@ import {
 	removeComment,
 	print,
 } from '../util/string';
+import {padded} from '../mixin/padded';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
@@ -24,6 +25,7 @@ import {noEscape} from '../mixin/noEscape';
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
  */
 @noEscape
+@padded(2)
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
@@ -105,11 +107,6 @@ export abstract class ConverterToken extends Token {
 	override text(): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

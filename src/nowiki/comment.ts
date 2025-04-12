@@ -1,5 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
+import {padded} from '../../mixin/padded';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError, Config} from '../../base';
@@ -17,7 +18,7 @@ import {classes} from '../../util/constants';
  *
  * HTML注释，不可见
  */
-@hiddenToken(false)
+@hiddenToken(false) @padded(4)
 export abstract class CommentToken extends NowikiBaseToken {
 	closed;
 
@@ -42,11 +43,6 @@ export abstract class CommentToken extends NowikiBaseToken {
 	constructor(wikitext: string, closed: boolean, config?: Config, accum?: Token[]) {
 		super(wikitext, config, accum);
 		this.closed = closed;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 4 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

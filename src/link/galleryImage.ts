@@ -6,6 +6,7 @@ import {
 
 	classes,
 } from '../../util/constants';
+import {padded} from '../../mixin/padded';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
@@ -28,6 +29,7 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
  * 图库图片
  */
 @singleLine()
+@padded(0)
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';
@@ -83,11 +85,6 @@ export abstract class GalleryImageToken extends FileToken {
 			imagemap ? 0 : 6,
 			{halfParsed: true, temporary, decode: !imagemap},
 		);
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 0 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

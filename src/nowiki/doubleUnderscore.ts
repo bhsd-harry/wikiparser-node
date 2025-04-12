@@ -1,4 +1,5 @@
 import {hiddenToken} from '../../mixin/hidden';
+import {padded} from '../../mixin/padded';
 import {NowikiBaseToken} from './base';
 import type {Config} from '../../base';
 import type {Token} from '../index';
@@ -17,7 +18,7 @@ import {syntax} from '../../mixin/syntax';
  * 状态开关
  */
 @syntax()
-@hiddenToken()
+@hiddenToken() @padded(2)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
 
@@ -45,11 +46,6 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 
 		this.#sensitive = sensitive;
 		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

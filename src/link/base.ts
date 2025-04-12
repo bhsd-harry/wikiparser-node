@@ -16,6 +16,7 @@ import {
 	sanitize,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
+import {padded} from '../../mixin/padded';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {
@@ -54,6 +55,7 @@ const isLink = (type: string): boolean => type === 'redirect-target' || type ===
  * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
 @noEscape
+@padded(2)
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;
@@ -218,10 +220,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		if (key === 'title') {
-			return this.#title as TokenAttribute<T>;
-		}
-		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
+		return key === 'title' ? this.#title as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

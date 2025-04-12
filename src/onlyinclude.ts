@@ -1,3 +1,4 @@
+import {padded} from '../mixin/padded';
 import {Token} from './index';
 
 /* NOT FOR BROWSER */
@@ -16,6 +17,7 @@ import Parser from '../index';
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 @noEscape
+@padded(13)
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';
@@ -49,11 +51,6 @@ export class OnlyincludeToken extends Token {
 	/** @private */
 	override isPlain(): true {
 		return true;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 13 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

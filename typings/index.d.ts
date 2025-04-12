@@ -18,6 +18,7 @@ declare global {
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly childNodes: readonly AstNodes[];
+		getAttribute<T extends string>(key: T): TokenAttribute<T>;
 		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
 		lint(): LintError[];
@@ -27,7 +28,6 @@ declare global {
 
 		afterBuild(): void;
 		insertAt(token: unknown, i?: number): unknown;
-		getAttribute<T extends string>(key: T): TokenAttribute<T>;
 		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
 		addEventListener(events: string | string[], listener: (...args: any[]) => void): void;
 		safeReplaceChildren(elements: readonly (AstNodes | string)[]): void;
