@@ -1,6 +1,7 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
+import {padded} from '../mixin/padded';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
@@ -16,6 +17,7 @@ import type {
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
  */
+@padded(3)
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
@@ -61,11 +63,6 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override text(): string {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 3 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

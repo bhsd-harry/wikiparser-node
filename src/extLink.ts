@@ -2,6 +2,7 @@ import {
 	MAX_STAGE,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
+import {padded} from '../mixin/padded';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {Config, LintError} from '../base';
@@ -12,6 +13,7 @@ import type {Config, LintError} from '../base';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
+@padded(1)
 export abstract class ExtLinkToken extends Token {
 	#space;
 
@@ -57,11 +59,6 @@ export abstract class ExtLinkToken extends Token {
 	/** @private */
 	override text(): string {
 		return `[${super.text(' ')}]`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 1 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

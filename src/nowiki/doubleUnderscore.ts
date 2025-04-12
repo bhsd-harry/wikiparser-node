@@ -1,4 +1,5 @@
 import {hiddenToken} from '../../mixin/hidden';
+import {padded} from '../../mixin/padded';
 import {NowikiBaseToken} from './base';
 import type {Config} from '../../base';
 import type {Token} from '../index';
@@ -8,7 +9,7 @@ import type {Token} from '../index';
  *
  * 状态开关
  */
-@hiddenToken()
+@hiddenToken() @padded(2)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
 
@@ -25,11 +26,6 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 		const lc = word.toLowerCase(),
 			{doubleUnderscore: [,, iAlias, sAlias]} = config;
 		this.setAttribute('name', (sensitive ? sAlias?.[word]?.toLowerCase() : iAlias?.[lc]) ?? lc);
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
