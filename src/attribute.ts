@@ -1,4 +1,4 @@
-import {generateForChild, htmlData} from '../util/lint';
+import {generateForChild, provideValues} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
@@ -188,9 +188,9 @@ export abstract class AttributeToken extends Token {
 			];
 			errors.push(e);
 		} else if (type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
-			const data = htmlData.provideValues(tag, name),
+			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
-			if (data.length > 0 && data.every(({name: n}) => n !== v)) {
+			if (data.length > 0 && data.every(n => n !== v)) {
 				errors.push(
 					generateForChild(
 						lastChild,

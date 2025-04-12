@@ -45,3 +45,4 @@ export type {GalleryToken} from './src/gallery';
 export type {ImagemapLinkToken} from './src/imagemapLink';
 export type {ImagemapToken} from './src/imagemap';
 export type {CommentedToken} from './src/commented';
+export type {TranslateToken} from './src/tagPair/translate';
