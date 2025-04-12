@@ -20,7 +20,7 @@ declare global {
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'nextSibling' | 'previousSibling' ? AstNodes | undefined :
 		T extends 'childNodes' ? AstNodes[] :
-		T extends 'bracket' | 'include' | 'plain' | 'built' ? boolean :
+		T extends 'bracket' | 'include' | 'built' ? boolean :
 		T extends 'title' ? Title :
 
 		/* NOT FOR BROWSER */

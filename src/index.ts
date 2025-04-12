@@ -208,7 +208,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
-		if (n < this.#stage || this.length === 0 || !this.getAttribute('plain')) {
+		if (n < this.#stage || this.length === 0 || !this.isPlain()) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
 			/* NOt FOR BROWSER */
@@ -456,10 +456,13 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
+	isPlain(): boolean {
+		return this.constructor === Token;
+	}
+
+	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
-			case 'plain':
-				return (this.constructor === Token) as TokenAttribute<T>;
 			case 'config':
 				return this.#config as TokenAttribute<T>;
 			case 'include':
@@ -551,7 +554,7 @@ export class Token extends AstElement {
 
 		const e = new Event('insert', {bubbles: true});
 		this.dispatchEvent(e, {type: 'insert', position: i < 0 ? i + this.length - 1 : i});
-		if (type !== 'list-range' && constructor === Token && this.getAttribute('plain')) {
+		if (type !== 'list-range' && constructor === Token && this.isPlain()) {
 			Parser.warn(
 				'You are inserting a plain token as a child of another plain token. '
 				+ 'Consider calling Token.flatten method afterwards.',
@@ -956,9 +959,9 @@ export class Token extends AstElement {
 	 * 合并普通节点的普通子节点
 	 */
 	flatten(): void {
-		if (this.getAttribute('plain')) {
+		if (this.isPlain()) {
 			for (const child of this.childNodes) {
-				if (child.type !== 'text' && child.getAttribute('plain')) {
+				if (child.type !== 'text' && child.isPlain()) {
 					child.insertAdjacent(child.childNodes, 1);
 					child.remove();
 				}
