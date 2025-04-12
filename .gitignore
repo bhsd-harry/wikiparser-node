@@ -15,6 +15,7 @@ dist/
 /.cache/
 /wiki/
 /test/*.wiki
+/test/prof*.json
 /test/**/*.txt
 /localStorage.json
 !README
