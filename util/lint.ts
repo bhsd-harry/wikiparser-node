@@ -2,7 +2,6 @@ import {Shadow} from './debug';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import type {Position} from 'vscode-languageserver-types';
-import type {IHTMLDataProvider, IValueData} from 'vscode-html-languageservice';
 import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
 
@@ -87,31 +86,18 @@ export const cache = <T>(store: Cached<T> | undefined, compute: () => T, update:
 	return result;
 };
 
-export const htmlData = ((): Partial<IHTMLDataProvider> & Pick<IHTMLDataProvider, 'provideValues'> => {
-	try {
-		return (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
-			.getDefaultHTMLDataProvider();
-	} catch {
-		/**
-		 * 获取HTML属性值可选列表
-		 * @param tag 标签名
-		 * @param attribute 属性名
-		 */
-		const provideValues = (tag: string, attribute: string): string[] => {
-			if (tag === 'ol' && attribute === 'type') {
-				return ['1', 'a', 'A', 'i', 'I'];
-			} else if (tag === 'th' && attribute === 'scope') {
-				return ['row', 'col', 'rowgroup', 'colgroup'];
-			} else if (attribute === 'dir') {
-				return ['ltr', 'rtl', 'auto'];
-			}
-			return attribute === 'aria-hidden' ? ['true', 'false'] : [];
-		};
-		return {
-			/** @implements */
-			provideValues(tag, attribute): IValueData[] {
-				return provideValues(tag, attribute).map(value => ({name: value}));
-			},
-		};
+/**
+ * 获取HTML属性值可选列表
+ * @param tag 标签名
+ * @param attribute 属性名
+ */
+export const provideValues = (tag: string, attribute: string): string[] => {
+	if (tag === 'ol' && attribute === 'type') {
+		return ['1', 'a', 'A', 'i', 'I'];
+	} else if (tag === 'th' && attribute === 'scope') {
+		return ['row', 'col', 'rowgroup', 'colgroup'];
+	} else if (attribute === 'dir') {
+		return ['ltr', 'rtl', 'auto'];
 	}
-})();
+	return attribute === 'aria-hidden' ? ['true', 'false'] : [];
+};
