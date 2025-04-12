@@ -67,7 +67,8 @@ session.post('Profiler.enable', () => {
 
 			session.post('Profiler.stop', (_, {profile: {nodes}}) => {
 				const useful = nodes.filter(
-						({callFrame: {url}, hitCount}) => url.startsWith('file:///') && hitCount,
+						({callFrame: {url}, hitCount, children}) => url.startsWith('file:///')
+							&& (hitCount || children),
 					),
 					summary: ProfileNode[] = [];
 				for (const {callFrame, hitCount, positionTicks} of useful) {
@@ -78,7 +79,9 @@ session.post('Profiler.enable', () => {
 						myTicks: Record<number, number> = {};
 					addTicks(myTicks, positionTicks);
 					if (existing) {
-						existing.hitCount! += hitCount!;
+						if (hitCount) {
+							existing.hitCount = (existing.hitCount ?? 0) + hitCount;
+						}
 						addTicks(existing.positionTicks, positionTicks);
 					} else {
 						summary.push({callFrame, hitCount, positionTicks: myTicks});
