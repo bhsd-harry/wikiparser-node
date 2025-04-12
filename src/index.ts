@@ -24,8 +24,9 @@
 // b: TableToken
 // c: CommentToke
 // d: ListToken
-// e: ExtToken、OnlyincludeToken或TranslateToken
+// e: ExtToken或OnlyincludeToken
 // f: ImageParameterToken内的MagicLinkToken
+// g: TranslateToken
 // h: HeadingToken
 // i: RFC/PMID/ISBN
 // l: LinkToken
