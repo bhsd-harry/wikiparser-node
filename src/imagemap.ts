@@ -1,7 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {
-	isToken,
-} from '../util/debug';
+import {isToken} from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
@@ -30,7 +28,7 @@ export abstract class ImagemapToken extends Token {
 	abstract override get firstChild(): Child | undefined;
 	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	override get type(): 'ext-inner' {

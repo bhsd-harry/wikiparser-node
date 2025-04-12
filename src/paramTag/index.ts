@@ -20,7 +20,7 @@ export abstract class ParamTagToken extends Token {
 	abstract override get firstChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken;
+	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	override get type(): 'ext-inner' {

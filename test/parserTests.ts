@@ -1,15 +1,9 @@
 import assert from 'assert/strict';
+import type {Test} from '../script/util';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
-
-declare interface Test {
-	desc: string;
-	wikitext?: string;
-	print?: string;
-	render?: string;
-}
 
 /* PRINT ONLY */
 
