@@ -23,9 +23,9 @@
 	},
 	"scripts": {
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
-		"build:core": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:lsp": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
-		"build:es7": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2016 --outfile=bundle/bundle-es7.min.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle-es7.min.js",
+		"build:core": "esbuild index.ts --charset=utf8 --bundle --minify --drop-labels=LSP --target=es2019 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
+		"build:lsp": "esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
+		"build:es7": "esbuild index.ts --charset=utf8 --bundle --minify --drop-labels=LSP --target=es2016 --outfile=bundle/bundle-es7.min.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle-es7.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es7 && npm run build:lsp && npm run build:test && npm run build:css",
