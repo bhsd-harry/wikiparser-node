@@ -84,8 +84,11 @@ session.post('Profiler.enable', () => {
 						summary.push({callFrame, hitCount, positionTicks: myTicks});
 					}
 				}
-				writeFileSync('test/prof.json', JSON.stringify(useful, null, '\t'));
-				writeFileSync('test/prof-summary.json', JSON.stringify(summary, null, '\t'));
+				writeFileSync('test/prof.json', `${JSON.stringify(useful, null, '\t')}\n`);
+				writeFileSync(
+					'test/prof-summary.json',
+					`${JSON.stringify(summary, null, '\t')}\n`,
+				);
 				session.disconnect();
 			});
 		})();

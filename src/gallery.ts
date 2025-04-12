@@ -97,7 +97,10 @@ export abstract class GalleryToken extends Token {
 					],
 				});
 			} else if (type !== 'noinclude' && type !== 'text') {
-				errors.push(...child.lint(start, re));
+				const childErrors = child.lint(start, re);
+				if (childErrors.length > 0) {
+					errors.push(...childErrors);
+				}
 			}
 			start += length + 1;
 		}
