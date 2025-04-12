@@ -2,6 +2,7 @@ import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
+import {gapped} from '../mixin/gapped';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
@@ -27,7 +28,7 @@ import Parser from '../index';
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
  */
 @noEscape
-@padded(3)
+@padded('{{{') @gapped()
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
@@ -95,11 +96,6 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override text(): string {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/** 设置name */

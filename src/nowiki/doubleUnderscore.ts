@@ -18,7 +18,7 @@ import {syntax} from '../../mixin/syntax';
  * 状态开关
  */
 @syntax()
-@hiddenToken() @padded(2)
+@hiddenToken() @padded('__')
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
 

@@ -26,7 +26,7 @@ import type {FileToken} from '../internal';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-@padded(1)
+@padded('[')
 export abstract class ExtLinkToken extends Token {
 	#space;
 

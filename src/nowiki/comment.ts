@@ -18,7 +18,7 @@ import {classes} from '../../util/constants';
  *
  * HTML注释，不可见
  */
-@hiddenToken(false) @padded(4)
+@hiddenToken(false) @padded('<!--')
 export abstract class CommentToken extends NowikiBaseToken {
 	closed;
 

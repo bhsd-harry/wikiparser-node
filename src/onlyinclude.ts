@@ -17,7 +17,7 @@ import Parser from '../index';
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 @noEscape
-@padded(13)
+@padded('<onlyinclude>')
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';

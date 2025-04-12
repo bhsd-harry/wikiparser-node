@@ -1,3 +1,4 @@
+import {gapped} from '../../mixin/gapped';
 import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstNodes} from '../../lib/node';
@@ -17,6 +18,7 @@ import Parser from '../../index';
  * 成对标签
  */
 @fixedToken @noEscape
+@gapped()
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
 	readonly #tags: [string, string];
@@ -109,11 +111,6 @@ export abstract class TagPairToken extends Token {
 		/* NOT FOR BROWSER END */
 
 		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/** @private */

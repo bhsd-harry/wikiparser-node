@@ -1,5 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
+import {gapped} from '../mixin/gapped';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {Config, LintError} from '../base';
@@ -21,6 +22,7 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: AtomToken[]}`
  */
+@gapped()
 export abstract class ConverterFlagsToken extends Token {
 	#flags?: string[];
 
@@ -93,11 +95,6 @@ export abstract class ConverterFlagsToken extends Token {
 	/** @private */
 	override text(): string {
 		return super.text(';');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/**

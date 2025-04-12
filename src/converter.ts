@@ -25,7 +25,7 @@ import {noEscape} from '../mixin/noEscape';
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
  */
 @noEscape
-@padded(2)
+@padded('-{')
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
