@@ -461,7 +461,10 @@ export abstract class AstElement extends AstNode {
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			child.setAttribute('aIndex', cur);
-			errors.push(...child.lint(cur, re));
+			const childErrors = child.lint(cur, re);
+			if (childErrors.length > 0) {
+				errors.push(...childErrors);
+			}
 			cur += child.toString().length + this.getGaps(i);
 		}
 		return errors;

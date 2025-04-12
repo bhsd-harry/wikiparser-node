@@ -717,7 +717,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	protectChildren(...args: (string | number | Range)[]): void {
+	protectChildren(args: string | number | Range | (string | number | Range)[]): void {
 		this.#protectedChildren.push(...new Ranges(args));
 	}
 
@@ -884,7 +884,7 @@ export class Token extends AstElement {
 			token.setAttribute('include', Boolean(this.#include));
 			token.setAttribute('name', this.name!);
 			token.safeAppend(cloned);
-			token.protectChildren(...this.#protectedChildren);
+			token.protectChildren(this.#protectedChildren);
 			return token;
 		});
 	}

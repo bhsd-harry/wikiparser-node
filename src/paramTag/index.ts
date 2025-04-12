@@ -90,7 +90,10 @@ export abstract class ParamTagToken extends Token {
 					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
 					errors.push(e);
 				} else {
-					errors.push(...child.lint(start, false));
+					const childErrors = child.lint(start, false);
+					if (childErrors.length > 0) {
+						errors.push(...childErrors);
+					}
 				}
 			}
 			start += child.toString().length + 1;

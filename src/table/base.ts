@@ -84,7 +84,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 
 		/* NOT FOR BROWSER */
 
-		this.protectChildren(0, 1);
+		this.protectChildren([0, 1]);
 	}
 
 	/* NOT FOR BROWSER */

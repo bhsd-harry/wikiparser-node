@@ -1291,7 +1291,10 @@ export class LanguageService implements LanguageServiceBase {
 		if (jsonLSP) {
 			for (const {selfClosing, lastChild} of root.querySelectorAll<ExtToken>(jsonSelector)) {
 				if (!selfClosing) {
-					ranges.push(...jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, lastChild)));
+					const foldingRanges = jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, lastChild));
+					if (foldingRanges.length > 0) {
+						ranges.push(...foldingRanges);
+					}
 				}
 			}
 		}

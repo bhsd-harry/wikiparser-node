@@ -148,17 +148,15 @@ export class AstText extends AstNode {
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
+
+		/* NOT FOR BROWSER */
+
 		Object.defineProperties(this, {
 			data: {
 				value: text,
 
-				/* NOT FOR BROWSER */
-
 				writable: false,
 			},
-
-			/* NOT FOR BROWSER */
-
 			childNodes: {enumerable: false, configurable: false},
 		});
 	}
