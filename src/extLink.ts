@@ -13,7 +13,7 @@ import type {Config, LintError} from '../base';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-@padded(1)
+@padded('[')
 export abstract class ExtLinkToken extends Token {
 	#space;
 

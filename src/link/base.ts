@@ -31,7 +31,7 @@ const isLink = (type: string): boolean => type === 'redirect-target' || type ===
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
-@padded(2)
+@padded('[[')
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;
