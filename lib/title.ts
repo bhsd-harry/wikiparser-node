@@ -147,8 +147,10 @@ export class Title {
 	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
+		// eslint-disable-next-line @typescript-eslint/prefer-destructuring
 		const prefix =
 			this.prefix;
+		// eslint-disable-next-line prefer-const
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		return [false, title];
 	}
@@ -181,6 +183,7 @@ export class Title {
 					+ (
 						fragment
 							? `#${encodeURIComponent(
+								// eslint-disable-next-line @stylistic/comma-dangle
 								fragment
 							)}`
 							: ''

@@ -8,7 +8,7 @@ import type {Config} from '../../base';
  * `<translate>`
  * @classdesc `{childNodes: [SyntaxToken, Token]}`
  */
-export abstract class TranslateToken extends TagPairToken implements Omit<
+export abstract class TranslateToken extends TagPairToken {
 	declare name: 'translate';
 	declare closed: true;
 	declare selfClosing: false;

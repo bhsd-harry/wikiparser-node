@@ -130,6 +130,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 			case 'provideInlayHints':
 			case 'provideColorPresentations':
 			case 'provideCodeAction':
+			case 'provideDefinition':
 			case 'setTargetWikipedia':
 				break;
 			case 'provideDocumentColors':

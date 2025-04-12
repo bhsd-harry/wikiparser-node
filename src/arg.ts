@@ -101,7 +101,10 @@ export abstract class ArgToken extends Token {
 		if (argDefault) {
 			const index = start + 4 + argName.toString().length;
 			argDefault.setAttribute('aIndex', index);
-			errors.push(...argDefault.lint(index, re));
+			const childErrors = argDefault.lint(index, re);
+			if (childErrors.length > 0) {
+				errors.push(...childErrors);
+			}
 		}
 		if (rest.length > 0) {
 			const rect = new BoundingRect(this, start);

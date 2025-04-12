@@ -214,6 +214,7 @@ export abstract class TableToken extends TrBaseToken {
 		const isRow = super.getRowCount();
 		if (
 			n === 0
+			// eslint-disable-next-line @stylistic/no-extra-parens
 			&& (
 				isRow
 			)

@@ -17,11 +17,13 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return 'quote';
 	}
 
-	override get bold(): boolean {
+	/** 是否粗体 */
+	get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
-	override get italic(): boolean {
+	/** 是否斜体 */
+	get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
 
