@@ -17,7 +17,7 @@ export abstract class ConverterRuleToken extends Token {
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): AtomToken;
 	abstract override get parentNode(): ConverterToken | undefined;
-	abstract override get previousSibling(): ConverterFlagsToken | this;
+	abstract override get previousSibling(): ConverterFlagsToken | this | undefined;
 	abstract override get nextSibling(): this | undefined;
 
 	override get type(): 'converter-rule' {

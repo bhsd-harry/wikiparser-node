@@ -1,12 +1,6 @@
 import assert from 'assert/strict';
 import Parser from '../index';
-
-declare interface Test {
-	desc: string;
-	wikitext?: string;
-	print?: string;
-	render?: string;
-}
+import type {Test} from '../script/util';
 
 /* PRINT ONLY */
 

@@ -16,7 +16,7 @@ export abstract class ImagemapLinkToken extends Token {
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): NoincludeToken;
 	abstract override get parentNode(): ImagemapToken | undefined;
-	abstract override get previousSibling(): GalleryImageToken | this | NoincludeToken | AstText;
+	abstract override get previousSibling(): GalleryImageToken | this | NoincludeToken | AstText | undefined;
 	abstract override get nextSibling(): this | NoincludeToken | AstText | undefined;
 
 	override get type(): 'imagemap-link' {
