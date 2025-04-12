@@ -8,6 +8,7 @@ declare global {
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly childNodes: readonly AstNodes[];
+		getAttribute<T extends string>(key: T): TokenAttribute<T>;
 		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
 		lint(): LintError[];
