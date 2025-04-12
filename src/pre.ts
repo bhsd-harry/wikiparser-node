@@ -63,8 +63,8 @@ export abstract class PreToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return (key === 'plain') as TokenAttribute<T> || super.getAttribute(key);
+	override isPlain(): true {
+		return true;
 	}
 
 	/** @private */

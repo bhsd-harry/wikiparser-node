@@ -167,7 +167,7 @@ export class AstText extends AstNode {
 					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
 					&& nextSibling.innerText?.includes(']')
 				)
-				|| magicLink && (!parentNode.getAttribute('plain') || noLinkTypes.has(type))
+				|| magicLink && (!parentNode.isPlain() || noLinkTypes.has(type))
 			) {
 				continue;
 			} else if (char === ']' && (index || length > 1)) {

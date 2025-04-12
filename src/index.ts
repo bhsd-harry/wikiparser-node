@@ -118,7 +118,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
-		if (n < this.#stage || this.length === 0 || !this.getAttribute('plain')) {
+		if (n < this.#stage || this.length === 0 || !this.isPlain()) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
 			return this;
@@ -358,10 +358,13 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
+	isPlain(): boolean {
+		return this.constructor === Token;
+	}
+
+	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
-			case 'plain':
-				return (this.constructor === Token) as TokenAttribute<T>;
 			case 'config':
 				return this.#config as TokenAttribute<T>;
 			case 'include':
