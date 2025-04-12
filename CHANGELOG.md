@@ -16,6 +16,7 @@
 - Internal links with empty alt text in `<imagemap>` are valid
 - The executable [`getParserConfig`](./README#cli-usage) for MediaWiki sites not [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
 - More potential stack overflow issues
+- Do not suggest more than 6 consecutive `=` when fixing unbalanced `=` in a section header
 
 ## v1.19.0
 
