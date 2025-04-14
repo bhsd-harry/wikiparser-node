@@ -47,7 +47,7 @@ const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(ty
 let wordRegex: RegExp;
 try {
 	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
-	wordRegex = new RegExp(String.raw`[\p{L}\d]`, 'u');
+	wordRegex = new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
 } catch /* istanbul ignore next */ {
 	wordRegex = /[^\W_]/u;
 }

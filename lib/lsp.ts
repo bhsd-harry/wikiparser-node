@@ -699,14 +699,14 @@ export class LanguageService implements LanguageServiceBase {
 				} = this.config,
 				tags = new Set([ext, html].flat(2));
 			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\d_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
+			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\p{N}_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
 			const re = new RegExp(
 				'(?:' // eslint-disable-line prefer-template
 				+ String.raw`<(\/?\w*)` // tag
 				+ '|'
 				+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets
 				+ '|'
-				+ String.raw`(__(?:(?!__)[\p{L}\d_])*)` // behavior switch
+				+ String.raw`(__(?:(?!__)[\p{L}\p{N}_])*)` // behavior switch
 				+ '|'
 				+ String.raw`(?<!\[)\[([a-z:/]*)` // protocol
 				+ '|'

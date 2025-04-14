@@ -1,6 +1,6 @@
 ## v1.20.0
 
-*2025-04-13*
+*2025-04-14*
 
 **Added**
 
@@ -17,6 +17,7 @@
 - The executable [`getParserConfig`](./README#cli-usage) for MediaWiki sites not [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
 - More potential stack overflow issues
 - Do not suggest more than 6 consecutive `=` when fixing unbalanced `=` in a section header
+- A unicode number before a URL protocol prevents it from being parsed as an external link
 
 ## v1.19.0
 
