@@ -16,7 +16,6 @@ module.exports = {
 		...config.ignorePatterns,
 		'coverage/',
 		'/bundle/',
-		'/extensions/es7/',
 	],
 	rules: {
 		...config.rules,
