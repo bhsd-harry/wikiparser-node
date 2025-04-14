@@ -18,7 +18,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 	if (!config.regexMagicLinks) {
 		try {
 			config.regexMagicLinks = new RegExp(
-				String.raw`(^|[^\p{L}\d_])(?:(?:${
+				String.raw`(^|[^\p{L}\p{N}_])(?:(?:${
 					config.protocol
 				})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 				'giu',

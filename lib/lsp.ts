@@ -697,7 +697,7 @@ export class LanguageService implements LanguageServiceBase {
 				+ '|'
 				+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets
 				+ '|'
-				+ String.raw`(__(?:(?!__)[\p{L}\d_])*)` // behavior switch
+				+ String.raw`(__(?:(?!__)[\p{L}\p{N}_])*)` // behavior switch
 				+ '|'
 				+ String.raw`(?<!\[)\[([a-z:/]*)` // protocol
 				+ '|'
