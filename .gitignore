@@ -2,7 +2,6 @@
 /dist/
 /bundle/bundle-es7.min.js
 /bundle/*.map
-/extensions/es7/
 /coverage/*
 !/coverage/badge.svg
 /errors/*
