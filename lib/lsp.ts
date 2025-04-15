@@ -126,7 +126,7 @@ const cssRules = {
 	mathTags = ['math', 'chem', 'ce'],
 	mathSelector = mathTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
-let colors: RegExp | false | undefined;
+let colors: Promise<RegExp | false> | undefined;
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -584,16 +584,17 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY */
 
-		/* eslint-disable require-atomic-updates */
-		try {
-			colors ??= new RegExp(
-				String.raw`\b${Object.keys((await import('color-name')).default).join('|')}\b`,
-				'giu',
-			);
-		} catch {
-			colors = false;
-		}
-		/* eslint-enable require-atomic-updates */
+		colors ??= (async () => {
+			try {
+				return new RegExp(
+					String.raw`\b${Object.keys((await import('color-name')).default).join('|')}\b`,
+					'giu',
+				);
+			} catch {
+				return false;
+			}
+		})();
+		const re = await colors;
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -620,7 +621,7 @@ export class LanguageService implements LanguageServiceBase {
 
 				/* NOT FOR BROWSER ONLY */
 
-				const isStyle = colors && type === 'attr-value' && parentNode!.name === 'style';
+				const isStyle = re && type === 'attr-value' && parentNode!.name === 'style';
 
 				/* NOT FOR BROWSER ONLY END */
 
@@ -633,7 +634,7 @@ export class LanguageService implements LanguageServiceBase {
 
 						if (isStyle) {
 							parts.push(
-								...[...data.matchAll(colors as RegExp)].map(
+								...[...data.matchAll(re)].map(
 									({index, 0: s}): [string, number, number, true] =>
 										[s, index, index + s.length, true],
 								),
