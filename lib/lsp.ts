@@ -453,8 +453,11 @@ export class LanguageService implements LanguageServiceBase {
 		Object.defineProperties(this, {
 			config: {enumerable: false},
 			data: {
-				value: require(path.join(dataDir, 'signatures')),
 				enumerable: false,
+
+				/* NOT FOR BROWSER ONLY */
+
+				value: require(path.join(dataDir, 'signatures')),
 			},
 		});
 	}
