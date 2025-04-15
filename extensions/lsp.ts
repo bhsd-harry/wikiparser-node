@@ -1,5 +1,6 @@
 import type {
 	LanguageServiceBase,
+	SignatureData,
 	ColorInformation,
 	ColorPresentation,
 	CompletionItem,
@@ -16,10 +17,13 @@ import type {
 	AST,
 } from './typings';
 
+let data: Promise<SignatureData> | undefined;
+
 /** 用于语法分析 */
 class LanguageService implements LanguageServiceBase {
 	readonly #id;
 	readonly #include;
+	#hasData = false;
 
 	/** @implements */
 	get include(): boolean {
@@ -139,8 +143,18 @@ class LanguageService implements LanguageServiceBase {
 		) as Promise<ServerDiagnostic[]>;
 	}
 
+	/** 懒加载魔术字信息 */
+	async #loadData(): Promise<void> {
+		if (!this.#hasData) {
+			this.#hasData = true;
+			data ??= (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())();
+			wikiparse.provide('data', this.#id, await data, this.#include);
+		}
+	}
+
 	/** @implements */
 	provideHover(text: string, position: Position): Promise<Hover | undefined> {
+		void this.#loadData();
 		return wikiparse.provide(
 			'hover',
 			this.#id + 0.05,
@@ -152,6 +166,7 @@ class LanguageService implements LanguageServiceBase {
 
 	/** @implements */
 	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
+		void this.#loadData();
 		return wikiparse.provide(
 			'signatureHelp',
 			this.#id + 0.15,

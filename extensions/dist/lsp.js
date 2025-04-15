@@ -10,14 +10,17 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _LanguageService_id, _LanguageService_include;
+var _LanguageService_instances, _LanguageService_id, _LanguageService_include, _LanguageService_hasData, _LanguageService_loadData;
+let data;
 class LanguageService {
     get include() {
         return __classPrivateFieldGet(this, _LanguageService_include, "f");
     }
     constructor(include = true) {
+        _LanguageService_instances.add(this);
         _LanguageService_id.set(this, void 0);
         _LanguageService_include.set(this, void 0);
+        _LanguageService_hasData.set(this, false);
         __classPrivateFieldSet(this, _LanguageService_id, wikiparse.id++, "f");
         __classPrivateFieldSet(this, _LanguageService_include, include, "f");
     }
@@ -55,9 +58,11 @@ class LanguageService {
         return wikiparse.provide('diagnostics', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.9, wikitext, __classPrivateFieldGet(this, _LanguageService_include, "f"), warning);
     }
     provideHover(text, position) {
+        void __classPrivateFieldGet(this, _LanguageService_instances, "m", _LanguageService_loadData).call(this);
         return wikiparse.provide('hover', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.05, text, __classPrivateFieldGet(this, _LanguageService_include, "f"), position);
     }
     provideSignatureHelp(text, position) {
+        void __classPrivateFieldGet(this, _LanguageService_instances, "m", _LanguageService_loadData).call(this);
         return wikiparse.provide('signatureHelp', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.15, text, __classPrivateFieldGet(this, _LanguageService_include, "f"), position);
     }
     provideInlayHints(text) {
@@ -67,6 +72,12 @@ class LanguageService {
         return wikiparse.provide('findStyleTokens', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.35);
     }
 }
-_LanguageService_id = new WeakMap(), _LanguageService_include = new WeakMap();
+_LanguageService_id = new WeakMap(), _LanguageService_include = new WeakMap(), _LanguageService_hasData = new WeakMap(), _LanguageService_instances = new WeakSet(), _LanguageService_loadData = async function _LanguageService_loadData() {
+    if (!__classPrivateFieldGet(this, _LanguageService_hasData, "f")) {
+        __classPrivateFieldSet(this, _LanguageService_hasData, true, "f");
+        data !== null && data !== void 0 ? data : (data = (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())());
+        wikiparse.provide('data', __classPrivateFieldGet(this, _LanguageService_id, "f"), await data, __classPrivateFieldGet(this, _LanguageService_include, "f"));
+    }
+};
 wikiparse.LanguageService = LanguageService;
 })();

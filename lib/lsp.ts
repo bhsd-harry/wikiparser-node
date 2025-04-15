@@ -306,7 +306,6 @@ export class LanguageService implements LanguageServiceBase {
 		Object.defineProperties(this, {
 			config: {enumerable: false},
 			data: {
-				value: require('../data/signatures'),
 				enumerable: false,
 			},
 		});

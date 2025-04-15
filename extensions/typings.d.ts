@@ -37,6 +37,7 @@ export type {
 	ConfigData,
 	LintError,
 	LanguageService,
+	SignatureData,
 	Action,
 	editor,
 	CodeJar,
