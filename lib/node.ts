@@ -21,6 +21,10 @@ export interface CaretPosition {
 	readonly offsetNode: AstNodes;
 	readonly offset: number;
 }
+export interface Font {
+	bold: boolean;
+	italic: boolean;
+}
 
 /**
  * Node-like

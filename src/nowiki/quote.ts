@@ -4,8 +4,11 @@ import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {
 	LintError,
+	Config,
 	AST,
 } from '../../base';
+import type {Font} from '../../lib/node';
+import type {Token} from '../../internal';
 
 /**
  * `''` and `'''`
@@ -13,6 +16,8 @@ import type {
  * `''`和`'''`
  */
 export abstract class QuoteToken extends NowikiBaseToken {
+	#closing: Font;
+
 	override get type(): 'quote' {
 		return 'quote';
 	}
@@ -27,6 +32,20 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return this.innerText.length !== 3;
 	}
 
+	/** whether to be closing quotes / 是否闭合 */
+	get closing(): Partial<Font> {
+		return {
+			...this.bold ? {bold: this.#closing.bold} : undefined,
+			...this.italic ? {italic: this.#closing.italic} : undefined,
+		};
+	}
+
+	/** @param closing 是否闭合 */
+	constructor(wikitext: string, closing: Font, config?: Config, accum?: Token[]) {
+		super(wikitext, config, accum);
+		this.#closing = closing;
+	}
+
 	/** @private */
 	override text(): string {
 		const {parentNode, innerText} = this;
@@ -35,7 +54,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {previousSibling, nextSibling, bold} = this,
+		const {previousSibling, nextSibling, bold, closing} = this,
+			previousData = previousSibling?.type === 'text' ? previousSibling.data : undefined,
+			nextData = nextSibling?.type === 'text' ? nextSibling.data : undefined,
 			message = Parser.msg('lonely "$1"', `'`),
 			errors: LintError[] = [],
 			rect = new BoundingRect(this, start);
@@ -54,10 +75,19 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			{desc: 'escape', range: [startIndex, endIndex], text: '&apos;'.repeat(length)},
 			{desc: 'remove', range: [startIndex, endIndex], text: ''},
 		];
-		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
-			const e = generateForSelf(this, rect, 'lonely-apos', message),
+		if (previousData?.endsWith(`'`)) {
+			const e = generateForSelf(
+					this,
+					rect,
+					'lonely-apos',
+					message,
+					(closing.bold || closing.italic)
+					&& (/[a-z\d]'$/iu.test(previousData) || nextData && /^[a-z\d]/iu.test(nextData))
+						? 'warning'
+						: 'error',
+				),
 				{startIndex: endIndex, startLine: endLine, startCol: endCol} = e,
-				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousSibling.data) as string[] as [string, string],
+				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
 				startIndex = start - length;
 			errors.push({
 				...e,
@@ -69,10 +99,10 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
-		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
+		if (nextData?.startsWith(`'`)) {
 			const e = generateForSelf(this, rect, 'lonely-apos', message),
 				{endIndex: startIndex, endLine: startLine, endCol: startCol} = e,
-				[{length}] = /^'+/u.exec(nextSibling.data)!,
+				[{length}] = /^'+/u.exec(nextData)!,
 				endIndex = startIndex + length;
 			errors.push({
 				...e,
