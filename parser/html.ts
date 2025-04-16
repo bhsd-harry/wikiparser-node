@@ -1,7 +1,7 @@
 import {AttributesToken} from '../src/attributes';
 import {HtmlToken} from '../src/html';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu;
 

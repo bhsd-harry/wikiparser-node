@@ -4,7 +4,7 @@ import {padded} from '../../mixin/padded';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError, Config} from '../../base';
-import type {Token} from '../index';
+import type {Token} from '../../internal';
 
 /**
  * invisible HTML comment
