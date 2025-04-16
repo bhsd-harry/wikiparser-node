@@ -180,7 +180,7 @@ export class AstText extends AstNode {
 				endIndex = startIndex + length,
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
-				severity = length > 1 && !(
+				severity = length > 1 && !/^(?:rfc|pmid|isbn)$/iu.test(error) && !(
 					char === '<' && !/[\s/>]/u.test(nextChar ?? '')
 					|| isHtmlAttrVal && (char === '[' || char === ']')
 					|| magicLink && type === 'parameter-value'
