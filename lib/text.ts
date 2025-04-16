@@ -116,7 +116,10 @@ export class AstText extends AstNode {
 			const {type: grandType, name: grandName, tag} = grandparent as AttributeToken;
 			if (grandType !== 'ext-attr') {
 				isHtmlAttrVal = true;
-			} else if (tag === 'choose' && (grandName === 'before' || grandName === 'after')) {
+			} else if (
+				tag === 'ref' && (grandName === 'name' || grandName === 'extends' || grandName === 'follow')
+				|| tag === 'choose' && (grandName === 'before' || grandName === 'after')
+			) {
 				return [];
 			}
 		}
