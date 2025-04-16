@@ -210,8 +210,8 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		const {parentNode} = this;
-		if (parentNode?.type === 'td' && parentNode.subtype === 'caption') {
-			this.setAttribute('name', 'caption');
+		if (parentNode?.type === 'td') {
+			this.setAttribute('name', parentNode.subtype);
 		}
 		super.afterBuild();
 	}

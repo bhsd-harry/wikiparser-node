@@ -1,3 +1,12 @@
+## v1.20.1
+
+*2025-04-17*
+
+**Fixed**
+
+- [`AttributesToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#name) should be `td`, `th` or `caption` for table cells
+- [`AttributeToken.tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tag) should be `td`, `th` or `caption` for table cells
+
 ## v1.20.0
 
 *2025-04-16*
