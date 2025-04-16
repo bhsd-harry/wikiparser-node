@@ -14,6 +14,7 @@
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) now ignores the `name` attribute of a `<ref>` tag
 - Lowered severity of lonely `RFC`, `PMID` or `ISBN`
 - Lowered severity from [`RedirectTargetToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#lint)
+- Lowered severity of multiline comments inside `<gallery>`
 
 ## v1.20.0
 
