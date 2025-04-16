@@ -41,7 +41,13 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start, false);
 		if (this.length === 2) {
-			const e = generateForChild(this.lastChild, {start}, 'no-ignored', 'useless link text');
+			const e = generateForChild(
+				this.lastChild,
+				{start},
+				'no-ignored',
+				'useless link text',
+				'warning',
+			);
 			e.startIndex--;
 			e.startCol--;
 			e.fix = {range: [e.startIndex, e.endIndex], text: '', desc: 'remove'};
