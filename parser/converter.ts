@@ -1,6 +1,6 @@
 import {ConverterToken} from '../src/converter';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /**
  * 解析语言变体转换
