@@ -12,6 +12,7 @@
 - Lowered severity of a lonely apostrophe followed by a closing bold/italic mark
 - Lowered severity of a lonely bracket surrounding an internal or external link
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) now ignores the `name` attribute of a `<ref>` tag
+- Lowered severity of lonely `RFC`, `PMID` or `ISBN`
 
 ## v1.20.0
 
