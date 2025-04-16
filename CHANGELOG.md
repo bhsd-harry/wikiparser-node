@@ -9,7 +9,8 @@
 
 **Changed**
 
-- Lowered severity of a lonely apostrophe followed by a closing bold/italic mark.
+- Lowered severity of a lonely apostrophe followed by a closing bold/italic mark
+- Lowered severity of a lonely bracket surrounding an internal or external link
 
 ## v1.20.0
 
