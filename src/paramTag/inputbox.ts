@@ -2,7 +2,7 @@ import {parseCommentAndExt} from '../../parser/commentAndExt';
 import {parseBraces} from '../../parser/braces';
 import Parser from '../../index';
 import {ParamTagToken} from './index';
-import type {Token} from '../index';
+import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 

@@ -13,7 +13,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
-import type {GalleryToken} from '../gallery';
+import type {GalleryToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 

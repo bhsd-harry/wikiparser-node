@@ -8,7 +8,7 @@ import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
 import type {RegexGetter} from '@bhsd/common';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /* NOT FOR BROWSER */
 

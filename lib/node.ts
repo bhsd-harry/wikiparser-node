@@ -21,11 +21,6 @@ import {EventEmitter} from 'events';
 import {classes} from '../util/constants';
 import Parser from '../index';
 
-export interface Font {
-	bold: boolean;
-	italic: boolean;
-}
-
 /* NOT FOR BROWSER END */
 
 export type AstNodes = AstText | Token;
@@ -40,6 +35,10 @@ export interface Position {
 export interface CaretPosition {
 	readonly offsetNode: AstNodes;
 	readonly offset: number;
+}
+export interface Font {
+	bold: boolean;
+	italic: boolean;
 }
 
 /**

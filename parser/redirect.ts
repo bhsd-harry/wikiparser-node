@@ -1,7 +1,7 @@
 import Parser from '../index';
 import {RedirectToken} from '../src/redirect';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /* NOT FOR BROWSER */
 

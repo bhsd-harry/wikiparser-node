@@ -2,7 +2,7 @@ import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
 import {ExtLinkToken} from '../src/extLink';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /* NOT FOR BROWSER */
 

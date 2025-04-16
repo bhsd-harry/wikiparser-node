@@ -1,6 +1,6 @@
 import {QuoteToken} from '../src/nowiki/quote';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -64,17 +64,9 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 			arr[i - 1] += `'`;
 		}
 	}
-
-	/* NOT FOR BROWSER */
-
 	let bold = true,
 		italic = true;
-
-	/* NOT FOR BROWSER END */
-
 	for (let i = 1; i < length; i += 2) {
-		/* NOT FOR BROWSER */
-
 		const n = arr[i]!.length,
 			isBold = n !== 2,
 			isItalic = n !== 3;
@@ -84,9 +76,6 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 		if (isItalic) {
 			italic = !italic;
 		}
-
-		/* NOT FOR BROWSER END */
-
 		// @ts-expect-error abstract class
 		new QuoteToken(
 			arr[i],

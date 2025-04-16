@@ -4,7 +4,7 @@ import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /* NOT FOR BROWSER */
 

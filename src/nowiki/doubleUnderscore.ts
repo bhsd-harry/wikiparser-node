@@ -2,7 +2,7 @@ import {hiddenToken} from '../../mixin/hidden';
 import {padded} from '../../mixin/padded';
 import {NowikiBaseToken} from './base';
 import type {Config} from '../../base';
-import type {Token} from '../index';
+import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 

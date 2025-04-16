@@ -7,6 +7,10 @@
 - [`AttributesToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#name) should be `td`, `th` or `caption` for table cells
 - [`AttributeToken.tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tag) should be `td`, `th` or `caption` for table cells
 
+**Changed**
+
+- Lowered severity of a lonely apostrophe followed by a closing bold/italic mark.
+
 ## v1.20.0
 
 *2025-04-16*

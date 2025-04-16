@@ -1,6 +1,6 @@
 import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
-import type {Token} from '../src/index';
+import type {Token} from '../internal';
 
 /**
  * 只能位于行首的类
