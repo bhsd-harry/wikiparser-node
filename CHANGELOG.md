@@ -15,6 +15,7 @@
 - Lowered severity of lonely `RFC`, `PMID` or `ISBN`
 - Lowered severity from [`RedirectTargetToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#lint)
 - Lowered severity of multiline comments inside `<gallery>`
+- Lowered severity of disallowed HTML tags
 
 ## v1.20.0
 

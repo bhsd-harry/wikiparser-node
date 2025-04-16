@@ -57,7 +57,7 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 		p: 'lonely-http',
 		i: 'lonely-http',
 	},
-	disallowedTags = [
+	disallowedTags = new Set([
 		'html',
 		'base',
 		'head',
@@ -108,7 +108,7 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 		'marquee',
 		'param',
 		'xmp',
-	];
+	]);
 let wordRegex: RegExp;
 try {
 	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
@@ -251,10 +251,11 @@ export class AstText extends AstNode {
 				endIndex = startIndex + length,
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
-				severity = length > 1 && !/^(?:rfc|pmid|isbn)$/iu.test(error) && !(
-					char === '<' && !/[\s/>]/u.test(nextChar ?? '')
+				severity = length > 1 && !(
+					char === '<' && (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '') || disallowedTags.has(tag!))
 					|| isHtmlAttrVal && (char === '[' || char === ']')
 					|| magicLink && type === 'parameter-value'
+					|| /^(?:rfc|pmid|isbn)$/iu.test(error)
 				)
 				|| char === '{' && (nextChar === char || previousChar === '-')
 				|| char === '}' && (previousChar === char || nextChar === '-')
