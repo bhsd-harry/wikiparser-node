@@ -13,6 +13,7 @@
 - Lowered severity of a lonely bracket surrounding an internal or external link
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) now ignores the `name` attribute of a `<ref>` tag
 - Lowered severity of lonely `RFC`, `PMID` or `ISBN`
+- Lowered severity from [`RedirectTargetToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#lint)
 
 ## v1.20.0
 
