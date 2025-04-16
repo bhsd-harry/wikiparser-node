@@ -186,14 +186,10 @@ export class AstText extends AstNode {
 				|| char === '{' && (nextChar === char || previousChar === '-')
 				|| char === '}' && (previousChar === char || nextChar === '-')
 				|| char === '[' && (
-					nextChar === char
-					|| type === 'ext-link-text'
-					|| nextType === 'free-ext-link' && !data.slice(index + 1).trim()
+					type === 'ext-link-text' || nextType === 'free-ext-link' && !data.slice(index + 1).trim()
 				)
-				|| char === ']' && (
-					previousChar === char
-					|| previousType === 'free-ext-link' && !data.slice(0, index).includes(']')
-				)
+				|| char === ']' && previousType === 'free-ext-link'
+				&& !data.slice(0, index).includes(']')
 					? 'error'
 					: 'warning';
 			const leftBracket = char === '{' || char === '[',
