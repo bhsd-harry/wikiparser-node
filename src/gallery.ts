@@ -99,7 +99,9 @@ export abstract class GalleryToken extends Token {
 				errors.push({
 					rule: 'no-ignored',
 					message: Parser.msg('invalid content in <$1>', 'gallery'),
-					severity: trimmed.startsWith('|') ? 'warning' : 'error',
+					severity: trimmed.endsWith('-->') || /^(?:\||<!--)/u.test(trimmed)
+						? 'warning'
+						: 'error',
 					startIndex: start,
 					endIndex,
 					startLine,
