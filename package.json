@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.20.0",
+	"version": "1.20.1",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -73,9 +73,9 @@
 		"entities": "^6.0.0",
 		"mathjax": "^3.2.2",
 		"stylelint": "^16.14.1",
-		"vscode-css-languageservice": "^6.3.2",
-		"vscode-html-languageservice": "^5.3.1",
-		"vscode-json-languageservice": "^5.4.3"
+		"vscode-css-languageservice": "^6.3.4",
+		"vscode-html-languageservice": "^5.3.3",
+		"vscode-json-languageservice": "^5.4.4"
 	},
 	"devDependencies": {
 		"@codemirror/lint": "^6.8.5",
