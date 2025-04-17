@@ -19,10 +19,16 @@ declare interface mathjax {
 	init(config: unknown): Promise<Jax>;
 }
 
-export const MathJax = (async () => {
+let MathJax: Promise<Jax> | undefined;
+
+/**
+ * Load MathJax
+ * @param id MathJax module ID
+ */
+export const loadMathJax = (id = 'mathjax'): Promise<Jax> | undefined => {
 	try {
-		const jax: mathjax = require('mathjax');
-		return await jax.init({
+		const jax: mathjax = require(id);
+		MathJax ??= jax.init({
 			loader: {
 				load: ['input/tex', '[tex]/mhchem'],
 			},
@@ -35,10 +41,11 @@ export const MathJax = (async () => {
 			},
 			startup: {typeset: false},
 		});
+		return MathJax;
 	} catch {
 		return undefined;
 	}
-})();
+};
 
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 

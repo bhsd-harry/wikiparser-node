@@ -89,7 +89,7 @@ import {
 	jsonTags,
 	htmlData,
 	stylelint,
-	MathJax as Jax,
+	loadMathJax,
 } from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
@@ -436,6 +436,8 @@ export class LanguageService implements LanguageServiceBase {
 
 	/* NOT FOR BROWSER ONLY */
 
+	/** @private */
+	declare mathjax: string | undefined;
 	lilypond: string;
 	#lilypondData: string[];
 	#mathData: string[];
@@ -1186,7 +1188,7 @@ export class LanguageService implements LanguageServiceBase {
 				}));
 			}
 		}
-		const MathJax = await Jax,
+		const MathJax = await loadMathJax(this.mathjax),
 			data = this.#mathSet,
 			mathDiagnostics = root.querySelectorAll<ExtToken>(mathSelector)
 				.map(token => {
