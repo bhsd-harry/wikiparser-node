@@ -171,6 +171,12 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER ONLY END */
 
+/* PRINT ONLY */
+
+let viewOnly = false;
+
+/* PRINT ONLY END */
+
 /* NOT FOR BROWSER */
 
 const promises = [Promise.resolve()];
@@ -178,8 +184,7 @@ const promises = [Promise.resolve()];
 const getInterwikiRegex = getRegex<string[]>(
 	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
 );
-let viewOnly = false,
-	redirectMap = new RedirectMap();
+let redirectMap = new RedirectMap();
 
 /* NOT FOR BROWSER END */
 
@@ -188,7 +193,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	i18n: undefined,
 	rules,
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	/** @implements */
 	get viewOnly() {
@@ -201,6 +206,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		viewOnly = value;
 	},
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER */
 
 	/** @implements */
 	get redirects() {
@@ -459,7 +468,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		LSP: { // eslint-disable-line no-unused-labels
 			const mod: typeof import('./lib/lsp') = require('./lib/lsp');
 			const {LanguageService, tasks} = mod;
-			Parser.viewOnly = true;
+			this.viewOnly = true;
 			return tasks.get(uri) ?? new LanguageService(uri);
 		}
 	},

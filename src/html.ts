@@ -12,11 +12,16 @@ import type {
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
 
+/* PRINT ONLY */
+
+import Parser from '../index';
+
+/* PRINT ONLY END */
+
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
-import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 

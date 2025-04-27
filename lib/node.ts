@@ -14,12 +14,17 @@ import type {
 	HtmlToken,
 } from '../internal';
 
+/* PRINT ONLY */
+
+import Parser from '../index';
+
+/* PRINT ONLY END */
+
 /* NOT FOR BROWSER */
 
 import assert from 'assert/strict';
 import {EventEmitter} from 'events';
 import {classes} from '../util/constants';
-import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 

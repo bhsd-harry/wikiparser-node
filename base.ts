@@ -513,12 +513,12 @@ export interface Parser {
 		| string
 		| undefined;
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	/** @since v1.9.0 */
 	viewOnly: boolean;
 
-	/* NOT FOR BROWSER END */
+	/* PRINT ONLY END */
 
 	/**
 	 * Get the current parser configuration
