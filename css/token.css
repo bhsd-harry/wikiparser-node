@@ -23,7 +23,7 @@
 .wpb-ext-inner {
 	color: initial;
 	font-weight: normal;
-	background-color: rgba(0, 0, 0, .03);
+	background-color: rgb(0, 0, 0, .03);
 }
 
 .wpb-arg {
@@ -38,12 +38,12 @@
 .wpb-template {
 	color: #80c;
 	font-weight: bold;
-	background-color: rgba(119, 0, 170, .03);
+	background-color: rgb(119, 0, 170, .03);
 }
 .wpb-magic-word {
 	color: #a11;
 	font-weight: bold;
-	background-color: rgba(170, 17, 17, .03);
+	background-color: rgb(170, 17, 17, .03);
 }
 .wpb-invoke-module, .wpb-invoke-function {
 	color: #bf3e13;
@@ -92,7 +92,7 @@
 .wpb-link, .wpb-category, .wpb-file, .wpb-gallery-image, .wpb-imagemap-image, .wpb-redirect-target,
 .wpb-ext-link, .wpb-free-ext-link, .wpb-magic-link {
 	color: #000aaa;
-	background-color: rgba(34, 17, 153, .03);
+	background-color: rgb(34, 17, 153, .03);
 }
 .wpb-link-text, .wpb-image-caption, .wpb-ext-link-text {
 	color: initial;

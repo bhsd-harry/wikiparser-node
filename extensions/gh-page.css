@@ -35,7 +35,7 @@ main {
 	max-width: 1200px;
 	margin: 3rem 0;
 	background-color: var(--color-background);
-	box-shadow: 0 0 .5rem rgba(0, 0, 0, .1);
+	box-shadow: 0 0 .5rem rgb(0, 0, 0, .1);
 	border-radius: .5rem;
 }
 article {
@@ -250,10 +250,10 @@ dt > :nth-child(2) {
 	color: #00f;
 }
 span.hover {
-	background-color: rgba(108, 108, 108, .2);
+	background-color: rgb(108, 108, 108, .2);
 }
 dl.hover {
-	background-color: rgba(108, 108, 108, .1);
+	background-color: rgb(108, 108, 108, .1);
 }
 
 #monaco-container {

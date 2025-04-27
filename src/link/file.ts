@@ -4,6 +4,7 @@ import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {
+	TokenTypes,
 	Config,
 	LintError,
 	AST,
@@ -13,12 +14,16 @@ import type {
 	AtomToken,
 } from '../../internal';
 
+declare type SeverityPredicate = boolean | ((arg: ImageParameterToken) => boolean);
+
 const frame = new Map([
 		['manualthumb', 'Thumb'],
 		['frameless', 'Frameless'],
 		['framed', 'Frame'],
 		['thumbnail', 'Thumb'],
 	]),
+	argTypes = new Set<TokenTypes>(['arg']),
+	transclusion = new Set<TokenTypes>(['template', 'magic-word']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
 	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']),
 	extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
@@ -49,6 +54,17 @@ const explode = (str?: string): string[] => {
 	exploded.push(str.slice(lastIndex));
 	return exploded;
 };
+
+/**
+ * filter out the image parameters that are not of the specified type
+ * @param args image parameter tokens
+ * @param types token types to be filtered
+ */
+const filterArgs = (args: ImageParameterToken[], types: Set<TokenTypes | 'text'>): ImageParameterToken[] =>
+	args.filter(({childNodes}) => {
+		const visibleNodes = childNodes.filter(node => node.text().trim());
+		return visibleNodes.length !== 1 || !types.has(visibleNodes[0]!.type);
+	});
 
 /**
  * image
@@ -86,10 +102,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			args = this.getAllArgs().filter(({childNodes}) => {
-				const visibleNodes = childNodes.filter(node => node.text().trim());
-				return visibleNodes.length !== 1 || visibleNodes[0]!.type !== 'arg';
-			}),
+			args = filterArgs(this.getAllArgs(), argTypes),
 			keys = [...new Set(args.map(({name}) => name))],
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
@@ -125,15 +138,16 @@ export abstract class FileToken extends LinkBaseToken {
 		 * @param p1 替换$1
 		 * @param severity 错误等级
 		 */
-		const generate = (msg: string, p1: string, severity?: LintError.Severity) =>
+		const generate = (msg: string, p1: string, severity: SeverityPredicate = true) =>
 			(arg: ImageParameterToken): LintError => {
-				const e = generateForChild(
-					arg,
-					rect,
-					'no-duplicate',
-					Parser.msg(`${msg} image $1 parameter`, p1),
-					severity,
-				);
+				const isError = typeof severity === 'function' ? severity(arg) : severity,
+					e = generateForChild(
+						arg,
+						rect,
+						'no-duplicate',
+						Parser.msg(`${msg} image $1 parameter`, p1),
+						isError ? 'error' : 'warning',
+					);
 				e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
 				return e;
 			};
@@ -142,19 +156,21 @@ export abstract class FileToken extends LinkBaseToken {
 			if (key === 'invalid' || key === 'width' && unscaled) {
 				continue;
 			}
+			const isCaption = key === 'caption';
 			let relevantArgs = args.filter(({name}) => name === key);
-			if (key === 'caption') {
+			if (isCaption) {
 				relevantArgs = [
 					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
 					...relevantArgs.slice(-1),
 				];
 			}
 			if (relevantArgs.length > 1) {
-				errors.push(...relevantArgs.map(generate(
-					'duplicated',
-					key,
-					key === 'caption' && extension && !extensions.has(extension) ? 'warning' : 'error',
-				)));
+				let severity: SeverityPredicate = !isCaption || !extension || extensions.has(extension);
+				if (isCaption && severity) {
+					const plainArgs = filterArgs(relevantArgs, transclusion);
+					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
+				}
+				errors.push(...relevantArgs.map(generate('duplicated', key, severity)));
 			}
 		}
 		if (frameKeys.length > 1) {
