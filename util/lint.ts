@@ -78,11 +78,18 @@ export const generateForSelf = factory((_, startIndex, startLine, startCol) => (
 export const cache = <T>(store: Cached<T> | undefined, compute: () => T, update: (value: Cached<T>) => void): T => {
 	if (
 		store
+
+		/* PRINT ONLY */
+
+		&& Parser.viewOnly
+		&& store[0] === Shadow.rev
 	) {
 		return store[1];
 	}
 	const result = compute();
-	update([Shadow.rev, result]);
+	if (Parser.viewOnly) {
+		update([Shadow.rev, result]);
+	}
 	return result;
 };
 

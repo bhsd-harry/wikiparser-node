@@ -460,6 +460,13 @@ export interface Parser {
 	i18n: Record<string, string>
 		| undefined;
 
+	/* PRINT ONLY */
+
+	/** @since v1.9.0 */
+	viewOnly: boolean;
+
+	/* PRINT ONLY END */
+
 	/**
 	 * Get the current parser configuration
 	 *

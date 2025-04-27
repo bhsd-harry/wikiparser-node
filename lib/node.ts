@@ -8,6 +8,12 @@ import type {
 	Token,
 } from '../internal';
 
+/* PRINT ONLY */
+
+import Parser from '../index';
+
+/* PRINT ONLY END */
+
 export type AstNodes = AstText | Token;
 export interface Dimension {
 	readonly height: number;
@@ -117,7 +123,9 @@ export abstract class AstNode implements AstNodeBase {
 				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
 				break;
 			case 'aIndex':
-				this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
+				if (Parser.viewOnly) {
+					this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
+				}
 				break;
 			default:
 				this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -213,7 +221,9 @@ export abstract class AstNode implements AstNodeBase {
 					n = j + (j < 0 ? childNodes.length : 0);
 				let acc = this.getAttribute('padding');
 				for (let i = 0; i < n; i++) {
-					this.#rIndex[i] = [Shadow.rev, acc];
+					if (Parser.viewOnly) {
+						this.#rIndex[i] = [Shadow.rev, acc];
+					}
 					acc += childNodes[i]!.toString().length + this.getGaps(i);
 				}
 				return acc;
