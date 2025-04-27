@@ -12,6 +12,12 @@ import type {
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
 
+/* PRINT ONLY */
+
+import Parser from '../index';
+
+/* PRINT ONLY END */
+
 export interface HtmlToken extends AttributesParentBase {}
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
@@ -236,12 +242,16 @@ export abstract class HtmlToken extends Token {
 						if (top === this) {
 							return token;
 						}
-						top.#match = [rev, token];
-						token.#match = [rev, top];
+						if (Parser.viewOnly) {
+							top.#match = [rev, token];
+							token.#match = [rev, top];
+						}
 					}
 				}
-				for (const token of stack) {
-					token.#match = [rev, undefined];
+				if (Parser.viewOnly) {
+					for (const token of stack) {
+						token.#match = [rev, undefined];
+					}
 				}
 				return undefined;
 			},

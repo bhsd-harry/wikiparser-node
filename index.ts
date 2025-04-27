@@ -104,10 +104,32 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER ONLY END */
 
+/* PRINT ONLY */
+
+let viewOnly = true;
+
+/* PRINT ONLY END */
+
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 	i18n: undefined,
 	rules,
+
+	/* PRINT ONLY */
+
+	/** @implements */
+	get viewOnly() {
+		return viewOnly;
+	},
+
+	set viewOnly(value) {
+		if (viewOnly && !value) {
+			Shadow.rev++;
+		}
+		viewOnly = value;
+	},
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER ONLY */
 

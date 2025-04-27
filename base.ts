@@ -498,6 +498,13 @@ export interface Parser {
 		| string
 		| undefined;
 
+	/* PRINT ONLY */
+
+	/** @since v1.9.0 */
+	viewOnly: boolean;
+
+	/* PRINT ONLY END */
+
 	/**
 	 * Get the current parser configuration
 	 *
