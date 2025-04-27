@@ -162,7 +162,7 @@ export abstract class AstNode implements AstNodeBase {
 			return true;
 		}
 		let {nextSibling} = this;
-		while (nextSibling?.type === 'text' && nextSibling.data.trim() === '') {
+		while (nextSibling?.type === 'text' && !nextSibling.data.trim()) {
 			({nextSibling} = nextSibling);
 		}
 		return nextSibling === undefined && parentNode.eof;

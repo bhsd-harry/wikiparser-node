@@ -98,7 +98,7 @@ export abstract class AstElement extends AstNode {
 
 	/** invisible / 不可见 */
 	get hidden(): boolean {
-		return this.text() === '';
+		return !this.text();
 	}
 
 	/** height of the inner / 内部高度 */

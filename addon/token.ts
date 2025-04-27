@@ -277,7 +277,7 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 				closeMatch = closeRegex.test(line);
 			if (openMatch || closeMatch) {
 				const blockquote = /<(\/?)blockquote[\s>](?!.*<\/?blockquote[\s>])/iu.exec(line)?.[1];
-				inBlockquote = blockquote === undefined ? inBlockquote : blockquote === '';
+				inBlockquote = blockquote === undefined ? inBlockquote : !blockquote;
 				pendingPTag = false;
 				output += closeParagraph();
 				inBlockElem = !closeMatch;

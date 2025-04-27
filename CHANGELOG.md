@@ -1,3 +1,11 @@
+## v1.20.2
+
+*2025-04-28*
+
+**Changed**
+
+- Lowered severity of a duplicated image caption consisting of a template or a magic word
+
 ## v1.20.1
 
 *2025-04-26*

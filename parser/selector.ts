@@ -177,11 +177,11 @@ const matches = (
 				case ':header':
 					return type === 'heading';
 				case ':hidden':
-					return token.text() === '';
+					return !token.text();
 				case ':visible':
-					return token.text() !== '';
+					return Boolean(token.text());
 				case ':only-whitespace':
-					return token.text().trim() === '';
+					return !token.text().trim();
 				case ':any-link':
 					return type === 'link'
 						|| type === 'redirect-target'
@@ -192,7 +192,7 @@ const matches = (
 				case ':local-link':
 					return (type === 'link' || type === 'file' || type === 'gallery-image')
 						&& attributes.link instanceof Title
-						&& attributes.link.title === '';
+						&& !attributes.link.title;
 				case ':invalid':
 					return attributes.invalid;
 				case ':valid':
@@ -432,7 +432,7 @@ const checkToken = (
 	};
 	while (mt) {
 		let {0: syntax, index} = mt;
-		if (syntax.trim() === '') {
+		if (!syntax.trim()) {
 			index += syntax.length;
 			const char = sanitized[index]!;
 			syntax = grouping.has(char) ? char : '';
