@@ -152,7 +152,6 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 				...ns.map(([id, canonical]) => [canonical.toLowerCase(), Number(id)]),
 				...namespacealiases.filter(({id}) => filterGadget(id)).map(({id, alias}) => [alias.toLowerCase(), id]),
 			]),
-			functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw'],
 			articlePath: articlepath,
 		};
 	config.doubleUnderscore[0] = [];
@@ -160,6 +159,9 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 	Object.assign(config.parserFunction[0], getConfig(magicwords, ({name}) => name === 'msgnw'));
 	config.parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
 	config.parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
+	if (!mwConfig.functionHooks) {
+		Object.assign(config, {functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw']});
+	}
 	if (!mwConfig.variableIDs) {
 		const {query: {variables}} = await (
 			await fetch(`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`)
