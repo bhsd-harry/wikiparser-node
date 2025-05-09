@@ -11,7 +11,7 @@ import type {
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 declare type Token = ReturnType<typeof Parser['parse']>;
 
-const version = '1.20.1',
+const version = '1.20.2',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
