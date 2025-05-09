@@ -65,7 +65,7 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 	]);
 let wordRegex: RegExp;
 try {
-	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
+	// eslint-disable-next-line prefer-regex-literals
 	wordRegex = new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
 } catch /* istanbul ignore next */ {
 	wordRegex = /\w/u;
