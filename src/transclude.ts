@@ -311,7 +311,13 @@ export abstract class TranscludeToken extends Token {
 					.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
 				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
-				const e = generateForChild(child, rect, 'no-ignored', 'useless fragment');
+				const e = generateForChild(
+					child,
+					rect,
+					'no-ignored',
+					'useless fragment',
+					'warning',
+				);
 				e.fix = {
 					range: [
 						e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'),
