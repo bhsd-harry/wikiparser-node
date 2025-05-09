@@ -1,3 +1,11 @@
+## v1.20.3
+
+*2025-05-10*
+
+**Changed**
+
+- Lowered severity of useless fragments
+
 ## v1.20.2
 
 *2025-05-09*
