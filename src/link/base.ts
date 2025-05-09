@@ -162,7 +162,7 @@ export abstract class LinkBaseToken extends Token {
 			}
 		}
 		if (fragment !== undefined && !isLink(type)) {
-			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
+			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment', 'warning'),
 				j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
 				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {
