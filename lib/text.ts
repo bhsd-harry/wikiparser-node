@@ -189,6 +189,7 @@ export class AstText extends AstNode {
 				isHtmlAttrVal = true;
 			} else if (
 				tag === 'ref' && (grandName === 'name' || grandName === 'extends' || grandName === 'follow')
+				|| grandName === 'group' && (tag === 'ref' || tag === 'references')
 				|| tag === 'choose' && (grandName === 'before' || grandName === 'after')
 			) {
 				return [];
