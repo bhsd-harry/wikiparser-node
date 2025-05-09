@@ -193,27 +193,6 @@ module.exports = {
 			},
 		},
 		{
-			files: '**/*.ts',
-			excludedFiles: [
-				'addon/*.ts',
-				'bin/*.ts',
-				'script/*.ts',
-				'test/*.ts',
-				'lib/lsp.ts',
-			],
-			plugins: [
-				'es-x',
-			],
-			rules: {
-				'es-x/no-array-prototype-flat': 2,
-				'es-x/no-global-this': 2,
-				'es-x/no-malformed-template-literals': 2,
-				'es-x/no-regexp-s-flag': 2,
-				'es-x/no-regexp-unicode-property-escapes': 2,
-				'es-x/no-string-prototype-trimstart-trimend': 2,
-			},
-		},
-		{
 			files: '*.cjs',
 			rules: {
 				'n/exports-style': [
@@ -243,9 +222,6 @@ module.exports = {
 				'chalk',
 				'monaco-editor',
 			],
-		},
-		'es-x': {
-			aggressive: true,
 		},
 	},
 };
