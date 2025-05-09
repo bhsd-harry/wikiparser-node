@@ -33,10 +33,10 @@ const sp = String.raw`[${zs}\t]*`,
 		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
 		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
 const errorSyntaxUrl = new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
@@ -111,7 +111,7 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 	]);
 let wordRegex: RegExp;
 try {
-	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
+	// eslint-disable-next-line prefer-regex-literals
 	wordRegex = new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
 } catch /* istanbul ignore next */ {
 	wordRegex = /\w/u;
@@ -515,7 +515,6 @@ export class AstText extends AstNode {
 						spaces.push(nextSibling);
 					}
 				} else if (mt && nextSibling.type === 'category') {
-					// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -535,7 +534,6 @@ export class AstText extends AstNode {
 						(nextSibling as AstText).deleteData(0, mt2[0].length);
 					}
 				} else {
-					// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
 					this.#setData(this.data.trimEnd());
 				}
 				for (const space of spaces) {

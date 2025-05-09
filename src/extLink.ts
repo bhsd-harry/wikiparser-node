@@ -188,7 +188,6 @@ export abstract class ExtLinkToken extends Token {
 			&& length > 1
 			&& (firstChild?.type === 'text' || firstChild?.type === 'converter')
 			// 都替换成`<`肯定不对，但无妨
-			// eslint-disable-next-line es-x/no-regexp-unicode-property-escapes
 			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u
 				.test(lastChild.text().replace(/&[lg]t;/u, '<'))
 		) {

@@ -31,17 +31,17 @@ import type {SyntaxBase} from '../mixin/syntax';
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
 const spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /* NOT FOR BROWSER */
 
 const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
 const isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u');
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
 const rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
 /^(ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions

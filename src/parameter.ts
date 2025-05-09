@@ -24,7 +24,7 @@ import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/iu;
 const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
 

@@ -704,7 +704,7 @@ export class LanguageService implements LanguageServiceBase {
 					img,
 				} = this.config,
 				tags = new Set([ext, html].flat(2));
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\p{N}_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
 			const re = new RegExp(
 				'(?:' // eslint-disable-line prefer-template

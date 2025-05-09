@@ -23,7 +23,7 @@ const space = String.raw`[${zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
 	if (!config.regexMagicLinks) {
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			/(^|[^\p{L}\p{N}_])(?:(?:ftp:\/\/|http:\/\/)((?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*)|(?:rfc|pmid)[\p{Zs}\t]+\d+\b|isbn[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dx]\b)/giu;
 			config.regexMagicLinks = new RegExp(
 				String.raw`(^|[^\p{L}\p{N}_])(?:(?:${

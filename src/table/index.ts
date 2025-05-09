@@ -747,7 +747,7 @@ export abstract class TableToken extends TrBaseToken {
 				nowrap: true,
 			};
 		return `${
-			[this, ...tr].flatMap(filter) // eslint-disable-line es-x/no-array-prototype-flat
+			[this, ...tr].flatMap(filter)
 				.map(token => token.toHtmlInternal(newOpt).trim())
 				.join(' ')
 		}<table${childNodes[1].toHtmlInternal()}>${opt?.nowrap ? ' ' : '\n'}<tbody>${

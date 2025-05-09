@@ -117,7 +117,6 @@ export class Title {
 					fragment = rawurldecode(fragment);
 				} catch {}
 			}
-			// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
 			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd()
 				.replaceAll(' ', '_');
 		}
