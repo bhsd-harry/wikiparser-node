@@ -181,22 +181,22 @@ export class AstText extends AstNode {
 			const startIndex = start + index,
 				endIndex = startIndex + length,
 				nextChar = rootStr[endIndex],
-				previousChar = rootStr[startIndex - 1],
-				severity = length > 1 && !(
-					char === '<' && (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '') || disallowedTags.has(tag!))
-					|| isHtmlAttrVal && (char === '[' || char === ']')
-					|| magicLink && type === 'parameter-value'
-					|| /^(?:rfc|pmid|isbn)$/iu.test(error)
-				)
-				|| char === '{' && (nextChar === char || previousChar === '-')
-				|| char === '}' && (previousChar === char || nextChar === '-')
-				|| char === '[' && (
-					type === 'ext-link-text' || nextType === 'free-ext-link' && !data.slice(index + 1).trim()
-				)
-				|| char === ']' && previousType === 'free-ext-link'
-				&& !data.slice(0, index).includes(']')
-					? 'error'
-					: 'warning';
+				previousChar = rootStr[startIndex - 1];
+			let severity: LintError.Severity = length > 1 && !(
+				char === '<' && (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '') || disallowedTags.has(tag!))
+				|| isHtmlAttrVal && (char === '[' || char === ']')
+				|| magicLink && type === 'parameter-value'
+				|| /^(?:rfc|pmid|isbn)$/iu.test(error)
+			)
+			|| char === '{' && (nextChar === char || previousChar === '-')
+			|| char === '}' && (previousChar === char || nextChar === '-')
+			|| char === '[' && (
+				type === 'ext-link-text' || nextType === 'free-ext-link' && !data.slice(index + 1).trim()
+			)
+			|| char === ']' && previousType === 'free-ext-link'
+			&& !data.slice(0, index).includes(']')
+				? 'error'
+				: 'warning';
 			const leftBracket = char === '{' || char === '[',
 				rightBracket = char === ']' || char === '}';
 			if (severity === 'warning' && (leftBracket || rightBracket)) {
@@ -220,6 +220,8 @@ export class AstText extends AstNode {
 			}
 			if (magicLink) {
 				error = error.toUpperCase();
+			} else if (length === 1 && (char === '{' && previousChar === '-' || char === '}' && nextChar === '-')) {
+				severity = 'warning';
 			}
 			const pos = this.posFromIndex(index)!,
 				{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left),
