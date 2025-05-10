@@ -6,6 +6,7 @@
 
 - Lowered severity of useless fragments
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) now ignores the `group` attribute of a `<ref>` or `<references>` tag
+- Lowered severity of lonely language conversion brackets
 
 ## v1.20.2
 
