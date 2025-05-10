@@ -2,6 +2,10 @@
 
 *2025-05-10*
 
+**Fixed**
+
+- Wrong message keys in simplified Chinese localization
+
 **Changed**
 
 - Lowered severity of useless fragments
