@@ -212,7 +212,7 @@ export class AstText extends AstNode {
 			previousType = previousSibling?.type,
 			root = this.getRootNode(),
 			rootStr = root.toString(),
-			{ext, html} = root.getAttribute('config'),
+			{ext, html, variants} = root.getAttribute('config'),
 			{top, left} = root.posFromIndex(start)!,
 			tags = new Set([
 				'onlyinclude',
@@ -233,8 +233,9 @@ export class AstText extends AstNode {
 				error = error.slice(length);
 			}
 			error = error.toLowerCase();
-			const {0: char, length} = error,
+			const [char] = error,
 				magicLink = char === 'r' || char === 'p' || char === 'i';
+			let {length} = error;
 			if (
 				char === '<' && !tags.has(tag!.toLowerCase())
 				|| char === '[' && type === 'ext-link-text' && (
@@ -248,9 +249,9 @@ export class AstText extends AstNode {
 			} else if (char === ']' && (index || length > 1)) {
 				errorRegex.lastIndex--;
 			}
-			const startIndex = start + index,
-				endIndex = startIndex + length,
-				nextChar = rootStr[endIndex],
+			let startIndex = start + index,
+				endIndex = startIndex + length;
+			const nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1];
 			let severity: LintError.Severity = length > 1 && !(
 				char === '<' && (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '') || disallowedTags.has(tag!))
@@ -258,8 +259,8 @@ export class AstText extends AstNode {
 				|| magicLink && type === 'parameter-value'
 				|| /^(?:rfc|pmid|isbn)$/iu.test(error)
 			)
-			|| char === '{' && (nextChar === char || previousChar === '-')
-			|| char === '}' && (previousChar === char || nextChar === '-')
+			|| char === '{' && (nextChar === char || previousChar === '-' && variants.length > 0)
+			|| char === '}' && (previousChar === char || nextChar === '-' && variants.length > 0)
 			|| char === '[' && (
 				type === 'ext-link-text' || nextType === 'free-ext-link' && !data.slice(index + 1).trim()
 			)
@@ -290,14 +291,30 @@ export class AstText extends AstNode {
 			}
 			if (magicLink) {
 				error = error.toUpperCase();
-			} else if (length === 1 && (char === '{' && previousChar === '-' || char === '}' && nextChar === '-')) {
+			} else if (error === '{' && previousChar === '-' && severity === 'error') {
 				severity = 'warning';
+				if (index > 0) {
+					error = '-{';
+					index--;
+					startIndex--;
+					length = 2;
+				}
+			} else if (error === '}' && nextChar === '-' && severity === 'error') {
+				severity = 'warning';
+				if (index < data.length - 1) {
+					error = '}-';
+					endIndex++;
+					length = 2;
+				}
 			}
 			const pos = this.posFromIndex(index)!,
 				{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left),
 				e: LintError = {
 					rule: ruleMap[char!]!,
-					message: Parser.msg('lonely "$1"', magicLink || char === 'h' ? error : char),
+					message: Parser.msg(
+						'lonely "$1"',
+						magicLink || char === 'h' || error === '-{' || error === '}-' ? error : char,
+					),
 					severity,
 					startIndex,
 					endIndex,
