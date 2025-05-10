@@ -64,7 +64,7 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.9.4",
+		"@bhsd/common": "^0.10.0",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
