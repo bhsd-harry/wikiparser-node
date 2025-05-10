@@ -211,3 +211,24 @@ describe('signatures.json', () => {
 		}
 	});
 });
+
+let baseI18nFile: string | undefined,
+	baseI18n: Set<string> | undefined;
+describe('i18n', () => {
+	for (const file of fs.readdirSync('i18n')) {
+		const i18n = new Set(Object.keys(require(path.join(basePath, 'i18n', file)) as Record<string, string>));
+		if (baseI18n) {
+			it(`${baseI18nFile} vs. file`, () => { // eslint-disable-line @typescript-eslint/no-loop-func
+				for (const key of i18n) {
+					assert(baseI18n!.has(key), `'${key}' not in ${baseI18nFile}`);
+				}
+				for (const key of baseI18n!) {
+					assert(i18n.has(key), `'${key}' not in ${file}`);
+				}
+			});
+		} else {
+			baseI18nFile = file;
+			baseI18n = i18n;
+		}
+	}
+});
