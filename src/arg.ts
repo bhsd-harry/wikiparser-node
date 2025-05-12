@@ -81,13 +81,6 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this;
-		if (!this.getAttribute('include')) {
-			const e = generateForSelf(this, {start}, 'no-arg', 'unexpected template argument');
-			if (argDefault) {
-				e.suggestions = [{range: [start, e.endIndex], text: argDefault.text(), desc: 'expand'}];
-			}
-			return [e];
-		}
 		argName.setAttribute('aIndex', start + 3);
 		const errors = argName.lint(start + 3, re);
 		if (argDefault) {
@@ -115,6 +108,19 @@ export abstract class ArgToken extends Token {
 				];
 				return e;
 			}));
+		}
+		if (!this.getAttribute('include')) {
+			const e = generateForSelf(
+				this,
+				{start},
+				'no-arg',
+				'unexpected template argument',
+				'warning',
+			);
+			if (argDefault) {
+				e.suggestions = [{range: [start, e.endIndex], text: argDefault.text(), desc: 'expand'}];
+			}
+			errors.push(e);
 		}
 		return errors;
 	}
