@@ -49,7 +49,7 @@ const codejar = (async (): Promise<f> => {
 		if (linenums) {
 			jar.onHighlight(e => {
 				e.parentNode!.querySelector('.wikiparser-line-numbers')?.remove();
-				wikiparse.lineNumbers(e, 1, paddingTop);
+				wikiparse.lineNumbers(e, 1, paddingTop, paddingBottom);
 			});
 		}
 		jar.restore({start: 0, end: 0});

@@ -253,16 +253,15 @@ const size = (html) => {
         lastTop = top;
     }
     if (line) {
-        if (isContentEditable) {
-            line.style.height = `${clientHeight}px`;
-        }
-        else if (html.offsetHeight <= clientHeight) {
+        if (!isContentEditable && html.offsetHeight <= clientHeight) {
             line.style.height = `${container.getBoundingClientRect().top + container.scrollHeight - lastTop}px`;
             container.style.overflowY = 'hidden';
         }
         else {
             line.style.height = `${html.getBoundingClientRect().bottom - lastTop}px`;
-            container.style.overflowY = '';
+            if (!isContentEditable) {
+                container.style.overflowY = '';
+            }
         }
     }
     sizer.remove();
@@ -276,13 +275,17 @@ const intersectionObserver = new IntersectionObserver(entries => {
         size(entry.target);
     }
 });
-const lineNumbers = (html, start = 1, paddingTop = '') => {
+const lineNumbers = (html, start = 1, paddingTop = '', paddingBottom = '') => {
     const container = html.parentElement, gutter = document.createElement('span');
     html.dataset['start'] = String(start);
     gutter.className = 'wikiparser-line-numbers';
     gutter.style.paddingTop = paddingTop;
+    gutter.style.paddingBottom = paddingBottom;
     container.classList.add('wikiparse-container');
     container.append(gutter);
+    if (html.isContentEditable) {
+        html.style.paddingBottom = `${container.clientHeight}px`;
+    }
     if (getComputedStyle(html).whiteSpace !== 'pre') {
         html.style.whiteSpace = 'pre-wrap';
     }

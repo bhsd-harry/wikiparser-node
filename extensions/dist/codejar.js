@@ -38,7 +38,7 @@ const codejar = (async () => {
             jar.onHighlight(e => {
                 var _a;
                 (_a = e.parentNode.querySelector('.wikiparser-line-numbers')) === null || _a === void 0 ? void 0 : _a.remove();
-                wikiparse.lineNumbers(e, 1, paddingTop);
+                wikiparse.lineNumbers(e, 1, paddingTop, paddingBottom);
             });
         }
         jar.restore({ start: 0, end: 0 });

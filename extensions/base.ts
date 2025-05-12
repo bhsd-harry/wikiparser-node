@@ -398,14 +398,14 @@ const size = (html: HTMLElement): void => {
 		lastTop = top;
 	}
 	if (line) {
-		if (isContentEditable) {
-			line.style.height = `${clientHeight}px`;
-		} else if (html.offsetHeight <= clientHeight) {
+		if (!isContentEditable && html.offsetHeight <= clientHeight) {
 			line.style.height = `${container.getBoundingClientRect().top + container.scrollHeight - lastTop!}px`;
 			container.style.overflowY = 'hidden';
 		} else {
 			line.style.height = `${html.getBoundingClientRect().bottom - lastTop!}px`;
-			container.style.overflowY = '';
+			if (!isContentEditable) {
+				container.style.overflowY = '';
+			}
 		}
 	}
 	sizer.remove();
@@ -426,15 +426,20 @@ const intersectionObserver = new IntersectionObserver(entries => {
  * @param html 待添加行号的多行文本
  * @param start 起始行号
  * @param paddingTop 上边距
+ * @param paddingBottom 下边距
  */
-const lineNumbers = (html: HTMLElement, start = 1, paddingTop = ''): void => {
+const lineNumbers = (html: HTMLElement, start = 1, paddingTop = '', paddingBottom = ''): void => {
 	const container = html.parentElement!,
 		gutter = document.createElement('span');
 	html.dataset['start'] = String(start);
 	gutter.className = 'wikiparser-line-numbers';
 	gutter.style.paddingTop = paddingTop;
+	gutter.style.paddingBottom = paddingBottom;
 	container.classList.add('wikiparse-container');
 	container.append(gutter);
+	if (html.isContentEditable) {
+		html.style.paddingBottom = `${container.clientHeight}px`;
+	}
 	if (getComputedStyle(html).whiteSpace !== 'pre') {
 		html.style.whiteSpace = 'pre-wrap';
 	}
