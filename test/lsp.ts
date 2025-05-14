@@ -137,7 +137,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 		});
 	}, summary);
 
-	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype) as Key[]) {
+	for (const method of Object.getOwnPropertyNames(Object.getPrototypeOf(lsp)) as Key[]) {
 		switch (method) {
 			case 'constructor':
 			case 'data':
