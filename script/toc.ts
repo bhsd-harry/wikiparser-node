@@ -5,7 +5,7 @@ const {argv: [,, filename]} = process;
 if (!filename) {
 	throw new RangeError('请指定文档文件！');
 }
-const fullpath = path.join(__dirname, '..', '..', 'wiki', `${filename}.md`),
+const fullpath = path.resolve('wiki', `${filename}.md`),
 	isEnglish = filename.endsWith('-(EN)');
 if (!fs.existsSync(fullpath)) {
 	throw new RangeError(`文档 ${filename}.md 不存在！`);
