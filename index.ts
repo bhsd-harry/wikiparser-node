@@ -151,7 +151,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			) {
 				error(
 					`The schema (${
-						path.resolve(__dirname, '..', 'config', '.schema.json')
+						path.join(__dirname, '..', 'config', '.schema.json')
 					}) of parser configuration is updated.`,
 				);
 			}

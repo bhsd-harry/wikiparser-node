@@ -12,9 +12,9 @@ const allCodes = new Map<string, string[]>();
 const mockCRLF = (str: string): string => str.replaceAll('\n', '\\r\n');
 
 describe('API tests', () => {
-	for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
+	for (const file of fs.readdirSync(path.resolve('wiki'))) {
 		if (file.endsWith('.md')) {
-			const md = fs.readFileSync(path.join(__dirname, '..', '..', 'wiki', file), 'utf8'),
+			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
 				codes = [...md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
 					.map(([code]) => code.replace(/[ \n]\/\/ .*$/gmu, '')),
 				testCodes = file.startsWith('LanguageService')
