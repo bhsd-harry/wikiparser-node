@@ -331,7 +331,7 @@ for (const file of new Set(files.map(f => path.resolve(f)))) {
 	}
 	const fileCache = obj?.[file];
 	let wikitext = fs.readFileSync(file, 'utf8'),
-		problems: LintError[],
+		problems: LintError[] & {output?: string},
 		update = false;
 	if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
 		[,,, problems] = fileCache;
@@ -339,20 +339,11 @@ for (const file of new Set(files.map(f => path.resolve(f)))) {
 		problems = Parser.parse(wikitext, include).lint();
 		update = true;
 	}
-	if (fixing && problems.some(({fix}) => fix)) {
-		// 倒序修复，跳过嵌套的修复
-		const fixable = (problems.map(({fix}) => fix).filter(Boolean) as LintError.Fix[])
-			.sort(({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo);
-		let start = Infinity;
-		for (const {range: [from, to], text} of fixable) {
-			if (to <= start) {
-				wikitext = wikitext.slice(0, from) + text + wikitext.slice(to);
-				start = from;
-			}
-		}
+	if (fixing && problems.output !== undefined) {
+		wikitext = problems.output;
 		jobs.push(fs.promises.writeFile(file, wikitext));
 		problems = Parser.parse(wikitext, include).lint();
-		update = fixable.length > 0;
+		update = true;
 	}
 	if (caching && update) {
 		obj![file] = [stat.mtimeMs, config, mtimeMs, problems];
