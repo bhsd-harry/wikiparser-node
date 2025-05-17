@@ -45,7 +45,7 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.10.0",
+		"@bhsd/common": "^0.10.2",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
@@ -59,7 +59,7 @@
 		"vscode-json-languageservice": "^5.4.4"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.24.3",
+		"@bhsd/codemirror-mediawiki": "^2.25.1",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@stylistic/stylelint-plugin": "^3.1.2",
@@ -70,7 +70,7 @@
 		"@types/prismjs": "^1.26.5",
 		"@typescript-eslint/eslint-plugin": "^8.29.0",
 		"@typescript-eslint/parser": "^8.29.0",
-		"codejar-async": "^4.2.6",
+		"codejar-async": "^4.2.7",
 		"color-rgba": "^3.0.0",
 		"esbuild": "^0.25.2",
 		"eslint": "^8.57.1",
