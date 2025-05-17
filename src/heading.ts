@@ -157,9 +157,11 @@ export abstract class HeadingToken extends Token {
 					Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
 				),
 				end = start + level + innerStr.length;
-			e.fix = rootStr.slice(e.endIndex, end).trim()
-				? {desc: 'close', range: [end, end], text: `''`}
-				: {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+			if (rootStr.slice(e.endIndex, end).trim()) {
+				e.suggestions = [{desc: 'close', range: [end, end], text: `''`}];
+			} else {
+				e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+			}
 			errors.push(e);
 		}
 		return errors;
