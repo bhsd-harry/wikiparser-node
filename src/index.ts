@@ -498,6 +498,20 @@ export class Token extends AstElement {
 				}
 				return nearest.type !== 'from';
 			});
+			if (errors.some(({fix}) => fix)) {
+				// 倒序修复，跳过嵌套的修复
+				const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[])
+					.sort(({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo);
+				let i = Infinity,
+					output = wikitext;
+				for (const {range: [from, to], text: t} of fixable) {
+					if (to <= i) {
+						output = output.slice(0, from) + t + output.slice(to);
+						i = from;
+					}
+				}
+				Object.assign(errors, {output});
+			}
 
 			/* NOT FOR BROWSER ONLY */
 		} else if (Parser.lintCSS && isAttr(this, true)) {
