@@ -261,7 +261,7 @@ export class AstText extends AstNode {
 				e.suggestions = [{desc: 'escape', range: [i, i + 1], text: '&#93;'}];
 			} else if (char === ']' && previousType === 'free-ext-link' && severity === 'error') {
 				const i = start - previousSibling!.toString().length;
-				e.fix = {range: [i, i], text: '[', desc: 'left bracket'};
+				e.suggestions = [{desc: 'left bracket', range: [i, i], text: '['}];
 			} else if (magicLink) {
 				e.suggestions = [
 					...mt[0] === error
