@@ -18,7 +18,7 @@ export interface PrinterBase {
 
 export interface LinterBase {
 	include: boolean;
-	queue(wikitext: string): Promise<LintError[]>;
+	queue(wikitext: string): Promise<LintError[] & {output?: string}>;
 	codemirror(wikitext: string): Promise<Diagnostic[]>;
 	monaco(wikitext: string): Promise<editor.IMarkerData[]>;
 }
@@ -48,7 +48,7 @@ export interface wikiparse {
 	getConfig: () => Promise<Config>;
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
-	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
+	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[] & {output?: string}>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string, paddingBottom?: string) => void;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;

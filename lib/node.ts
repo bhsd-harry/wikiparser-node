@@ -78,7 +78,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * 可见部分
 	 */
 	abstract text(): string;
-	abstract lint(): LintError[];
+	abstract lint(): LintError[] & {output?: string};
 	abstract print(): string;
 
 	/** first child node / 首位子节点 */

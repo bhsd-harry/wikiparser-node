@@ -1,3 +1,11 @@
+## v1.21.0
+
+*2025-05-17*
+
+**Added**
+
+- `Token.prototype.lint` called on the root node now returns an optional `output` property, which is a string after all auto-fixes are applied
+
 ## v1.20.3
 
 *2025-05-12*

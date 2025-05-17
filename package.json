@@ -78,7 +78,7 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.10.0",
+		"@bhsd/common": "^0.10.2",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
@@ -101,7 +101,7 @@
 		"@types/node": "^22.13.1",
 		"@typescript-eslint/eslint-plugin": "^8.29.0",
 		"@typescript-eslint/parser": "^8.29.0",
-		"codejar-async": "^4.2.6",
+		"codejar-async": "^4.2.7",
 		"color-rgba": "^3.0.0",
 		"esbuild": "^0.25.2",
 		"eslint": "^8.57.1",
