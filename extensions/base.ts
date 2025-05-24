@@ -8,7 +8,7 @@ import type {
 	Command,
 } from './typings';
 
-declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
+declare type WorkerListener<T> = (e: {data: [string, number, T, string]}) => void;
 declare type Token = ReturnType<typeof Parser['parse']>;
 
 const version = '1.20.3',
@@ -46,11 +46,10 @@ const workerJS = (): void => {
 
 	/**
 	 * 获取LSP
-	 * @param qid 请求编号
+	 * @param id 请求编号
 	 * @param include 是否嵌入
 	 */
-	const getLSP = (qid: number, include = true): LanguageService => {
-		const id = Math.floor(qid);
+	const getLSP = (id: number, include = true): LanguageService => {
 		if (lsps.has(id)) {
 			return lsps.get(id)!;
 		}
@@ -98,16 +97,17 @@ const workerJS = (): void => {
 				delete last.wikitext;
 				break;
 			case 'getConfig':
-				postMessage([qid, Parser.getConfig()]);
+				postMessage([command, qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, parse(wikitext, include, stage).json()]);
+				postMessage([command, qid, parse(wikitext, include, stage).json()]);
 				break;
 			case 'lint':
-				postMessage([qid, parse(wikitext, include).lint(), wikitext]);
+				postMessage([command, qid, parse(wikitext, include).lint(), wikitext]);
 				break;
 			case 'print':
 				postMessage([
+					command,
 					qid,
 					parse(wikitext, include, stage).childNodes.map(child => [
 						stage ?? Infinity,
@@ -126,57 +126,82 @@ const workerJS = (): void => {
 				getLSP(qid, include).data = wikitext;
 				break;
 			case 'colorPresentations':
-				postMessage([qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
+				postMessage([command, qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
 				break;
 			case 'documentColors':
 				(async () => {
-					postMessage(
-						[
-							qid,
-							await getLSP(qid, include).provideDocumentColors(parseColor, wikitext, false),
-							wikitext,
-						],
-					);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideDocumentColors(parseColor, wikitext, false),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'foldingRanges':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideFoldingRanges(wikitext), wikitext]);
+					postMessage([command, qid, await getLSP(qid, include).provideFoldingRanges(wikitext), wikitext]);
 				})();
 				break;
 			case 'links':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideLinks(wikitext), wikitext]);
+					postMessage([command, qid, await getLSP(qid, include).provideLinks(wikitext), wikitext]);
 				})();
 				break;
 			case 'diagnostics':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideDiagnostics(wikitext, stage), wikitext]);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideDiagnostics(wikitext, stage),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'completionItems':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideCompletionItems(wikitext, stage), wikitext]);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideCompletionItems(wikitext, stage),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'references':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideReferences(wikitext, stage), wikitext]);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideReferences(wikitext, stage),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'definition':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideDefinition(wikitext, stage), wikitext]);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideDefinition(wikitext, stage),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'renameLocation':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).resolveRenameLocation(wikitext, stage), wikitext]);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).resolveRenameLocation(wikitext, stage),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'renameEdits':
 				(async () => {
 					postMessage([
+						command,
 						qid,
 						await getLSP(qid, include).provideRenameEdits(wikitext, stage, newName!),
 						wikitext,
@@ -185,21 +210,26 @@ const workerJS = (): void => {
 				break;
 			case 'hover':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideHover(wikitext, stage), wikitext]);
+					postMessage([command, qid, await getLSP(qid, include).provideHover(wikitext, stage), wikitext]);
 				})();
 				break;
 			case 'signatureHelp':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideSignatureHelp(wikitext, stage), wikitext]);
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideSignatureHelp(wikitext, stage),
+						wikitext,
+					]);
 				})();
 				break;
 			case 'inlayHints':
 				(async () => {
-					postMessage([qid, await getLSP(qid, include).provideInlayHints(wikitext), wikitext]);
+					postMessage([command, qid, await getLSP(qid, include).provideInlayHints(wikitext), wikitext]);
 				})();
 				break;
 			case 'findStyleTokens':
-				postMessage([qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
+				postMessage([command, qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
 			// no default
 		}
 	};
@@ -212,17 +242,18 @@ URL.revokeObjectURL(url);
 
 /**
  * 生成事件监听函数
+ * @param command 指令名
  * @param qid 输入id
  * @param resolve Promise对象的resolve函数
  * @param raw 原始文本
  */
-const getListener = <T>(qid: number, resolve: (res: T) => void, raw?: string): WorkerListener<T> => {
+const getListener = <T>(command: string, qid: number, resolve: (res: T) => void, raw?: string): WorkerListener<T> => {
 	/**
 	 * 事件监听函数
-	 * @param {{data: [number, T, string]}} e 消息事件
+	 * @param {{data: unknown[]}} e 消息事件
 	 */
-	const listener: WorkerListener<T> = ({data: [rid, res, resRaw]}) => {
-		if (rid === qid && (raw === undefined || raw === resRaw)) {
+	const listener: WorkerListener<T> = ({data: [cmd, rid, res, resRaw]}) => {
+		if (cmd === command && rid === qid && (raw === undefined || raw === resRaw)) {
 			worker.removeEventListener('message', listener);
 			resolve(res);
 		}
@@ -257,7 +288,7 @@ const setConfig = (config: ConfigData): void => {
  */
 const getFeedback = <T>(command: string, qid: number, strict?: boolean, raw?: string, ...args: unknown[]): Promise<T> =>
 	new Promise(resolve => {
-		worker.addEventListener('message', getListener(qid, resolve, strict ? raw : undefined));
+		worker.addEventListener('message', getListener(command, qid, resolve, strict ? raw : undefined));
 		worker.postMessage([command, qid, raw, ...args]);
 	});
 

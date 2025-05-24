@@ -55,7 +55,7 @@ class LanguageService implements LanguageServiceBase {
 	provideDocumentColors(text: string): Promise<ColorInformation[]> {
 		return wikiparse.provide(
 			'documentColors',
-			this.#id + 0.1,
+			this.#id,
 			text,
 			this.#include,
 		) as Promise<ColorInformation[]>;
@@ -63,24 +63,19 @@ class LanguageService implements LanguageServiceBase {
 
 	/** @implements */
 	provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		return wikiparse.provide(
-			'foldingRanges',
-			this.#id + 0.2,
-			text,
-			this.#include,
-		) as Promise<FoldingRange[]>;
+		return wikiparse.provide('foldingRanges', this.#id, text, this.#include) as Promise<FoldingRange[]>;
 	}
 
 	/** @implements */
 	provideLinks(text: string): Promise<DocumentLink[]> {
-		return wikiparse.provide('links', this.#id + 0.3, text, this.#include) as Promise<DocumentLink[]>;
+		return wikiparse.provide('links', this.#id, text, this.#include) as Promise<DocumentLink[]>;
 	}
 
 	/** @implements */
 	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
 		return wikiparse.provide(
 			'completionItems',
-			this.#id + 0.4,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -91,7 +86,7 @@ class LanguageService implements LanguageServiceBase {
 	provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		return wikiparse.provide(
 			'references',
-			this.#id + 0.5,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -102,7 +97,7 @@ class LanguageService implements LanguageServiceBase {
 	provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		return wikiparse.provide(
 			'definition',
-			this.#id + 0.6,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -113,7 +108,7 @@ class LanguageService implements LanguageServiceBase {
 	resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
 		return wikiparse.provide(
 			'renameLocation',
-			this.#id + 0.7,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -124,7 +119,7 @@ class LanguageService implements LanguageServiceBase {
 	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		return wikiparse.provide(
 			'renameEdits',
-			this.#id + 0.8,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -133,11 +128,11 @@ class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
-	provideDiagnostics(wikitext: string, warning?: boolean): Promise<ServerDiagnostic[]> {
+	provideDiagnostics(text: string, warning?: boolean): Promise<ServerDiagnostic[]> {
 		return wikiparse.provide(
 			'diagnostics',
-			this.#id + 0.9,
-			wikitext,
+			this.#id,
+			text,
 			this.#include,
 			warning,
 		) as Promise<ServerDiagnostic[]>;
@@ -157,7 +152,7 @@ class LanguageService implements LanguageServiceBase {
 		void this.#loadData();
 		return wikiparse.provide(
 			'hover',
-			this.#id + 0.05,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -169,7 +164,7 @@ class LanguageService implements LanguageServiceBase {
 		void this.#loadData();
 		return wikiparse.provide(
 			'signatureHelp',
-			this.#id + 0.15,
+			this.#id,
 			text,
 			this.#include,
 			position,
@@ -178,12 +173,12 @@ class LanguageService implements LanguageServiceBase {
 
 	/** @implements */
 	provideInlayHints(text: string): Promise<InlayHint[]> {
-		return wikiparse.provide('inlayHints', this.#id + 0.25, text, this.#include) as Promise<InlayHint[]>;
+		return wikiparse.provide('inlayHints', this.#id, text, this.#include) as Promise<InlayHint[]>;
 	}
 
 	/** @implements */
 	findStyleTokens(): Promise<AST[]> {
-		return wikiparse.provide('findStyleTokens', this.#id + 0.35) as Promise<AST[]>;
+		return wikiparse.provide('findStyleTokens', this.#id) as Promise<AST[]>;
 	}
 }
 
