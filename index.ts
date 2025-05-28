@@ -278,6 +278,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		if (ext.includes('translate') && !variable.includes('translationlanguage')) {
 			variable.push('translationlanguage');
+			/* istanbul ignore if */
 			if (Array.isArray(parserFunction[1])) {
 				parserFunction[1].push('TRANSLATIONLANGUAGE');
 			} else {
@@ -475,6 +476,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* NOT FOR BROWSER ONLY */
 
+	/* istanbul ignore next */
 	/** @implements */
 	async fetchConfig(site, url) {
 		return this.getConfig(await fetchConfig(site, url, false, true));

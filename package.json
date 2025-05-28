@@ -69,6 +69,8 @@
 	},
 	"nyc": {
 		"exclude": [
+			"dist/bin/*.js",
+			"dist/script/*.js",
 			"dist/test/*.js"
 		],
 		"reporter": [
