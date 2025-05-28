@@ -26,6 +26,7 @@
 		"chem",
 		"maplink",
 		"mapframe",
+		"page-collection",
 		"phonos"
 	],
 	"html": [
@@ -124,6 +125,8 @@
 		"711": "TimedText talk",
 		"828": "Module",
 		"829": "Module talk",
+		"1728": "Event",
+		"1729": "Event talk",
 		"-2": "Media",
 		"-1": "Special"
 	},
@@ -167,6 +170,8 @@
 		"module": 828,
 		"モジュール‐ノート": 829,
 		"module talk": 829,
+		"event": 1728,
+		"event talk": 1729,
 		"メディア": -2,
 		"media": -2,
 		"特別": -1,
@@ -194,7 +199,6 @@
 		"モジュール・トーク": 829
 	},
 	"functionHook": [
-		"msgnw",
 		"ns",
 		"nse",
 		"urlencode",
@@ -299,7 +303,9 @@
 		"property",
 		"statements",
 		"commaseparatedlist",
-		"mentor"
+		"chart",
+		"mentor",
+		"msgnw"
 	],
 	"variable": [
 		"!",
@@ -507,6 +513,7 @@
 			"#property": "property",
 			"#statements": "statements",
 			"#commaseparatedlist": "commaseparatedlist",
+			"#chart": "chart",
 			"#mentor": "mentor",
 			"記事パス": "articlepath",
 			"articlepath": "articlepath",
