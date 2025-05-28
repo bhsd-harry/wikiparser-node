@@ -173,7 +173,8 @@ export class Title {
 	getUrl(articlePath?: string): string {
 		LSP: { // eslint-disable-line no-unused-labels
 			if (typeof articlePath === 'string') {
-				this.#path = articlePath || '/wiki/$1';
+				this.#path = articlePath;
+				/* istanbul ignore if */
 				if (!this.#path.includes('$1')) {
 					this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
 				}
