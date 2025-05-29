@@ -121,13 +121,13 @@ const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
 		if (k.startsWith('Stage-')) {
 			for (let i = 0; i <= Number(k.slice(6)); i++) {
 				for (const type of aliases[i]!) {
-					acceptable[type] = new Ranges(v);
+					acceptable[type] = new Ranges(v as string | number);
 				}
 			}
 		} else if (k.startsWith('!')) { // `!`项必须放在最后
 			delete acceptable[k.slice(1)];
 		} else {
-			acceptable[k] = new Ranges(v);
+			acceptable[k] = new Ranges(v as string | number);
 		}
 	}
 	return acceptable;
