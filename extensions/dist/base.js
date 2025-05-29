@@ -1,6 +1,6 @@
 (() => {
 var _a;
-const version = '1.20.3', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+const version = '1.21.0', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
@@ -18,8 +18,7 @@ const workerJS = () => {
         }
         return root;
     };
-    const getLSP = (qid, include = true) => {
-        const id = Math.floor(qid);
+    const getLSP = (id, include = true) => {
         if (lsps.has(id)) {
             return lsps.get(id);
         }
@@ -61,16 +60,17 @@ const workerJS = () => {
                 delete last.wikitext;
                 break;
             case 'getConfig':
-                postMessage([qid, Parser.getConfig()]);
+                postMessage([command, qid, Parser.getConfig()]);
                 break;
             case 'json':
-                postMessage([qid, parse(wikitext, include, stage).json()]);
+                postMessage([command, qid, parse(wikitext, include, stage).json()]);
                 break;
             case 'lint':
-                postMessage([qid, parse(wikitext, include).lint(), wikitext]);
+                postMessage([command, qid, parse(wikitext, include).lint(), wikitext]);
                 break;
             case 'print':
                 postMessage([
+                    command,
                     qid,
                     parse(wikitext, include, stage).childNodes.map(child => [
                         stage !== null && stage !== void 0 ? stage : Infinity,
@@ -89,11 +89,12 @@ const workerJS = () => {
                 getLSP(qid, include).data = wikitext;
                 break;
             case 'colorPresentations':
-                postMessage([qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
+                postMessage([command, qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
                 break;
             case 'documentColors':
                 (async () => {
                     postMessage([
+                        command,
                         qid,
                         await getLSP(qid, include).provideDocumentColors(parseColor, wikitext, false),
                         wikitext,
@@ -102,42 +103,68 @@ const workerJS = () => {
                 break;
             case 'foldingRanges':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideFoldingRanges(wikitext), wikitext]);
+                    postMessage([command, qid, await getLSP(qid, include).provideFoldingRanges(wikitext), wikitext]);
                 })();
                 break;
             case 'links':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideLinks(wikitext), wikitext]);
+                    postMessage([command, qid, await getLSP(qid, include).provideLinks(wikitext), wikitext]);
                 })();
                 break;
             case 'diagnostics':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideDiagnostics(wikitext, stage), wikitext]);
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).provideDiagnostics(wikitext, stage),
+                        wikitext,
+                    ]);
                 })();
                 break;
             case 'completionItems':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideCompletionItems(wikitext, stage), wikitext]);
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).provideCompletionItems(wikitext, stage),
+                        wikitext,
+                    ]);
                 })();
                 break;
             case 'references':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideReferences(wikitext, stage), wikitext]);
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).provideReferences(wikitext, stage),
+                        wikitext,
+                    ]);
                 })();
                 break;
             case 'definition':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideDefinition(wikitext, stage), wikitext]);
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).provideDefinition(wikitext, stage),
+                        wikitext,
+                    ]);
                 })();
                 break;
             case 'renameLocation':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).resolveRenameLocation(wikitext, stage), wikitext]);
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).resolveRenameLocation(wikitext, stage),
+                        wikitext,
+                    ]);
                 })();
                 break;
             case 'renameEdits':
                 (async () => {
                     postMessage([
+                        command,
                         qid,
                         await getLSP(qid, include).provideRenameEdits(wikitext, stage, newName),
                         wikitext,
@@ -146,29 +173,34 @@ const workerJS = () => {
                 break;
             case 'hover':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideHover(wikitext, stage), wikitext]);
+                    postMessage([command, qid, await getLSP(qid, include).provideHover(wikitext, stage), wikitext]);
                 })();
                 break;
             case 'signatureHelp':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideSignatureHelp(wikitext, stage), wikitext]);
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).provideSignatureHelp(wikitext, stage),
+                        wikitext,
+                    ]);
                 })();
                 break;
             case 'inlayHints':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, include).provideInlayHints(wikitext), wikitext]);
+                    postMessage([command, qid, await getLSP(qid, include).provideInlayHints(wikitext), wikitext]);
                 })();
                 break;
             case 'findStyleTokens':
-                postMessage([qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
+                postMessage([command, qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
         }
     };
 };
 const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
 URL.revokeObjectURL(url);
-const getListener = (qid, resolve, raw) => {
-    const listener = ({ data: [rid, res, resRaw] }) => {
-        if (rid === qid && (raw === undefined || raw === resRaw)) {
+const getListener = (command, qid, resolve, raw) => {
+    const listener = ({ data: [cmd, rid, res, resRaw] }) => {
+        if (cmd === command && rid === qid && (raw === undefined || raw === resRaw)) {
             worker.removeEventListener('message', listener);
             resolve(res);
         }
@@ -183,7 +215,7 @@ const setConfig = (config) => {
     wikiparse.config = config;
 };
 const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve => {
-    worker.addEventListener('message', getListener(qid, resolve, strict ? raw : undefined));
+    worker.addEventListener('message', getListener(command, qid, resolve, strict ? raw : undefined));
     worker.postMessage([command, qid, raw, ...args]);
 });
 const getConfig = () => getFeedback('getConfig', -3);
