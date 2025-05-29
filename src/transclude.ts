@@ -82,6 +82,11 @@ export abstract class TranscludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	/** module name / 模块名 */
+	get module(): string | undefined {
+		return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
+	}
+
 	/** whether to contain duplicated parameters / 是否存在重复参数 */
 	get duplication(): boolean {
 		return this.isTemplate() && Boolean(this.hasDuplicatedArgs());

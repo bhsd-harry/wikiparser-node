@@ -1,10 +1,11 @@
 ## v1.21.0
 
-*2025-05-24*
+*2025-05-29*
 
 **Added**
 
 - `Token.prototype.lint` called on the root node now returns an optional `output` property, which is a string after all auto-fixes are applied
+- [`TranscludeToken.module`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#module)
 
 ## v1.20.3
 
