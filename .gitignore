@@ -1,6 +1,5 @@
-/node_modules/
 /dist/
-/bundle/bundle-es8.min.js
+/bundle/bundle-es*.min.js
 /bundle/*.map
 /coverage/*
 !/coverage/badge.svg
