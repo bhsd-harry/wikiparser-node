@@ -1,3 +1,11 @@
+## v1.21.1
+
+*2025-06-05*
+
+**Fixed**
+
+- Interaction between definition lists (`;:`) and void HTML tags
+
 ## v1.21.0
 
 *2025-05-29*

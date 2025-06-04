@@ -21,7 +21,7 @@ const tests: Test[] = [],
 		'html/php+disabled',
 		'html/*',
 	]),
-	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu;
+	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata|extlinks))*\n!/mu;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
 const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
@@ -69,6 +69,7 @@ const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 			'showmedia',
 			'notoc',
 			'pst',
+			'extlinks',
 		].join('|')
 	}|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*)|pst )+$`, 'u'),
 	files = new Set(fs.readdirSync('test/core/'));

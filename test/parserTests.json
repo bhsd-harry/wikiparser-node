@@ -8060,8 +8060,8 @@
 		"desc": "Void elements without self-closing slash in definition lists",
 		"wikitext": ";[[File:Foobar.jpg|Test]]:123\n;Test<br>12:3",
 		"html": "<dl><dt><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"Test\"><img alt=\"Test\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span></dt>\n<dd>123</dd>\n<dt>Test<br />12</dt>\n<dd>3</dd></dl>",
-		"render": "<dl><dt><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"Test\"><img alt=\"Test\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span></dt>\n<dd>123</dd>\n<dt>Test<br>12:3</dt></dl>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">Test</span>]]</span><span class=\"wpb-dd\">:</span>123\n<span class=\"wpb-list\">;</span>Test<span class=\"wpb-html\">&lt;br&gt;</span>12:3</span>"
+		"render": "<dl><dt><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"Test\"><img alt=\"Test\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span></dt>\n<dd>123</dd>\n<dt>Test<br>12</dt>\n<dd>3</dd></dl>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">Test</span>]]</span><span class=\"wpb-dd\">:</span>123\n<span class=\"wpb-list\">;</span>Test<span class=\"wpb-html\">&lt;br&gt;</span>12<span class=\"wpb-dd\">:</span>3</span>"
 	},
 	{
 		"desc": "extLinks"
@@ -8618,6 +8618,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://[2404:130:0:1000::187:2]/index.php</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2373</span>, section 2.2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/unicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FF01::101]/multicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::1]/loopback</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::]/unspecified</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::13.1.68.3]/ipv4compat</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]/ipv4compat</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2732</span>, section 2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080:0:0:0:8:800:200C:417A]/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[3ffe:2a00:100:7031::1]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/foo</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::192.9.5.5]/ipng</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[2010:836B:4179::836B:4179]</span></span>"
 	},
 	{
+		"desc": "Ensure html2wt b/c for stashed RFC target links (T382963)",
+		"wikitext": "RFC 1234\n\nRFC 1234",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC 1234</span>\n\n<span class=\"wpb-magic-link\">RFC 1234</span></span>"
+	},
+	{
 		"desc": "Unicode text around autolinks",
 		"wikitext": "größhttps://foo.org\n\ngröß https://foo.org\n\n아들 고건 사진https://foo.org\n\n💩https://foo.org",
 		"html": "<p>größhttps://foo.org\n</p><p>größ <a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p>",
@@ -8687,6 +8692,72 @@
 		"html": "<p>[&#160;<a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">123</a>&#160;]\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">[123</a>\n</p>",
 		"render": "<p>[&nbsp;<a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">123</a>&nbsp;]\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">[123</a>\n</p>",
 		"print": "<span class=\"wpb-root\">[&amp;nbsp;<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span>&amp;nbsp;]\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">[123</span>]</span></span>"
+	},
+	{
+		"desc": "Extlink in indent pre gets link attributes",
+		"wikitext": " [http://test.com 123]",
+		"html": "<pre><a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">123</a>\n</pre>",
+		"render": "<pre><a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">123</a>\n</pre>",
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span></span>"
+	},
+	{
+		"desc": "extTags"
+	},
+	{
+		"desc": "Extension tags in extension content: <nowiki>",
+		"wikitext": "{{#tag:nowiki|a<nowiki>b</nowiki>c}}",
+		"html": "<p>abc\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension content: <pre>",
+		"wikitext": "{{#tag:pre|a<nowiki>b</nowiki>c}}",
+		"html": "<pre>abc</pre>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">pre</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension content: <indicator>",
+		"wikitext": "{{#tag:indicator|a<nowiki>b</nowiki>c|name=foo}}",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">indicator</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension attributes: <pre>",
+		"wikitext": "{{#tag:pre|content|class=a<nowiki>b</nowiki>c}}",
+		"html": "<pre class=\"ac\">content</pre>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">pre</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">class</span>=<span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension attributes: <indicator>",
+		"wikitext": "{{#tag:indicator|content|name=a<nowiki>b</nowiki>c}}",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">indicator</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension attributes: bogus tag name",
+		"wikitext": "{{#tag:does-not-exist|<nowiki>content</nowiki>|name=a<nowiki>b</nowiki>c}}",
+		"html": "<p>&lt;does-not-exist name=\"ac\"&gt;content&lt;/does-not-exist&gt;\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">does-not-exist</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">content</span>&lt;/nowiki&gt;</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension name",
+		"wikitext": "{{#tag:no<nowiki>ignored</nowiki>wiki|content}}",
+		"html": "<p>content\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">no<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">ignored</span>&lt;/nowiki&gt;</span>wiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Doubly-nested tags",
+		"wikitext": "{{#tag:nowiki|more {{#tag:nowiki|content <nowiki>here</nowiki>}}}}",
+		"html": "<p>more content here\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">more <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content <span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">here</span>&lt;/nowiki&gt;</span></span></span>}}</span></span></span>}}</span></span>"
 	},
 	{
 		"desc": "fragmentModes"
