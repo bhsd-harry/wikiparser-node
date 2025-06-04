@@ -43,7 +43,7 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 	if (!dt) {
 		return text;
 	}
-	const {html: [normalTags]} = config,
+	const {html: [normalTags,, voidTags]} = config,
 		fullRegex = /:+|-\{|\0\d+[xq]\x7F/gu;
 	let regex = fullRegex,
 		ex = regex.exec(text),
@@ -92,7 +92,7 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 			}
 		} else if (syntax.endsWith('x\x7F')) {
 			const {name, closing, selfClosing} = accum[Number(syntax.slice(1, -2))] as HtmlToken;
-			if (!selfClosing || normalTags.includes(name)) {
+			if (normalTags.includes(name) || !selfClosing && !voidTags.includes(name)) {
 				update(closing);
 			}
 		} else if (syntax.endsWith('q\x7F')) {

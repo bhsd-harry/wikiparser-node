@@ -6253,6 +6253,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">Alice in\tWonderland</span>]</span></span>"
 	},
 	{
+		"desc": "U+0338, bare and as entity",
+		"wikitext": "Header\n\n== &#x338; One & ==\n&#x338; Text\n\n== ̸ Two & ==\n̸ Text",
+		"print": "<span class=\"wpb-root\">Header\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> &amp;#x338; One &amp; </span>==</span>\n&amp;#x338; Text\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> ̸ Two &amp; </span>==</span>\n̸ Text</span>"
+	},
+	{
 		"desc": "Stray carriage return in text",
 		"wikitext": "hiho",
 		"html": "<p>hiho\n</p>",
@@ -7822,73 +7827,73 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;dl&gt;</span><span class=\"wpb-html\">&lt;dt&gt;</span>x<span class=\"wpb-html\">&lt;/dt&gt;</span>\n<span class=\"wpb-html\">&lt;dd&gt;</span>a<span class=\"wpb-html\">&lt;/dd&gt;</span>\n<span class=\"wpb-html\">&lt;dd&gt;</span>b<span class=\"wpb-html\">&lt;/dd&gt;</span><span class=\"wpb-html\">&lt;/dl&gt;</span></span>"
 	},
 	{
-		"desc": "Definition Lists: No nesting: Multiple dd's",
+		"desc": "No nesting: Multiple dd's",
 		"wikitext": ";x\n:a\n:b",
 		"html": "<dl><dt>x</dt>\n<dd>a</dd>\n<dd>b</dd></dl>",
 		"render": "<dl><dt>x</dt>\n<dd>a</dd>\n<dd>b</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>x\n<span class=\"wpb-list\">:</span>a\n<span class=\"wpb-list\">:</span>b</span>"
 	},
 	{
-		"desc": "Definition Lists: Indentation: Regular",
+		"desc": "Indentation: Regular",
 		"wikitext": ":i1\n::i2\n:::i3",
 		"html": "<dl><dd>i1\n<dl><dd>i2\n<dl><dd>i3</dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd>i1\n<dl><dd>i2\n<dl><dd>i3</dd></dl></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span>i1\n<span class=\"wpb-list\">::</span>i2\n<span class=\"wpb-list\">:::</span>i3</span>"
 	},
 	{
-		"desc": "Definition Lists: Indentation: Missing 1st level",
+		"desc": "Indentation: Missing 1st level",
 		"wikitext": "::i2\n:::i3",
 		"html": "<dl><dd><dl><dd>i2\n<dl><dd>i3</dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd><dl><dd>i2\n<dl><dd>i3</dd></dl></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">::</span>i2\n<span class=\"wpb-list\">:::</span>i3</span>"
 	},
 	{
-		"desc": "Definition Lists: Indentation: Multi-level indent",
+		"desc": "Indentation: Multi-level indent",
 		"wikitext": ":::i3",
 		"html": "<dl><dd><dl><dd><dl><dd>i3</dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd><dl><dd><dl><dd>i3</dd></dl></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:::</span>i3</span>"
 	},
 	{
-		"desc": "Definition Lists: Hacky use to indent tables",
+		"desc": "Hacky use to indent tables",
 		"wikitext": "::{|\n|foo\n|bar\n|}\nthis text\nshould be left alone",
 		"html": "<dl><dd><dl><dd><table>\n<tbody><tr>\n<td>foo\n</td>\n<td>bar\n</td></tr></tbody></table></dd></dl></dd></dl>\n<p>this text\nshould be left alone\n</p>",
 		"render": "<dl><dd><dl><dd><table>\n<tbody><tr>\n<td>foo\n</td>\n<td>bar\n</td></tr></tbody></table></dd></dl></dd></dl>\n<p>this text\nshould be left alone\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-dd\">::</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\nthis text\nshould be left alone</span>"
 	},
 	{
-		"desc": "Definition Lists: Hacky use to indent tables (with content following table)",
+		"desc": "Hacky use to indent tables (with content following table)",
 		"wikitext": ":{|\n|foo\n|bar\n|} <!--c1--> this text should be part of the dl",
 		"html": "<dl><dd><table>\n<tbody><tr>\n<td>foo\n</td>\n<td>bar\n</td></tr></tbody></table>  this text should be part of the dl</dd></dl>",
 		"render": "<dl><dd><table>\n<tbody><tr>\n<td>foo\n</td>\n<td>bar\n</td></tr></tbody></table>  this text should be part of the dl</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-dd\">:</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span><span class=\"wpb-table-syntax\">\n|}</span></span> <span class=\"wpb-comment\">&lt;!--c1--&gt;</span> this text should be part of the dl</span>"
 	},
 	{
-		"desc": "Definition Lists: Hacky use to indent tables, with comments (T65979)",
+		"desc": "Hacky use to indent tables, with comments (T65979)",
 		"wikitext": "<!-- foo -->\n::{|\n|foo\n|bar\n|}<!-- bar -->\nthis text\nshould be left alone",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- foo --&gt;</span>\n<span class=\"wpb-dd\">::</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span><span class=\"wpb-table-syntax\">\n|}</span></span><span class=\"wpb-comment\">&lt;!-- bar --&gt;</span>\nthis text\nshould be left alone</span>"
 	},
 	{
-		"desc": "Definition Lists: Hacky use to indent tables, with comment before table",
+		"desc": "Hacky use to indent tables, with comment before table",
 		"wikitext": "::<!-- foo -->{|\n|foo\n|}",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-dd\">::</span><span class=\"wpb-comment\">&lt;!-- foo --&gt;</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
-		"desc": "Definition Lists: Hack use to indent tables, in a nested list context (T262943)",
+		"desc": "Hack use to indent tables, in a nested list context (T262943)",
 		"wikitext": "This is a discussion thread.\n\n:Parent comment.\n::Child comment\n::{|\n|With a\n|Table!\n|}",
 		"html": "<p>This is a discussion thread.\n</p>\n<dl><dd>Parent comment.\n<dl><dd>Child comment</dd></dl></dd></dl>\n<dl><dd><dl><dd><table>\n<tbody><tr>\n<td>With a\n</td>\n<td>Table!\n</td></tr></tbody></table></dd></dl></dd></dl>",
 		"render": "<p>This is a discussion thread.\n</p>\n<dl><dd>Parent comment.\n<dl><dd>Child comment</dd></dl></dd></dl>\n<dl><dd><dl><dd><table>\n<tbody><tr>\n<td>With a\n</td>\n<td>Table!\n</td></tr></tbody></table></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\">This is a discussion thread.\n\n<span class=\"wpb-list\">:</span>Parent comment.\n<span class=\"wpb-list\">::</span>Child comment\n<span class=\"wpb-dd\">::</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">With a</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">Table!</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
-		"desc": "Definition Lists: Hacky use to indent tables (WS-insensitive)",
+		"desc": "Hacky use to indent tables (WS-insensitive)",
 		"wikitext": ":{|\n|a\n|}",
 		"html": "<dl><dd><table>\n<tbody><tr>\n<td>a\n</td></tr></tbody></table></dd></dl>",
 		"render": "<dl><dd><table>\n<tbody><tr>\n<td>a\n</td></tr></tbody></table></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-dd\">:</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">a</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
-		"desc": "Definition Lists: Hacky use to indent tables (nl-insensitive)",
+		"desc": "Hacky use to indent tables (nl-insensitive)",
 		"wikitext": ":{|\n\n\n|a\n|}",
 		"html": "<dl><dd><table>\n\n\n<tbody><tr>\n<td>a\n</td></tr></tbody></table></dd></dl>",
 		"render": "<dl><dd><table>\n<tbody><tr>\n<td>a\n</td></tr></tbody></table></dd></dl>",
@@ -7909,147 +7914,154 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-dd\">:</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">\n<span class=\"wpb-list\">:</span>a\n<span class=\"wpb-list\">:</span>b</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">\n<span class=\"wpb-list\">*</span>c\n<span class=\"wpb-list\">*</span>d</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n\n<span class=\"wpb-list\">*</span>e\n<span class=\"wpb-list\">*</span>f</span>"
 	},
 	{
-		"desc": "Definition Lists: Nesting: Multi-level (Parsoid only)",
+		"desc": "Nesting: Multi-level (Parsoid only)",
 		"wikitext": ";t1:d1\n;;t2::d2\n;;;t3:::d3",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>t1<span class=\"wpb-dd\">:</span>d1\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t2<span class=\"wpb-dd\">::</span>d2\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t3<span class=\"wpb-dd\">::</span>:d3</span>"
 	},
 	{
-		"desc": "Definition Lists: Nesting: Test 2",
+		"desc": "Nesting: Test 2",
 		"wikitext": ";t1\n::d2",
 		"html": "<dl><dt>t1</dt>\n<dd>\n<dl><dd>d2</dd></dl></dd></dl>",
 		"render": "<dl><dt>t1</dt>\n<dd>\n<dl><dd>d2</dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>t1\n<span class=\"wpb-list\">::</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Nesting: Test 3",
+		"desc": "Nesting: Test 3",
 		"wikitext": ":;t1\n::::d2",
 		"html": "<dl><dd><dl><dt>t1</dt>\n<dd>\n<dl><dd><dl><dd>d2</dd></dl></dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd><dl><dt>t1</dt>\n<dd>\n<dl><dd><dl><dd>d2</dd></dl></dd></dl></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span><span class=\"wpb-list\">;</span>t1\n<span class=\"wpb-list\">::::</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Nesting: Test 4",
+		"desc": "Nesting: Test 4",
 		"wikitext": "::;t3\n:::d3",
 		"html": "<dl><dd><dl><dd><dl><dt>t3</dt>\n<dd>d3</dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd><dl><dd><dl><dt>t3</dt>\n<dd>d3</dd></dl></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">::</span><span class=\"wpb-list\">;</span>t3\n<span class=\"wpb-list\">:::</span>d3</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 1",
+		"desc": "Mixed Lists: Test 1",
 		"wikitext": ":;*foo\n::*bar\n:;baz",
 		"html": "<dl><dd><dl><dt><ul><li>foo</li>\n<li>bar</li></ul></dt></dl>\n<dl><dt>baz</dt></dl></dd></dl>",
 		"render": "<dl><dd><dl><dt><ul><li>foo</li>\n<li>bar</li></ul></dt>\n<dt>baz</dt></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span><span class=\"wpb-list\">;*</span>foo\n<span class=\"wpb-list\">::*</span>bar\n<span class=\"wpb-list\">:</span><span class=\"wpb-list\">;</span>baz</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 2",
+		"desc": "Mixed Lists: Test 2",
 		"wikitext": "*:d1\n*:d2",
 		"html": "<ul><li><dl><dd>d1</dd>\n<dd>d2</dd></dl></li></ul>",
 		"render": "<ul><li><dl><dd>d1</dd>\n<dd>d2</dd></dl></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*:</span>d1\n<span class=\"wpb-list\">*:</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 3",
+		"desc": "Mixed Lists: Test 3",
 		"wikitext": "*:::d1\n*:::d2",
 		"html": "<ul><li><dl><dd><dl><dd><dl><dd>d1</dd>\n<dd>d2</dd></dl></dd></dl></dd></dl></li></ul>",
 		"render": "<ul><li><dl><dd><dl><dd><dl><dd>d1</dd>\n<dd>d2</dd></dl></dd></dl></dd></dl></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*:::</span>d1\n<span class=\"wpb-list\">*:::</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 4",
+		"desc": "Mixed Lists: Test 4",
 		"wikitext": "*;d1 :d2\n*;d3 :d4",
 		"html": "<ul><li><dl><dt>d1</dt>\n<dd>d2</dd>\n<dt>d3</dt>\n<dd>d4</dd></dl></li></ul>",
 		"render": "<ul><li><dl><dt>d1</dt>\n<dd>d2</dd></dl></li>\n<li><dl><dt>d3</dt>\n<dd>d4</dd></dl></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-list\">;</span>d1 <span class=\"wpb-dd\">:</span>d2\n<span class=\"wpb-list\">*</span><span class=\"wpb-list\">;</span>d3 <span class=\"wpb-dd\">:</span>d4</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 5",
+		"desc": "Mixed Lists: Test 5",
 		"wikitext": "*:d1\n*::d2",
 		"html": "<ul><li><dl><dd>d1\n<dl><dd>d2</dd></dl></dd></dl></li></ul>",
 		"render": "<ul><li><dl><dd>d1\n<dl><dd>d2</dd></dl></dd></dl></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*:</span>d1\n<span class=\"wpb-list\">*::</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 6",
+		"desc": "Mixed Lists: Test 6",
 		"wikitext": "#*:d1\n#*:::d3",
 		"html": "<ol><li><ul><li><dl><dd>d1\n<dl><dd><dl><dd>d3</dd></dl></dd></dl></dd></dl></li></ul></li></ol>",
 		"render": "<ol><li><ul><li><dl><dd>d1\n<dl><dd><dl><dd>d3</dd></dl></dd></dl></dd></dl></li></ul></li></ol>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">#*:</span>d1\n<span class=\"wpb-list\">#*:::</span>d3</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 7",
+		"desc": "Mixed Lists: Test 7",
 		"wikitext": ":*d1\n:*d2",
 		"html": "<dl><dd><ul><li>d1</li>\n<li>d2</li></ul></dd></dl>",
 		"render": "<dl><dd><ul><li>d1</li>\n<li>d2</li></ul></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:*</span>d1\n<span class=\"wpb-list\">:*</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 8",
+		"desc": "Mixed Lists: Test 8",
 		"wikitext": ":*d1\n::*d2",
 		"html": "<dl><dd><ul><li>d1</li></ul>\n<dl><dd><ul><li>d2</li></ul></dd></dl></dd></dl>",
 		"render": "<dl><dd><ul><li>d1</li></ul>\n<dl><dd><ul><li>d2</li></ul></dd></dl></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:*</span>d1\n<span class=\"wpb-list\">::*</span>d2</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 9",
+		"desc": "Mixed Lists: Test 9",
 		"wikitext": "*;foo :bar",
 		"html": "<ul><li><dl><dt>foo</dt>\n<dd>bar</dd></dl></li></ul>",
 		"render": "<ul><li><dl><dt>foo</dt>\n<dd>bar</dd></dl></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span>bar</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 10",
+		"desc": "Mixed Lists: Test 10",
 		"wikitext": "*#;foo :bar",
 		"html": "<ul><li><ol><li><dl><dt>foo</dt>\n<dd>bar</dd></dl></li></ol></li></ul>",
 		"render": "<ul><li><ol><li><dl><dt>foo</dt>\n<dd>bar</dd></dl></li></ol></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span>bar</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 11",
+		"desc": "Mixed Lists: Test 11",
 		"wikitext": ";a\n:*b",
 		"html": "<dl><dt>a</dt>\n<dd>\n<ul><li>b</li></ul></dd></dl>",
 		"render": "<dl><dt>a</dt>\n<dd>\n<ul><li>b</li></ul></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>a\n<span class=\"wpb-list\">:*</span>b</span>"
 	},
 	{
-		"desc": "Definition Lists: Mixed Lists: Test 12",
-		"wikitext": "*#*#;*;;foo :bar\n*#*#;boo :baz",
-		"html": "<ul><li><ol><li><ul><li><ol><li><dl><dt>foo</dt>\n<dd><ul><li><dl><dt><dl><dt>bar</dt></dl></dt></dl></li></ul></dd></dl></li></ol></li></ul>\n<dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul>",
-		"render": "<ul><li><ol><li><ul><li><ol><li><dl><dt><ul><li><dl><dt><dl><dt>foo</dt>\n<dd>bar</dd></dl></dt></dl></li></ul></dt></dl></li>\n<li><dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul></li></ol></li></ul>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;*</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span>bar\n<span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;</span>boo <span class=\"wpb-dd\">:</span>baz</span>"
-	},
-	{
-		"desc": "Definition Lists: Mixed Lists: Test 13",
+		"desc": "Mixed Lists: Test 13",
 		"wikitext": "*#*#;*;;foo : bar\n*#*#;boo : baz",
 		"html": "<ul><li><ol><li><ul><li><ol><li><dl><dt>foo</dt>\n<dd><ul><li><dl><dt><dl><dt>bar</dt></dl></dt></dl></li></ul></dd></dl></li></ol></li></ul>\n<dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul>",
 		"render": "<ul><li><ol><li><ul><li><ol><li><dl><dt><ul><li><dl><dt><dl><dt>foo</dt>\n<dd>bar</dd></dl></dt></dl></li></ul></dt></dl></li>\n<li><dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul></li></ol></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;*</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span> bar\n<span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;</span>boo <span class=\"wpb-dd\">:</span> baz</span>"
 	},
 	{
-		"desc": "Definition Lists: Weird Ones: Test 1",
-		"wikitext": "*#;*::;;foo :bar (who uses this?)",
-		"html": "<ul><li><ol><li><dl><dt>foo</dt>\n<dd><ul><li><dl><dd><dl><dd><dl><dt><dl><dt>bar (who uses this?)</dt></dl></dt></dl></dd></dl></dd></dl></li></ul></dd></dl></li></ol></li></ul>",
-		"render": "<ul><li><ol><li><dl><dt><ul><li><dl><dd><dl><dd><dl><dt><dl><dt>foo</dt>\n<dd>bar (who uses this?)</dd></dl></dt></dl></dd></dl></dd></dl></li></ul></dt></dl></li></ol></li></ul>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#</span><span class=\"wpb-list\">;*::</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span>bar (who uses this?)</span>"
-	},
-	{
-		"desc": "Definition Lists: colons occurring in tags",
+		"desc": "colons occurring in tags",
 		"wikitext": ";a:b\n;'''a:b'''\n;<i>a:b</i>\n;<span>a:b</span>\n;<div>a:b</div>\n;<div>a\n:b</div>\n;{{1x|a:b}}\n;{{1x|''a:b''}}\n;;;''a:b''",
 		"html": "<dl><dt>a</dt>\n<dd>b</dd>\n<dt><b>a:b</b></dt>\n<dt><i>a:b</i></dt>\n<dt><span>a:b</span></dt>\n<dt><div>a:b</div></dt>\n<dt><div>a</div></dt>\n<dd>b</dd>\n<dt>a</dt>\n<dd>b</dd>\n<dt><i>a:b</i></dt></dl>\n<dl><dt><dl><dt><dl><dt><i>a:b</i></dt></dl></dt></dl></dt></dl>",
 		"render": "<dl><dt>a</dt>\n<dd>b</dd>\n<dt><b>a:b</b></dt>\n<dt><i>a:b</i></dt>\n<dt><span>a:b</span></dt>\n<dt><div>a:b</div></dt>\n<dt><div>a</dt>\n<dd>b</div></dd>\n<dt>a</dt>\n<dd>b</dd>\n<dt><i>a:b</i>\n<dl><dt><dl><dt><i>a:b</i></dt></dl></dt></dl></dt></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>a<span class=\"wpb-dd\">:</span>b\n<span class=\"wpb-list\">;</span><span class=\"wpb-quote\">'''</span>a:b<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;i&gt;</span>a:b<span class=\"wpb-html\">&lt;/i&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;span&gt;</span>a:b<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;div&gt;</span>a:b<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;div&gt;</span>a\n<span class=\"wpb-list\">:</span>b<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a:b</span></span>}}</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>a:b<span class=\"wpb-quote\">''</span></span></span>}}</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-quote\">''</span>a:b<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
-		"desc": "Definition Lists: colons and tables 1",
+		"desc": "colons and tables 1",
 		"wikitext": ":{|\n|x\n|}\n:{|\n|y\n|}",
 		"html": "<dl><dd><table>\n<tbody><tr>\n<td>x\n</td></tr></tbody></table></dd></dl>\n<dl><dd><table>\n<tbody><tr>\n<td>y\n</td></tr></tbody></table></dd></dl>",
 		"render": "<dl><dd><table>\n<tbody><tr>\n<td>x\n</td></tr></tbody></table></dd></dl>\n<dl><dd><table>\n<tbody><tr>\n<td>y\n</td></tr></tbody></table></dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-dd\">:</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">x</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n<span class=\"wpb-dd\">:</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">y</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
-		"desc": "Definition Lists: template interaction",
+		"desc": "Template interaction",
 		"wikitext": "::{{definition_list}}\n\n:one\n::{{definition_list}}\n:::two\n:::three\n::four",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">::</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">definition_list</span>}}</span>\n\n<span class=\"wpb-list\">:</span>one\n<span class=\"wpb-list\">::</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">definition_list</span>}}</span>\n<span class=\"wpb-list\">:::</span>two\n<span class=\"wpb-list\">:::</span>three\n<span class=\"wpb-list\">::</span>four</span>"
+	},
+	{
+		"desc": "Second colon on line: No templates involved",
+		"wikitext": ";term:def=foo:bar\n\n;'''1:00''':bar",
+		"html": "<dl><dt>term</dt>\n<dd>def=foo:bar</dd></dl>\n<dl><dt><b>1:00</b></dt>\n<dd>bar</dd></dl>",
+		"render": "<dl><dt>term</dt>\n<dd>def=foo:bar</dd></dl>\n<dl><dt><b>1:00</b></dt>\n<dd>bar</dd></dl>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>term<span class=\"wpb-dd\">:</span>def=foo:bar\n\n<span class=\"wpb-list\">;</span><span class=\"wpb-quote\">'''</span>1:00<span class=\"wpb-quote\">'''</span><span class=\"wpb-dd\">:</span>bar</span>"
+	},
+	{
+		"desc": "Second colon on line: Templates involved and T2959 kicks in",
+		"wikitext": ":a\n::{{1x|1=::foo}} bar\n\n;term:def=foo{{1x|:bar}}",
+		"html": "<dl><dd>a\n<dl><dd></dd>\n<dd>foo bar</dd></dl></dd></dl>\n<dl><dt>term</dt>\n<dd>def=foo</dd>\n<dd>bar</dd></dl>",
+		"render": "<dl><dd>a\n<dl><dd></dd>\n<dd>foo bar</dd></dl></dd></dl>\n<dl><dt>term</dt>\n<dd>def=foo</dd>\n<dd>bar</dd></dl>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span>a\n<span class=\"wpb-list\">::</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">::foo</span></span>}}</span> bar\n\n<span class=\"wpb-list\">;</span>term<span class=\"wpb-dd\">:</span>def=foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">:bar</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Void elements without self-closing slash in definition lists",
+		"wikitext": ";[[File:Foobar.jpg|Test]]:123\n;Test<br>12:3",
+		"html": "<dl><dt><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"Test\"><img alt=\"Test\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span></dt>\n<dd>123</dd>\n<dt>Test<br />12</dt>\n<dd>3</dd></dl>",
+		"render": "<dl><dt><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"Test\"><img alt=\"Test\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span></dt>\n<dd>123</dd>\n<dt>Test<br>12</dt>\n<dd>3</dd></dl>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">Test</span>]]</span><span class=\"wpb-dd\">:</span>123\n<span class=\"wpb-list\">;</span>Test<span class=\"wpb-html\">&lt;br&gt;</span>12<span class=\"wpb-dd\">:</span>3</span>"
 	},
 	{
 		"desc": "extLinks"
@@ -8606,6 +8618,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://[2404:130:0:1000::187:2]/index.php</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2373</span>, section 2.2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/unicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FF01::101]/multicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::1]/loopback</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::]/unspecified</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::13.1.68.3]/ipv4compat</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]/ipv4compat</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2732</span>, section 2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080:0:0:0:8:800:200C:417A]/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[3ffe:2a00:100:7031::1]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/foo</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::192.9.5.5]/ipng</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[2010:836B:4179::836B:4179]</span></span>"
 	},
 	{
+		"desc": "Ensure html2wt b/c for stashed RFC target links (T382963)",
+		"wikitext": "RFC 1234\n\nRFC 1234",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC 1234</span>\n\n<span class=\"wpb-magic-link\">RFC 1234</span></span>"
+	},
+	{
 		"desc": "Unicode text around autolinks",
 		"wikitext": "größhttps://foo.org\n\ngröß https://foo.org\n\n아들 고건 사진https://foo.org\n\n💩https://foo.org",
 		"html": "<p>größhttps://foo.org\n</p><p>größ <a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p>",
@@ -8675,6 +8692,72 @@
 		"html": "<p>[&#160;<a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">123</a>&#160;]\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">[123</a>\n</p>",
 		"render": "<p>[&nbsp;<a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">123</a>&nbsp;]\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">[123</a>\n</p>",
 		"print": "<span class=\"wpb-root\">[&amp;nbsp;<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span>&amp;nbsp;]\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">[123</span>]</span></span>"
+	},
+	{
+		"desc": "Extlink in indent pre gets link attributes",
+		"wikitext": " [http://test.com 123]",
+		"html": "<pre><a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">123</a>\n</pre>",
+		"render": "<pre><a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">123</a>\n</pre>",
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span></span>"
+	},
+	{
+		"desc": "extTags"
+	},
+	{
+		"desc": "Extension tags in extension content: <nowiki>",
+		"wikitext": "{{#tag:nowiki|a<nowiki>b</nowiki>c}}",
+		"html": "<p>abc\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension content: <pre>",
+		"wikitext": "{{#tag:pre|a<nowiki>b</nowiki>c}}",
+		"html": "<pre>abc</pre>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">pre</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension content: <indicator>",
+		"wikitext": "{{#tag:indicator|a<nowiki>b</nowiki>c|name=foo}}",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">indicator</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension attributes: <pre>",
+		"wikitext": "{{#tag:pre|content|class=a<nowiki>b</nowiki>c}}",
+		"html": "<pre class=\"ac\">content</pre>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">pre</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">class</span>=<span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension attributes: <indicator>",
+		"wikitext": "{{#tag:indicator|content|name=a<nowiki>b</nowiki>c}}",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">indicator</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension attributes: bogus tag name",
+		"wikitext": "{{#tag:does-not-exist|<nowiki>content</nowiki>|name=a<nowiki>b</nowiki>c}}",
+		"html": "<p>&lt;does-not-exist name=\"ac\"&gt;content&lt;/does-not-exist&gt;\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">does-not-exist</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">content</span>&lt;/nowiki&gt;</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">a<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/nowiki&gt;</span>c</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Extension tags in extension name",
+		"wikitext": "{{#tag:no<nowiki>ignored</nowiki>wiki|content}}",
+		"html": "<p>content\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">no<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">ignored</span>&lt;/nowiki&gt;</span>wiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Doubly-nested tags",
+		"wikitext": "{{#tag:nowiki|more {{#tag:nowiki|content <nowiki>here</nowiki>}}}}",
+		"html": "<p>more content here\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">more <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">content <span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">here</span>&lt;/nowiki&gt;</span></span></span>}}</span></span></span>}}</span></span>"
 	},
 	{
 		"desc": "fragmentModes"
