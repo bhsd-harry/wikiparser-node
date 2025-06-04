@@ -6,7 +6,6 @@ import {prepare} from './util';
 import type {Test} from './util';
 
 prepare(Parser);
-Parser.debugging = true;
 
 const tests: Test[] = [],
 	regex = {
@@ -21,7 +20,7 @@ const tests: Test[] = [],
 		'html/php+disabled',
 		'html/*',
 	]),
-	re = /^!!\s*options(?:\n(?:parsoid=(?:wt2html.*|\{[\s\S]+\})|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata|showflags|extlinks|templates|links|special))*\n!/mu;
+	re = /^!!\s*options(?:\n(?:parsoid=(?:wt2html.*|\{[^}]+\})|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata|showflags|extlinks|templates|links|special))*\n!/mu;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
 const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
@@ -121,4 +120,12 @@ for (const file of ['parserTests.txt', ...files]) {
 	}
 }
 fs.writeFileSync('test/parserTests.json', JSON.stringify(tests, null, '\t'));
-console.log([...Parser.templates.keys()].sort());
+
+const unused = fs.readdirSync('test/templates').filter(
+	file => !Parser.templates.has(
+		decodeURIComponent(file.slice(0, -5).replaceAll('꞉', ':')),
+	),
+);
+if (unused.length > 0) {
+	console.log('Unused templates', unused.sort());
+}
