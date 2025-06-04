@@ -5,6 +5,7 @@
 **Fixed**
 
 - Interaction between definition lists (`;:`) and void HTML tags
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports percent-encoded file names (e.g., `%3F` for `?`)
 
 ## v1.21.0
 

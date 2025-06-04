@@ -133,15 +133,24 @@ const expand = (
 					} else if (!path.isAbsolute(Parser.templateDir)) {
 						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 					}
-					const titles = [title, title.replaceAll('_', ' ')]
-							.flatMap(tt => [tt, tt.replaceAll(':', '꞉')]),
-						file = ['.wiki', '.txt', '']
-							.flatMap(ext => titles.map(tt => path.join(Parser.templateDir!, tt + ext)))
-							.find(fs.existsSync);
+					const file = fs.readdirSync(Parser.templateDir, {withFileTypes: true})
+						.filter(dirent => dirent.isFile())
+						.find(({name: fl}) => {
+							const t = fl.replace(/\.(?:wiki|txt)$/iu, '')
+								.replaceAll('꞉', ':');
+							try {
+								return decodeURIComponent(t) === title;
+							} catch {
+								return t === title;
+							}
+						});
 					if (!file) {
 						return m;
 					}
-					Parser.templates.set(title, fs.readFileSync(file, 'utf8'));
+					Parser.templates.set(
+						title,
+						fs.readFileSync(path.join(file.parentPath, file.name), 'utf8'),
+					);
 				} else if (stack.includes(title)) {
 					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
