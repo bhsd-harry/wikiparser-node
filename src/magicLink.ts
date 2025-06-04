@@ -136,7 +136,7 @@ export abstract class MagicLinkToken extends Token {
 						.getUrl(articlePath);
 				}
 				link = link.startsWith('RFC')
-					? `https://tools.ietf.org/html/rfc${link.slice(4)}`
+					? `https://datatracker.ietf.org/doc/html/rfc${link.slice(4)}`
 					: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`;
 			} else if (link.startsWith('//')) {
 				link = `https:${link}`;
