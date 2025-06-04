@@ -1972,6 +1972,8 @@
 	{
 		"desc": "Template name with question mark",
 		"wikitext": "{{temp?|123}}",
+		"html": "<p>temp 123\n</p>",
+		"render": "<p>temp 123\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">temp?</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123</span></span>}}</span></span>"
 	},
 	{
