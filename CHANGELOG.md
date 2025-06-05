@@ -1,10 +1,10 @@
 ## v1.21.1
 
-*2025-06-05*
+*2025-06-06*
 
 **Fixed**
 
-- Interaction between definition lists (`;:`) and void HTML tags
+- Interaction between one-line definition lists (`;:`) and void HTML tags
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports percent-encoded file names (e.g., `%3F` for `?`)
 
 ## v1.21.0
