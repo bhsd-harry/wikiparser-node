@@ -54,15 +54,19 @@ export abstract class GalleryImageToken extends FileToken {
 		);
 	}
 
+	/** 判定无效的图片 */
+	#lint(): boolean {
+		const {
+			ns,
+		} = this.getAttribute('title');
+		// eslint-disable-next-line @stylistic/semi
+		return ns !== 6
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{
-				ns,
-			} = this.getAttribute('title');
-		if (
-			ns !== 6
-		) {
+		const errors = super.lint(start, re);
+		if (this.#lint()) {
 			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image');
 			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
 			errors.push(e);

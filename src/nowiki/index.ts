@@ -26,10 +26,16 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		return 'ext-inner';
 	}
 
+	/** 扩展标签内的无效内容 */
+	#lint(): boolean {
+		const {name, firstChild: {data}} = this;
+		return voidExt.has(name) && Boolean(data);
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {name, firstChild: {data}} = this;
-		if (voidExt.has(name) && data) {
+		const {name} = this;
+		if (this.#lint()) {
 			const e = generateForSelf(
 				this,
 				{start},
