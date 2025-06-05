@@ -72,25 +72,32 @@ export abstract class MagicLinkToken extends Token {
 		this.#type = type;
 	}
 
+	/** 判定无效的ISBN */
+	#lint(): boolean {
+		if (this.type === 'magic-link') {
+			const {link} = this;
+			if (link.startsWith('ISBN')) {
+				// eslint-disable-next-line unicorn/no-useless-spread, @typescript-eslint/no-misused-spread
+				const digits = [...link.slice(5)].map(s => s === 'X' ? 10 : Number(s));
+				return digits.length === 10
+					? digits.reduce((sum, d, i) => sum + d * (10 - i), 0) % 11 !== 0
+					: digits.length === 13 && (
+						digits[12] === 10
+						|| digits.reduce((sum, d, i) => sum + d * (i % 2 ? 3 : 1), 0) % 10 !== 0
+					);
+			}
+		}
+		return false;
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			rect = new BoundingRect(this, start),
 			{type, childNodes} = this;
 		if (type === 'magic-link') {
-			const {link} = this;
-			if (link.startsWith('ISBN')) {
-				// eslint-disable-next-line unicorn/no-useless-spread, @typescript-eslint/no-misused-spread
-				const digits = [...link.slice(5)].map(s => s === 'X' ? 10 : Number(s));
-				if (
-					digits.length === 10 && digits.reduce((sum, d, i) => sum + d * (10 - i), 0) % 11
-					|| digits.length === 13 && (
-						digits[12] === 10
-						|| digits.reduce((sum, d, i) => sum + d * (i % 2 ? 3 : 1), 0) % 10
-					)
-				) {
-					errors.push(generateForSelf(this, rect, 'invalid-isbn', 'invalid ISBN'));
-				}
+			if (this.#lint()) {
+				errors.push(generateForSelf(this, rect, 'invalid-isbn', 'invalid ISBN'));
 			}
 			return errors;
 		}

@@ -144,11 +144,68 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
+	/**
+	 * 判定无效的属性名或值
+	 * @param start 起始位置
+	 */
+	#lint(): boolean;
+	#lint(start: number, rect: BoundingRect): LintError | false;
+	#lint(start?: number, rect?: BoundingRect): LintError | boolean {
+		const {firstChild, lastChild, type, name, tag} = this,
+			value = this.getValue(),
+			attrs = extAttrs[tag],
+			attrs2 = htmlAttrs[tag],
+			{length} = this.toString();
+		if (
+			!attrs?.has(name)
+			&& !attrs2?.has(name)
+			// 不是未定义的扩展标签或包含嵌入的HTML标签
+			&& (type === 'ext-attr' ? attrs || attrs2 : !/\{\{[^{]+\}\}/u.test(name))
+			&& (
+				type === 'ext-attr' && !attrs2
+				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
+				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			)
+		) {
+			if (start === undefined) {
+				return true;
+			}
+			const e = generateForChild(firstChild, rect!, 'illegal-attr', 'illegal attribute name');
+			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
+			return e;
+		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
+			return start === undefined
+				|| generateForChild(lastChild, rect!, 'insecure-style', 'insecure style');
+		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
+			if (start === undefined) {
+				return true;
+			}
+			const e = generateForChild(lastChild, rect!, 'illegal-attr', 'nonzero tabindex');
+			e.suggestions = [
+				{desc: 'remove', range: [start, start + length], text: ''},
+				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
+			];
+			return e;
+		} else if (type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
+			const data = provideValues(tag, name),
+				v = String(value).toLowerCase();
+			if (data.length > 0 && data.every(n => n !== v)) {
+				return start === undefined || generateForChild(
+					lastChild,
+					rect!,
+					'illegal-attr',
+					'illegal attribute value',
+					'warning',
+				);
+			}
+		}
+		return false;
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{balanced, firstChild, lastChild, type, name, tag} = this,
-			value = this.getValue(),
+			{balanced, firstChild, lastChild, name, tag} = this,
 			rect = new BoundingRect(this, start);
 		if (!balanced) {
 			const e = generateForChild(
@@ -163,46 +220,9 @@ export abstract class AttributeToken extends Token {
 			e.suggestions = [{range: [e.endIndex, e.endIndex], text: this.#quotes[0]!, desc: 'close'}];
 			errors.push(e);
 		}
-		const attrs = extAttrs[tag],
-			attrs2 = htmlAttrs[tag],
-			{length} = this.toString();
-		if (
-			!attrs?.has(name)
-			&& !attrs2?.has(name)
-			// 不是未定义的扩展标签或包含嵌入的HTML标签
-			&& (type === 'ext-attr' ? attrs || attrs2 : !/\{\{[^{]+\}\}/u.test(name))
-			&& (
-				type === 'ext-attr' && !attrs2
-				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
-				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
-			)
-		) {
-			const e = generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name');
-			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
+		const e = this.#lint(start, rect);
+		if (e) {
 			errors.push(e);
-		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
-			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
-		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
-			const e = generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex');
-			e.suggestions = [
-				{desc: 'remove', range: [start, start + length], text: ''},
-				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
-			];
-			errors.push(e);
-		} else if (type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
-			const data = provideValues(tag, name),
-				v = String(value).toLowerCase();
-			if (data.length > 0 && data.every(n => n !== v)) {
-				errors.push(
-					generateForChild(
-						lastChild,
-						rect,
-						'illegal-attr',
-						'illegal attribute value',
-						'warning',
-					),
-				);
-			}
 		}
 		if (obsoleteAttrs[tag]?.has(name)) {
 			errors.push(
