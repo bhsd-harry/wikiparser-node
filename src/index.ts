@@ -55,7 +55,14 @@ import {
 	aliases,
 	classes,
 } from '../util/constants';
-import {generateForSelf, cache} from '../util/lint';
+import {
+	generateForSelf,
+	cache,
+
+	/* NOT FOR BROWSER */
+
+	isFostered,
+} from '../util/lint';
 import {
 	setChildNodes,
 
@@ -480,6 +487,8 @@ export class Token extends AstElement {
 
 			case 'protectedChildren':
 				return this.#protectedChildren as TokenAttribute<T>;
+			case 'invalid':
+				return (this.type === 'table-inter' && isFostered(this) === 'error') as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER END */
 

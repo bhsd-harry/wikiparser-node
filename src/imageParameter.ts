@@ -276,6 +276,14 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		/* NOT FOR BROWSER */
+
+		if (key === 'invalid') {
+			return (this.name === 'invalid') as TokenAttribute<T>;
+		}
+
+		/** NOT FOR BROWSER END */
+
 		return key === 'padding'
 			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
 			: super.getAttribute(key);

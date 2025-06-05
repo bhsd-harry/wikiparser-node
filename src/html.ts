@@ -182,8 +182,21 @@ export abstract class HtmlToken extends Token {
 		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
 	}
 
+	/** 是否位于表格属性内 */
+	#lint(): boolean {
+		return Boolean(this.closest<Token>('table-attrs'));
+	}
+
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		/* NOT FOR BROWSER */
+
+		if (key === 'invalid') {
+			return this.#lint() as TokenAttribute<T>;
+		}
+
+		/* NOT FOR BROWSER END */
+
 		return key === 'padding'
 			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttribute<T>
 			: super.getAttribute(key);
@@ -199,7 +212,7 @@ export abstract class HtmlToken extends Token {
 			e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
 			errors.push(e);
 		}
-		if (this.closest('table-attrs')) {
+		if (this.#lint()) {
 			const e = generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes');
 			e.fix = {desc: 'remove', range: [start, e.endIndex], text: ''};
 			errors.push(e);

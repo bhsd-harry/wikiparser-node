@@ -5,6 +5,7 @@ import type {Config} from '../base';
 
 import {classes} from '../util/constants';
 import {cloneNode} from '../util/html';
+import type {ConverterFlagsToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -61,6 +62,16 @@ export class AtomToken extends Token {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid'
+			? (
+				this.type === 'converter-flag'
+				&& Boolean((this.parentNode as ConverterFlagsToken | undefined)?.isInvalidFlag(this))
+			) as TokenAttribute<T>
+			: super.getAttribute(key);
+	}
 
 	override cloneNode(): this {
 		return cloneNode(this, () => new AtomToken(

@@ -189,6 +189,11 @@ export abstract class ImagemapToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid' ? !this.image as TokenAttribute<T> : super.getAttribute(key);
+	}
+
 	/**
 	 * @override
 	 * @param token node to be inserted / 待插入的节点

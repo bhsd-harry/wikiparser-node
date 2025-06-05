@@ -87,20 +87,23 @@ export abstract class GalleryImageToken extends FileToken {
 		);
 	}
 
+	/** 判定无效的图片 */
+	#lint(): boolean {
+		const {
+			ns,
+
+			/* NOT FOR BROWSER */
+
+			interwiki,
+		} = this.getAttribute('title');
+		return ns !== 6
+			|| Boolean(interwiki);
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{
-				ns,
-
-				/* NOT FOR BROWSER */
-
-				interwiki,
-			} = this.getAttribute('title');
-		if (
-			ns !== 6
-			|| interwiki
-		) {
+		const errors = super.lint(start, re);
+		if (this.#lint()) {
 			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image');
 			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
 			errors.push(e);
@@ -109,6 +112,11 @@ export abstract class GalleryImageToken extends FileToken {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+	}
 
 	/**
 	 * @override

@@ -250,6 +250,12 @@ export abstract class AttributesToken extends Token {
 		return this.getAttrToken(key)?.getValue();
 	}
 
+	/** 是否位于闭合标签内 */
+	#lint(): boolean {
+		const {parentNode} = this;
+		return parentNode?.type === 'html' && parentNode.closing && this.text().trim() !== '';
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
@@ -257,9 +263,9 @@ export abstract class AttributesToken extends Token {
 			attrs = new Map<string, AttributeToken[]>(),
 			duplicated = new Set<string>(),
 			rect = new BoundingRect(this, start);
-		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
+		if (this.#lint()) {
 			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag'),
-				index = parentNode.getAbsoluteIndex();
+				index = parentNode!.getAbsoluteIndex();
 			e.suggestions = [
 				{desc: 'remove', range: [start, e.endIndex], text: ''},
 				{desc: 'open', range: [index + 1, index + 2], text: ''},
@@ -519,6 +525,9 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		if (key === 'invalid') {
+			return this.#lint() as TokenAttribute<T>;
+		}
 		return key === 'padding'
 			? this.#leadingSpace(super.toString()).length as TokenAttribute<T>
 			: super.getAttribute(key);

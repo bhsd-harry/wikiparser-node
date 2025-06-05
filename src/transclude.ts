@@ -403,6 +403,11 @@ export abstract class TranscludeToken extends Token {
 
 			case 'keys':
 				return this.#keys as TokenAttribute<T>;
+			case 'invalid':
+				return (
+					this.type === 'magic-word' && this.name === 'invoke'
+					&& (this.length === 2 || !this.#getTitle().valid)
+				) as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER END */
 

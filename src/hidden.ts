@@ -29,6 +29,11 @@ export class HiddenToken extends Token {
 		});
 	}
 
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return (key === 'invalid') as TokenAttribute<T> || super.getAttribute(key);
+	}
+
 	override cloneNode(): this {
 		return cloneNode(
 			this,
