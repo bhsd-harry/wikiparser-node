@@ -87,17 +87,37 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 ## Parser
 
 1. Memory leaks may occur in rare cases.
+1. Invalid page names with unicode characters are treated like valid ones ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 1. Preformatted text with a leading space is only processed by [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
-1. Invalid page name with unicode characters ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 
 ## HTML conversion
 
+### Extension
+
 1. Many extensions are not supported, such as `<indicator>` and `<ref>`.
+
+### Transclusion
+
 1. Most parser functions are not supported.
-1. TOC is not supported.
+1. Transclusion of a subpage is not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#T2561%3A%20%7B%7B%2FSubpage%7D%7D)).
+
+### Heading
+
+1. The table of contents (TOC) is not supported.
+
+### Table
+
+1. When the entire table content is fostered, the table does not have an empty `<td>` ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%204.%20Templated%20tags%2C%20no%20content)).
+
+### Link
+
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
-1. Incomplete `<p>` wrapping (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily)).
-1. URI encoding in free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
-1. When the entire table content is fostered, the table does not have an empty `<td>` (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%201a.%20Fostering%20of%20entire%20template%20content), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%201b.%20Fostering%20of%20entire%20template%20content), [3](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%202.%20Fostering%20of%20partial%20template%20content), [4](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%204.%20Templated%20tags%2C%20no%20content)).
-1. Link to a subpage without a slash ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Subpage%20noslash%20link)).
-1. Transclusion of a subpage ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#T2561%3A%20%7B%7B%2FSubpage%7D%7D)).
+1. Links to a subpage without a slash are not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Subpage%20noslash%20link)).
+
+### External link
+
+1. No percent-encoding in displayed free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
+
+### Block element
+
+1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [`<div>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily) or even [closing tags](http://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
