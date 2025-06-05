@@ -1,9 +1,3 @@
-.wpb-table-inter {
-	color: #d73333;
-	font-weight: normal;
-	text-decoration: underline wavy 1px;
-}
-
 .wpb-hidden, .wpb-noinclude, .wpb-include, .wpb-comment, .wpb-attr-dirty {
 	color: #7b8c8f;
 	font-weight: normal;
@@ -78,7 +72,7 @@
 .wpb-table-attr > .wpb-attr-value {
 	color: #f500d4;
 }
-.wpb-td-inner {
+.wpb-table-inter, .wpb-td-inner {
 	color: initial;
 	font-weight: normal;
 }

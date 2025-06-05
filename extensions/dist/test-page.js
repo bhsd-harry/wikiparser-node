@@ -27,38 +27,8 @@
             optgroup.append(option);
         }
     }
-    select.addEventListener('change', () => {
-        const { wikitext, html, render, desc } = tests[Number(select.value)];
-        pre.textContent = wikitext;
-        pre.classList.remove('wikiparser');
-        container.removeAttribute('data-source');
-        if (html === undefined) {
-            container.style.display = 'none';
-        }
-        else {
-            container.style.display = '';
-            container1.innerHTML = html;
-            container2.innerHTML = render !== null && render !== void 0 ? render : '';
-        }
-        wikiparse.highlight(pre, false, true);
-        select.selectedOptions[0].disabled = true;
-        btn.disabled = false;
-        history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
-        dispatchEvent(new Event('casechange'));
-    });
-    btn.addEventListener('click', () => {
-        dones.add(tests[Number(select.value)].desc);
-        localStorage.setItem(key, JSON.stringify([...dones]));
-        while (select.selectedOptions[0].disabled) {
-            select.selectedIndex++;
-        }
-        select.dispatchEvent(new Event('change'));
-    });
-    container.addEventListener('click', e => {
-        e.preventDefault();
-    }, { capture: true });
-    container.addEventListener('dblclick', e => {
-        e.preventDefault();
+    const dblClickHandler = (e) => {
+        e === null || e === void 0 ? void 0 : e.preventDefault();
         if (container.dataset['source']) {
             container.removeAttribute('data-source');
             container1.innerHTML = container1.textContent;
@@ -77,7 +47,53 @@
             container2.replaceChildren(pre2);
             Prism.highlightAllUnder(container);
         }
+    };
+    select.addEventListener('change', () => {
+        const { wikitext, html, render, desc } = tests[Number(select.value)];
+        pre.textContent = wikitext;
+        pre.classList.remove('wikiparser');
+        container.removeAttribute('data-source');
+        if (html === undefined) {
+            container.style.display = 'none';
+        }
+        else {
+            container.style.display = '';
+            container1.innerHTML = html;
+            container2.innerHTML = render !== null && render !== void 0 ? render : '';
+            const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt');
+            for (const span of edits) {
+                span.remove();
+            }
+            for (const ele of empty) {
+                if (ele.childElementCount === 0 && !ele.textContent.trim()) {
+                    ele.classList.remove('mw-empty-elt');
+                    if (ele.classList.length === 0) {
+                        ele.removeAttribute('class');
+                    }
+                }
+            }
+            if (isIframe && container1.innerHTML === container2.innerHTML) {
+                dblClickHandler();
+            }
+        }
+        wikiparse.highlight(pre, false, true);
+        select.selectedOptions[0].disabled = true;
+        btn.disabled = false;
+        history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
+        dispatchEvent(new Event('casechange'));
     });
+    btn.addEventListener('click', () => {
+        dones.add(tests[Number(select.value)].desc);
+        localStorage.setItem(key, JSON.stringify([...dones]));
+        while (select.selectedOptions[0].disabled) {
+            select.selectedIndex++;
+        }
+        select.dispatchEvent(new Event('change'));
+    });
+    container.addEventListener('click', e => {
+        e.preventDefault();
+    }, { capture: true });
+    container.addEventListener('dblclick', dblClickHandler);
     addEventListener('hashchange', () => {
         const hash = decodeURIComponent(location.hash.slice(1)), i = tests.findIndex(({ desc }) => desc === hash);
         if (i !== -1) {
