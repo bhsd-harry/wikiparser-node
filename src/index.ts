@@ -49,7 +49,10 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
-import {generateForSelf, cache} from '../util/lint';
+import {
+	generateForSelf,
+	cache,
+} from '../util/lint';
 import {
 	setChildNodes,
 } from '../util/debug';

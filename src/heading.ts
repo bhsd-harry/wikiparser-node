@@ -72,6 +72,11 @@ export abstract class HeadingToken extends Token {
 		return equals + this.firstChild.text() + equals;
 	}
 
+	/** 是否位于标签属性内 */
+	#lint(): boolean {
+		return Boolean(this.closest<Token>('html-attrs,table-attrs'));
+	}
+
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		return key === 'padding' ? this.level as TokenAttribute<T> : super.getAttribute(key);
@@ -126,7 +131,7 @@ export abstract class HeadingToken extends Token {
 			}
 			errors.push(e);
 		}
-		if (this.closest('html-attrs,table-attrs')) {
+		if (this.#lint()) {
 			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in an HTML tag'));
 		}
 		const rootStr = this.getRootNode().toString();
