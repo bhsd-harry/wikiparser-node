@@ -72,18 +72,10 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	isInvalidFlag(
-		child: AtomToken,
-		variant?: Set<string>,
-		unknown?: Set<string>,
-		valid?: Set<string>,
-		flag?: string,
-	): boolean {
-		variant ??= this.getVariantFlags();
-		unknown ??= this.getUnknownFlags();
-		valid ??= new Set(this.#flags!.filter(f => definedFlags.has(f)));
-		flag ??= child.text().trim();
-		return Boolean(flag) && !variant.has(flag) && !unknown.has(flag) && (variant.size > 0 || !valid.has(flag));
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
+	isInvalidFlag(flag: string | Token, variant?: Set<string>, unknown?: Set<string>, valid?: Set<string>): boolean {
+		// @ts-expect-error flag is string
+		return Boolean(flag) && !variant!.has(flag) && !unknown!.has(flag) && (variant!.size > 0 || !valid!.has(flag));
 	}
 
 	/** @private */
@@ -101,7 +93,7 @@ export abstract class ConverterFlagsToken extends Token {
 		for (let i = 0; i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				flag = child.text().trim();
-			if (this.isInvalidFlag(child, variantFlags, unknownFlags, validFlags, flag)) {
+			if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
 				const e = generateForChild(child, rect, 'no-ignored', 'invalid conversion flag');
 				if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
 					e.fix = {range: [e.startIndex, e.endIndex], text: flag.toUpperCase(), desc: 'uppercase'};
