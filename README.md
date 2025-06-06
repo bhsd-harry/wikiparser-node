@@ -113,6 +113,7 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
 1. Links to a subpage without a slash are not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Subpage%20noslash%20link)).
+1. Block elements inside a link should break it into multiple links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
 
 ### External link
 

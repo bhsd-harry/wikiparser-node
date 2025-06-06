@@ -1,11 +1,16 @@
 import {Token} from './index';
 import type {Config} from '../base';
 
+/* PRINT ONLY */
+
+import type {ConverterFlagsToken} from '../internal';
+
+/* PRINT ONLY END */
+
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
 import {cloneNode} from '../util/html';
-import type {ConverterFlagsToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -61,7 +66,7 @@ export class AtomToken extends Token {
 		this.#type = type;
 	}
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
@@ -72,6 +77,10 @@ export class AtomToken extends Token {
 			) as TokenAttribute<T>
 			: super.getAttribute(key);
 	}
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
 		return cloneNode(this, () => new AtomToken(

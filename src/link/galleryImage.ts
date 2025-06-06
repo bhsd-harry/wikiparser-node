@@ -111,12 +111,16 @@ export abstract class GalleryImageToken extends FileToken {
 		return errors;
 	}
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
 	}
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * @override

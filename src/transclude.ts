@@ -399,15 +399,20 @@ export abstract class TranscludeToken extends Token {
 			case 'colon':
 				return this.#colon as TokenAttribute<T>;
 
-				/* NOT FOR BROWSER */
+				/* PRINT ONLY */
 
-			case 'keys':
-				return this.#keys as TokenAttribute<T>;
 			case 'invalid':
 				return (
 					this.type === 'magic-word' && this.name === 'invoke'
 					&& (this.length === 2 || !this.#getTitle().valid)
 				) as TokenAttribute<T>;
+
+				/* PRINT ONLY END */
+
+				/* NOT FOR BROWSER */
+
+			case 'keys':
+				return this.#keys as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER END */
 
@@ -645,7 +650,9 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override print(): string {
 		const {childNodes, length, firstChild, modifier, type} = this;
-		return `<span class="wpb-${type}">{{${escape(modifier)}${
+		return `<span class="wpb-${type}${
+			this.getAttribute('invalid') ? ' wpb-invalid' : ''
+		}">{{${escape(modifier)}${
 			type === 'magic-word'
 				? firstChild.print() + (length === 1 ? '' : this.#colon) + print(childNodes.slice(1), {sep: '|'})
 				: print(childNodes, {sep: '|'})

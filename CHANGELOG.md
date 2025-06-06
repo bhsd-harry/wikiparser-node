@@ -1,6 +1,10 @@
 ## v1.21.1
 
-*2025-06-06*
+*2025-06-07*
+
+**Added**
+
+- [`AstElement.prototype.print`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) now adds a red wavy underline to invalid wikitext
 
 **Fixed**
 

@@ -20,6 +20,15 @@ export class HiddenToken extends Token {
 		return 'hidden';
 	}
 
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return (key === 'invalid') as TokenAttribute<T> || super.getAttribute(key);
+	}
+
+	/* PRINT ONLY END */
+
 	/* NOT FOR BROWSER */
 
 	/** @class */
@@ -27,11 +36,6 @@ export class HiddenToken extends Token {
 		super(wikitext, config, accum, {
 			'Stage-2': ':', '!HeadingToken': '',
 		});
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return (key === 'invalid') as TokenAttribute<T> || super.getAttribute(key);
 	}
 
 	override cloneNode(): this {

@@ -59,7 +59,7 @@ import {
 	generateForSelf,
 	cache,
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	isFostered,
 } from '../util/lint';
@@ -483,12 +483,17 @@ export class Token extends AstElement {
 			case 'stage':
 				return this.#stage as TokenAttribute<T>;
 
+				/* PRINT ONLY */
+
+			case 'invalid':
+				return (this.type === 'table-inter' && isFostered(this) === 'error') as TokenAttribute<T>;
+
+				/* PRINT ONLY END */
+
 				/* NOT FOR BROWSER */
 
 			case 'protectedChildren':
 				return this.#protectedChildren as TokenAttribute<T>;
-			case 'invalid':
-				return (this.type === 'table-inter' && isFostered(this) === 'error') as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER END */
 

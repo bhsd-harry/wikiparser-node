@@ -132,13 +132,14 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* NOT FOR BROWSER */
+		/* PRINT ONLY */
 
 		if (key === 'invalid') {
 			return this.#lint() as TokenAttribute<T>;
 		}
 
-		/* NOT FOR BROWSER END */
+		/* PRINT ONLY END */
+
 		return key === 'padding' ? this.level as TokenAttribute<T> : super.getAttribute(key);
 	}
 

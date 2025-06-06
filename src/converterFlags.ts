@@ -122,7 +122,7 @@ export abstract class ConverterFlagsToken extends Token {
 	isInvalidFlag(child: Token): boolean;
 	/** @private */
 	isInvalidFlag(flag: string | Token, variant?: Set<string>, unknown?: Set<string>, valid?: Set<string>): boolean {
-		/* NOT FOR BROWSER */
+		/* PRINT ONLY */
 
 		if (typeof flag === 'object') {
 			flag = flag.text().trim();
@@ -131,7 +131,7 @@ export abstract class ConverterFlagsToken extends Token {
 			valid = new Set(this.#flags!.filter(f => definedFlags.has(f)));
 		}
 
-		/* NOT FOR BROWSER END */
+		/* PRINT ONLY END */
 
 		return Boolean(flag) && !variant!.has(flag) && !unknown!.has(flag) && (variant!.size > 0 || !valid!.has(flag));
 	}

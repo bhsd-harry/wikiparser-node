@@ -248,35 +248,35 @@ export abstract class AttributeToken extends Token {
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
 		) {
-			/* NOT FOR BROWSER */
+			/* PRINT ONLY */
 
 			if (start === undefined) {
 				return true;
 			}
 
-			/* NOT FOR BROWSER END */
+			/* PRINT ONLY END */
 
 			const e = generateForChild(firstChild, rect!, 'illegal-attr', 'illegal attribute name');
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
 			return e;
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
-			/* NOT FOR BROWSER */
+			/* PRINT ONLY */
 
 			if (start === undefined) {
 				return true;
 			}
 
-			/* NOT FOR BROWSER END */
+			/* PRINT ONLY END */
 
 			return generateForChild(lastChild, rect!, 'insecure-style', 'insecure style');
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
-			/* NOT FOR BROWSER */
+			/* PRINT ONLY */
 
 			if (start === undefined) {
 				return true;
 			}
 
-			/* NOT FOR BROWSER END */
+			/* PRINT ONLY END */
 
 			const e = generateForChild(lastChild, rect!, 'illegal-attr', 'nonzero tabindex');
 			e.suggestions = [
@@ -288,13 +288,13 @@ export abstract class AttributeToken extends Token {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
-				/* NOT FOR BROWSER */
+				/* PRINT ONLY */
 
 				if (start === undefined) {
 					return true;
 				}
 
-				/* NOT FOR BROWSER END */
+				/* PRINT ONLY END */
 
 				return generateForChild(
 					lastChild,
@@ -353,6 +353,13 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
 	}
 
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+	}
+
 	/** @private */
 	override print(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
@@ -366,12 +373,9 @@ export abstract class AttributeToken extends Token {
 		return json;
 	}
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY END */
 
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
-	}
+	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],

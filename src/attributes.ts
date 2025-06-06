@@ -322,14 +322,33 @@ export abstract class AttributesToken extends Token {
 		return errors;
 	}
 
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		/* NOT FOR BROWSER */
+
+		if (key === 'padding') {
+			return this.#leadingSpace(super.toString()).length as TokenAttribute<T>;
+		}
+
+		/* NOT FOR BROWSER END */
+
+		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+	}
+
 	/** @private */
 	override print(): string {
 		return this.toString()
-			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print(
-				child instanceof AtomToken ? {class: child.toString().trim() && 'attr-dirty'} : undefined,
-			)).join('')}</span>`
+			? `<span class="wpb-${this.type}${this.#lint() ? ' wpb-invalid' : ''}">${
+				this.childNodes.map(child => child.print(
+					child instanceof AtomToken ? {class: child.toString().trim() && 'attr-dirty'} : undefined,
+				)).join('')
+			}</span>`
 			: '';
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 
@@ -521,16 +540,6 @@ export abstract class AttributesToken extends Token {
 		}
 		const str = super.toString(skip);
 		return this.#leadingSpace(str) + str;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
-		}
-		return key === 'padding'
-			? this.#leadingSpace(super.toString()).length as TokenAttribute<T>
-			: super.getAttribute(key);
 	}
 
 	/** @private */
