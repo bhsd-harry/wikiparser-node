@@ -72,9 +72,22 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
+	isInvalidFlag(flag: string, variant: Set<string>, unknown: Set<string>, valid: Set<string>): boolean;
+	/** @private */
+	isInvalidFlag(child: Token): boolean;
+	/** @private */
 	isInvalidFlag(flag: string | Token, variant?: Set<string>, unknown?: Set<string>, valid?: Set<string>): boolean {
-		// @ts-expect-error flag is string
+		/* PRINT ONLY */
+
+		if (typeof flag === 'object') {
+			flag = flag.text().trim();
+			variant = this.getVariantFlags();
+			unknown = this.getUnknownFlags();
+			valid = new Set(this.#flags!.filter(f => definedFlags.has(f)));
+		}
+
+		/* PRINT ONLY END */
+
 		return Boolean(flag) && !variant!.has(flag) && !unknown!.has(flag) && (variant!.size > 0 || !valid!.has(flag));
 	}
 

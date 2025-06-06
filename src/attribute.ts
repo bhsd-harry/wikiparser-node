@@ -149,7 +149,9 @@ export abstract class AttributeToken extends Token {
 	 * @param start 起始位置
 	 * @param rect 位置
 	 */
-	#lint(start: number, rect?: BoundingRect): LintError | false {
+	#lint(): boolean;
+	#lint(start: number, rect: BoundingRect): LintError | false;
+	#lint(start?: number, rect?: BoundingRect): LintError | boolean {
 		const {firstChild, lastChild, type, name, tag} = this,
 			value = this.getValue(),
 			attrs = extAttrs[tag],
@@ -166,12 +168,36 @@ export abstract class AttributeToken extends Token {
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
 		) {
+			/* PRINT ONLY */
+
+			if (start === undefined) {
+				return true;
+			}
+
+			/* PRINT ONLY END */
+
 			const e = generateForChild(firstChild, rect!, 'illegal-attr', 'illegal attribute name');
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
 			return e;
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
+			/* PRINT ONLY */
+
+			if (start === undefined) {
+				return true;
+			}
+
+			/* PRINT ONLY END */
+
 			return generateForChild(lastChild, rect!, 'insecure-style', 'insecure style');
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
+			/* PRINT ONLY */
+
+			if (start === undefined) {
+				return true;
+			}
+
+			/* PRINT ONLY END */
+
 			const e = generateForChild(lastChild, rect!, 'illegal-attr', 'nonzero tabindex');
 			e.suggestions = [
 				{desc: 'remove', range: [start, start + length], text: ''},
@@ -182,6 +208,14 @@ export abstract class AttributeToken extends Token {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
+				/* PRINT ONLY */
+
+				if (start === undefined) {
+					return true;
+				}
+
+				/* PRINT ONLY END */
+
 				return generateForChild(
 					lastChild,
 					rect!,
@@ -237,6 +271,13 @@ export abstract class AttributeToken extends Token {
 	 */
 	getValue(): string | true {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
+	}
+
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
