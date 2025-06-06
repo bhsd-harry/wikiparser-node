@@ -5,11 +5,11 @@
 **Added**
 
 - [`AstElement.prototype.print`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) now adds a red wavy underline to invalid wikitext
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports percent-encoded file names (e.g., `%3F` for `?`)
 
 **Fixed**
 
 - Interaction between one-line definition lists (`;:`) and void HTML tags
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports percent-encoded file names (e.g., `%3F` for `?`)
 
 ## v1.21.0
 
