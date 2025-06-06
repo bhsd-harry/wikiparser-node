@@ -61,9 +61,10 @@
             container1.innerHTML = html;
             container2.innerHTML = render !== null && render !== void 0 ? render : '';
             const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt'), extLinks = container1
-                .querySelectorAll('a.external');
-            for (const span of edits) {
-                span.remove();
+                .querySelectorAll('a.external'), styles = container1
+                .querySelectorAll('[style="/* insecure input */"]');
+            for (const ele of edits) {
+                ele.remove();
             }
             for (const ele of empty) {
                 if (ele.childElementCount === 0 && !ele.textContent.trim()) {
@@ -73,12 +74,15 @@
                     }
                 }
             }
-            for (const link of extLinks) {
-                link.classList.remove('text', 'autonumber');
+            for (const ele of extLinks) {
+                ele.classList.remove('text', 'autonumber');
                 try {
-                    link.href = new URL(link.href).href;
+                    ele.href = new URL(ele.href).href;
                 }
                 catch { }
+            }
+            for (const ele of styles) {
+                ele.removeAttribute('style');
             }
             if (isIframe && container1.innerHTML === container2.innerHTML) {
                 dblClickHandler();

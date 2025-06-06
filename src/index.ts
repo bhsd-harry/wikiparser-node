@@ -10,7 +10,7 @@
 // 6. 内链，含文件和分类，参见Parser::handleInternalLinks2
 // 7. `'`，参见Parser::doQuotes
 // 8. 外链，参见Parser::handleExternalLinks
-// 9. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
+// 9. ISBN、RFC和自由外链，参见Parser::handleMagicLinks
 // 10. 段落和列表，参见BlockLevelPass::execute
 // 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
 // \0\d+.\x7F标记Token：
@@ -425,6 +425,18 @@ export class Token extends AstElement {
 	/** @private */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, opt);
+	}
+
+	/** @private */
+	inTableAttrs(): LintError.Severity | false {
+		return this.closest('table-attrs,ext')?.type === 'table-attrs' && (
+			this.closest('table-attrs,arg,magic-word,template')?.type === 'table-attrs' ? 'error' : 'warning'
+		);
+	}
+
+	/** @private */
+	inHtmlAttrs(): LintError.Severity | false {
+		return this.closest('html-attrs,ext')?.type === 'html-attrs' ? 'error' : this.inTableAttrs();
 	}
 
 	/** @private */

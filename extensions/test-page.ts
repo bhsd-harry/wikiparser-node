@@ -80,9 +80,11 @@ declare interface Test {
 			const edits = container1.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
 				empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>,
 				extLinks = container1
-					.querySelectorAll('a.external') as unknown as Iterable<HTMLAnchorElement>;
-			for (const span of edits) {
-				span.remove();
+					.querySelectorAll('a.external') as unknown as Iterable<HTMLAnchorElement>,
+				styles = container1
+					.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>;
+			for (const ele of edits) {
+				ele.remove();
 			}
 			for (const ele of empty) {
 				if (ele.childElementCount === 0 && !ele.textContent!.trim()) {
@@ -92,11 +94,14 @@ declare interface Test {
 					}
 				}
 			}
-			for (const link of extLinks) {
-				link.classList.remove('text', 'autonumber');
+			for (const ele of extLinks) {
+				ele.classList.remove('text', 'autonumber');
 				try {
-					link.href = new URL(link.href).href;
+					ele.href = new URL(ele.href).href;
 				} catch {}
+			}
+			for (const ele of styles) {
+				ele.removeAttribute('style');
 			}
 			if (isIframe && container1.innerHTML === container2.innerHTML) {
 				dblClickHandler();
