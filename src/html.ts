@@ -182,17 +182,12 @@ export abstract class HtmlToken extends Token {
 		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
 	}
 
-	/** 是否位于表格属性内 */
-	#lint(): boolean {
-		return Boolean(this.closest<Token>('table-attrs'));
-	}
-
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* PRINT ONLY */
 
 		if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
+			return (this.inTableAttrs() === 'error') as TokenAttribute<T>;
 		}
 
 		/* PRINT ONLY END */
@@ -206,15 +201,18 @@ export abstract class HtmlToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{name, parentNode, closing, selfClosing} = this,
-			rect = new BoundingRect(this, start);
+			rect = new BoundingRect(this, start),
+			s = this.inTableAttrs();
 		if (name === 'h1' && !closing) {
 			const e = generateForSelf(this, rect, 'h1', '<h1>');
 			e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
 			errors.push(e);
 		}
-		if (this.#lint()) {
-			const e = generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes');
-			e.fix = {desc: 'remove', range: [start, e.endIndex], text: ''};
+		if (s) {
+			const e = generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes', s);
+			if (s === 'error') {
+				e.fix = {desc: 'remove', range: [start, e.endIndex], text: ''};
+			}
 			errors.push(e);
 		}
 		if (obsoleteTags.has(name)) {

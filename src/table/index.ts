@@ -752,7 +752,7 @@ export abstract class TableToken extends TrBaseToken {
 				.join(' ')
 		}<table${childNodes[1].toHtmlInternal()}>${opt?.nowrap ? ' ' : '\n'}<tbody>${
 			super.toHtmlInternal(opt)
-		}${html(tr, '', opt)}</tbody></table>`;
+		}${html(tr, '\n', opt)}</tbody></table>`;
 	}
 }
 

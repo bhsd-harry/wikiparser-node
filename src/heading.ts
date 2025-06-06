@@ -125,17 +125,12 @@ export abstract class HeadingToken extends Token {
 		return equals + this.firstChild.text() + equals;
 	}
 
-	/** 是否位于标签属性内 */
-	#lint(): boolean {
-		return Boolean(this.closest<Token>('html-attrs,table-attrs'));
-	}
-
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* PRINT ONLY */
 
 		if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
+			return (this.inHtmlAttrs() === 'error') as TokenAttribute<T>;
 		}
 
 		/* PRINT ONLY END */
@@ -158,7 +153,8 @@ export abstract class HeadingToken extends Token {
 			quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
 			boldQuotes = quotes.filter(({bold}) => bold),
 			italicQuotes = quotes.filter(({italic}) => italic),
-			rect = new BoundingRect(this, start);
+			rect = new BoundingRect(this, start),
+			s = this.inHtmlAttrs();
 		if (this.level === 1) {
 			const e = generateForChild(firstChild, rect, 'h1', '<h1>');
 			if (!unbalanced) {
@@ -192,8 +188,8 @@ export abstract class HeadingToken extends Token {
 			}
 			errors.push(e);
 		}
-		if (this.#lint()) {
-			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in an HTML tag'));
+		if (s) {
+			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in an HTML tag', s));
 		}
 		const rootStr = this.getRootNode().toString();
 		if (boldQuotes.length % 2) {
