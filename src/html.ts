@@ -125,6 +125,14 @@ export abstract class HtmlToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		/* PRINT ONLY */
+
+		if (key === 'invalid') {
+			return this.#lint() as TokenAttribute<T>;
+		}
+
+		/* PRINT ONLY END */
+
 		return key === 'padding'
 			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttribute<T>
 			: super.getAttribute(key);

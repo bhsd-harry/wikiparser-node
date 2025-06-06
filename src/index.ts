@@ -52,6 +52,10 @@ import {
 import {
 	generateForSelf,
 	cache,
+
+	/* PRINT ONLY */
+
+	isFostered,
 } from '../util/lint';
 import {
 	setChildNodes,
@@ -372,6 +376,14 @@ export class Token extends AstElement {
 				return this.#built as TokenAttribute<T>;
 			case 'stage':
 				return this.#stage as TokenAttribute<T>;
+
+				/* PRINT ONLY */
+
+			case 'invalid':
+				return (this.type === 'table-inter' && isFostered(this) === 'error') as TokenAttribute<T>;
+
+				/* PRINT ONLY END */
+
 			default:
 				return super.getAttribute(key);
 		}

@@ -171,6 +171,14 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		/* PRINT ONLY */
+
+		if (key === 'invalid') {
+			return (this.name === 'invalid') as TokenAttribute<T>;
+		}
+
+		/** PRINT ONLY END */
+
 		return key === 'padding'
 			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
 			: super.getAttribute(key);
@@ -214,7 +222,7 @@ export abstract class ImageParameterToken extends Token {
 	/** @private */
 	override print(): string {
 		if (this.#syntax) {
-			return `<span class="wpb-image-parameter">${
+			return `<span class="wpb-image-parameter${this.name === 'invalid' ? ' wpb-invalid' : ''}">${
 				this.#syntax.replace(
 					'$1',
 					`<span class="wpb-image-caption">${print(this.childNodes)}</span>`,

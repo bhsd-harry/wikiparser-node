@@ -47,4 +47,11 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		}
 		return super.lint(start, getLintRegex(name));
 	}
+
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+	}
 }

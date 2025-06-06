@@ -1,3 +1,7 @@
+.wpb-invalid {
+	text-decoration: underline wavy #d73333 1px;
+}
+
 .wpb-hidden, .wpb-noinclude, .wpb-include, .wpb-comment, .wpb-attr-dirty {
 	color: #7b8c8f;
 	font-weight: normal;
