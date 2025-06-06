@@ -227,6 +227,7 @@ export abstract class AttributeToken extends Token {
 	/**
 	 * 判定无效的属性名或值
 	 * @param start 起始位置
+	 * @param rect 位置
 	 */
 	#lint(): boolean;
 	#lint(start: number, rect: BoundingRect): LintError | false;
@@ -247,19 +248,36 @@ export abstract class AttributeToken extends Token {
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
 		) {
+			/* NOT FOR BROWSER */
+
 			if (start === undefined) {
 				return true;
 			}
+
+			/* NOT FOR BROWSER END */
+
 			const e = generateForChild(firstChild, rect!, 'illegal-attr', 'illegal attribute name');
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
 			return e;
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
-			return start === undefined
-				|| generateForChild(lastChild, rect!, 'insecure-style', 'insecure style');
-		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
+			/* NOT FOR BROWSER */
+
 			if (start === undefined) {
 				return true;
 			}
+
+			/* NOT FOR BROWSER END */
+
+			return generateForChild(lastChild, rect!, 'insecure-style', 'insecure style');
+		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
+			/* NOT FOR BROWSER */
+
+			if (start === undefined) {
+				return true;
+			}
+
+			/* NOT FOR BROWSER END */
+
 			const e = generateForChild(lastChild, rect!, 'illegal-attr', 'nonzero tabindex');
 			e.suggestions = [
 				{desc: 'remove', range: [start, start + length], text: ''},
@@ -270,7 +288,15 @@ export abstract class AttributeToken extends Token {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
-				return start === undefined || generateForChild(
+				/* NOT FOR BROWSER */
+
+				if (start === undefined) {
+					return true;
+				}
+
+				/* NOT FOR BROWSER END */
+
+				return generateForChild(
 					lastChild,
 					rect!,
 					'illegal-attr',
