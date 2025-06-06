@@ -435,6 +435,7 @@
 			"nse": "nse",
 			"url编码": "urlencode",
 			"urlencode": "urlencode",
+			"#urlencode": "urlencode",
 			"小写首字": "lcfirst",
 			"lcfirst": "lcfirst",
 			"大写首字": "ucfirst",

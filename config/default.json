@@ -672,6 +672,7 @@
 			"urlエンコード": "urlencode",
 			"ｕｒｌエンコード：": "urlencode",
 			"urlencode": "urlencode",
+			"#urlencode": "urlencode",
 			"小写首字": "lcfirst",
 			"先頭小文字": "lcfirst",
 			"lcfirst": "lcfirst",
