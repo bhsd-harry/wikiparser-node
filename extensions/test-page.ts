@@ -78,7 +78,9 @@ declare interface Test {
 			container1.innerHTML = html!;
 			container2.innerHTML = render ?? '';
 			const edits = container1.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
-				empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>;
+				empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>,
+				extLinks = container1
+					.querySelectorAll('a.external') as unknown as Iterable<HTMLAnchorElement>;
 			for (const span of edits) {
 				span.remove();
 			}
@@ -89,6 +91,12 @@ declare interface Test {
 						ele.removeAttribute('class');
 					}
 				}
+			}
+			for (const link of extLinks) {
+				link.classList.remove('text', 'autonumber');
+				try {
+					link.href = new URL(link.href).href;
+				} catch {}
 			}
 			if (isIframe && container1.innerHTML === container2.innerHTML) {
 				dblClickHandler();

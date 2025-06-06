@@ -60,7 +60,8 @@
             container.style.display = '';
             container1.innerHTML = html;
             container2.innerHTML = render !== null && render !== void 0 ? render : '';
-            const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt');
+            const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt'), extLinks = container1
+                .querySelectorAll('a.external');
             for (const span of edits) {
                 span.remove();
             }
@@ -71,6 +72,13 @@
                         ele.removeAttribute('class');
                     }
                 }
+            }
+            for (const link of extLinks) {
+                link.classList.remove('text', 'autonumber');
+                try {
+                    link.href = new URL(link.href).href;
+                }
+                catch { }
             }
             if (isIframe && container1.innerHTML === container2.innerHTML) {
                 dblClickHandler();
