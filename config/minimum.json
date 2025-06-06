@@ -105,6 +105,7 @@
 			"servername": "servername",
 			"scriptpath": "scriptpath",
 			"stylepath": "stylepath",
+			"#urlencode": "urlencode",
 			"#language": "language",
 			"#special": "special",
 			"#speciale": "speciale",
