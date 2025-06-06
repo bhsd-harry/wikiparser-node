@@ -105,9 +105,15 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 1. The table of contents (TOC) is not supported.
 
+### HTML tag
+
+1. Style sanitization is sometimes different ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
+1. Empty `id` attributes are not removed ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Sanitizer%3A%20Validating%20the%20contents%20of%20the%20id%20attribute%2C%20empty%20attribute%20syntax%20(T6515))).
+
 ### Table
 
 1. When the entire table content is fostered, the table does not have an empty `<td>` ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%204.%20Templated%20tags%2C%20no%20content)).
+1. Missing newline between the fostered content and the table ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%201a.%20Fostering%20of%20entire%20template%20content)).
 
 ### Link
 
