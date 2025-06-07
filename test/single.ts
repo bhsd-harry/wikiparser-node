@@ -1,4 +1,5 @@
 import {diff, error} from '../util/diff';
+import type {SimplePage} from '@bhsd/common/dist/test';
 import type {LintError} from '../base';
 
 /* NOT FOR BROWSER ONLY */

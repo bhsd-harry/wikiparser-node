@@ -1,3 +1,4 @@
+import {getPages, reset} from '@bhsd/common/dist/test';
 import {error, info, diff} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
@@ -20,43 +21,15 @@ const {argv: [,, site = '']} = process,
 		['MediaWiki', 'https://www.mediawiki.org/w', 'mediawikiwiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
-/**
- * 获取最近更改的页面源代码
- * @param url api.php网址
- * @param config 解析器配置名
- */
-const getPages = async (url: string, config: string): Promise<SimplePage[]> => {
-	const qs = {
-		action: 'query',
-		format: 'json',
-		formatversion: '2',
-		errorformat: 'plaintext',
-		generator: 'recentchanges',
-		grcnamespace: config === 'mediawikiwiki' ? '0|10|12|100|102|104|106' : '0|10',
-		grclimit: '10',
-		grctype: 'edit|new',
-		prop: 'revisions',
-		rvprop: 'contentmodel|content',
-	};
-	return (await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json() as MediaWikiResponse)
-		.query.pages
-		.map(({pageid, title, ns, revisions}) => ({
-			pageid,
-			title,
-			ns,
-			content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
-		}))
-		.filter((page): page is SimplePage => page.content !== false);
-};
-
 (async () => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：\n`);
 		Parser.config = config;
+		reset();
 		try {
 			let failed = 0;
-			for (const page of await getPages(`${url}/api.php`, config)) {
+			for (const page of await getPages(`${url}/api.php`, name, '10')) {
 				const {pageid, title, content} = page;
 				try {
 					const errors = await single(page);
