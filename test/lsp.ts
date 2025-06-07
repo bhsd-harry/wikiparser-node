@@ -1,6 +1,7 @@
 import {error} from '../util/diff';
 import './wikiparse';
 import type {Position} from 'vscode-languageserver-types';
+import type {SimplePage} from '@bhsd/common/dist/test';
 import type {
 	LanguageService,
 	Config,

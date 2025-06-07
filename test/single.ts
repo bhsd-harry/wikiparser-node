@@ -1,5 +1,6 @@
 import {diff, error} from '../util/diff';
 import './wikiparse';
+import type {SimplePage} from '@bhsd/common/dist/test';
 import type {LintError} from '../base';
 
 /* PRINT ONLY */
