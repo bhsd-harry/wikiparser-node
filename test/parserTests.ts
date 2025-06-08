@@ -1,5 +1,5 @@
 import Parser from '../index';
-import type {Test} from '../script/util';
+import type {Test} from '@bhsd/common/dist/test';
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
