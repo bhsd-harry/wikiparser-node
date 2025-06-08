@@ -4,11 +4,12 @@
 
 **Fixed**
 
-- An issue with one-line definition lists (`;:`)
+- An issue with one-line definition lists (`;:`) when `;` is followed by whitespace
 
 **Changed**
 
 - `TranscludeToken.prototype.print` now highlights the modifiers (e.g., `subst:`) as magic words
+- [`AttributeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tohtml) now drops empty `id` attributes
 
 ## v1.21.1
 
