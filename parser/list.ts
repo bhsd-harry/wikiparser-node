@@ -24,7 +24,8 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 		state.lastPrefix = '';
 		return wikitext;
 	}
-	const [total, comment, prefix] = mt,
+	const [total, comment] = mt,
+		prefix = mt[2].trim(),
 		prefix2 = prefix.replace(/;/gu, ':'),
 		commonPrefixLength = getCommon(prefix2, state.lastPrefix),
 		parts = (commonPrefixLength > 1 ? prefix.slice(commonPrefixLength - 1) : prefix).split(/(?=;)/u),

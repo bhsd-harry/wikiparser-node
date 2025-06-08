@@ -1,3 +1,11 @@
+## v1.21.2
+
+*2025-06-09*
+
+**Fixed**
+
+- An issue with one-line definition lists (`;:`)
+
 ## v1.21.1
 
 *2025-06-07*

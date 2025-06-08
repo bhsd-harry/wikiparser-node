@@ -104,7 +104,7 @@ export abstract class MagicLinkToken extends Token {
 				}`
 				: innerText;
 		}
-		return decodeNumber(innerText);
+		return decodeNumber(innerText).replace(/\n/gu, '%0A');
 	}
 
 	/* NOT FOR BROWSER */
