@@ -19,16 +19,16 @@ import {parsers} from '../util/constants';
  * @param accum
  */
 export const parseList = (wikitext: string, state: {lastPrefix: string}, config: Config, accum: Token[]): string => {
-	const mt = /^((?:\0\d+[cno]\x7F)*)([;:*#]+\s*)/u.exec(wikitext) as [string, string, string] | null;
+	const mt = /^((?:\0\d+[cno]\x7F)*)([;:*#]+)(\s*)/u.exec(wikitext) as [string, string, string, string] | null;
 	if (!mt) {
 		state.lastPrefix = '';
 		return wikitext;
 	}
-	const [total, comment] = mt,
-		prefix = mt[2].trim(),
+	const [total, comment, prefix, space] = mt,
 		prefix2 = prefix.replace(/;/gu, ':'),
 		commonPrefixLength = getCommon(prefix2, state.lastPrefix),
-		parts = (commonPrefixLength > 1 ? prefix.slice(commonPrefixLength - 1) : prefix).split(/(?=;)/u),
+		parts = ((commonPrefixLength > 1 ? prefix.slice(commonPrefixLength - 1) : prefix) + space)
+			.split(/(?=;)/u),
 		isDt = parts[0]!.startsWith(';');
 	let dt = parts.length - (isDt ? 0 : 1);
 	if (commonPrefixLength > 1) {
