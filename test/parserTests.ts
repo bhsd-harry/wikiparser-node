@@ -24,10 +24,13 @@ describe('Parser tests', () => {
 			&& !wikitext.includes('|]]')
 		) {
 			it(desc, () => {
-				const root =
-					Parser.parse(wikitext);
-
+				const root = Parser.parse(wikitext);
 				try {
+					assert.deepStrictEqual(
+						root.toString(),
+						wikitext.replaceAll('\0', ''),
+						'解析过程中不可逆地修改了原始文本！',
+					);
 					if (print) {
 						assert.deepStrictEqual(split(root.print()), split(print));
 					}
