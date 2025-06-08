@@ -1,5 +1,5 @@
 import assert from 'assert/strict';
-import type {Test} from '../script/util';
+import type {Test} from '@bhsd/common/dist/test';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;

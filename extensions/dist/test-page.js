@@ -62,7 +62,7 @@
             container2.innerHTML = render !== null && render !== void 0 ? render : '';
             const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt'), extLinks = container1
                 .querySelectorAll('a.external'), styles = container1
-                .querySelectorAll('[style="/* insecure input */"]');
+                .querySelectorAll('[style="/* insecure input */"]'), anchors = container1.querySelectorAll('a[href]');
             for (const ele of edits) {
                 ele.remove();
             }
@@ -83,6 +83,21 @@
             }
             for (const ele of styles) {
                 ele.removeAttribute('style');
+            }
+            for (const ele of anchors) {
+                try {
+                    const url = new URL(ele.href);
+                    if (url.origin === location.origin
+                        && url.pathname === '/index.php'
+                        && url.searchParams.has('title')) {
+                        url.pathname = `/wiki/${url.searchParams.get('title').replace(/:/gu, '%3A')}`;
+                        url.searchParams.delete('title');
+                        ele.setAttribute('href', url.pathname + url.search);
+                    }
+                }
+                catch {
+                    ele.removeAttribute('href');
+                }
             }
             if (isIframe && container1.innerHTML === container2.innerHTML) {
                 dblClickHandler();
