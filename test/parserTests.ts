@@ -1,3 +1,4 @@
+import assert from 'assert/strict';
 import Parser from '../index';
 import type {Test} from '@bhsd/common/dist/test';
 
@@ -8,7 +9,19 @@ describe('Parser tests', () => {
 			wikitext && (print || render)
 		) {
 			it(desc, () => {
-				Parser.parse(wikitext);
+				const root = Parser.parse(wikitext);
+				try {
+					assert.deepStrictEqual(
+						root.toString(),
+						wikitext.replaceAll('\0', ''),
+						'解析过程中不可逆地修改了原始文本！',
+					);
+				} catch (e) {
+					if (e instanceof assert.AssertionError) {
+						e.cause = {message: `\n${wikitext}`};
+					}
+					throw e;
+				}
 			});
 		}
 	}
