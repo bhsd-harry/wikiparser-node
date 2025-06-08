@@ -4277,7 +4277,7 @@
 		"wikitext": "{{RAW:QUERTY}}",
 		"html": "<p><a href=\"/index.php?title=Template:QUERTY&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:QUERTY (page does not exist)\">Template:QUERTY</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Template%3AQUERTY?action=edit&redlink=1\" class=\"new\" title=\"Template:QUERTY (page does not exist)\">Template:QUERTY</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{RAW:<span class=\"wpb-template-name\">QUERTY</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">RAW:</span><span class=\"wpb-template-name\">QUERTY</span>}}</span></span>"
 	},
 	{
 		"desc": "Always escape literal '>' in output, not just after '<'",
@@ -13905,7 +13905,7 @@
 	{
 		"desc": "pre-save transform: subst:",
 		"wikitext": "{{subst:test}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">test</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">test</span>}}</span></span>"
 	},
 	{
 		"desc": "pre-save transform: normal template",
@@ -13925,17 +13925,17 @@
 	{
 		"desc": "pre-save transform: subst: templates with parameters",
 		"wikitext": "{{subst:paramtest|param=\"something else\"}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">paramtest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">param</span>=<span class=\"wpb-parameter-value\">\"something else\"</span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">paramtest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">param</span>=<span class=\"wpb-parameter-value\">\"something else\"</span></span>}}</span></span>"
 	},
 	{
 		"desc": "pre-save transform: nowiki in subst (T3188)",
 		"wikitext": "{{subst:nowikitest}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">nowikitest</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">nowikitest</span>}}</span></span>"
 	},
 	{
 		"desc": "pre-save transform: comment in subst (T3936)",
 		"wikitext": "{{subst:commenttest}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">commenttest</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">commenttest</span>}}</span></span>"
 	},
 	{
 		"desc": "pre-save transform: unclosed tag",
@@ -13972,17 +13972,17 @@
 	{
 		"desc": "pre-save transform: <noinclude> in subst (T5298)",
 		"wikitext": "{{subst:Includes}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">Includes</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">Includes</span>}}</span></span>"
 	},
 	{
 		"desc": "pre-save transform: <onlyinclude> in subst (T5298)",
 		"wikitext": "{{subst:Includes2}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">Includes2</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">Includes2</span>}}</span></span>"
 	},
 	{
 		"desc": "T24297: safesubst: works during PST",
 		"wikitext": "{{subst:SafeSubstTest}}{{safesubst:SubstTest}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">SafeSubstTest</span>}}</span><span class=\"wpb-template\">{{safesubst:<span class=\"wpb-template-name\">SubstTest</span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">SafeSubstTest</span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">safesubst:</span><span class=\"wpb-template-name\">SubstTest</span>}}</span></span>"
 	},
 	{
 		"desc": "T24297: safesubst: works during normal parse",
@@ -14013,7 +14013,7 @@
 	{
 		"desc": "subst: with whitespace - variable vs. template",
 		"wikitext": "Variable: {{subst: ROOTPAGENAME}}\nVariable: {{subst:ROOTPAGENAME}}\nTemplate: {{subst: ROOTPAGENAME|template}}\nTemplate: {{subst:ROOTPAGENAME|template}}",
-		"print": "<span class=\"wpb-root\">Variable: <span class=\"wpb-magic-word\">{{subst: <span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\nVariable: <span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\nTemplate: <span class=\"wpb-template\">{{subst: <span class=\"wpb-template-name\">ROOTPAGENAME</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">template</span></span>}}</span>\nTemplate: <span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">ROOTPAGENAME</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">template</span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\">Variable: <span class=\"wpb-magic-word\">{{subst: <span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\nVariable: <span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\nTemplate: <span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst: </span><span class=\"wpb-template-name\">ROOTPAGENAME</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">template</span></span>}}</span>\nTemplate: <span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">ROOTPAGENAME</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">template</span></span>}}</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\")",
@@ -14115,7 +14115,7 @@
 	{
 		"desc": "pre-save transform: Signature expansion in nowiki tags (T2093)",
 		"wikitext": "Shall not expand:\n\n<nowiki>~~~~</nowiki>\n\n<includeonly><nowiki>~~~~</nowiki></includeonly>\n\n<noinclude><nowiki>~~~~</nowiki></noinclude>\n\n<onlyinclude><nowiki>~~~~</nowiki></onlyinclude>\n\n{{subst:Foo}} shall be converted to FOO\n\nAs well as inside noinclude/onlyinclude\n<noinclude>{{subst:Foo}}</noinclude>\n<onlyinclude>{{subst:Foo}}</onlyinclude>\n\nBut not inside includeonly\n<includeonly>{{subst:Foo}}</includeonly>",
-		"print": "<span class=\"wpb-root\">Shall not expand:\n\n<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">~~~~</span>&lt;/nowiki&gt;</span>\n\n<span class=\"wpb-include\">&lt;includeonly&gt;&lt;nowiki&gt;~~~~&lt;/nowiki&gt;&lt;/includeonly&gt;</span>\n\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">~~~~</span>&lt;/nowiki&gt;</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>\n\n<span class=\"wpb-noinclude\">&lt;onlyinclude&gt;</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">~~~~</span>&lt;/nowiki&gt;</span><span class=\"wpb-noinclude\">&lt;/onlyinclude&gt;</span>\n\n<span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">Foo</span>}}</span> shall be converted to FOO\n\nAs well as inside noinclude/onlyinclude\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">Foo</span>}}</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>\n<span class=\"wpb-noinclude\">&lt;onlyinclude&gt;</span><span class=\"wpb-template\">{{subst:<span class=\"wpb-template-name\">Foo</span>}}</span><span class=\"wpb-noinclude\">&lt;/onlyinclude&gt;</span>\n\nBut not inside includeonly\n<span class=\"wpb-include\">&lt;includeonly&gt;{{subst:Foo}}&lt;/includeonly&gt;</span></span>"
+		"print": "<span class=\"wpb-root\">Shall not expand:\n\n<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">~~~~</span>&lt;/nowiki&gt;</span>\n\n<span class=\"wpb-include\">&lt;includeonly&gt;&lt;nowiki&gt;~~~~&lt;/nowiki&gt;&lt;/includeonly&gt;</span>\n\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">~~~~</span>&lt;/nowiki&gt;</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>\n\n<span class=\"wpb-noinclude\">&lt;onlyinclude&gt;</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">~~~~</span>&lt;/nowiki&gt;</span><span class=\"wpb-noinclude\">&lt;/onlyinclude&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">Foo</span>}}</span> shall be converted to FOO\n\nAs well as inside noinclude/onlyinclude\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">Foo</span>}}</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>\n<span class=\"wpb-noinclude\">&lt;onlyinclude&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">Foo</span>}}</span><span class=\"wpb-noinclude\">&lt;/onlyinclude&gt;</span>\n\nBut not inside includeonly\n<span class=\"wpb-include\">&lt;includeonly&gt;{{subst:Foo}}&lt;/includeonly&gt;</span></span>"
 	},
 	{
 		"desc": "Parsoid: Recognize nowiki with trailing space in tags",
