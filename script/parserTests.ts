@@ -3,7 +3,7 @@ import path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
 import {prepare} from './util';
-import type {Test} from './util';
+import type {Test} from '@bhsd/common/dist/test';
 
 prepare(Parser);
 

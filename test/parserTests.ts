@@ -1,6 +1,6 @@
 import assert from 'assert/strict';
 import Parser from '../index';
-import type {Test} from '../script/util';
+import type {Test} from '@bhsd/common/dist/test';
 
 /* NOT FOR BROWSER */
 
