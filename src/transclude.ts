@@ -652,10 +652,14 @@ export abstract class TranscludeToken extends Token {
 		const {childNodes, length, firstChild, modifier, type} = this;
 		return `<span class="wpb-${type}${
 			this.getAttribute('invalid') ? ' wpb-invalid' : ''
-		}">{{${escape(modifier)}${
+		}">{{${
 			type === 'magic-word'
-				? firstChild.print() + (length === 1 ? '' : this.#colon) + print(childNodes.slice(1), {sep: '|'})
-				: print(childNodes, {sep: '|'})
+				? escape(modifier)
+				+ firstChild.print()
+				+ (length === 1 ? '' : this.#colon)
+				+ print(childNodes.slice(1), {sep: '|'})
+				: (modifier ? `<span class="wpb-magic-word">${escape(modifier)}</span>` : '')
+					+ print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
 

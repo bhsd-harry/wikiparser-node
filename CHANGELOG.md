@@ -6,6 +6,10 @@
 
 - An issue with one-line definition lists (`;:`)
 
+**Changed**
+
+- `TranscludeToken.prototype.print` now highlights the modifiers (e.g., `subst:`) as magic words
+
 ## v1.21.1
 
 *2025-06-07*
