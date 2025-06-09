@@ -20,7 +20,7 @@ const isTr = (token: TableTokens): token is TrToken | TableToken =>
  * @param stack 表格栈
  */
 const pop = (top: TableTokens | undefined, stack: TableTokens[]): TrToken | TableToken =>
-	top!.type === 'td' ? stack.pop() as TrToken | TableToken : top!;
+	top!.is<TdToken>('td') ? stack.pop() as TrToken | TableToken : top!;
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
@@ -100,7 +100,7 @@ export const parseTable = (
 			push(attr, stack[stack.length - 1]);
 		} else if (row) {
 			top = pop(top, stack);
-			if (top.type === 'tr') {
+			if (top.is<TrToken>('tr')) {
 				top = stack.pop() as TableToken;
 			}
 			// @ts-expect-error abstract class
