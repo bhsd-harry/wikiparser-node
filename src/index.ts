@@ -70,6 +70,7 @@ import type {
 	AstNodes,
 	CategoryToken,
 	AttributeToken,
+	AttributesToken,
 } from '../internal';
 
 declare interface LintIgnore {
@@ -430,13 +431,17 @@ export class Token extends AstElement {
 	/** @private */
 	inTableAttrs(): LintError.Severity | false {
 		return this.closest('table-attrs,ext')?.type === 'table-attrs' && (
-			this.closest('table-attrs,arg,magic-word,template')?.type === 'table-attrs' ? 'error' : 'warning'
+			this.closest('table-attrs,arg,magic-word,template')?.is<AttributesToken>('table-attrs')
+				? 'error'
+				: 'warning'
 		);
 	}
 
 	/** @private */
 	inHtmlAttrs(): LintError.Severity | false {
-		return this.closest('html-attrs,ext')?.type === 'html-attrs' ? 'error' : this.inTableAttrs();
+		return this.closest('html-attrs,ext')?.is<AttributesToken>('html-attrs')
+			? 'error'
+			: this.inTableAttrs();
 	}
 
 	/** @private */
@@ -447,7 +452,7 @@ export class Token extends AstElement {
 				selector = 'category,html-attr#id,ext-attr#id,table-attr#id';
 			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 				let key;
-				if (cat.type === 'category') {
+				if (cat.is<CategoryToken>('category')) {
 					key = cat.name;
 				} else {
 					const value = cat.getValue();
