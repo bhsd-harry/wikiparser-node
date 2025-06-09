@@ -165,7 +165,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 			attr = this.firstChild.toString() || undefined;
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new TranslateToken(attr, undefined, config) as this;
+			const token: this = new TranslateToken(attr, undefined, config);
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});

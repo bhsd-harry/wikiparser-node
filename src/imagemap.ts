@@ -166,7 +166,7 @@ export abstract class ImagemapToken extends Token {
 			errors.push(
 				...this.childNodes.filter(child => {
 					const str = child.toString().trim();
-					return child.type === 'noinclude' && str && !str.startsWith('#');
+					return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
 				}).map(child => {
 					const e = generateForChild(
 						child,
@@ -209,9 +209,13 @@ export abstract class ImagemapToken extends Token {
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		const {image} = this;
-		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
+		if (
+			!image && (
+				typeof token === 'string' || token.is<ImagemapLinkToken>('imagemap-link') || token.type === 'text'
+			)
+		) {
 			throw new Error('Missing a valid image!');
-		} else if (image && typeof token !== 'string' && token.type === 'imagemap-image') {
+		} else if (image && typeof token !== 'string' && token.is<GalleryImageToken>('imagemap-image')) {
 			throw new RangeError('Already have a valid image!');
 		}
 		return super.insertAt(token as T, i);
@@ -223,7 +227,7 @@ export abstract class ImagemapToken extends Token {
 	 * @throws `Error` 禁止移除图片
 	 */
 	override removeAt(i: number): AstNodes {
-		if (this.childNodes[i]?.type === 'imagemap-image') {
+		if (this.childNodes[i]?.is<GalleryImageToken>('imagemap-image')) {
 			throw new Error('Do not remove the image in <imagemap>!');
 		}
 		return super.removeAt(i);
@@ -231,7 +235,7 @@ export abstract class ImagemapToken extends Token {
 
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, () => new ImagemapToken(undefined, this.getAttribute('config')));
+		return cloneNode(this, (): this => new ImagemapToken(undefined, this.getAttribute('config')));
 	}
 }
 

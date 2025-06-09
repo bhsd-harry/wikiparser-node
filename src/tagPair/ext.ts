@@ -218,7 +218,7 @@ export abstract class ExtToken extends TagPairToken {
 			attr = this.firstChild.toString();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ExtToken(tags[0], attr, '', closed, config, include) as this;
+			const token: this = new ExtToken(tags[0], attr, '', closed, config, include);
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});

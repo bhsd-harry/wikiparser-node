@@ -355,13 +355,15 @@ Token.prototype.createElement = /** @implements */ function(
 	if (tagName === (include ? 'noinclude' : 'includeonly')) {
 		return Shadow.run(
 			// @ts-expect-error abstract class
-			() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
+			(): IncludeToken => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
 		);
 	} else if (config.ext.includes(tagName)) {
-		// @ts-expect-error abstract class
-		return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config, include));
+		return Shadow.run(
+			// @ts-expect-error abstract class
+			(): ExtToken => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config, include),
+		);
 	} else if (config.html.some(tags => tags.includes(tagName))) {
-		return Shadow.run(() => {
+		return Shadow.run((): HtmlToken => {
 			// @ts-expect-error abstract class
 			const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
 			attr.afterBuild();
@@ -379,7 +381,7 @@ Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined
 	}
 	const {childNodes, length} = this,
 		headings: [number, number][] = [...childNodes.entries()]
-			.filter((entry): entry is [number, HeadingToken] => entry[1].type === 'heading')
+			.filter((entry): entry is [number, HeadingToken] => entry[1].is<HeadingToken>('heading'))
 			.map(([i, {level}]) => [i, level]),
 		lastHeading = [-1, -1, -1, -1, -1, -1],
 		sections = headings.map(([i]) => {

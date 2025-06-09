@@ -185,7 +185,7 @@ export abstract class ArgToken extends Token {
 		const [name, ...cloned] = this.cloneChildNodes() as [AtomToken, ...Token[]];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ArgToken([''], this.getAttribute('config')) as this;
+			const token: this = new ArgToken([''], this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(name);
 			token.safeAppend(cloned);
 			return token;

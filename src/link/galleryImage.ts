@@ -130,7 +130,11 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @throws `TypeError` 不可插入文本节点
 	 */
 	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (this.type === 'gallery-image' && child.type === 'image-parameter' && !galleryParams.has(child.name)) {
+		if (
+			this.type === 'gallery-image'
+			&& child.is<ImageParameterToken>('image-parameter')
+			&& !galleryParams.has(child.name)
+		) {
 			child.setAttribute('name', 'invalid');
 		}
 		return super.insertAt(child, i);
@@ -140,12 +144,12 @@ export abstract class GalleryImageToken extends FileToken {
 		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...ImageParameterToken[]];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new GalleryImageToken(
+			const token: this = new GalleryImageToken(
 				this.type.slice(0, -6),
 				'',
 				undefined,
 				this.getAttribute('config'),
-			) as this;
+			);
 			token.firstChild.safeReplaceWith(link);
 			token.safeAppend(linkText);
 			return token;

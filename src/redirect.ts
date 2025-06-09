@@ -111,7 +111,7 @@ export abstract class RedirectToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new RedirectToken(this.#pre, undefined, '', undefined, this.#post, config, []) as this;
+			const token: this = new RedirectToken(this.#pre, undefined, '', undefined, this.#post, config, []);
 			token.firstChild.safeReplaceWith(cloned[0]);
 			token.lastChild.safeReplaceWith(cloned[1]);
 			return token;

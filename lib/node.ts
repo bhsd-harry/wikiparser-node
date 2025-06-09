@@ -209,8 +209,8 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	constructor() {
-		Object.defineProperty(this, 'childNodes', {writable: false});
 		if (!Parser.viewOnly) {
+			Object.defineProperty(this, 'childNodes', {writable: false});
 			Object.freeze(this.childNodes);
 		}
 	}
@@ -254,17 +254,20 @@ export abstract class AstNode implements AstNodeBase {
 				/* NOT FOR BROWSER */
 
 				if (Object.hasOwn(this, key)) {
-					const descriptor = Object.getOwnPropertyDescriptor(this, key)!;
-					if (this.#optional.has(key)) {
-						descriptor.enumerable = Boolean(value);
+					const descriptor = Object.getOwnPropertyDescriptor(this, key)!,
+						bool = Boolean(value),
+						optional = this.#optional.has(key) && descriptor.enumerable !== bool;
+					if (optional) {
+						descriptor.enumerable = bool;
 					}
-					const oldValue = this[key as keyof this],
-						frozen = typeof oldValue === 'object' && Object.isFrozen(oldValue);
-					Object.defineProperty(this, key, {...descriptor, value});
-					if (frozen && typeof value === 'object') {
+					const oldValue = this[key as keyof this];
+					if (typeof value === 'object' && typeof oldValue === 'object' && Object.isFrozen(oldValue)) {
 						Object.freeze(value);
 					}
-					return;
+					if (optional || !descriptor.writable) {
+						Object.defineProperty(this, key, {...descriptor, value});
+						return;
+					}
 				}
 
 				/* NOT FOR BROWSER END */
@@ -459,14 +462,17 @@ export abstract class AstNode implements AstNodeBase {
 
 		/* NOT FOR BROWSER END */
 
-		Object.defineProperty(this, key, {
-			enumerable: !permanent && Boolean(this[key as keyof this]),
-			configurable: true,
+		const enumerable = !permanent && Boolean(this[key as keyof this]);
+		if (!enumerable || !Parser.viewOnly) {
+			Object.defineProperty(this, key, {
+				enumerable,
+				configurable: true,
 
-			/* NOT FOR BROWSER */
+				/* NOT FOR BROWSER */
 
-			writable: false,
-		});
+				writable: Parser.viewOnly,
+			});
+		}
 	}
 
 	/* PRINT ONLY END */

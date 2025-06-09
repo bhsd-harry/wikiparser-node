@@ -16,7 +16,7 @@ import type {Config, LintError} from '../base';
 import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
 import Parser from '../index';
-import type {FileToken} from '../internal';
+import type {LinkToken, FileToken, ConverterToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -170,7 +170,7 @@ export abstract class ExtLinkToken extends Token {
 		const [url, text] = this.cloneChildNodes() as [MagicLinkToken, Token?];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ExtLinkToken(undefined, this.#space, '', this.getAttribute('config')) as this;
+			const token: this = new ExtLinkToken(undefined, this.#space, '', this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(url);
 			if (text) {
 				token.insertAt(text);
@@ -186,7 +186,7 @@ export abstract class ExtLinkToken extends Token {
 		if (
 			!this.#space
 			&& length > 1
-			&& (firstChild?.type === 'text' || firstChild?.type === 'converter')
+			&& (firstChild?.type === 'text' || firstChild?.is<ConverterToken>('converter'))
 			// 都替换成`<`肯定不对，但无妨
 			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u
 				.test(lastChild.text().replace(/&[lg]t;/u, '<'))
@@ -225,7 +225,7 @@ export abstract class ExtLinkToken extends Token {
 			lastChild.normalize();
 			const {childNodes} = lastChild,
 				i = childNodes.findIndex(
-					child => child.type === 'link'
+					child => child.is<LinkToken>('link')
 						|| child.is<FileToken>('file')
 						&& (child.getValue('link') as string | undefined)?.trim() !== '',
 				);

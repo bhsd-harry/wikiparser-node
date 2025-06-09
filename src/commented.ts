@@ -71,7 +71,7 @@ export abstract class CommentedToken extends Token {
 
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, () => new CommentedToken(undefined, this.getAttribute('config')));
+		return cloneNode(this, (): this => new CommentedToken(undefined, this.getAttribute('config')));
 	}
 }
 

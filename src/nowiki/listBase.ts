@@ -101,7 +101,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 				} else if (nextSibling.is<ListToken>('list') && nextSibling.dt) {
 					nDt++;
 				}
-			} else if (nextSibling.type === 'dd') {
+			} else if (nextSibling.is<DdToken>('dd')) {
 				break;
 			}
 			({nextSibling} = nextSibling);

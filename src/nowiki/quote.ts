@@ -8,7 +8,7 @@ import type {
 	AST,
 } from '../../base';
 import type {Font} from '../../lib/node';
-import type {Token} from '../../internal';
+import type {Token, ImageParameterToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
@@ -64,7 +64,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	/** @private */
 	override text(): string {
 		const {parentNode, innerText} = this;
-		return parentNode?.type === 'image-parameter' && parentNode.name !== 'caption' ? '' : innerText;
+		return parentNode?.is<ImageParameterToken>('image-parameter') && parentNode.name !== 'caption'
+			? ''
+			: innerText;
 	}
 
 	/** @private */
@@ -155,7 +157,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	override cloneNode(): this {
 		return Shadow.run(
 			// @ts-expect-error abstract class
-			() => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')) as this,
+			(): this => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')),
 		);
 	}
 

@@ -18,6 +18,7 @@ import type {Title} from '../lib/title';
 import type {
 	AtomToken,
 	FileToken,
+	GalleryImageToken,
 
 	/* NOT FOR BROWSER */
 
@@ -253,7 +254,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.parentNode?.type === 'gallery-image' && !galleryParams.has(this.name)) {
+		if (this.parentNode?.is<GalleryImageToken>('gallery-image') && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
 		super.afterBuild();
@@ -344,11 +345,11 @@ export abstract class ImageParameterToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ImageParameterToken(
+			const token: this = new ImageParameterToken(
 				this.#syntax.replace('$1', '1'),
 				this.#extension,
 				config,
-			) as this;
+			);
 			token.safeReplaceChildren(cloned);
 			return token;
 		});

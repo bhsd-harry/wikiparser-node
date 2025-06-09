@@ -360,7 +360,7 @@ export abstract class HtmlToken extends Token {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');
 		// @ts-expect-error abstract class
-		return Shadow.run(() => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config) as this);
+		return Shadow.run((): this => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config));
 	}
 
 	/**
@@ -401,7 +401,7 @@ export abstract class HtmlToken extends Token {
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
 			prevSiblings = childNodes.slice(0, i)
-				.filter((child): child is this => child.type === 'html' && child.name === tagName),
+				.filter((child): child is this => child.is<this>('html') && child.name === tagName),
 			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
 		if (imbalance < 0) {
 			this.#selfClosing = false;

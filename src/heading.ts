@@ -248,7 +248,7 @@ export abstract class HeadingToken extends Token {
 		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new HeadingToken(this.level, [], this.getAttribute('config')) as this;
+			const token: this = new HeadingToken(this.level, [], this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(title);
 			token.lastChild.safeReplaceWith(trail);
 			return token;

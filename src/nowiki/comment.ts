@@ -84,7 +84,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	override cloneNode(): this {
 		return Shadow.run(
 			// @ts-expect-error abstract class
-			() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this,
+			(): this => new CommentToken(this.innerText, this.closed, this.getAttribute('config')),
 		);
 	}
 

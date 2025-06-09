@@ -98,7 +98,7 @@ export abstract class PreToken extends Token {
 
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, () => new PreToken(undefined, this.getAttribute('config')));
+		return cloneNode(this, (): this => new PreToken(undefined, this.getAttribute('config')));
 	}
 }
 

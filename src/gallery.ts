@@ -182,7 +182,7 @@ export abstract class GalleryToken extends Token {
 
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, () => new GalleryToken(undefined, this.getAttribute('config')));
+		return cloneNode(this, (): this => new GalleryToken(undefined, this.getAttribute('config')));
 	}
 
 	/**

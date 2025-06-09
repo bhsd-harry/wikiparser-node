@@ -670,11 +670,11 @@ export abstract class TranscludeToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new TranscludeToken(
+			const token: this = new TranscludeToken(
 				this.type === 'template' ? 'T' : first!.text() + (cloned.length === 0 ? '' : this.#colon),
 				[],
 				config,
-			) as this;
+			);
 			if (this.#raw) {
 				token.setModifier(this.modifier);
 			} else {

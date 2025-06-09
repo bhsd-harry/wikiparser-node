@@ -86,7 +86,7 @@ export abstract class ConverterToken extends Token {
 				firstRuleToken,
 				...rules.slice(1)
 					// @ts-expect-error abstract class
-					.map(rule => new ConverterRuleToken(rule, true, config, accum) as ConverterRuleToken),
+					.map((rule): ConverterRuleToken => new ConverterRuleToken(rule, true, config, accum)),
 			);
 		}
 
@@ -128,7 +128,7 @@ export abstract class ConverterToken extends Token {
 		const [flags, ...rules] = this.cloneChildNodes() as [ConverterFlagsToken, ...ConverterRuleToken[]];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ConverterToken([], [''], this.getAttribute('config')) as this;
+			const token: this = new ConverterToken([], [''], this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(flags);
 			token.removeAt(1);
 			token.safeAppend(rules);

@@ -1,6 +1,6 @@
 import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
-import type {Token} from '../internal';
+import type {Token, ListRangeToken} from '../internal';
 
 /**
  * 只能位于行首的类
@@ -19,7 +19,7 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 					: '\n';
 			}
 			return parentNode?.type === 'root'
-				|| type === 'list' && parentNode?.type === 'list-range'
+				|| type === 'list' && parentNode?.is<ListRangeToken>('list-range')
 				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem'
 				? ''
 				: '\n';

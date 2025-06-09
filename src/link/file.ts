@@ -16,6 +16,7 @@ import type {
 	/* NOT FOR BROWSER */
 
 	GalleryToken,
+	GalleryImageToken,
 } from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -128,7 +129,7 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** image width / 图片宽度 */
 	get width(): string | undefined {
-		return this.type === 'gallery-image'
+		return this.is<GalleryImageToken>('gallery-image')
 			? (this.parentNode as GalleryToken | undefined)?.widths.toString()
 			: this.size?.width;
 	}
@@ -144,7 +145,7 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** image height / 图片高度 */
 	get height(): string | undefined {
-		return this.type === 'gallery-image'
+		return this.is<GalleryImageToken>('gallery-image')
 			? (this.parentNode as GalleryToken | undefined)?.heights.toString()
 			: this.size?.height;
 	}

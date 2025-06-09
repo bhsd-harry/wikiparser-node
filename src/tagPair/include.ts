@@ -106,7 +106,7 @@ export abstract class IncludeToken extends TagPairToken {
 			{innerText} = this,
 			closing = this.selfClosing || !this.closed ? undefined : tags[1];
 		// @ts-expect-error abstract class
-		return Shadow.run(() => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config) as this);
+		return Shadow.run((): this => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config));
 	}
 
 	/**

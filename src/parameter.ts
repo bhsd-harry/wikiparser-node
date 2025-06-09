@@ -223,7 +223,7 @@ export abstract class ParameterToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config) as this;
+			const token: this = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			if (this.anon) {

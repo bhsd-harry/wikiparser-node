@@ -144,7 +144,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		const child = this.childNodes[i];
 		if (child instanceof TdToken && child.isIndependent()) {
 			const {nextSibling} = child;
-			if (nextSibling?.type === 'td') {
+			if (nextSibling?.is<TdToken>('td')) {
 				nextSibling.independence();
 			}
 		}
@@ -159,7 +159,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		if (!Shadow.running && token.type !== 'td') {
 			/* istanbul ignore next */
-			if (this.type === 'tr') {
+			if (this.is<TrToken>('tr')) {
 				this.typeError('insertAt', 'TdToken');
 			} else if (token.type !== 'tr') {
 				this.typeError('insertAt', 'TrToken', 'TdToken');

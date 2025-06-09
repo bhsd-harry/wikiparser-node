@@ -63,7 +63,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	override cloneNode(): this {
 		const config = this.getAttribute('config');
 		// @ts-expect-error abstract class
-		return Shadow.run(() => new DoubleUnderscoreToken(this.innerText, this.#sensitive, config));
+		return Shadow.run((): this => new DoubleUnderscoreToken(this.innerText, this.#sensitive, config));
 	}
 }
 

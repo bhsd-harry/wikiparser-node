@@ -1,7 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {Shadow} from './debug';
-import type {AstNodes, ListRangeToken, Token} from '../internal';
+import type {AstNodes, ListRangeToken, Token, DdToken, ListToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -123,7 +123,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 			}
 			result = pre + result;
 			let {nextSibling} = child;
-			while (nextSibling?.type === 'dd') {
+			while (nextSibling?.is<DdToken>('dd')) {
 				const next = nextSibling.nextSibling as ListRangeToken;
 				for (let i = 0; i < nextSibling.indent; i++) {
 					result += nextItem(':', state);
@@ -135,7 +135,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 			if (
 				nextSibling?.type === 'text'
 				&& nextSibling.data === '\n'
-				&& nextSibling.nextVisibleSibling?.type === 'list'
+				&& nextSibling.nextVisibleSibling?.is<ListToken>('list')
 			) {
 				j += 2;
 				lastPrefix = prefix2;

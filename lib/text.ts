@@ -18,6 +18,9 @@ import type {
 	/* NOT FOR BROWSER */
 
 	TranscludeToken,
+	CommentToken,
+	CategoryToken,
+	TableToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -148,17 +151,16 @@ export class AstText extends AstNode {
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
+		if (Parser.viewOnly) {
+			this.data = text;
 
-		/* NOT FOR BROWSER */
-
-		Object.defineProperties(this, {
-			data: {
-				value: text,
-
-				writable: false,
-			},
-			childNodes: {enumerable: false, configurable: false},
-		});
+			/* NOT FOR BROWSER */
+		} else {
+			Object.defineProperties(this, {
+				data: {value: text, writable: false},
+				childNodes: {enumerable: false, configurable: false},
+			});
+		}
 	}
 
 	/** @private */
@@ -524,8 +526,11 @@ export class AstText extends AstNode {
 			let {nextSibling} = this,
 				mt2: RegExpExecArray | null = null;
 			while (
-				nextSibling
-				&& (nextSibling.type === 'comment' || nextSibling.type === 'category' || nextSibling.type === 'text')
+				nextSibling && (
+					nextSibling.is<CommentToken>('comment')
+					|| nextSibling.is<CategoryToken>('category')
+					|| nextSibling.type === 'text'
+				)
 			) {
 				if (nextSibling.type === 'text') {
 					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(nextSibling.data);
@@ -534,7 +539,7 @@ export class AstText extends AstNode {
 					} else {
 						spaces.push(nextSibling);
 					}
-				} else if (mt && nextSibling.type === 'category') {
+				} else if (mt && nextSibling.is<CategoryToken>('category')) {
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -547,7 +552,7 @@ export class AstText extends AstNode {
 				}
 				({nextSibling} = nextSibling);
 			}
-			if (mt2 || nextSibling?.type === 'table') {
+			if (mt2 || nextSibling?.is<TableToken>('table')) {
 				if (mt) {
 					this.deleteData(mt.index + (mt2 ? 0 : 1));
 					if (mt2) {
