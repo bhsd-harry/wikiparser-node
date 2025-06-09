@@ -52,7 +52,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** whether the table is closed / 表格是否闭合 */
 	get closed(): boolean {
-		return this.lastChild.type === 'table-syntax';
+		return this.lastChild.is<SyntaxToken>('table-syntax');
 	}
 
 	/**
@@ -160,7 +160,7 @@ export abstract class TableToken extends TrBaseToken {
 				k = 0,
 				last: boolean | undefined;
 			for (const cell of rows[i]!.childNodes.slice(2)) {
-				if (cell.type === 'td') {
+				if (cell.is<TdToken>('td')) {
 					if (cell.isIndependent()) {
 						last = cell.subtype !== 'caption';
 					}
@@ -195,7 +195,7 @@ export abstract class TableToken extends TrBaseToken {
 		return [
 			...super.getRowCount() ? [this] : [],
 			...this.childNodes.slice(1)
-				.filter((child): child is TrToken => child.type === 'tr' && child.getRowCount() > 0),
+				.filter((child): child is TrToken => child.is<TrToken>('tr') && child.getRowCount() > 0),
 		];
 	}
 

@@ -7,7 +7,7 @@ import type {
 	Config,
 } from '../../base';
 import type {Font} from '../../lib/node';
-import type {Token} from '../../internal';
+import type {Token, ImageParameterToken} from '../../internal';
 
 /**
  * `''` and `'''`
@@ -48,7 +48,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	/** @private */
 	override text(): string {
 		const {parentNode, innerText} = this;
-		return parentNode?.type === 'image-parameter' && parentNode.name !== 'caption' ? '' : innerText;
+		return parentNode?.is<ImageParameterToken>('image-parameter') && parentNode.name !== 'caption'
+			? ''
+			: innerText;
 	}
 
 	/** @private */

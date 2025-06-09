@@ -9,7 +9,7 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {Config, LintError} from '../base';
-import type {ExtToken, HtmlToken, SyntaxToken} from '../internal';
+import type {ExtToken, HtmlToken, SyntaxToken, TdToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 import type {TableTokens} from './table/index';
 
@@ -112,7 +112,7 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		const {parentNode} = this;
-		if (parentNode?.type === 'td') {
+		if (parentNode?.is<TdToken>('td')) {
 			this.setAttribute('name', parentNode.subtype);
 		}
 		super.afterBuild();

@@ -27,8 +27,8 @@ export const isFostered = (token: AstNodes): LintError.Severity | false => {
 	if (
 		!first
 		|| first.type === 'text' && first.data.trim().startsWith('!')
-		|| first.type === 'magic-word' && first.name === '!'
-		|| first.type === 'template' && tableTemplates.has(first.name!)
+		|| first.is<TranscludeToken>('magic-word') && first.name === '!'
+		|| first.is<TranscludeToken>('template') && tableTemplates.has(first.name)
 		|| first.is<HtmlToken>('html') && tableTags.has(first.name)
 	) {
 		return false;
@@ -42,7 +42,10 @@ export const isFostered = (token: AstNodes): LintError.Severity | false => {
 				: severity.includes('warning') && 'warning';
 		} catch {}
 	}
-	return first.type === 'template' || first.type === 'magic-word' && first.name === 'invoke' ? 'warning' : 'error';
+	return first.is<TranscludeToken>('template')
+		|| first.is<TranscludeToken>('magic-word') && first.name === 'invoke'
+		? 'warning'
+		: 'error';
 };
 
 /**

@@ -178,7 +178,7 @@ export const isAttr = ({type, parentNode, length, firstChild}: Token, style?: bo
  * @param token
  */
 const isHtmlAttr = (token: Token): token is AttributeToken =>
-	token.type === 'html-attr' || token.type === 'table-attr';
+	token.is<AttributeToken>('html-attr') || token.is<AttributeToken>('table-attr');
 
 /**
  * Check if all child nodes are plain text or comments.

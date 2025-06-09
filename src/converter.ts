@@ -49,7 +49,7 @@ export abstract class ConverterToken extends Token {
 				firstRuleToken,
 				...rules.slice(1)
 					// @ts-expect-error abstract class
-					.map(rule => new ConverterRuleToken(rule, true, config, accum) as ConverterRuleToken),
+					.map((rule): ConverterRuleToken => new ConverterRuleToken(rule, true, config, accum)),
 			);
 		}
 	}

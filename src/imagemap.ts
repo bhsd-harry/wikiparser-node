@@ -137,7 +137,7 @@ export abstract class ImagemapToken extends Token {
 			errors.push(
 				...this.childNodes.filter(child => {
 					const str = child.toString().trim();
-					return child.type === 'noinclude' && str && !str.startsWith('#');
+					return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
 				}).map(child => {
 					const e = generateForChild(
 						child,
