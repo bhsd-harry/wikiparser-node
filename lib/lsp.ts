@@ -1723,6 +1723,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供 CodeLens
 	 * @param text source Wikitext / 源代码
+	 * @since v1.16.3
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
 		const root = await this.#queue(text);
@@ -1829,6 +1830,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * 设置目标维基百科
 	 * @param wiki Wikipedia URL / 维基百科网址
 	 * @throws `RangeError` 不是有效的维基百科网址
+	 * @since v1.18.1
 	 */
 	async setTargetWikipedia(wiki: string): Promise<void> {
 		const mt = /^https?:\/\/([^./]+)\.wikipedia\.org/iu.exec(wiki);

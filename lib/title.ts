@@ -59,7 +59,9 @@ export class Title {
 	}
 
 	/**
-	 * file extension / 扩展名
+	 * file extension
+	 *
+	 * 扩展名
 	 * @since v1.1.0
 	 */
 	get extension(): string | undefined {

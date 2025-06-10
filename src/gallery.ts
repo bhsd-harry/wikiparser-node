@@ -39,12 +39,22 @@ export abstract class GalleryToken extends Token {
 
 	/* PRINT ONLY */
 
-	/** image widths / 图片宽度 */
+	/**
+	 * image widths
+	 *
+	 * 图片宽度
+	 * @since v1.12.5
+	 */
 	get widths(): number {
 		return this.#getSize('widths');
 	}
 
-	/** image heights / 图片高度 */
+	/**
+	 * image heights
+	 *
+	 * 图片高度
+	 * @since v1.12.5
+	 */
 	get heights(): number {
 		return this.#getSize('heights');
 	}
