@@ -13,6 +13,7 @@ const redirects: Record<string, string> = {
 export const prepare = (Parser: ParserBase): void => {
 	Parser.viewOnly = true;
 	Parser.warning = false;
+	Parser.now = new Date(Date.UTC(1970, 0, 1, 0, 2, 3));
 	Parser.templateDir = './test/templates';
 	Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 };

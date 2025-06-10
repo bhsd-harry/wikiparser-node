@@ -80,13 +80,23 @@ export abstract class TranscludeToken extends Token {
 		return this.#type;
 	}
 
-	/** module name / 模块名 */
+	/**
+	 * module name
+	 *
+	 * 模块名
+	 * @since v1.21.0
+	 */
 	get module(): string | undefined {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
 	}
 
-	/** function name / 函数名 */
+	/**
+	 * function name
+	 *
+	 * 函数名
+	 * @since v1.21.2
+	 */
 	get function(): string | undefined {
 		LSP: return this.type === 'magic-word' && this.name === 'invoke' // eslint-disable-line no-unused-labels
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -913,6 +923,7 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 获取模块名和模块函数名
 	 * @throws `Error` 仅用于模块
+	 * @since v1.16.4
 	 */
 	getModule(): [string, string | undefined] {
 		/* istanbul ignore if */

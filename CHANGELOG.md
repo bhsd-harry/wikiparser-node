@@ -1,10 +1,12 @@
 ## v1.21.2
 
-*2025-06-10*
+*2025-06-12*
 
 **Added**
 
 - [`TranscludeToken.function`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#function)
+- Some time-related variables are now expanded, e.g., `{{CURRENTMONTH}}` and `{{LOCALMONTH}}`
+- `Parser.now` property that specifies the current time for parsing
 
 **Fixed**
 
@@ -251,7 +253,7 @@
 - [`LinkBaseToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#json) now includes the [`fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#fragment) property
 - [`CategoryToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken#json) now includes the [`sortKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken#sortkey) property
 - [`FileToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#json) now includes the [`extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension) property
-- [`ListToken.indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#indent) property
+- `ListToken.indent` property
 - [`ListToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#json) now includes the [`indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#indent) property
 - [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#colspan) properties
 - [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#json) now includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
@@ -566,12 +568,12 @@
 - `<p>` wrapping for [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml)
 - Conversion from Wikitext lists to HTML
 - [`ConverterToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterToken#tohtml) when there are variant flags
-- [`ConverterFlagsToken.prototype.getEffectiveFlags`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterFlagsToken#geteffectiveflags) when there are variant flags
 - [`FileToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#tohtml), [`FileToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#getframe), [`FileToken.prototype.getHorizAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#gethorizalign) and [`FileToken.prototype.getVertAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#getvertalign)
 - [`ImageParameterToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#geturl)
 
 **Fixed**
 
+- [`ConverterFlagsToken.prototype.getEffectiveFlags`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterFlagsToken#geteffectiveflags) when there are variant flags
 - [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) when there are nested internal links
 - [`ArgToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#clonenode), [`AttributeToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#clonenode), [`AttributesToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#clonenode), [`GalleryToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#clonenode) and [`MagicLinkToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#clonenode)
 - Implicit newline in [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand)
@@ -605,7 +607,7 @@
 
 - [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#is) method
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) method
-- [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templatedir) property
+- [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templatedir) and [`Parser.templates`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templates) properties
 - [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
 - [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) method
 - [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#innertext) properties
@@ -1071,7 +1073,7 @@
 
 **Added**
 
-- New methods [`AstText.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#escape), [`ParameterToken.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parameter#escape) and [`MagicLinkToken.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#escape)
+- New methods [`AstText.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#escape), `ParameterToken.prototype.escape` and `MagicLinkToken.prototype.escape`
 
 **Fixed**
 

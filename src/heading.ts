@@ -80,7 +80,12 @@ export abstract class HeadingToken extends Token {
 		this.firstChild.safeReplaceChildren(childNodes);
 	}
 
-	/** id attribute / id属性 */
+	/**
+	 * id attribute
+	 *
+	 * id属性
+	 * @since v1.12.4
+	 */
 	get id(): string {
 		return this.#getId(true);
 	}

@@ -676,6 +676,7 @@ export abstract class AstElement extends AstNode {
 	 * Escape `=` and `|`
 	 *
 	 * 转义 `=` 和 `|`
+	 * @since v1.18.3
 	 */
 	escape(): void {
 		for (const child of this.childNodes) {

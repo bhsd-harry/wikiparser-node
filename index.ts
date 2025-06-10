@@ -66,6 +66,14 @@ declare interface Parser extends ParserBase {
 	warning: boolean;
 	debugging: boolean;
 
+	/**
+	 * Specify the current time of the parser
+	 *
+	 * 指定解析器的当前时间
+	 * @since v1.21.2
+	 */
+	now?: Date;
+
 	/* NOT FOR BROWSER END */
 
 	/* NOT FOR BROWSER ONLY */

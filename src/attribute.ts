@@ -488,6 +488,7 @@ export abstract class AttributeToken extends Token {
 	 * @throws `Error` 不是style属性
 	 * @throws `Error` 复杂的style属性
 	 * @throws `Error` 无CSS语言服务
+	 * @since v1.17.1
 	 */
 	css(key: string, value?: string): string | undefined {
 		const {name, lastChild} = this;

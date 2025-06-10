@@ -36,7 +36,12 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** link text / 链接显示文字 */
+	/**
+	 * link text
+	 *
+	 * 链接显示文字
+	 * @since v1.10.0
+	 */
 	get innerText(): string {
 		return this.link.toString(true);
 	}

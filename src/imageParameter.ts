@@ -401,6 +401,7 @@ export abstract class ImageParameterToken extends Token {
 	 *
 	 * 获取网址
 	 * @param articlePath article path / 条目路径
+	 * @since v1.11.0
 	 */
 	getUrl(articlePath?: string): string | undefined {
 		let {link} = this;

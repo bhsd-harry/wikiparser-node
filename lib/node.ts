@@ -192,18 +192,33 @@ export abstract class AstNode implements AstNodeBase {
 		return false;
 	}
 
-	/** font weigth and style / 字体样式 */
+	/**
+	 * font weigth and style
+	 *
+	 * 字体样式
+	 * @since v.1.8.0
+	 */
 	get font(): Font {
 		const {bold, italic, b = 0, i = 0} = this.#getFont();
 		return {bold: bold && b >= 0, italic: italic && i >= 0};
 	}
 
-	/** whether to be bold / 是否粗体 */
+	/**
+	 * whether to be bold
+	 *
+	 * 是否粗体
+	 * @since v.1.8.0
+	 */
 	get bold(): boolean {
 		return this.font.bold;
 	}
 
-	/** whether to be italic / 是否斜体 */
+	/**
+	 * whether to be italic
+	 *
+	 * 是否斜体
+	 * @since v.1.8.0
+	 */
 	get italic(): boolean {
 		return this.font.italic;
 	}
@@ -421,6 +436,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 是否是某种类型的节点
 	 * @param type token type / 节点类型
+	 * @since v1.10.0
 	 */
 	is<T extends Token>(type: TokenTypes): this is T {
 		return this.type === type;
@@ -430,6 +446,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * Get the text and the start/end positions of all lines
 	 *
 	 * 获取所有行的wikitext和起止位置
+	 * @since v1.16.3
 	 */
 	getLines(): [string, number, number][] {
 		return cache<[string, number, number][]>(

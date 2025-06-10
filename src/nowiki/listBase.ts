@@ -23,7 +23,12 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 
 	/* PRINT ONLY */
 
-	/** number of indentation / 缩进数 */
+	/**
+	 * number of indentation
+	 *
+	 * 缩进数
+	 * @since v1.16.5
+	 */
 	get indent(): number {
 		return this.innerText.split(':').length - 1;
 	}

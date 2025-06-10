@@ -1,6 +1,7 @@
 // PHP解析器的步骤：
-// -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
-// 0. 移除特定字符`\0`和`\x7F`，参见Parser::parse
+// -2. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
+// -1. 移除特定字符`\0`和`\x7F`，参见Parser::parse
+// 0. 重定向，参见WikitextContentHandler::extractRedirectTargetAndText
 // 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
 // 2. 模板/模板变量/标题，注意rightmost法则，以及`-{`和`[[`可以破坏`{{`或`{{{`语法，
 //    参见Preprocessor_Hash::buildDomTreeArrayFromText
@@ -985,6 +986,7 @@ export class Token extends AstElement {
 	 * Expand templates
 	 *
 	 * 展开模板
+	 * @since v1.10.0
 	 */
 	expand(): Token {
 		require('../addon/token');
@@ -1021,6 +1023,7 @@ export class Token extends AstElement {
 	 * Generate HTML
 	 *
 	 * 生成HTML
+	 * @since v1.10.0
 	 */
 	toHtml(): string {
 		require('../addon/token');
@@ -1046,6 +1049,7 @@ export class Token extends AstElement {
 	 * Build lists
 	 *
 	 * 构建列表
+	 * @since v1.17.1
 	 */
 	buildLists(): void {
 		this.#buildLists(true);

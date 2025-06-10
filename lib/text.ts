@@ -483,6 +483,7 @@ export class AstText extends AstNode {
 	 * Escape `=` and `|`
 	 *
 	 * 转义 `=` 和 `|`
+	 * @since v1.1.4
 	 */
 	escape(): void {
 		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
@@ -512,6 +513,7 @@ export class AstText extends AstNode {
 	 *
 	 * 生成HTML
 	 * @param nowrap whether to disable line-wrapping / 是否不换行
+	 * @since v1.10.0
 	 */
 	toHtml(nowrap?: boolean): string {
 		const {data} = this;

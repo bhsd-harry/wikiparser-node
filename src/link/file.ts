@@ -101,7 +101,12 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
-	/** file extension / 扩展名 */
+	/**
+	 * file extension
+	 *
+	 * 扩展名
+	 * @since v1.5.3
+	 */
 	get extension(): string | undefined {
 		return this.getAttribute('title').extension;
 	}
@@ -375,6 +380,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * Get the effective image frame paremter value
 	 *
 	 * 获取生效的图片框架属性参数
+	 * @since v1.11.0
 	 */
 	getFrame(): string | Title | undefined {
 		const [arg] = this.getFrameArgs(),
@@ -386,6 +392,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * Get the effective image horizontal alignment parameter value
 	 *
 	 * 获取生效的图片水平对齐参数
+	 * @since v1.11.0
 	 */
 	getHorizAlign(): string | undefined {
 		return this.getHorizAlignArgs()[0]?.name;
@@ -395,6 +402,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * Get the effective image vertical alignment parameter value
 	 *
 	 * 获取生效的图片垂直对齐参数
+	 * @since v1.11.0
 	 */
 	getVertAlign(): string | undefined {
 		return this.getVertAlignArgs()[0]?.name;
