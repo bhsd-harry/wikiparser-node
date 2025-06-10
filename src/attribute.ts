@@ -243,7 +243,7 @@ export abstract class AttributeToken extends Token {
 			);
 			e.startIndex--;
 			e.startCol--;
-			e.suggestions = [{range: [e.endIndex, e.endIndex], text: this.#quotes[0]!, desc: 'close'}];
+			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: this.#quotes[0]!}];
 			errors.push(e);
 		}
 		const e = this.#lint(start, rect);

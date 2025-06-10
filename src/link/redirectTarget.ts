@@ -50,7 +50,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			);
 			e.startIndex--;
 			e.startCol--;
-			e.fix = {range: [e.startIndex, e.endIndex], text: '', desc: 'remove'};
+			e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
 			errors.push(e);
 		}
 		return errors;
