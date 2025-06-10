@@ -308,4 +308,6 @@ export abstract class AstNode implements AstNodeBase {
 			configurable: true,
 		});
 	}
+
+	/* PRINT ONLY END */
 }
