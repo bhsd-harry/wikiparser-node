@@ -96,7 +96,7 @@ export abstract class ConverterFlagsToken extends Token {
 			if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
 				const e = generateForChild(child, rect, 'no-ignored', 'invalid conversion flag');
 				if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-					e.fix = {range: [e.startIndex, e.endIndex], text: flag.toUpperCase(), desc: 'uppercase'};
+					e.fix = {desc: 'uppercase', range: [e.startIndex, e.endIndex], text: flag.toUpperCase()};
 				} else {
 					e.suggestions = [{desc: 'remove', range: [e.startIndex - (i && 1), e.endIndex], text: ''}];
 				}

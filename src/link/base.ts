@@ -83,7 +83,7 @@ export abstract class LinkBaseToken extends Token {
 	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = value as TokenAttribute<'bracket'>;
-		} else if (key === 'title') {
+		} else /* istanbul ignore if */ if (key === 'title') {
 			this.#title = value as TokenAttribute<'title'>;
 		} else {
 			super.setAttribute(key, value);
@@ -135,8 +135,9 @@ export abstract class LinkBaseToken extends Token {
 				rect,
 				'url-encoding',
 				'unnecessary URL encoding in an internal link',
+				'warning',
 			);
-			e.suggestions = [{desc: 'decode', range: [e.startIndex, e.endIndex], text: rawurldecode(target.text())}];
+			e.fix = {desc: 'decode', range: [e.startIndex, e.endIndex], text: rawurldecode(target.text())};
 			errors.push(e);
 		}
 		if (type === 'link' || type === 'category') {
@@ -167,12 +168,12 @@ export abstract class LinkBaseToken extends Token {
 				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {
 				e.fix = {
+					desc: 'remove',
 					range: [
 						e.startIndex + target.getRelativeIndex(j) + textNode.data.indexOf('#'),
 						e.endIndex,
 					],
 					text: '',
-					desc: 'remove',
 				};
 			}
 			errors.push(e);

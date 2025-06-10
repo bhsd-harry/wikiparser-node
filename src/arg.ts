@@ -118,7 +118,7 @@ export abstract class ArgToken extends Token {
 				'warning',
 			);
 			if (argDefault) {
-				e.suggestions = [{range: [start, e.endIndex], text: argDefault.text(), desc: 'expand'}];
+				e.suggestions = [{desc: 'expand', range: [start, e.endIndex], text: argDefault.text()}];
 			}
 			errors.push(e);
 		}
