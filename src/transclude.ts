@@ -80,12 +80,21 @@ export abstract class TranscludeToken extends Token {
 		return this.#type;
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** module name / 模块名 */
 	get module(): string | undefined {
-		return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
 	}
+
+	/** function name / 函数名 */
+	get function(): string | undefined {
+		LSP: return this.type === 'magic-word' && this.name === 'invoke' // eslint-disable-line no-unused-labels
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			? this.childNodes[2]?.text().trim()
+			: undefined;
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** whether to contain duplicated parameters / 是否存在重复参数 */
 	get duplication(): boolean {
@@ -298,26 +307,6 @@ export abstract class TranscludeToken extends Token {
 			);
 		title.fragment = undefined;
 		return title;
-	}
-
-	/**
-	 * Get the module name and module function name
-	 *
-	 * 获取模块名和模块函数名
-	 * @throws `Error` 仅用于模块
-	 */
-	getModule(): [string, string | undefined] {
-		LSP: { // eslint-disable-line no-unused-labels
-			/* istanbul ignore if */
-			if (this.type !== 'magic-word' || this.name !== 'invoke') {
-				throw new Error('TranscludeToken.getModule method is only for modules!');
-			}
-			return [
-				this.#getTitle().title,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				this.childNodes[2]?.text().trim(),
-			];
-		}
 	}
 
 	/** @private */
@@ -917,6 +906,20 @@ export abstract class TranscludeToken extends Token {
 	escapeTables(): TranscludeToken {
 		require('../addon/transclude');
 		return this.escapeTables();
+	}
+
+	/**
+	 * Get the module name and module function name
+	 *
+	 * 获取模块名和模块函数名
+	 * @throws `Error` 仅用于模块
+	 */
+	getModule(): [string, string | undefined] {
+		/* istanbul ignore if */
+		if (this.type !== 'magic-word' || this.name !== 'invoke') {
+			throw new Error('TranscludeToken.getModule method is only for modules!');
+		}
+		return [this.module!, this.function];
 	}
 
 	/** @private */

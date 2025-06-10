@@ -39,10 +39,7 @@ export class HiddenToken extends Token {
 	}
 
 	override cloneNode(): this {
-		return cloneNode(
-			this,
-			() => new HiddenToken(undefined, this.getAttribute('config'), []) as this,
-		);
+		return cloneNode(this, () => new HiddenToken(undefined, this.getAttribute('config')) as this);
 	}
 }
 

@@ -1,6 +1,10 @@
 ## v1.21.2
 
-*2025-06-09*
+*2025-06-10*
+
+**Added**
+
+- [`TranscludeToken.function`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#function)
 
 **Fixed**
 
