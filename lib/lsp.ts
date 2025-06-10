@@ -1217,6 +1217,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供 CodeLens
 	 * @param text source Wikitext / 源代码
+	 * @since v1.16.3
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
 		const root = await this.#queue(text);

@@ -34,7 +34,12 @@ export abstract class MagicLinkToken extends Token {
 		return this.#type;
 	}
 
-	/** text of the link / 链接显示文字 */
+	/**
+	 * text of the link
+	 *
+	 * 链接显示文字
+	 * @since v1.10.0
+	 */
 	get innerText(): string {
 		const map = new Map([['!', '|'], ['=', '=']]);
 		let link = text(this.childNodes.map(child => {

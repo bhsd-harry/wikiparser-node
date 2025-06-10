@@ -11241,105 +11241,105 @@
 		"desc": "Magic Word: {{CURRENTDAY}}",
 		"wikitext": "{{CURRENTDAY}}",
 		"html": "<p>1\n</p>",
-		"render": "",
+		"render": "<p>1\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTDAY</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTDAY2}}",
 		"wikitext": "{{CURRENTDAY2}}",
 		"html": "<p>01\n</p>",
-		"render": "",
+		"render": "<p>01\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTDAY2</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTDAYNAME}}",
 		"wikitext": "{{CURRENTDAYNAME}}",
 		"html": "<p>Thursday\n</p>",
-		"render": "",
+		"render": "<p>Thursday\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTDAYNAME</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTDOW}}",
 		"wikitext": "{{CURRENTDOW}}",
 		"html": "<p>4\n</p>",
-		"render": "",
+		"render": "<p>4\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTDOW</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTMONTH}}",
 		"wikitext": "{{CURRENTMONTH}}",
 		"html": "<p>01\n</p>",
-		"render": "",
+		"render": "<p>01\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTMONTH</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTMONTH1}}",
 		"wikitext": "{{CURRENTMONTH1}}",
 		"html": "<p>1\n</p>",
-		"render": "",
+		"render": "<p>1\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTMONTH1</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTMONTHABBREV}}",
 		"wikitext": "{{CURRENTMONTHABBREV}}",
 		"html": "<p>Jan\n</p>",
-		"render": "",
+		"render": "<p>Jan\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTMONTHABBREV</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTMONTHNAME}}",
 		"wikitext": "{{CURRENTMONTHNAME}}",
 		"html": "<p>January\n</p>",
-		"render": "",
+		"render": "<p>January\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTMONTHNAME</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTMONTHNAMEGEN}}",
 		"wikitext": "{{CURRENTMONTHNAMEGEN}}",
 		"html": "<p>January\n</p>",
-		"render": "",
+		"render": "<p>January\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTMONTHNAMEGEN</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTTIME}}",
 		"wikitext": "{{CURRENTTIME}}",
 		"html": "<p>00:02\n</p>",
-		"render": "",
+		"render": "<p>00:02\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTTIME</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTHOUR}}",
 		"wikitext": "{{CURRENTHOUR}}",
 		"html": "<p>00\n</p>",
-		"render": "",
+		"render": "<p>00\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTHOUR</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTWEEK}} (T6594)",
 		"wikitext": "{{CURRENTWEEK}}",
 		"html": "<p>1\n</p>",
-		"render": "",
+		"render": "<p>1\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTWEEK</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTYEAR}}",
 		"wikitext": "{{CURRENTYEAR}}",
 		"html": "<p>1970\n</p>",
-		"render": "",
+		"render": "<p>1970\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTYEAR</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{CURRENTTIMESTAMP}}",
 		"wikitext": "{{CURRENTTIMESTAMP}}",
 		"html": "<p>19700101000203\n</p>",
-		"render": "",
+		"render": "<p>19700101000203\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTTIMESTAMP</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Words LOCAL (UTC)",
 		"wikitext": "*{{LOCALMONTH}}\n*{{LOCALMONTH1}}\n*{{LOCALMONTHNAME}}\n*{{LOCALMONTHNAMEGEN}}\n*{{LOCALMONTHABBREV}}\n*{{LOCALDAY}}\n*{{LOCALDAY2}}\n*{{LOCALDAYNAME}}\n*{{LOCALYEAR}}\n*{{LOCALTIME}}\n*{{LOCALHOUR}}\n*{{LOCALWEEK}}\n*{{LOCALDOW}}\n*{{LOCALTIMESTAMP}}",
 		"html": "<ul><li>01</li>\n<li>1</li>\n<li>January</li>\n<li>January</li>\n<li>Jan</li>\n<li>1</li>\n<li>01</li>\n<li>Thursday</li>\n<li>1970</li>\n<li>00:02</li>\n<li>00</li>\n<li>1</li>\n<li>4</li>\n<li>19700101000203</li></ul>",
-		"render": "<ul><li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li></ul>",
+		"render": "<ul><li>01</li>\n<li>1</li>\n<li>January</li>\n<li>January</li>\n<li>Jan</li>\n<li>1</li>\n<li>01</li>\n<li>Thursday</li>\n<li>1970</li>\n<li>08:02</li>\n<li>08</li>\n<li>1</li>\n<li>4</li>\n<li>19700101080203</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTH</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTH1</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHNAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHNAMEGEN</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHABBREV</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAY</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAY2</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAYNAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALYEAR</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALTIME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALHOUR</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALWEEK</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDOW</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALTIMESTAMP</span>}}</span></span>"
 	},
 	{
