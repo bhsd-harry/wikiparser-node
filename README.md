@@ -103,18 +103,19 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 ### Heading
 
+1. HTML section heading elements are not automatically given an `id` attribute ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Do%20not%20trim%20whitespace%20in%20HTML%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
 1. The table of contents (TOC) is not supported.
 
 ### HTML tag
 
 1. Style sanitization is sometimes different ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
-1. Empty `id` attributes are not removed ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Sanitizer%3A%20Validating%20the%20contents%20of%20the%20id%20attribute%2C%20empty%20attribute%20syntax%20(T6515))).
 
 ### Table
 
-1. When the entire table content is fostered, the table does not have an empty `<td>` ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%204.%20Templated%20tags%2C%20no%20content)).
+1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
 1. Missing newline between the fostered content and the table ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%201a.%20Fostering%20of%20entire%20template%20content)).
 1. Unclosed HTML tags in the table fostered content ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
+1. `<tr>` elements should not be fostered ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
 
 ### Link
 
@@ -124,6 +125,7 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 ### External link
 
+1. External images are not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#T21052%20U%2B3000%20IDEOGRAPHIC%20SPACE%20should%20terminate%20external%20images%20links)).
 1. No percent-encoding in displayed free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
 
 ### Block element

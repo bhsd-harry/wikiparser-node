@@ -13,12 +13,18 @@
         btn.style.display = '';
     }
     let optgroup;
+    const refGroups = new Set(['bookReferencing', 'citeParserTests', 'citeSmokeTests', 'magicWords']);
     for (let i = 0; i < tests.length; i++) {
         const { desc, wikitext, html } = tests[i];
         if (wikitext === undefined) {
+            if (optgroup && optgroup.childElementCount === 0) {
+                optgroup.remove();
+            }
             optgroup = document.createElement('optgroup');
             optgroup.label = desc;
-            select.append(optgroup);
+            if (!isIframe || !refGroups.has(desc)) {
+                select.append(optgroup);
+            }
         }
         else if ((isIframe || html !== undefined) && (isGH || !dones.has(desc))) {
             const option = document.createElement('option');
