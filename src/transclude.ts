@@ -435,12 +435,12 @@ export abstract class TranscludeToken extends Token {
 					'warning',
 				);
 				e.fix = {
+					desc: 'remove',
 					range: [
 						e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'),
 						e.endIndex,
 					],
 					text: '',
-					desc: 'remove',
 				};
 				errors.push(e);
 			}

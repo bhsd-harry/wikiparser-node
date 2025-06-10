@@ -296,7 +296,7 @@ export abstract class ImageParameterToken extends Token {
 			{link, name} = this;
 		if (name === 'invalid') {
 			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid image parameter');
-			e.fix = {range: [start - 1, e.endIndex], text: '', desc: 'remove'};
+			e.fix = {desc: 'remove', range: [start - 1, e.endIndex], text: ''};
 			errors.push(e);
 		} else if (typeof link === 'object' && link.encoded) {
 			const e = generateForSelf(

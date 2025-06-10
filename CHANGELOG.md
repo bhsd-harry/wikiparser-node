@@ -14,6 +14,7 @@
 
 - `TranscludeToken.prototype.print` now highlights the modifiers (e.g., `subst:`) as magic words
 - [`AttributeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tohtml) now drops empty `id` attributes
+- Lowered severity of unnecessary URL encoding in internal links
 
 ## v1.21.1
 

@@ -57,7 +57,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				'void-ext',
 				Parser.msg('nothing should be in <$1>', name),
 			);
-			e.fix = {range: [start, e.endIndex], text: '', desc: 'empty'};
+			e.fix = {desc: 'empty', range: [start, e.endIndex], text: ''};
 			return [e];
 		}
 		return super.lint(start, getLintRegex(name));

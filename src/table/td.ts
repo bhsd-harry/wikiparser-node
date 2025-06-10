@@ -286,9 +286,9 @@ export abstract class TdToken extends TableBaseToken {
 					if (isError) {
 						const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
 						e.fix = {
+							desc: 'newline',
 							range: [e.startIndex, e.endIndex],
 							text: data.replace(/\|\|/gu, `\n${syntax}`),
-							desc: 'newline',
 						};
 					} else {
 						e.suggestions = [

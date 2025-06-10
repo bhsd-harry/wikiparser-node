@@ -198,7 +198,7 @@ export abstract class ParameterToken extends Token {
 			e.startCol = e.endCol;
 			e.endIndex++;
 			e.endCol++;
-			e.fix = {range: [e.startIndex, e.endIndex], text: '{{=}}', desc: 'escape'};
+			e.fix = {desc: 'escape', range: [e.startIndex, e.endIndex], text: '{{=}}'};
 			errors.push(e);
 		}
 		return errors;
