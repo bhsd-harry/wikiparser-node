@@ -31,7 +31,12 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return this.innerText.length !== 3;
 	}
 
-	/** whether to be closing quotes / 是否闭合 */
+	/**
+	 * whether to be closing quotes
+	 *
+	 * 是否闭合
+	 * @since v1.16.5
+	 */
 	get closing(): Partial<Font> {
 		return {
 			...this.bold ? {bold: this.#closing.bold} : undefined,

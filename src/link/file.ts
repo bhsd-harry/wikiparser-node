@@ -79,7 +79,12 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
-	/** file extension / 扩展名 */
+	/**
+	 * file extension
+	 *
+	 * 扩展名
+	 * @since v1.5.3
+	 */
 	get extension(): string | undefined {
 		return this.getAttribute('title').extension;
 	}
