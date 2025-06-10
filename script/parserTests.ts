@@ -98,7 +98,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)?.[1]!.trim();
 		if (
 			!wikitext
-			|| /<(?:span|static|aside)?tag\b/iu.test(wikitext)
+			|| /<(?:div|span|static|aside)?tag\b|\{\{\s*#spantag:/iu.test(wikitext)
 			|| /\b(?:NULL\b|array\s*\()/u.test(html!)
 			|| /\blanguage=(?!en|zh)/u.test(option!)
 		) {

@@ -746,14 +746,16 @@ export abstract class TableToken extends TrBaseToken {
 			newOpt = {
 				...opt,
 				nowrap: true,
-			};
+			},
+			firstRow = super.toHtmlInternal(opt),
+			newline = opt?.nowrap ? ' ' : '\n';
 		return `${
 			[this, ...tr].flatMap(filter)
 				.map(token => token.toHtmlInternal(newOpt).trim())
 				.join(' ')
-		}<table${childNodes[1].toHtmlInternal()}>${opt?.nowrap ? ' ' : '\n'}<tbody>${
-			super.toHtmlInternal(opt)
-		}${html(tr, '\n', opt)}</tbody></table>`;
+		}<table${childNodes[1].toHtmlInternal()}>${newline}<tbody>${
+			firstRow + (tr.length > 0 && firstRow.endsWith('</tr>') ? newline : '')
+		}${html(tr, newline, opt)}${tr.length === 0 && !firstRow ? '<tr><td></td></tr>' : ''}</tbody></table>`;
 	}
 }
 
