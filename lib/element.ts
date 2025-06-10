@@ -272,6 +272,7 @@ export abstract class AstElement extends AstNode {
 			}
 			return {offsetNode: self as AstText, offset: index - start};
 		}
+		this.lspError('AstElement.caretPositionFromIndex');
 	}
 
 	/**
@@ -285,6 +286,7 @@ export abstract class AstElement extends AstNode {
 			const node = this.caretPositionFromIndex(index)?.offsetNode;
 			return node?.type === 'text' ? node.parentNode : node;
 		}
+		this.lspError('AstElement.elementFromIndex');
 	}
 
 	/**
@@ -297,6 +299,7 @@ export abstract class AstElement extends AstNode {
 	elementFromPoint(x: number, y: number): Token | undefined {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
+		this.lspError('AstElement.elementFromPoint');
 	}
 
 	/** @private */

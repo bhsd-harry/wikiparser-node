@@ -150,6 +150,7 @@ export abstract class MagicLinkToken extends Token {
 			}
 			return new URL(link);
 		}
+		this.lspError('MagicLinkToken.getUrl');
 	}
 
 	/* PRINT ONLY */

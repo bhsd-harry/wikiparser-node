@@ -216,6 +216,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			const {LanguageService, tasks} = mod;
 			return tasks.get(uri) ?? new LanguageService(uri);
 		}
+		throw new Error('Parser.createLanguageService method is only available in the LSP version!');
 	},
 };
 

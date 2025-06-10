@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import assert from 'assert';
 import type {Test} from '@bhsd/common/dist/test';
 import type {Parser as ParserBase} from '../base';
 

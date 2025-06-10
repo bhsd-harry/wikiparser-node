@@ -698,7 +698,7 @@ export class LanguageService implements LanguageServiceBase {
 				return undefined;
 			}
 			const key = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart(),
-				[mod, func] = t === 'magic-word' ? transclusion.getModule() : [];
+				{module: mod, function: func} = transclusion;
 			return key
 				? getCompletion(
 					root.querySelectorAll<ParameterToken>('parameter').filter(token => {
@@ -712,8 +712,7 @@ export class LanguageService implements LanguageServiceBase {
 						} else if (t === 'template') {
 							return true;
 						}
-						const [m, f] = token.parentNode!.getModule();
-						return m === mod && f === func;
+						return token.parentNode!.module === mod && token.parentNode!.function === func;
 					}).map(({name}) => name),
 					'Variable',
 					key,

@@ -170,6 +170,7 @@ export abstract class AstNode implements AstNodeBase {
 				index = start + left;
 			return index > end ? undefined : index;
 		}
+		this.lspError('AstNode.indexFromPos');
 	}
 
 	/**
@@ -263,6 +264,7 @@ export abstract class AstNode implements AstNodeBase {
 			...this.#getDimension(),
 			...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!,
 		};
+		this.lspError('AstNode.getBoundingClientRect');
 	}
 
 	/**
@@ -307,5 +309,14 @@ export abstract class AstNode implements AstNodeBase {
 			enumerable: !permanent && Boolean(this[key as keyof this]),
 			configurable: true,
 		});
+	}
+
+	/* PRINT ONLY END */
+
+	/* BROWSER ONLY */
+
+	/** @private */
+	lspError(method: string): never { // eslint-disable-line @typescript-eslint/class-methods-use-this
+		throw new Error(`${method} method is only available in the LSP version!`);
 	}
 }

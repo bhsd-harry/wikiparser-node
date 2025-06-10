@@ -168,6 +168,7 @@ export class Title {
 	 *
 	 * 生成URL
 	 * @param articlePath article path / 条目路径
+	 * @throws `Error` only available in the LSP version
 	 * @since v1.10.0
 	 */
 	getUrl(articlePath?: string): string {
@@ -196,5 +197,6 @@ export class Title {
 			}
 			return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 		}
+		throw new Error('Title.getUrl method is only available in the LSP version!');
 	}
 }
