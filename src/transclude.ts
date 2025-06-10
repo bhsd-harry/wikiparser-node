@@ -45,6 +45,20 @@ export abstract class TranscludeToken extends Token {
 		return this.#type;
 	}
 
+	/** module name / 模块名 */
+	get module(): string | undefined {
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
+	}
+
+	/** function name / 函数名 */
+	get function(): string | undefined {
+		LSP: return this.type === 'magic-word' && this.name === 'invoke' // eslint-disable-line no-unused-labels
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			? this.childNodes[2]?.text().trim()
+			: undefined;
+	}
+
 	/**
 	 * @param title 模板标题或魔术字
 	 * @param parts 参数各部分
@@ -212,26 +226,6 @@ export abstract class TranscludeToken extends Token {
 				{temporary: true},
 			);
 		return title;
-	}
-
-	/**
-	 * Get the module name and module function name
-	 *
-	 * 获取模块名和模块函数名
-	 * @throws `Error` 仅用于模块
-	 */
-	getModule(): [string, string | undefined] {
-		LSP: { // eslint-disable-line no-unused-labels
-			/* istanbul ignore if */
-			if (this.type !== 'magic-word' || this.name !== 'invoke') {
-				throw new Error('TranscludeToken.getModule method is only for modules!');
-			}
-			return [
-				this.#getTitle().title,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				this.childNodes[2]?.text().trim(),
-			];
-		}
 	}
 
 	/** @private */
