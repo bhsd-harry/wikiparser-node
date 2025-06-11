@@ -194,7 +194,9 @@ export abstract class HeadingToken extends Token {
 			errors.push(e);
 		}
 		if (s) {
-			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in an HTML tag', s));
+			errors.push(
+				generateForSelf(this, rect, 'parsing-order', 'section header in HTML tag attributes', s),
+			);
 		}
 		const rootStr = this.getRootNode().toString();
 		if (boldQuotes.length % 2) {
