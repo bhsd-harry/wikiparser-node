@@ -1,5 +1,11 @@
 (() => {
 "use strict";
+const removeClass = (ele, cls) => {
+    ele.classList.remove(cls);
+    if (ele.classList.length === 0) {
+        ele.removeAttribute('class');
+    }
+};
 (async () => {
     const tests = await (await fetch('./test/parserTests.json')).json(), key = 'wikiparser-node-done', dones = new Set(JSON.parse(localStorage.getItem(key))), isGH = location.hostname.endsWith('.github.io'), isIframe = self !== top, select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     Parser.config = await (await fetch('./config/default.json')).json();
@@ -68,16 +74,13 @@
             container2.innerHTML = render !== null && render !== void 0 ? render : '';
             const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt'), extLinks = container1
                 .querySelectorAll('a.external'), styles = container1
-                .querySelectorAll('[style="/* insecure input */"]'), anchors = container1.querySelectorAll('a[href]');
+                .querySelectorAll('[style="/* insecure input */"]'), anchors = container1.querySelectorAll('a[href]'), typeofs = container1.querySelectorAll('span[typeof]'), defaultSizes = container1.querySelectorAll('.mw-default-size');
             for (const ele of edits) {
                 ele.remove();
             }
             for (const ele of empty) {
                 if (ele.childElementCount === 0 && !ele.textContent.trim()) {
-                    ele.classList.remove('mw-empty-elt');
-                    if (ele.classList.length === 0) {
-                        ele.removeAttribute('class');
-                    }
+                    removeClass(ele, 'mw-empty-elt');
                 }
             }
             for (const ele of extLinks) {
@@ -104,6 +107,12 @@
                 catch {
                     ele.removeAttribute('href');
                 }
+            }
+            for (const ele of typeofs) {
+                ele.removeAttribute('typeof');
+            }
+            for (const ele of defaultSizes) {
+                removeClass(ele, 'mw-default-size');
             }
             if (isIframe && container1.innerHTML === container2.innerHTML) {
                 dblClickHandler();

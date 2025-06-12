@@ -5,6 +5,18 @@ declare interface Test {
 	render?: string;
 }
 
+/**
+ * 移除元素的指定类名
+ * @param ele 元素
+ * @param cls 类名
+ */
+const removeClass = (ele: Element, cls: string): void => {
+	ele.classList.remove(cls);
+	if (ele.classList.length === 0) {
+		ele.removeAttribute('class');
+	}
+};
+
 (async () => {
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
 		key = 'wikiparser-node-done',
@@ -89,16 +101,15 @@ declare interface Test {
 					.querySelectorAll('a.external') as unknown as Iterable<HTMLAnchorElement>,
 				styles = container1
 					.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>,
-				anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
+				anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>,
+				typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
+				defaultSizes = container1.querySelectorAll('.mw-default-size') as unknown as Iterable<Element>;
 			for (const ele of edits) {
 				ele.remove();
 			}
 			for (const ele of empty) {
 				if (ele.childElementCount === 0 && !ele.textContent!.trim()) {
-					ele.classList.remove('mw-empty-elt');
-					if (ele.classList.length === 0) {
-						ele.removeAttribute('class');
-					}
+					removeClass(ele, 'mw-empty-elt');
 				}
 			}
 			for (const ele of extLinks) {
@@ -127,6 +138,12 @@ declare interface Test {
 				} catch {
 					ele.removeAttribute('href');
 				}
+			}
+			for (const ele of typeofs) {
+				ele.removeAttribute('typeof');
+			}
+			for (const ele of defaultSizes) {
+				removeClass(ele, 'mw-default-size');
 			}
 			if (isIframe && container1.innerHTML === container2.innerHTML) {
 				dblClickHandler();
