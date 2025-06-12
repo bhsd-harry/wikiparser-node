@@ -125,10 +125,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 			let {nextSibling} = child;
 			while (nextSibling?.is<DdToken>('dd')) {
 				const next = nextSibling.nextSibling as ListRangeToken;
-				for (let i = 0; i < nextSibling.indent; i++) {
-					result += nextItem(':', state);
-				}
-				result += next.toHtmlInternal(opt).trim();
+				result += nextItem(':', state) + next.toHtmlInternal(opt).trim();
 				({nextSibling} = next);
 				j += 2;
 			}

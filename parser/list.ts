@@ -34,7 +34,9 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 	if (commonPrefixLength > 1) {
 		const commonPrefix = prefix.slice(0, commonPrefixLength - 1);
 		if (isDt) {
-			parts.unshift(commonPrefix);
+			const commonPrefixes = commonPrefix.split(/(?=;)/u);
+			parts.unshift(...commonPrefixes);
+			dt += commonPrefix.includes(';') ? commonPrefixes.length : 0;
 		} else {
 			parts[0] = commonPrefix + parts[0];
 		}

@@ -531,7 +531,9 @@ export abstract class FileToken extends LinkBaseToken {
 				this.getValue('border') ? ' mw-image-border' : ''
 			} ${sanitizeAlt(this.getValue('class') as string | undefined) ?? ''}`.trim(),
 			classAttr = className && ` class="${className}"`,
-			img = `<img${alt && ` alt="${alt}"`} src="${(manual ? fr : file).getUrl()}" class="mw-file-element"${
+			img = `<img${alt && ` alt="${alt}"`} src="${
+				(manual ? fr : file).getUrl()
+			}" decoding="async" class="mw-file-element"${
 				isInteger(width) ? ` width="${width}"` : ''
 			}${isInteger(height) ? ` height="${height}"` : ''}>`;
 		let href = '';

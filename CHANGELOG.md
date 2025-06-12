@@ -11,6 +11,7 @@
 **Fixed**
 
 - An issue with one-line definition lists (`;:`) when `;` is followed by whitespace
+- An occasional issue with multi-level indentation in a one-line definition list (`;;dt::dd`)
 
 **Changed**
 
