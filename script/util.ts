@@ -11,6 +11,7 @@ const redirects: Record<string, string> = {
  * @param Parser
  */
 export const prepare = (Parser: ParserBase): void => {
+	process.env.TZ = 'UTC';
 	Parser.viewOnly = true;
 	Parser.warning = false;
 	Parser.now = new Date(Date.UTC(1970, 0, 1, 0, 2, 3));
