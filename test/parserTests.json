@@ -6269,6 +6269,90 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t3<span class=\"wpb-dd\">:::</span>d3\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t5<span class=\"wpb-dd\">:::::</span>:d5\n\n<span class=\"wpb-list\">;</span>t1\n<span class=\"wpb-list\">;*</span>t1<span class=\"wpb-dd\">:</span>d1\n<span class=\"wpb-list\">;*</span>t1:d1</span>"
 	},
 	{
+		"desc": "Extension tag in language conversion",
+		"wikitext": "-{<pre>foo</pre>}-\n\n-{<pre>foo</pre>|bar}-",
+		"html": "<pre>foo</pre><p>\nbar</p>",
+		"render": "<pre>foo</pre>\n<p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/pre&gt;</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/pre&gt;</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Template in language conversion",
+		"wikitext": "-{{{1x|foo}} }-\n\n-{{{1x|foo}}|bar}-",
+		"html": "<p>foo \n</p><p>bar\n</p>",
+		"render": "<p>foo \n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span> </span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Template variable in language conversion",
+		"wikitext": "-{{{{foo}}} }-\n\n-{{{{foo}}}|bar}-\n\n-{{{{foo|baz}}} }-\n\n-{{{{foo|baz}}}|bar}-",
+		"html": "<p>{{{foo}}} \n</p><p>bar\n</p><p>baz \n</p><p>bar\n</p>",
+		"render": "<p>{{{foo}}} \n</p><p><br>\n</p><p>baz \n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">foo</span>}}}</span> </span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">foo</span>}}}</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">foo</span>|<span class=\"wpb-arg-default\">baz</span>}}}</span> </span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">foo</span>|<span class=\"wpb-arg-default\">baz</span>}}}</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Section heading in language conversion",
+		"wikitext": "-{\n==foo==\n}-\n\n-{\n==foo==\n|bar}-",
+		"html": "<p class=\"mw-empty-elt\">\n</p>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo\">foo</h2></div>\n<p class=\"mw-empty-elt\">\n</p><p>bar\n</p>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"foo\">foo</h2></div>\n<p><br>\nbar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">foo</span>==</span>\n</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\">\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">foo</span>==</span>\n</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "HTML tag in language conversion",
+		"wikitext": "-{<b>foo</b>}-\n\n-{<b>foo</b>|bar}-",
+		"html": "<p><b>foo</b>\n</p><p>bar\n</p>",
+		"render": "<p><b>foo</b>\n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-html\">&lt;b&gt;</span>foo<span class=\"wpb-html\">&lt;/b&gt;</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-html\">&lt;b&gt;</span>foo<span class=\"wpb-html\">&lt;/b&gt;</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Table in language conversion",
+		"wikitext": "-{\n{|\n|foo\n|}}-\n\n-{\n{|\n|foo\n|}|bar}-",
+		"html": "<p class=\"mw-empty-elt\">\n</p>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>\n<p>bar</p>",
+		"render": "<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>\n<p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Hr in language conversion",
+		"wikitext": "-{\n----}-\n\n-{\n----|bar}-",
+		"html": "<p class=\"mw-empty-elt\">\n</p>\n<hr />\n<p>bar</p>",
+		"render": "<hr>\n<p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">\n<span class=\"wpb-hr\">----</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\">\n<span class=\"wpb-hr\">----</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Internal link in language conversion",
+		"wikitext": "-{[[foo]]}-\n\n-{[[foo]]|bar}-",
+		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">foo</a>\n</p><p>bar\n</p>",
+		"render": "<p><a href=\"/wiki/Foo\" title=\"Foo\">foo</a>\n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo</span>]]</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo</span>]]</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Quote in language conversion",
+		"wikitext": "-{''foo''}-\n\n-{''foo''|bar}-",
+		"html": "<p><i>foo</i>\n</p><p>bar\n</p>",
+		"render": "<p><i>foo</i>\n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "External link in language conversion",
+		"wikitext": "-{[//foo]}-\n\n-{[//foo]|bar}-",
+		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"https://foo\">[1]</a>\n</p><p>bar\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://foo/\">[1]</a>\n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//foo</span>]</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//foo</span>]</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "List in language conversion",
+		"wikitext": "-{\n*foo}-\n\n-{\n*foo|bar}-",
+		"html": "<p class=\"mw-empty-elt\">\n</p>\n<ul><li>foo</li></ul>\n<p>bar</p>",
+		"render": "<ul><li>foo</li></ul>\n<p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">\n<span class=\"wpb-list\">*</span>foo</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\">\n<span class=\"wpb-list\">*</span>foo</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Magic link in language conversion",
+		"wikitext": "-{PMID 1}-\n\n-{PMID 1|bar}-",
+		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1?dopt=Abstract\">PMID 1</a>\n</p><p>bar\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://pubmed.ncbi.nlm.nih.gov/1\">PMID 1</a>\n</p><p>bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
@@ -11346,7 +11430,7 @@
 		"desc": "Magic Words LOCAL (UTC)",
 		"wikitext": "*{{LOCALMONTH}}\n*{{LOCALMONTH1}}\n*{{LOCALMONTHNAME}}\n*{{LOCALMONTHNAMEGEN}}\n*{{LOCALMONTHABBREV}}\n*{{LOCALDAY}}\n*{{LOCALDAY2}}\n*{{LOCALDAYNAME}}\n*{{LOCALYEAR}}\n*{{LOCALTIME}}\n*{{LOCALHOUR}}\n*{{LOCALWEEK}}\n*{{LOCALDOW}}\n*{{LOCALTIMESTAMP}}",
 		"html": "<ul><li>01</li>\n<li>1</li>\n<li>January</li>\n<li>January</li>\n<li>Jan</li>\n<li>1</li>\n<li>01</li>\n<li>Thursday</li>\n<li>1970</li>\n<li>00:02</li>\n<li>00</li>\n<li>1</li>\n<li>4</li>\n<li>19700101000203</li></ul>",
-		"render": "<ul><li>01</li>\n<li>1</li>\n<li>January</li>\n<li>January</li>\n<li>Jan</li>\n<li>1</li>\n<li>01</li>\n<li>Thursday</li>\n<li>1970</li>\n<li>08:02</li>\n<li>08</li>\n<li>1</li>\n<li>4</li>\n<li>19700101080203</li></ul>",
+		"render": "<ul><li>01</li>\n<li>1</li>\n<li>January</li>\n<li>January</li>\n<li>Jan</li>\n<li>1</li>\n<li>01</li>\n<li>Thursday</li>\n<li>1970</li>\n<li>00:02</li>\n<li>00</li>\n<li>1</li>\n<li>4</li>\n<li>19700101000203</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTH</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTH1</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHNAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHNAMEGEN</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHABBREV</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAY</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAY2</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAYNAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALYEAR</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALTIME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALHOUR</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALWEEK</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDOW</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALTIMESTAMP</span>}}</span></span>"
 	},
 	{

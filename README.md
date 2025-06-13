@@ -125,12 +125,13 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 ### External link
 
-1. External images are not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#T21052%20U%2B3000%20IDEOGRAPHIC%20SPACE%20should%20terminate%20external%20images%20links)).
+1. External images are not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image)).
 1. No percent-encoding in displayed free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
 
 ### Block element
 
 1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [`<div>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily) or even [closing tags](http://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
+1. Mixed lists ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Mixed%20Lists%3A%20Test%204)).
 
 ### Miscellaneous
 
