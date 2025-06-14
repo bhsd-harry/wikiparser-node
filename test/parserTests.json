@@ -6353,6 +6353,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
 	},
 	{
+		"desc": "Nested <poem><pre>",
+		"wikitext": "<poem><pre>\nthis\nis\na\ntest\n</pre></poem>",
+		"html": "<div class=\"poem\">\n<pre><br />\nthis<br />\nis<br />\na<br />\ntest<br />\n</pre>\n</div>",
+		"render": "<div class=\"poem\"><pre><br>\n<p>this<br>\nis<br>\na<br>\ntest<br>\n</p>\n</pre></div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nthis\nis\na\ntest\n</span>&lt;/pre&gt;</span></span>&lt;/poem&gt;</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
@@ -13673,7 +13680,7 @@
 		"desc": "Multi-line poems with indentation use spans and breaks correctly (T235709)",
 		"wikitext": "<poem>\n''CONGREGATI''\n:'''EX TOTO ORBE'''\n::'''''MATHEMATICI'''''\n:<span>foo</span>\n</poem>",
 		"html": "<div class=\"poem\">\n<p><i>CONGREGATI</i><br />\n<span class=\"mw-poem-indented\" style=\"display: inline-block; margin-inline-start: 1em;\"><b>EX TOTO ORBE</b></span><br />\n<span class=\"mw-poem-indented\" style=\"display: inline-block; margin-inline-start: 2em;\"><i><b>MATHEMATICI</b></i></span><br />\n<span class=\"mw-poem-indented\" style=\"display: inline-block; margin-inline-start: 1em;\"><span>foo</span></span>\n</p>\n</div>",
-		"render": "<div class=\"poem\">\n<p><i>CONGREGATI</i><br>\n</p>\n<dl><dd><b>EX TOTO ORBE</b><br>\n<dl><dd><i><b>MATHEMATICI</b></i></dd></dl></dd><br>\n<dd><span>foo</span></dd></dl>\n</div>",
+		"render": "<div class=\"poem\">\n<p><i>CONGREGATI</i><br>\n<span style=\"display: inline-block; margin-inline-start: 1em;\"><b>EX TOTO ORBE</b></span><br>\n<span style=\"display: inline-block; margin-inline-start: 2em;\"><i><b>MATHEMATICI</b></i></span><br>\n<span style=\"display: inline-block; margin-inline-start: 1em;\"><span>foo</span></span>\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-quote\">''</span>CONGREGATI<span class=\"wpb-quote\">''</span>\n<span class=\"wpb-list\">:</span><span class=\"wpb-quote\">'''</span>EX TOTO ORBE<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-list\">::</span><span class=\"wpb-quote\">'''''</span>MATHEMATICI<span class=\"wpb-quote\">'''''</span>\n<span class=\"wpb-list\">:</span><span class=\"wpb-html\">&lt;span&gt;</span>foo<span class=\"wpb-html\">&lt;/span&gt;</span>\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{

@@ -67,7 +67,7 @@ export const parseTable = (
 			matchesStart = /^(:*)((?:\s|\0\d+[cn]\x7F)*)(\{\||\{(?:\0\d+[cn]\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
 				.exec(line) as [string, string, string, string, string] | null;
 		if (matchesStart) {
-			while (top && top.type !== 'td') {
+			while (top && !top.is<TdToken>('td')) {
 				top = stack.pop();
 			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
@@ -93,10 +93,10 @@ export const parseTable = (
 		}
 		const [, closing, row, cell, attr] = matches;
 		if (closing) {
-			while (top!.type !== 'table') {
+			while (!top!.is<TableToken>('table')) {
 				top = stack.pop();
 			}
-			top!.close(`\n${spaces}${closing}`, true);
+			top.close(`\n${spaces}${closing}`, true);
 			push(attr, stack[stack.length - 1]);
 		} else if (row) {
 			top = pop(top, stack);
