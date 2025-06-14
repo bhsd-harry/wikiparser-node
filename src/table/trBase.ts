@@ -157,11 +157,11 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		if (!Shadow.running && token.type !== 'td') {
+		if (!Shadow.running && !token.is<TdToken>('td')) {
 			/* istanbul ignore next */
 			if (this.is<TrToken>('tr')) {
 				this.typeError('insertAt', 'TdToken');
-			} else if (token.type !== 'tr') {
+			} else if (!token.is<TrToken>('tr')) {
 				this.typeError('insertAt', 'TrToken', 'TdToken');
 			}
 		}

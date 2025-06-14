@@ -113,7 +113,6 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 ### Table
 
 1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
-1. Missing newline between the fostered content and the table ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Wiki%20Tables%3A%201a.%20Fostering%20of%20entire%20template%20content)).
 1. Unclosed HTML tags in the table fostered content ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
 1. `<tr>` elements should not be fostered ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
 

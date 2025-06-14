@@ -205,7 +205,7 @@ export abstract class TableToken extends TrBaseToken {
 					Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes :
 					[syntax];
 			/* eslint-enable unicorn/no-negated-condition, @stylistic/operator-linebreak */
-		if (this.lastChild.type !== 'table-syntax') {
+		if (!this.lastChild.is<SyntaxToken>('table-syntax')) {
 			Shadow.run(() => {
 				const token = new SyntaxToken(
 					undefined,

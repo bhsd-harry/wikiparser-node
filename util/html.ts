@@ -1,7 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {Shadow} from './debug';
-import type {AstNodes, ListRangeToken, Token, DdToken, ListToken} from '../internal';
+import type {AstNodes, ListRangeToken, Token, DdToken, ListToken, ExtToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -104,41 +104,54 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 		const child = childNodes[j]!;
 		let result = child.toHtmlInternal(opt);
 		if (child.is<ListRangeToken>('list-range')) {
-			result = result.trim();
-			const {previousSibling: {firstChild: {data}}} = child,
-				prefix = data.trim(),
-				prefix2 = prefix.replaceAll(';', ':'),
-				commonPrefixLength = getCommon(prefix2, lastPrefix);
-			let pre = closeList(lastPrefix.slice(commonPrefixLength), state);
-			if (prefix.length === commonPrefixLength) {
-				pre += nextItem(prefix.slice(-1) as Prefix, state);
-			} else {
-				if (state.dt[0] && prefix[commonPrefixLength - 1] === ':') {
-					pre += nextItem(':', state);
-				}
-				if (lastPrefix) {
-					pre += '\n';
-				}
-				pre += openList(prefix.slice(commonPrefixLength), state);
-			}
-			result = pre + result;
-			let {nextSibling} = child;
-			while (nextSibling?.is<DdToken>('dd')) {
-				const next = nextSibling.nextSibling as ListRangeToken;
-				result += nextItem(':', state) + next.toHtmlInternal(opt).trim();
-				({nextSibling} = next);
-				j += 2;
-			}
+			const {previousSibling} = child,
+				{innerText} = previousSibling;
 			if (
-				nextSibling?.type === 'text'
-				&& nextSibling.data === '\n'
-				&& nextSibling.nextVisibleSibling?.is<ListToken>('list')
+				(child.length > 0 || /\s$/u.test(innerText))
+				&& previousSibling.is<ListToken>('list')
+				&& !/[;#*]/u.test(innerText)
+				&& child.closest('ext#poem,list-range')?.is<ExtToken>('ext')
 			) {
-				j += 2;
-				lastPrefix = prefix2;
-			} else {
 				lastPrefix = '';
-				result += closeList(prefix2, state);
+				result = `<span style="display: inline-block; margin-inline-start: ${
+					previousSibling.indent
+				}em;">${result}</span>`;
+			} else {
+				result = result.trim();
+				const prefix = innerText.trim(),
+					prefix2 = prefix.replaceAll(';', ':'),
+					commonPrefixLength = getCommon(prefix2, lastPrefix);
+				let pre = closeList(lastPrefix.slice(commonPrefixLength), state);
+				if (prefix.length === commonPrefixLength) {
+					pre += nextItem(prefix.slice(-1) as Prefix, state);
+				} else {
+					if (state.dt[0] && prefix[commonPrefixLength - 1] === ':') {
+						pre += nextItem(':', state);
+					}
+					if (lastPrefix) {
+						pre += '\n';
+					}
+					pre += openList(prefix.slice(commonPrefixLength), state);
+				}
+				result = pre + result;
+				let {nextSibling} = child;
+				while (nextSibling?.is<DdToken>('dd')) {
+					const next = nextSibling.nextSibling as ListRangeToken;
+					result += nextItem(':', state) + next.toHtmlInternal(opt).trim();
+					({nextSibling} = next);
+					j += 2;
+				}
+				if (
+					nextSibling?.type === 'text'
+					&& nextSibling.data === '\n'
+					&& nextSibling.nextVisibleSibling?.is<ListToken>('list')
+				) {
+					j += 2;
+					lastPrefix = prefix2;
+				} else {
+					lastPrefix = '';
+					result += closeList(prefix2, state);
+				}
 			}
 		}
 		results.push(result);

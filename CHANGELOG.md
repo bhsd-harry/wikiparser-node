@@ -1,3 +1,11 @@
+## v1.21.3
+
+*2025-06-16*
+
+**Fixed**
+
+- HTML conversion of `<poem>` containing `<nowiki>` or leading `:`
+
 ## v1.21.2
 
 *2025-06-12*
