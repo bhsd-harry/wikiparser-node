@@ -1,5 +1,16 @@
 (() => {
 "use strict";
+const ignoredGroups = new Set([
+    'bookReferencing',
+    'citeParserTests',
+    'citeSmokeTests',
+    'fragmentModes',
+    'magicWords',
+    'extTags',
+    'funcsParserTests',
+    'stringFunctionTests',
+    'parserFunctionTests',
+]);
 const removeClass = (ele, cls) => {
     ele.classList.remove(cls);
     if (ele.classList.length === 0) {
@@ -19,7 +30,6 @@ const removeClass = (ele, cls) => {
         btn.style.display = '';
     }
     let optgroup;
-    const refGroups = new Set(['bookReferencing', 'citeParserTests', 'citeSmokeTests', 'magicWords']);
     for (let i = 0; i < tests.length; i++) {
         const { desc, wikitext, html } = tests[i];
         if (wikitext === undefined) {
@@ -28,7 +38,7 @@ const removeClass = (ele, cls) => {
             }
             optgroup = document.createElement('optgroup');
             optgroup.label = desc;
-            if (!isIframe || !refGroups.has(desc)) {
+            if (!isIframe || !ignoredGroups.has(desc)) {
                 select.append(optgroup);
             }
         }
@@ -94,6 +104,7 @@ const removeClass = (ele, cls) => {
                 ele.removeAttribute('style');
             }
             for (const ele of anchors) {
+                ele.classList.remove('mw-magiclink-pmid', 'mw-magiclink-rfc');
                 try {
                     const url = new URL(ele.href);
                     if (url.origin === location.origin

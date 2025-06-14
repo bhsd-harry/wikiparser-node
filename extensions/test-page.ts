@@ -5,6 +5,20 @@ declare interface Test {
 	render?: string;
 }
 
+const ignoredGroups = new Set([
+	// <ref>
+	'bookReferencing',
+	'citeParserTests',
+	'citeSmokeTests',
+	'fragmentModes',
+	// magic words
+	'magicWords',
+	'extTags',
+	'funcsParserTests',
+	'stringFunctionTests',
+	'parserFunctionTests',
+]);
+
 /**
  * 移除元素的指定类名
  * @param ele 元素
@@ -41,7 +55,6 @@ const removeClass = (ele: Element, cls: string): void => {
 		btn.style.display = '';
 	}
 	let optgroup: HTMLOptGroupElement | undefined;
-	const refGroups = new Set(['bookReferencing', 'citeParserTests', 'citeSmokeTests', 'magicWords']);
 	for (let i = 0; i < tests.length; i++) {
 		const {desc, wikitext, html} = tests[i]!;
 		if (wikitext === undefined) {
@@ -50,7 +63,7 @@ const removeClass = (ele: Element, cls: string): void => {
 			}
 			optgroup = document.createElement('optgroup');
 			optgroup.label = desc;
-			if (!isIframe || !refGroups.has(desc)) {
+			if (!isIframe || !ignoredGroups.has(desc)) {
 				select.append(optgroup);
 			}
 		} else if ((isIframe || html !== undefined) && (isGH || !dones.has(desc))) {
@@ -122,6 +135,7 @@ const removeClass = (ele: Element, cls: string): void => {
 				ele.removeAttribute('style');
 			}
 			for (const ele of anchors) {
+				ele.classList.remove('mw-magiclink-pmid', 'mw-magiclink-rfc');
 				try {
 					const url = new URL(ele.href);
 					if (

@@ -125,7 +125,7 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 ### External link
 
-1. External images are not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image)).
+1. External images are not supported (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20links%3A%20Clickable%20images)).
 1. No percent-encoding in displayed free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
 
 ### Block element
