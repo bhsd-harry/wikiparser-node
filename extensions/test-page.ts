@@ -24,8 +24,8 @@ const ignoredGroups = new Set([
  * @param ele 元素
  * @param cls 类名
  */
-const removeClass = (ele: Element, cls: string): void => {
-	ele.classList.remove(cls);
+const removeClass = (ele: Element, ...cls: string[]): void => {
+	ele.classList.remove(...cls);
 	if (ele.classList.length === 0) {
 		ele.removeAttribute('class');
 	}
@@ -116,7 +116,8 @@ const removeClass = (ele: Element, cls: string): void => {
 					.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>,
 				anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>,
 				typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
-				defaultSizes = container1.querySelectorAll('.mw-default-size') as unknown as Iterable<Element>;
+				classes = container1
+					.querySelectorAll('.mw-default-size, .mw-poem-indented') as unknown as Iterable<Element>;
 			for (const ele of edits) {
 				ele.remove();
 			}
@@ -126,7 +127,7 @@ const removeClass = (ele: Element, cls: string): void => {
 				}
 			}
 			for (const ele of extLinks) {
-				ele.classList.remove('text', 'autonumber');
+				ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
 				try {
 					ele.href = new URL(ele.href).href;
 				} catch {}
@@ -135,7 +136,6 @@ const removeClass = (ele: Element, cls: string): void => {
 				ele.removeAttribute('style');
 			}
 			for (const ele of anchors) {
-				ele.classList.remove('mw-magiclink-pmid', 'mw-magiclink-rfc');
 				try {
 					const url = new URL(ele.href);
 					if (
@@ -156,8 +156,8 @@ const removeClass = (ele: Element, cls: string): void => {
 			for (const ele of typeofs) {
 				ele.removeAttribute('typeof');
 			}
-			for (const ele of defaultSizes) {
-				removeClass(ele, 'mw-default-size');
+			for (const ele of classes) {
+				removeClass(ele, 'mw-default-size', 'mw-poem-indented');
 			}
 			if (isIframe && container1.innerHTML === container2.innerHTML) {
 				dblClickHandler();

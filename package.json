@@ -45,7 +45,7 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.12.0",
+		"@bhsd/common": "^0.13.0",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
@@ -59,7 +59,7 @@
 		"vscode-json-languageservice": "^5.4.4"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.25.5",
+		"@bhsd/codemirror-mediawiki": "^2.28.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@stylistic/stylelint-plugin": "^3.1.2",

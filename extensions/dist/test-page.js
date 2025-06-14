@@ -11,8 +11,8 @@ const ignoredGroups = new Set([
     'stringFunctionTests',
     'parserFunctionTests',
 ]);
-const removeClass = (ele, cls) => {
-    ele.classList.remove(cls);
+const removeClass = (ele, ...cls) => {
+    ele.classList.remove(...cls);
     if (ele.classList.length === 0) {
         ele.removeAttribute('class');
     }
@@ -84,7 +84,8 @@ const removeClass = (ele, cls) => {
             container2.innerHTML = render !== null && render !== void 0 ? render : '';
             const edits = container1.querySelectorAll('.mw-editsection'), empty = container1.querySelectorAll('.mw-empty-elt'), extLinks = container1
                 .querySelectorAll('a.external'), styles = container1
-                .querySelectorAll('[style="/* insecure input */"]'), anchors = container1.querySelectorAll('a[href]'), typeofs = container1.querySelectorAll('span[typeof]'), defaultSizes = container1.querySelectorAll('.mw-default-size');
+                .querySelectorAll('[style="/* insecure input */"]'), anchors = container1.querySelectorAll('a[href]'), typeofs = container1.querySelectorAll('span[typeof]'), classes = container1
+                .querySelectorAll('.mw-default-size, .mw-poem-indented');
             for (const ele of edits) {
                 ele.remove();
             }
@@ -94,7 +95,7 @@ const removeClass = (ele, cls) => {
                 }
             }
             for (const ele of extLinks) {
-                ele.classList.remove('text', 'autonumber');
+                ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
                 try {
                     ele.href = new URL(ele.href).href;
                 }
@@ -104,7 +105,6 @@ const removeClass = (ele, cls) => {
                 ele.removeAttribute('style');
             }
             for (const ele of anchors) {
-                ele.classList.remove('mw-magiclink-pmid', 'mw-magiclink-rfc');
                 try {
                     const url = new URL(ele.href);
                     if (url.origin === location.origin
@@ -122,8 +122,8 @@ const removeClass = (ele, cls) => {
             for (const ele of typeofs) {
                 ele.removeAttribute('typeof');
             }
-            for (const ele of defaultSizes) {
-                removeClass(ele, 'mw-default-size');
+            for (const ele of classes) {
+                removeClass(ele, 'mw-default-size', 'mw-poem-indented');
             }
             if (isIframe && container1.innerHTML === container2.innerHTML) {
                 dblClickHandler();
