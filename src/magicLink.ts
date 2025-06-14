@@ -303,11 +303,13 @@ export abstract class MagicLinkToken extends Token {
 		try {
 			url = this.getUrl();
 		} catch {}
-		return `<a${
-			type === 'magic-link' && protocol === 'ISBN'
-				? ''
-				: ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"`
-		}${url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`}>${innerText}</a>`;
+		const attrs = type === 'free-ext-link' || type === 'ext-link-url'
+			? ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"${
+				typeof url === 'object' ? ` href="${url.href}"` : ''
+			}`
+			: (protocol === 'ISBN' ? '' : ' class="external" rel="nofollow"')
+				+ (url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`);
+		return `<a${attrs}>${innerText}</a>`;
 	}
 }
 
