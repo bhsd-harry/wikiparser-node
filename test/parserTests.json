@@ -6353,6 +6353,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
 	},
 	{
+		"desc": "Nested <poem><pre>",
+		"wikitext": "<poem><pre>\nthis\nis\na\ntest\n</pre></poem>",
+		"html": "<div class=\"poem\">\n<pre><br />\nthis<br />\nis<br />\na<br />\ntest<br />\n</pre>\n</div>",
+		"render": "<div class=\"poem\"><pre><br>\n<p>this<br>\nis<br>\na<br>\ntest<br>\n</p>\n</pre></div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nthis\nis\na\ntest\n</span>&lt;/pre&gt;</span></span>&lt;/poem&gt;</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
@@ -13638,14 +13645,14 @@
 		"desc": "nested <poem><nowiki>",
 		"wikitext": "<poem><nowiki>\nthis\nis\na\ntest\n</nowiki></poem>",
 		"html": "<div class=\"poem\">\n<p><br />\nthis<br />\nis<br />\na<br />\ntest<br />\n\n</p>\n</div>",
-		"render": "<div class=\"poem\">&#10;this&#10;is&#10;a&#10;test&#10;</div>",
+		"render": "<div class=\"poem\">\n<p>this<br>\nis<br>\na<br>\ntest\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">\nthis\nis\na\ntest\n</span>&lt;/nowiki&gt;</span></span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "nested <poem><nowiki> with formatting",
 		"wikitext": "<poem><nowiki>\nthis\n'''is'''\na\ntest\n</nowiki></poem>",
 		"html": "<div class=\"poem\">\n<p><br />\nthis<br />\n'''is'''<br />\na<br />\ntest<br />\n\n</p>\n</div>",
-		"render": "<div class=\"poem\">&#10;this&#10;'''is'''&#10;a&#10;test&#10;</div>",
+		"render": "<div class=\"poem\">\n<p>this<br>\n'''is'''<br>\na<br>\ntest\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">\nthis\n'''is'''\na\ntest\n</span>&lt;/nowiki&gt;</span></span>&lt;/poem&gt;</span></span>"
 	},
 	{
@@ -13659,7 +13666,7 @@
 		"desc": "Verify Parsoid handles entities in nowikis in poem correctly",
 		"wikitext": "<poem>\nL1\nL2\n<nowiki>\n<ref>Not a ref</ref>\nfoo &amp; bar\n[[Not a link]]\n</nowiki>\nL3\n</poem>",
 		"html": "<div class=\"poem\">\n<p>L1<br />\nL2<br />\n<br />\n&lt;ref&gt;Not a ref&lt;/ref&gt;<br />\nfoo &amp; bar<br />\n[[Not a link]]<br />\n<br />\nL3\n</p>\n</div>",
-		"render": "<div class=\"poem\">\n<p>L1<br>\nL2<br>\n&#10;&lt;ref&gt;Not a ref&lt;/ref&gt;&#10;foo &amp; bar&#10;[[Not a link]]&#10;<br>\nL3\n</p>\n</div>",
+		"render": "<div class=\"poem\">\n<p>L1<br>\nL2<br>\n<br>\n&lt;ref&gt;Not a ref&lt;/ref&gt;<br>\nfoo &amp; bar<br>\n[[Not a link]]<br>\n<br>\nL3\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\nL1\nL2\n<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">\n&lt;ref&gt;Not a ref&lt;/ref&gt;\nfoo &amp;amp; bar\n[[Not a link]]\n</span>&lt;/nowiki&gt;</span>\nL3\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{

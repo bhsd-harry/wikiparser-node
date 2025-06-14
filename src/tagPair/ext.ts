@@ -228,15 +228,19 @@ export abstract class ExtToken extends TagPairToken {
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {
-			case 'nowiki':
-				return newline(lastChild.toHtmlInternal());
-			case 'pre':
+			case 'nowiki': {
+				const html = lastChild.toHtmlInternal();
+				return this.closest('ext#poem') ? html : newline(html);
+			}
+			case 'pre': {
+				const html = lastChild.toHtmlInternal({
+					...opt,
+					nowrap: false,
+				});
 				return `<pre${firstChild.toHtmlInternal()}>${
-					newline(lastChild.toHtmlInternal({
-						...opt,
-						nowrap: false,
-					}))
+					this.closest('ext#poem') ? html : newline(html)
 				}</pre>`;
+			}
 			case 'poem':
 				firstChild.classList.add('poem');
 				return `<div${firstChild.toHtmlInternal()}>${
