@@ -108,37 +108,51 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 			container.style.display = '';
 			container1.innerHTML = html!;
 			container2.innerHTML = render ?? '';
-			const edits = container1.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
+			const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading'],
+				withClasses = container1
+					.querySelectorAll(classes.map(c => `.${c}`).join()) as unknown as Iterable<Element>,
 				empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>,
-				extLinks = container1
-					.querySelectorAll('a.external') as unknown as Iterable<HTMLAnchorElement>,
 				styles = container1
 					.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>,
-				anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>,
 				typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
-				classes = container1
-					.querySelectorAll('.mw-default-size, .mw-poem-indented') as unknown as Iterable<Element>;
-			for (const ele of edits) {
-				ele.remove();
+				edits = container1
+					.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
+				tocs = container1.querySelectorAll('#toc') as unknown as Iterable<Element>,
+				anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
+			for (const ele of withClasses) {
+				removeClass(ele, ...classes);
 			}
 			for (const ele of empty) {
 				if (ele.childElementCount === 0 && !ele.textContent!.trim()) {
 					removeClass(ele, 'mw-empty-elt');
 				}
 			}
-			for (const ele of extLinks) {
-				ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
-				try {
-					ele.href = new URL(ele.href).href;
-				} catch {}
-			}
 			for (const ele of styles) {
 				ele.removeAttribute('style');
 			}
+			for (const ele of typeofs) {
+				ele.removeAttribute('typeof');
+			}
+			for (const ele of edits) {
+				ele.remove();
+			}
+			for (const ele of tocs) {
+				const {nextSibling} = ele;
+				if (
+					nextSibling?.nodeType === Node.TEXT_NODE
+					&& nextSibling.textContent!.startsWith('\n\n')
+				) {
+					(nextSibling as Text).deleteData(0, 2);
+				}
+				ele.remove();
+			}
 			for (const ele of anchors) {
+				ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
 				try {
 					const url = new URL(ele.href);
-					if (
+					if (ele.classList.contains('external')) {
+						ele.href = url.href;
+					} else if (
 						url.origin === location.origin
 						&& url.pathname === '/index.php'
 						&& url.searchParams.has('title')
@@ -152,12 +166,6 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 				} catch {
 					ele.removeAttribute('href');
 				}
-			}
-			for (const ele of typeofs) {
-				ele.removeAttribute('typeof');
-			}
-			for (const ele of classes) {
-				removeClass(ele, 'mw-default-size', 'mw-poem-indented');
 			}
 			if (isIframe && container1.innerHTML === container2.innerHTML) {
 				dblClickHandler();
