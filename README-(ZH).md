@@ -44,13 +44,13 @@ npm i wikilint
 可以通过 CDN 下载代码，如：
 
 ```html
-<script src="//cdn.jsdelivr.net/npm/wikiparser-node@browser"></script>
+<script src="//cdn.jsdelivr.net/npm/wikiparser-node"></script>
 ```
 
 或
 
 ```html
-<script src="//unpkg.com/wikiparser-node@browser"></script>
+<script src="//unpkg.com/wikiparser-node/bundle/bundle.min.js"></script>
 ```
 
 更多浏览器端可用的插件请查阅对应[文档](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)。

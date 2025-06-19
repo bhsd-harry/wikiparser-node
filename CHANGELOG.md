@@ -1,10 +1,11 @@
 ## v1.21.3
 
-*2025-06-16*
+*2025-06-20*
 
 **Fixed**
 
 - HTML conversion of `<poem>` containing `<nowiki>` or leading `:`
+- HTML conversion of `<h1>` to `<h6>` without and `id` attribute
 
 ## v1.21.2
 

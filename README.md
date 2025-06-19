@@ -44,13 +44,13 @@ npm i wikilint
 You can download the code via CDN, for example:
 
 ```html
-<script src="//cdn.jsdelivr.net/npm/wikiparser-node@browser/bundle/bundle.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/wikiparser-node"></script>
 ```
 
 or
 
 ```html
-<script src="//unpkg.com/wikiparser-node@browser/bundle/bundle.min.js"></script>
+<script src="//unpkg.com/wikiparser-node/bundle/bundle.min.js"></script>
 ```
 
 For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-%28EN%29).
@@ -103,7 +103,6 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 ### Heading
 
-1. HTML section heading elements are not automatically given an `id` attribute ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Do%20not%20trim%20whitespace%20in%20HTML%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
 1. The table of contents (TOC) is not supported.
 
 ### HTML tag

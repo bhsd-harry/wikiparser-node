@@ -20,7 +20,8 @@ import type {QuoteToken, AstText} from '../internal';
 /* NOT FOR BROWSER */
 
 import {classes, states} from '../util/constants';
-import {sanitizeAlt, decodeHtml, sanitizeId} from '../util/string';
+import {sanitizeId} from '../util/string';
+import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import {noEscape} from '../mixin/noEscape';
@@ -286,13 +287,7 @@ export abstract class HeadingToken extends Token {
 	 * @param expand 是否展开模板
 	 */
 	#getId(expand?: boolean): string {
-		const token = expand ? this.firstChild.expand() : this.firstChild;
-		let id = decodeHtml(sanitizeAlt(token.toHtmlInternal({nocc: true}))!)
-			.replace(/[\s_]+/gu, '_');
-		if (id.endsWith('_')) {
-			id = id.slice(0, -1);
-		}
-		return id;
+		return getId(this.firstChild[expand ? 'expand' : 'cloneNode']());
 	}
 
 	/** @private */

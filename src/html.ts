@@ -21,6 +21,7 @@ import Parser from '../index';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
+import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 
 /* NOT FOR BROWSER END */
@@ -421,9 +422,24 @@ export abstract class HtmlToken extends Token {
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : `<${tag}>`;
 		}
-		return `<${closing ? '/' : ''}${tag}>${
+		const result = `<${closing ? '/' : ''}${tag}>${
 			this.#selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
 		}`;
+		if (/^h\d$/u.test(name) && (this.closing || !this.id)) {
+			const matched = this.findMatchingTag();
+			if (matched) {
+				if (closing) {
+					return result + (matched.id ? '' : '</div>');
+				}
+				const range = this.createRange();
+				range.setStartAfter(this);
+				range.setEndBefore(matched);
+				return `<div class="mw-heading mw-heading${name.slice(-1)}">${
+					result.slice(0, -1)
+				} id="${getId(range.cloneContents())}">`;
+			}
+		}
+		return result;
 	}
 }
 

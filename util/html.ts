@@ -1,6 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {Shadow} from './debug';
+import {decodeHtml, sanitizeAlt} from './string';
 import type {AstNodes, ListRangeToken, Token, DdToken, ListToken, ExtToken} from '../internal';
 
 /* NOT FOR BROWSER END */
@@ -171,4 +172,15 @@ export const cloneNode = <T extends Token>(token: T, f: () => T): T => {
 		newToken.safeAppend(cloned);
 		return newToken;
 	});
+};
+
+/**
+ * get the id of a section heading
+ * @param tokens inner tokens of a section heading
+ */
+export const getId = (tokens: Token | AstNodes[]): string => {
+	const opt: HtmlOpt = {nocc: true},
+		content = Array.isArray(tokens) ? html(tokens, '', opt) : tokens.toHtmlInternal(opt),
+		id = decodeHtml(sanitizeAlt(content)!).replace(/[\s_]+/gu, '_');
+	return id.endsWith('_') ? id.slice(0, -1) : id;
 };
