@@ -6,7 +6,7 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -69,9 +69,10 @@ export abstract class CommentedToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, (): this => new CommentedToken(undefined, this.getAttribute('config')));
+		return new CommentedToken(undefined, this.getAttribute('config'));
 	}
 }
 

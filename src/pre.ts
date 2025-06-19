@@ -12,7 +12,7 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
 
 /* NOT FOR BROWSER */
 
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -96,9 +96,10 @@ export abstract class PreToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, (): this => new PreToken(undefined, this.getAttribute('config')));
+		return new PreToken(undefined, this.getAttribute('config'));
 	}
 }
 

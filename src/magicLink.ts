@@ -22,7 +22,7 @@ import type {
 
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 import {syntax} from '../mixin/syntax';
 import type {SyntaxBase} from '../mixin/syntax';
 
@@ -246,12 +246,10 @@ export abstract class MagicLinkToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
-		const token = cloneNode<this>(
-			this,
-			// @ts-expect-error abstract class
-			(): this => new MagicLinkToken(undefined, this.type, this.getAttribute('config')),
-		);
+		// @ts-expect-error abstract class
+		const token: this = new MagicLinkToken(undefined, this.type, this.getAttribute('config'));
 		token.setAttribute('pattern', this.pattern);
 		return token;
 	}

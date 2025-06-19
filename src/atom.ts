@@ -10,7 +10,7 @@ import type {ConverterFlagsToken} from '../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -82,14 +82,15 @@ export class AtomToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(this, () => new AtomToken(
+		return new AtomToken(
 			undefined,
 			this.type,
 			this.getAttribute('config'),
 			[],
 			this.getAcceptable(),
-		) as this);
+		) as this;
 	}
 }
 

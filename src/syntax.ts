@@ -4,7 +4,7 @@ import type {Config, LintError} from '../base';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 import {syntax} from '../mixin/syntax';
 import type {SyntaxBase} from '../mixin/syntax';
 
@@ -54,15 +54,16 @@ export class SyntaxToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(this, () => new SyntaxToken(
+		return new SyntaxToken(
 			undefined,
 			this.pattern,
 			this.type,
 			this.getAttribute('config'),
 			[],
 			this.getAcceptable(),
-		) as this);
+		) as this;
 	}
 }
 

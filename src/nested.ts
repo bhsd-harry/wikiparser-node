@@ -13,7 +13,7 @@ import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeTo
 
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -152,12 +152,10 @@ export abstract class NestedToken extends Token {
 		return super.insertAt(token, i);
 	}
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(
-			this,
-			// @ts-expect-error abstract class
-			(): this => new NestedToken(undefined, this.#regex, this.#tags, this.getAttribute('config')),
-		);
+		// @ts-expect-error abstract class
+		return new NestedToken(undefined, this.#regex, this.#tags, this.getAttribute('config'));
 	}
 }
 

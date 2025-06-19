@@ -4,7 +4,7 @@ import {Token} from './index';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 
@@ -63,11 +63,9 @@ export class OnlyincludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(
-			this,
-			() => new OnlyincludeToken(undefined, this.getAttribute('config')) as this,
-		);
+		return new OnlyincludeToken(undefined, this.getAttribute('config')) as this;
 	}
 }
 

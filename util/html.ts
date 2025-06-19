@@ -1,6 +1,5 @@
 /* NOT FOR BROWSER */
 
-import {Shadow} from './debug';
 import {decodeHtml, sanitizeAlt} from './string';
 import type {AstNodes, ListRangeToken, Token, DdToken, ListToken, ExtToken} from '../internal';
 
@@ -158,20 +157,6 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 		results.push(result);
 	}
 	return results.join(separator);
-};
-
-/**
- * basic function of `cloneNode`
- * @param token token to clone
- * @param f empty token constructor
- */
-export const cloneNode = <T extends Token>(token: T, f: () => T): T => {
-	const cloned = token.cloneChildNodes();
-	return Shadow.run(() => {
-		const newToken = f();
-		newToken.safeAppend(cloned);
-		return newToken;
-	});
 };
 
 /**

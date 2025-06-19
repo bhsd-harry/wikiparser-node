@@ -22,7 +22,8 @@ import type {
 
 import {Shadow, isToken} from '../util/debug';
 import {classes} from '../util/constants';
-import {html, cloneNode} from '../util/html';
+import {html} from '../util/html';
+import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -190,9 +191,10 @@ export abstract class GalleryToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, (): this => new GalleryToken(undefined, this.getAttribute('config')));
+		return new GalleryToken(undefined, this.getAttribute('config'));
 	}
 
 	/**

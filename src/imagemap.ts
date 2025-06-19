@@ -21,7 +21,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 import {singleLine} from '../mixin/singleLine';
 
 /* NOT FOR BROWSER END */
@@ -233,9 +233,10 @@ export abstract class ImagemapToken extends Token {
 		return super.removeAt(i);
 	}
 
+	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, (): this => new ImagemapToken(undefined, this.getAttribute('config')));
+		return new ImagemapToken(undefined, this.getAttribute('config'));
 	}
 }
 

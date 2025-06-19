@@ -10,7 +10,7 @@ import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -171,9 +171,10 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return cloneNode(this, (): this => new ConverterFlagsToken([], this.getAttribute('config')));
+		return new ConverterFlagsToken([], this.getAttribute('config'));
 	}
 
 	/**

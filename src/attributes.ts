@@ -20,9 +20,10 @@ import type {TableTokens} from './table/index';
 
 /* NOT FOR BROWSER */
 
-import {html, cloneNode} from '../util/html';
+import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {clone} from '../mixin/clone';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
@@ -371,12 +372,10 @@ export abstract class AttributesToken extends Token {
 		}
 	}
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(
-			this,
-			// @ts-expect-error abstract class
-			(): this => new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')),
-		);
+		// @ts-expect-error abstract class
+		return new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
 	}
 
 	/**

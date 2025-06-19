@@ -11,7 +11,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import {cloneNode} from '../../util/html';
+import {clone} from '../../mixin/clone';
 import {singleLine} from '../../mixin/singleLine';
 
 /* NOT FOR BROWSER END */
@@ -103,11 +103,10 @@ export abstract class ParamTagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(this, () => {
-			const C = this.constructor as new (...args: any[]) => this;
-			return new C(this.getAttribute('include'), undefined, this.getAttribute('config'));
-		});
+		const C = this.constructor as new (...args: any[]) => this;
+		return new C(this.getAttribute('include'), undefined, this.getAttribute('config'));
 	}
 }
 

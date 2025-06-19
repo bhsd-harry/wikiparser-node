@@ -4,7 +4,7 @@ import {Token} from './index';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {cloneNode} from '../util/html';
+import {clone} from '../mixin/clone';
 import type {Config} from '../base';
 
 /* NOT FOR BROWSER END */
@@ -38,8 +38,9 @@ export class HiddenToken extends Token {
 		});
 	}
 
+	@clone
 	override cloneNode(): this {
-		return cloneNode(this, () => new HiddenToken(undefined, this.getAttribute('config')) as this);
+		return new HiddenToken(undefined, this.getAttribute('config')) as this;
 	}
 }
 
