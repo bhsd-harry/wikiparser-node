@@ -6356,7 +6356,7 @@
 		"desc": "Nested <poem><pre>",
 		"wikitext": "<poem><pre>\nthis\nis\na\ntest\n</pre></poem>",
 		"html": "<div class=\"poem\">\n<pre><br />\nthis<br />\nis<br />\na<br />\ntest<br />\n</pre>\n</div>",
-		"render": "<div class=\"poem\"><pre><br>\n<p>this<br>\nis<br>\na<br>\ntest<br>\n</p>\n</pre></div>",
+		"render": "<div class=\"poem\">\n<pre><br>\nthis<br>\nis<br>\na<br>\ntest<br>\n</pre>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nthis\nis\na\ntest\n</span>&lt;/pre&gt;</span></span>&lt;/poem&gt;</span></span>"
 	},
 	{
