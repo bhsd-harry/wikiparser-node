@@ -23,6 +23,7 @@ import type {TableCoords} from './trBase';
 import {html} from '../../util/html';
 import {classes} from '../../util/constants';
 import {noWrap} from '../../util/string';
+import {cached} from '../../mixin/cached';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 export interface TableRenderedCoords {
@@ -735,6 +736,7 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		/**
 		 * 过滤需要移出表格的节点

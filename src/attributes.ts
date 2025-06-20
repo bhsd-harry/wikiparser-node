@@ -24,6 +24,7 @@ import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
+import {cached} from '../mixin/cached';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
@@ -551,6 +552,7 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		const map = new Map(
 			this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),

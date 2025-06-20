@@ -15,6 +15,7 @@ import type {Token, ImageParameterToken} from '../../internal';
 import {classes} from '../../util/constants';
 import {Shadow} from '../../util/debug';
 import {syntax} from '../../mixin/syntax';
+import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -167,6 +168,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		const {closing: {bold, italic}} = this;
 		return (bold ? '</b>' : '') + (italic ? '</i>' : '')

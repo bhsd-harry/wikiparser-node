@@ -9,6 +9,7 @@ import type {Config} from '../../base';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {trimLc} from '../../util/string';
+import {cached} from '../../mixin/cached';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 import type {CommentToken} from '../../internal';
 
@@ -172,6 +173,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		for (const {innerText, nextSibling} of this.querySelectorAll<CommentToken>('comment')) {
 			if (

@@ -31,6 +31,7 @@ import type {AstText} from '../internal';
 /* NOT FOR BROWSER */
 
 import {noEscape} from '../mixin/noEscape';
+import {cached} from '../mixin/cached';
 import Parser from '../index';
 
 const basicMagicWords = new Map([['=', '='], ['!', '|']]);
@@ -934,6 +935,7 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {type, name} = this;
 		if (type === 'template' && !name.startsWith('Special:')) {

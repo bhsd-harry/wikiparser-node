@@ -24,6 +24,7 @@ import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 import {syntax} from '../mixin/syntax';
+import {cached} from '../mixin/cached';
 import type {SyntaxBase} from '../mixin/syntax';
 
 /* NOT FOR BROWSER END */
@@ -295,6 +296,7 @@ export abstract class MagicLinkToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		const {type, innerText, protocol} = this;
 		let url: URL | string | undefined;

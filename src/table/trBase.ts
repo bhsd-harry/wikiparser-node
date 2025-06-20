@@ -14,6 +14,7 @@ import type {LintError} from '../../base';
 import {Shadow, isToken} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {html} from '../../util/html';
+import {cached} from '../../mixin/cached';
 import {Token} from '../index';
 import type {TdAttrs, TdSubtypes} from './td';
 import type {AstNodes, SyntaxToken, TrToken} from '../../internal';
@@ -212,6 +213,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {childNodes, type} = this,
 			td = childNodes.filter(isToken<TdToken>('td'));

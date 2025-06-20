@@ -23,6 +23,7 @@ import Parser from '../index';
 import {classes} from '../util/constants';
 import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
+import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -415,6 +416,7 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		const {closing, name} = this,
 			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config'),

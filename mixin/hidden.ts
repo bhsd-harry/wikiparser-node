@@ -4,6 +4,7 @@ import type {LintError} from '../base';
 /* NOT FOR BROWSER */
 
 import {mixins} from '../util/constants';
+import {cached} from './cached';
 
 /* NOT FOR BROWSER END */
 
@@ -32,6 +33,7 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 			//
 		}
 
+		@cached()
 		override toHtmlInternal(opt?: HtmlOpt): string {
 			return html ? '' : super.toHtmlInternal(opt);
 		}

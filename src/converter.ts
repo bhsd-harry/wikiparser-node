@@ -15,6 +15,7 @@ import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {noEscape} from '../mixin/noEscape';
+import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -137,6 +138,7 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		const flags = this.getEffectiveFlags(),
 			nocc = opt?.nocc,

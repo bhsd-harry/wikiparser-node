@@ -15,6 +15,7 @@ import type {Config, LintError} from '../base';
 
 import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
+import {cached} from '../mixin/cached';
 import Parser from '../index';
 import type {LinkToken, FileToken, ConverterToken} from '../internal';
 
@@ -217,6 +218,7 @@ export abstract class ExtLinkToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		const {length, lastChild} = this;
 		let innerText: string,

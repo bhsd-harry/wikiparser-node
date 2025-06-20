@@ -9,6 +9,7 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
 import {undo, Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {html} from '../util/html';
+import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -306,6 +307,7 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3

@@ -107,20 +107,25 @@ export const generateForSelf = factory((_, startIndex, startLine, startCol) => (
  * @param store 缓存的值
  * @param compute 计算新值的函数
  * @param update 更新缓存的函数
+ * @param force 是否强制缓存
  */
-export const cache = <T>(store: Cached<T> | undefined, compute: () => T, update: (value: Cached<T>) => void): T => {
+export const cache = <T>(
+	store: Cached<T> | undefined,
+	compute: () => T,
+	update: (value: Cached<T>) => void,
+	force?: boolean,
+): T => {
 	if (
 		store
 
 		/* PRINT ONLY */
 
-		&& Parser.viewOnly
-		&& store[0] === Shadow.rev
+		&& (force || Parser.viewOnly && store[0] === Shadow.rev)
 	) {
 		return store[1];
 	}
 	const result = compute();
-	if (Parser.viewOnly) {
+	if (force || Parser.viewOnly) {
 		update([Shadow.rev, result]);
 	}
 	return result;

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {cached} from '../mixin/cached';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {Cached} from '../util/lint';
 import type {
@@ -57,7 +58,6 @@ export abstract class AstNode implements AstNodeBase {
 	#parentNode: Token | undefined;
 	#nextSibling: AstNodes | undefined;
 	#previousSibling: AstNodes | undefined;
-	#lines: Cached<[string, number, number][]> | undefined;
 	#root: Cached<Token | this> | undefined;
 	#aIndex: Cached<number> | undefined;
 	#rIndex: Record<number, Cached<number>> = {};
@@ -448,23 +448,16 @@ export abstract class AstNode implements AstNodeBase {
 	 * 获取所有行的wikitext和起止位置
 	 * @since v1.16.3
 	 */
+	@cached(false)
 	getLines(): [string, number, number][] {
-		return cache<[string, number, number][]>(
-			this.#lines,
-			() => {
-				const results: [string, number, number][] = [];
-				let start = 0;
-				for (const line of String(this).split('\n')) {
-					const end = start + line.length;
-					results.push([line, start, end]);
-					start = end + 1;
-				}
-				return results;
-			},
-			value => {
-				this.#lines = value;
-			},
-		);
+		const results: [string, number, number][] = [];
+		let start = 0;
+		for (const line of String(this).split('\n')) {
+			const end = start + line.length;
+			results.push([line, start, end]);
+			start = end + 1;
+		}
+		return results;
 	}
 
 	/* PRINT ONLY */

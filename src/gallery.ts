@@ -24,6 +24,7 @@ import {Shadow, isToken} from '../util/debug';
 import {classes} from '../util/constants';
 import {html} from '../util/html';
 import {clone} from '../mixin/clone';
+import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -233,6 +234,7 @@ export abstract class GalleryToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		return html(this.childNodes.filter(isToken<GalleryImageToken>('gallery-image')), '\n');
 	}

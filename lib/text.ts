@@ -28,6 +28,7 @@ import type {
 import {classes} from '../util/constants';
 import {setChildNodes, Shadow} from '../util/debug';
 import {readOnly} from '../mixin/readOnly';
+import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -571,6 +572,7 @@ export class AstText extends AstNode {
 	}
 
 	/** @private */
+	@cached()
 	toHtmlInternal(opt?: Pick<HtmlOpt, 'nowrap'>): string {
 		this.removeBlankLines();
 		return this.toHtml(opt?.nowrap);

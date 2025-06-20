@@ -38,6 +38,7 @@ import type {
 
 import {undo, Shadow} from '../../util/debug';
 import {noEscape} from '../../mixin/noEscape';
+import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 
 /* NOT FOR BROWSER END */
@@ -389,6 +390,7 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
 			const {link, length, lastChild, type} = this,

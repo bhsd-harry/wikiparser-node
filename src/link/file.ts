@@ -25,6 +25,7 @@ import {sanitizeAlt} from '../../util/string';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {Title} from '../../lib/title';
+import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -505,6 +506,7 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		/** @ignore */
 		const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n));

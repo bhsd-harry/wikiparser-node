@@ -13,6 +13,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
+import {cached} from '../../mixin/cached';
 import type {GalleryToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
@@ -225,6 +226,7 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {

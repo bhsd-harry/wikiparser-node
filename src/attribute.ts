@@ -33,6 +33,7 @@ import type {AttributesToken} from '../internal';
 import {Shadow} from '../util/debug';
 import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
 import {fixedToken} from '../mixin/fixed';
+import {cached} from '../mixin/cached';
 
 declare interface CSSNode {
 	offset: number;
@@ -458,6 +459,7 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		const {type, name, tag, lastChild} = this;
 		if (

@@ -101,6 +101,7 @@ import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import {readOnly} from '../mixin/readOnly';
+import {cached} from '../mixin/cached';
 import type {Range} from '../lib/ranges';
 
 /* NOT FOR BROWSER END */
@@ -1056,6 +1057,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
+	@cached()
 	toHtmlInternal(opt?: HtmlOpt): string {
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {

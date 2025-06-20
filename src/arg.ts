@@ -17,6 +17,7 @@ import type {
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {noEscape} from '../mixin/noEscape';
+import {cached} from '../mixin/cached';
 import Parser from '../index';
 
 /* NOT FOR BROWSER END */
@@ -272,6 +273,7 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		if (this.length === 1) {
 			const html = this.toString();

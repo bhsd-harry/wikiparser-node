@@ -25,6 +25,7 @@ import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import {noEscape} from '../mixin/noEscape';
+import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -291,6 +292,7 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
 		let id = this.#getId();
 		const {level, firstChild} = this,
