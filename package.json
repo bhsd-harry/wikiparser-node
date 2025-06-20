@@ -40,12 +40,11 @@
 		"test:unit": "mocha dist/test/test.js",
 		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
-		"test:server": "npm run build:core && npm run build:ext && bash sed.sh -i 's|importScripts.*|importScripts(\"http://127.0.0.1:8080/wikiparser-node/bundle/bundle.min.js\");|' extensions/dist/base.js; npm run server",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.13.0",
+		"@bhsd/common": "^0.13.1",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
@@ -59,7 +58,7 @@
 		"vscode-json-languageservice": "^5.4.4"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.28.0",
+		"@bhsd/codemirror-mediawiki": "^2.28.2",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@stylistic/stylelint-plugin": "^3.1.2",
