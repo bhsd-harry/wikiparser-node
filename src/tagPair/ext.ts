@@ -243,15 +243,16 @@ export abstract class ExtToken extends TagPairToken {
 					this.closest('ext#poem') ? html : newline(html)
 				}</pre>`;
 			}
-			case 'poem':
+			case 'poem': {
+				const padding = firstChild.getAttr('compact') ? '' : '\n';
 				firstChild.classList.add('poem');
-				return `<div${firstChild.toHtmlInternal()}>${
-					lastChild.toHtmlInternal({
-						...opt,
-						nowrap: false,
-					}).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+				return `<div${firstChild.toHtmlInternal()}>${padding}${
+					lastChild.toHtmlInternal({...opt, nowrap: false})
+						.replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
 						.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
-				}</div>`;
+						.trim()
+				}${padding}</div>`;
+			}
 			case 'gallery': {
 				const caption = firstChild.getAttrToken('caption'),
 					perrow = parseInt(String(firstChild.getAttr('perrow'))),

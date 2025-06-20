@@ -10,7 +10,6 @@ import {mixins} from '../util/constants';
 /**
  * 缓存计算结果
  * @param force 是否强制缓存
- * @todo 移除`toHtmlInternal()`方法的缓存
  */
 export const cached = (force = true) =>
 	(method: (this: Token, ...args: any[]) => unknown) => {
