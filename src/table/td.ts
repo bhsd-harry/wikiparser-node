@@ -1,15 +1,15 @@
-import {generateForChild, cache} from '../../util/lint';
+import {generateForChild} from '../../util/lint';
 import {
 	BuildMethod,
 } from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
+import {cached} from '../../mixin/cached';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {
 	Config,
 	LintError,
 } from '../../base';
-import type {Cached} from '../../util/lint';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
 export type TdSubtypes = 'td' | 'th' | 'caption';
@@ -30,7 +30,6 @@ declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? numb
  */
 export abstract class TdToken extends TableBaseToken {
 	#innerSyntax = '';
-	#syntax: Cached<TdSyntax> | undefined;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
@@ -89,31 +88,25 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** 表格语法信息 */
+	@cached(false)
 	#getSyntax(): TdSyntax {
-		return cache<TdSyntax>(
-			this.#syntax,
-			() => {
-				const syntax = this.firstChild.text(),
-					char = syntax.slice(-1);
-				let subtype: TdSubtypes = 'td';
-				if (char === '!') {
-					subtype = 'th';
-				} else if (char === '+') {
-					subtype = 'caption';
-				}
-				if (this.isIndependent()) {
-					return {
-						subtype,
-					};
-				}
-				const {previousSibling} = this;
-				const result = {...(previousSibling as TdToken).#getSyntax()};
-				return result;
-			},
-			value => {
-				this.#syntax = value;
-			},
-		);
+		const syntax = this.firstChild.text(),
+			char = syntax.slice(-1);
+		let subtype: TdSubtypes = 'td';
+		if (char === '!') {
+			subtype = 'th';
+		} else if (char === '+') {
+			subtype = 'caption';
+		}
+		if (this.isIndependent()) {
+			return {
+				subtype,
+			};
+		}
+		const {previousSibling} = this;
+		const result = {...(previousSibling as TdToken).#getSyntax()};
+		return result;
+		return result;
 	}
 
 	/** @private */
