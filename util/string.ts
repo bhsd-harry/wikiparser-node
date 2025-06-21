@@ -37,9 +37,6 @@ export const tidy = factory(/[\0\x7F]|\r$/gmu, '');
 /** remove half-parsed comment-like tokens */
 export const removeComment = factory(/\0\d+[cn]\x7F/gu, '');
 
-/** escape special chars for RegExp constructor */
-export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
-
 /**
  * extract effective wikitext
  * @param childNodes a Token's contents
@@ -85,9 +82,6 @@ export const decodeNumber = factory(
 	(_, code: string) => String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code)),
 );
 
-/** escape newlines */
-export const noWrap = factory(/\n/gu, String.raw`\n`);
-
 /* PRINT ONLY */
 
 const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
@@ -115,6 +109,12 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
 /* PRINT ONLY END */
 
 /* NOT FOR BROWSER */
+
+/** escape special chars for RegExp constructor */
+export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
+
+/** escape newlines */
+export const noWrap = factory(/\n/gu, String.raw`\n`);
 
 /** encode URI */
 export const encode = factory(/[<>[\]#|=]+/gu, encodeURIComponent);
