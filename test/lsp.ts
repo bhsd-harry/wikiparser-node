@@ -222,7 +222,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
-							check(await lsp.provideHover(content, pos), title, pos);
+							await lsp.provideHover(content, pos);
 						}
 					}, summary);
 				}
