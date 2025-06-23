@@ -22,10 +22,12 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle.js",
+		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --outfile=build/bundle-lsp.js",
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
-		"build:core": "esbuild index.ts --charset=utf8 --bundle --minify --drop-labels=LSP --target=es2019 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:lsp": "esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
-		"build:es8": "esbuild index.ts --charset=utf8 --bundle --minify --drop-labels=LSP --target=es2017 --outfile=bundle/bundle-es8.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle-es8.min.js",
+		"build:core": "npm run bundle:core && esbuild build/bundle.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
+		"build:es8": "esbuild build/bundle.js --charset=utf8 --minify --target=es2017 --format=iife --outfile=bundle/bundle-es8.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle-es8.min.js",
+		"build:lsp": "npm run bundle:lsp && esbuild build/bundle-lsp.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es8 && npm run build:lsp && npm run build:test && npm run build:css",
@@ -52,13 +54,13 @@
 		"color-name": "^2.0.0",
 		"entities": "^6.0.0",
 		"mathjax": "^3.2.2",
-		"stylelint": "^16.20.0",
+		"stylelint": "^16.21.0",
 		"vscode-css-languageservice": "^6.3.4",
 		"vscode-html-languageservice": "^5.3.3",
 		"vscode-json-languageservice": "^5.4.4"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.28.2",
+		"@bhsd/codemirror-mediawiki": "^2.29.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@stylistic/stylelint-plugin": "^3.1.2",

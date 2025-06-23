@@ -16,4 +16,5 @@
 /test/prof*.json
 /test/**/*.txt
 /localStorage.json
+/build
 !README
