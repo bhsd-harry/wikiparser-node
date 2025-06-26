@@ -16,7 +16,9 @@ const severities = new Set([0, 1, 2]),
 		[2, 'error'],
 	]);
 
-const defaultLintConfig: LintConfig = {};
+const defaultLintConfig: LintConfig = {
+	unescaped: 2,
+};
 Object.freeze(defaultLintConfig);
 
 /**
