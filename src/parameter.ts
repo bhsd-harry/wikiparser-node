@@ -96,7 +96,7 @@ export abstract class ParameterToken extends Token {
 		if (s) {
 			const {firstChild} = this,
 				link = linkRegex.exec(firstChild.text())?.[0];
-			if (link && new URL(link).search) {
+			if (link && URL.parse(link)?.search) {
 				const msg = 'unescaped query string in an anonymous parameter',
 					e = generateForChild(firstChild, {start}, rule, msg, s);
 				e.startIndex = e.endIndex;
