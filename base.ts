@@ -496,5 +496,5 @@ export interface Parser {
 	 * @param uri document URI / 文档标识
 	 * @since v1.16.1
 	 */
-	createLanguageService(uri: object): LanguageService;
+	createLanguageService(uri?: object): LanguageService;
 }
