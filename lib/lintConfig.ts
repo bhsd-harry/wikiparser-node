@@ -9,9 +9,18 @@ import {classes} from '../util/constants';
 
 declare type SeverityLevel = 0 | 1 | 2;
 declare type LintConfigValue = SeverityLevel | [SeverityLevel, Record<string, unknown>];
-export type LintConfig = Partial<Record<LintError.Rule, LintConfigValue>>;
+declare type LintConfig = Partial<Record<LintError.Rule, LintConfigValue>>;
+export interface LintConfiguration extends LintConfig {
+	/** @private */
+	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false;
+}
 
-const severities = new Set([0, 1, 2]);
+const severities = new Set([0, 1, 2]),
+	dict = new Map<SeverityLevel, LintError.Severity | false>([
+		[0, false],
+		[1, 'warning'],
+		[2, 'error'],
+	]);
 
 const defaultLintConfig: LintConfig = {};
 Object.freeze(defaultLintConfig);
@@ -48,7 +57,7 @@ const set = (obj: LintConfig, key: LintError.Rule, value: LintConfigValue): bool
 };
 
 /** 语法检查设置 */
-class LintConfiguration implements LintConfig {
+export class LintConfiguration implements LintConfig {
 	/** @param config 语法检查设置 */
 	constructor(config?: LintConfig) {
 		Object.assign(
@@ -64,12 +73,22 @@ class LintConfiguration implements LintConfig {
 			set(this, key, value);
 		}
 	}
+
+	/** @implements */
+	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
+		const value = this[rule]!;
+		if (typeof value === 'number') {
+			return dict.get(value)!;
+		}
+		return key ? dict.get(value[1][key] as SeverityLevel) ?? dict.get(value[0])! : dict.get(value[0])!;
+	}
 }
 
 /**
  * 获取语法检查设置
  * @param config 语法检查设置
  */
-export const getLintConfig = (config?: LintConfig): LintConfig => new Proxy(new LintConfiguration(config), {set});
+export const getLintConfig = (config?: LintConfig): LintConfiguration =>
+	new Proxy(new LintConfiguration(config), {set}) as LintConfiguration;
 
 classes['LintConfiguration'] = __filename;
