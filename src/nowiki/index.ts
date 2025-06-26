@@ -34,14 +34,11 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {name} = this;
-		if (this.#lint()) {
-			const e = generateForSelf(
-				this,
-				{start},
-				'void-ext',
-				Parser.msg('nothing should be in <$1>', name),
-			);
+		const {name} = this,
+			rule = 'void-ext',
+			s = Parser.lintConfig.getSeverity(rule, name);
+		if (s && this.#lint()) {
+			const e = generateForSelf(this, {start}, rule, Parser.msg('nothing should be in <$1>', name), s);
 			e.fix = {desc: 'empty', range: [start, e.endIndex], text: ''};
 			return [e];
 		}
