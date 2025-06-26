@@ -23,6 +23,13 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
+	'no-ignored': [
+		2,
+		{
+			// dynamicpagelist: 2,
+			// inputbox: 2,
+		},
+	],
 	unescaped: 2,
 };
 Object.freeze(defaultLintConfig);

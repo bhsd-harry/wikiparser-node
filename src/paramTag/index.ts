@@ -73,6 +73,11 @@ export abstract class ParamTagToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const rule = 'no-ignored',
+			s = Parser.lintConfig.getSeverity(rule, this.name);
+		if (!s) {
+			return [];
+		}
 		const rect = new BoundingRect(this, start),
 			msg = Parser.msg('invalid parameter of <$1>', this.name),
 			errors: LintError[] = [];
@@ -81,12 +86,12 @@ export abstract class ParamTagToken extends Token {
 			const grandChildren = child.childNodes
 				.filter(({type}) => type !== 'comment' && type !== 'include' && type !== 'noinclude');
 			if (grandChildren.some(({type}) => type === 'ext')) {
-				errors.push(generateForChild(child, rect, 'no-ignored', msg));
+				errors.push(generateForChild(child, rect, rule, msg, s));
 			} else {
 				const i = grandChildren.findIndex(({type}) => type !== 'text'),
 					str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
 				if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
-					const e = generateForChild(child, rect, 'no-ignored', msg);
+					const e = generateForChild(child, rect, rule, msg, s);
 					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
 					errors.push(e);
 				} else {
