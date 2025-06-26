@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
 import type {LintError, Config} from '../../base';
@@ -73,15 +74,11 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start, false);
-		if (this.length === 2) {
-			const e = generateForChild(
-				this.lastChild,
-				{start},
-				'no-ignored',
-				'useless link text',
-				'warning',
-			);
+		const errors = super.lint(start, false),
+			rule = 'no-ignored',
+			s = Parser.lintConfig.getSeverity(rule, 'redirect');
+		if (s && this.length === 2) {
+			const e = generateForChild(this.lastChild, {start}, rule, 'useless link text', s);
 			e.startIndex--;
 			e.startCol--;
 			e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
