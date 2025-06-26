@@ -38,6 +38,7 @@ const defaultLintConfig: LintConfig = {
 	'no-ignored': [
 		2,
 		{
+			// conversionFlag: 2,
 			redirect: 1,
 
 			// choose: 2,
