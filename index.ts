@@ -10,6 +10,7 @@ import {
 	classes,
 } from './util/constants';
 import {tidy} from './util/string';
+import {getLintConfig} from './lib/lintConfig';
 import type {
 	Config,
 	ConfigData,
@@ -21,6 +22,7 @@ import type {
 } from './base';
 import type {Title, TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
+import type {LintConfig} from './lib/lintConfig';
 import type {Token} from './internal';
 
 /* NOT FOR BROWSER */
@@ -52,6 +54,8 @@ import fetchConfig from './bin/config';
 declare interface Parser extends ParserBase {
 	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
+	/** @since v1.22.0 */
+	lintConfig: LintConfig;
 
 	/* NOT FOR BROWSER */
 
@@ -196,10 +200,21 @@ let redirectMap = new RedirectMap();
 
 /* NOT FOR BROWSER END */
 
+let lintConfig = getLintConfig();
+
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 	i18n: undefined,
 	rules,
+
+	/** @implements */
+	get lintConfig() {
+		return lintConfig;
+	},
+
+	set lintConfig(config) {
+		lintConfig = getLintConfig(config);
+	},
 
 	/* PRINT ONLY */
 
