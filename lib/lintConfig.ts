@@ -26,8 +26,11 @@ const defaultLintConfig: LintConfig = {
 	'no-ignored': [
 		2,
 		{
+			// choose: 2,
+			// combobox: 2,
 			// dynamicpagelist: 2,
 			// inputbox: 2,
+			// references: 2,
 		},
 	],
 	'unclosed-comment': [
