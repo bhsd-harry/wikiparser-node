@@ -20,6 +20,8 @@ const defaultLintConfig: LintConfig = {
 	'no-ignored': [
 		2,
 		{
+			redirect: 1,
+
 			// choose: 2,
 			// combobox: 2,
 			// dynamicpagelist: 2,
