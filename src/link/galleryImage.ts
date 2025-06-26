@@ -7,6 +7,7 @@ import {
 	classes,
 } from '../../util/constants';
 import {padded} from '../../mixin/padded';
+import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
@@ -102,9 +103,11 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		if (this.#lint()) {
-			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image');
+		const errors = super.lint(start, re),
+			rule = 'invalid-gallery',
+			s = Parser.lintConfig.getSeverity(rule, 'image');
+		if (s && this.#lint()) {
+			const e = generateForSelf(this, {start}, rule, 'invalid gallery image', s);
 			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
 			errors.push(e);
 		}

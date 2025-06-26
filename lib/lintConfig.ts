@@ -23,6 +23,12 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
+	'invalid-gallery': [
+		2,
+		{
+			// image: 2,
+		},
+	],
 	'nested-link': [
 		2,
 		{
