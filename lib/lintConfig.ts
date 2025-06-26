@@ -23,6 +23,12 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
+	'nested-link': [
+		2,
+		{
+			// file: 2,
+		},
+	],
 	'no-ignored': [
 		2,
 		{
