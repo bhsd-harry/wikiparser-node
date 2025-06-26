@@ -18,14 +18,14 @@ import type {
 } from './base';
 import type {Title, TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
-import type {LintConfig} from './lib/lintConfig';
+import type {LintConfiguration} from './lib/lintConfig';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
 	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
 	/** @since v1.22.0 */
-	lintConfig: LintConfig;
+	lintConfig: LintConfiguration;
 
 	/** @private */
 	msg(msg: string, arg?: string): string;
