@@ -31,6 +31,14 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	unescaped: 2,
+	'void-ext': [
+		2,
+		{
+			// languages: 2,
+			// templatestyles: 2,
+			// section: 2,
+		},
+	],
 };
 Object.freeze(defaultLintConfig);
 
