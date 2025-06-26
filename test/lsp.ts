@@ -88,7 +88,7 @@ const indexToPos = (
  */
 export default async ({title, content}: SimplePage, summary?: boolean): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
-	const lsp = Parser.createLanguageService({});
+	const lsp = Parser.createLanguageService();
 
 	/* NOT FOR BROWSER ONLY */
 

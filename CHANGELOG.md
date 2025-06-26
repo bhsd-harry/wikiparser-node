@@ -7,6 +7,10 @@
 - HTML conversion of `<poem>` containing `<nowiki>` or leading `:`
 - HTML conversion of `<h1>` to `<h6>` without and `id` attribute
 
+**Changed**
+
+- The object parameter of [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#createlanguageservice) is now optional
+
 ## v1.21.2
 
 *2025-06-12*
