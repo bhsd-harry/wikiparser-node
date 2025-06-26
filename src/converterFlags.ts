@@ -1,6 +1,7 @@
 import {generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
+import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {Config, LintError} from '../base';
@@ -89,18 +90,22 @@ export abstract class ConverterFlagsToken extends Token {
 		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 			return errors;
 		}
-		const rect = new BoundingRect(this, start);
-		for (let i = 0; i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				flag = child.text().trim();
-			if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
-				const e = generateForChild(child, rect, 'no-ignored', 'invalid conversion flag');
-				if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-					e.fix = {desc: 'uppercase', range: [e.startIndex, e.endIndex], text: flag.toUpperCase()};
-				} else {
-					e.suggestions = [{desc: 'remove', range: [e.startIndex - (i && 1), e.endIndex], text: ''}];
+		const rule = 'no-ignored',
+			s = Parser.lintConfig.getSeverity(rule, 'conversionFlag');
+		if (s) {
+			const rect = new BoundingRect(this, start);
+			for (let i = 0; i < this.length; i++) {
+				const child = this.childNodes[i]!,
+					flag = child.text().trim();
+				if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
+					const e = generateForChild(child, rect, rule, 'invalid conversion flag', s);
+					if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
+						e.fix = {desc: 'uppercase', range: [e.startIndex, e.endIndex], text: flag.toUpperCase()};
+					} else {
+						e.suggestions = [{desc: 'remove', range: [e.startIndex - (i && 1), e.endIndex], text: ''}];
+					}
+					errors.push(e);
 				}
-				errors.push(e);
 			}
 		}
 		return errors;
