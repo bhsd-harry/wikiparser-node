@@ -87,10 +87,16 @@ export abstract class NestedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
+			rule = 'no-ignored',
+			s = Parser.lintConfig.getSeverity(rule, this.name);
+		if (!s) {
+			return errors;
+		}
 		const rect = new BoundingRect(this, start),
 			regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
 		return [
-			...super.lint(start, re),
+			...errors,
 			...this.childNodes.filter(child => {
 				const {type, name} = child;
 				if (type === 'ext') {
@@ -101,12 +107,7 @@ export abstract class NestedToken extends Token {
 				const str = child.toString().trim();
 				return str && !regex.test(str);
 			}).map(child => {
-				const e = generateForChild(
-					child,
-					rect,
-					'no-ignored',
-					Parser.msg('invalid content in <$1>', this.name),
-				);
+				const e = generateForChild(child, rect, rule, Parser.msg('invalid content in <$1>', this.name), s);
 				e.suggestions = [
 					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
 					{desc: 'comment', range: [e.startIndex, e.endIndex], text: `<!--${child.toString()}-->`},
