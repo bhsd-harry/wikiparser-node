@@ -46,6 +46,13 @@ const defaultLintConfig: LintConfig = {
 		{},
 	],
 	unescaped: 2,
+	'var-anchor': [
+		1,
+		{
+			// extLink: 1,
+			// ref: 1,
+		},
+	],
 	'void-ext': [
 		2,
 		{
