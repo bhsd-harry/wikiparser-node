@@ -24,6 +24,10 @@ const defaultLintConfig: LintConfig = {
 			// inputbox: 2,
 		},
 	],
+	'unclosed-comment': [
+		1,
+		{},
+	],
 	unescaped: 2,
 	'void-ext': [
 		2,
