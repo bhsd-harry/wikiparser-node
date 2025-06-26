@@ -53,7 +53,7 @@ const workerJS = (): void => {
 		if (lsps.has(id)) {
 			return lsps.get(id)!;
 		}
-		const lsp = Parser.createLanguageService({});
+		const lsp = Parser.createLanguageService();
 		lsp.include = include;
 		lsps.set(id, lsp);
 		return lsp;
