@@ -3,6 +3,7 @@ import {
 	extUrlCharFirst,
 } from '../util/string';
 import {generateForChild} from '../util/lint';
+import Parser from '../index';
 import {Token} from './index';
 import type {
 	Config,
@@ -90,22 +91,22 @@ export abstract class ParameterToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{firstChild} = this,
-			link = linkRegex.exec(firstChild.text())?.[0];
-		if (link && new URL(link).search) {
-			const e = generateForChild(
-				firstChild,
-				{start},
-				'unescaped',
-				'unescaped query string in an anonymous parameter',
-			);
-			e.startIndex = e.endIndex;
-			e.startLine = e.endLine;
-			e.startCol = e.endCol;
-			e.endIndex++;
-			e.endCol++;
-			e.fix = {desc: 'escape', range: [e.startIndex, e.endIndex], text: '{{=}}'};
-			errors.push(e);
+			rule = 'unescaped',
+			s = Parser.lintConfig.getSeverity(rule);
+		if (s) {
+			const {firstChild} = this,
+				link = linkRegex.exec(firstChild.text())?.[0];
+			if (link && new URL(link).search) {
+				const msg = 'unescaped query string in an anonymous parameter',
+					e = generateForChild(firstChild, {start}, rule, msg, s);
+				e.startIndex = e.endIndex;
+				e.startLine = e.endLine;
+				e.startCol = e.endCol;
+				e.endIndex++;
+				e.endCol++;
+				e.fix = {desc: 'escape', range: [e.startIndex, e.endIndex], text: '{{=}}'};
+				errors.push(e);
+			}
 		}
 		return errors;
 	}
