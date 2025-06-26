@@ -3,6 +3,7 @@ import {
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
 import {padded} from '../mixin/padded';
+import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {Config, LintError} from '../base';
@@ -68,9 +69,11 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		if (this.length === 1 && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, {start}, 'var-anchor', 'variable anchor in a section header'));
+		const errors = super.lint(start, re),
+			rule = 'var-anchor',
+			s = Parser.lintConfig.getSeverity(rule, 'extLink');
+		if (s && this.length === 1 && this.closest('heading-title')) {
+			errors.push(generateForSelf(this, {start}, rule, 'variable anchor in a section header', s));
 		}
 		return errors;
 	}
