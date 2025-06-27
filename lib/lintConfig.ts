@@ -1,13 +1,11 @@
 import {rules} from '../base';
-import type {LintError} from '../base';
-
-declare type SeverityLevel = 0 | 1 | 2;
-declare type LintConfigValue = SeverityLevel | [SeverityLevel, Record<string, unknown>];
-declare type LintConfig = Partial<Record<LintError.Rule, LintConfigValue>>;
-export interface LintConfiguration extends LintConfig {
-	/** @private */
-	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false;
-}
+import type {
+	LintError,
+	SeverityLevel,
+	LintConfigValue,
+	LintConfig,
+	LintConfiguration as LintConfigurationBase,
+} from '../base';
 
 const severities = new Set([0, 1, 2]),
 	dict = new Map<SeverityLevel, LintError.Severity | false>([
@@ -17,12 +15,6 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
-	'invalid-css': [
-		2,
-		{
-			warn: 1,
-		},
-	],
 	'invalid-gallery': [
 		2,
 		{
@@ -89,6 +81,15 @@ const defaultLintConfig: LintConfig = {
 			// section: 2,
 		},
 	],
+
+	/* NOT FOR BROWSER ONLY */
+
+	'invalid-css': [
+		2,
+		{
+			warn: 1,
+		},
+	],
 };
 Object.freeze(defaultLintConfig);
 
@@ -113,7 +114,7 @@ const validateConfigValue = (value: unknown): boolean => validateSeverity(value)
  * @param value 语法检查规则值
  * @throws `RangeError` 未知的规则或无效的值
  */
-const set = (obj: LintConfig, key: LintError.Rule, value: LintConfigValue): boolean => {
+const set = (obj: LintConfigurationBase, key: LintError.Rule, value: LintConfigValue): boolean => {
 	if (!rules.includes(key)) {
 		throw new RangeError(`Unknown lint rule: ${key}`);
 	} else if (validateConfigValue(value)) {
@@ -124,7 +125,7 @@ const set = (obj: LintConfig, key: LintError.Rule, value: LintConfigValue): bool
 };
 
 /** 语法检查设置 */
-export class LintConfiguration implements LintConfig {
+export class LintConfiguration implements LintConfigurationBase {
 	/** @param config 语法检查设置 */
 	constructor(config?: LintConfig) {
 		Object.assign(
@@ -142,7 +143,7 @@ export class LintConfiguration implements LintConfig {
 	}
 
 	/** @implements */
-	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
+	getSeverity(this: LintConfigurationBase, rule: LintError.Rule, key?: string): LintError.Severity | false {
 		const value = this[rule]!;
 		if (typeof value === 'number') {
 			return dict.get(value)!;
@@ -156,4 +157,4 @@ export class LintConfiguration implements LintConfig {
  * @param config 语法检查设置
  */
 export const getLintConfig = (config?: LintConfig): LintConfiguration =>
-	new Proxy(new LintConfiguration(config), {set}) as LintConfiguration;
+	new Proxy(new LintConfiguration(config), {set});
