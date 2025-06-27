@@ -81,6 +81,8 @@ declare interface LintIgnore {
 	rules: Set<string> | undefined;
 }
 
+const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id'];
+
 /**
  * base class for all tokens
  *
@@ -450,44 +452,42 @@ export class Token extends AstElement {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
-				selector = 'category,html-attr#id,ext-attr#id,table-attr#id';
-			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
-				let key;
-				if (cat.is<CategoryToken>('category')) {
-					key = cat.name;
-				} else {
-					const value = cat.getValue();
-					if (value && value !== true) {
-						key = `#${value}`;
-					}
-				}
-				if (key) {
-					const thisCat = record.get(key);
-					if (thisCat) {
-						thisCat.add(cat);
+				r = 'no-duplicate',
+				s = ['category', 'id'].map(key => Parser.lintConfig.getSeverity(r, key)),
+				selector = lintSelectors.filter((_, i) => s[i]).join();
+			if (selector) {
+				for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
+					let key;
+					if (cat.is<CategoryToken>('category')) {
+						key = cat.name;
 					} else {
-						record.set(key, new Set([cat]));
+						const value = cat.getValue();
+						if (value && value !== true) {
+							key = `#${value}`;
+						}
+					}
+					if (key) {
+						const thisCat = record.get(key);
+						if (thisCat) {
+							thisCat.add(cat);
+						} else {
+							record.set(key, new Set([cat]));
+						}
 					}
 				}
-			}
-			for (const [key, value] of record) {
-				if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
-					const isCat = !key.startsWith('#'),
-						msg = `duplicated ${isCat ? 'category' : 'id'}`,
-						severity = isCat ? 'error' : 'warning';
-					errors.push(...[...value].map(cat => {
-						const e = generateForSelf(
-							cat,
-							{start: cat.getAbsoluteIndex()},
-							'no-duplicate',
-							msg,
-							severity,
-						);
-						if (isCat) {
-							e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
-						}
-						return e;
-					}));
+				for (const [key, value] of record) {
+					if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
+						const isCat = !key.startsWith('#'),
+							msg = `duplicated ${isCat ? 'category' : 'id'}`,
+							severity = s[isCat ? 0 : 1] as LintError.Severity;
+						errors.push(...[...value].map(cat => {
+							const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
+							if (isCat) {
+								e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
+							}
+							return e;
+						}));
+					}
 				}
 			}
 			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
@@ -501,7 +501,7 @@ export class Token extends AstElement {
 					line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
 					from: type === 'disable' ? regex.lastIndex : undefined,
 					to: type === 'enable' ? regex.lastIndex : undefined,
-					rules: detail ? new Set(detail.split(',').map(r => r.trim())) : undefined,
+					rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
 				});
 				mt = regex.exec(wikitext);
 			}

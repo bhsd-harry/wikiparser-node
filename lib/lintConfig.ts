@@ -17,6 +17,12 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
+	'invalid-css': [
+		2,
+		{
+			warn: 1,
+		},
+	],
 	'invalid-gallery': [
 		2,
 		{
@@ -35,6 +41,13 @@ const defaultLintConfig: LintConfig = {
 		2,
 		{
 			// file: 2,
+		},
+	],
+	'no-duplicate': [
+		2,
+		{
+			// category: 2,
+			id: 1,
 		},
 	],
 	'no-ignored': [
