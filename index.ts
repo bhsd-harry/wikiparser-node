@@ -11,6 +11,8 @@ import type {
 	Config,
 	ConfigData,
 	LintError,
+	LintConfig,
+	LintConfiguration,
 	TokenTypes,
 	Parser as ParserBase,
 	Stage,
@@ -18,7 +20,6 @@ import type {
 } from './base';
 import type {Title, TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
-import type {LintConfiguration} from './lib/lintConfig';
 import type {Token} from './internal';
 
 /* NOT FOR BROWSER ONLY */
@@ -35,7 +36,7 @@ import fetchConfig from './bin/config';
 declare interface Parser extends ParserBase {
 	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
-	/** @since v1.22.0 */
+	/** @private */
 	lintConfig: LintConfiguration;
 
 	/* NOT FOR BROWSER ONLY */
@@ -122,11 +123,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	rules,
 
 	/** @implements */
-	get lintConfig() {
+	get lintConfig(): LintConfiguration {
 		return lintConfig;
 	},
 
-	set lintConfig(config) {
+	set lintConfig(config: LintConfig) {
 		lintConfig = getLintConfig(config);
 	},
 

@@ -492,11 +492,22 @@ export interface LanguageService {
 	setTargetWikipedia(wiki: string): Promise<void>;
 }
 
+export type SeverityLevel = 0 | 1 | 2;
+export type LintConfigValue = SeverityLevel | [SeverityLevel, Record<string, unknown>];
+export type LintConfig = Partial<Record<LintError.Rule, LintConfigValue>>;
+export interface LintConfiguration extends LintConfig {
+	/** @private */
+	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false;
+}
+
 export interface Parser {
 	config: ConfigData | string;
 	i18n: Record<string, string>
 		| string
 		| undefined;
+
+	/** @since v1.22.0 */
+	lintConfig: LintConfiguration;
 
 	/* PRINT ONLY */
 
