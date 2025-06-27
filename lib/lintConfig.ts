@@ -15,6 +15,18 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
+	'format-leakage': [
+		2,
+		{
+			// apostrophe: 2,
+		},
+	],
+	h1: [
+		1,
+		{
+			// html: 1,
+		},
+	],
 	'invalid-gallery': [
 		2,
 		{
@@ -56,6 +68,7 @@ const defaultLintConfig: LintConfig = {
 			// references: 2,
 		},
 	],
+	'unbalanced-header': 2,
 	'unclosed-comment': [
 		1,
 		{
