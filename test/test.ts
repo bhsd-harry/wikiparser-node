@@ -2,8 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import * as assert from 'assert';
 import Parser = require('../index');
+import type {
+	LintError,
+} from '../base';
+import type {LintConfiguration} from '../lib/lintConfig';
 
-const allCodes = new Map<string, string[]>();
+const re = /`(\{[^`]+\})`:\n+```wikitext\n([^`]+)\n```$/gmu;
 
 /**
  * Mock CRLF
@@ -24,10 +28,10 @@ describe('API tests', () => {
 							.replace('\n', ' (CRLF)\n'),
 					])
 					: codes;
-			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
+					Parser.lintConfig = {} as LintConfiguration;
 					if (typeof Parser.config === 'object') {
 						// @ts-expect-error delete readonly property
 						delete Parser.config.articlePath;
@@ -57,25 +61,24 @@ describe('API tests', () => {
 						});
 					}
 				}
-			});
-		}
-	}
-});
-
-describe('Documentation tests', () => {
-	for (const [file, enCodes] of allCodes) {
-		if (file.endsWith('-(EN)')) {
-			const zhFile = file.slice(0, -5);
-			describe(zhFile, () => {
-				const zhCodes = allCodes.get(zhFile)!;
-				for (let i = 0; i < zhCodes.length; i++) {
-					const code = zhCodes[i]!;
-					it(code.split('\n', 1)[0]!.slice(3), () => {
-						assert.strictEqual(
-							code,
-							enCodes[i],
-							`${zhFile} is different from its English version`,
-						);
+				const cur = file.slice(0, -3);
+				for (const code of md.matchAll(re)) {
+					const [, config, wikitext] = code as string[] as [string, string, string],
+						lintConfig = JSON.parse(config);
+					it(config, () => {
+						Parser.lintConfig = lintConfig;
+						try {
+							assert.strictEqual(
+								Parser.lintConfig.getSeverity(cur as LintError.Rule) !== 'error',
+								Parser.parse(wikitext).lint()
+									.some(({rule, severity}) => rule === cur && severity === 'error'),
+							);
+						} catch (e) {
+							if (e instanceof assert.AssertionError) {
+								e.cause = {message: `\n${wikitext}`};
+							}
+							throw e;
+						}
 					});
 				}
 			});
