@@ -2,6 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import * as assert from 'assert';
 import Parser = require('../index');
+import type {
+	LintError,
+} from '../base';
+import type {LintConfiguration} from '../lib/lintConfig';
 
 /* NOT FOR BROWSER */
 
@@ -14,10 +18,12 @@ if (process.env['CLONENODE']) {
 		parse(...args).cloneNode();
 }
 
-/* NOT FOR BROWSER END */
-
 Parser.warning = false;
 const allCodes = new Map<string, string[]>();
+
+/* NOT FOR BROWSER END */
+
+const re = /`(\{[^`]+\})`:\n+```wikitext\n([^`]+)\n```$/gmu;
 
 /**
  * Mock CRLF
@@ -41,10 +47,17 @@ describe('API tests', () => {
 			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
-					Parser.viewOnly = false;
 					Parser.i18n = undefined;
+					Parser.lintConfig = {} as LintConfiguration;
+
+					/* NOT FOR BROWSER */
+
+					Parser.viewOnly = false;
 					Parser.conversionTable.clear();
 					Parser.redirects.clear();
+
+					/* NOT FOR BROWSER END */
+
 					if (typeof Parser.config === 'object') {
 						Parser.config.interwiki.length = 0;
 						// @ts-expect-error delete readonly property
@@ -75,10 +88,32 @@ describe('API tests', () => {
 						});
 					}
 				}
+				const cur = file.slice(0, -3);
+				for (const code of md.matchAll(re)) {
+					const [, config, wikitext] = code as string[] as [string, string, string],
+						lintConfig = JSON.parse(config);
+					it(config, () => {
+						Parser.lintConfig = lintConfig;
+						try {
+							assert.strictEqual(
+								Parser.lintConfig.getSeverity(cur as LintError.Rule) !== 'error',
+								Parser.parse(wikitext).lint()
+									.some(({rule, severity}) => rule === cur && severity === 'error'),
+							);
+						} catch (e) {
+							if (e instanceof assert.AssertionError) {
+								e.cause = {message: `\n${wikitext}`};
+							}
+							throw e;
+						}
+					});
+				}
 			});
 		}
 	}
 });
+
+/* NOT FOR BROWSER */
 
 describe('Documentation tests', () => {
 	for (const [file, enCodes] of allCodes) {
