@@ -2,6 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import * as assert from 'assert';
 import Parser = require('../index');
+import type {
+	LintError,
+} from '../base';
+import type {LintConfiguration} from '../lib/lintConfig';
+
+const re = /`(\{[^`]+\})`:\n+```wikitext\n([^`]+)\n```$/gmu;
 
 /**
  * Mock CRLF
@@ -25,6 +31,7 @@ describe('API tests', () => {
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
+					Parser.lintConfig = {} as LintConfiguration;
 					if (typeof Parser.config === 'object') {
 						// @ts-expect-error delete readonly property
 						delete Parser.config.articlePath;
@@ -53,6 +60,26 @@ describe('API tests', () => {
 							}
 						});
 					}
+				}
+				const cur = file.slice(0, -3);
+				for (const code of md.matchAll(re)) {
+					const [, config, wikitext] = code as string[] as [string, string, string],
+						lintConfig = JSON.parse(config);
+					it(config, () => {
+						Parser.lintConfig = lintConfig;
+						try {
+							assert.strictEqual(
+								Parser.lintConfig.getSeverity(cur as LintError.Rule) !== 'error',
+								Parser.parse(wikitext).lint()
+									.some(({rule, severity}) => rule === cur && severity === 'error'),
+							);
+						} catch (e) {
+							if (e instanceof assert.AssertionError) {
+								e.cause = {message: `\n${wikitext}`};
+							}
+							throw e;
+						}
+					});
 				}
 			});
 		}

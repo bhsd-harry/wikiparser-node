@@ -135,7 +135,7 @@ export abstract class ImagemapToken extends Token {
 			rect = new BoundingRect(this, start),
 			{childNodes, image} = this,
 			rule = 'invalid-imagemap',
-			s = Parser.lintConfig.getSeverity(rule, image ? 'image' : 'link');
+			s = Parser.lintConfig.getSeverity(rule, image ? 'link' : 'image');
 		if (s) {
 			if (image) {
 				errors.push(
