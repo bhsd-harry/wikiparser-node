@@ -2,13 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import * as assert from 'assert';
 import {mock} from './wikiparse';
-import type {Parser as ParserBase} from '../base';
+import type {
+	LintError,
+	Parser as ParserBase,
+} from '../base';
+import type {LintConfiguration} from '../lib/lintConfig';
 
 declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
 wikiparse.setConfig(Parser.config);
 
-const allCodes = new Map<string, string[]>();
+const re = /`(\{[^`]+\})`:\n+```wikitext\n([^`]+)\n```$/gmu;
 
 /**
  * Mock CRLF
@@ -29,10 +33,10 @@ describe('API tests', () => {
 							.replace('\n', ' (CRLF)\n'),
 					])
 					: codes;
-			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
+					Parser.lintConfig = {} as LintConfiguration;
 					if (typeof Parser.config === 'object') {
 						// @ts-expect-error delete readonly property
 						delete Parser.config.articlePath;
@@ -63,6 +67,28 @@ describe('API tests', () => {
 						});
 					}
 				}
+				const cur = file.slice(0, -3);
+				if (cur !== 'invalid-css') {
+					for (const code of md.matchAll(re)) {
+						const [, config, wikitext] = code as string[] as [string, string, string],
+							lintConfig = JSON.parse(config);
+						it(config, () => {
+							Parser.lintConfig = lintConfig;
+							try {
+								assert.strictEqual(
+									Parser.lintConfig.getSeverity(cur as LintError.Rule) !== 'error',
+									Parser.parse(wikitext).lint()
+										.some(({rule, severity}) => rule === cur && severity === 'error'),
+								);
+							} catch (e) {
+								if (e instanceof assert.AssertionError) {
+									e.cause = {message: `\n${wikitext}`};
+								}
+								throw e;
+							}
+						});
+					}
+				}
 			});
 		}
 	}
@@ -71,24 +97,3 @@ describe('API tests', () => {
 setTimeout(() => {
 	void mock.worker.terminate();
 }, 2000);
-
-describe('Documentation tests', () => {
-	for (const [file, enCodes] of allCodes) {
-		if (file.endsWith('-(EN)')) {
-			const zhFile = file.slice(0, -5);
-			describe(zhFile, () => {
-				const zhCodes = allCodes.get(zhFile)!;
-				for (let i = 0; i < zhCodes.length; i++) {
-					const code = zhCodes[i]!;
-					it(code.split('\n', 1)[0]!.slice(3), () => {
-						assert.strictEqual(
-							code,
-							enCodes[i],
-							`${zhFile} is different from its English version`,
-						);
-					});
-				}
-			});
-		}
-	}
-});
