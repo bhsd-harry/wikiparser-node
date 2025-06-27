@@ -41,25 +41,16 @@ export abstract class IncludeToken extends TagPairToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors: LintError[] = [],
 			{firstChild, closed, name} = this,
-			rect = new BoundingRect(this, start);
-		if (firstChild.data.trim()) {
-			const e = generateForChild(
-				firstChild,
-				rect,
-				'no-ignored',
-				'useless attribute',
-				'warning',
-			);
+			rect = new BoundingRect(this, start),
+			rules = ['no-ignored', 'unclosed-comment'] as const,
+			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'include'));
+		if (s[0] && firstChild.data.trim()) {
+			const e = generateForChild(firstChild, rect, rules[0], 'useless attribute', s[0]);
 			e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
 			errors.push(e);
 		}
-		if (!closed) {
-			const e = generateForSelf(
-				this,
-				rect,
-				'unclosed-comment',
-				Parser.msg('unclosed $1', `<${name}>`),
-			);
+		if (s[1] && !closed) {
+			const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed $1', `<${name}>`), s[1]);
 			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: `</${name}>`}];
 			errors.push(e);
 		}
