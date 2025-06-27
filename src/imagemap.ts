@@ -132,28 +132,28 @@ export abstract class ImagemapToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start);
-		if (this.image) {
-			errors.push(
-				...this.childNodes.filter(child => {
-					const str = child.toString().trim();
-					return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
-				}).map(child => {
-					const e = generateForChild(
-						child,
-						rect,
-						'invalid-imagemap',
-						'invalid link in <imagemap>',
-					);
-					e.suggestions = [
-						{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''},
-						{desc: 'comment', range: [e.startIndex, e.startIndex], text: '# '},
-					];
-					return e;
-				}),
-			);
-		} else {
-			errors.push(generateForSelf(this, rect, 'invalid-imagemap', '<imagemap> without an image'));
+			rect = new BoundingRect(this, start),
+			{childNodes, image} = this,
+			rule = 'invalid-imagemap',
+			s = Parser.lintConfig.getSeverity(rule, image ? 'image' : 'link');
+		if (s) {
+			if (image) {
+				errors.push(
+					...childNodes.filter(child => {
+						const str = child.toString().trim();
+						return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
+					}).map(child => {
+						const e = generateForChild(child, rect, rule, 'invalid link in <imagemap>', s);
+						e.suggestions = [
+							{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''},
+							{desc: 'comment', range: [e.startIndex, e.startIndex], text: '# '},
+						];
+						return e;
+					}),
+				);
+			} else {
+				errors.push(generateForSelf(this, rect, rule, '<imagemap> without an image', s));
+			}
 		}
 		return errors;
 	}
