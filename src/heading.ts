@@ -163,77 +163,87 @@ export abstract class HeadingToken extends Token {
 			rect = new BoundingRect(this, start),
 			s = this.inHtmlAttrs();
 		if (this.level === 1) {
-			const e = generateForChild(firstChild, rect, 'h1', '<h1>');
-			if (!unbalanced) {
-				e.suggestions = [{desc: 'h2', range: [e.startIndex, e.endIndex], text: `=${innerStr}=`}];
+			const rule = 'h1',
+				severity = Parser.lintConfig.getSeverity(rule);
+			if (severity) {
+				const e = generateForChild(firstChild, rect, rule, '<h1>', severity);
+				if (!unbalanced) {
+					e.suggestions = [{desc: 'h2', range: [e.startIndex, e.endIndex], text: `=${innerStr}=`}];
+				}
+				errors.push(e);
 			}
-			errors.push(e);
 		}
 		if (unbalanced) {
-			const e = generateForChild(
-				firstChild,
-				rect,
-				'unbalanced-header',
-				Parser.msg('unbalanced $1 in a section header', '"="'),
-			);
-			if (innerStr === '=') {
-				//
-			} else if (unbalancedStart) {
-				const [extra] = /^=+/u.exec(innerStr)!,
-					newLevel = level + extra.length;
-				e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''}];
-				if (newLevel < 7) {
-					e.suggestions.push({desc: `h${newLevel}`, range: [e.endIndex, e.endIndex], text: extra});
+			const rule = 'unbalanced-header',
+				severity = Parser.lintConfig.getSeverity(rule);
+			if (severity) {
+				const msg = Parser.msg('unbalanced $1 in a section header', '"="'),
+					e = generateForChild(firstChild, rect, rule, msg, severity);
+				if (innerStr === '=') {
+					//
+				} else if (unbalancedStart) {
+					const [extra] = /^=+/u.exec(innerStr)!,
+						newLevel = level + extra.length;
+					e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''}];
+					if (newLevel < 7) {
+						e.suggestions.push({desc: `h${newLevel}`, range: [e.endIndex, e.endIndex], text: extra});
+					}
+				} else {
+					const extra = /[^=](=+)$/u.exec(innerStr)![1]!,
+						newLevel = level + extra.length;
+					e.suggestions = [{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''}];
+					if (newLevel < 7) {
+						e.suggestions.push({desc: `h${newLevel}`, range: [e.startIndex, e.startIndex], text: extra});
+					}
 				}
-			} else {
-				const extra = /[^=](=+)$/u.exec(innerStr)![1]!,
-					newLevel = level + extra.length;
-				e.suggestions = [{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''}];
-				if (newLevel < 7) {
-					e.suggestions.push({desc: `h${newLevel}`, range: [e.startIndex, e.startIndex], text: extra});
-				}
+				errors.push(e);
 			}
-			errors.push(e);
 		}
 		if (s) {
 			errors.push(
 				generateForSelf(this, rect, 'parsing-order', 'section header in HTML tag attributes', s),
 			);
 		}
-		const rootStr = this.getRootNode().toString();
-		if (boldQuotes.length % 2) {
-			const e = generateForChild(
-					boldQuotes[boldQuotes.length - 1]!,
-					{
-						...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
-						start: start + level,
-						left: rect.left + level,
-					},
-					'format-leakage',
-					Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
-				),
-				end = start + level + innerStr.length;
-			if (rootStr.slice(e.endIndex, end).trim()) {
-				e.suggestions = [{desc: 'close', range: [end, end], text: `'''`}];
-			} else {
-				e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+		const rule = 'format-leakage',
+			severity = Parser.lintConfig.getSeverity(rule, 'apostrophe');
+		if (severity) {
+			const rootStr = this.getRootNode().toString();
+			if (boldQuotes.length % 2) {
+				const e = generateForChild(
+						boldQuotes[boldQuotes.length - 1]!,
+						{
+							...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
+							start: start + level,
+							left: rect.left + level,
+						},
+						rule,
+						Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
+						severity,
+					),
+					end = start + level + innerStr.length;
+				if (rootStr.slice(e.endIndex, end).trim()) {
+					e.suggestions = [{desc: 'close', range: [end, end], text: `'''`}];
+				} else {
+					e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+				}
+				errors.push(e);
 			}
-			errors.push(e);
-		}
-		if (italicQuotes.length % 2) {
-			const e = generateForChild(
-					italicQuotes[italicQuotes.length - 1]!,
-					{start: start + level},
-					'format-leakage',
-					Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
-				),
-				end = start + level + innerStr.length;
-			if (rootStr.slice(e.endIndex, end).trim()) {
-				e.suggestions = [{desc: 'close', range: [end, end], text: `''`}];
-			} else {
-				e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+			if (italicQuotes.length % 2) {
+				const e = generateForChild(
+						italicQuotes[italicQuotes.length - 1]!,
+						{start: start + level},
+						rule,
+						Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
+						severity,
+					),
+					end = start + level + innerStr.length;
+				if (rootStr.slice(e.endIndex, end).trim()) {
+					e.suggestions = [{desc: 'close', range: [end, end], text: `''`}];
+				} else {
+					e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+				}
+				errors.push(e);
 			}
-			errors.push(e);
 		}
 		return errors;
 	}
