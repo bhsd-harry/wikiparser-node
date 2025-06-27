@@ -21,6 +21,7 @@ const defaultLintConfig: LintConfig = {
 		2,
 		{
 			// image: 2,
+			// parameter: 2,
 		},
 	],
 	'nested-link': [
@@ -47,6 +48,12 @@ const defaultLintConfig: LintConfig = {
 		{},
 	],
 	unescaped: 2,
+	'url-encoding': [
+		1,
+		{
+			// file: 1,
+		},
+	],
 	'var-anchor': [
 		1,
 		{
