@@ -30,6 +30,13 @@ const defaultLintConfig: LintConfig = {
 			// parameter: 2,
 		},
 	],
+	'invalid-imagemap': [
+		2,
+		{
+			// image: 2,
+			// link: 2,
+		},
+	],
 	'nested-link': [
 		2,
 		{
