@@ -190,18 +190,21 @@ export abstract class ImageParameterToken extends Token {
 		const errors = super.lint(start, re),
 			{link, name} = this;
 		if (name === 'invalid') {
-			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid image parameter');
-			e.fix = {desc: 'remove', range: [start - 1, e.endIndex], text: ''};
-			errors.push(e);
+			const rule = 'invalid-gallery',
+				s = Parser.lintConfig.getSeverity(rule, 'parameter');
+			if (s) {
+				const e = generateForSelf(this, {start}, rule, 'invalid image parameter', s);
+				e.fix = {desc: 'remove', range: [start - 1, e.endIndex], text: ''};
+				errors.push(e);
+			}
 		} else if (typeof link === 'object' && link.encoded) {
-			const e = generateForSelf(
-				this,
-				{start},
-				'url-encoding',
-				'unnecessary URL encoding in an internal link',
-			);
-			e.suggestions = [{desc: 'decode', range: [start, e.endIndex], text: rawurldecode(this.text())}];
-			errors.push(e);
+			const rule = 'url-encoding',
+				s = Parser.lintConfig.getSeverity(rule, 'file');
+			if (s) {
+				const e = generateForSelf(this, {start}, rule, 'unnecessary URL encoding in an internal link', s);
+				e.suggestions = [{desc: 'decode', range: [start, e.endIndex], text: rawurldecode(this.text())}];
+				errors.push(e);
+			}
 		}
 		return errors;
 	}
