@@ -46,6 +46,7 @@ const defaultLintConfig: LintConfig = {
 		2,
 		{
 			// conversionFlag: 2,
+			include: 1,
 			redirect: 1,
 
 			// choose: 2,
@@ -57,7 +58,9 @@ const defaultLintConfig: LintConfig = {
 	],
 	'unclosed-comment': [
 		1,
-		{},
+		{
+			// include: 1,
+		},
 	],
 	unescaped: 2,
 	'url-encoding': [
