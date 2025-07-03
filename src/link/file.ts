@@ -574,11 +574,11 @@ export abstract class FileToken extends LinkBaseToken {
 		}px">\n\t\t<div class="thumb" style="width: ${Number(width) + padding}px${
 			nolines ? '' : `; height: ${Number(height) + padding}px`
 		}"><span>${a}</span></div>\n\t\t<div class="gallerytext">${
-			parent?.parentNode?.getAttr('showfilename') === undefined
-				? ''
-				: `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
+			parent?.parentNode?.hasAttr('showfilename')
+				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
 					file.title
 				}">${file.main}</a>\n`
+				: ''
 		}${caption}</div>\n\t</li>`;
 	}
 }

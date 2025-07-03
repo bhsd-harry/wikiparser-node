@@ -26,6 +26,14 @@ export interface AttributesParentBase {
 	/* NOT FOR BROWSER END */
 
 	/**
+	 * Check if the token has a certain attribute
+	 *
+	 * 是否具有某属性
+	 * @param key attribute name / 属性键
+	 */
+	hasAttr(key: string): boolean;
+
+	/**
 	 * Get the attribute
 	 *
 	 * 获取指定属性
@@ -34,14 +42,6 @@ export interface AttributesParentBase {
 	getAttr(key: string): string | true | undefined;
 
 	/* NOT FOR BROWSER */
-
-	/**
-	 * Check if the token has a certain attribute
-	 *
-	 * 是否具有某属性
-	 * @param key attribute name / 属性键
-	 */
-	hasAttr(key: string): boolean;
 
 	/**
 	 * Get all attribute names
@@ -146,16 +146,16 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		}
 
 		/** @implements */
+		hasAttr(key: string): boolean {
+			return this.#getAttributesChild().hasAttr(key);
+		}
+
+		/** @implements */
 		getAttr(key: string): string | true | undefined {
 			return this.#getAttributesChild().getAttr(key);
 		}
 
 		/* NOT FOR BROWSER */
-
-		/** @implements */
-		hasAttr(key: string): boolean {
-			return this.#getAttributesChild().hasAttr(key);
-		}
 
 		/** @implements */
 		getAttrNames(): Set<string> {

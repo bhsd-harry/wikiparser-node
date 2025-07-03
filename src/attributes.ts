@@ -232,6 +232,16 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
+	 * Check if the token has a certain attribute
+	 *
+	 * 是否具有某属性
+	 * @param key attribute name / 属性键
+	 */
+	hasAttr(key: string): boolean {
+		return this.getAttrTokens(key).length > 0;
+	}
+
+	/**
 	 * Get the last AttributeToken with the specified attribute name
 	 *
 	 * 指定属性名的最后一个AttributeToken
@@ -461,16 +471,6 @@ export abstract class AttributesToken extends Token {
 			this.getAttribute('config'),
 		));
 		this.insertAt(token);
-	}
-
-	/**
-	 * Check if the token has a certain attribute
-	 *
-	 * 是否具有某属性
-	 * @param key attribute name / 属性键
-	 */
-	hasAttr(key: string): boolean {
-		return this.getAttrTokens(key).length > 0;
 	}
 
 	/**

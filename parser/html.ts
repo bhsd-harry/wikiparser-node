@@ -34,10 +34,10 @@ export const parseHtml = (wikitext: string, config: Config, accum: Token[]): str
 			{length} = accum,
 			// @ts-expect-error abstract class
 			attrs: AttributesToken = new AttributesToken(params, 'html-attrs', name!, config, accum),
-			itemprop = attrs.getAttr('itemprop');
+			itemprop = attrs.hasAttr('itemprop');
 		if (
-			name === 'meta' && (itemprop === undefined || attrs.getAttr('content') === undefined)
-			|| name === 'link' && (itemprop === undefined || attrs.getAttr('href') === undefined)
+			name === 'meta' && !(itemprop && attrs.hasAttr('content'))
+			|| name === 'link' && !(itemprop && attrs.hasAttr('href'))
 		) {
 			text += `<${x}`;
 			accum.length = length;
