@@ -20,7 +20,7 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 			}
 			return parentNode?.type === 'root'
 				|| type === 'list' && parentNode?.is<ListRangeToken>('list-range')
-				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem'
+				|| parentNode?.type === 'ext-inner' && parentNode.name === 'poem'
 				? ''
 				: '\n';
 		}

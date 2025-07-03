@@ -1,11 +1,12 @@
-## v1.21.3
+## v1.22.0
 
-*2025-06-28*
+*2025-07-13*
 
 **Fixed**
 
 - HTML conversion of `<poem>` containing `<nowiki>` or leading `:`
 - HTML conversion of `<h1>` to `<h6>` without and `id` attribute
+- [HeadingToken](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) as the first token of a `<poem>` tag does not need to be on a new line
 
 **Changed**
 

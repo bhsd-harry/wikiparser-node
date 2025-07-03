@@ -84,7 +84,7 @@
 		"color-name": "^2.0.0",
 		"entities": "^6.0.0",
 		"mathjax": "^3.2.2",
-		"stylelint": "^16.21.0",
+		"stylelint": "^16.21.1",
 		"vscode-css-languageservice": "^6.3.4",
 		"vscode-html-languageservice": "^5.3.3",
 		"vscode-json-languageservice": "^5.4.4"
