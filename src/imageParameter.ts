@@ -53,10 +53,14 @@ const getSyntaxRegex = getRegex(syntax => new RegExp(
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
+/* eslint-disable jsdoc/check-param-names */
 /**
  * 检查图片参数是否合法
  * @param key 参数名
  * @param val 参数值
+ * @param config
+ * @param halfParsed
+ * @param ext 文件扩展名
  */
 function validate(key: 'link', val: string, config: Config, halfParsed?: boolean): string | Title;
 function validate(key: string, val: string, config: Config, halfParsed: boolean, ext: string | undefined): boolean;
@@ -101,6 +105,7 @@ function validate(
 			return Boolean(value) && !isNaN(value as unknown as number);
 	}
 }
+/* eslint-enable jsdoc/check-param-names */
 
 /**
  * image parameter
