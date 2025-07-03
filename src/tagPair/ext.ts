@@ -246,7 +246,7 @@ export abstract class ExtToken extends TagPairToken {
 				}</pre>`;
 			}
 			case 'poem': {
-				const padding = firstChild.getAttr('compact') ? '' : '\n';
+				const padding = firstChild.hasAttr('compact') ? '' : '\n';
 				firstChild.classList.add('poem');
 				return `<div${firstChild.toHtmlInternal()}>${padding}${
 					lastChild.toHtmlInternal({...opt, nowrap: false})
