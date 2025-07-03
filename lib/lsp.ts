@@ -992,7 +992,7 @@ export class LanguageService implements LanguageServiceBase {
 			if (word) {
 				const data = this.#mathData;
 				return getCompletion(
-					cur!.name === 'math' && (parentNode as ExtToken).getAttr('chem') !== undefined
+					cur!.name === 'math' && (parentNode as ExtToken).hasAttr('chem')
 						? [...data, String.raw`\ce`]
 						: data,
 					'Function',
@@ -1145,7 +1145,7 @@ export class LanguageService implements LanguageServiceBase {
 				lilypondDiagnostics = await Promise.all(tokens.map(async (token): Promise<DiagnosticBase[]> => {
 					const {innerText} = token,
 						score = `showLastLength = R1${
-							token.getAttr('raw') === undefined ? ` \\score {\n${innerText}\n}` : `\n${innerText}`
+							token.hasAttr('raw') ? `\n${innerText}` : ` \\score {\n${innerText}\n}`
 						}`;
 					if (scores.has(score)) {
 						return getLilyPondDiagnostics(root, token, scores.get(score)!);
@@ -1186,7 +1186,7 @@ export class LanguageService implements LanguageServiceBase {
 					if (selfClosing) {
 						return [];
 					}
-					const hasCe = name === 'math' && token.getAttr('chem') !== undefined,
+					const hasCe = name === 'math' && token.hasAttr('chem'),
 						mathErrors: DiagnosticBase[] = [...innerText!.matchAll(/\\\w+/gu)]
 							.filter(([macro]) => !(hasCe && macro === String.raw`\ce` || data.has(macro)))
 							.map(({0: macro, index}): DiagnosticBase => {
