@@ -4,6 +4,14 @@ import type {AttributesToken} from '../internal';
 export interface AttributesParentBase {
 
 	/**
+	 * Check if the token has a certain attribute
+	 *
+	 * 是否具有某属性
+	 * @param key attribute name / 属性键
+	 */
+	hasAttr(key: string): boolean;
+
+	/**
 	 * Get the attribute
 	 *
 	 * 获取指定属性
@@ -22,6 +30,11 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		/** AttributesToken子节点 */
 		#getAttributesChild(): AttributesToken {
 			return this.childNodes[i] as AttributesToken;
+		}
+
+		/** @implements */
+		hasAttr(key: string): boolean {
+			return this.#getAttributesChild().hasAttr(key);
 		}
 
 		/** @implements */
