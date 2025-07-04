@@ -23,7 +23,20 @@ export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
 	/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
-	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']);
+	evil = /(?:^|\s|\*\/)(?:javascript|vbscript)(?:\W|$)/iu,
+	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']),
+	urlAttrs = new Set([
+		'about',
+		'property',
+		'resource',
+		'datatype',
+		'typeof',
+		'itemid',
+		'itemprop',
+		'itemref',
+		'itemscope',
+		'itemtype',
+	]);
 
 /**
  * attribute of extension and HTML tags
@@ -148,7 +161,8 @@ export abstract class AttributeToken extends Token {
 	 * @param rect 位置
 	 */
 	#lint(start: number, rect?: BoundingRect): LintError | false {
-		const {firstChild, lastChild, type, name, tag} = this,
+		const {firstChild, lastChild, type, name, tag, parentNode} = this,
+			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),
 			attrs = extAttrs[tag],
 			attrs2 = htmlAttrs[tag],
@@ -163,6 +177,8 @@ export abstract class AttributeToken extends Token {
 				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
+			|| (name === 'itemtype' || name === 'itemid' || name === 'itemref')
+			&& !parentNode?.hasAttr('itemscope')
 		) {
 			const e = generateForChild(firstChild, rect!, 'illegal-attr', 'illegal attribute name');
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
@@ -176,7 +192,7 @@ export abstract class AttributeToken extends Token {
 				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
 			];
 			return e;
-		} else if (type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
+		} else if (simple && type !== 'ext-attr') {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
@@ -188,6 +204,16 @@ export abstract class AttributeToken extends Token {
 					'warning',
 				);
 			}
+		} else if (
+			typeof value === 'string' && (
+				(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
+				|| simple
+				&& (name === 'href' || name === 'src')
+				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
+					.test(value)
+			)
+		) {
+			return generateForChild(lastChild, rect!, 'illegal-attr', 'illegal attribute value');
 		}
 		return false;
 	}
