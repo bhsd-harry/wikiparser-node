@@ -136,8 +136,15 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
 /** escape HTML entities */
 export const sanitize = replaceEntities(/[<>]|&(?=amp(?!;))/giu);
 
-/** escape HTML entities in attributes */
-export const sanitizeAttr = replaceEntities(/[<>"]/gu);
+const replaceAttrEntities = replaceEntities(/[<>"]/gu);
+
+/**
+ * escape HTML entities in attributes
+ * @param attr 属性值
+ * @param id 是否是`id`属性
+ */
+export const sanitizeAttr = (attr: string, id?: boolean): string =>
+	replaceAttrEntities(attr.replace(/\s+|&#10;/gu, id ? '_' : ' '));
 
 /** escape HTML entities in heading id */
 export const sanitizeId = replaceEntities(/["&]/gu);

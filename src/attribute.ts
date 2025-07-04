@@ -53,7 +53,8 @@ declare interface StyleSheet extends CSSNode {
 	children: [RuleSet];
 }
 
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
+const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
+	ariaAttrs = new Set(['aria-describedby', 'aria-flowto', 'aria-labelledby', 'aria-owns']);
 
 /* NOT FOR BROWSER END */
 
@@ -62,7 +63,20 @@ export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
 	/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
-	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']);
+	evil = /(?:^|\s|\*\/)(?:javascript|vbscript)(?:\W|$)/iu,
+	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']),
+	urlAttrs = new Set([
+		'about',
+		'property',
+		'resource',
+		'datatype',
+		'typeof',
+		'itemid',
+		'itemprop',
+		'itemref',
+		'itemscope',
+		'itemtype',
+	]);
 
 /**
  * attribute of extension and HTML tags
@@ -233,7 +247,8 @@ export abstract class AttributeToken extends Token {
 	#lint(): boolean;
 	#lint(start: number, rect: BoundingRect): LintError | false;
 	#lint(start?: number, rect?: BoundingRect): LintError | boolean {
-		const {firstChild, lastChild, type, name, tag} = this,
+		const {firstChild, lastChild, type, name, tag, parentNode} = this,
+			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),
 			attrs = extAttrs[tag],
 			attrs2 = htmlAttrs[tag],
@@ -248,6 +263,8 @@ export abstract class AttributeToken extends Token {
 				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
+			|| (name === 'itemtype' || name === 'itemid' || name === 'itemref')
+			&& !parentNode?.hasAttr('itemscope')
 		) {
 			/* PRINT ONLY */
 
@@ -285,7 +302,7 @@ export abstract class AttributeToken extends Token {
 				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
 			];
 			return e;
-		} else if (type !== 'ext-attr' && !lastChild.childNodes.some(({type: t}) => complexTypes.has(t))) {
+		} else if (simple && type !== 'ext-attr') {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
@@ -305,6 +322,24 @@ export abstract class AttributeToken extends Token {
 					'warning',
 				);
 			}
+		} else if (
+			typeof value === 'string' && (
+				(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
+				|| simple
+				&& (name === 'href' || name === 'src')
+				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
+					.test(value)
+			)
+		) {
+			/* PRINT ONLY */
+
+			if (start === undefined) {
+				return true;
+			}
+
+			/* PRINT ONLY END */
+
+			return generateForChild(lastChild, rect!, 'illegal-attr', 'illegal attribute value');
 		}
 		return false;
 	}
@@ -462,23 +497,17 @@ export abstract class AttributeToken extends Token {
 	@cached()
 	override toHtmlInternal(): string {
 		const {type, name, tag, lastChild} = this;
-		if (
-			type === 'ext-attr' && !(tag in htmlAttrs)
-			|| !htmlAttrs[tag]?.has(name)
-			&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
-			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
-		) {
+		if (type === 'ext-attr' && extAttrs[tag]?.has(name) || this.#lint()) {
 			return '';
 		}
 		const value = lastChild.toHtmlInternal().trim();
-		if (
-			name === 'style' && insecureStyle.test(value)
-			|| name === 'tabindex' && value !== '0'
-			|| name === 'id' && !value
-		) {
+		if (name === 'id' && !value) {
 			return '';
 		}
-		return `${name}="${sanitizeAttr(value.replace(/\s+|&#10;/gu, name === 'id' ? '_' : ' '))}"`;
+		const sanitized = ariaAttrs.has(name)
+			? value.split(/\s+/u).filter(Boolean).map(v => sanitizeAttr(v, true)).join(' ')
+			: sanitizeAttr(value, name === 'id');
+		return `${name}="${sanitized}"`;
 	}
 
 	/**

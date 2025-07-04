@@ -116,13 +116,20 @@ module.exports = {
 			},
 		},
 		{
-			files: 'wiki/*.md/**',
+			files: '**/*.md/**',
 			globals: {
 				assert: 'readonly',
+				document: 'readonly',
 				Parser: 'readonly',
 				wikiparse: 'readonly',
 			},
 			rules: {
+				'no-unused-vars': [
+					2,
+					{
+						varsIgnorePattern: '^Parser$',
+					},
+				],
 				'no-var': 0,
 				'jsdoc/require-jsdoc': 0,
 				'n/no-missing-require': 0,
