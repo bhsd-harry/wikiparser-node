@@ -1,6 +1,6 @@
-## v1.22.0
+## v1.21.3
 
-*2025-07-13*
+*2025-07-14*
 
 **Fixed**
 
@@ -8,6 +8,7 @@
 - HTML conversion of `<h1>` to `<h6>` without and `id` attribute
 - [HeadingToken](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) as the first token of a `<poem>` tag does not need to be on a new line
 - Sanitization of [AttributeToken](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken)
+- Use the legacy `rgba()` function instead of `#rrggbbaa` in [`LanguageService.provideColorPresentations`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecolorpresentations) for colors with an alpha channel
 
 **Changed**
 
