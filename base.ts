@@ -468,7 +468,7 @@ export interface Parser {
 	i18n: Record<string, string>
 		| undefined;
 
-	/** @since v1.22.0 */
+	/** @private */
 	lintConfig: LintConfiguration;
 
 	/* PRINT ONLY */
