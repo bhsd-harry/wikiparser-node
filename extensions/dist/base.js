@@ -1,6 +1,6 @@
 (() => {
 var _a;
-const version = '1.21.2', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+const version = '1.21.3', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
@@ -22,7 +22,7 @@ const workerJS = () => {
         if (lsps.has(id)) {
             return lsps.get(id);
         }
-        const lsp = Parser.createLanguageService({});
+        const lsp = Parser.createLanguageService();
         lsp.include = include;
         lsps.set(id, lsp);
         return lsp;
