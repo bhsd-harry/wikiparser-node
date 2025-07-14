@@ -506,7 +506,7 @@ export interface Parser {
 		| string
 		| undefined;
 
-	/** @since v1.22.0 */
+	/** @private */
 	lintConfig: LintConfiguration;
 
 	/* PRINT ONLY */
