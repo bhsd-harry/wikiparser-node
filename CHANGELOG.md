@@ -1,3 +1,11 @@
+## v1.21.4
+
+*2025-07-15*
+
+**Changed**
+
+- The preset configurations are updated
+
 ## v1.21.3
 
 *2025-07-14*
