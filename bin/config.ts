@@ -107,13 +107,27 @@ let mwConfig: MwConfig | undefined;
  * @param internal for internal use
  */
 export default async (site: string, url: string, force?: boolean, internal?: boolean): Promise<ConfigData> => {
+	// wrong calls
 	if (!site || !url) {
-		error('Usage: npx getParserConfig <site> <script path> [force]');
-		process.exit(1);
-	} else if (/(?:\.php|\/)$/u.test(url)) {
-		url = url.slice(0, url.lastIndexOf('/'));
+		if (internal) {
+			throw new RangeError('Site nickname and script path are required!');
+		} else {
+			error('Usage: npx getParserConfig <site> <script path> [force]');
+			process.exit(1);
+		}
 	}
 
+	// internal calls with stored configuration
+	const dir = path.join('..', '..', 'config'),
+		file = path.join(__dirname, dir, `${site}.json`);
+	if (internal && !force && fs.existsSync(file)) {
+		return require(file) as ConfigData;
+	}
+
+	// fetching configuration
+	if (/(?:\.php|\/)$/u.test(url)) {
+		url = url.slice(0, url.lastIndexOf('/'));
+	}
 	const m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`)).text(),
 		params = {
 			action: 'query',
@@ -137,8 +151,7 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 	if (!mwConfig) {
 		throw new RangeError('Extension:CodeMirror is not installed!');
 	}
-	const dir = path.join('..', '..', 'config'),
-		ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
+	const ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
 			.flatMap(([id, {name, canonical = ''}]): (readonly [string, string])[] => [
 				[id, name],
 				...name === canonical ? [] : [[id, canonical] as const],
@@ -175,10 +188,11 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 			config.variable.splice(i, 1);
 		}
 	}
-	const file = path.join(__dirname, dir, `${site}.json`);
+
+	// saving configuration
 	if (force || !fs.existsSync(file)) {
 		fs.writeFileSync(file, `${JSON.stringify(config, null, '\t')}\n`);
-	} else if (!internal) {
+	} else {
 		const oldConfig = arrToObj(require(file) as ConfigData),
 			newConfig = arrToObj(config);
 		for (const [k, v] of Object.entries(newConfig)) {
