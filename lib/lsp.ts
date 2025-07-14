@@ -674,7 +674,10 @@ export class LanguageService implements LanguageServiceBase {
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideColorPresentations(color: ColorInformation): ColorPresentation[] {
 		const {color: {red, green, blue, alpha}, range} = color,
-			newText = `#${numToHex(red)}${numToHex(green)}${numToHex(blue)}${alpha < 1 ? numToHex(alpha) : ''}`;
+			rgb = [red, green, blue],
+			newText = alpha < 1
+				? `rgba(${rgb.map(c => Math.round(c * 255)).join()},${alpha})`
+				: `#${rgb.map(numToHex).join('')}`;
 		return [
 			{
 				label: newText,
