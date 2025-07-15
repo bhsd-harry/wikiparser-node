@@ -31,7 +31,7 @@ const defaultLintConfig: LintConfig = {
 		2,
 		{
 			// image: 2,
-			// parameter: 2,
+			parameter: 1,
 		},
 	],
 	'invalid-imagemap': [
@@ -53,7 +53,7 @@ const defaultLintConfig: LintConfig = {
 		2,
 		{
 			// attribute: 2,
-			// category: 2,
+			category: 1,
 			id: 1,
 		},
 	],
