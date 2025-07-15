@@ -8,6 +8,10 @@
 - [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
 - [`LanguageService.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now supports other WMF-hosted sites
 
+**Fixed**
+
+- [`Parser.normalizeTitle`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#normalizetitle) now correctly handles titles with nested transclusions
+
 **Changed**
 
 - The preset configurations are updated

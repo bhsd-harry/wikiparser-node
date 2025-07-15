@@ -367,6 +367,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.type = 'root';
 				root.parseOnce(0, include).parseOnce();
 				const t = new Title(root.toString(), defaultNs, config, opt);
+				root.build();
 				for (const key of ['main', 'fragment'] as const) {
 					const str = t[key];
 					if (str?.includes('\0')) {
