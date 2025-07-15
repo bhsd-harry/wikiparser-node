@@ -101,32 +101,38 @@ export abstract class MagicLinkToken extends Token {
 			rect = new BoundingRect(this, start),
 			{type, childNodes} = this;
 		if (type === 'magic-link') {
-			if (this.#lint()) {
-				errors.push(generateForSelf(this, rect, 'invalid-isbn', 'invalid ISBN'));
+			const rule = 'invalid-isbn',
+				s = Parser.lintConfig.getSeverity(rule);
+			if (s && this.#lint()) {
+				errors.push(generateForSelf(this, rect, rule, 'invalid ISBN', s));
 			}
 			return errors;
 		}
 		const pipe = type === 'ext-link-url',
-			regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
-			child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
-		if (child) {
-			const {data} = child,
-				e = generateForChild(
-					child,
-					rect,
-					'unterminated-url',
-					Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
-					'warning',
-				),
-				{index, 0: s} = regex.exec(data)!,
-				i = e.startIndex + index;
-			e.suggestions = pipe
-				? [{desc: 'whitespace', range: [i, i + 1], text: ' '}]
-				: [
-					{desc: 'whitespace', range: [i, i], text: ' '},
-					{desc: 'escape', range: [i, i + s.length], text: encodeURI(s)},
-				];
-			errors.push(e);
+			rule = 'unterminated-url',
+			severity = Parser.lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
+		if (severity) {
+			const regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
+				child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
+			if (child) {
+				const {data} = child,
+					e = generateForChild(
+						child,
+						rect,
+						rule,
+						Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
+						severity,
+					),
+					{index, 0: s} = regex.exec(data)!,
+					i = e.startIndex + index;
+				e.suggestions = pipe
+					? [{desc: 'whitespace', range: [i, i + 1], text: ' '}]
+					: [
+						{desc: 'whitespace', range: [i, i], text: ' '},
+						{desc: 'escape', range: [i, i + s.length], text: encodeURI(s)},
+					];
+				errors.push(e);
+			}
 		}
 		return errors;
 	}
