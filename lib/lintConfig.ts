@@ -47,6 +47,7 @@ const defaultLintConfig: LintConfig = {
 			// link: 2,
 		},
 	],
+	'invalid-isbn': 2,
 	'nested-link': [
 		2,
 		{
@@ -100,6 +101,13 @@ const defaultLintConfig: LintConfig = {
 	],
 	'unclosed-quote': 1,
 	unescaped: 2,
+	'unterminated-url': [
+		1,
+		{
+			// pipe: 1,
+			// punctuation: 1,
+		},
+	],
 	'url-encoding': [
 		1,
 		{
