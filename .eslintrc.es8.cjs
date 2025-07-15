@@ -9,7 +9,6 @@ module.exports = {
 	],
 	rules: {
 		'es-x/no-global-this': 0,
-		'es-x/no-malformed-template-literals': 0,
 		'es-x/no-regexp-unicode-property-escapes': 0,
 	},
 };
