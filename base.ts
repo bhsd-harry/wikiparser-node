@@ -480,7 +480,7 @@ export interface Parser {
 		| string
 		| undefined;
 
-	/** @private */
+	/** @since v1.22.0 */
 	lintConfig: LintConfiguration;
 
 	/**
