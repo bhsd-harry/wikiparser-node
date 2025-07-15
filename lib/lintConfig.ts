@@ -84,6 +84,13 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	'obsolete-attr': 1,
+	'parsing-order': [
+		2,
+		{
+			// heading: 2,
+			templateInTable: 1,
+		},
+	],
 	'unbalanced-header': 2,
 	'unclosed-comment': [
 		1,
