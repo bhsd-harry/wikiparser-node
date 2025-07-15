@@ -174,11 +174,11 @@ export abstract class ExtToken extends TagPairToken {
 		const errors = super.lint(start, re),
 			rect = new BoundingRect(this, start);
 		if (this.name !== 'nowiki') {
-			const s = this.inHtmlAttrs();
-			if (s) {
-				errors.push(
-					generateForSelf(this, rect, 'parsing-order', 'extension tag in HTML tag attributes', s),
-				);
+			const s = this.inHtmlAttrs(),
+				rule = 'parsing-order',
+				severity = s && Parser.lintConfig.getSeverity(rule, s === 'error' ? 'ext' : 'templateInTable');
+			if (severity) {
+				errors.push(generateForSelf(this, rect, rule, 'extension tag in HTML tag attributes', severity));
 			}
 		}
 		const rule = 'var-anchor',
