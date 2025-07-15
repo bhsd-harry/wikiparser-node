@@ -90,13 +90,15 @@ describe('API tests', () => {
 				}
 				const cur = file.slice(0, -3);
 				for (const code of md.matchAll(re)) {
-					const [, config, wikitext] = code as string[] as [string, string, string],
-						lintConfig = JSON.parse(config);
+					const [, config, wikitext] = code as string[] as [string, string, string];
 					it(config, () => {
-						Parser.lintConfig = lintConfig;
 						try {
+							const lintConfig = JSON.parse(config);
+							Parser.lintConfig = lintConfig;
 							assert.strictEqual(
-								Parser.lintConfig.getSeverity(cur as LintError.Rule) !== 'error',
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+								typeof lintConfig[cur] === 'number'
+								=== (Parser.lintConfig.getSeverity(cur as LintError.Rule) === 'error'),
 								Parser.parse(wikitext).lint()
 									.some(({rule, severity}) => rule === cur && severity === 'error'),
 							);
