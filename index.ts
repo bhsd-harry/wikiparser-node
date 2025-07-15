@@ -23,6 +23,7 @@ import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
+	default: Parser;
 	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
 	/** @private */
@@ -72,7 +73,7 @@ let viewOnly = true;
 
 let lintConfig = getLintConfig();
 
-const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
+const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: minConfig,
 	i18n: undefined,
 	rules,
@@ -234,7 +235,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		throw new Error('Parser.createLanguageService method is only available in the LSP version!');
 	},
-};
+} as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
 	},
