@@ -17,7 +17,8 @@
 		"poll",
 		"modernsoundmanager",
 		"flashmp3",
-		"sm2"
+		"sm2",
+		"img"
 	],
 	"html": [
 		[
@@ -85,8 +86,7 @@
 			"wbr",
 			"hr",
 			"meta",
-			"link",
-			"img"
+			"link"
 		]
 	],
 	"namespaces": {
