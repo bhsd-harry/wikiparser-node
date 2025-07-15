@@ -223,15 +223,11 @@ export abstract class AttributeToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{balanced, firstChild, lastChild, name, tag} = this,
-			rect = new BoundingRect(this, start);
-		if (!balanced) {
-			const e = generateForChild(
-				lastChild,
-				rect,
-				'unclosed-quote',
-				Parser.msg('unclosed $1', 'quotes'),
-				'warning',
-			);
+			rect = new BoundingRect(this, start),
+			rules = ['unclosed-quote', 'obsolete-attr'] as const,
+			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
+		if (s[0] && !balanced) {
+			const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed $1', 'quotes'), s[0]);
 			e.startIndex--;
 			e.startCol--;
 			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: this.#quotes[0]!}];
@@ -241,16 +237,8 @@ export abstract class AttributeToken extends Token {
 		if (e) {
 			errors.push(e);
 		}
-		if (obsoleteAttrs[tag]?.has(name)) {
-			errors.push(
-				generateForChild(
-					firstChild,
-					rect,
-					'obsolete-attr',
-					'obsolete attribute',
-					'warning',
-				),
-			);
+		if (s[1] && obsoleteAttrs[tag]?.has(name)) {
+			errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete attribute', s[1]));
 		}
 		return errors;
 	}
