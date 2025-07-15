@@ -26,6 +26,7 @@ import type {Token} from './internal';
 
 import fs from 'fs';
 import path from 'path';
+import {wmf} from '@bhsd/common';
 import {
 	error,
 } from './util/diff';
@@ -84,6 +85,15 @@ declare interface Parser extends ParserBase {
 	/* NOT FOR BROWSER ONLY */
 
 	/**
+	 * get the name of a WMF site from a URL
+	 *
+	 * 获取一个WMF网站的名称
+	 * @param url script path
+	 * @since v1.22.0
+	 */
+	getWMFSite(url: string): [string, string];
+
+	/**
 	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
 	 *
 	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
@@ -95,6 +105,8 @@ declare interface Parser extends ParserBase {
 }
 
 /* NOT FOR BROWSER ONLY */
+
+const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
 
 /**
  * 从根路径require
@@ -335,6 +347,16 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/* NOT FOR BROWSER ONLY */
+
+	/** @implements */
+	getWMFSite(url) {
+		const mt = re.exec(url);
+		if (!mt) {
+			throw new RangeError('Not a recognizable WMF site!');
+		}
+		const type = mt[2]!.toLowerCase();
+		return [mt[1]!.toLowerCase() + (type === 'wikipedia' ? 'wiki' : type), mt[0]];
+	},
 
 	/* istanbul ignore next */
 	/** @implements */
