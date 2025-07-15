@@ -51,6 +51,7 @@ const defaultLintConfig: LintConfig = {
 	'no-duplicate': [
 		2,
 		{
+			// attribute: 2,
 			// category: 2,
 			id: 1,
 		},
@@ -59,11 +60,14 @@ const defaultLintConfig: LintConfig = {
 		2,
 		{
 			// arg: 2,
+			// closingTag: 2,
 			// conversionFlag: 2,
 			galleryComment: 1,
 			// galleryImage: 2,
 			galleryNoImage: 1,
 			include: 1,
+			// invalidAttributes: 2,
+			nonWordAttributes: 1,
 			redirect: 1,
 
 			// choose: 2,
