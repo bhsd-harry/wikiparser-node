@@ -73,6 +73,7 @@ const defaultLintConfig: LintConfig = {
 			// references: 2,
 		},
 	],
+	'obsolete-attr': 1,
 	'unbalanced-header': 2,
 	'unclosed-comment': [
 		1,
@@ -80,6 +81,7 @@ const defaultLintConfig: LintConfig = {
 			// include: 1,
 		},
 	],
+	'unclosed-quote': 1,
 	unescaped: 2,
 	'url-encoding': [
 		1,

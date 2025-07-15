@@ -3,6 +3,7 @@ import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
 import {gapped} from '../mixin/gapped';
+import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
