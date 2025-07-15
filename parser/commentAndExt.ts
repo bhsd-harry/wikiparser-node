@@ -28,8 +28,8 @@ const onlyincludeLeft = '<onlyinclude>',
 			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				ext.join('|')
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
+				ext.join('|') // eslint-disable-next-line unicorn/prefer-string-raw
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
 			'giu',
