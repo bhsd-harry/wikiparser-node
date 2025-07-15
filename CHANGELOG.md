@@ -1,6 +1,11 @@
-## v1.21.4
+## v1.22.0
 
 *2025-07-15*
+
+**Added**
+
+- [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
+- [`LanguageService.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#settargetwikipedia) method now supports other WMF-hosted sites
 
 **Changed**
 

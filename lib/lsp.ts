@@ -1845,18 +1845,14 @@ export class LanguageService implements LanguageServiceBase {
 	 * @since v1.18.1
 	 */
 	async setTargetWikipedia(wiki: string): Promise<void> {
-		const mt = /^https?:\/\/([^./]+)\.wikipedia\.org/iu.exec(wiki);
-		if (!mt) {
-			throw new RangeError('Invalid Wikipedia URL!');
-		}
-		const site = `${mt[1]!.toLowerCase()}wiki`;
+		const [site, host] = Parser.getWMFSite(wiki);
 		try {
 			const config: ConfigData = require(path.join('..', '..', 'config', site));
 			this.config = Parser.getConfig(config);
 		} catch {
-			this.config = await Parser.fetchConfig(site, `${mt[0]}/w`);
+			this.config = await Parser.fetchConfig(site, `${host}/w`);
 		}
-		Object.assign(this.config, {articlePath: `${mt[0]}/wiki/`});
+		Object.assign(this.config, {articlePath: `${host}/wiki/`});
 	}
 }
 
