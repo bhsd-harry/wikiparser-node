@@ -274,9 +274,12 @@ export abstract class AttributesToken extends Token {
 			{parentNode, childNodes} = this,
 			attrs = new Map<string, AttributeToken[]>(),
 			duplicated = new Set<string>(),
-			rect = new BoundingRect(this, start);
-		if (this.#lint()) {
-			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag'),
+			rect = new BoundingRect(this, start),
+			rules = ['no-ignored', 'no-duplicate'] as const,
+			s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
+				.map(k => Parser.lintConfig.getSeverity(rules[0], k));
+		if (s[0] && this.#lint()) {
+			const e = generateForSelf(this, rect, rules[0], 'attributes of a closing tag', s[0]),
 				index = parentNode!.getAbsoluteIndex();
 			e.suggestions = [
 				{desc: 'remove', range: [start, e.endIndex], text: ''},
@@ -294,21 +297,17 @@ export abstract class AttributesToken extends Token {
 					attrs.set(name, [attr]);
 				}
 			} else {
-				const str = attr.text().trim();
-				if (str) {
-					const e = generateForChild(
-						attr,
-						rect,
-						'no-ignored',
-						'containing invalid attribute',
-						wordRegex.test(str) ? 'error' : 'warning',
-					);
+				const str = attr.text().trim(),
+					severity = s[wordRegex.test(str) ? 1 : 2];
+				if (str && severity) {
+					const e = generateForChild(attr, rect, rules[0], 'containing invalid attribute', severity);
 					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ' '}];
 					errors.push(e);
 				}
 			}
 		}
-		if (duplicated.size > 0) {
+		const severity = Parser.lintConfig.getSeverity(rules[1], 'attribute');
+		if (severity && duplicated.size > 0) {
 			for (const key of duplicated) {
 				const pairs = attrs.get(key)!.map(attr => {
 					const value = attr.getValue();
@@ -318,8 +317,9 @@ export abstract class AttributesToken extends Token {
 					const e = generateForChild(
 							attr,
 							rect,
-							'no-duplicate',
+							rules[1],
 							Parser.msg('duplicated $1 attribute', key),
+							severity,
 						),
 						remove: LintError.Fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
 					if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
