@@ -8,7 +8,7 @@
 	"bold in section header": "段落标题中的粗体",
 	"conflicting image $1 parameter": "冲突的图片$1参数",
 	"containing invalid attribute": "包含无效属性",
-	"content to be moved out from the table": "将被移出表格的内容",
+	"content to be moved outside the table": "将被移出表格的内容",
 	"duplicated $1 attribute": "重复的$1属性",
 	"duplicated category": "重复的分类",
 	"duplicated id": "重复的id",

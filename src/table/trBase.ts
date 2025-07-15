@@ -52,7 +52,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 			inter,
 			{start},
 			'fostered-content',
-			'content to be moved out from the table',
+			'content to be moved outside the table',
 			severity,
 		);
 		error.startIndex++;
