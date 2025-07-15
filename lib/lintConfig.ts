@@ -92,9 +92,10 @@ const defaultLintConfig: LintConfig = {
 	'void-ext': [
 		2,
 		{
+			// img: 2,
 			// languages: 2,
-			// templatestyles: 2,
 			// section: 2,
+			// templatestyles: 2,
 		},
 	],
 };
