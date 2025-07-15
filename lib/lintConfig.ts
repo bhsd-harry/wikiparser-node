@@ -88,6 +88,7 @@ const defaultLintConfig: LintConfig = {
 	'parsing-order': [
 		2,
 		{
+			// ext: 2,
 			// heading: 2,
 			templateInTable: 1,
 		},
