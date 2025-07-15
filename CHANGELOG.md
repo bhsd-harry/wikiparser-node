@@ -5,6 +5,7 @@
 **Changed**
 
 - The preset configurations are updated
+- For [Moegirlpedia](https://zh.moegirl.org.cn/), `<img>` tags are now parsed as extension tags ([Extension: MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)) instead of HTML tags
 
 ## v1.21.3
 

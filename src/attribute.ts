@@ -178,6 +178,7 @@ export abstract class AttributeToken extends Token {
 		} else if (
 			tag === 'gallery' && key === 'caption'
 			|| tag === 'choose' && (key === 'before' || key === 'after')
+			|| tag === 'img' && key === 'src'
 		) {
 			const newConfig: Config = {
 				...config,

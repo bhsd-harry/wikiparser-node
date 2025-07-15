@@ -43,7 +43,8 @@
 		"syntaxhighlight",
 		"templatedata",
 		"timeline",
-		"page-collection"
+		"page-collection",
+		"img"
 	],
 	"html": [
 		[
@@ -111,8 +112,7 @@
 			"wbr",
 			"hr",
 			"meta",
-			"link",
-			"img"
+			"link"
 		]
 	],
 	"namespaces": {
