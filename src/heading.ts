@@ -97,9 +97,6 @@ export abstract class HeadingToken extends Token {
 			innerStr = firstChild.toString(),
 			unbalancedStart = innerStr.startsWith('='),
 			unbalanced = unbalancedStart || innerStr.endsWith('='),
-			quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
-			boldQuotes = quotes.filter(({bold}) => bold),
-			italicQuotes = quotes.filter(({italic}) => italic),
 			rect = new BoundingRect(this, start),
 			s = this.inHtmlAttrs(),
 			rules = ['h1', 'unbalanced-header', 'format-leakage'] as const,
@@ -141,7 +138,10 @@ export abstract class HeadingToken extends Token {
 			}
 		}
 		if (severities[2]) {
-			const rootStr = this.getRootNode().toString();
+			const rootStr = this.getRootNode().toString(),
+				quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
+				boldQuotes = quotes.filter(({bold}) => bold),
+				italicQuotes = quotes.filter(({italic}) => italic);
 			if (boldQuotes.length % 2) {
 				const e = generateForChild(
 						boldQuotes[boldQuotes.length - 1]!,
