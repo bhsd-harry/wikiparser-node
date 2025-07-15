@@ -47,6 +47,7 @@ const defaultLintConfig: LintConfig = {
 			// file: 2,
 		},
 	],
+	'no-arg': 1,
 	'no-duplicate': [
 		2,
 		{
@@ -57,7 +58,11 @@ const defaultLintConfig: LintConfig = {
 	'no-ignored': [
 		2,
 		{
+			// arg: 2,
 			// conversionFlag: 2,
+			galleryComment: 1,
+			// galleryImage: 2,
+			galleryNoImage: 1,
 			include: 1,
 			redirect: 1,
 
