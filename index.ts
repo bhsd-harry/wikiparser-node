@@ -34,6 +34,7 @@ import fetchConfig from './bin/config';
 /* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
+	default: Parser;
 	/** @since v1.5.1 */
 	rules: readonly LintError.Rule[];
 	/** @private */
@@ -122,7 +123,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 let lintConfig = getLintConfig();
 
-const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
+const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 	i18n: undefined,
 	rules,
@@ -340,9 +341,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	async fetchConfig(site, url) {
 		return this.getConfig(await fetchConfig(site, url, false, true));
 	},
-
-	/* NOT FOR BROWSER ONLY */
-};
+} as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
 		default: {value: Parser},
