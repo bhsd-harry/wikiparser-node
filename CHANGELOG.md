@@ -4,8 +4,9 @@
 
 **Added**
 
-- [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
-- [`LanguageService.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#settargetwikipedia) method now supports other WMF-hosted sites
+- Now the rule configuration for `Token.prototype.lint` can be set via [`Parser.lintConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lintconfig)
+- [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
+- [`LanguageService.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now supports other WMF-hosted sites
 
 **Changed**
 
@@ -21,14 +22,14 @@
 
 - HTML conversion of `<poem>` containing `<nowiki>` or leading `:`
 - HTML conversion of `<h1>` to `<h6>` without and `id` attribute
-- [HeadingToken](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) as the first token of a `<poem>` tag does not need to be on a new line
-- Sanitization of [AttributeToken](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken)
-- Use the legacy `rgba()` function instead of `#rrggbbaa` in [`LanguageService.provideColorPresentations`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecolorpresentations) for colors with an alpha channel
+- [HeadingToken](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29) as the first token of a `<poem>` tag does not need to be on a new line
+- Sanitization of [AttributeToken](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29)
+- Use the legacy `rgba()` function instead of `#rrggbbaa` in [`LanguageService.provideColorPresentations`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecolorpresentations) for colors with an alpha channel
 - `NowikiToken.prototype.cloneNode` should copy the `name` attribute if it exists
 
 **Changed**
 
-- The object parameter of [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#createlanguageservice) is now optional
+- The object parameter of [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#createlanguageservice) is now optional
 
 ## v1.21.2
 
@@ -36,7 +37,7 @@
 
 **Added**
 
-- [`TranscludeToken.function`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#function)
+- [`TranscludeToken.function`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#function)
 - Some time-related variables are now expanded, e.g., `{{CURRENTMONTH}}` and `{{LOCALMONTH}}`
 - `Parser.now` property that specifies the current time for parsing
 
@@ -48,7 +49,7 @@
 **Changed**
 
 - `TranscludeToken.prototype.print` now highlights the modifiers (e.g., `subst:`) as magic words
-- [`AttributeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tohtml) now drops empty `id` attributes
+- [`AttributeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#tohtml) now drops empty `id` attributes
 - Lowered severity of unnecessary URL encoding in internal links
 
 ## v1.21.1
@@ -57,8 +58,8 @@
 
 **Added**
 
-- [`AstElement.prototype.print`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) now adds a red wavy underline to invalid wikitext
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports percent-encoded file names (e.g., `%3F` for `?`)
+- [`AstElement.prototype.print`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#print) now adds a red wavy underline to invalid wikitext
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports percent-encoded file names (e.g., `%3F` for `?`)
 
 **Fixed**
 
@@ -71,7 +72,7 @@
 **Added**
 
 - `Token.prototype.lint` called on the root node now returns an optional `output` property, which is a string after all auto-fixes are applied
-- [`TranscludeToken.module`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#module)
+- [`TranscludeToken.module`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#module)
 
 ## v1.20.3
 
@@ -84,7 +85,7 @@
 **Changed**
 
 - Lowered severity of useless fragments
-- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) now ignores the `group` attribute of a `<ref>` or `<references>` tag
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) now ignores the `group` attribute of a `<ref>` or `<references>` tag
 - Lowered severity of lonely language conversion brackets
 - Lowered severity of an unexpected template argument
 
@@ -102,16 +103,16 @@
 
 **Fixed**
 
-- [`AttributesToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#name) should be `td`, `th` or `caption` for table cells
-- [`AttributeToken.tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tag) should be `td`, `th` or `caption` for table cells
+- [`AttributesToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#name) should be `td`, `th` or `caption` for table cells
+- [`AttributeToken.tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#tag) should be `td`, `th` or `caption` for table cells
 
 **Changed**
 
 - Lowered severity of a lonely apostrophe followed by a closing bold/italic mark
 - Lowered severity of a lonely bracket surrounding an internal or external link
-- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) now ignores the `name` attribute of a `<ref>` tag
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) now ignores the `name` attribute of a `<ref>` tag
 - Lowered severity of lonely `RFC`, `PMID` or `ISBN`
-- Lowered severity from [`RedirectTargetToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#lint)
+- Lowered severity from [`RedirectTargetToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29#lint)
 - Lowered severity of multiline comments inside `<gallery>`
 - Lowered severity of disallowed HTML tags
 
@@ -121,8 +122,8 @@
 
 **Added**
 
-- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now supports extension tags `<math>` and `<chem>`
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports unknown macros in extension tags `<math>` and `<chem>`
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now supports extension tags `<math>` and `<chem>`
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now reports unknown macros in extension tags `<math>` and `<chem>`
 - Accepted attribute names for extension tags `<math>`, `<chem>`, `<phonos>`, `<section>`, `<syntaxhighlight>`, `<timeline>` and `<quiz>`
 - Parse the extension tag `<hiero>`
 - Parse [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate)
@@ -142,11 +143,11 @@
 
 **Added**
 
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now supports extension tags `<math>` and `<chem>` if [MathJax](https://www.mathjax.org/) is available
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now supports extension tags `<math>` and `<chem>` if [MathJax](https://www.mathjax.org/) is available
 
 **Fixed**
 
-- [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) containing comments that do not break the parameter syntax
+- [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29) containing comments that do not break the parameter syntax
 
 ## v1.18.4
 
@@ -154,20 +155,20 @@
 
 **Added**
 
-- [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#fetchconfig) method that executes the [`getParserConfig`](./README#cli-usage) executable
-- [`TranscludeToken.prototype.getPossibleValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#getpossiblevalues) method now supports the `#switch` parser function
+- [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#fetchconfig) method that executes the [`getParserConfig`](./README#cli-usage) executable
+- [`TranscludeToken.prototype.getPossibleValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getpossiblevalues) method now supports the `#switch` parser function
 
 **Fixed**
 
 - More cases where potential memory leak may occur
 - Expansion of `#switch`
-- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now handles arguments and a set of magic words recursively
+- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#lint) now handles arguments and a set of magic words recursively
 - Stack overflow in `TableToken.prototype.getLayout`
-- Issue with [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) when the text contains certain unicode characters
+- Issue with [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) when the text contains certain unicode characters
 
 **Changed**
 
-- Lowered severity of fostered content of `{{#invoke:}}` in [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint)
+- Lowered severity of fostered content of `{{#invoke:}}` in [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#lint)
 
 ## v1.18.3
 
@@ -180,13 +181,13 @@
 **Fixed**
 
 - Stack overflow when there are too many tokens in a page
-- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) should not report appropriate HTML tags (`<tr>`, `<td>`, `<th>` and `<caption>`) as `fostered-content`
+- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#lint) should not report appropriate HTML tags (`<tr>`, `<td>`, `<th>` and `<caption>`) as `fostered-content`
 
 **Changed**
 
-- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#duplicated) property only if it is `true`
-- [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#colspan) properties only if they are greater than `1`
-- [`FileToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#lint) now reports warnings instead of errors for duplicated `caption` parameters of an unknown file type
+- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#duplicated) property only if it is `true`
+- [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#colspan) properties only if they are greater than `1`
+- [`FileToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#lint) now reports warnings instead of errors for duplicated `caption` parameters of an unknown file type
 
 ## v1.18.2
 
@@ -194,8 +195,8 @@
 
 **Added**
 
-- [`Config.functionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
-- [`LanguageService.prototype.provideLinks`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providelinks) now supports the `filepath` parser function
+- [`Config.functionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) property
+- [`LanguageService.prototype.provideLinks`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providelinks) now supports the `filepath` parser function
 - New preset configuration [`jawiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/jawiki.json) for Japanese Wikipedia
 - The executable [`getParserConfig`](./README#cli-usage) now supports more MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed
 
@@ -206,7 +207,7 @@
 
 **Changed**
 
-- [`LanguageService.prototype.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#resolverenamelocation) no longer supports magic words
+- [`LanguageService.prototype.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolverenamelocation) no longer supports magic words
 
 ## v1.18.1
 
@@ -214,10 +215,10 @@
 
 **Added**
 
-- [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#settargetwikipedia) that updates the parser configuration for a specific Wikipedia language edition
-- [`LanguageService.prototype.provideDocumentColors`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providedocumentcolors) now supports color names in `style` attributes
-- [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) now supports HTML tags and attributes
-- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) now reports invalid attribute values of HTML tags
+- [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) that updates the parser configuration for a specific Wikipedia language edition
+- [`LanguageService.prototype.provideDocumentColors`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedocumentcolors) now supports color names in `style` attributes
+- [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) now supports HTML tags and attributes
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) now reports invalid attribute values of HTML tags
 
 ## v1.18.0
 
@@ -225,13 +226,13 @@
 
 **Added**
 
-- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now provide documentations for suggested magic words
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now support the `score` extension tag written in [LilyPond](https://lilypond.org)
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now provide documentations for suggested magic words
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now support the `score` extension tag written in [LilyPond](https://lilypond.org)
 - New executable [`getParserConfig`](./README#cli-usage)
 
 **Fixed**
 
-- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) if [Stylelint](https://npmjs.com/package/stylelint) is unavailable
+- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) if [Stylelint](https://npmjs.com/package/stylelint) is unavailable
 - Manual upright parameters (e.g., `upright=$1`) of images are not treated as upright parameters
 - The magic words `#section`, `#section-x` and `#section-h` are recognized as aliases of `#lst`, `#lstx` and `#lsth`, respectively
 
@@ -245,24 +246,24 @@
 
 **Added**
 
-- [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#buildlists) that builds all `list-range` tokens
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics), [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now work for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`) and inline CSS
-- [`LanguageService.prototype.provideFoldingRanges`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providefoldingranges) now works for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`)
+- [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) that builds all `list-range` tokens
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics), [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now work for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`) and inline CSS
+- [`LanguageService.prototype.provideFoldingRanges`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providefoldingranges) now works for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`)
 - `Token.prototype.lint` now reports errors and warnings for inline CSS
-- [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#css) method that gets or sets the value of a CSS property
-- [`AttributeToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#json) now includes the [`tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#tag) property
-- [`LanguageService.include`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#include) property that configures the transclusion option for parsing
+- [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#css) method that gets or sets the value of a CSS property
+- [`AttributeToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#json) now includes the [`tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#tag) property
+- [`LanguageService.include`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#include) property that configures the transclusion option for parsing
 
 **Fixed**
 
-- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml)
-- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) for attribute keys of extension tags, HTML tags and tables
-- Various issues with [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#clonenode)
-- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) now ignores an empty fragment
+- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#findenclosinghtml)
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) for attribute keys of extension tags, HTML tags and tables
+- Various issues with [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#clonenode)
+- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#geturl) now ignores an empty fragment
 
 **Changed**
 
-- [`HtmlToken.prototype.findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken#findmatchingtag) now returns `undefined` if there is no matching tag instead of throwing a syntax error
+- [`HtmlToken.prototype.findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#findmatchingtag) now returns `undefined` if there is no matching tag instead of throwing a syntax error
 
 ## v1.16.6
 
@@ -274,7 +275,7 @@
 
 **Changed**
 
-- A [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) instance can provide both signature help and other services
+- A [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) instance can provide both signature help and other services
 
 ## v1.16.5
 
@@ -283,21 +284,21 @@
 **Added**
 
 - English translation for JSDoc annotations
-- [`LinkBaseToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#json) now includes the [`fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#fragment) property
-- [`CategoryToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken#json) now includes the [`sortKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken#sortkey) property
-- [`FileToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#json) now includes the [`extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension) property
+- [`LinkBaseToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#json) now includes the [`fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#fragment) property
+- [`CategoryToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken-%28EN%29#json) now includes the [`sortKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken-%28EN%29#sortkey) property
+- [`FileToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#json) now includes the [`extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#extension) property
 - `ListToken.indent` property
-- [`ListToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#json) now includes the [`indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#indent) property
-- [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#colspan) properties
-- [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#json) now includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
-- [`ConverterRuleToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken#json) now includes the [`variant`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken#variant) property
-- `GalleryToken.prototype.json` now includes the [`widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#widths) and [`heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#heights) properties
-- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#duplicated) property
+- [`ListToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken-%28EN%29#json) now includes the [`indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken-%28EN%29#indent) property
+- [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#colspan) properties
+- [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29#json) now includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29#default) property
+- [`ConverterRuleToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken-%28EN%29#json) now includes the [`variant`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken-%28EN%29#variant) property
+- `GalleryToken.prototype.json` now includes the [`widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#widths) and [`heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#heights) properties
+- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#duplicated) property
 
 **Fixed**
 
-- [`LanguageService.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) for variables without a parameter
-- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) when there are mixed apostrophes and `<b>`/`<i>` tags
+- [`LanguageService.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) for variables without a parameter
+- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) when there are mixed apostrophes and `<b>`/`<i>` tags
 
 ## v1.16.4
 
@@ -305,23 +306,23 @@
 
 **Added**
 
-- [`TranscludeToken.prototype.getModule`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#getmodule) that returns the module name and the function name of a `#invoke` parser function
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now suggests parameter keys for the `#invoke` parser function
+- [`TranscludeToken.prototype.getModule`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getmodule) that returns the module name and the function name of a `#invoke` parser function
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests parameter keys for the `#invoke` parser function
 
 **Fixed**
 
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should suggest with a leading `:` for the transclusion of a main namespace article
-- [`AstElement.links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#links) should not return internal links inside the link parameter of an image twice
-- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font) for nodes following an external link
-- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font) when there are unmatched `<b>` or `<i>` tags
-- [`LanguageService.provideRenameEdits`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providerenameedits) should not rename the `name` attribute of a `<ref>` tag with a different `group` attribute
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) should suggest with a leading `:` for the transclusion of a main namespace article
+- [`AstElement.links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#links) should not return internal links inside the link parameter of an image twice
+- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font) for nodes following an external link
+- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font) when there are unmatched `<b>` or `<i>` tags
+- [`LanguageService.provideRenameEdits`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providerenameedits) should not rename the `name` attribute of a `<ref>` tag with a different `group` attribute
 
 **Changed**
 
-- [`LanguageService.provideDefinition`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providedefinition) now returns the [`Location`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#location) of the `<ref>` inner content for any [`Position`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position) within a `<ref>` tag that has a `name` attribute
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) inserts a `>` character after completing a closing tag when necessary
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) inserts a `=` character after completing a template parameter key when necessary
+- [`LanguageService.provideDefinition`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedefinition) now returns the [`Location`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#location) of the `<ref>` inner content for any [`Position`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position) within a `<ref>` tag that has a `name` attribute
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) inserts a `>` character after completing a closing tag when necessary
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) inserts a `=` character after completing a template parameter key when necessary
 
 ## v1.16.3
 
@@ -329,20 +330,20 @@
 
 **Added**
 
-- [`LanguageService.provideInlayHints`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#provideinlayhints) that computes inlay hints for template anonymous parameters
-- [`AstNode.prototype.getLines`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#getlines) that returns an array of the source text, the start and end positions of each line
+- [`LanguageService.provideInlayHints`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#provideinlayhints) that computes inlay hints for template anonymous parameters
+- [`AstNode.prototype.getLines`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#getlines) that returns an array of the source text, the start and end positions of each line
 - Signatures of more parser functions from extensions
 
 **Fixed**
 
-- [`LanguageService.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports warnings
-- [`LanguageService.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#resolverenamelocation) should ignore file and category links
-- The outputs of [`wikiparse.Linter.prototype.codemirror`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter#codemirror) and [`wikiparse.Linter.prototype.monaco`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter#monaco) now strictly follow the [CodeMirror](https://codemirror.net/docs/ref/#lint.Diagnostic) and [Monaco Editor](https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor.IMarkerData.html) specifications, respectively
+- [`LanguageService.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now reports warnings
+- [`LanguageService.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolverenamelocation) should ignore file and category links
+- The outputs of [`wikiparse.Linter.prototype.codemirror`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter-%28EN%29#codemirror) and [`wikiparse.Linter.prototype.monaco`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter-%28EN%29#monaco) now strictly follow the [CodeMirror](https://codemirror.net/docs/ref/#lint.Diagnostic) and [Monaco Editor](https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor.IMarkerData.html) specifications, respectively
 
 **Changed**
 
-- The return values of [`AstElement.prototype.caretPositionfromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#caretpositionfromindex) and its related methods are now different if the index is at the boundary between two tokens
-- [`AstElement.prototype.elementFromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#elementfromindex) and its related methods now return [`Token`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token) instead of [`AstNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode)
+- The return values of [`AstElement.prototype.caretPositionfromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#caretpositionfromindex) and its related methods are now different if the index is at the boundary between two tokens
+- [`AstElement.prototype.elementFromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#elementfromindex) and its related methods now return [`Token`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29) instead of [`AstNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29)
 
 ## v1.16.1
 
@@ -350,8 +351,8 @@
 
 **Added**
 
-- [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#createlanguageservice) method will create a [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) instance that provides various functions
-- [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) does not have to include `'$1'` now
+- [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#createlanguageservice) method will create a [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) instance that provides various functions
+- [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) does not have to include `'$1'` now
 
 **Fixed**
 
@@ -413,7 +414,7 @@
 **Added**
 
 - New category of linting errors: lonely `RFC`/`PMID`/`ISBN`
-- [`LintError.Fix`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterrorfix) now has a new string property `desc`
+- [`LintError.Fix`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#linterrorfix) now has a new string property `desc`
 
 **Changed**
 
@@ -441,7 +442,7 @@
 
 **Fixed**
 
-- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#name) for some new parser functions, e.g., `#dir`
+- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#name) for some new parser functions, e.g., `#dir`
 
 ## v1.13.3
 
@@ -449,7 +450,7 @@
 
 **Fixed**
 
-- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) now correctly reports invalid attribute names of `<pre>` tags
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) now correctly reports invalid attribute names of `<pre>` tags
 
 ## v1.13.2
 
@@ -472,7 +473,7 @@
 
 **Changed**
 
-- [`IncludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken#lint) now also reports useless attributes
+- [`IncludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken-%28EN%29#lint) now also reports useless attributes
 
 ## v1.13.0
 
@@ -480,18 +481,18 @@
 
 **Added**
 
-- New pseudo selectors [`:valid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#valid) and [`:scope`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#scope)
-- Pseudo selector [`:has()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#has) now supports relative selectors
-- [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#parse) now accepts an array of token types as the third argument to specify the maximum stage of parsing
+- New pseudo selectors [`:valid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#valid) and [`:scope`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#scope)
+- Pseudo selector [`:has()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#has) now supports relative selectors
+- [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) now accepts an array of token types as the third argument to specify the maximum stage of parsing
 
 **Fixed**
 
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports file names containing `꞉` as a substitute for `:` in a Windows file system
-- Order of HTML/URL decoding in [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports file names containing `꞉` as a substitute for `:` in a Windows file system
+- Order of HTML/URL decoding in [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29) parsing
 
 **Changed**
 
-- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#lint) now reports warnings instead of errors for useless non-word characters
+- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#lint) now reports warnings instead of errors for useless non-word characters
 
 ## v1.12.7
 
@@ -499,7 +500,7 @@
 
 **Fixed**
 
-- [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint) should not report `#` in an HTML entity as template page fragment
+- [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#lint) should not report `#` in an HTML entity as template page fragment
 
 ## v1.12.6
 
@@ -507,7 +508,7 @@
 
 **Fixed**
 
-- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) for unknown extension tags, since [v1.12.5](#v1125)
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) for unknown extension tags, since [v1.12.5](#v1125)
 
 ## v1.12.5
 
@@ -515,12 +516,12 @@
 
 **Added**
 
-- [`GalleryToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#tohtml)
-- [`GalleryToken.widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#widths) and [`GalleryToken.heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#heights)
+- [`GalleryToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#tohtml)
+- [`GalleryToken.widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#widths) and [`GalleryToken.heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#heights)
 
 **Fixed**
 
-- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#lint) now correctly reports invalid attribute names containing `{{!}}`
+- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#lint) now correctly reports invalid attribute names containing `{{!}}`
 
 ## v1.12.4
 
@@ -528,18 +529,18 @@
 
 **Added**
 
-- [`HeadingToken.id`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#id)
+- [`HeadingToken.id`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#id)
 - New category of linting errors: duplicated id
 
 **Fixed**
 
-- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) should skip language conversion for the `id` attribute
-- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) when there are more than 3 duplicated IDs
-- [Descendant combinator](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#后代选择器)
+- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#tohtml) should skip language conversion for the `id` attribute
+- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#tohtml) when there are more than 3 duplicated IDs
+- [Descendant combinator](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#后代选择器)
 
 **Changed**
 
-- [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#json) no longer includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
+- [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29#json) no longer includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29#default) property
 
 ## v1.12.3
 
@@ -547,7 +548,7 @@
 
 **Fixed**
 
-- Fix a rare case of [`LinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#tohtml) for the [Media namespace](https://www.mediawiki.org/wiki/Help:Namespaces#Media)
+- Fix a rare case of [`LinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken-%28EN%29#tohtml) for the [Media namespace](https://www.mediawiki.org/wiki/Help:Namespaces#Media)
 
 ## v1.12.2
 
@@ -555,34 +556,34 @@
 
 **Added**
 
-- [`Title.prototype.getRedirection`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#getredirection) method
-- [`TranscludeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#tohtml) for nonexistent transcluded pages and transclusion loops
+- [`Title.prototype.getRedirection`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getredirection) method
+- [`TranscludeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#tohtml) for nonexistent transcluded pages and transclusion loops
 
 **Fixed**
 
-- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) now correctly handles headings with duplicated IDs
-- Remove unnecessary implicit leading newline from [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand)
-- Remove unexpected leading space for fostered table content in [`TableToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#tohtml)
+- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#tohtml) now correctly handles headings with duplicated IDs
+- Remove unnecessary implicit leading newline from [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand)
+- Remove unexpected leading space for fostered table content in [`TableToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#tohtml)
 - A valid title should not contain characters that are escaped as HTML entities twice (e.g., `&amp;amp;`)
-- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) for `#switch` with a fall-through default case
-- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) for `#ifeq` when comparing two numbers or strings containing HTML entities
+- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#solveconst) for `#switch` with a fall-through default case
+- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#solveconst) for `#ifeq` when comparing two numbers or strings containing HTML entities
 - `Token.prototype.toHtml` for various token types that have a bold and/or italic style
-[`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) should replace underscores with spaces
-- [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) should replace spaces with underscores
+[`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29#innertext) should replace underscores with spaces
+- [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#fragment) should replace spaces with underscores
 - Some Wikitext syntaxes at SOL, including headings and lists, are now allowed following behavior switches except `__toc__`
-- `<p>` wrapping for [`TdToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#tohtml)
+- `<p>` wrapping for [`TdToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#tohtml)
 - Media namespace redirects
-- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) when `<blockquote>` interferes with indent-`<pre>`
-- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) should also report reserved data attributes
+- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) when `<blockquote>` interferes with indent-`<pre>`
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should also report reserved data attributes
 
 **Changed**
 
-- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports `lonely-http` for `http://` in `ext-link-text`
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now removes all comments and expands [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
-- [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) now includes trailing blank lines
-- By turning [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#redirects) and [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) into accessors, page titles and fragments are now automatically normalized
-- The second arguments of [`AstText.prototype.deleteData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#deletedata) and [`AstText.prototype.substringData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#substringdata) are now optional
-- The first item of the `doubleUnderscore` property of [`Config`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) is now `Record<string, string>`
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) no longer reports `lonely-http` for `http://` in `ext-link-text`
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now removes all comments and expands [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29)
+- [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29) now includes trailing blank lines
+- By turning [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#redirects) and [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#fragment) into accessors, page titles and fragments are now automatically normalized
+- The second arguments of [`AstText.prototype.deleteData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#deletedata) and [`AstText.prototype.substringData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#substringdata) are now optional
+- The first item of the `doubleUnderscore` property of [`Config`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) is now `Record<string, string>`
 
 ## v1.11.1
 
@@ -590,7 +591,7 @@
 
 **Fixed**
 
-- Lonely `px` should be considered as caption in [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken)
+- Lonely `px` should be considered as caption in [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29)
 
 ## v1.11.0
 
@@ -598,35 +599,35 @@
 
 **Added**
 
-- `<p>` wrapping for [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml)
+- `<p>` wrapping for [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml)
 - Conversion from Wikitext lists to HTML
-- [`ConverterToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterToken#tohtml) when there are variant flags
-- [`FileToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#tohtml), [`FileToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#getframe), [`FileToken.prototype.getHorizAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#gethorizalign) and [`FileToken.prototype.getVertAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#getvertalign)
-- [`ImageParameterToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#geturl)
+- [`ConverterToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterToken-%28EN%29#tohtml) when there are variant flags
+- [`FileToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#tohtml), [`FileToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#getframe), [`FileToken.prototype.getHorizAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#gethorizalign) and [`FileToken.prototype.getVertAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#getvertalign)
+- [`ImageParameterToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#geturl)
 
 **Fixed**
 
-- [`ConverterFlagsToken.prototype.getEffectiveFlags`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterFlagsToken#geteffectiveflags) when there are variant flags
-- [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) when there are nested internal links
-- [`ArgToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#clonenode), [`AttributeToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#clonenode), [`AttributesToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#clonenode), [`GalleryToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#clonenode) and [`MagicLinkToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#clonenode)
-- Implicit newline in [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand)
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) for template redirects
-- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) for self links
+- [`ConverterFlagsToken.prototype.getEffectiveFlags`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterFlagsToken-%28EN%29#geteffectiveflags) when there are variant flags
+- [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken-%28EN%29#tohtml) when there are nested internal links
+- [`ArgToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29#clonenode), [`AttributeToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#clonenode), [`AttributesToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#clonenode), [`GalleryToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#clonenode) and [`MagicLinkToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#clonenode)
+- Implicit newline in [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand)
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) for template redirects
+- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#geturl) for self links
 - Definition list parsing since [v1.10.0](#v1100)
-- [`LinkBaseToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#tohtml) when wrapped by apostrophes
-- [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) and [`MagicLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#tohtml) for invalid URLs
-- [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing with multiple consecutive spaces and/or underscores
+- [`LinkBaseToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#tohtml) when wrapped by apostrophes
+- [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken-%28EN%29#tohtml) and [`MagicLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#tohtml) for invalid URLs
+- [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29) parsing with multiple consecutive spaces and/or underscores
 - Self-closing `<ref>` tags inside a `<references>` tag
-- [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) should not be bold or italic
-- [`ImageParameterToken.size`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#size) when the parameter ends with `pxpx`
-- [`ImageParameterToken.link`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#link) when containing [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken)
+- [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29) should not be bold or italic
+- [`ImageParameterToken.size`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#size) when the parameter ends with `pxpx`
+- [`ImageParameterToken.link`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#link) when containing [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29)
 - Image parameter parsing for `link=` followed by an invalid external link
 - Framed images and manual thumbnails are always unscaled
 
 **Changed**
 
 - `ListBaseToken.prototype.toHtml` now returns an empty string
-- [`ListBaseToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListBaseToken#getrange) now modifies the AST and returns a plain token with the type `list-range`
+- [`ListBaseToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListBaseToken-%28EN%29#getrange) now modifies the AST and returns a plain token with the type `list-range`
 
 **Removed**
 
@@ -638,33 +639,33 @@
 
 **Added**
 
-- [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#is) method
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) method
-- [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templatedir) and [`Parser.templates`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templates) properties
-- [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
-- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) method
-- [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#innertext) properties
+- [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#is) method
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) method
+- [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#templatedir) and [`Parser.templates`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#templates) properties
+- [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) property
+- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#geturl) method
+- [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#innertext) properties
 - `AstNode.prototype.toHtml` method, which is an incomplete implementation of Wikitext-to-HTML conversion
 
 **Fixed**
 
-- [`SyntaxToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/SyntaxToken#lint) now also reports errors from its [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#children)
+- [`SyntaxToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/SyntaxToken-%28EN%29#lint) now also reports errors from its [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#children)
 - Parse the `caption` attribute of a `<gallery>` extension tag
-- Fix [`LinkToken.prototype.pipeTrick`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#pipetrick)
-- Absolute path on Windows in [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config) and [`Parser.i18n`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#i18n)
-- [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#clonenode) when applied to a `root` token
-- Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#any-link) for [`RedirectTargetToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken)
-- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#lint) now reports duplicated `class` attributes
+- Fix [`LinkToken.prototype.pipeTrick`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken-%28EN%29#pipetrick)
+- Absolute path on Windows in [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config) and [`Parser.i18n`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#i18n)
+- [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#clonenode) when applied to a `root` token
+- Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#any-link) for [`RedirectTargetToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29)
+- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#lint) now reports duplicated `class` attributes
 
 **Changed**
 
-- [`LinkBaseToken.prototype.setTarget`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#settarget) now only adds leading `:` when necessary
-- [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint) now only reports the first occurrence of full-width punctuations in `free-ext-link` as an error
-- [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint) now ignores the fragment of an invalid module name
-- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) now returns a copy of the original token
-- [`MagicLinkToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#geturl) now returns a string for ISBN links
-- Each [`ListToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken) now contains at most one `;`
-- [`AttributeToken.prototype.getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#getvalue) now always trims leading and trailing whitespace
+- [`LinkBaseToken.prototype.setTarget`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#settarget) now only adds leading `:` when necessary
+- [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#lint) now only reports the first occurrence of full-width punctuations in `free-ext-link` as an error
+- [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#lint) now ignores the fragment of an invalid module name
+- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#solveconst) now returns a copy of the original token
+- [`MagicLinkToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#geturl) now returns a string for ISBN links
+- Each [`ListToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken-%28EN%29) now contains at most one `;`
+- [`AttributeToken.prototype.getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#getvalue) now always trims leading and trailing whitespace
 
 **Removed**
 
@@ -677,15 +678,15 @@
 
 **Added**
 
-- [`AstElement.length`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#length) and [`AstText.length`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#length) are now writable
+- [`AstElement.length`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#length) and [`AstText.length`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#length) are now writable
 
 **Fixed**
 
-- Fix event handling for [`DoubleUnderscoreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DoubleUnderscoreToken)
+- Fix event handling for [`DoubleUnderscoreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DoubleUnderscoreToken-%28EN%29)
 
 **Changed**
 
-- No longer report full-width punctuations in `ext-link-url` as an error in [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
+- No longer report full-width punctuations in `ext-link-url` as an error in [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#lint)
 
 ## v1.9.2
 
@@ -694,7 +695,7 @@
 **Fixed**
 
 - Fix event handling since [v1.9.0](#v190)
-- Fix issues related to [`Parser.viewOnly`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#viewonly)
+- Fix issues related to [`Parser.viewOnly`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#viewonly)
 
 ## v1.9.1
 
@@ -702,19 +703,19 @@
 
 **Fixed**
 
-- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#italic) for external links which have a lower precedence than apostrophes
-- Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#any-link) for [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken)
-- Pseudo selector [`:lang()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#lang)
-- Pseudo selector [`:regex()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#正则选择器) for [`AttributesToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken)
+- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#italic) for external links which have a lower precedence than apostrophes
+- Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#any-link) for [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29)
+- Pseudo selector [`:lang()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#lang)
+- Pseudo selector [`:regex()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#正则选择器) for [`AttributesToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29)
 
 **Changed**
 
 - `Token.prototype.normalizeTitle` is now a private method
-- [`Parser.getConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#getconfig) is now available for public use
+- [`Parser.getConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getconfig) is now available for public use
 
 **Removed**
 
-- [Pseudo selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) `:nth-child`, `:nth-last-child`, `:nth-of-type` and `:nth-last-of-type` no longer support comma-delimited arguments
+- [Pseudo selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#伪选择器) `:nth-child`, `:nth-last-child`, `:nth-of-type` and `:nth-last-of-type` no longer support comma-delimited arguments
 
 ## v1.9.0
 
@@ -722,8 +723,8 @@
 
 **Added**
 
-- Magic links (RFC, PMID and ISBN) are now parsed as [`MagicLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken)
-- New property [`Parser.viewOnly`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#viewonly), which helps to speed up [`AstElement.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#lint)
+- Magic links (RFC, PMID and ISBN) are now parsed as [`MagicLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29)
+- New property [`Parser.viewOnly`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#viewonly), which helps to speed up [`AstElement.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#lint)
 
 **Changed**
 
@@ -735,17 +736,17 @@
 
 **Added**
 
-- New getters [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#italic)
+- New getters [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#italic)
 
 **Fixed**
 
-- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now correctly handles self-closing tags
+- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#findenclosinghtml) now correctly handles self-closing tags
 - `\r` is now automatically removed from EOL for CRLF (`\r\n`) line breaks
 
 **Changed**
 
-- [`Token.prototype.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#sections) now returns an array of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) objects
-- [`AstNode.nextVisibleSibling`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#nextvisiblesibling), [`AstNode.previousVisibleSibling`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#previousvisiblesibling), [`AstNode.prototype.destroy`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#destroy) and [`AstNode.prototype.getLine`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#getline) were previously only available for [`AstElement`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement), but now they are also available for [`AstText`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText)
+- [`Token.prototype.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#sections) now returns an array of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29) objects
+- [`AstNode.nextVisibleSibling`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#nextvisiblesibling), [`AstNode.previousVisibleSibling`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#previousvisiblesibling), [`AstNode.prototype.destroy`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#destroy) and [`AstNode.prototype.getLine`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#getline) were previously only available for [`AstElement`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29), but now they are also available for [`AstText`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29)
 
 ## v1.7.1
 
@@ -758,12 +759,12 @@
 **Fixed**
 
 - Allow an external image as `ext-link-text`
-- Ignore duplicated parameters containing extension tags in [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint)
+- Ignore duplicated parameters containing extension tags in [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#lint)
 - Self-closing tags `<noinclude/>` and `<includeonly/>` are now valid
 
 **Changed**
 
-- For redirects with a fragment, the fragment is now ignored by [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title)
+- For redirects with a fragment, the fragment is now ignored by [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#title)
 
 ## v1.6.2
 
@@ -775,9 +776,9 @@
 
 **Fixed**
 
-- Mimic the structure of CSS [combinators](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#组合器)
-- Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) tag attributes
-- Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
+- Mimic the structure of CSS [combinators](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#组合器)
+- Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#print) tag attributes
+- Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29) patterns
 - Image size parameter with a suffix of `pxpx` is now also valid
 - Fix conflicts between image parameters and external links
 - Fix free external links led by a Unicode character
@@ -798,11 +799,11 @@
 
 - Allow the image parameter `page` in PDF file links
 - Disallow empty strings as the `manual-upright` image parameter
-- Use `parseInt()` for the `rowspan` and `colspan` properties of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken)
+- Use `parseInt()` for the `rowspan` and `colspan` properties of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29)
 
 **Changed**
 
-- The start position of a linting error associated with a [`TrToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TrToken) is now one character ahead
+- The start position of a linting error associated with a [`TrToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TrToken-%28EN%29) is now one character ahead
 
 ## v1.5.7
 
@@ -810,11 +811,11 @@
 
 **Fixed**
 
-- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now ignores inconsistent table layout due to a large `colspan` value in the last column
+- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#lint) now ignores inconsistent table layout due to a large `colspan` value in the last column
 
 **Changed**
 
-- Lowered severity of ignored lines due to no image in [`GalleryToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#lint)
+- Lowered severity of ignored lines due to no image in [`GalleryToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#lint)
 
 ## v1.5.6
 
@@ -822,12 +823,12 @@
 
 **Fixed**
 
-- Parsing a [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken) after another `TdToken` with a multiline [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) in it
-- [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken) when the link text starts with a token with higher precedence
+- Parsing a [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29) after another `TdToken` with a multiline [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29) in it
+- [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken-%28EN%29) when the link text starts with a token with higher precedence
 
 **Changed**
 
-- [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) no longer decodes the deprecated MediaWiki-style fragment encoding
+- [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#fragment) no longer decodes the deprecated MediaWiki-style fragment encoding
 
 ## v1.5.5
 
@@ -835,16 +836,16 @@
 
 **Fixed**
 
-- [`ListToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#getrange) for `<dt>` items
+- [`ListToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken-%28EN%29#getrange) for `<dt>` items
 
 **Changed**
 
-- [Attribute selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#属性) now regard falsy values as non-existent attributes
-- [`HeadingToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#innertext) and [`TdToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#innertext) now trim leading and trailing whitespace, while [`LinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#innertext) trims leading whitespace only
+- [Attribute selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#属性) now regard falsy values as non-existent attributes
+- [`HeadingToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#innertext) and [`TdToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#innertext) now trim leading and trailing whitespace, while [`LinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken-%28EN%29#innertext) trims leading whitespace only
 
 **Removed**
 
-- [`ImagemapToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImagemapToken) no longer overrides the [`links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#links) getter
+- [`ImagemapToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImagemapToken-%28EN%29) no longer overrides the [`links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#links) getter
 
 ## v1.5.4
 
@@ -852,7 +853,7 @@
 
 **Fixed**
 
-- Ignore most invalid Wikitext syntax nested in a [`PreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/PreToken) when linting
+- Ignore most invalid Wikitext syntax nested in a [`PreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/PreToken-%28EN%29) when linting
 
 ## v1.5.3
 
@@ -860,12 +861,12 @@
 
 **Added**
 
-- New getter [`FileToken.extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension)
+- New getter [`FileToken.extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#extension)
 
 **Fixed**
 
-- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken) is present in the same line
-- Improved [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) validation for different file extensions
+- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken-%28EN%29) is now correctly parsed when [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29) is present in the same line
+- Improved [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29) validation for different file extensions
 - Ignore incomplete Wikitext syntax in `before` and `after` attributes of a `<choose>` extension tag when linting
 
 ## v1.5.1
@@ -874,11 +875,11 @@
 
 **Added**
 
-- New property [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#rules) of the interface `Parser`
+- New property [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#rules) of the interface `Parser`
 
 **Fixed**
 
-- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) is present in the same line
+- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken-%28EN%29) is now correctly parsed when [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29) is present in the same line
 
 **Changed**
 
@@ -906,7 +907,7 @@
 
 **Added**
 
-- New property `rule` of the interface [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
+- New property `rule` of the interface [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#linterror)
 
 ## v1.4.4
 
@@ -914,7 +915,7 @@
 
 **Added**
 
-- New category of linting errors: inconsistent [table layout](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#getlayout)
+- New category of linting errors: inconsistent [table layout](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#getlayout)
 
 **Fixed**
 
@@ -931,7 +932,7 @@
 
 **Added**
 
-- New field `range` in the return value of [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#json)
+- New field `range` in the return value of [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#json)
 
 **Fixed**
 
@@ -943,7 +944,7 @@
 
 **Fixed**
 
-- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports warnings for matched single brace or bracket
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) no longer reports warnings for matched single brace or bracket
 
 ## v1.4.1
 
@@ -951,17 +952,17 @@
 
 **Added**
 
-- New category of linting errors: `<ref>` or external links without specified text in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
+- New category of linting errors: `<ref>` or external links without specified text in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29)
 - New preset configuration [`enwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/enwiki.json) for English Wikipedia
 
 **Fixed**
 
-- [`Token.prototype.redoQuotes`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#redoquotes)
+- [`Token.prototype.redoQuotes`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#redoquotes)
 
 **Changed**
 
 - Reported duplicated categories do not need to be child nodes of the same parent node
-- Better recognition of bracket pair (`[]`) that actually breaks the [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken)
+- Better recognition of bracket pair (`[]`) that actually breaks the [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken-%28EN%29)
 
 ## v1.4.0
 
@@ -969,8 +970,8 @@
 
 **Added**
 
-- Linting errors for [`LinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken) are now also reported from [`CategoryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken) and [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken) where applicable
-- New category of linting errors: duplicated categories, and bold (either [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken) or [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken)) in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
+- Linting errors for [`LinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken-%28EN%29) are now also reported from [`CategoryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken-%28EN%29) and [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29) where applicable
+- New category of linting errors: duplicated categories, and bold (either [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29) or [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29)) in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29)
 
 **Fixed**
 
@@ -982,12 +983,12 @@
 
 **Added**
 
-- New categories of linting errors, including obsolete HTML tags and attributes, internal links in external links, and unmatched [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken) inside a [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
-- New properties for [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken): `bold` and `italic`
+- New categories of linting errors, including obsolete HTML tags and attributes, internal links in external links, and unmatched [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29) inside a [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29)
+- New properties for [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29): `bold` and `italic`
 
 **Fixed**
 
-- [`Parser.isInterwiki`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#isinterwiki) now returns `null` if no interwiki prefix is found from the configuration
+- [`Parser.isInterwiki`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#isinterwiki) now returns `null` if no interwiki prefix is found from the configuration
 - Title starting with multiple colons is invalid
 
 ## v1.3.8
@@ -996,7 +997,7 @@
 
 **Changed**
 
-- [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#json) now records [`AstText`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText) as an object instead of a plain string, and some getter properties including [`ArgToken.default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default), [`HeadingToken.level`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#level), [`HtmlToken.closing`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken#closing), [`HtmlToken.selfClosing`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken#selfclosing), [`ParameterToken.anon`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#anon), [`TableToken.closed`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#closed), and [`TdToken.subtype`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#subtype) are now supported
+- [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#json) now records [`AstText`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29) as an object instead of a plain string, and some getter properties including [`ArgToken.default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29#default), [`HeadingToken.level`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#level), [`HtmlToken.closing`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#closing), [`HtmlToken.selfClosing`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#selfclosing), [`ParameterToken.anon`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#anon), [`TableToken.closed`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#closed), and [`TdToken.subtype`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#subtype) are now supported
 
 ## v1.3.7
 
@@ -1004,11 +1005,11 @@
 
 **Fixed**
 
-- Trailing whitespace as the last [`ConverterRuleToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken) is now allowed
+- Trailing whitespace as the last [`ConverterRuleToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken-%28EN%29) is now allowed
 
 **Changed**
 
-- Double pipes in [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#lint) will now report an `'error'` instead of a `'warning'`
+- Double pipes in [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29#lint) will now report an `'error'` instead of a `'warning'`
 
 ## v1.3.6
 
@@ -1016,7 +1017,7 @@
 
 **Changed**
 
-- [`AttributesToken.prototype.setAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#setattr) now also accepts an attribute object as argument
+- [`AttributesToken.prototype.setAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#setattr) now also accepts an attribute object as argument
 
 ## v1.3.4
 
@@ -1025,7 +1026,7 @@
 **Fixed**
 
 - Case-insensitive magic variables like `server`
-- `startIndex` and `endIndex` of [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
+- `startIndex` and `endIndex` of [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#lint)
 
 ## v1.3.3
 
@@ -1043,9 +1044,9 @@
 
 **Added**
 
-- Reporting unclosed [`IncludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken#lint)
+- Reporting unclosed [`IncludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken-%28EN%29#lint)
 - Reporting lonely `<onlyinclude>`, `<noinclude>` and `<includeonly>`
-- Reporting errors such as `<pre>` inside [`PreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/PreToken)
+- Reporting errors such as `<pre>` inside [`PreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/PreToken-%28EN%29)
 
 ## v1.3.1
 
@@ -1061,11 +1062,11 @@
 
 **Changed**
 
-- Ingoring `'http'` in tag attribute values when [linting](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint)
+- Ingoring `'http'` in tag attribute values when [linting](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint)
 
 **Removed**
 
-- `excerpt` field in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
+- `excerpt` field in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#linterror)
 
 ## v1.2.0
 
@@ -1077,8 +1078,8 @@
 
 **Changed**
 
-- `HiddenToken` child nodes of [`GalleryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken) are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
-- The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#invalid) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
+- `HiddenToken` child nodes of [`GalleryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29) are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken-%28EN%29)
+- The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#invalid) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken-%28EN%29)
 
 **Removed**
 
@@ -1090,7 +1091,7 @@
 
 **Fixed**
 
-- Fully localized message in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
+- Fully localized message in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#linterror)
 
 ## v1.1.5
 
@@ -1106,11 +1107,11 @@
 
 **Added**
 
-- New methods [`AstText.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#escape), `ParameterToken.prototype.escape` and `MagicLinkToken.prototype.escape`
+- New methods [`AstText.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#escape), `ParameterToken.prototype.escape` and `MagicLinkToken.prototype.escape`
 
 **Fixed**
 
-- Removing unexpected `remove` and `insert` events dispatched by [`Token.prototype.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
+- Removing unexpected `remove` and `insert` events dispatched by [`Token.prototype.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#safereplacewith)
 - `{{!}}` and `{{=}}` can be part of an external link now
 
 **Changed**
@@ -1123,11 +1124,11 @@
 
 **Fixed**
 
-- Fixing [`Token.prototype.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#sections) since [v1.1.2](#v112)
+- Fixing [`Token.prototype.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#sections) since [v1.1.2](#v112)
 
 **Changed**
 
-- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now returns an [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) object
+- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#findenclosinghtml) now returns an [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29) object
 
 ## v1.1.2
 
@@ -1136,7 +1137,7 @@
 **Changed**
 
 - Token type `converter-rule-noconvert` now regarded as `converter-rule-to`
-- Anonymous parameters will remain anonymous after [`ParameterToken.prototype.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#setvalue)
+- Anonymous parameters will remain anonymous after [`ParameterToken.prototype.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#setvalue)
 
 **Removed**
 
@@ -1148,7 +1149,7 @@
 
 **Changed**
 
-- [`getAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#getAttr) as the preferred method for [attribute selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#属性)
+- [`getAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#getAttr) as the preferred method for [attribute selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector-%28EN%29#属性)
 
 ## v1.1.0
 
@@ -1156,17 +1157,17 @@
 
 **Added**
 
-- New properties and methods for [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) objects: `extension`, `toSubjectPage`, `toTalkPage`, `isTalkPage`, `toBasePage`, `toRootPage`
+- New properties and methods for [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29) objects: `extension`, `toSubjectPage`, `toTalkPage`, `isTalkPage`, `toBasePage`, `toRootPage`
 
 **Fixed**
 
-- Wrapping the text after the last `</onlyinclude>` in a [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
-- Replacing remaining spaces in [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title) property with underscores
-- [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) now maintains its content after `insertNode`, `deleteContents`, `extractContents` and `cloneContents` methods
+- Wrapping the text after the last `</onlyinclude>` in a [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken-%28EN%29)
+- Replacing remaining spaces in [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#title) property with underscores
+- [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29) now maintains its content after `insertNode`, `deleteContents`, `extractContents` and `cloneContents` methods
 
 **Changed**
 
-- `startContainer` and `endContainer` properties of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) must be siblings now
+- `startContainer` and `endContainer` properties of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29) must be siblings now
 
 **Removed**
 
