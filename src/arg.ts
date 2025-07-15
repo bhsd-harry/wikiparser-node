@@ -92,15 +92,12 @@ export abstract class ArgToken extends Token {
 				errors.push(...childErrors);
 			}
 		}
-		if (rest.length > 0) {
+		const rules = ['no-ignored', 'no-arg'] as const,
+			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'arg') as LintError.Severity);
+		if (s[0] && rest.length > 0) {
 			const rect = new BoundingRect(this, start);
 			errors.push(...rest.map(child => {
-				const e = generateForChild(
-					child,
-					rect,
-					'no-ignored',
-					'invisible content inside triple braces',
-				);
+				const e = generateForChild(child, rect, rules[0], 'invisible content inside triple braces', s[0]);
 				e.startIndex--;
 				e.startCol--;
 				e.suggestions = [
@@ -110,14 +107,8 @@ export abstract class ArgToken extends Token {
 				return e;
 			}));
 		}
-		if (!this.getAttribute('include')) {
-			const e = generateForSelf(
-				this,
-				{start},
-				'no-arg',
-				'unexpected template argument',
-				'warning',
-			);
+		if (s[1] && !this.getAttribute('include')) {
+			const e = generateForSelf(this, {start}, rules[1], 'unexpected template argument', s[1]);
 			if (argDefault) {
 				e.suggestions = [{desc: 'expand', range: [start, e.endIndex], text: argDefault.text()}];
 			}

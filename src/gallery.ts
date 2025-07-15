@@ -94,7 +94,9 @@ export abstract class GalleryToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
-			errors: LintError[] = [];
+			errors: LintError[] = [],
+			rule = 'no-ignored',
+			s = ['Image', 'NoImage', 'Comment'].map(k => Parser.lintConfig.getSeverity(rule, `gallery${k}`));
 		for (let i = 0; i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				str = child.toString(),
@@ -105,24 +107,30 @@ export abstract class GalleryToken extends Token {
 				startCol = i ? 0 : left;
 			child.setAttribute('aIndex', start);
 			if (type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
-				const endIndex = start + length;
-				errors.push({
-					rule: 'no-ignored',
-					message: Parser.msg('invalid content in <$1>', 'gallery'),
-					severity: trimmed.endsWith('-->') || /^(?:\||<!--)/u.test(trimmed)
-						? 'warning'
-						: 'error',
-					startIndex: start,
-					endIndex,
-					startLine,
-					endLine: startLine,
-					startCol,
-					endCol: startCol + length,
-					suggestions: [
-						{desc: 'remove', range: [start, endIndex], text: ''},
-						{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
-					],
-				});
+				let [severity] = s;
+				if (trimmed.startsWith('|')) {
+					[, severity] = s;
+				} else if (trimmed.startsWith('<!--') || trimmed.endsWith('-->')) {
+					[,, severity] = s;
+				}
+				if (severity) {
+					const endIndex = start + length;
+					errors.push({
+						rule,
+						message: Parser.msg('invalid content in <$1>', 'gallery'),
+						severity,
+						startIndex: start,
+						endIndex,
+						startLine,
+						endLine: startLine,
+						startCol,
+						endCol: startCol + length,
+						suggestions: [
+							{desc: 'remove', range: [start, endIndex], text: ''},
+							{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
+						],
+					});
+				}
 			} else if (type !== 'noinclude' && type !== 'text') {
 				const childErrors = child.lint(start, re);
 				if (childErrors.length > 0) {
