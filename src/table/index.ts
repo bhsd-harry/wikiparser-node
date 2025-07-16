@@ -3,6 +3,7 @@ import {
 	Shadow,
 } from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
+import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
@@ -151,6 +152,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param stop.x stop at the row / 中止行
 	 * @param stop.y stop at the column / 中止列
 	 */
+	@cached(false)
 	getLayout(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
 		const rows = this.getAllRows(),
 			{length} = rows,

@@ -2,6 +2,7 @@ import {generateForSelf, cache} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import {attributesParent} from '../mixin/attributesParent';
+import Parser from '../index';
 import {Token} from './index';
 import type {Cached} from '../util/lint';
 import type {
@@ -11,12 +12,6 @@ import type {
 } from '../base';
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
-
-/* PRINT ONLY */
-
-import Parser from '../index';
-
-/* PRINT ONLY END */
 
 export interface HtmlToken extends AttributesParentBase {}
 
