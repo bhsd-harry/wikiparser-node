@@ -20,7 +20,9 @@ import type {
 } from './base';
 import type {Title, TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
-import type {Token} from './internal';
+import type {
+	Token,
+} from './internal';
 
 /* NOT FOR BROWSER ONLY */
 

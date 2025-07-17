@@ -300,7 +300,7 @@ interface Token extends AstNode {
 	 * Get all descendants that match the selector
 	 *
 	 * 符合选择器的所有后代节点
-	 * @param selector 选择器
+	 * @param selector selector / 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
 
@@ -370,7 +370,7 @@ export interface LanguageService {
 	 *
 	 * 提供自动补全
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined>;
 
@@ -404,7 +404,7 @@ export interface LanguageService {
 	 *
 	 * 提供引用
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined>;
 
@@ -413,7 +413,7 @@ export interface LanguageService {
 	 *
 	 * 提供定义
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined>;
 
@@ -422,7 +422,7 @@ export interface LanguageService {
 	 *
 	 * 提供变量更名准备
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	resolveRenameLocation(text: string, position: Position): Promise<Range | undefined>;
 
@@ -431,7 +431,7 @@ export interface LanguageService {
 	 *
 	 * 变量更名
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 * @param newName new name / 新名称
 	 */
 	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined>;
@@ -441,7 +441,7 @@ export interface LanguageService {
 	 *
 	 * 提供悬停信息
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	provideHover(text: string, position: Position): Promise<Hover | undefined>;
 
@@ -450,7 +450,7 @@ export interface LanguageService {
 	 *
 	 * 提供魔术字帮助
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined>;
 
