@@ -30,6 +30,7 @@ import type {
 	/* NOT FOR BROWSER */
 
 	TranscludeToken,
+	ExtToken,
 } from './internal';
 
 /* NOT FOR BROWSER */
@@ -62,6 +63,7 @@ import fetchConfig from './bin/config';
 /* NOT FOR BROWSER */
 
 declare type FunctionHook = (token: TranscludeToken, context?: TranscludeToken) => string;
+declare type TagHook = (token: ExtToken) => string;
 
 /* NOT FOR BROWSER END */
 
@@ -95,6 +97,9 @@ declare interface Parser extends ParserBase {
 
 	/** @private */
 	functionHooks: Map<string, FunctionHook>;
+
+	/** @private */
+	tagHooks: Map<string, TagHook>;
 
 	/* NOT FOR BROWSER END */
 
@@ -174,6 +179,16 @@ declare interface Parser extends ParserBase {
 	 * @since v1.22.0
 	 */
 	setFunctionHook(name: string, hook: FunctionHook): void;
+
+	/**
+	 * Define how to convert an extension tag to HTML
+	 *
+	 * 定义如何将一个扩展标签转换为HTML
+	 * @param name tag name / 标签名
+	 * @param hook handler function / 处理函数
+	 * @since v1.22.0
+	 */
+	setHook(name: string, hook: TagHook): void;
 
 	/** @private */
 	warn: log;
@@ -290,6 +305,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	debugging: false,
 
 	functionHooks: new Map(),
+
+	tagHooks: new Map(),
 
 	/* NOT FOR BROWSER END */
 
@@ -567,6 +584,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
+	setHook(name, hook) {
+		this.tagHooks.set(name, hook);
+	},
+
+	/** @implements */
 	warn(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.warning) {
@@ -668,9 +690,16 @@ const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
+		'lintConfig',
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
+
+		/* NOT FOR BROWSER ONLY */
+
+		'fetchConfig',
+
+		/* NOT FOR BROWSER ONLY END */
 
 		/* NOT FOR BROWSER */
 

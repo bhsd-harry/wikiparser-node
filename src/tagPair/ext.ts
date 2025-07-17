@@ -237,6 +237,9 @@ export abstract class ExtToken extends TagPairToken {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		const {name, firstChild, lastChild} = this;
+		if (Parser.tagHooks.has(name)) {
+			return Parser.tagHooks.get(name)!(this);
+		}
 		switch (name) {
 			case 'nowiki': {
 				const html = lastChild.toHtmlInternal();
