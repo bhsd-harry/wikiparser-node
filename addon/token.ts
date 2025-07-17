@@ -203,6 +203,8 @@ const expand = (
 					).toString(),
 					prev,
 				);
+			} else if (Parser.functionHooks.has(name)) {
+				return Parser.functionHooks.get(name)!(target, context || undefined);
 			} else if (expandedMagicWords.has(name)) {
 				if (context === false) {
 					return m;

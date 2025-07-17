@@ -24,7 +24,13 @@ import type {
 } from './base';
 import type {Title, TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
-import type {Token} from './internal';
+import type {
+	Token,
+
+	/* NOT FOR BROWSER */
+
+	TranscludeToken,
+} from './internal';
 
 /* NOT FOR BROWSER */
 
@@ -53,6 +59,12 @@ import fetchConfig from './bin/config';
 
 /* NOT FOR BROWSER ONLY END */
 
+/* NOT FOR BROWSER */
+
+declare type FunctionHook = (token: TranscludeToken, context?: TranscludeToken) => string;
+
+/* NOT FOR BROWSER END */
+
 declare interface Parser extends ParserBase {
 	default: Parser;
 	/** @since v1.5.1 */
@@ -80,6 +92,9 @@ declare interface Parser extends ParserBase {
 	 * @since v1.21.2
 	 */
 	now?: Date;
+
+	/** @private */
+	functionHooks: Map<string, FunctionHook>;
 
 	/* NOT FOR BROWSER END */
 
@@ -150,6 +165,16 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
 
+	/**
+	 * Define how to expand a parser function
+	 *
+	 * 定义如何展开一个解析器函数
+	 * @param name parser function name / 解析器函数名
+	 * @param hook handler function / 处理函数
+	 * @since v1.22.0
+	 */
+	setFunctionHook(name: string, hook: FunctionHook): void;
+
 	/** @private */
 	warn: log;
 	/** @private */
@@ -172,7 +197,7 @@ declare interface Parser extends ParserBase {
 	 * Check if the title is an interwiki link
 	 *
 	 * 是否是跨维基链接
-	 * @param title 链接标题
+	 * @param title title / 链接标题
 	 */
 	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
 
@@ -263,6 +288,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	warning: true,
 	debugging: false,
+
+	functionHooks: new Map(),
 
 	/* NOT FOR BROWSER END */
 
@@ -533,6 +560,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
+
+	/** @implements */
+	setFunctionHook(name, hook) {
+		this.functionHooks.set(name, hook);
+	},
 
 	/** @implements */
 	warn(msg, ...args) {
