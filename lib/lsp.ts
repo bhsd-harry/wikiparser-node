@@ -756,7 +756,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供自动补全
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
@@ -1430,7 +1430,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供引用
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		const root = await this.#queue(text),
@@ -1461,7 +1461,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供定义
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		const root = await this.#queue(text),
@@ -1489,7 +1489,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供变量更名准备
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
 		const root = await this.#queue(text),
@@ -1511,7 +1511,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 变量更名
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 * @param newName new name / 新名称
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
@@ -1567,7 +1567,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供悬停信息
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
 		/* istanbul ignore next */
@@ -1675,7 +1675,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 提供魔术字帮助
 	 * @param text source Wikitext / 源代码
-	 * @param position 位置
+	 * @param position position / 位置
 	 */
 	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
 		/* istanbul ignore next */

@@ -879,7 +879,7 @@ export class Token extends AstElement {
 	 *
 	 * 创建标签
 	 * @param tagName tag name / 标签名
-	 * @param options 选项
+	 * @param options options / 选项
 	 * @param options.selfClosing whether to be a self-closing tag / 是否自封闭
 	 * @param options.closing whether to be a closing tag / 是否是闭合标签
 	 * @throws `RangeError` 非法的标签名
@@ -915,7 +915,7 @@ export class Token extends AstElement {
 	 * Check if a title is an interwiki link
 	 *
 	 * 判断标题是否是跨维基链接
-	 * @param title 标题
+	 * @param title title / 标题
 	 */
 	isInterwiki(title: string): RegExpExecArray | null {
 		return Parser.isInterwiki(title, this.#config);

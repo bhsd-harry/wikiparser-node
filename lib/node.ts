@@ -606,7 +606,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * 添加事件监听
 	 * @param types event type / 事件类型
 	 * @param listener listener function / 监听函数
-	 * @param options 选项
+	 * @param options options / 选项
 	 * @param options.once to be executed only once / 仅执行一次
 	 */
 	addEventListener(types: string | string[], listener: (...args: any[]) => void, options?: {once?: boolean}): void {

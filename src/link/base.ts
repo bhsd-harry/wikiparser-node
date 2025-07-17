@@ -355,7 +355,7 @@ export abstract class LinkBaseToken extends Token {
 	 * Set the fragment
 	 *
 	 * 设置片段标识符
-	 * @param fragment 片段标识符
+	 * @param fragment URI fragment / 片段标识符
 	 */
 	setFragment(fragment?: string): void {
 		const {type, name} = this;

@@ -8,6 +8,7 @@
 - [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
 - [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now supports other WMF-hosted sites
 - [`Title.prototype.toSubjectPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#tosubjectpage), [`Title.prototype.toTalkPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#totalkpage), [`Title.prototype.toBasePage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#tobasepage) and [`Title.prototype.toRootPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#torootpage) now return the `Title` object itself for chaining
+- [`TranscludeToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getframe) method that returns a basic JSON [frame object](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object) for the `#invoke` parser function
 
 **Fixed**
 

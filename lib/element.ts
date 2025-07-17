@@ -235,7 +235,7 @@ export abstract class AstElement extends AstNode {
 	 * Get the closest ancestor node that matches the selector
 	 *
 	 * 最近的符合选择器的祖先节点
-	 * @param selector 选择器
+	 * @param selector selector / 选择器
 	 */
 	closest<T = Token>(selector: string): T | undefined {
 		const condition = getCondition<T>(selector, this);
@@ -272,7 +272,7 @@ export abstract class AstElement extends AstNode {
 	 * Get the first descendant that matches the selector
 	 *
 	 * 符合选择器的第一个后代节点
-	 * @param selector 选择器
+	 * @param selector selector / 选择器
 	 */
 	querySelector<T = Token>(selector: string): T | undefined {
 		const condition = getCondition<T>(selector, this);
@@ -300,7 +300,7 @@ export abstract class AstElement extends AstNode {
 	 * Get all descendants that match the selector
 	 *
 	 * 符合选择器的所有后代节点
-	 * @param selector 选择器
+	 * @param selector selector / 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[] {
 		const condition = getCondition<T>(selector, this);
@@ -540,7 +540,7 @@ export abstract class AstElement extends AstNode {
 	 * Check if the current element matches the selector
 	 *
 	 * 检查是否符合选择器
-	 * @param selector 选择器
+	 * @param selector selector / 选择器
 	 */
 	matches<T>(selector?: string): this is T {
 		return selector === undefined || getCondition<T>(selector, this)(this);

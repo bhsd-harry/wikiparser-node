@@ -94,7 +94,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * Convert to a self link
 	 *
 	 * 修改为到自身的链接
-	 * @param fragment 片段标识符
+	 * @param fragment URI fragment / 片段标识符
 	 * @throws `RangeError` 空的片段标识符
 	 */
 	asSelfLink(fragment = this.fragment): void {

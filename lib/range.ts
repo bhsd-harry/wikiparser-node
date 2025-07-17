@@ -303,7 +303,7 @@ export class AstRange {
 	 *
 	 * 比较端点和Range的位置
 	 * @param referenceNode node container / 端点容器
-	 * @param offset 端点位置
+	 * @param offset node offset / 端点位置
 	 * @throws `RangeError` 不在同一个文档
 	 */
 	comparePoint(referenceNode: AstNodes, offset: number): -1 | 0 | 1 {
@@ -324,7 +324,7 @@ export class AstRange {
 	 *
 	 * 端点是否在Range中
 	 * @param referenceNode node container / 端点容器
-	 * @param offset 端点位置
+	 * @param offset node offset / 端点位置
 	 */
 	isPointInRange(referenceNode: AstNodes, offset: number): boolean {
 		return this.comparePoint(referenceNode, offset) === 0;

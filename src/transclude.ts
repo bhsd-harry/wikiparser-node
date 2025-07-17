@@ -34,6 +34,12 @@ import {noEscape} from '../mixin/noEscape';
 import {cached} from '../mixin/cached';
 import Parser from '../index';
 
+declare interface Frame {
+	args: Record<string, string>;
+	parent?: Frame | undefined;
+	title: string;
+}
+
 const basicMagicWords = new Map([['=', '='], ['!', '|']]);
 
 /* NOT FOR BROWSER END */
@@ -914,7 +920,7 @@ export abstract class TranscludeToken extends Token {
 	 * 转义模板内的表格
 	 * @throws `Error` 转义失败
 	 */
-	escapeTables(): TranscludeToken {
+	escapeTables(): this {
 		require('../addon/transclude');
 		return this.escapeTables();
 	}
@@ -932,6 +938,26 @@ export abstract class TranscludeToken extends Token {
 			throw new Error('TranscludeToken.getModule method is only for modules!');
 		}
 		return [this.module!, this.function];
+	}
+
+	/**
+	 * Get the [frame object](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object)
+	 *
+	 * 获取 [frame 对象](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object)
+	 * @param context template calling this module / 调用该模块的模板
+	 * @throws `Error` 仅用于模块
+	 * @since v1.22.0
+	 */
+	getFrame(context?: this): Frame {
+		/* istanbul ignore if */
+		if (this.type === 'magic-word' && this.name !== 'invoke' || this.type === 'template' && context) {
+			throw new Error('TranscludeToken.getFrame method is only for modules!');
+		}
+		return {
+			args: this.getValue(),
+			parent: context?.getFrame(),
+			title: this.#getTitle().toString(true),
+		};
 	}
 
 	/** @private */
