@@ -91,7 +91,7 @@ export const commonHtmlAttrs = new Set([
 		math: empty,
 		chem: empty,
 		ce: empty,
-		img: new Set(['alt', 'src', 'width', 'height']),
+		img: new Set(['alt', 'src', 'width', 'height', 'loading']),
 	}))(),
 	extAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 		gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails']),
