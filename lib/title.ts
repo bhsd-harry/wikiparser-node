@@ -347,10 +347,11 @@ export class Title {
 	 * 转换为主页面
 	 * @since v1.1.0
 	 */
-	toSubjectPage(): void {
+	toSubjectPage(): this {
 		if (this.isTalkPage()) {
 			this.#ns--;
 		}
+		return this;
 	}
 
 	/**
@@ -359,10 +360,11 @@ export class Title {
 	 * 转换为讨论页面
 	 * @since v1.1.0
 	 */
-	toTalkPage(): void {
+	toTalkPage(): this {
 		if (!this.isTalkPage()) {
 			this.#ns++;
 		}
+		return this;
 	}
 
 	/**
@@ -381,8 +383,9 @@ export class Title {
 	 * 转换为上一级页面
 	 * @since v1.1.0
 	 */
-	toBasePage(): void {
+	toBasePage(): this {
 		this.main = this.main.replace(/\/[^/]*$/u, '');
+		return this;
 	}
 
 	/**
@@ -391,8 +394,9 @@ export class Title {
 	 * 转换为根页面
 	 * @since v1.1.0
 	 */
-	toRootPage(): void {
+	toRootPage(): this {
 		this.main = this.main.replace(/\/.*/u, '');
+		return this;
 	}
 
 	/** @private */

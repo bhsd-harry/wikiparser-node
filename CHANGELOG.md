@@ -6,7 +6,8 @@
 
 - Now the rule configuration for `Token.prototype.lint` can be set via [`Parser.lintConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lintconfig)
 - [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
-- [`LanguageService.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now supports other WMF-hosted sites
+- [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now supports other WMF-hosted sites
+- [`Title.prototype.toSubjectPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#tosubjectpage), [`Title.prototype.toTalkPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#totalkpage), [`Title.prototype.toBasePage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#tobasepage) and [`Title.prototype.toRootPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#torootpage) now return the `Title` object itself for chaining
 
 **Fixed**
 
@@ -28,7 +29,7 @@
 - HTML conversion of `<h1>` to `<h6>` without and `id` attribute
 - [HeadingToken](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29) as the first token of a `<poem>` tag does not need to be on a new line
 - Sanitization of [AttributeToken](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29)
-- Use the legacy `rgba()` function instead of `#rrggbbaa` in [`LanguageService.provideColorPresentations`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecolorpresentations) for colors with an alpha channel
+- Use the legacy `rgba()` function instead of `#rrggbbaa` in [`LanguageService.prototype.provideColorPresentations`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecolorpresentations) for colors with an alpha channel
 - `NowikiToken.prototype.cloneNode` should copy the `name` attribute if it exists
 
 **Changed**
@@ -301,7 +302,7 @@
 
 **Fixed**
 
-- [`LanguageService.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) for variables without a parameter
+- [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) for variables without a parameter
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) when there are mixed apostrophes and `<b>`/`<i>` tags
 
 ## v1.16.4
@@ -311,22 +312,22 @@
 **Added**
 
 - [`TranscludeToken.prototype.getModule`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getmodule) that returns the module name and the function name of a `#invoke` parser function
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests parameter keys for the `#invoke` parser function
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests parameter keys for the `#invoke` parser function
 
 **Fixed**
 
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) should suggest with a leading `:` for the transclusion of a main namespace article
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) should suggest with a leading `:` for the transclusion of a main namespace article
 - [`AstElement.links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#links) should not return internal links inside the link parameter of an image twice
 - [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font) for nodes following an external link
 - [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font) when there are unmatched `<b>` or `<i>` tags
-- [`LanguageService.provideRenameEdits`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providerenameedits) should not rename the `name` attribute of a `<ref>` tag with a different `group` attribute
+- [`LanguageService.prototype.provideRenameEdits`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providerenameedits) should not rename the `name` attribute of a `<ref>` tag with a different `group` attribute
 
 **Changed**
 
-- [`LanguageService.provideDefinition`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedefinition) now returns the [`Location`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#location) of the `<ref>` inner content for any [`Position`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position) within a `<ref>` tag that has a `name` attribute
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) inserts a `>` character after completing a closing tag when necessary
-- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) inserts a `=` character after completing a template parameter key when necessary
+- [`LanguageService.prototype.provideDefinition`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedefinition) now returns the [`Location`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#location) of the `<ref>` inner content for any [`Position`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position) within a `<ref>` tag that has a `name` attribute
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) inserts a `>` character after completing a closing tag when necessary
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) inserts a `=` character after completing a template parameter key when necessary
 
 ## v1.16.3
 
@@ -334,14 +335,14 @@
 
 **Added**
 
-- [`LanguageService.provideInlayHints`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#provideinlayhints) that computes inlay hints for template anonymous parameters
+- [`LanguageService.prototype.provideInlayHints`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#provideinlayhints) that computes inlay hints for template anonymous parameters
 - [`AstNode.prototype.getLines`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#getlines) that returns an array of the source text, the start and end positions of each line
 - Signatures of more parser functions from extensions
 
 **Fixed**
 
-- [`LanguageService.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now reports warnings
-- [`LanguageService.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolverenamelocation) should ignore file and category links
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now reports warnings
+- [`LanguageService.prototype.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolverenamelocation) should ignore file and category links
 - The outputs of [`wikiparse.Linter.prototype.codemirror`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter-%28EN%29#codemirror) and [`wikiparse.Linter.prototype.monaco`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter-%28EN%29#monaco) now strictly follow the [CodeMirror](https://codemirror.net/docs/ref/#lint.Diagnostic) and [Monaco Editor](https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor.IMarkerData.html) specifications, respectively
 
 **Changed**
