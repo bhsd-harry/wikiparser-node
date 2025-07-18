@@ -8,6 +8,7 @@ import {
 } from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
 import {cached} from '../../mixin/cached';
+import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {
@@ -22,7 +23,6 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 import {Shadow} from '../../util/debug';
 import {trimLc, newline} from '../../util/string';
 import {fixedToken} from '../../mixin/fixed';
-import Parser from '../../index';
 
 /* NOT FOR BROWSER END */
 
@@ -262,36 +262,35 @@ export abstract class TdToken extends TableBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1));
+			rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1)),
+			rule = 'pipe-like',
+			severities = ['td', 'double'].map(key => Parser.lintConfig.getSeverity(rule, key));
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text') {
 				const {data} = child;
 				if (data.includes('|')) {
-					const isError = data.includes('||'),
-						e = generateForChild(
-							child,
-							rect,
-							'pipe-like',
-							'additional "|" in a table cell',
-							isError ? 'error' : 'warning',
-						);
-					if (isError) {
-						const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
-						e.fix = {
-							desc: 'newline',
-							range: [e.startIndex, e.endIndex],
-							text: data.replace(/\|\|/gu, `\n${syntax}`),
-						};
-					} else {
-						e.suggestions = [
-							{
-								desc: 'escape',
+					const double = data.includes('||'),
+						s = severities[double ? 1 : 0];
+					if (s) {
+						const e = generateForChild(child, rect, rule, 'additional "|" in a table cell', s);
+						if (double) {
+							const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
+							e.fix = {
+								desc: 'newline',
 								range: [e.startIndex, e.endIndex],
-								text: data.replace(/\|/gu, '&#124;'),
-							},
-						];
+								text: data.replace(/\|\|/gu, `\n${syntax}`),
+							};
+						} else {
+							e.suggestions = [
+								{
+									desc: 'escape',
+									range: [e.startIndex, e.endIndex],
+									text: data.replace(/\|/gu, '&#124;'),
+								},
+							];
+						}
+						errors.push(e);
 					}
-					errors.push(e);
 				}
 			}
 		}
