@@ -22,7 +22,7 @@ const tableTags = new Set(['tr', 'td', 'th', 'caption']),
  * Check if the content is fostered
  * @param token
  */
-export const isFostered = (token: AstNodes): LintError.Severity | false => {
+export const isFostered = (token: AstNodes): 1 | 2 | false => {
 	const first = token.childNodes.find(child => child.text().trim());
 	if (
 		!first
@@ -37,15 +37,13 @@ export const isFostered = (token: AstNodes): LintError.Severity | false => {
 	} else if (first.is<TranscludeToken>('magic-word')) {
 		try {
 			const severity = first.getPossibleValues().map(isFostered);
-			return severity.includes('error')
-				? 'error'
-				: severity.includes('warning') && 'warning';
+			return severity.includes(2) ? 2 : severity.includes(1) && 1;
 		} catch {}
 	}
 	return first.is<TranscludeToken>('template')
 		|| first.is<TranscludeToken>('magic-word') && first.name === 'invoke'
-		? 'warning'
-		: 'error';
+		? 1
+		: 2;
 };
 
 /**
