@@ -63,6 +63,13 @@ const defaultLintConfig: LintConfig = {
 			// link: 2,
 		},
 	],
+	'invalid-invoke': [
+		2,
+		{
+			// function: 2,
+			// name: 2,
+		},
+	],
 	'invalid-isbn': 2,
 	'lonely-apos': [
 		1,
@@ -83,6 +90,7 @@ const defaultLintConfig: LintConfig = {
 			// attribute: 2,
 			category: 1,
 			id: 1,
+			// parameter: 2,
 		},
 	],
 	'no-ignored': [
@@ -91,6 +99,7 @@ const defaultLintConfig: LintConfig = {
 			// arg: 2,
 			// closingTag: 2,
 			// conversionFlag: 2,
+			fragment: 1,
 			galleryComment: 1,
 			// galleryImage: 2,
 			galleryNoImage: 1,
