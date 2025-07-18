@@ -435,25 +435,22 @@ export abstract class TranscludeToken extends Token {
 		}
 		const {type, childNodes, length} = this,
 			rect = new BoundingRect(this, start),
-			invoke = type === 'magic-word',
-			rules = ['invalid-invoke', 'no-ignored', 'no-duplicate'] as const,
-			s = [
-				Parser.lintConfig.getSeverity(rules[0], 'name'),
-				Parser.lintConfig.getSeverity(rules[0], 'function'),
-				Parser.lintConfig.getSeverity(rules[1], 'fragment'),
-				Parser.lintConfig.getSeverity(rules[2], 'parameter'),
-			];
+			invoke = type === 'magic-word';
+		let rule: LintError.Rule = 'no-ignored',
+			s = Parser.lintConfig.getSeverity(rule, 'fragment');
 		if (invoke && !this.#getTitle().valid) {
-			if (s[0]) {
-				errors.push(generateForChild(childNodes[1], rect, rules[0], 'illegal module name', s[0]));
+			rule = 'invalid-invoke';
+			s = Parser.lintConfig.getSeverity(rule, 'name');
+			if (s) {
+				errors.push(generateForChild(childNodes[1], rect, rule, 'illegal module name', s));
 			}
-		} else if (s[2]) {
+		} else if (s) {
 			const child = childNodes[invoke ? 1 : 0] as AtomToken,
 				i = child.childNodes
 					.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
 				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
-				const e = generateForChild(child, rect, rules[1], 'useless fragment', s[2]);
+				const e = generateForChild(child, rect, rule, 'useless fragment', s);
 				e.fix = {
 					desc: 'remove',
 					range: [
@@ -465,17 +462,21 @@ export abstract class TranscludeToken extends Token {
 				errors.push(e);
 			}
 		}
-		if (s[1] && invoke && length === 2) {
-			errors.push(generateForSelf(this, rect, rules[0], 'missing module function', s[1]));
+		rule = 'invalid-invoke';
+		s = Parser.lintConfig.getSeverity(rule, 'function');
+		if (s && invoke && length === 2) {
+			errors.push(generateForSelf(this, rect, rule, 'missing module function', s));
 			return errors;
 		}
-		if (s[3]) {
+		rule = 'no-duplicate';
+		s = Parser.lintConfig.getSeverity(rule, 'parameter');
+		if (s) {
 			const duplicatedArgs = this.getDuplicatedArgs()
 					.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
 				msg = 'duplicated parameter';
 			for (const [, args] of duplicatedArgs) {
 				errors.push(...args.map(arg => {
-					const e = generateForChild(arg, rect, rules[2], msg, s[3] as LintError.Severity);
+					const e = generateForChild(arg, rect, rule, msg, s);
 					e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
 					return e;
 				}));
