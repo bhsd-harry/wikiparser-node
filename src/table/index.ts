@@ -3,6 +3,7 @@ import {
 	Shadow,
 } from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
+import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';

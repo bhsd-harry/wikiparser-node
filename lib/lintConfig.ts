@@ -15,6 +15,13 @@ const severities = new Set([0, 1, 2]),
 	]);
 
 const defaultLintConfig: LintConfig = {
+	'bold-header': [
+		1,
+		{
+			// b: 1,
+			// strong: 1,
+		},
+	],
 	'format-leakage': [
 		2,
 		{
@@ -79,11 +86,13 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	'obsolete-attr': 1,
+	'obsolete-tag': 1,
 	'parsing-order': [
 		2,
 		{
 			// ext: 2,
 			// heading: 2,
+			// html: 2,
 			templateInTable: 1,
 		},
 	],
@@ -96,6 +105,16 @@ const defaultLintConfig: LintConfig = {
 	],
 	'unclosed-quote': 1,
 	unescaped: 2,
+	'unmatched-tag': [
+		1,
+		{
+			// both: 1,
+			// closing: 1,
+			// conditional: 1,
+			// opening: 1,
+			// selfClosing: 1,
+		},
+	],
 	'unterminated-url': [
 		1,
 		{
@@ -188,6 +207,9 @@ export class LintConfiguration implements LintConfigurationBase {
 
 	/** @implements */
 	getSeverity(this: LintConfigurationBase, rule: LintError.Rule, key?: string): LintError.Severity | false {
+		if (!(rule in this)) {
+			throw new RangeError(`Unknown rule: ${rule}`);
+		}
 		const value = this[rule]!;
 		if (typeof value === 'number') {
 			return dict.get(value)!;
