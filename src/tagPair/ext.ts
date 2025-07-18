@@ -186,7 +186,7 @@ export abstract class ExtToken extends TagPairToken {
 		if (this.name !== 'nowiki') {
 			const s = this.inHtmlAttrs(),
 				rule = 'parsing-order',
-				severity = s && Parser.lintConfig.getSeverity(rule, s === 'error' ? 'ext' : 'templateInTable');
+				severity = s && Parser.lintConfig.getSeverity(rule, s === 2 ? 'ext' : 'templateInTable');
 			if (severity) {
 				errors.push(generateForSelf(this, rect, rule, 'extension tag in HTML tag attributes', severity));
 			}

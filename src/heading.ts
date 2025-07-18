@@ -77,7 +77,7 @@ export abstract class HeadingToken extends Token {
 		/* PRINT ONLY */
 
 		if (key === 'invalid') {
-			return (this.inHtmlAttrs() === 'error') as TokenAttribute<T>;
+			return (this.inHtmlAttrs() === 2) as TokenAttribute<T>;
 		}
 
 		/* PRINT ONLY END */
@@ -132,7 +132,7 @@ export abstract class HeadingToken extends Token {
 		}
 		if (s) {
 			const rule = 'parsing-order',
-				severity = Parser.lintConfig.getSeverity(rule, s === 'error' ? 'heading' : 'templateInTable');
+				severity = Parser.lintConfig.getSeverity(rule, s === 2 ? 'heading' : 'templateInTable');
 			if (severity) {
 				errors.push(generateForSelf(this, rect, rule, 'section header in HTML tag attributes', severity));
 			}
