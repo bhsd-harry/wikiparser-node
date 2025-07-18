@@ -1,4 +1,5 @@
 import {generateForChild, isFostered} from '../../util/lint';
+import Parser from '../../index';
 import {TableBaseToken} from './base';
 import {
 	TdToken,
@@ -28,21 +29,16 @@ export abstract class TrBaseToken extends TableBaseToken {
 		if (!inter) {
 			return errors;
 		}
-		const severity = isFostered(inter);
-		if (!severity) {
-			return errors;
+		const severity = isFostered(inter),
+			rule = 'fostered-content',
+			s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? undefined : 'transclusion');
+		if (s) {
+			const error = generateForChild(inter, {start}, rule, 'content to be moved outside the table', s);
+			error.startIndex++;
+			error.startLine++;
+			error.startCol = 0;
+			errors.push(error);
 		}
-		const error = generateForChild(
-			inter,
-			{start},
-			'fostered-content',
-			'content to be moved outside the table',
-			severity,
-		);
-		error.startIndex++;
-		error.startLine++;
-		error.startCol = 0;
-		errors.push(error);
 		return errors;
 	}
 
