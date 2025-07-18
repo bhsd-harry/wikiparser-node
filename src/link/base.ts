@@ -8,6 +8,7 @@ import {
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
+import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {
@@ -128,39 +129,25 @@ export abstract class LinkBaseToken extends Token {
 			{childNodes: [target, linkText], type} = this,
 			{encoded, fragment} = this.#title,
 			rect = new BoundingRect(this, start);
-		if (target.childNodes.some(({type: t}) => t === 'template')) {
-			errors.push(
-				generateForChild(
-					target,
-					rect,
-					'unknown-page',
-					'template in an internal link target',
-					'warning',
-				),
-			);
+		let rule: LintError.Rule = 'unknown-page',
+			s = Parser.lintConfig.getSeverity(rule);
+		if (s && target.childNodes.some(({type: t}) => t === 'template')) {
+			errors.push(generateForChild(target, rect, rule, 'template in an internal link target', s));
 		}
-		if (encoded) {
-			const e = generateForChild(
-				target,
-				rect,
-				'url-encoding',
-				'unnecessary URL encoding in an internal link',
-				'warning',
-			);
+		rule = 'url-encoding';
+		s = Parser.lintConfig.getSeverity(rule);
+		if (s && encoded) {
+			const e = generateForChild(target, rect, rule, 'unnecessary URL encoding in an internal link', s);
 			e.fix = {desc: 'decode', range: [e.startIndex, e.endIndex], text: rawurldecode(target.text())};
 			errors.push(e);
 		}
-		if (type === 'link' || type === 'category') {
+		rule = 'pipe-like';
+		s = Parser.lintConfig.getSeverity(rule, 'link');
+		if (s && (type === 'link' || type === 'category')) {
 			const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
 				textNode = linkText?.childNodes[j!] as AstText | undefined;
 			if (textNode) {
-				const e = generateForChild(
-						linkText!,
-						rect,
-						'pipe-like',
-						'additional "|" in the link text',
-						'warning',
-					),
+				const e = generateForChild(linkText!, rect, rule, 'additional "|" in the link text', s),
 					i = e.startIndex + linkText!.getRelativeIndex(j);
 				e.suggestions = [
 					{
@@ -172,8 +159,10 @@ export abstract class LinkBaseToken extends Token {
 				errors.push(e);
 			}
 		}
-		if (fragment !== undefined && !isLink(type)) {
-			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment', 'warning'),
+		rule = 'no-ignored';
+		s = Parser.lintConfig.getSeverity(rule, 'fragment');
+		if (s && fragment !== undefined && !isLink(type)) {
+			const e = generateForChild(target, rect, rule, 'useless fragment', s),
 				j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
 				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {

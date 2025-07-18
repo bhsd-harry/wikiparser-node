@@ -555,21 +555,23 @@ export class Token extends AstElement {
 				const root = this.getRootNode(),
 					textDoc = new EmbeddedCSSDocument(root, this);
 				errors.push(
-					...cssLSP!.doValidation(textDoc, textDoc.styleSheet).filter(
-						({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
-							&& (sWarn || severity === 1),
-					).map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
-						code: code as string,
-						rule: 'invalid-css',
-						message,
-						severity: severity === 1 ? s : sWarn as LintError.Severity,
-						startLine: line,
-						startCol: character,
-						startIndex: root.indexFromPos(line, character)!,
-						endLine: end.line,
-						endCol: end.character,
-						endIndex: root.indexFromPos(end.line, end.character)!,
-					})),
+					...cssLSP!.doValidation(textDoc, textDoc.styleSheet)
+						.filter(
+							({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
+								&& (sWarn || severity === 1),
+						)
+						.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
+							code: code as string,
+							rule: 'invalid-css',
+							message,
+							severity: severity === 1 ? s : sWarn as LintError.Severity,
+							startLine: line,
+							startCol: character,
+							startIndex: root.indexFromPos(line, character)!,
+							endLine: end.line,
+							endCol: end.character,
+							endIndex: root.indexFromPos(end.line, end.character)!,
+						})),
 				);
 			}
 
