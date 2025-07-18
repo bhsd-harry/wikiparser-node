@@ -141,50 +141,44 @@ export abstract class TableToken extends TrBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start);
-		if (!this.closed) {
+			rect = new BoundingRect(this, start),
+			rules = ['unclosed-table', 'table-layout'] as const,
+			s = rules.map(rule => Parser.lintConfig.getSeverity(rule));
+		if (s[0] && !this.closed) {
 			errors.push(
-				generateForChild(
-					this.firstChild,
-					rect,
-					'unclosed-table',
-					Parser.msg('unclosed $1', 'table'),
-				),
+				generateForChild(this.firstChild, rect, rules[0], Parser.msg('unclosed $1', 'table'), s[0]),
 			);
 		}
-		const layout = this.getLayout(),
-			{length} = layout;
-		if (length > 1) {
-			let low = 1,
-				high = Infinity,
-				j = 0;
-			for (; j < length; j++) {
-				const row = layout[j]!,
-					max = row.length;
-				if (max < low) {
-					break;
-				} else if (max < high) {
-					high = max;
+		if (s[1]) {
+			const layout = this.getLayout(),
+				{length} = layout;
+			if (length > 1) {
+				let low = 1,
+					high = Infinity,
+					j = 0;
+				for (; j < length; j++) {
+					const row = layout[j]!,
+						max = row.length;
+					if (max < low) {
+						break;
+					} else if (max < high) {
+						high = max;
+					}
+					const min = row.indexOf(row[max - 1]!) + 1;
+					if (min > high) {
+						break;
+					} else if (min > low) {
+						low = min;
+					}
 				}
-				const min = row.indexOf(row[max - 1]!) + 1;
-				if (min > high) {
-					break;
-				} else if (min > low) {
-					low = min;
+				if (j < length) {
+					const row = this.getNthRow(j) as TrToken,
+						e = generateForChild(row, rect, rules[1], 'inconsistent table layout', s[1]);
+					e.startIndex++;
+					e.startLine++;
+					e.startCol = 0;
+					errors.push(e);
 				}
-			}
-			if (j < length) {
-				const e = generateForChild(
-					this.getNthRow(j) as TrToken,
-					rect,
-					'table-layout',
-					'inconsistent table layout',
-					'warning',
-				);
-				e.startIndex++;
-				e.startLine++;
-				e.startCol = 0;
-				errors.push(e);
 			}
 		}
 		return errors;

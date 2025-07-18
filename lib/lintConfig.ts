@@ -130,6 +130,7 @@ const defaultLintConfig: LintConfig = {
 			// td: 1,
 		},
 	],
+	'table-layout': 1,
 	'unbalanced-header': 2,
 	'unclosed-comment': [
 		1,
@@ -138,6 +139,7 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	'unclosed-quote': 1,
+	'unclosed-table': 2,
 	unescaped: 2,
 	'unmatched-tag': [
 		1,
