@@ -254,6 +254,7 @@ export abstract class AttributeToken extends Token {
 			attrs = extAttrs[tag],
 			attrs2 = htmlAttrs[tag],
 			{length} = this.toString();
+		let rule: LintError.Rule = 'illegal-attr';
 		if (
 			!attrs?.has(name)
 			&& !attrs2?.has(name)
@@ -275,9 +276,12 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			const e = generateForChild(firstChild, rect!, 'illegal-attr', 'illegal attribute name');
-			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
-			return e;
+			const s = Parser.lintConfig.getSeverity(rule, 'unknown');
+			if (s) {
+				const e = generateForChild(firstChild, rect!, rule, 'illegal attribute name', s);
+				e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
+				return e;
+			}
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			/* PRINT ONLY */
 
@@ -287,7 +291,9 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			return generateForChild(lastChild, rect!, 'insecure-style', 'insecure style');
+			rule = 'insecure-style';
+			const s = Parser.lintConfig.getSeverity(rule);
+			return s && generateForChild(lastChild, rect!, rule, 'insecure style', s);
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
 			/* PRINT ONLY */
 
@@ -297,12 +303,15 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			const e = generateForChild(lastChild, rect!, 'illegal-attr', 'nonzero tabindex');
-			e.suggestions = [
-				{desc: 'remove', range: [start, start + length], text: ''},
-				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
-			];
-			return e;
+			const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
+			if (s) {
+				const e = generateForChild(lastChild, rect!, rule, 'nonzero tabindex', s);
+				e.suggestions = [
+					{desc: 'remove', range: [start, start + length], text: ''},
+					{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
+				];
+				return e;
+			}
 		} else if (simple && type !== 'ext-attr') {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
@@ -315,13 +324,8 @@ export abstract class AttributeToken extends Token {
 
 				/* PRINT ONLY END */
 
-				return generateForChild(
-					lastChild,
-					rect!,
-					'illegal-attr',
-					'illegal attribute value',
-					'warning',
-				);
+				const s = Parser.lintConfig.getSeverity(rule, 'value');
+				return s && generateForChild(lastChild, rect!, rule, 'illegal attribute value', s);
 			}
 		} else if (
 			typeof value === 'string' && (
@@ -340,7 +344,8 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			return generateForChild(lastChild, rect!, 'illegal-attr', 'illegal attribute value');
+			const s = Parser.lintConfig.getSeverity(rule, 'value');
+			return s && generateForChild(lastChild, rect!, rule, 'illegal attribute value', s);
 		}
 		return false;
 	}

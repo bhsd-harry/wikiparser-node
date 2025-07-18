@@ -40,6 +40,15 @@ const defaultLintConfig: LintConfig = {
 			// html: 1,
 		},
 	],
+	'illegal-attr': [
+		2,
+		{
+			// tabindex: 2,
+			// unknown: 2,
+			// value: 2,
+		},
+	],
+	'insecure-style': 2,
 	'invalid-gallery': [
 		2,
 		{
