@@ -58,6 +58,12 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	'invalid-isbn': 2,
+	'lonely-apos': [
+		1,
+		{
+			// word: 1,
+		},
+	],
 	'nested-link': [
 		2,
 		{
