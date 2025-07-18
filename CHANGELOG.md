@@ -22,6 +22,7 @@
 - For [Moegirlpedia](https://zh.moegirl.org.cn/), `<img>` tags are now parsed as extension tags ([Extension: MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)) instead of HTML tags
 - Lowered severity of invalid gallery image parameters and duplicate categories
 - Lowered severity of unmatched HTML tags except for formatting tags in section headers
+- Lowered severity of plain-text apostrophes next to bold/italic apostrophes
 
 ## v1.21.3
 
