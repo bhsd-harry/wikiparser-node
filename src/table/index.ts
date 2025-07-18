@@ -7,6 +7,7 @@ import {
 	isToken,
 } from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
+import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
@@ -23,7 +24,6 @@ import type {TableCoords} from './trBase';
 import {html} from '../../util/html';
 import {classes} from '../../util/constants';
 import {noWrap} from '../../util/string';
-import {cached} from '../../mixin/cached';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 export interface TableRenderedCoords {

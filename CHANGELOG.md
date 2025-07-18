@@ -21,6 +21,7 @@
 - The preset configurations are updated
 - For [Moegirlpedia](https://zh.moegirl.org.cn/), `<img>` tags are now parsed as extension tags ([Extension: MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)) instead of HTML tags
 - Lowered severity of invalid gallery image parameters and duplicate categories
+- Lowered severity of unmatched HTML tags except for formatting tags in section headers
 
 ## v1.21.3
 
