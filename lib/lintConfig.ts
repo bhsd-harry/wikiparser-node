@@ -117,6 +117,13 @@ const defaultLintConfig: LintConfig = {
 			templateInTable: 1,
 		},
 	],
+	'pipe-like': [
+		1,
+		{
+			double: 2,
+			// td: 1,
+		},
+	],
 	'unbalanced-header': 2,
 	'unclosed-comment': [
 		1,
