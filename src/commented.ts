@@ -64,7 +64,7 @@ export abstract class CommentedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return super.lint(start, /<\s*(?:\/\s*)?(hiero)\b/giu);
+		return super.lint(start, new RegExp(String.raw`/<\s*(?:\/\s*)?(${this.name})\b`, 'giu'));
 	}
 
 	/* NOT FOR BROWSER */

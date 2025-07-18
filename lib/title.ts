@@ -124,6 +124,16 @@ export class Title {
 		}
 	}
 
+	/**
+	 * display title
+	 *
+	 * 用于显示的标题
+	 * @since v1.22.0
+	 */
+	get displayTitle(): string {
+		return this.title.replaceAll('_', ' ');
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
@@ -294,16 +304,11 @@ export class Title {
 
 	/** @private */
 	toString(display?: boolean): string {
-		return (display ? this.title.replace(/_/gu, ' ') : this.title)
-			+ (
-				this.#fragment === undefined
-				&& this.#redirectFragment === undefined
-					? ''
-					: `#${
-						this.#fragment
-						?? this.#redirectFragment
-					}`
-			);
+		return (display ? this.displayTitle : this.title) + (
+			this.#fragment === undefined && this.#redirectFragment === undefined
+				? ''
+				: `#${this.#fragment ?? this.#redirectFragment}`
+		);
 	}
 
 	/**
