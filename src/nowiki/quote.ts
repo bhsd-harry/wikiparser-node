@@ -60,72 +60,36 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {previousSibling, nextSibling, bold, closing} = this,
+		const {previousSibling, bold, closing} = this,
 			previousData = previousSibling?.type === 'text' ? previousSibling.data : undefined,
-			nextData = nextSibling?.type === 'text' ? nextSibling.data : undefined,
-			message = Parser.msg('lonely "$1"', `'`),
 			errors: LintError[] = [],
-			rect = new BoundingRect(this, start);
-
-		/**
-		 * 获取建议
-		 * @param startIndex 起点
-		 * @param endIndex 终点
-		 * @param length 长度
-		 */
-		const getSuggestion = (
-			startIndex: number,
-			endIndex: number,
-			length: number,
-		): LintError.Fix[] => [
-			{desc: 'escape', range: [startIndex, endIndex], text: '&apos;'.repeat(length)},
-			{desc: 'remove', range: [startIndex, endIndex], text: ''},
-		];
-		let rule: LintError.Rule = 'lonely-apos',
-			s;
+			rect = new BoundingRect(this, start),
+			rules = ['lonely-apos', 'bold-header'] as const,
+			severities = [undefined, 'word'].map(key => Parser.lintConfig.getSeverity(rules[0], key)),
+			s = Parser.lintConfig.getSeverity(rules[1]);
 		if (previousData?.endsWith(`'`)) {
-			const e = generateForSelf(
-					this,
-					rect,
-					'lonely-apos',
-					message,
-					(closing.bold || closing.italic)
-					&& (/[a-z\d]'$/iu.test(previousData) || nextData && /^[a-z\d]/iu.test(nextData))
-						? 'warning'
-						: 'error',
-				),
-				{startIndex: endIndex, startLine: endLine, startCol: endCol} = e,
-				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
-				startIndex = start - length;
-			errors.push({
-				...e,
-				startIndex,
-				endIndex,
-				endLine,
-				startCol: endCol - length,
-				endCol,
-				suggestions: getSuggestion(startIndex, endIndex, length),
-			});
+			const severity = severities[(closing.bold || closing.italic) && /[a-z\d]'$/iu.test(previousData) ? 1 : 0];
+			if (severity) {
+				const e = generateForSelf(this, rect, rules[0], Parser.msg('lonely "$1"', `'`), severity),
+					{startIndex: endIndex, startLine: endLine, startCol: endCol} = e,
+					[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
+					startIndex = start - length;
+				errors.push({
+					...e,
+					startIndex,
+					endIndex,
+					endLine,
+					startCol: endCol - length,
+					endCol,
+					suggestions: [
+						{desc: 'escape', range: [startIndex, endIndex], text: '&apos;'.repeat(length)},
+						{desc: 'remove', range: [startIndex, endIndex], text: ''},
+					],
+				});
+			}
 		}
-		if (nextData?.startsWith(`'`)) {
-			const e = generateForSelf(this, rect, 'lonely-apos', message),
-				{endIndex: startIndex, endLine: startLine, endCol: startCol} = e,
-				[{length}] = /^'+/u.exec(nextData)!,
-				endIndex = startIndex + length;
-			errors.push({
-				...e,
-				startIndex,
-				endIndex,
-				startLine,
-				startCol,
-				endCol: startCol + length,
-				suggestions: getSuggestion(startIndex, endIndex, length),
-			});
-		}
-		rule = 'bold-header';
-		s = Parser.lintConfig.getSeverity(rule);
 		if (s && bold && this.closest('heading-title')) {
-			const e = generateForSelf(this, rect, rule, 'bold in section header', s);
+			const e = generateForSelf(this, rect, rules[1], 'bold in section header', s);
 			e.suggestions = [{desc: 'remove', range: [start, start + 3], text: ''}];
 			errors.push(e);
 		}
