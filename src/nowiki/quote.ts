@@ -82,6 +82,8 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			{desc: 'escape', range: [startIndex, endIndex], text: '&apos;'.repeat(length)},
 			{desc: 'remove', range: [startIndex, endIndex], text: ''},
 		];
+		let rule: LintError.Rule = 'lonely-apos',
+			s;
 		if (previousData?.endsWith(`'`)) {
 			const e = generateForSelf(
 					this,
@@ -121,14 +123,10 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
-		if (bold && this.closest('heading-title')) {
-			const e = generateForSelf(
-				this,
-				rect,
-				'bold-header',
-				'bold in section header',
-				'warning',
-			);
+		rule = 'bold-header';
+		s = Parser.lintConfig.getSeverity(rule);
+		if (s && bold && this.closest('heading-title')) {
+			const e = generateForSelf(this, rect, rule, 'bold in section header', s);
 			e.suggestions = [{desc: 'remove', range: [start, start + 3], text: ''}];
 			errors.push(e);
 		}

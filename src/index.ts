@@ -432,18 +432,18 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	inTableAttrs(): LintError.Severity | false {
+	inTableAttrs(): 1 | 2 | false {
 		return this.closest('table-attrs,ext')?.type === 'table-attrs' && (
 			this.closest('table-attrs,arg,magic-word,template')?.is<AttributesToken>('table-attrs')
-				? 'error'
-				: 'warning'
+				? 2
+				: 1
 		);
 	}
 
 	/** @private */
-	inHtmlAttrs(): LintError.Severity | false {
+	inHtmlAttrs(): 1 | 2 | false {
 		return this.closest('html-attrs,ext')?.is<AttributesToken>('html-attrs')
-			? 'error'
+			? 2
 			: this.inTableAttrs();
 	}
 
