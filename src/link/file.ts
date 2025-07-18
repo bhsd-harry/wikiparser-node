@@ -114,15 +114,20 @@ export abstract class FileToken extends LinkBaseToken {
 			[fr] = frameKeys,
 			unscaled = fr === 'framed' || fr === 'manualthumb',
 			rect = new BoundingRect(this, start);
+		let rule: LintError.Rule = 'nested-link',
+			s = Parser.lintConfig.getSeverity(rule, 'file');
 		if (
-			this.closest('ext-link-text')
+			s
+			&& this.closest('ext-link-text')
 			&& (this.getValue('link') as string | undefined)?.trim() !== ''
 		) {
-			errors.push(generateForSelf(this, rect, 'nested-link', 'internal link in an external link'));
+			errors.push(generateForSelf(this, rect, rule, 'internal link in an external link', s));
 		}
-		if (unscaled) {
+		rule = 'invalid-gallery';
+		s = Parser.lintConfig.getSeverity(rule, 'parameter');
+		if (s && unscaled) {
 			for (const arg of args.filter(({name}) => name === 'width')) {
-				const e = generateForChild(arg, rect, 'invalid-gallery', 'invalid image parameter');
+				const e = generateForChild(arg, rect, rule, 'invalid image parameter', s);
 				e.fix = {desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''};
 				errors.push(e);
 			}
@@ -135,27 +140,31 @@ export abstract class FileToken extends LinkBaseToken {
 		) {
 			return errors;
 		}
+		rule = 'no-duplicate';
+		const {extension} = this,
+			severities = ['unknownImageParameter', 'imageParameter'].map(k => Parser.lintConfig.getSeverity(rule, k));
 
 		/**
 		 * 图片参数到语法错误的映射
+		 * @param tokens 图片参数节点
 		 * @param msg 消息键
 		 * @param p1 替换$1
 		 * @param severity 错误等级
 		 */
-		const generate = (msg: string, p1: string, severity: SeverityPredicate = true) =>
-			(arg: ImageParameterToken): LintError => {
-				const isError = typeof severity === 'function' ? severity(arg) : severity,
-					e = generateForChild(
-						arg,
-						rect,
-						'no-duplicate',
-						Parser.msg(`${msg} image $1 parameter`, p1),
-						isError ? 'error' : 'warning',
-					);
-				e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
-				return e;
-			};
-		const {extension} = this;
+		const generate = (
+			tokens: ImageParameterToken[],
+			msg: string,
+			p1: string,
+			severity: SeverityPredicate = true,
+		): LintError[] => tokens.map(arg => {
+			s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
+			if (!s) {
+				return false;
+			}
+			const e = generateForChild(arg, rect, rule, Parser.msg(`${msg} image $1 parameter`, p1), s);
+			e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
+			return e;
+		}).filter((e): e is LintError => e !== false);
 		for (const key of keys) {
 			if (key === 'invalid' || key === 'width' && unscaled) {
 				continue;
@@ -174,22 +183,24 @@ export abstract class FileToken extends LinkBaseToken {
 					const plainArgs = filterArgs(relevantArgs, transclusion);
 					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
 				}
-				errors.push(...relevantArgs.map(generate('duplicated', key, severity)));
+				errors.push(...generate(relevantArgs, 'duplicated', key, severity));
 			}
 		}
 		if (frameKeys.length > 1) {
-			errors.push(...args.filter(({name}) => frame.has(name)).map(generate('conflicting', 'frame')));
+			errors.push(...generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'));
 		}
 		if (horizAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => horizAlign.has(name))
-					.map(generate('conflicting', 'horizontal-alignment')),
+				...generate(
+					args.filter(({name}) => horizAlign.has(name)),
+					'conflicting',
+					'horizontal-alignment',
+				),
 			);
 		}
 		if (vertAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => vertAlign.has(name))
-					.map(generate('conflicting', 'vertical-alignment')),
+				...generate(args.filter(({name}) => vertAlign.has(name)), 'conflicting', 'vertical-alignment'),
 			);
 		}
 		return errors;

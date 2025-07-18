@@ -90,7 +90,9 @@ const defaultLintConfig: LintConfig = {
 			// attribute: 2,
 			category: 1,
 			id: 1,
+			// imageParameter: 2,
 			// parameter: 2,
+			unknownImageParameter: 1,
 		},
 	],
 	'no-ignored': [
@@ -130,6 +132,7 @@ const defaultLintConfig: LintConfig = {
 		1,
 		{
 			double: 2,
+			// link: 1,
 			// td: 1,
 		},
 	],
@@ -144,6 +147,7 @@ const defaultLintConfig: LintConfig = {
 	'unclosed-quote': 1,
 	'unclosed-table': 2,
 	unescaped: 2,
+	'unknown-page': 1,
 	'unmatched-tag': [
 		1,
 		{
