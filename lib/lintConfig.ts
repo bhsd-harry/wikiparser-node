@@ -29,9 +29,15 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	'format-leakage': [
-		2,
+		1,
 		{
-			// apostrophe: 2,
+			// apostrophe: 1,
+		},
+	],
+	'fostered-content': [
+		1,
+		{
+			// transclusion: 1,
 		},
 	],
 	h1: [
