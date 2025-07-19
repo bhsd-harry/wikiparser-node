@@ -8,7 +8,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
 const getLintRegex = getRegex(
 	name => new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'),
 );
-const voidExt = new Set(['languages', 'section', 'templatestyles']);
+const voidExt = new Set(['img', 'languages', 'section', 'templatestyles']);
 
 /**
  * text-only token inside an extension tag

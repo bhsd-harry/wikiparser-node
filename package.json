@@ -18,6 +18,7 @@
 		"/errors/README",
 		"/config/",
 		"!/config/mediawikiwiki.json",
+		"!/config/testwiki.json",
 		"/data/",
 		"/i18n/",
 		"/coverage/badge.svg",
