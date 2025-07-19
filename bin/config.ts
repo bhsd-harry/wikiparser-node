@@ -3,9 +3,9 @@
 import path from 'path';
 import fs from 'fs';
 import assert from 'assert/strict';
-import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/common/dist/cm';
+import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/cm-util';
 import {error} from '../util/diff';
-import type {MwConfig, MagicWord} from '@bhsd/common/dist/cm';
+import type {MwConfig, MagicWord} from '@bhsd/cm-util';
 import type {ConfigData} from '../base';
 
 declare interface Response {
