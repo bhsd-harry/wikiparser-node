@@ -18,3 +18,4 @@
 /localStorage.json
 /build
 !README
+/config/testwiki.json
