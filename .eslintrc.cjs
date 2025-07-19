@@ -1,7 +1,7 @@
 'use strict';
 
-const config = require('@bhsd/common/eslintrc.node.cjs'),
-	{rules} = require('@bhsd/common/eslintrc.browser.cjs');
+const config = require('@bhsd/code-standard/eslintrc.node.cjs'),
+	{rules} = require('@bhsd/code-standard/eslintrc.browser.cjs');
 const [
 		json,
 		ts,
