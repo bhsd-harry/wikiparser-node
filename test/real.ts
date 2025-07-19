@@ -1,4 +1,4 @@
-import {getPages, reset} from '@bhsd/common/dist/test';
+import {getPages, reset} from '@bhsd/test-util';
 import {error, info, diff} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
