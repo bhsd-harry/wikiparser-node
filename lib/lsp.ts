@@ -74,7 +74,7 @@ import path from 'path';
 import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
-import {styleLint} from '@bhsd/common/dist/stylelint';
+import {styleLint} from '@bhsd/stylelint-util';
 import {
 	EmbeddedJSONDocument,
 	EmbeddedCSSDocument,
