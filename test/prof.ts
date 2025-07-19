@@ -6,7 +6,7 @@ import {
 	writeFileSync,
 } from 'fs';
 import single from './single';
-import type {SimplePage} from '@bhsd/common/dist/test';
+import type {SimplePage} from '@bhsd/test-util';
 
 /* NOT FOR BROWSER ONLY */
 
