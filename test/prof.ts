@@ -3,7 +3,7 @@ import {
 } from 'fs';
 import single from './single';
 import {mock} from './wikiparse';
-import type {SimplePage} from '@bhsd/common/dist/test';
+import type {SimplePage} from '@bhsd/test-util';
 import type {Config} from '../base';
 
 const config: Config = require('../../config/default');
