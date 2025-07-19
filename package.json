@@ -80,6 +80,7 @@
 		"vscode-json-languageservice": "^5.6.1"
 	},
 	"devDependencies": {
+		"@bhsd/test-util": "^0.0.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@types/color-name": "^2.0.0",
