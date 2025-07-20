@@ -32,7 +32,7 @@ export abstract class ConverterRuleToken extends Token {
 		const i = rule.indexOf(':'),
 			j = rule.slice(0, i).indexOf('=>'),
 			v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
-		if (hasColon && config.variants.includes(v.trim())) {
+		if (hasColon && config.variants.includes(v.trim().toLowerCase())) {
 			super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 			super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
 			if (j !== -1) {
