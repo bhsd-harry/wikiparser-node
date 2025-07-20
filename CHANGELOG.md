@@ -16,6 +16,7 @@
 **Fixed**
 
 - [`Parser.normalizeTitle`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#normalizetitle) now correctly handles titles with nested transclusions
+- Conversion rules can have upper-case letters in their variant names
 
 **Changed**
 
