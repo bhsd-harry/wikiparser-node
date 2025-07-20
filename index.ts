@@ -186,6 +186,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}) of parser configuration is updated.`,
 				);
 			}
+
 			return this.getConfig();
 		}
 
