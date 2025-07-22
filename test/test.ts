@@ -12,7 +12,7 @@ declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
 wikiparse.setConfig(Parser.config);
 
-const re = /`(\{[^`]+\})`:\n+```wikitext\n([^`]+)\n```$/gmu;
+const re = /`(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\n```)+)$/gmu;
 
 /**
  * Mock CRLF
@@ -72,19 +72,22 @@ describe('API tests', () => {
 					for (const code of md.matchAll(re)) {
 						const [, config, wikitext] = code as string[] as [string, string, string];
 						it(config, () => {
-							try {
-								const lintConfig = JSON.parse(config);
-								Parser.lintConfig = lintConfig;
-								assert.strictEqual(
-									// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-									typeof lintConfig[cur] === 'number'
-									=== (Parser.lintConfig.getSeverity(cur as LintError.Rule) === 'error'),
-									Parser.parse(wikitext).lint()
-										.some(({rule, severity}) => rule === cur && severity === 'error'),
-								);
-							} catch (e) {
-								if (e instanceof assert.AssertionError) {
-									e.cause = {message: `\n${wikitext}`};
+							const lintConfig = JSON.parse(config);
+							Parser.lintConfig = lintConfig;
+							for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
+								try {
+									assert.strictEqual(
+										// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+										typeof lintConfig[cur] === 'number'
+										=== (Parser.lintConfig.getSeverity(cur as LintError.Rule) === 'error'),
+										Parser.parse(block).lint()
+											.some(({rule, severity}) => rule === cur && severity === 'error'),
+									);
+								} catch (e) {
+									if (e instanceof assert.AssertionError) {
+										e.cause = {message: `\n${block}`};
+									}
+									throw e;
 								}
 							}
 						});
