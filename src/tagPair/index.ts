@@ -30,8 +30,6 @@ export abstract class TagPairToken extends Token {
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 
-	/* NOT FOR BROWSER END */
-
 	/** inner wikitext / 内部wikitext */
 	get innerText(): string | undefined {
 		return this.selfClosing ? undefined : this.lastChild.text();
@@ -73,12 +71,13 @@ export abstract class TagPairToken extends Token {
 				nextSibling,
 				name,
 				closed,
+				type,
 			} = this,
 			[opening, closing] = this.#tags;
 
 		/* NOT FOR BROWSER */
 
-		if (!closed && nextSibling) {
+		if (!closed && nextSibling && type === 'include') {
 			Parser.error(`Auto-closing <${name}>`, lastChild);
 			this.closed = true;
 		}

@@ -3,6 +3,8 @@ import {
 	removeComment,
 	escape,
 
+	/* PRINT ONLY END */
+
 	/* NOT FOR BROWSER */
 
 	sanitize,

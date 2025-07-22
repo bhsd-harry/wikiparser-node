@@ -466,6 +466,4 @@ export const createTd = (
 	return token;
 };
 
-/* NOT FOR BROWSER END */
-
 classes['TdToken'] = __filename;

@@ -45,6 +45,9 @@
 
 import {
 	text,
+
+	/* NOT FOR BROWSER */
+
 	print,
 } from '../util/string';
 import {

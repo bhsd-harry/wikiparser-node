@@ -322,7 +322,13 @@ export abstract class TranscludeToken extends Token {
 				isTemplate ? 10 : 828,
 				{temporary: true},
 			);
+
+		/* NOT FOR BROWSER */
+
 		title.fragment = undefined;
+
+		/* NOT FOR BROWSER END */
+
 		return title;
 	}
 

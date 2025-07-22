@@ -211,6 +211,9 @@ export abstract class TableToken extends TrBaseToken {
 					{'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':'},
 				);
 				super.insertAt(token);
+
+				/* NOT FOR BROWSER */
+
 				if (!halfParsed) {
 					token.afterBuild();
 				}
