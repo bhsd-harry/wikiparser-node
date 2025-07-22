@@ -25,7 +25,8 @@ import type {
 	InlayHint,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, ConfigData, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
+// eslint-disable-next-line @stylistic/max-len
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser, LintConfiguration} from '../base';
 
 /* NOT EXPORTED */
 
@@ -35,6 +36,8 @@ export type {
 	AST,
 	Config,
 	ConfigData,
+	LintConfig,
+	LintConfiguration,
 	LintError,
 	LanguageService,
 	SignatureData,
@@ -57,6 +60,7 @@ export type {
 };
 
 export type Command = ['setI18N', Record<string, string>?]
+	| ['setLintConfig', LintConfig | undefined]
 	| ['setConfig', ConfigData]
 	| ['getConfig', number]
 	| ['destroy' | 'findStyleTokens', number]
@@ -121,6 +125,7 @@ export interface wikiparse {
 	version: string;
 	CDN: string;
 	setI18N: (i18n?: Record<string, string>) => void;
+	setLintConfig: (config?: LintConfig) => void;
 	setConfig: (config: ConfigData) => void;
 	getConfig: () => Promise<Config>;
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
@@ -138,7 +143,9 @@ export interface wikiparse {
 
 	id: number;
 	config: ConfigData;
-	provide: (...args: Exclude<Command, ['setI18N' | 'setConfig' | 'getConfig', ...unknown[]]>) => Promise<unknown>;
+	provide: (
+		...args: Exclude<Command, ['setI18N' | 'setLintConfig' | 'setConfig' | 'getConfig', ...unknown[]]>,
+	) => Promise<unknown>;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
 

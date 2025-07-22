@@ -55,6 +55,9 @@ const workerJS = () => {
             case 'setI18N':
                 Parser.i18n = qid;
                 break;
+            case 'setLintConfig':
+                Parser.lintConfig = qid;
+                break;
             case 'setConfig':
                 Parser.config = qid;
                 delete last.wikitext;
@@ -210,6 +213,9 @@ const getListener = (command, qid, resolve, raw) => {
 const setI18N = (i18n) => {
     worker.postMessage(['setI18N', i18n]);
 };
+const setLintConfig = (config) => {
+    worker.postMessage(['setLintConfig', config]);
+};
 const setConfig = (config) => {
     worker.postMessage(['setConfig', config]);
     wikiparse.config = config;
@@ -334,6 +340,7 @@ const wikiparse = {
     id: 0,
     config: {},
     setI18N,
+    setLintConfig,
     setConfig,
     getConfig,
     print,

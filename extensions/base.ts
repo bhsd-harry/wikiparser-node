@@ -6,6 +6,8 @@ import type {
 	LanguageService,
 	wikiparse as Wikiparse,
 	Command,
+	LintConfig,
+	LintConfiguration,
 } from './typings';
 
 declare type WorkerListener<T> = (e: {data: [string, number, T, string]}) => void;
@@ -91,6 +93,9 @@ const workerJS = (): void => {
 		switch (command) {
 			case 'setI18N':
 				Parser.i18n = qid;
+				break;
+			case 'setLintConfig':
+				Parser.lintConfig = qid as LintConfiguration;
 				break;
 			case 'setConfig':
 				Parser.config = qid;
@@ -267,6 +272,14 @@ const getListener = <T>(command: string, qid: number, resolve: (res: T) => void,
  */
 const setI18N = (i18n?: Record<string, string>): void => {
 	worker.postMessage(['setI18N', i18n]);
+};
+
+/**
+ * 更新Linter设置
+ * @param config Linter设置
+ */
+const setLintConfig = (config?: LintConfig): void => {
+	worker.postMessage(['setLintConfig', config]);
 };
 
 /**
@@ -487,6 +500,7 @@ const wikiparse: Wikiparse = {
 	id: 0,
 	config: {} as ConfigData,
 	setI18N,
+	setLintConfig,
 	setConfig,
 	getConfig,
 	print,
