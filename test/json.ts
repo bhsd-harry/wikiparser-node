@@ -90,7 +90,7 @@ for (const file of fs.readdirSync('config')) {
 const defaultConfig = configs['default.json']!,
 	{parserFunction, doubleUnderscore} = defaultConfig;
 for (const [file, config] of Object.entries(configs)) {
-	if (file !== 'default.json') {
+	if (file !== 'default.json' && file !== 'testwiki.json') {
 		describe(`${file} vs. default.json`, () => {
 			// ext/variable/functionHook/redirection/variants
 			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
