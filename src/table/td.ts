@@ -108,7 +108,6 @@ export abstract class TdToken extends TableBaseToken {
 		const {previousSibling} = this;
 		const result = {...(previousSibling as TdToken).#getSyntax()};
 		return result;
-		return result;
 	}
 
 	/** @private */

@@ -243,6 +243,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 const def: PropertyDescriptorMap = {
 	},
 	enumerable = new Set([
+		'lintConfig',
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
