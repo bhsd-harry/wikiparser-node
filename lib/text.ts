@@ -178,8 +178,8 @@ export class AstText extends AstNode {
 			const nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
 				leftBracket = lbrace || lbrack,
-				lConverter = lbrace && (nextChar === char || previousChar === '-' && variants.length > 0),
-				rConverter = rbrace && (previousChar === char || nextChar === '-' && variants.length > 0),
+				lConverter = lbrace && previousChar === '-' && variants.length > 0,
+				rConverter = rbrace && nextChar === '-' && variants.length > 0,
 				brokenExtLink = lbrack && nextType === 'free-ext-link' && !data.slice(index + 1).trim()
 					|| rbrack && previousType === 'free-ext-link'
 					&& !data.slice(0, index).includes(']');
@@ -214,7 +214,9 @@ export class AstText extends AstNode {
 				severity = Parser.lintConfig.getSeverity(rule, 'extLink');
 			} else if (leftBracket || rbrace || rbrack) {
 				rule = 'lonely-bracket';
-				if (length === 1) {
+				if (length > 1 || lbrace && nextChar === char || rbrace && previousChar === char) {
+					severity = Parser.lintConfig.getSeverity(rule, 'double');
+				} else {
 					if (!lbrack || type !== 'ext-link-text') {
 						const regex = regexes[char],
 							remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
@@ -235,8 +237,6 @@ export class AstText extends AstNode {
 						}
 					}
 					severity = Parser.lintConfig.getSeverity(rule, 'single');
-				} else {
-					severity = Parser.lintConfig.getSeverity(rule, 'double');
 				}
 			} else {
 				rule = 'lonely-http';
