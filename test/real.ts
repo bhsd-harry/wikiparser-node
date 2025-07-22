@@ -47,7 +47,9 @@ const {argv: [,, site = '']} = process,
 						}
 						await diff(content, text, pageid);
 					}
-					await lsp(page, true);
+					if (name !== 'MediaWiki') {
+						await lsp(page, true);
+					}
 				} catch (e) {
 					error(`解析 ${title} 页面时出错！`, e);
 					failed++;
