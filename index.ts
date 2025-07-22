@@ -351,9 +351,14 @@ const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
+		'lintConfig',
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
+
+		/* NOT FOR BROWSER ONLY */
+
+		'fetchConfig',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
