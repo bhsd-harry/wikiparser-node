@@ -8,7 +8,7 @@ import type {
 	ColorPresentation,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, ConfigData, LintError, AST, LanguageService} from '../base';
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService} from '../base';
 
 export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
 
@@ -44,6 +44,7 @@ export interface wikiparse {
 	version: string;
 	CDN: string;
 	setI18N: (i18n?: Record<string, string>) => void;
+	setLintConfig: (config?: LintConfig) => void;
 	setConfig: (config: ConfigData) => void;
 	getConfig: () => Promise<Config>;
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
