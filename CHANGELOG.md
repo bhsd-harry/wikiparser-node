@@ -27,6 +27,8 @@
 - Lowered severity of plain-text apostrophes next to bold/italic apostrophes
 - Lowered severity of unclosed apostrophes in section headers
 - Lowered severity of fostered table content
+- Lowered severity of double square brackets or curly braces
+- Lowered severity of lonely `http://` or `https://`
 
 ## v1.21.3
 
