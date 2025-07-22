@@ -249,7 +249,7 @@ export abstract class AttributeToken extends Token {
 			typeof value === 'string' && (
 				(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
 				|| simple
-				&& (name === 'href' || name === 'src')
+				&& (name === 'href' || tag === 'img' && name === 'src')
 				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
 					.test(value)
 			)
