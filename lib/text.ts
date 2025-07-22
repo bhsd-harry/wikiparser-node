@@ -185,12 +185,9 @@ export class AstText extends AstNode {
 			throw new Error('An isolated text node cannot be linted!');
 		}
 		const {type, name, parentNode: grandparent} = parentNode;
-		let isHtmlAttrVal = false;
 		if (type === 'attr-value') {
-			const {type: grandType, name: grandName, tag} = grandparent as AttributeToken;
-			if (grandType !== 'ext-attr') {
-				isHtmlAttrVal = true;
-			} else if (
+			const {name: grandName, tag} = grandparent as AttributeToken;
+			if (
 				tag === 'ref' && (grandName === 'name' || grandName === 'extends' || grandName === 'follow')
 				|| grandName === 'group' && (tag === 'ref' || tag === 'references')
 				|| tag === 'choose' && (grandName === 'before' || grandName === 'after')
@@ -202,7 +199,7 @@ export class AstText extends AstNode {
 			|| type === 'ext-link-url'
 			|| type === 'ext-link-text'
 			|| type === 'image-parameter' && name === 'link'
-			|| isHtmlAttrVal
+			|| type === 'attr-value'
 			? errorSyntaxUrl
 			: errorSyntax;
 		if (data.search(errorRegex) === -1) {
@@ -258,7 +255,7 @@ export class AstText extends AstNode {
 				previousChar = rootStr[startIndex - 1];
 			let severity: LintError.Severity = length > 1 && !(
 				char === '<' && (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '') || disallowedTags.has(tag!))
-				|| isHtmlAttrVal && (char === '[' || char === ']')
+				|| type === 'attr-value' && (char === '[' || char === ']')
 				|| magicLink && type === 'parameter-value'
 				|| /^(?:rfc|pmid|isbn)$/iu.test(error)
 			)
