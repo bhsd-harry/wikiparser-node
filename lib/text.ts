@@ -188,13 +188,13 @@ export class AstText extends AstNode {
 				severity = Parser.lintConfig.getSeverity(rule, error);
 			} else if (char === '<') {
 				rule = 'tag-like';
+				let key: string | undefined;
 				if (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
-					severity = Parser.lintConfig.getSeverity(rule, 'invalid');
+					key = 'invalid';
 				} else if (disallowedTags.has(tag!)) {
-					severity = Parser.lintConfig.getSeverity(rule, 'disallowed');
-				} else {
-					severity = Parser.lintConfig.getSeverity(rule);
+					key = 'disallowed';
 				}
+				severity = Parser.lintConfig.getSeverity(rule, key);
 			} else if (lConverter || rConverter) {
 				rule = 'lonely-bracket';
 				severity = Parser.lintConfig.getSeverity(rule, 'converter');
@@ -214,21 +214,23 @@ export class AstText extends AstNode {
 			} else if (leftBracket || rbrace || rbrack) {
 				rule = 'lonely-bracket';
 				if (length === 1) {
-					const regex = regexes[char],
-						remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
-					if (
-						lbrace && regex.exec(remains)?.[0] === '}'
-						|| rbrace && regex.exec(remains)?.[0] === '{'
-					) {
-						continue;
-					} else if (!remains.includes(char)) {
-						const sibling = leftBracket ? 'nextSibling' : 'previousSibling';
-						let cur = this[sibling];
-						while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
-							cur = cur[sibling];
-						}
-						if (cur && regex.exec(cur.data)![0] !== char) {
+					if (!lbrack || type !== 'ext-link-text') {
+						const regex = regexes[char],
+							remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
+						if (
+							lbrace && regex.exec(remains)?.[0] === '}'
+							|| rbrace && regex.exec(remains)?.[0] === '{'
+						) {
 							continue;
+						} else if (!remains.includes(char)) {
+							const sibling = leftBracket ? 'nextSibling' : 'previousSibling';
+							let cur = this[sibling];
+							while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
+								cur = cur[sibling];
+							}
+							if (cur && regex.exec(cur.data)![0] !== char) {
+								continue;
+							}
 						}
 					}
 					severity = Parser.lintConfig.getSeverity(rule, 'single');
