@@ -122,7 +122,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		) => {
 			const l = accum.length;
 			let ch = 'n';
-			if (name || imgClosing !== undefined) {
+			if (name || newExt.includes('img') && imgClosing !== undefined) {
 				ch = 'e';
 				// @ts-expect-error abstract class
 				new ExtToken(
