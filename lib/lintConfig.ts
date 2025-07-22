@@ -77,6 +77,23 @@ const defaultLintConfig: LintConfig = {
 			// word: 1,
 		},
 	],
+	'lonely-bracket': [
+		1,
+		{
+			// converter: 1,
+			// double: 1,
+			extLink: 2,
+			// single: 1,
+		},
+	],
+	'lonely-http': [
+		1,
+		{
+			// ISBN: 1,
+			// PMID: 1,
+			// RFC: 1,
+		},
+	],
 	'nested-link': [
 		2,
 		{
@@ -137,6 +154,13 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 	'table-layout': 1,
+	'tag-like': [
+		2,
+		{
+			disallowed: 1,
+			invalid: 1,
+		},
+	],
 	'unbalanced-header': 2,
 	'unclosed-comment': [
 		1,
