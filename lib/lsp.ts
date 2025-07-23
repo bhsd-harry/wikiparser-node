@@ -364,15 +364,22 @@ const adjustPos = (height: number, width: number, line: number, column: number):
  * Get the position of a Stylelint error.
  * @param rect bounding client rect of the token
  * @param bottom bottom of the style block
- * @param line line number
- * @param column column number
+ * @param lineOrCode line number or code string
+ * @param columnOrOffset column number or offset in the code string
  */
-const getStylelintPos = (rect: Dimension & NodePosition, bottom: number, line: number, column: number): Position => {
+const getStylelintPos = (
+	rect: Dimension & NodePosition,
+	bottom: number,
+	lineOrCode: number | string,
+	columnOrOffset: number,
+): Position => {
 	const {top, left, height, width} = rect,
 		start = bottom - height - 1;
-	line -= start;
-	[line, column] = adjustPos(height, width, line, column);
-	return getEndPos(top, left, line, column);
+	if (typeof lineOrCode === 'number') {
+		return getEndPos(top, left, ...adjustPos(height, width, lineOrCode - start, columnOrOffset));
+	}
+	const lines = lineOrCode.slice(0, columnOrOffset).split(/\r?\n/u);
+	return getStylelintPos(rect, bottom, lines.length, lines.at(-1)!.length);
 };
 
 /**
@@ -1071,13 +1078,12 @@ export class LanguageService implements LanguageServiceBase {
 						if (tokens.length === 0) {
 							return [];
 						}
-						const cssErrors = await styleLint(
-							(await stylelint)!,
-							tokens.map(({type, tag, lastChild}, i) => `${type === 'ext-attr' ? 'div' : tag}#${i}{\n${
-								sanitizeInlineStyle(lastChild.toString())
-							}\n}`).join('\n'),
-							cssRules,
-						);
+						const code = tokens.map(
+								({type, tag, lastChild}, i) => `${type === 'ext-attr' ? 'div' : tag}#${i}{\n${
+									sanitizeInlineStyle(lastChild.toString())
+								}\n}`,
+							).join('\n'),
+							cssErrors = await styleLint((await stylelint)!, code, cssRules);
 						if (cssErrors.length === 0) {
 							return [];
 						}
@@ -1095,6 +1101,7 @@ export class LanguageService implements LanguageServiceBase {
 							column,
 							endLine = line,
 							endColumn = column,
+							fix,
 						}): DiagnosticBase => {
 							const i = bottoms.findIndex(bottom => bottom >= line);
 							return {
@@ -1106,6 +1113,21 @@ export class LanguageService implements LanguageServiceBase {
 								source: 'Stylelint',
 								code: rule,
 								message: msg.slice(0, msg.lastIndexOf('(') - 1),
+								...fix
+									? {
+										data: [
+											{
+												range: {
+													start: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range[0]),
+													end: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range[1]),
+												},
+												newText: fix.text,
+												title: `Fix: ${rule}`,
+												fix: true,
+											} satisfies QuickFixData,
+										],
+									}
+									: {},
 							};
 						});
 					})() :
