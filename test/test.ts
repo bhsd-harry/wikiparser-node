@@ -42,6 +42,7 @@ describe('API tests', () => {
 						delete Parser.config.articlePath;
 					}
 					wikiparse.setI18N();
+					wikiparse.setLintConfig();
 				});
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
