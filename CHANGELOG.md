@@ -1,3 +1,11 @@
+## v1.22.1
+
+*2025-07-24*
+
+**Added**
+
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now includes available quick fixes for Stylelint errors
+
 ## v1.22.0
 
 *2025-07-22*
