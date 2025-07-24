@@ -14,7 +14,9 @@ export const readOnly = (readonly = false) =>
 			Parser.viewOnly = readonly;
 		}
 		const result = method.apply(this, args);
-		Parser.viewOnly = viewOnly;
+		if (!Shadow.running) {
+			Parser.viewOnly = viewOnly;
+		}
 		return result;
 	};
 
