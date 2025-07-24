@@ -11,12 +11,17 @@ import type {SimplePage} from '@bhsd/test-util';
 /* NOT FOR BROWSER ONLY */
 
 import inspector from 'inspector';
+import {register} from 'module'; // eslint-disable-line n/no-unsupported-features/node-builtins
+import {pathToFileURL} from 'url';
+import path from 'path';
 import lsp from './lsp';
 import type {Profiler} from 'inspector';
 
 declare interface ProfileNode extends Pick<Profiler.ProfileNode, 'callFrame' | 'hitCount'> {
 	positionTicks: Record<number, number>;
 }
+
+register(pathToFileURL(path.join(__dirname, 'hooks.js')));
 
 /**
  * Adds the ticks to the myTicks object.
