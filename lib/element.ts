@@ -141,16 +141,16 @@ export abstract class AstElement extends AstNode {
 	/**
 	 * 符合条件的所有后代节点
 	 * @param condition 条件
+	 * @param descendants 已经找到的后代节点
 	 */
-	#getElementsBy<T>(condition: TokenPredicate<T>): T[] {
-		let descendants: T[] = [];
+	#getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {
 				continue;
 			} else if (condition(child)) {
 				descendants.push(child);
 			}
-			descendants = [...descendants, ...child.#getElementsBy(condition)];
+			child.#getElementsBy(condition, descendants);
 		}
 		return descendants;
 	}
