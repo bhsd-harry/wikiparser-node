@@ -14,8 +14,8 @@ export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
  */
 const basic = (selector: string, type: string, name?: string): boolean => {
 	if (selector.includes('#')) {
-		const [t, ...names] = selector.split('#');
-		return (!t || t === type) && names.every(n => n === name);
+		const i = selector.indexOf('#');
+		return (i === 0 || selector.slice(0, i) === type) && selector.slice(i + 1) === name;
 	}
 	return !selector || selector === type;
 };
