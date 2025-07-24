@@ -503,12 +503,17 @@ const checkToken = (
  * @param scope 作用对象
  * @param has `:has()`伪选择器
  */
-export const getCondition = <T>(selector: string, scope: AstElement, has?: Token): TokenPredicate<T> => (
-	/* eslint-disable @stylistic/operator-linebreak */
-	/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector.trim()) ?
-		checkToken(selector, scope, has) :
-		({type, name}): boolean => selector.split(',').some(str => basic(str.trim(), type, name))
-/* eslint-enable @stylistic/operator-linebreak */
-) as TokenPredicate<T>;
+export const getCondition = <T>(selector: string, scope: AstElement, has?: Token): TokenPredicate<T> => {
+	/* NOT FOR BROWSER */
+
+	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector.trim())) {
+		return checkToken(selector, scope, has) as TokenPredicate<T>;
+	}
+
+	/* NOT FOR BROWSER END */
+
+	const parts = selector.split(',');
+	return (({type, name}): boolean => parts.some(str => basic(str.trim(), type, name))) as TokenPredicate<T>;
+};
 
 parsers['parseSelector'] = __filename;
