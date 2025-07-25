@@ -567,6 +567,7 @@
 		"translation",
 		"chart",
 		"avatar",
+		"img",
 		"mentor"
 	],
 	"variable": [
@@ -936,6 +937,7 @@
 			"#头像": "avatar",
 			"#頭像": "avatar",
 			"#avatar": "avatar",
+			"#img": "img",
 			"wb報表名稱": "wbreponame",
 			"wb报告名": "wbreponame",
 			"wbreponame": "wbreponame"
