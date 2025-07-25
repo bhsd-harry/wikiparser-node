@@ -8,9 +8,11 @@ import type {Dimension, Position} from './node';
  * @param offset 相对位置
  * @param end 是否是终点
  */
-const getIndex = (referenceNode: AstNodes, offset: number, end?: boolean): number =>
-	referenceNode.getAbsoluteIndex() + referenceNode.getRelativeIndex(offset - (end ? 1 : 0))
-	+ (end ? referenceNode.childNodes[offset - 1]!.toString().length : 0);
+const getIndex = (referenceNode: AstNodes, offset: number, end?: boolean): number => {
+	end &&= referenceNode.type !== 'text';
+	return referenceNode.getAbsoluteIndex() + referenceNode.getRelativeIndex(offset - (end ? 1 : 0))
+		+ (end ? referenceNode.childNodes[offset - 1]!.toString().length : 0);
+};
 
 /**
  * 获取父节点或抛出错误
@@ -79,7 +81,8 @@ export class AstRange {
 
 	/** end character index / 终点绝对位置 */
 	get endIndex(): number {
-		return getIndex(this.endContainer, this.endOffset, !this.collapsed);
+		const {endContainer, endOffset} = this;
+		return getIndex(endContainer, endOffset, this.#startContainer ? !this.collapsed : endOffset > 0);
 	}
 
 	/** end position / 终点行列位置 */
