@@ -1,10 +1,14 @@
 ## v1.22.1
 
-*2025-07-24*
+*2025-07-25*
 
 **Added**
 
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now includes available quick fixes for Stylelint errors
+
+**Changed**
+
+- The preset configuration for Moegirlpedia is updated to support the latest version of [Extension:MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)
 
 ## v1.22.0
 
@@ -29,7 +33,7 @@
 **Changed**
 
 - The preset configurations are updated
-- For [Moegirlpedia](https://zh.moegirl.org.cn/), `<img>` tags are now parsed as extension tags ([Extension: MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)) instead of HTML tags
+- For [Moegirlpedia](https://zh.moegirl.org.cn/), `<img>` tags are now parsed as extension tags ([Extension:MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)) instead of HTML tags
 - Lowered severity of invalid gallery image parameters and duplicate categories
 - Lowered severity of unmatched HTML tags
 - Lowered severity of plain-text apostrophes next to bold/italic apostrophes
