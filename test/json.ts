@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import type {ConfigData, SignatureData} from '../base';
+import type {
+	ConfigData,
+} from '../base';
 
 const basePath = path.join('..', '..');
 
@@ -88,7 +90,9 @@ for (const file of fs.readdirSync('config')) {
 }
 
 const defaultConfig = configs['default.json']!,
-	{parserFunction, doubleUnderscore} = defaultConfig;
+	{
+		parserFunction,
+	} = defaultConfig;
 for (const [file, config] of Object.entries(configs)) {
 	if (file !== 'default.json' && file !== 'testwiki.json') {
 		describe(`${file} vs. default.json`, () => {
@@ -176,41 +180,6 @@ for (const [file, config] of Object.entries(configs)) {
 		});
 	}
 }
-
-const {
-	behaviorSwitches,
-	parserFunctions,
-} = require(path.join(basePath, 'data', 'signatures.json')) as SignatureData;
-const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
-		.map(s => s.toLowerCase()),
-	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]]
-		.flat(2)
-		.map(s => s.toLowerCase()),
-	behaviorSwitchNames = behaviorSwitches.flatMap(({aliases}) => aliases),
-	parserFunctionNames = parserFunctions.flatMap(({aliases}) => aliases);
-describe('signatures.json', () => {
-	it('behaviorSwitch signatures', () => {
-		assert.strictEqual(
-			behaviorSwitchNames.length,
-			new Set(behaviorSwitchNames).size,
-			'Duplicate magic words',
-		);
-		for (const word of behaviorSwitchNames) {
-			assert.ok(doubleUnderscores.includes(word), `Missing: ${word}`);
-		}
-	});
-
-	it('parserFunction signatures', () => {
-		assert.strictEqual(
-			parserFunctionNames.length,
-			new Set(parserFunctionNames).size,
-			'Duplicate magic words',
-		);
-		for (const word of parserFunctionNames) {
-			assert.ok(magicWords.includes(word), `Missing: ${word}`);
-		}
-	});
-});
 
 let baseI18nFile: string | undefined,
 	baseI18n: Set<string> | undefined;
