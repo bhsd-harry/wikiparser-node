@@ -1,7 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import type {ConfigData, SignatureData} from '../base';
+import type {
+	ConfigData,
+
+	/* NOT FOR BROWSER ONLY */
+
+	SignatureData,
+} from '../base';
 
 const basePath = path.join('..', '..');
 
@@ -88,7 +94,13 @@ for (const file of fs.readdirSync('config')) {
 }
 
 const defaultConfig = configs['default.json']!,
-	{parserFunction, doubleUnderscore} = defaultConfig;
+	{
+		parserFunction,
+
+		/* NOT FOR BROWSER ONLY */
+
+		doubleUnderscore,
+	} = defaultConfig;
 for (const [file, config] of Object.entries(configs)) {
 	if (file !== 'default.json' && file !== 'testwiki.json') {
 		describe(`${file} vs. default.json`, () => {
@@ -177,6 +189,29 @@ for (const [file, config] of Object.entries(configs)) {
 	}
 }
 
+let baseI18nFile: string | undefined,
+	baseI18n: Set<string> | undefined;
+describe('i18n', () => {
+	for (const file of fs.readdirSync('i18n')) {
+		const i18n = new Set(Object.keys(require(path.join(basePath, 'i18n', file)) as Record<string, string>));
+		if (baseI18n) {
+			it(`${baseI18nFile} vs. file`, () => { // eslint-disable-line @typescript-eslint/no-loop-func
+				for (const key of i18n) {
+					assert(baseI18n!.has(key), `'${key}' not in ${baseI18nFile}`);
+				}
+				for (const key of baseI18n!) {
+					assert(i18n.has(key), `'${key}' not in ${file}`);
+				}
+			});
+		} else {
+			baseI18nFile = file;
+			baseI18n = i18n;
+		}
+	}
+});
+
+/* NOT FOR BROWSER ONLY */
+
 const {
 	behaviorSwitches,
 	parserFunctions,
@@ -210,25 +245,4 @@ describe('signatures.json', () => {
 			assert.ok(magicWords.includes(word), `Missing: ${word}`);
 		}
 	});
-});
-
-let baseI18nFile: string | undefined,
-	baseI18n: Set<string> | undefined;
-describe('i18n', () => {
-	for (const file of fs.readdirSync('i18n')) {
-		const i18n = new Set(Object.keys(require(path.join(basePath, 'i18n', file)) as Record<string, string>));
-		if (baseI18n) {
-			it(`${baseI18nFile} vs. file`, () => { // eslint-disable-line @typescript-eslint/no-loop-func
-				for (const key of i18n) {
-					assert(baseI18n!.has(key), `'${key}' not in ${baseI18nFile}`);
-				}
-				for (const key of baseI18n!) {
-					assert(i18n.has(key), `'${key}' not in ${file}`);
-				}
-			});
-		} else {
-			baseI18nFile = file;
-			baseI18n = i18n;
-		}
-	}
 });
