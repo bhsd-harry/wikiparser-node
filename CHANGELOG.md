@@ -6,6 +6,10 @@
 
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now includes available quick fixes for Stylelint errors
 
+**Fixed**
+
+- [`AstRange.endIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#endindex) when the range is not empty
+
 **Changed**
 
 - The preset configuration for Moegirlpedia is updated to support the latest version of [Extension:MoeImgTag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)

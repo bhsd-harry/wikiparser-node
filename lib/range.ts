@@ -6,9 +6,11 @@ import type {Dimension, Position} from './node';
  * 计算绝对位置
  * @param referenceNode 容器
  * @param offset 相对位置
+ * @param end 是否是终点
  */
-const getIndex = (referenceNode: AstNodes, offset: number): number =>
-	referenceNode.getAbsoluteIndex() + referenceNode.getRelativeIndex(offset);
+const getIndex = (referenceNode: AstNodes, offset: number, end?: boolean): number =>
+	referenceNode.getAbsoluteIndex() + referenceNode.getRelativeIndex(offset - (end ? 1 : 0))
+	+ (end ? referenceNode.childNodes[offset - 1]!.toString().length : 0);
 
 /**
  * 获取父节点或抛出错误
@@ -77,7 +79,7 @@ export class AstRange {
 
 	/** end character index / 终点绝对位置 */
 	get endIndex(): number {
-		return getIndex(this.endContainer, this.endOffset);
+		return getIndex(this.endContainer, this.endOffset, !this.collapsed);
 	}
 
 	/** end position / 终点行列位置 */

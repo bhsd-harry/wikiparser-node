@@ -103,7 +103,7 @@ export interface AttributesParentBase {
  */
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T): T => {
 	/** 子节点含有AttributesToken的类 */
-	abstract class AttributesParent extends constructor {
+	abstract class AttributesParent extends constructor implements AttributesParentBase {
 		/* NOT FOR BROWSER */
 
 		/** @implements */

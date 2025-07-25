@@ -14,7 +14,7 @@ export interface SyntaxBase {
  */
 export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(constructor: S): S => {
 	/** 满足特定语法格式的Token */
-	abstract class SyntaxToken extends constructor {
+	abstract class SyntaxToken extends constructor implements SyntaxBase {
 		declare pattern: RegExp;
 
 		/** @class */

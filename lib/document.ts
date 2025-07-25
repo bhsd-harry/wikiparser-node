@@ -128,7 +128,7 @@ class EmbeddedDocument implements TextDocument {
 		this.languageId = id;
 		this.lineCount = root.getLines().length;
 		this.#root = root;
-		this.#content = String(token);
+		this.#content = token.toString();
 		this.#offset = token.getAbsoluteIndex();
 		this.pre = pre;
 		this.#post = post;
