@@ -2,8 +2,10 @@
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {cached} from '../mixin/cached';
+import {nodeLike} from '../mixin/nodeLike';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {Cached} from '../util/lint';
+import type {NodeLike} from '../mixin/nodeLike';
 import type {
 	AstText,
 	Token,
@@ -33,11 +35,14 @@ export interface Font {
 	italic: boolean;
 }
 
+export interface AstNode extends NodeLike {}
+
 /**
  * Node-like
  *
  * 类似Node
  */
+@nodeLike
 export abstract class AstNode implements AstNodeBase {
 	declare data?: string | undefined;
 	readonly childNodes: readonly AstNodes[] = [];
@@ -60,16 +65,6 @@ export abstract class AstNode implements AstNodeBase {
 	abstract lint(): LintError[] & {output?: string};
 	abstract print(): string;
 
-	/** first child node / 首位子节点 */
-	get firstChild(): AstNodes | undefined {
-		return this.childNodes[0];
-	}
-
-	/** last child node / 末位子节点 */
-	get lastChild(): AstNodes | undefined {
-		return this.childNodes[this.childNodes.length - 1];
-	}
-
 	/** parent node / 父节点 */
 	get parentNode(): Token | undefined {
 		return this.#parentNode;
@@ -83,16 +78,6 @@ export abstract class AstNode implements AstNodeBase {
 	/** previous sibling node / 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
 		return this.#previousSibling;
-	}
-
-	/** number of lines / 行数 */
-	get offsetHeight(): number {
-		return this.#getDimension().height;
-	}
-
-	/** number of columns of the last line / 最后一行的列数 */
-	get offsetWidth(): number {
-		return this.#getDimension().width;
 	}
 
 	/** @private */
@@ -189,8 +174,8 @@ export abstract class AstNode implements AstNodeBase {
 		return undefined;
 	}
 
-	/** 获取行数和最后一行的列数 */
-	#getDimension(): Dimension {
+	/** @private */
+	getDimension(): Dimension {
 		const lines = this.getLines(),
 			last = lines[lines.length - 1]!;
 		return {height: lines.length, width: last[2] - last[1]};
@@ -260,7 +245,7 @@ export abstract class AstNode implements AstNodeBase {
 	getBoundingClientRect(): Dimension & Position {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return {
-			...this.#getDimension(),
+			...this.getDimension(),
 			...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!,
 		};
 	}
