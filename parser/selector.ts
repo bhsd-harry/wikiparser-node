@@ -26,7 +26,7 @@ const basic = (selector: string, type: string, name?: string): boolean => {
  * @param scope 作用对象
  * @param has `:has()`伪选择器
  */
-export const getCondition = <T>(selector: string, scope: AstElement, has?: Token): TokenPredicate<T> => {
+export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
 	const parts = selector.split(',');
 	return (({type, name}): boolean => parts.some(str => basic(str.trim(), type, name))) as TokenPredicate<T>;
 };

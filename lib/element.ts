@@ -4,10 +4,11 @@ import {
 import {setChildNodes} from '../util/debug';
 import {getCondition} from '../parser/selector';
 import {AstNode} from './node';
+import {elementLike} from '../mixin/elementLike';
 import type {
 	LintError,
 } from '../base';
-import type {TokenPredicate} from '../parser/selector';
+import type {ElementLike} from '../mixin/elementLike';
 import type {
 	AstNodes,
 	AstText,
@@ -19,11 +20,14 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
+export interface AstElement extends AstNode, ElementLike {}
+
 /**
  * HTMLElement-like
  *
  * 类似HTMLElement
  */
+@elementLike
 export abstract class AstElement extends AstNode {
 	declare readonly name?: string;
 	declare readonly data: undefined;
@@ -104,64 +108,6 @@ export abstract class AstElement extends AstNode {
 			({parentNode} = parentNode);
 		}
 		return undefined;
-	}
-
-	/**
-	 * 符合条件的第一个后代节点
-	 * @param condition 条件
-	 */
-	#getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				continue;
-			} else if (condition(child)) {
-				return child;
-			}
-			const descendant = child.#getElementBy(condition);
-			if (descendant) {
-				return descendant;
-			}
-		}
-		return undefined;
-	}
-
-	/**
-	 * Get the first descendant that matches the selector
-	 *
-	 * 符合选择器的第一个后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelector<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector, this);
-		return this.#getElementBy(condition);
-	}
-
-	/**
-	 * 符合条件的所有后代节点
-	 * @param condition 条件
-	 * @param descendants 已经找到的后代节点
-	 */
-	#getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				continue;
-			} else if (condition(child)) {
-				descendants.push(child);
-			}
-			child.#getElementsBy(condition, descendants);
-		}
-		return descendants;
-	}
-
-	/**
-	 * Get all descendants that match the selector
-	 *
-	 * 符合选择器的所有后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelectorAll<T = Token>(selector: string): T[] {
-		const condition = getCondition<T>(selector, this);
-		return this.#getElementsBy(condition);
 	}
 
 	/**
