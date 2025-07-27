@@ -5,6 +5,7 @@
 **Added**
 
 - [`HtmlToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#getrange) that returns the range of the HTML tag pair
+- New properties and methods of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29): [`childNodes`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#childnodes), [`firstChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#firstchild), [`lastChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#lastchild), [`offsetHeight`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#offsetheight), [`offsetWidth`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#offsetwidth), [`getClientRects`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getclientrects), [`remove`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#remove), [`before`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#before), [`after`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#after), [`replaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#replacewith), [`getRootNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getrootnode)
 
 ## v1.22.1
 

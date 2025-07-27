@@ -1,6 +1,10 @@
 import {classes} from '../util/constants';
+import {nodeLike} from '../mixin/nodeLike';
+import type {NodeLike} from '../mixin/nodeLike';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
+
+export interface AstRange extends NodeLike {}
 
 /**
  * 计算绝对位置
@@ -43,6 +47,7 @@ const notInit = (start: boolean): never => {
  *
  * 模拟Range对象
  */
+@nodeLike
 export class AstRange {
 	#startContainer: AstNodes | undefined;
 	#startOffset: number | undefined;
@@ -99,6 +104,16 @@ export class AstRange {
 	get commonAncestorContainer(): AstNodes {
 		const {startContainer, endContainer} = this;
 		return startContainer.contains(endContainer) ? startContainer : startContainer.parentNode!;
+	}
+
+	/**
+	 * nodes in the Range
+	 *
+	 * 范围内的节点
+	 * @since v1.23.0
+	 */
+	get childNodes(): AstNodes[] {
+		return this.extractContents();
 	}
 
 	/**
@@ -369,7 +384,7 @@ export class AstRange {
 			{childNodes} = commonAncestorContainer;
 		let {startOffset, endOffset} = this;
 		if (commonAncestorContainer.type === 'text') {
-			commonAncestorContainer.deleteData(startOffset, endOffset);
+			commonAncestorContainer.deleteData(startOffset, endOffset - startOffset);
 			this.#endOffset = this.#startOffset;
 			return;
 		} else if (startContainer.type === 'text') {
@@ -390,6 +405,16 @@ export class AstRange {
 	}
 
 	/**
+	 * Remove the contents of the Range
+	 *
+	 * 删除Range中的内容
+	 * @since v1.23.0
+	 */
+	remove(): void {
+		this.deleteContents();
+	}
+
+	/**
 	 * Get the position and dimension
 	 *
 	 * 获取行列位置和大小
@@ -400,39 +425,123 @@ export class AstRange {
 	}
 
 	/**
-	 * Insert a node at the start
+	 * Get the client rects of all nodes in the Range
 	 *
-	 * 在起始位置插入节点
-	 * @param newNode node to be inserted / 插入的节点
+	 * 获取范围内所有节点的行列位置和大小
+	 * @since v1.23.0
 	 */
-	insertNode(newNode: AstNodes | string): void {
-		const {startContainer, startOffset} = this,
-			endContainer = this.#endContainer;
-		if (startContainer.type === 'text') {
-			if (startOffset) {
-				startContainer.splitText(startOffset);
-				this.#startContainer = startContainer.nextSibling!;
+	getClientRects(): (Dimension & Position)[] {
+		return this.extractContents().map(node => node.getBoundingClientRect());
+	}
+
+	/**
+	 * 断开范围两端的文本节点
+	 * @param end 是否在终点断开文本节点
+	 */
+	#splitText(end?: boolean): void {
+		if (end) {
+			const {endContainer, endOffset} = this;
+			if (endContainer.type === 'text' && endOffset < endContainer.length) {
+				endContainer.splitText(endOffset);
+			}
+		} else {
+			const {startContainer, startOffset} = this;
+			if (startContainer.type === 'text' && startOffset) {
+				this.#startContainer = startContainer.splitText(startOffset);
 				this.#startOffset = 0;
-				startContainer.after(newNode);
-				if (endContainer === startContainer) {
+				if (this.#endContainer === startContainer) {
 					this.#endContainer = this.#startContainer;
 					this.#endOffset! -= startOffset;
-				} else if (endContainer) {
-					this.#endOffset! += 2;
-				}
-			} else {
-				startContainer.before(newNode);
-				if (endContainer && endContainer !== startContainer) {
+				} else if (this.#endContainer && this.#endContainer.type !== 'text') {
 					this.#endOffset!++;
 				}
 			}
+		}
+	}
+
+	/**
+	 * Insert a node before or after the Range
+	 *
+	 * 在范围前或后插入节点
+	 * @param newNode node to be inserted / 插入的节点
+	 * @param after whether to insert after the Range / 是否在范围后插入
+	 */
+	insertNode(newNode: AstNodes | string, after?: boolean): void {
+		if (after) {
+			const {endContainer, endOffset} = this;
+			if (endContainer.type === 'text') {
+				this.#splitText(true);
+				this.endContainer.after(newNode);
+			} else {
+				endContainer.insertAt(newNode as string, endOffset);
+			}
 		} else {
-			startContainer.insertAt(newNode as string, startOffset);
-			this.#startOffset!++;
-			if (endContainer === startContainer) {
+			const {startContainer, startOffset} = this;
+			if (startContainer.type === 'text') {
+				this.#splitText();
+				this.startContainer.before(newNode);
+			} else {
+				startContainer.insertAt(newNode as string, startOffset);
+				this.#startOffset!++;
+			}
+			if (this.#endContainer && this.#endContainer.type !== 'text') {
 				this.#endOffset!++;
 			}
 		}
+	}
+
+	/**
+	 * Insert nodes before the Range
+	 *
+	 * 在范围前插入节点
+	 * @param nodes nodes to be inserted / 插入节点
+	 * @since v1.23.0
+	 */
+	before(...nodes: (AstNodes | string)[]): void {
+		for (const node of nodes) {
+			this.insertNode(node);
+		}
+	}
+
+	/**
+	 * 在范围后插入节点
+	 * @param nodes 插入节点
+	 */
+	#after(nodes: (AstNodes | string)[]): void {
+		for (let i = nodes.length - 1; i >= 0; i--) {
+			this.insertNode(nodes[i]!, true);
+		}
+	}
+
+	/**
+	 * Insert nodes after the Range
+	 *
+	 * 在范围后插入节点
+	 * @param nodes nodes to be inserted / 插入节点
+	 * @since v1.23.0
+	 */
+	after(...nodes: (AstNodes | string)[]): void {
+		this.#after(nodes);
+	}
+
+	/**
+	 * Replace the Range with new nodes
+	 *
+	 * 将当前范围批量替换为新的节点
+	 * @param nodes nodes to be inserted / 插入节点
+	 * @since v1.23.0
+	 */
+	replaceWith(...nodes: (AstNodes | string)[]): void {
+		this.deleteContents();
+		this.#after(nodes);
+		const {endContainer} = this,
+			{type, parentNode} = endContainer;
+		if (type === 'text') {
+			this.#startContainer = parentNode!;
+			this.#startOffset = parentNode!.childNodes.indexOf(endContainer) + 1;
+			this.#endContainer = parentNode!;
+		}
+		this.#endOffset = this.#startOffset! + nodes.length;
 	}
 
 	/** @private */
@@ -447,45 +556,19 @@ export class AstRange {
 	 * 获取范围内的全部节点
 	 */
 	extractContents(): AstNodes[] {
+		if (this.startContainer === this.endContainer && this.#startOffset === this.#endOffset) {
+			return [];
+		}
+		this.#splitText();
+		this.#splitText(true);
 		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
-			{childNodes} = commonAncestorContainer;
-		let from: number,
-			to: number;
-		if (commonAncestorContainer.type === 'text') {
-			if (startOffset === endOffset) {
-				return [];
-			} else if (endOffset < commonAncestorContainer.length) {
-				commonAncestorContainer.splitText(endOffset);
-			}
-			if (startOffset) {
-				const nextSibling = commonAncestorContainer.splitText(startOffset);
-				this.#startContainer = nextSibling;
-				this.#startOffset = 0;
-				this.#endContainer = nextSibling;
-				this.#endOffset! -= startOffset;
-				return [nextSibling];
-			}
+			{type, childNodes} = commonAncestorContainer;
+		if (type === 'text') {
 			return [commonAncestorContainer];
-		} else if (endContainer.type === 'text') {
-			if (endOffset && endOffset < endContainer.length) {
-				endContainer.splitText(endOffset);
-			}
-			to = childNodes.indexOf(endContainer) + (endOffset && 1);
-		} else {
-			to = endOffset;
 		}
-		if (startContainer.type === 'text') {
-			if (startOffset && startOffset < startContainer.length) {
-				this.#startContainer = startContainer.splitText(startOffset);
-				this.#startOffset = 0;
-				this.#endOffset!++;
-				to++;
-			}
-			from = childNodes.indexOf(startContainer) + (startOffset && 1);
-		} else {
-			from = startOffset;
-		}
-		return commonAncestorContainer.childNodes.slice(from, to);
+		const from = startContainer.type === 'text' ? childNodes.indexOf(startContainer) : startOffset,
+			to = endContainer.type === 'text' ? childNodes.indexOf(endContainer) + 1 : endOffset;
+		return childNodes.slice(from, to);
 	}
 
 	/**
@@ -495,6 +578,22 @@ export class AstRange {
 	 */
 	cloneContents(): AstNodes[] {
 		return this.extractContents().map(node => node.cloneNode());
+	}
+
+	/** @private */
+	getDimension(): Dimension {
+		const lines = this.toString().split('\n');
+		return {height: lines.length, width: lines.at(-1)!.length};
+	}
+
+	/**
+	 * Get the root node
+	 *
+	 * 获取根节点
+	 * @since v1.23.0
+	 */
+	getRootNode(): AstNodes {
+		return (this.#endContainer ?? this.startContainer).getRootNode();
 	}
 }
 
