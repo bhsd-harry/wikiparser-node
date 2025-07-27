@@ -25,23 +25,22 @@ export interface AttributesParentBase {
  * @param i AttributesToken子节点的位置
  */
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T): T => {
-	/** 子节点含有AttributesToken的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class AttributesParent extends constructor implements AttributesParentBase {
 		/** AttributesToken子节点 */
 		#getAttributesChild(): AttributesToken {
 			return this.childNodes[i] as AttributesToken;
 		}
 
-		/** @implements */
 		hasAttr(key: string): boolean {
 			return this.#getAttributesChild().hasAttr(key);
 		}
 
-		/** @implements */
 		getAttr(key: string): string | true | undefined {
 			return this.#getAttributesChild().getAttr(key);
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(AttributesParent, constructor);
 	return AttributesParent;
 };

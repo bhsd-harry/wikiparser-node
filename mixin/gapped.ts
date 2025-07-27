@@ -5,13 +5,13 @@ import {mixin} from '../util/debug';
  * @param gap
  */
 export const gapped = (gap = 1) => <S extends AstConstructor>(constructor: S): S => {
-	/** 不可增删子节点的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class GappedToken extends constructor {
-		/** @private */
 		getGaps(): number {
 			return gap;
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(GappedToken, constructor);
 	return GappedToken;
 };

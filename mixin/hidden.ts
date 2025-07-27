@@ -7,7 +7,7 @@ import type {LintError} from '../base';
  * @param html 是否覆写 toHtml 方法
  */
 export const hiddenToken = (linter = true, html = true) => <T extends AstConstructor>(constructor: T): T => {
-	/** 解析后不可见的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class AnyHiddenToken extends constructor {
 		/** 没有可见部分 */
 		override text(): string {
@@ -19,6 +19,7 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 			return linter ? [] : super.lint(start);
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(AnyHiddenToken, constructor);
 	return AnyHiddenToken;
 };
