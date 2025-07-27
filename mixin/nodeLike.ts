@@ -1,5 +1,4 @@
 import {mixin} from '../util/debug';
-import {mixins} from '../util/constants';
 import type {Dimension} from '../lib/node';
 import type {AstNodes} from '../internal';
 
@@ -47,5 +46,3 @@ export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
 	mixin(NodeLike, constructor);
 	return NodeLike;
 };
-
-mixins['nodeLike'] = __filename;
