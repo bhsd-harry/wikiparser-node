@@ -1,7 +1,12 @@
 import {mixin} from '../util/debug';
-import {mixins} from '../util/constants';
 import type {Dimension} from '../lib/node';
 import type {AstNodes} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {mixins} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 declare type NodeConstructor = abstract new (...args: any[]) => {
 	readonly childNodes: readonly AstNodes[];

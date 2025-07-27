@@ -1,10 +1,12 @@
 import {classes} from '../util/constants';
 import {nodeLike} from '../mixin/nodeLike';
+import {elementLike} from '../mixin/elementLike';
 import type {NodeLike} from '../mixin/nodeLike';
+import type {ElementLike} from '../mixin/elementLike';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
 
-export interface AstRange extends NodeLike {}
+export interface AstRange extends NodeLike, ElementLike {}
 
 /**
  * 计算绝对位置
@@ -47,7 +49,7 @@ const notInit = (start: boolean): never => {
  *
  * 模拟Range对象
  */
-@nodeLike
+@nodeLike @elementLike
 export class AstRange {
 	#startContainer: AstNodes | undefined;
 	#startOffset: number | undefined;
@@ -594,6 +596,79 @@ export class AstRange {
 	 */
 	getRootNode(): AstNodes {
 		return (this.#endContainer ?? this.startContainer).getRootNode();
+	}
+
+	/**
+	 * Get the closest ancestor node that matches the selector
+	 *
+	 * 最近的符合选择器的祖先节点
+	 * @param selector selector / 选择器
+	 */
+	closest<T = Token>(selector: string): T | undefined {
+		const {commonAncestorContainer} = this;
+		if (commonAncestorContainer.type === 'text') {
+			const {parentNode} = commonAncestorContainer;
+			return parentNode?.matches<T>(selector) ? parentNode : parentNode?.closest(selector);
+		}
+		return commonAncestorContainer.closest(selector);
+	}
+
+	/**
+	 * Insert a batch of child nodes at the end
+	 *
+	 * 在末尾批量插入子节点
+	 * @param elements nodes to be inserted / 插入节点
+	 */
+	append(...elements: (AstNodes | string)[]): void {
+		this.after(...elements);
+		const {endContainer} = this;
+		if (endContainer.type === 'text') {
+			this.#endContainer = endContainer.parentNode!;
+			this.#endOffset = this.#endContainer.childNodes.indexOf(endContainer) + 1;
+		}
+		this.#endOffset! += elements.length;
+	}
+
+	/**
+	 * Insert a batch of child nodes at the start
+	 *
+	 * 在开头批量插入子节点
+	 * @param elements nodes to be inserted / 插入节点
+	 */
+	prepend(...elements: (AstNodes | string)[]): void {
+		this.before(...elements);
+		const {startContainer} = this;
+		if (startContainer.type === 'text') {
+			this.#startContainer = startContainer.parentNode!;
+			this.#startOffset = this.#startContainer.childNodes.indexOf(startContainer);
+		}
+		this.#startOffset! -= elements.length;
+	}
+
+	/**
+	 * Remove a child node
+	 *
+	 * 移除子节点
+	 * @param node child node to be removed / 子节点
+	 * @throws `RangeError` 不是子节点
+	 */
+	removeChild<T extends AstNodes>(node: T): T {
+		const {childNodes, commonAncestorContainer, startContainer, endContainer} = this;
+		if (!childNodes.includes(node)) {
+			throw new RangeError('Not a child node!');
+		} else if (commonAncestorContainer.type === 'text') {
+			this.deleteContents();
+			return node;
+		} else if (startContainer === node) {
+			this.#startContainer = startContainer.parentNode!;
+			this.#startOffset = this.#startContainer.childNodes.indexOf(startContainer);
+		} else if (endContainer === node) {
+			this.#endContainer = endContainer.parentNode!;
+			this.#endOffset = this.#endContainer.childNodes.indexOf(endContainer) + 1;
+		}
+		commonAncestorContainer.removeChild(node);
+		this.#endOffset!--;
+		return node;
 	}
 }
 

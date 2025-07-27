@@ -144,8 +144,8 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
 const matches = (
 	token: Token & Partial<AttributesParentBase>,
 	step: SelectorArray,
-	scope: AstElement,
-	has: Token | undefined,
+	scope?: AstElement,
+	has?: Token,
 ): boolean => {
 	const {parentNode, type, name, childNodes} = token,
 		attributes = new Attributes(token);
@@ -202,6 +202,9 @@ const matches = (
 				case ':optional':
 					return isProtected(token) === false;
 				case ':scope':
+					if (!scope) {
+						throw new SyntaxError('The :scope pseudo-selector must be used with an element node.');
+					}
 					return token === scope;
 				default:
 					return basic(selector, type, name);
@@ -315,12 +318,7 @@ const matches = (
  * @param scope 作用对象
  * @param has `:has()`伪选择器
  */
-const matchesArray = (
-	token: Token,
-	copy: readonly SelectorArray[],
-	scope: AstElement,
-	has: Token | undefined,
-): boolean => {
+const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstElement, has?: Token): boolean => {
 	const condition = [...copy];
 	if (matches(token, condition.pop()!, scope, has)) {
 		const {parentNode, previousElementSibling} = token;
@@ -371,8 +369,8 @@ const deQuote = (val: string): string => /^(["']).*\1$/u.test(val) ? val.slice(1
  */
 const checkToken = (
 	selector: string,
-	scope: AstElement,
-	has: Token | undefined,
+	scope?: AstElement,
+	has?: Token,
 ) => <T extends Token>(token: Token): token is T => {
 	let sanitized = selector.trim();
 	for (const [c, entity] of specialChars) {
@@ -503,7 +501,7 @@ const checkToken = (
  * @param scope 作用对象
  * @param has `:has()`伪选择器
  */
-export const getCondition = <T>(selector: string, scope: AstElement, has?: Token): TokenPredicate<T> => {
+export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
 	/* NOT FOR BROWSER */
 
 	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector.trim())) {

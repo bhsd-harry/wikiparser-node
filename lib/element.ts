@@ -5,11 +5,12 @@ import {
 import {setChildNodes} from '../util/debug';
 import {getCondition} from '../parser/selector';
 import {AstNode} from './node';
+import {elementLike} from '../mixin/elementLike';
 import type {
 	LintError,
 	AST,
 } from '../base';
-import type {TokenPredicate} from '../parser/selector';
+import type {ElementLike} from '../mixin/elementLike';
 import type {
 	AstNodes,
 	AstText,
@@ -42,11 +43,14 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
+export interface AstElement extends AstNode, ElementLike {}
+
 /**
  * HTMLElement-like
  *
  * 类似HTMLElement
  */
+@elementLike
 export abstract class AstElement extends AstNode {
 	declare readonly name?: string;
 	declare readonly data: undefined;
@@ -64,26 +68,6 @@ export abstract class AstElement extends AstNode {
 				this.removeAt(i);
 			}
 		}
-	}
-
-	/** all child elements / 全部非文本子节点 */
-	get children(): Token[] {
-		return this.childNodes.filter((child): child is Token => child.type !== 'text');
-	}
-
-	/** first child element / 首位非文本子节点 */
-	get firstElementChild(): Token | undefined {
-		return this.childNodes.find((child): child is Token => child.type !== 'text');
-	}
-
-	/** last child element / 末位非文本子节点 */
-	get lastElementChild(): Token | undefined {
-		return this.childNodes.findLast((child): child is Token => child.type !== 'text');
-	}
-
-	/** number of child elements / 非文本子节点总数 */
-	get childElementCount(): number {
-		return this.children.length;
 	}
 
 	/** parent node / 父节点 */
@@ -247,64 +231,6 @@ export abstract class AstElement extends AstNode {
 			({parentNode} = parentNode);
 		}
 		return undefined;
-	}
-
-	/**
-	 * 符合条件的第一个后代节点
-	 * @param condition 条件
-	 */
-	#getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				continue;
-			} else if (condition(child)) {
-				return child;
-			}
-			const descendant = child.#getElementBy(condition);
-			if (descendant) {
-				return descendant;
-			}
-		}
-		return undefined;
-	}
-
-	/**
-	 * Get the first descendant that matches the selector
-	 *
-	 * 符合选择器的第一个后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelector<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector, this);
-		return this.#getElementBy(condition);
-	}
-
-	/**
-	 * 符合条件的所有后代节点
-	 * @param condition 条件
-	 * @param descendants 已经找到的后代节点
-	 */
-	#getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				continue;
-			} else if (condition(child)) {
-				descendants.push(child);
-			}
-			child.#getElementsBy(condition, descendants);
-		}
-		return descendants;
-	}
-
-	/**
-	 * Get all descendants that match the selector
-	 *
-	 * 符合选择器的所有后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelectorAll<T = Token>(selector: string): T[] {
-		const condition = getCondition<T>(selector, this);
-		return this.#getElementsBy(condition);
 	}
 
 	/**
@@ -547,51 +473,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Get all descendants of the types
-	 *
-	 * 类型选择器
-	 * @param types token types / 节点类型
-	 */
-	getElementByTypes<T = Token>(types: string): T | undefined {
-		const typeSet = new Set(types.split(',').map(str => str.trim()));
-		return this.#getElementBy((({type}) => typeSet.has(type)) as TokenPredicate<T>);
-	}
-
-	/**
-	 * Get the first descendant with the id
-	 *
-	 * id选择器
-	 * @param id id名
-	 */
-	getElementById<T = Token>(id: string): T | undefined {
-		return this.#getElementBy((token => 'id' in token && token.id === id) as TokenPredicate<T>);
-	}
-
-	/**
-	 * Get all descendants with the class
-	 *
-	 * 类选择器
-	 * @param className class name / 类名之一
-	 */
-	getElementsByClassName<T = Token>(className: string): T[] {
-		return this.#getElementsBy(
-			(token => 'classList' in token && (token.classList as Set<string>).has(className)) as TokenPredicate<T>,
-		);
-	}
-
-	/**
-	 * Get all descendants with the tag name
-	 *
-	 * 标签名选择器
-	 * @param tag tag name / 标签名
-	 */
-	getElementsByTagName<T = Token>(tag: string): T[] {
-		return this.#getElementsBy<T>(
-			(({type, name}) => name === tag && (type === 'html' || type === 'ext')) as TokenPredicate<T>,
-		);
-	}
-
-	/**
 	 * Insert a batch of child nodes at the start
 	 *
 	 * 在开头批量插入子节点
@@ -673,18 +554,6 @@ export abstract class AstElement extends AstNode {
 	 */
 	elementsFromPoint(x: number, y: number): Token[] {
 		return this.elementsFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
-	 * Escape `=` and `|`
-	 *
-	 * 转义 `=` 和 `|`
-	 * @since v1.18.3
-	 */
-	escape(): void {
-		for (const child of this.childNodes) {
-			child.escape();
-		}
 	}
 }
 
