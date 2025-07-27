@@ -13,11 +13,10 @@ export interface SyntaxBase {
  * @param pattern 语法正则
  */
 export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(constructor: S): S => {
-	/** 满足特定语法格式的Token */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class SyntaxToken extends constructor implements SyntaxBase {
 		declare pattern: RegExp;
 
-		/** @class */
 		constructor(...args: any[]) {
 			super(...args); // eslint-disable-line @typescript-eslint/no-unsafe-argument
 			if (pattern) {
@@ -45,6 +44,7 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			}
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(SyntaxToken, constructor);
 	return SyntaxToken;
 };

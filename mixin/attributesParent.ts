@@ -102,11 +102,10 @@ export interface AttributesParentBase {
  * @param i AttributesToken子节点的位置
  */
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T): T => {
-	/** 子节点含有AttributesToken的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class AttributesParent extends constructor implements AttributesParentBase {
 		/* NOT FOR BROWSER */
 
-		/** @implements */
 		get attributes(): Record<string, string | true> {
 			return this.#getAttributesChild().attributes;
 		}
@@ -115,7 +114,6 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			this.#getAttributesChild().attributes = attributes;
 		}
 
-		/** @implements */
 		get className(): string {
 			return this.#getAttributesChild().className;
 		}
@@ -124,12 +122,10 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			this.#getAttributesChild().className = className;
 		}
 
-		/** @implements */
 		get classList(): Set<string> {
 			return this.#getAttributesChild().classList;
 		}
 
-		/** @implements */
 		get id(): string {
 			return this.#getAttributesChild().id;
 		}
@@ -145,50 +141,43 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			return this.childNodes[i] as AttributesToken;
 		}
 
-		/** @implements */
 		hasAttr(key: string): boolean {
 			return this.#getAttributesChild().hasAttr(key);
 		}
 
-		/** @implements */
 		getAttr(key: string): string | true | undefined {
 			return this.#getAttributesChild().getAttr(key);
 		}
 
 		/* NOT FOR BROWSER */
 
-		/** @implements */
 		getAttrNames(): Set<string> {
 			return this.#getAttributesChild().getAttrNames();
 		}
 
-		/** @implements */
 		getAttrs(): Record<string, string | true> {
 			return this.#getAttributesChild().getAttrs();
 		}
 
-		/** @implements */
 		setAttr(key: string, value: string | boolean): void;
 		setAttr(prop: Record<string, string | boolean>): void;
 		setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
 			this.#getAttributesChild().setAttr(keyOrProp as string, value!);
 		}
 
-		/** @implements */
 		removeAttr(key: string): void {
 			this.#getAttributesChild().removeAttr(key);
 		}
 
-		/** @implements */
 		toggleAttr(key: string, force?: boolean): void {
 			this.#getAttributesChild().toggleAttr(key, force);
 		}
 
-		/** @implements */
 		css(key: string, value?: string): string | undefined {
 			return this.#getAttributesChild().css(key, value);
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(AttributesParent, constructor);
 	return AttributesParent;
 };

@@ -6,13 +6,13 @@ import {mixins} from '../util/constants';
  * @ignore
  */
 export const noEscape = <T extends AstConstructor>(constructor: T): T => {
-	/** 不可包含换行符的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class NoEscapeToken extends constructor {
-		/** @private */
 		escape(): void { // eslint-disable-line @typescript-eslint/class-methods-use-this
 			//
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(NoEscapeToken, constructor);
 	return NoEscapeToken;
 };

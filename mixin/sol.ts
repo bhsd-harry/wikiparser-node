@@ -7,9 +7,8 @@ import type {Token, ListRangeToken} from '../internal';
  * @param self 是否允许同类节点相邻
  */
 export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T): T => {
-	/** 只能位于行首的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class SolToken extends constructor {
-		/** @implements */
 		#prependNewLine(): string {
 			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
 			if (previousVisibleSibling) {
@@ -39,6 +38,7 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 			return this.#prependNewLine() + super.text();
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(SolToken, constructor);
 	return SolToken;
 };

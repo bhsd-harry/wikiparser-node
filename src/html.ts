@@ -19,6 +19,7 @@ import {classes} from '../util/constants';
 import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 import {cached} from '../mixin/cached';
+import type {AstRange} from '../lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -447,6 +448,28 @@ export abstract class HtmlToken extends Token {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Get the range of the HTML tag pair
+	 *
+	 * 获取HTML标签对的范围
+	 * @since v1.23.0
+	 */
+	getRange(): AstRange | undefined {
+		const {closing, selfClosing, name} = this,
+			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config');
+		if (voidTags.includes(name) || selfClosing && selfClosingTags.includes(name)) {
+			return undefined;
+		}
+		const matched = this.findMatchingTag();
+		if (!matched) {
+			return undefined;
+		}
+		const range = this.createRange();
+		range.setStartAfter(closing ? matched : this);
+		range.setEndBefore(closing ? this : matched);
+		return range;
 	}
 }
 

@@ -11,7 +11,7 @@ import {mixins} from '../util/constants';
  * @ignore
  */
 export const multiLine = <T extends AstConstructor>(constructor: T): T => {
-	/** 不可包含换行符的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class MultiLineToken extends constructor {
 		override toString(skip?: boolean): string {
 			return super.toString(skip, '\n');
@@ -21,7 +21,6 @@ export const multiLine = <T extends AstConstructor>(constructor: T): T => {
 			return super.text('\n').replace(/\n\s*\n/gu, '\n');
 		}
 
-		/** @private */
 		getGaps(): number {
 			return 1;
 		}
@@ -30,6 +29,7 @@ export const multiLine = <T extends AstConstructor>(constructor: T): T => {
 			return super.print({sep: '\n'});
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(MultiLineToken, constructor);
 	return MultiLineToken;
 };

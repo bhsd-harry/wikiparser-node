@@ -1,3 +1,11 @@
+## v1.23.0
+
+*2025-07-28*
+
+**Added**
+
+- [`HtmlToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#getrange) that returns the range of the HTML tag pair
+
 ## v1.22.1
 
 *2025-07-25*

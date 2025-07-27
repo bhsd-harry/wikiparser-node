@@ -12,12 +12,13 @@ import {mixins} from '../util/constants';
  * @param padding.length
  */
 export const padded = ({length}: string) => <S extends AstConstructor>(constructor: S): S => {
-	/** 不可增删子节点的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class PaddedToken extends constructor {
 		override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 			return key === 'padding' ? length as TokenAttribute<T> : super.getAttribute(key);
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(PaddedToken, constructor);
 	return PaddedToken;
 };

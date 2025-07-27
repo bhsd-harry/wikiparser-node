@@ -6,7 +6,7 @@ import {mixins} from '../util/constants';
  * @param strict 是否严格
  */
 export const singleLine = (strict = true) => <T extends AstConstructor>(constructor: T): T => {
-	/** 不可包含换行符的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class SingleLineToken extends constructor {
 		override toString(skip?: boolean): string {
 			if (strict) {
@@ -26,6 +26,7 @@ export const singleLine = (strict = true) => <T extends AstConstructor>(construc
 			return super.text().replaceAll('\n', ' ');
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(SingleLineToken, constructor);
 	return SingleLineToken;
 };

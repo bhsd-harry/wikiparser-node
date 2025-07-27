@@ -7,22 +7,16 @@ import type {AstNodes, AstText} from '../internal';
  * @ignore
  */
 export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
-	/** 不可增删子节点的类 */
+	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class FixedToken extends constructor {
-		/** @private */
 		get fixed(): true {
 			return true;
 		}
 
-		/** @override */
 		removeAt(): never {
 			this.constructorError('cannot remove child nodes');
 		}
 
-		/**
-		 * @param token 待插入的子节点
-		 * @param i 插入位置
-		 */
 		override insertAt(token: string, i?: number): AstText;
 		override insertAt<T extends AstNodes>(token: T, i?: number): T;
 		override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
@@ -31,6 +25,7 @@ export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
 				: this.constructorError('cannot insert child nodes');
 		}
 	}
+	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(FixedToken, constructor);
 	return FixedToken;
 };
