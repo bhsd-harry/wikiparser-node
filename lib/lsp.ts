@@ -77,7 +77,7 @@ export const tasks = new WeakMap<object, LanguageService>();
 
 const refTags = new Set(['ref']),
 	referencesTags = new Set(['ref', 'references']),
-	nameAttrs = new Set(['name', 'extends', 'follow']),
+	nameAttrs = new Set(['name', 'follow']),
 	groupAttrs = new Set(['group']),
 	renameTypes = new Set<TokenTypes>([
 		'arg-name',
