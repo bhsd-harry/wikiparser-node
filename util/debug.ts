@@ -68,6 +68,8 @@ export const setChildNodes = (
 	return removed;
 };
 
+/* NOT FOR BROWSER ONLY */
+
 /**
  * 同步混入的类名
  * @param target 混入的目标
