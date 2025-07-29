@@ -64,7 +64,7 @@ export abstract class GalleryImageToken extends FileToken {
 		if (text !== undefined) {
 			const {length} = accum;
 			token = new Token(text, config, accum);
-			for (let n = 1; n < MAX_STAGE; n++) {
+			for (let n = 0; n < MAX_STAGE - 1; n++) {
 				token.parseOnce();
 			}
 			accum.splice(length, 1);

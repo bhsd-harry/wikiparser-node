@@ -79,6 +79,8 @@ export const setChildNodes = (
 	return removed;
 };
 
+/* NOT FOR BROWSER ONLY */
+
 /**
  * 同步混入的类名
  * @param target 混入的目标
@@ -87,6 +89,8 @@ export const setChildNodes = (
 export const mixin = (target: Function, source: Function): void => {
 	Object.defineProperty(target, 'name', {value: source.name});
 };
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 

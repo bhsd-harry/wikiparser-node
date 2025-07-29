@@ -72,7 +72,7 @@ export abstract class NestedToken extends Token {
 		accum: Token[] = [],
 	) {
 		if (typeof regex === 'boolean') {
-			const placeholder = Symbol('InputboxToken'),
+			const placeholder = Symbol('NestedToken'),
 				{length} = accum;
 			accum.push(placeholder as unknown as Token);
 			wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);

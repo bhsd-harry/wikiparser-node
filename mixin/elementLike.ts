@@ -1,12 +1,12 @@
 import {mixin} from '../util/debug';
 import {getCondition} from '../parser/selector';
-import {AstElement} from '../lib/element';
 import type {TokenPredicate} from '../parser/selector';
 import type {AstNodes, Token} from '../internal';
 
 /* NOT FOR BROWSER */
 
 import {mixins} from '../util/constants';
+import {AstElement} from '../lib/element';
 
 /* NOT FOR BROWSER END */
 
@@ -161,7 +161,13 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelectorAll<T = Token>(selector: string): T[] {
-			const condition = getCondition<T>(selector, this instanceof AstElement ? this : undefined);
+			const condition = getCondition<T>(
+				selector,
+				// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
+				!(this instanceof AstElement) ?
+					undefined : // eslint-disable-line @stylistic/operator-linebreak
+					this,
+			);
 			return this.getElementsBy(condition);
 		}
 
