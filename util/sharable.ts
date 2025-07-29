@@ -110,7 +110,7 @@ export const commonHtmlAttrs = new Set([
 		nowiki: empty,
 		indicator: new Set(['name']),
 		langconvert: new Set(['from', 'to']),
-		ref: new Set(['group', 'name', 'extends', 'follow', 'dir']),
+		ref: new Set(['group', 'name', 'follow', 'dir', 'details']),
 		references: new Set(['group', 'responsive']),
 		charinsert: new Set(['label']),
 		choose: new Set(['uncached', 'before', 'after']),
