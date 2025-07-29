@@ -2,11 +2,6 @@ import type {AstNodes} from '../lib/node';
 
 export {rawurldecode} from '@bhsd/common';
 
-export const zs = String.raw` \xA0\u1680\u2000-\u200A\u202F\u205F\u3000`;
-const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F${zs}\uFFFD]`;
-export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
-export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
-
 /**
  * trim and toLowerCase
  * @param s 字符串
@@ -63,35 +58,3 @@ export const decodeHtmlBasic = factory(
 export const decodeHtml = (str: string): string => {
 	return decodeHtmlBasic(str);
 };
-
-/** decode numbered HTML entities */
-export const decodeNumber = factory(
-	/&#(\d+|x[\da-f]+);/giu,
-	(_, code: string) => String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code)),
-);
-
-/* PRINT ONLY */
-
-const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
-
-/**
- * replace by HTML entities
- * @param re regex
- */
-const replaceEntities = (re: RegExp): (str: string) => string =>
-	factory(re, p => `&${entities[p as keyof typeof entities]};`);
-
-/** escape HTML entities */
-export const escape = replaceEntities(/[&<>]/gu);
-
-/**
- * 以HTML格式打印
- * @param childNodes 子节点
- * @param opt 选项
- */
-export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): string => {
-	const {pre = '', post = '', sep = ''} = opt;
-	return pre + childNodes.map(child => child.print()).join(sep) + post;
-};
-
-/* PRINT ONLY END */

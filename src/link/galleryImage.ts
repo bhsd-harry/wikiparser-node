@@ -1,13 +1,9 @@
-import {generateForSelf} from '../../util/lint';
 import {
 	MAX_STAGE,
 } from '../../util/constants';
-import {padded} from '../../mixin/padded';
-import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
-import type {Title} from '../../lib/title';
-import type {Config, LintError} from '../../base';
+import type {Config} from '../../base';
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
@@ -16,7 +12,6 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
  *
  * 图库图片
  */
-@padded('')
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';
@@ -35,56 +30,12 @@ export abstract class GalleryImageToken extends FileToken {
 		if (text !== undefined) {
 			const {length} = accum;
 			token = new Token(text, config, accum);
-			for (let n = 1; n < MAX_STAGE; n++) {
+			for (let n = 0; n < MAX_STAGE; n++) {
 				token.parseOnce();
 			}
 			accum.splice(length, 1);
 		}
 		super(link, token?.toString(), config, accum);
-		this.setAttribute('bracket', false);
 		this.privateType = `${type}-image`;
-
-		/* PRINT ONLY */
-
-		this.seal('privateType', true);
-	}
-
-	/** @private */
-	override getTitle(temporary?: boolean): Title {
-		const imagemap = this.type === 'imagemap-image';
-		return this.normalizeTitle(
-			this.firstChild.toString(),
-			imagemap ? 0 : 6,
-			{halfParsed: true, temporary, decode: !imagemap},
-		);
-	}
-
-	/** 判定无效的图片 */
-	#lint(): boolean {
-		const {
-			ns,
-		} = this.getAttribute('title');
-		// eslint-disable-next-line @stylistic/semi
-		return ns !== 6
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'invalid-gallery',
-			s = Parser.lintConfig.getSeverity(rule, 'image');
-		if (s && this.#lint()) {
-			const e = generateForSelf(this, {start}, rule, 'invalid gallery image', s);
-			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
-			errors.push(e);
-		}
-		return errors;
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
 	}
 }

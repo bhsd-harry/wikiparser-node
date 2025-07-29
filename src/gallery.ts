@@ -1,12 +1,9 @@
 import {multiLine} from '../mixin/multiLine';
-import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../base';
 import type {
 	AstText,
@@ -24,8 +21,6 @@ declare type Child = GalleryImageToken | NoincludeToken;
  */
 @multiLine
 export abstract class GalleryToken extends Token {
-	declare readonly name: 'gallery';
-
 	declare readonly childNodes: readonly (Child | AstText)[];
 	abstract override get firstChild(): Child | AstText | undefined;
 	abstract override get lastChild(): Child | AstText | undefined;
@@ -36,30 +31,6 @@ export abstract class GalleryToken extends Token {
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
 	}
-
-	/* PRINT ONLY */
-
-	/**
-	 * image widths
-	 *
-	 * 图片宽度
-	 * @since v1.12.5
-	 */
-	get widths(): number {
-		return this.#getSize('widths');
-	}
-
-	/**
-	 * image heights
-	 *
-	 * 图片高度
-	 * @since v1.12.5
-	 */
-	get heights(): number {
-		return this.#getSize('heights');
-	}
-
-	/* PRINT ONLY END */
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
@@ -89,75 +60,5 @@ export abstract class GalleryToken extends Token {
 	 */
 	#checkFile(file: string): boolean {
 		return this.normalizeTitle(file, 6, {halfParsed: true, temporary: true, decode: true}).valid;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const {top, left} = this.getRootNode().posFromIndex(start)!,
-			errors: LintError[] = [],
-			rule = 'no-ignored',
-			s = ['Image', 'NoImage', 'Comment'].map(k => Parser.lintConfig.getSeverity(rule, `gallery${k}`));
-		for (let i = 0; i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				str = child.toString(),
-				{length} = str,
-				trimmed = str.trim(),
-				{type} = child,
-				startLine = top + i,
-				startCol = i ? 0 : left;
-			child.setAttribute('aIndex', start);
-			if (type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
-				let [severity] = s;
-				if (trimmed.startsWith('|')) {
-					[, severity] = s;
-				} else if (trimmed.startsWith('<!--') || trimmed.endsWith('-->')) {
-					[,, severity] = s;
-				}
-				if (severity) {
-					const endIndex = start + length;
-					errors.push({
-						rule,
-						message: Parser.msg('invalid content in <$1>', 'gallery'),
-						severity,
-						startIndex: start,
-						endIndex,
-						startLine,
-						endLine: startLine,
-						startCol,
-						endCol: startCol + length,
-						suggestions: [
-							{desc: 'remove', range: [start, endIndex], text: ''},
-							{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
-						],
-					});
-				}
-			} else if (type !== 'noinclude' && type !== 'text') {
-				const childErrors = child.lint(start, re);
-				if (childErrors.length > 0) {
-					errors.push(...childErrors);
-				}
-			}
-			start += length + 1;
-		}
-		return errors;
-	}
-
-	/* PRINT ONLY */
-
-	/**
-	 * 获取图片的宽度或高度
-	 * @param key `widths` 或 `heights`
-	 */
-	#getSize(key: 'widths' | 'heights'): number {
-		const widths = this.parentNode?.getAttr(key),
-			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
-		return mt && Number(mt) || 120;
-	}
-
-	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
-		Object.assign(json, {widths: this.widths, heights: this.heights});
-		return json;
 	}
 }

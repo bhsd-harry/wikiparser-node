@@ -1,18 +1,9 @@
-import {
-	extUrlChar,
-	extUrlCharFirst,
-} from '../util/string';
-import {generateForChild} from '../util/lint';
-import Parser from '../index';
+import {removeComment} from '../util/string';
 import {Token} from './index';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../base';
-import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
-
-const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
+import type {AtomToken, TranscludeToken} from '../internal';
 
 /**
  * template or magic word parameter
@@ -28,7 +19,7 @@ export abstract class ParameterToken extends Token {
 	abstract override get lastChild(): Token;
 	abstract override get parentNode(): TranscludeToken | undefined;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get previousSibling(): AtomToken | SyntaxToken | this | undefined;
+	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	override get type(): 'parameter' {
 		return 'parameter';
@@ -38,19 +29,6 @@ export abstract class ParameterToken extends Token {
 	get anon(): boolean {
 		return this.firstChild.length === 0;
 	}
-
-	/* PRINT ONLY */
-
-	/** whether to be a duplicated parameter / 是否是重复参数 */
-	get duplicated(): boolean {
-		try {
-			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-		} catch {
-			return false;
-		}
-	}
-
-	/* PRINT ONLY END */
 
 	/**
 	 * @param key 参数名
@@ -69,8 +47,8 @@ export abstract class ParameterToken extends Token {
 	}
 
 	/** @private */
-	trimName(name: string | Token, set = true): string {
-		const trimmed = (typeof name === 'string' ? name : name.toString(true))
+	trimName(name: Token, set = true): string {
+		const trimmed = name.toString(true)
 			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		this.setAttribute('name', trimmed);
 		return trimmed;
@@ -97,45 +75,23 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}
 
-	/** @private */
-	override getGaps(): number {
-		return this.anon ? 0 : 1;
+	/**
+	 * Get the parameter value
+	 *
+	 * 获取参数值
+	 */
+	getValue(): string {
+		const value = removeComment(this.lastChild.text());
+		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'unescaped',
-			s = Parser.lintConfig.getSeverity(rule);
-		if (s) {
-			const {firstChild} = this,
-				link = linkRegex.exec(firstChild.text())?.[0];
-			try {
-				if (link && new URL(link).search) {
-					const msg = 'unescaped query string in an anonymous parameter',
-						e = generateForChild(firstChild, {start}, rule, msg, s);
-					e.startIndex = e.endIndex;
-					e.startLine = e.endLine;
-					e.startCol = e.endCol;
-					e.endIndex++;
-					e.endCol++;
-					e.fix = {desc: 'escape', range: [e.startIndex, e.endIndex], text: '{{=}}'};
-					errors.push(e);
-				}
-			} catch {}
-		}
-		return errors;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: this.anon ? '' : '='});
-	}
-
-	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
-		Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
-		return json;
+	/**
+	 * Set the parameter value
+	 *
+	 * 设置参数值
+	 * @param value parameter value / 参数值
+	 */
+	setValue(value: string): void {
+		this.lastChild.replaceChildren(value);
 	}
 }

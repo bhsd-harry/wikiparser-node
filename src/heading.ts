@@ -1,17 +1,9 @@
-import {generateForChild, generateForSelf} from '../util/lint';
-import {
-	isToken,
-} from '../util/debug';
-import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
 import {Token} from './index';
-import {SyntaxToken} from './syntax';
+import {AtomToken as SyntaxToken} from './atom';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../base';
-import type {QuoteToken, AstText} from '../internal';
+import type {AstText} from '../internal';
 
 /**
  * section heading
@@ -70,128 +62,5 @@ export abstract class HeadingToken extends Token {
 	override text(): string {
 		const equals = this.#getEquals();
 		return equals + this.firstChild.text() + equals;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* PRINT ONLY */
-
-		if (key === 'invalid') {
-			return (this.inHtmlAttrs() === 2) as TokenAttribute<T>;
-		}
-
-		/* PRINT ONLY END */
-
-		return key === 'padding' ? this.level as TokenAttribute<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return this.level;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{firstChild, level} = this,
-			innerStr = firstChild.toString(),
-			unbalancedStart = innerStr.startsWith('='),
-			unbalanced = unbalancedStart || innerStr.endsWith('='),
-			rect = new BoundingRect(this, start),
-			s = this.inHtmlAttrs(),
-			rules = ['h1', 'unbalanced-header', 'format-leakage'] as const,
-			severities = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'apostrophe'));
-		if (severities[0] && this.level === 1) {
-			const e = generateForChild(firstChild, rect, rules[0], '<h1>', severities[0]);
-			if (!unbalanced) {
-				e.suggestions = [{desc: 'h2', range: [e.startIndex, e.endIndex], text: `=${innerStr}=`}];
-			}
-			errors.push(e);
-		}
-		if (severities[1] && unbalanced) {
-			const msg = Parser.msg('unbalanced $1 in a section header', '"="'),
-				e = generateForChild(firstChild, rect, rules[1], msg, severities[1]);
-			if (innerStr === '=') {
-				//
-			} else if (unbalancedStart) {
-				const [extra] = /^=+/u.exec(innerStr)!,
-					newLevel = level + extra.length;
-				e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''}];
-				if (newLevel < 7) {
-					e.suggestions.push({desc: `h${newLevel}`, range: [e.endIndex, e.endIndex], text: extra});
-				}
-			} else {
-				const extra = /[^=](=+)$/u.exec(innerStr)![1]!,
-					newLevel = level + extra.length;
-				e.suggestions = [{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''}];
-				if (newLevel < 7) {
-					e.suggestions.push({desc: `h${newLevel}`, range: [e.startIndex, e.startIndex], text: extra});
-				}
-			}
-			errors.push(e);
-		}
-		if (s) {
-			const rule = 'parsing-order',
-				severity = Parser.lintConfig.getSeverity(rule, s === 2 ? 'heading' : 'templateInTable');
-			if (severity) {
-				errors.push(generateForSelf(this, rect, rule, 'section header in HTML tag attributes', severity));
-			}
-		}
-		if (severities[2]) {
-			const rootStr = this.getRootNode().toString(),
-				quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
-				boldQuotes = quotes.filter(({bold}) => bold),
-				italicQuotes = quotes.filter(({italic}) => italic);
-			if (boldQuotes.length % 2) {
-				const e = generateForChild(
-						boldQuotes[boldQuotes.length - 1]!,
-						{
-							...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
-							start: start + level,
-							left: rect.left + level,
-						},
-						rules[2],
-						Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
-						severities[2],
-					),
-					end = start + level + innerStr.length;
-				if (rootStr.slice(e.endIndex, end).trim()) {
-					e.suggestions = [{desc: 'close', range: [end, end], text: `'''`}];
-				} else {
-					e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
-				}
-				errors.push(e);
-			}
-			if (italicQuotes.length % 2) {
-				const e = generateForChild(
-						italicQuotes[italicQuotes.length - 1]!,
-						{start: start + level},
-						rules[2],
-						Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
-						severities[2],
-					),
-					end = start + level + innerStr.length;
-				if (rootStr.slice(e.endIndex, end).trim()) {
-					e.suggestions = [{desc: 'close', range: [end, end], text: `''`}];
-				} else {
-					e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
-				}
-				errors.push(e);
-			}
-		}
-		return errors;
-	}
-
-	/** @private */
-	override print(): string {
-		const equals = this.#getEquals();
-		return super.print({pre: equals, sep: equals});
-	}
-
-	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
-		json['level'] = this.level;
-		return json;
 	}
 }

@@ -1,29 +1,16 @@
 import {Token} from './index';
 import type {Config} from '../base';
 
-/* PRINT ONLY */
-
-import type {ConverterFlagsToken} from '../internal';
-
-/* PRINT ONLY END */
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const atomTypes = [
 	'arg-name',
 	'attr-key',
 	'attr-value',
 	'ext-attr-dirty',
-	'html-attr-dirty',
-	'table-attr-dirty',
-	'converter-flag',
-	'converter-rule-variant',
-	'converter-rule-to',
-	'converter-rule-from',
-	'invoke-function',
-	'invoke-module',
 	'template-name',
 	'link-target',
-	'param-line',
+	'heading-trail',
+	'magic-word-name',
 ] as const;
 
 declare type AtomTypes = typeof atomTypes[number];
@@ -40,10 +27,6 @@ export class AtomToken extends Token {
 		return this.#type;
 	}
 
-	override set type(value) {
-		this.#type = value;
-	}
-
 	/** @class */
 	constructor(
 		wikitext: string | undefined,
@@ -54,17 +37,5 @@ export class AtomToken extends Token {
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.#type = type;
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid'
-			? (
-				this.type === 'converter-flag'
-				&& Boolean((this.parentNode as ConverterFlagsToken | undefined)?.isInvalidFlag(this))
-			) as TokenAttribute<T>
-			: super.getAttribute(key);
 	}
 }

@@ -1,26 +1,15 @@
 import {
 	text,
-	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
-import {getCondition} from '../parser/selector';
 import {AstNode} from './node';
 import {elementLike} from '../mixin/elementLike';
-import type {
-	LintError,
-	AST,
-} from '../base';
 import type {ElementLike} from '../mixin/elementLike';
 import type {
 	AstNodes,
 	AstText,
 	Token,
 } from '../internal';
-
-export interface CaretPosition {
-	readonly offsetNode: AstNodes;
-	readonly offset: number;
-}
 
 export interface AstElement extends AstNode, ElementLike {}
 
@@ -45,34 +34,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Merge adjacent text child nodes
-	 *
-	 * 合并相邻的文本子节点
-	 */
-	normalize(): void {
-		const childNodes = this.getChildNodes();
-
-		/**
-		 * 移除子节点
-		 * @param i 移除位置
-		 */
-		const remove = (i: number): void => {
-			childNodes.splice(i, 1);
-			childNodes[i - 1]?.setAttribute('nextSibling', childNodes[i]);
-			childNodes[i]?.setAttribute('previousSibling', childNodes[i - 1]);
-		};
-		for (let i = childNodes.length - 1; i >= 0; i--) {
-			const {type, data} = childNodes[i]!;
-			if (type !== 'text' || childNodes.length === 1 || this.getGaps(i - (i && 1))) {
-				//
-			} else if (data === '') {
-				remove(i);
-			}
-		}
-		this.setAttribute('childNodes', childNodes);
-	}
-
-	/**
 	 * Remove a child node
 	 *
 	 * 移除子节点
@@ -92,24 +53,6 @@ export abstract class AstElement extends AstNode {
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		setChildNodes(this as AstElement as Token, i, 0, [node]);
 		return node;
-	}
-
-	/**
-	 * Get the closest ancestor node that matches the selector
-	 *
-	 * 最近的符合选择器的祖先节点
-	 * @param selector selector / 选择器
-	 */
-	closest<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector, this);
-		let {parentNode} = this;
-		while (parentNode) {
-			if (condition(parentNode)) {
-				return parentNode;
-			}
-			({parentNode} = parentNode);
-		}
-		return undefined;
 	}
 
 	/**
@@ -165,146 +108,5 @@ export abstract class AstElement extends AstNode {
 	/** @private */
 	override toString(skip?: boolean, separator = ''): string {
 		return this.childNodes.map(child => child.toString(skip)).join(separator);
-	}
-
-	/**
-	 * Get the caret position from the character index
-	 *
-	 * 找到给定位置
-	 * @param index character index / 位置
-	 */
-	caretPositionFromIndex(index?: number): CaretPosition | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
-			if (index === undefined) {
-				return undefined;
-			}
-			const {length} = this.toString();
-			if (index > length || index < -length) {
-				return undefined;
-			}
-			index += index < 0 ? length : 0;
-			let self: AstNode = this,
-				acc = 0,
-				start = 0;
-			while (self.type !== 'text') {
-				const {childNodes} = self;
-				acc += self.getAttribute('padding');
-				for (let i = 0; acc <= index && i < childNodes.length; i++) {
-					const cur: AstNodes = childNodes[i]!,
-						{nextSibling} = cur,
-						str = cur.toString(),
-						l = str.length;
-					cur.setAttribute('aIndex', acc);
-					acc += l;
-					// 优先选择靠前的非文本兄弟节点，但永不进入假节点
-					if (
-						acc > index
-						|| acc === index && l > 0 && (
-							!nextSibling
-							|| nextSibling.type === 'text'
-							|| cur.type !== 'text' && (str.trim() || !nextSibling.toString().trim())
-						)
-					) {
-						self = cur;
-						acc -= l;
-						start = acc;
-						break;
-					}
-					acc += self.getGaps(i);
-				}
-				if (self.childNodes === childNodes) {
-					return {offsetNode: self as Token, offset: index - start};
-				}
-			}
-			return {offsetNode: self as AstText, offset: index - start};
-		}
-		this.lspError('AstElement.caretPositionFromIndex');
-	}
-
-	/**
-	 * Get the closest ancestor element from the character index
-	 *
-	 * 找到给定位置所在的最内层非文本节点
-	 * @param index character index / 位置
-	 */
-	elementFromIndex(index?: number): Token | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
-			const node = this.caretPositionFromIndex(index)?.offsetNode;
-			return node?.type === 'text' ? node.parentNode : node;
-		}
-		this.lspError('AstElement.elementFromIndex');
-	}
-
-	/**
-	 * Get the closest ancestor element from the position
-	 *
-	 * 找到给定位置所在的最内层非文本节点
-	 * @param x column number / 列数
-	 * @param y line number / 行数
-	 */
-	elementFromPoint(x: number, y: number): Token | undefined {
-		// eslint-disable-next-line no-unused-labels
-		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
-		this.lspError('AstElement.elementFromPoint');
-	}
-
-	/** @private */
-	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		const errors: LintError[] = [];
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!;
-			child.setAttribute('aIndex', cur);
-			const childErrors = child.lint(cur, re);
-			if (childErrors.length > 0) {
-				errors.push(...childErrors);
-			}
-			cur += child.toString().length + this.getGaps(i);
-		}
-		return errors;
-	}
-
-	/** @private */
-	print(opt: PrintOpt = {}): string {
-		const cl = opt.class;
-		if (this.toString()) {
-			return (
-				cl === ''
-					? ''
-					: `<span class="wpb-${cl ?? this.type}${
-						this.getAttribute('invalid') ? ' wpb-invalid' : ''
-					}">`
-			)
-			+ print(this.childNodes, opt)
-			+ (cl === '' ? '' : '</span>');
-		}
-		return '';
-	}
-
-	/**
-	 * Save in JSON format
-	 *
-	 * 保存为JSON
-	 * @param file file name / 文件名
-	 * @param start
-	 */
-	json(file?: string, start = this.getAbsoluteIndex()): AST {
-		const json = {
-			...this, // eslint-disable-line @typescript-eslint/no-misused-spread
-			type: this.type,
-			range: [start, start + this.toString().length],
-			childNodes: [],
-		} as unknown as AST;
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				{length} = child.toString();
-			child.setAttribute('aIndex', cur);
-			json.childNodes!.push(
-				child.type === 'text'
-					? {data: child.data, range: [cur, cur + length]} as unknown as AST
-					: child.json(undefined, cur),
-			);
-			cur += length + this.getGaps(i);
-		}
-		return json;
 	}
 }

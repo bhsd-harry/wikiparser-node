@@ -1,14 +1,5 @@
-import {getRegex} from '@bhsd/common';
-import {generateForSelf} from '../../util/lint';
-import Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
-
-const getLintRegex = getRegex(
-	name => new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'),
-);
-const voidExt = new Set(['img', 'languages', 'section', 'templatestyles']);
 
 /**
  * text-only token inside an extension tag
@@ -16,39 +7,11 @@ const voidExt = new Set(['img', 'languages', 'section', 'templatestyles']);
  * 扩展标签内的纯文字Token
  */
 export abstract class NowikiToken extends NowikiBaseToken {
-	declare readonly name: string;
-
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
-	}
-
-	/** 扩展标签内的无效内容 */
-	#lint(): boolean {
-		const {name, firstChild: {data}} = this;
-		return voidExt.has(name) && Boolean(data);
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {name} = this,
-			rule = 'void-ext',
-			s = Parser.lintConfig.getSeverity(rule, name);
-		if (s && this.#lint()) {
-			const e = generateForSelf(this, {start}, rule, Parser.msg('nothing should be in <$1>', name), s);
-			e.fix = {desc: 'empty', range: [start, e.endIndex], text: ''};
-			return [e];
-		}
-		return super.lint(start, getLintRegex(name));
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
 	}
 }

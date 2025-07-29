@@ -8,7 +8,6 @@ import type {Config} from '../base';
 export interface TitleOptions {
 	temporary?: boolean | undefined;
 	decode?: boolean | undefined;
-	selfLink?: boolean | undefined;
 	halfParsed?: boolean | undefined;
 }
 
@@ -20,21 +19,12 @@ export interface TitleOptions {
 export class Title {
 	#main: string;
 	readonly #namespaces;
-	#path: string;
 	#ns;
-	#fragment;
 	readonly valid;
-	/** @private */
-	readonly encoded: boolean = false;
 
 	/** namespace number / 命名空间 */
 	get ns(): number {
 		return this.#ns;
-	}
-
-	/** 片段标识符 */
-	get fragment(): string | undefined {
-		return this.#fragment;
 	}
 
 	/** main part without the namespace / 不含命名空间的标题主体部分 */
@@ -59,18 +49,6 @@ export class Title {
 	}
 
 	/**
-	 * file extension
-	 *
-	 * 扩展名
-	 * @since v1.1.0
-	 */
-	get extension(): string | undefined {
-		const {main} = this,
-			i = main.lastIndexOf('.');
-		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
-	}
-
-	/**
 	 * @see MediaWikiTitleCodec::splitTitleString
 	 *
 	 * @param title 标题（含或不含命名空间前缀）
@@ -81,13 +59,12 @@ export class Title {
 	 * @param opt.decode 是否需要解码
 	 * @param opt.selfLink 是否允许selfLink
 	 */
+	// @ts-expect-error unused property
 	constructor(title: string, defaultNs: number, config: Config, {temporary, decode, selfLink}: TitleOptions = {}) {
 		const subpage = title.trim().startsWith('../');
 		if (decode && title.includes('%')) {
 			try {
-				const encoded = /%(?!21|3[ce]|5[bd]|7[b-d])[\da-f]{2}/iu.test(title);
 				title = rawurldecode(title);
-				this.encoded = encoded;
 			} catch {}
 		}
 		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
@@ -112,18 +89,11 @@ export class Title {
 		}
 		const i = title.indexOf('#');
 		if (i !== -1) {
-			let fragment = title.slice(i).trim().slice(1);
-			if (fragment.includes('%')) {
-				try {
-					fragment = rawurldecode(fragment);
-				} catch {}
-			}
-			this.#fragment = fragment.replace(/ /gu, '_');
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(
+			// eslint-disable-next-line @stylistic/comma-dangle
 			title
-			|| selfLink && this.ns === 0 && this.#fragment !== undefined,
 		)
 		&& decodeHtml(title) === title
 		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
@@ -131,18 +101,6 @@ export class Title {
 		);
 		this.main = title;
 		this.#namespaces = config.namespaces;
-		this.#path = config.articlePath || '/wiki/$1';
-		if (!this.#path.includes('$1')) {
-			this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
-		}
-
-		/* PRINT ONLY */
-
-		if (!temporary) {
-			Object.defineProperties(this, {
-				encoded: {enumerable: false, writable: false},
-			});
-		}
 	}
 
 	/**
@@ -158,47 +116,5 @@ export class Title {
 		// eslint-disable-next-line prefer-const
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		return [false, title];
-	}
-
-	/** @private */
-	setFragment(fragment: string): void {
-		this.#fragment = fragment;
-	}
-
-	/**
-	 * Get the URL of the title
-	 *
-	 * 生成URL
-	 * @param articlePath article path / 条目路径
-	 * @throws `Error` only available in the LSP version
-	 * @since v1.10.0
-	 */
-	getUrl(articlePath?: string): string {
-		LSP: { // eslint-disable-line no-unused-labels
-			if (typeof articlePath === 'string') {
-				this.#path = articlePath;
-				/* istanbul ignore if */
-				if (!this.#path.includes('$1')) {
-					this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
-				}
-			}
-			const {title, fragment} = this;
-			if (title) {
-				return this.#path.replace(
-					'$1',
-					encodeURIComponent(title)
-					+ (
-						fragment
-							? `#${encodeURIComponent(
-								// eslint-disable-next-line @stylistic/comma-dangle
-								fragment
-							)}`
-							: ''
-					),
-				);
-			}
-			return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
-		}
-		throw new Error('Title.getUrl method is only available in the LSP version!');
 	}
 }

@@ -51,37 +51,16 @@ import {
 	BuildMethod,
 } from '../util/constants';
 import {
-	generateForSelf,
-	cache,
-
-	/* PRINT ONLY */
-
-	isFostered,
-} from '../util/lint';
-import {
 	setChildNodes,
 } from '../util/debug';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
-import type {LintError, TokenTypes} from '../base';
-import type {Cached} from '../util/lint';
+import type {TokenTypes} from '../base';
 import type {Title, TitleOptions} from '../lib/title';
 import type {
 	AstNodes,
-	CategoryToken,
-	AttributeToken,
-	AttributesToken,
 } from '../internal';
-
-declare interface LintIgnore {
-	line: number;
-	from: number | undefined;
-	to: number | undefined;
-	rules: Set<string> | undefined;
-}
-
-const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id'];
 
 /**
  * base class for all tokens
@@ -100,7 +79,6 @@ export class Token extends AstElement {
 	readonly #accum;
 	#include?: boolean;
 	#built = false;
-	#string: Cached<string> | undefined;
 
 	override get type(): TokenTypes {
 		return this.#type;
@@ -132,41 +110,12 @@ export class Token extends AstElement {
 			case 0:
 				if (this.type === 'root') {
 					this.#accum.pop();
-					const isRedirect = this.#parseRedirect();
-					include &&= !isRedirect;
 				}
 				this.#include = include;
 				this.#parseCommentAndExt(include);
 				break;
 			case 1:
 				this.#parseBraces();
-				break;
-			case 2:
-				this.#parseHtml();
-				break;
-			case 3:
-				this.#parseTable();
-				break;
-			case 4:
-				this.#parseHrAndDoubleUnderscore();
-				break;
-			case 5:
-				this.#parseLinks(tidy);
-				break;
-			case 6:
-				this.#parseQuotes(tidy);
-				break;
-			case 7:
-				this.#parseExternalLinks();
-				break;
-			case 8:
-				this.#parseMagicLinks();
-				break;
-			case 9:
-				this.#parseList();
-				break;
-			case 10:
-				this.#parseConverter();
 				// no default
 		}
 		if (this.type === 'root') {
@@ -207,7 +156,6 @@ export class Token extends AstElement {
 			str = firstChild?.toString();
 		if (length === 1 && firstChild!.type === 'text' && str!.includes('\0')) {
 			setChildNodes(this, 0, 1, this.buildFromStr(str!));
-			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
 					token?.build(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
@@ -239,17 +187,6 @@ export class Token extends AstElement {
 		return this;
 	}
 
-	/** 解析重定向 */
-	#parseRedirect(): boolean {
-		const {parseRedirect}: typeof import('../parser/redirect') = require('../parser/redirect');
-		const wikitext = this.firstChild!.toString(),
-			parsed = parseRedirect(wikitext, this.#config, this.#accum);
-		if (parsed) {
-			this.setText(parsed);
-		}
-		return Boolean(parsed);
-	}
-
 	/**
 	 * 解析HTML注释和扩展标签
 	 * @param includeOnly 是否嵌入
@@ -267,101 +204,6 @@ export class Token extends AstElement {
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
 	}
 
-	/** 解析HTML标签 */
-	#parseHtml(): void {
-		if (this.#config.excludes.includes('html')) {
-			return;
-		}
-		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
-		this.setText(parseHtml(this.firstChild!.toString(), this.#config, this.#accum));
-	}
-
-	/** 解析表格 */
-	#parseTable(): void {
-		if (this.#config.excludes.includes('table')) {
-			return;
-		}
-		const {parseTable}: typeof import('../parser/table') = require('../parser/table');
-		this.setText(parseTable(this as Token & {firstChild: AstText}, this.#config, this.#accum));
-	}
-
-	/** 解析`<hr>`和状态开关 */
-	#parseHrAndDoubleUnderscore(): void {
-		if (this.#config.excludes.includes('hr')) {
-			return;
-		}
-		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore') =
-			require('../parser/hrAndDoubleUnderscore');
-		this.setText(parseHrAndDoubleUnderscore(this as Token & {firstChild: AstText}, this.#config, this.#accum));
-	}
-
-	/**
-	 * 解析内部链接
-	 * @param tidy 是否整理
-	 */
-	#parseLinks(tidy?: boolean): void {
-		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, tidy));
-	}
-
-	/**
-	 * 解析单引号
-	 * @param tidy 是否整理
-	 */
-	#parseQuotes(tidy?: boolean): void {
-		if (this.#config.excludes.includes('quote')) {
-			return;
-		}
-		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
-		const lines = this.firstChild!.toString().split('\n');
-		for (let i = 0; i < lines.length; i++) {
-			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum, tidy);
-		}
-		this.setText(lines.join('\n'));
-	}
-
-	/** 解析外部链接 */
-	#parseExternalLinks(): void {
-		if (this.#config.excludes.includes('extLink')) {
-			return;
-		}
-		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(this.firstChild!.toString(), this.#config, this.#accum));
-	}
-
-	/** 解析自由外链 */
-	#parseMagicLinks(): void {
-		if (this.#config.excludes.includes('magicLink')) {
-			return;
-		}
-		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(this.firstChild!.toString(), this.#config, this.#accum));
-	}
-
-	/** 解析列表 */
-	#parseList(): void {
-		if (this.#config.excludes.includes('list')) {
-			return;
-		}
-		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const {firstChild, type, name} = this,
-			lines = firstChild!.toString().split('\n'),
-			state = {lastPrefix: ''};
-		let i = type === 'root' || type === 'ext-inner' && name === 'poem' ? 0 : 1;
-		for (; i < lines.length; i++) {
-			lines[i] = parseList(lines[i]!, state, this.#config, this.#accum);
-		}
-		this.setText(lines.join('\n'));
-	}
-
-	/** 解析语言变体转换 */
-	#parseConverter(): void {
-		if (this.#config.variants.length > 0) {
-			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
-			this.setText(parseConverter(this.firstChild!.toString(), this.#config, this.#accum));
-		}
-	}
-
 	/** @private */
 	isPlain(): boolean {
 		return this.constructor === Token;
@@ -372,22 +214,8 @@ export class Token extends AstElement {
 		switch (key) {
 			case 'config':
 				return this.#config as TokenAttribute<T>;
-			case 'include':
-				return (this.#include ?? Boolean(this.getRootNode().#include)) as TokenAttribute<T>;
-			case 'accum':
-				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
-			case 'stage':
-				return this.#stage as TokenAttribute<T>;
-
-				/* PRINT ONLY */
-
-			case 'invalid':
-				return (this.type === 'table-inter' && isFostered(this) === 2) as TokenAttribute<T>;
-
-				/* PRINT ONLY END */
-
 			default:
 				return super.getAttribute(key);
 		}
@@ -429,132 +257,5 @@ export class Token extends AstElement {
 	/** @private */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, opt);
-	}
-
-	/** @private */
-	inTableAttrs(): 1 | 2 | false {
-		return this.closest('table-attrs,ext')?.type === 'table-attrs' && (
-			this.closest('table-attrs,arg,magic-word,template')?.is<AttributesToken>('table-attrs')
-				? 2
-				: 1
-		);
-	}
-
-	/** @private */
-	inHtmlAttrs(): 1 | 2 | false {
-		return this.closest('html-attrs,ext')?.is<AttributesToken>('html-attrs')
-			? 2
-			: this.inTableAttrs();
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		let errors = super.lint(start, re);
-		if (this.type === 'root') {
-			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
-				r = 'no-duplicate',
-				s = ['category', 'id'].map(key => Parser.lintConfig.getSeverity(r, key)),
-				selector = lintSelectors.filter((_, i) => s[i]).join();
-			if (selector) {
-				for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
-					let key;
-					if (cat.is<CategoryToken>('category')) {
-						key = cat.name;
-					} else {
-						const value = cat.getValue();
-						if (value && value !== true) {
-							key = `#${value}`;
-						}
-					}
-					if (key) {
-						const thisCat = record.get(key);
-						if (thisCat) {
-							thisCat.add(cat);
-						} else {
-							record.set(key, new Set([cat]));
-						}
-					}
-				}
-				for (const [key, value] of record) {
-					if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
-						const isCat = !key.startsWith('#'),
-							msg = `duplicated ${isCat ? 'category' : 'id'}`,
-							severity = s[isCat ? 0 : 1] as LintError.Severity;
-						errors.push(...[...value].map(cat => {
-							const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
-							if (isCat) {
-								e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
-							}
-							return e;
-						}));
-					}
-				}
-			}
-			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
-				wikitext = this.toString(),
-				ignores: LintIgnore[] = [];
-			let mt = regex.exec(wikitext);
-			while (mt) {
-				const {1: type, index} = mt,
-					detail = mt[2]?.trim();
-				ignores.push({
-					line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
-					from: type === 'disable' ? regex.lastIndex : undefined,
-					to: type === 'enable' ? regex.lastIndex : undefined,
-					rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
-				});
-				mt = regex.exec(wikitext);
-			}
-			errors = errors.filter(({rule, startLine, startIndex}) => {
-				const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
-				for (const {line, from, to, rules} of ignores) {
-					if (line > startLine + 1) {
-						break;
-					} else if (rules && !rules.has(rule)) {
-						continue;
-					} else if (line === startLine && from === undefined && to === undefined) {
-						return false;
-					} else if (from! <= startIndex && from! > nearest.pos) {
-						nearest.pos = from!;
-						nearest.type = 'from';
-					} else if (to! <= startIndex && to! > nearest.pos) {
-						nearest.pos = to!;
-						nearest.type = 'to';
-					}
-				}
-				return nearest.type !== 'from';
-			});
-			if (errors.some(({fix}) => fix)) {
-				// 倒序修复，跳过嵌套的修复
-				const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[])
-					.sort(({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo);
-				let i = Infinity,
-					output = wikitext;
-				for (const {range: [from, to], text: t} of fixable) {
-					if (to <= i) {
-						output = output.slice(0, from) + t + output.slice(to);
-						i = from;
-					}
-				}
-				Object.assign(errors, {output});
-			}
-		}
-		return errors;
-	}
-
-	/** @private */
-	override toString(skip?: boolean, separator?: string): string {
-		return skip
-			? super.toString(true, separator)
-			: cache<string>(
-				this.#string,
-				() => super.toString(false, separator),
-				value => {
-					const root = this.getRootNode();
-					if (root.type === 'root' && root.#built) {
-						this.#string = value;
-					}
-				},
-			);
 	}
 }

@@ -38,8 +38,6 @@ const getSymbol = (s: string): string => {
 		return marks.get(name)!; // 标记{{!}}等
 	} else if (/^(?:filepath|(?:full|canonical)urle?):./u.test(name)) {
 		return 'm';
-	} else if (/^#vardefine:./u.test(name)) {
-		return 'n';
 	}
 	return 't';
 };

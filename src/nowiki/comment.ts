@@ -1,9 +1,6 @@
-import {generateForSelf} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
-import {padded} from '../../mixin/padded';
-import Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError, Config} from '../../base';
+import type {Config} from '../../base';
 import type {Token} from '../../internal';
 
 /**
@@ -11,7 +8,7 @@ import type {Token} from '../../internal';
  *
  * HTML注释，不可见
  */
-@hiddenToken(false) @padded('<!--')
+@hiddenToken(false)
 export abstract class CommentToken extends NowikiBaseToken {
 	closed;
 
@@ -26,27 +23,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		if (this.closed) {
-			return [];
-		}
-		const rule = 'unclosed-comment',
-			s = Parser.lintConfig.getSeverity(rule);
-		if (!s) {
-			return [];
-		}
-		const e = generateForSelf(this, {start}, rule, Parser.msg('unclosed $1', 'HTML comment'), s);
-		e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: '-->'}];
-		return [e];
-	}
-
-	/** @private */
 	override toString(skip?: boolean): string {
 		return skip ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 }

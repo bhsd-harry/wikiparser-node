@@ -1,12 +1,9 @@
-import {mixin} from '../util/debug';
 import {getCondition} from '../parser/selector';
-import {AstElement} from '../lib/element';
 import type {TokenPredicate} from '../parser/selector';
 import type {AstNodes, Token} from '../internal';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly childNodes: readonly AstNodes[];
-	detach?: () => void; // eslint-disable-line @typescript-eslint/method-signature-style
 };
 
 export interface ElementLike {
@@ -37,6 +34,14 @@ export interface ElementLike {
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
 	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class ElementLike extends constructor implements ElementLike {
+		#getCondition<T>(selector: string): TokenPredicate<T> {
+			return getCondition<T>(
+				selector,
+				// @ts-expect-error only AstElement
+				this,
+			);
+		}
+
 		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
 			for (const child of this.childNodes) {
 				if (child.type === 'text') {
@@ -53,14 +58,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelector<T = Token>(selector: string): T | undefined {
-			const condition = getCondition<T>(
-				selector,
-				// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
-				!(this instanceof AstElement) ?
-					undefined : // eslint-disable-line @stylistic/operator-linebreak
-					this,
-			);
-			return this.getElementBy(condition);
+			return this.getElementBy(this.#getCondition<T>(selector));
 		}
 
 		getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
@@ -76,11 +74,9 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelectorAll<T = Token>(selector: string): T[] {
-			const condition = getCondition<T>(selector, this instanceof AstElement ? this : undefined);
-			return this.getElementsBy(condition);
+			return this.getElementsBy(this.#getCondition<T>(selector));
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(ElementLike, constructor);
 	return ElementLike;
 };

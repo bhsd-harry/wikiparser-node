@@ -1,27 +1,17 @@
 import {
 	removeComment,
 	text,
-	decodeHtml,
-	print,
-	escape,
 } from '../util/string';
-import {generateForChild, generateForSelf} from '../util/lint';
-import {isToken, Shadow} from '../util/debug';
 import {
 	BuildMethod,
 } from '../util/constants';
-import {BoundingRect} from '../lib/rect';
-import {gapped} from '../mixin/gapped';
-import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
-import {SyntaxToken} from './syntax';
-import type {Config, LintError} from '../base';
+import type {Config} from '../base';
 import type {Title} from '../lib/title';
-import type {AstText} from '../internal';
 
-declare type Child = AtomToken | SyntaxToken;
+declare type Child = AtomToken;
 
 /**
  * template or magic word
@@ -29,7 +19,6 @@ declare type Child = AtomToken | SyntaxToken;
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
  */
-@gapped()
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';
@@ -39,37 +28,13 @@ export abstract class TranscludeToken extends Token {
 	#title: Title;
 
 	declare readonly name: string;
+	// eslint-disable-next-line @stylistic/semi
 	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
-		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstChild(): Child;
 	abstract override get lastChild(): Child | ParameterToken;
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
-	}
-
-	/**
-	 * module name
-	 *
-	 * 模块名
-	 * @since v1.21.0
-	 */
-	get module(): string | undefined {
-		// eslint-disable-next-line no-unused-labels
-		LSP: return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
-	}
-
-	/**
-	 * function name
-	 *
-	 * 函数名
-	 * @since v1.21.2
-	 */
-	get function(): string | undefined {
-		LSP: return this.type === 'magic-word' && this.name === 'invoke' // eslint-disable-line no-unused-labels
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			? this.childNodes[2]?.text().trim()
-			: undefined;
 	}
 
 	/**
@@ -117,16 +82,12 @@ export abstract class TranscludeToken extends Token {
 					? cleaned.slice(cleaned.search(/\S/u)) + (fullWidth ? '：' : '')
 					: cleaned.trim(),
 				lcName = name.toLowerCase(),
-				isOldSchema = Array.isArray(sensitive),
-				isSensitive = isOldSchema
-					? sensitive.includes(name)
-					: Object.prototype.hasOwnProperty.call(sensitive, name),
-				canonicalName = !isOldSchema && isSensitive
+				isSensitive = Object.prototype.hasOwnProperty.call(sensitive, name),
+				canonicalName = isSensitive
 					? sensitive[name]!
 					: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
-				isFunc = isOldSchema && isSensitive
-					|| !('functionHook' in config) || functionHook.includes(canonicalName as string),
-				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
+				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
+				isVar = variable.includes(canonicalName as string);
 			if (isFunction ? canonicalName && isFunc : isVar) {
 				this.setAttribute(
 					'name',
@@ -136,7 +97,7 @@ export abstract class TranscludeToken extends Token {
 				if (fullWidth) {
 					this.#colon = '：';
 				}
-				const token = new SyntaxToken(
+				const token = new AtomToken(
 					magicWord,
 					'magic-word-name',
 					config,
@@ -145,21 +106,6 @@ export abstract class TranscludeToken extends Token {
 				super.insertAt(token);
 				if (arg !== false) {
 					parts.unshift([arg]);
-				}
-				if (this.name === 'invoke') {
-					for (let i = 0; i < 2; i++) {
-						const part = parts.shift();
-						if (!part) {
-							break;
-						}
-						const invoke = new AtomToken(
-							part.join('='),
-							`invoke-${i ? 'function' : 'module'}`,
-							config,
-							accum,
-						);
-						super.insertAt(invoke);
-					}
 				}
 			}
 		}
@@ -179,9 +125,10 @@ export abstract class TranscludeToken extends Token {
 		}
 		const templateLike = this.isTemplate();
 		let i = 1;
+		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let j = 0; j < parts.length; j++) {
 			const part = parts[j]!;
-			if (!(templateLike || this.name === 'switch' && j > 0 || this.name === 'tag' && j > 1)) {
+			if (!templateLike) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}
@@ -192,10 +139,6 @@ export abstract class TranscludeToken extends Token {
 			// @ts-expect-error abstract class
 			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
 		}
-
-		/* PRINT ONLY */
-
-		this.seal('modifier');
 	}
 
 	/**
@@ -214,9 +157,7 @@ export abstract class TranscludeToken extends Token {
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
 		if (
-			this.#raw && isRaw
-			|| !this.#raw && (isSubst || !modifier)
-			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || !modifier)
+			isRaw || isSubst || !modifier
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -231,17 +172,16 @@ export abstract class TranscludeToken extends Token {
 	 * 是否是模板或模块
 	 */
 	isTemplate(): boolean {
-		return this.type === 'template' || this.name === 'invoke';
+		return this.type === 'template';
 	}
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
-		const isTemplate = this.type === 'template',
-			title = this.normalizeTitle(
-				this.childNodes[isTemplate ? 0 : 1].text(),
-				isTemplate ? 10 : 828,
-				{temporary: true},
-			);
+		const title = this.normalizeTitle(
+			this.childNodes[0].text(),
+			10,
+			{temporary: true},
+		);
 		return title;
 	}
 
@@ -252,11 +192,8 @@ export abstract class TranscludeToken extends Token {
 		}
 		super.afterBuild();
 		if (this.isTemplate()) {
-			const isTemplate = this.type === 'template';
-			if (isTemplate) {
-				this.#title = this.#getTitle();
-				this.setAttribute('name', this.#title.title);
-			}
+			this.#title = this.#getTitle();
+			this.setAttribute('name', this.#title.title);
 		}
 	}
 
@@ -273,117 +210,26 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const {childNodes, length, firstChild, modifier, type, name} = this;
-		return type === 'magic-word' && name === 'vardefine'
-			? ''
-			: `{{${modifier}${
-				type === 'magic-word'
-					? firstChild.text()
-					+ (length === 1 ? '' : this.#colon)
-					+ text(childNodes.slice(1), '|')
-					: super.text('|')
-			}}}`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		switch (key) {
-			case 'padding':
-				return this.modifier.length + 2 as TokenAttribute<T>;
-			case 'title':
-				return this.#title as TokenAttribute<T>;
-			case 'colon':
-				return this.#colon as TokenAttribute<T>;
-
-				/* PRINT ONLY */
-
-			case 'invalid':
-				return (
-					this.type === 'magic-word' && this.name === 'invoke'
-					&& (this.length === 2 || !this.#getTitle().valid)
-				) as TokenAttribute<T>;
-
-				/* PRINT ONLY END */
-
-			default:
-				return super.getAttribute(key);
-		}
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		if (!this.isTemplate()) {
-			return errors;
-		}
-		const {type, childNodes, length} = this,
-			rect = new BoundingRect(this, start),
-			invoke = type === 'magic-word';
-		let rule: LintError.Rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, 'fragment');
-		if (invoke && !this.#getTitle().valid) {
-			rule = 'invalid-invoke';
-			s = Parser.lintConfig.getSeverity(rule, 'name');
-			if (s) {
-				errors.push(generateForChild(childNodes[1], rect, rule, 'illegal module name', s));
-			}
-		} else if (s) {
-			const child = childNodes[invoke ? 1 : 0] as AtomToken,
-				i = child.childNodes
-					.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
-				textNode = child.childNodes[i] as AstText | undefined;
-			if (textNode) {
-				const e = generateForChild(child, rect, rule, 'useless fragment', s);
-				e.fix = {
-					desc: 'remove',
-					range: [
-						e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'),
-						e.endIndex,
-					],
-					text: '',
-				};
-				errors.push(e);
-			}
-		}
-		rule = 'invalid-invoke';
-		s = Parser.lintConfig.getSeverity(rule, 'function');
-		if (s && invoke && length === 2) {
-			errors.push(generateForSelf(this, rect, rule, 'missing module function', s));
-			return errors;
-		}
-		rule = 'no-duplicate';
-		s = Parser.lintConfig.getSeverity(rule, 'parameter');
-		if (s) {
-			const duplicatedArgs = this.getDuplicatedArgs()
-					.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
-				msg = 'duplicated parameter';
-			for (const [, args] of duplicatedArgs) {
-				errors.push(...args.map(arg => {
-					const e = generateForChild(arg, rect, rule, msg, s);
-					e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
-					return e;
-				}));
-			}
-		}
-		return errors;
+		const {childNodes, length, firstChild, modifier, type} = this;
+		return `{{${modifier}${
+			type === 'magic-word'
+				? firstChild.text()
+				+ (length === 1 ? '' : this.#colon)
+				+ text(childNodes.slice(1), '|')
+				: super.text('|')
+		}}}`;
 	}
 
 	/**
 	 * 处理匿名参数更改
 	 * @param addedToken 新增的参数
 	 */
-	#handleAnonArgChange(addedToken: number | ParameterToken): void {
-		const args = this.getAnonArgs(),
-			added = typeof addedToken !== 'number';
-		for (let i = added ? args.indexOf(addedToken) : addedToken - 1; i < args.length; i++) {
-			const token = args[i]!,
-				{name} = token,
-				newName = String(i + 1);
-			if (name !== newName || token === addedToken) {
-				token.setAttribute('name', newName);
-				this.getArgs(newName, false, false).add(token);
-			}
-		}
+	#handleAnonArgChange(addedToken: ParameterToken): void {
+		const args = this.getAnonArgs();
+		const token = addedToken,
+			newName = String(args.length);
+		token.setAttribute('name', newName);
+		this.getArgs(newName, false, false).add(token);
 	}
 
 	/**
@@ -407,7 +253,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取所有参数
 	 */
 	getAllArgs(): ParameterToken[] {
-		return this.childNodes.filter(isToken<ParameterToken>('parameter'));
+		return this.childNodes.slice(1) as ParameterToken[];
 	}
 
 	/**
@@ -419,13 +265,12 @@ export abstract class TranscludeToken extends Token {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
+	// eslint-disable-next-line jsdoc/require-param
 	/**
 	 * Get parameters with the specified name
 	 *
 	 * 获取指定参数
 	 * @param key parameter name / 参数名
-	 * @param exact whether to match anonymosity / 是否匹配匿名性
-	 * @param copy whether to return a copy / 是否返回一个备份
 	 */
 	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
 		const keyStr = String(key)
@@ -441,82 +286,40 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
-	 * Get duplicated parameters
+	 * Get the effective parameter with the specified name
 	 *
-	 * 获取重名参数
+	 * 获取生效的指定参数
+	 * @param key parameter name / 参数名
 	 */
-	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
+	getArg(key: string | number): ParameterToken | undefined {
+		const {childNodes} = this;
+		return [...this.getArgs(key)].sort((a, b) => childNodes.indexOf(b) - childNodes.indexOf(a))[0];
 	}
 
 	/**
-	 * Get possible values of some magic words
+	 * Get the effective parameter value
 	 *
-	 * 对特定魔术字获取可能的取值
-	 * @throws `Error` 不是可接受的魔术字
+	 * 获取生效的参数值
+	 * @param key parameter name / 参数名
 	 */
-	getPossibleValues(): Token[] {
-		const {type, name, childNodes} = this;
-		if (type === 'template') {
-			throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
-		}
-		let start: number | undefined,
-			queue: Token[] | undefined;
-		switch (name) {
-			case 'if':
-			case 'ifexist':
-			case 'ifexpr':
-			case 'iferror':
-				start = 2;
-				break;
-			case 'ifeq':
-				start = 3;
-				break;
-			case 'switch': {
-				const parameters = childNodes.slice(2) as ParameterToken[],
-					last = parameters[parameters.length - 1];
-				queue = [
-					...parameters.filter(({anon}) => !anon),
-					...last?.anon ? [last] : [],
-				].map(({lastChild}) => lastChild);
-				break;
-			}
-			default:
-				throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
-		}
-		queue ??= (childNodes.slice(start, start! + 2) as ParameterToken[]).map(({lastChild}) => lastChild);
-		for (let i = 0; i < queue.length;) {
-			const {length, 0: first} = queue[i]!.childNodes.filter(child => child.text().trim());
-			if (length === 0) {
-				queue.splice(i, 1);
-			} else if (length > 1 || first!.type !== 'magic-word') {
-				i++;
-			} else {
-				try {
-					const possibleValues = (first as this).getPossibleValues();
-					queue.splice(i, 1, ...possibleValues);
-					i += possibleValues.length;
-				} catch {
-					i++;
-				}
-			}
-		}
-		return queue;
+	getValue(key: string | number): string | undefined {
+		return this.getArg(key)?.getValue();
 	}
 
-	/** @private */
-	override print(): string {
-		const {childNodes, length, firstChild, modifier, type} = this;
-		return `<span class="wpb-${type}${
-			this.getAttribute('invalid') ? ' wpb-invalid' : ''
-		}">{{${
-			type === 'magic-word'
-				? escape(modifier)
-				+ firstChild.print()
-				+ (length === 1 ? '' : this.#colon)
-				+ print(childNodes.slice(1), {sep: '|'})
-				: (modifier ? `<span class="wpb-magic-word">${escape(modifier)}</span>` : '')
-					+ print(childNodes, {sep: '|'})
-		}}}</span>`;
+	/**
+	 * Set the parameter value
+	 *
+	 * 设置参数值
+	 * @param key parameter name / 参数名
+	 * @param value parameter value / 参数值
+	 */
+	setValue(key: string | number, value: string): void {
+		const arg = this.getArg(key);
+		if (arg) {
+			arg.setValue(value);
+		} else {
+			// @ts-expect-error abstract class
+			this.insertAt(new ParameterToken(String(key), value, this.getAttribute('config')));
+		}
 	}
 }

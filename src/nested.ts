@@ -1,21 +1,11 @@
-import {generateForChild} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
-import Parser from '../index';
 import {Token} from './index';
-import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {Config, LintError} from '../base';
-import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
+import type {Config} from '../base';
+import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken, ExtToken} from '../internal';
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
-
-const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']),
-	lintRegex = [false, true].map(article => {
-		const noinclude = article ? 'includeonly' : 'noinclude';
-		return new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu');
-	}) as [RegExp, RegExp];
 
 /**
  * extension tag that has a nested structure
@@ -24,10 +14,6 @@ const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word
  * @classdesc `{childNodes: (ExtToken|NoincludeToken|CommentToken)[]}`
  */
 export abstract class NestedToken extends Token {
-	declare readonly name: string;
-	readonly #tags;
-	readonly #regex;
-
 	declare readonly childNodes: readonly Child[];
 	abstract override get firstChild(): Child | undefined;
 	abstract override get lastChild(): Child | undefined;
@@ -45,29 +31,17 @@ export abstract class NestedToken extends Token {
 	 */
 	constructor(
 		wikitext: string | undefined,
-		regex: RegExp | boolean,
+		regex: boolean,
 		tags: readonly string[],
 		config: Config,
 		accum: Token[] = [],
 	) {
-		if (typeof regex === 'boolean') {
-			const placeholder = Symbol('InputboxToken'),
-				{length} = accum;
-			accum.push(placeholder as unknown as Token);
-			wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);
-			wikitext &&= parseBraces(wikitext, config, accum);
-			accum.splice(length, 1);
-		} else {
-			wikitext &&= wikitext.replace(
-				regex,
-				(_, name: string, attr?: string, inner?: string, closing?: string) => {
-					const str = `\0${accum.length + 1}e\x7F`;
-					// @ts-expect-error abstract class
-					new ExtToken(name, attr, inner, closing, config, false, accum);
-					return str;
-				},
-			);
-		}
+		const placeholder = Symbol('NestedToken'),
+			{length} = accum;
+		accum.push(placeholder as unknown as Token);
+		wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);
+		wikitext &&= parseBraces(wikitext, config, accum);
+		accum.splice(length, 1);
 		wikitext &&= wikitext.replace(
 			/(^|\0\d+.\x7F)([^\0]+)(?=$|\0\d+.\x7F)/gu,
 			(_, lead: string, substr: string) => {
@@ -81,39 +55,5 @@ export abstract class NestedToken extends Token {
 			config,
 			accum,
 		);
-		this.#tags = [...tags];
-		this.#regex = regex;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, this.name);
-		if (!s) {
-			return errors;
-		}
-		const rect = new BoundingRect(this, start),
-			regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
-		return [
-			...errors,
-			...this.childNodes.filter(child => {
-				const {type, name} = child;
-				if (type === 'ext') {
-					return !this.#tags.includes(name);
-				} else if (childTypes.has(type)) {
-					return false;
-				}
-				const str = child.toString().trim();
-				return str && !regex.test(str);
-			}).map(child => {
-				const e = generateForChild(child, rect, rule, Parser.msg('invalid content in <$1>', this.name), s);
-				e.suggestions = [
-					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
-					{desc: 'comment', range: [e.startIndex, e.endIndex], text: `<!--${child.toString()}-->`},
-				];
-				return e;
-			}),
-		];
 	}
 }

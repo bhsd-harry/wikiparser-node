@@ -1,6 +1,3 @@
-import {mixin} from '../util/debug';
-import type {LintError} from '../base';
-
 /**
  * 解析后不可见的类
  * @param linter 是否覆写 lint 方法
@@ -13,13 +10,7 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 		override text(): string {
 			return '';
 		}
-
-		override lint(start?: number): LintError[] {
-			// @ts-expect-error private argument
-			return linter ? [] : super.lint(start);
-		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(AnyHiddenToken, constructor);
 	return AnyHiddenToken;
 };

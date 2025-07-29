@@ -1,20 +1,24 @@
 {
-	"name": "wikiparser-node",
+	"name": "wikiparser-template",
 	"version": "1.22.1",
-	"description": "A Node.js parser for MediaWiki markup with AST",
+	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
 		"wikitext",
 		"parser"
 	],
-	"homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
+	"homepage": "https://github.com/bhsd-harry/wikiparser-node/tree/template#readme",
 	"bugs": {
 		"url": "https://github.com/bhsd-harry/wikiparser-node/issues"
 	},
 	"license": "GPL-3.0",
 	"author": "Bhsd",
-	"files": [],
-	"main": "./bundle/bundle-lsp.min.js",
+	"files": [
+		"bundle/bundle.min.js",
+		"/dist/**/*.d.ts",
+		"!/dist/test/"
+	],
+	"main": "./bundle/bundle.min.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,
 	"repository": {
@@ -22,59 +26,27 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle.js",
-		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --outfile=build/bundle-lsp.js",
-		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
-		"build:core": "npm run bundle:core && esbuild build/bundle.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:es8": "esbuild build/bundle.js --charset=utf8 --minify --target=es2017 --format=iife --outfile=bundle/bundle-es8.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle-es8.min.js",
-		"build:lsp": "npm run bundle:lsp && esbuild build/bundle-lsp.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
-		"build:ext": "bash build-ext.sh",
+		"prepublishOnly": "npm run build:core",
+		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle-template.js",
+		"build:core": "npm run bundle:core && esbuild build/bundle-template.js --charset=utf8 --minify --target=es2017 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle.min.js && rm -rf dist/; tsc && rm -rf dist/[ptu]*/*.d.ts",
 		"build:test": "tsc --project tsconfig.dist.json",
-		"build": "npm run build:core && npm run build:es8 && npm run build:lsp && npm run build:test && npm run build:css",
+		"build": "npm run build:core && npm run build:test",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . | grep '\\.ts'; }; f",
-		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
-		"lint:json": "v8r -s config/.schema.json config/*.json && mocha dist/test/json.js",
-		"lint:css": "stylelint css/*.css extensions/*.css",
-		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
-		"prof": "node dist/test/prof.js",
-		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
-		"test:unit": "mocha dist/test/test.js",
+		"lint:ts": "tsc --noEmit && eslint --cache .",
+		"lint": "npm run lint:ts",
 		"test:parser": "mocha dist/test/parserTests.js",
-		"test": "npm run test:unit && npm run test:parser",
-		"test:end": "pkill -x http-server",
-		"test:real": "node --enable-source-maps dist/test/real.js"
-	},
-	"dependencies": {
-		"@bhsd/common": "^1.0.0",
-		"vscode-languageserver-types": "^3.17.5"
-	},
-	"optionalDependencies": {
-		"chalk": "^4.1.2",
-		"color-name": "^2.0.0",
-		"entities": "^6.0.0",
-		"mathjax": "^3.2.2",
-		"stylelint": "^16.22.0",
-		"vscode-css-languageservice": "^6.3.7",
-		"vscode-html-languageservice": "^5.5.1",
-		"vscode-json-languageservice": "^5.6.1"
+		"test": "npm run test:parser"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^1.0.0",
-		"@bhsd/codemirror-mediawiki": "^2.30.2",
+		"@bhsd/common": "^1.0.0",
 		"@bhsd/test-util": "^0.0.0",
-		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
-		"@stylistic/stylelint-plugin": "^3.1.2",
-		"@types/color-name": "^2.0.0",
-		"@types/color-rgba": "^2.1.3",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.0.10",
-		"@types/prismjs": "^1.26.5",
 		"@typescript-eslint/eslint-plugin": "^8.35.1",
 		"@typescript-eslint/parser": "^8.35.1",
-		"codejar-async": "^4.2.7",
-		"color-rgba": "^3.0.0",
 		"esbuild": "^0.25.5",
 		"eslint": "^8.57.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
@@ -85,13 +57,8 @@
 		"eslint-plugin-promise": "^7.2.1",
 		"eslint-plugin-regexp": "^2.9.0",
 		"eslint-plugin-unicorn": "^56.0.1",
-		"http-server": "^14.1.1",
 		"mocha": "^11.7.1",
-		"monaco-editor": "^0.52.2",
-		"nyc": "^17.1.0",
-		"typescript": "^5.8.2",
-		"v8r": "^5.0.0",
-		"vscode-languageserver-textdocument": "^1.0.12"
+		"typescript": "^5.8.2"
 	},
 	"engines": {
 		"node": ">=18.17.0"

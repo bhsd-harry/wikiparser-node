@@ -4,12 +4,8 @@ import type {AstText} from '../../lib/text';
 
 declare type NowikiTypes = 'ext-inner'
 	| 'comment'
-	| 'dd'
-	| 'double-underscore'
-	| 'hr'
-	| 'list'
+	// eslint-disable-next-line @stylistic/semi
 	| 'noinclude'
-	| 'quote';
 
 /**
  * text-only token that will not be parsed

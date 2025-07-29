@@ -1,8 +1,6 @@
 import {getObjRegex} from '@bhsd/common';
-import {restore} from '../util/string';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
-import {TranslateToken} from '../src/tagPair/translate';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
@@ -20,13 +18,11 @@ const onlyincludeLeft = '<onlyinclude>',
 			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				ext.filter(tag => tag !== 'img').join('|')
+				ext.join('|')
 				// eslint-disable-next-line unicorn/prefer-string-raw
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))${
-				ext.includes('img') ? String.raw`|<img(\s[^>]*?)?(/?)>` : ''
-			}`,
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
 			'giu',
 		));
 	}) as [RegexGetter<string[]>, RegexGetter<string[]>];
@@ -81,22 +77,6 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	const {ext} = config,
 		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar'),
 		newConfig = {...config, ext: newExt};
-	if (ext.includes('translate')) {
-		const stack: string[] = [];
-		wikitext = wikitext.replace(/<nowiki>[\s\S]*?<\/nowiki>/giu, m => {
-			stack.push(m);
-			return `\0${stack.length - 1}\x7F`;
-		}).replace(
-			/<translate( nowrap)?>([\s\S]+?)?<\/translate>/gu,
-			(_, p1: string | undefined, p2: string | undefined) => {
-				const l = accum.length;
-				// @ts-expect-error abstract class
-				new TranslateToken(p1, p2 && restore(p2, stack), newConfig, accum);
-				return `\0${l}g\x7F`;
-			},
-		);
-		wikitext = restore(wikitext, stack);
-	}
 	return wikitext.replace(
 		getRegex[includeOnly ? 1 : 0](newExt),
 		(
@@ -109,19 +89,17 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			includeAttr?: string,
 			includeInner?: string,
 			includeClosing?: string,
-			imgAttr?: string,
-			imgClosing?: string,
 		) => {
 			const l = accum.length;
 			let ch = 'n';
-			if (name || newExt.includes('img') && imgClosing !== undefined) {
+			if (name) {
 				ch = 'e';
 				// @ts-expect-error abstract class
 				new ExtToken(
-					name ?? 'img',
-					name ? attr : imgAttr,
+					name,
+					attr,
 					inner,
-					name ? closing : imgClosing && undefined,
+					closing,
 					newConfig,
 					include,
 					accum,

@@ -3,5 +3,8 @@
 	"include": [
 		"test/**/*",
 		"typings/api.d.ts"
-	]
+	],
+	"compilerOptions": {
+		"emitDeclarationOnly": false
+	}
 }

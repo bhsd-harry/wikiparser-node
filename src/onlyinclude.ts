@@ -1,4 +1,3 @@
-import {padded} from '../mixin/padded';
 import {Token} from './index';
 
 /**
@@ -7,7 +6,6 @@ import {Token} from './index';
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
-@padded('<onlyinclude>')
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';
@@ -21,13 +19,5 @@ export class OnlyincludeToken extends Token {
 	/** @private */
 	override isPlain(): true {
 		return true;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({
-			pre: '<span class="wpb-ext">&lt;onlyinclude&gt;</span>',
-			post: '<span class="wpb-ext">&lt;/onlyinclude&gt;</span>',
-		});
 	}
 }

@@ -1,4 +1,3 @@
-import {gapped} from '../../mixin/gapped';
 import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstNodes} from '../../lib/node';
@@ -8,22 +7,15 @@ import type {AstNodes} from '../../lib/node';
  *
  * 成对标签
  */
-@gapped()
 export abstract class TagPairToken extends Token {
-	declare readonly name: string;
 	readonly #tags: [string, string];
 	closed;
 	selfClosing;
 
-	abstract override get type(): 'ext' | 'include' | 'translate';
+	abstract override get type(): 'ext' | 'include';
 	declare readonly childNodes: readonly [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
-
-	/** inner wikitext / 内部wikitext */
-	get innerText(): string | undefined {
-		return this.selfClosing ? undefined : this.lastChild.text();
-	}
 
 	/**
 	 * @param name 标签名
@@ -40,7 +32,6 @@ export abstract class TagPairToken extends Token {
 		accum: Token[] = [],
 	) {
 		super(undefined, config);
-		this.setAttribute('name', name.toLowerCase());
 		this.#tags = [name, closed || name];
 		this.closed = closed !== '';
 		this.selfClosing = closed === undefined;
@@ -70,20 +61,5 @@ export abstract class TagPairToken extends Token {
 		return this.selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	override print(): string {
-		const [opening, closing] = this.#tags;
-		return super.print(
-			this.selfClosing
-				? {pre: `&lt;${opening}`, post: '/&gt;'}
-				: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''},
-		);
 	}
 }
