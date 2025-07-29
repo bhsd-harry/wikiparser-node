@@ -1,4 +1,3 @@
-import {mixin} from '../util/debug';
 import type {AttributesToken} from '../internal';
 
 export interface AttributesParentBase {
@@ -41,6 +40,5 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(AttributesParent, constructor);
 	return AttributesParent;
 };

@@ -1,4 +1,3 @@
-import {mixin} from '../util/debug';
 import type {LintError} from '../base';
 
 /**
@@ -20,6 +19,5 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(AnyHiddenToken, constructor);
 	return AnyHiddenToken;
 };

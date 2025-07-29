@@ -1,4 +1,3 @@
-import {mixin} from '../util/debug';
 import type {Dimension} from '../lib/node';
 import type {AstNodes} from '../internal';
 
@@ -43,6 +42,5 @@ export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(NodeLike, constructor);
 	return NodeLike;
 };

@@ -1,5 +1,3 @@
-import {mixin} from '../util/debug';
-
 /**
  * 给定 gap 的类
  * @param gap
@@ -12,6 +10,5 @@ export const gapped = (gap = 1) => <S extends AstConstructor>(constructor: S): S
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(GappedToken, constructor);
 	return GappedToken;
 };

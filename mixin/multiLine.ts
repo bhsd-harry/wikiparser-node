@@ -1,5 +1,3 @@
-import {mixin} from '../util/debug';
-
 /**
  * 逐行解析的类
  * @ignore
@@ -24,6 +22,5 @@ export const multiLine = <T extends AstConstructor>(constructor: T): T => {
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(MultiLineToken, constructor);
 	return MultiLineToken;
 };

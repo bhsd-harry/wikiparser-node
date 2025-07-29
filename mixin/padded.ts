@@ -1,5 +1,3 @@
-import {mixin} from '../util/debug';
-
 /**
  * 给定 padding 的类
  * @param padding padding 字符串
@@ -13,6 +11,5 @@ export const padded = ({length}: string) => <S extends AstConstructor>(construct
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(PaddedToken, constructor);
 	return PaddedToken;
 };
