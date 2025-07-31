@@ -111,12 +111,12 @@ export abstract class TableToken extends TrBaseToken {
 		return errors;
 	}
 
+	// eslint-disable-next-line jsdoc/require-param
 	/**
 	 * Close the table syntax
 	 *
 	 * 闭合表格语法
 	 * @param syntax syntax of the table end / 表格结尾语法
-	 * @param halfParsed
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
@@ -135,15 +135,11 @@ export abstract class TableToken extends TrBaseToken {
 		(this.lastChild as SyntaxToken).safeReplaceChildren(inner);
 	}
 
+	// eslint-disable-next-line jsdoc/require-param
 	/**
 	 * Get the table layout
 	 *
 	 * 获取表格布局
-	 * @param stop stop condition / 中止条件
-	 * @param stop.row stop at the row / 中止行
-	 * @param stop.column stop at the column / 中止列
-	 * @param stop.x stop at the row / 中止行
-	 * @param stop.y stop at the column / 中止列
 	 */
 	@cached(false)
 	getLayout(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
@@ -200,9 +196,6 @@ export abstract class TableToken extends TrBaseToken {
 	 *
 	 * 获取第n行
 	 * @param n row number / 行号
-	 * @param force whether to regard the table itself as the first row / 是否将表格自身视为第一行
-	 * @param insert whether to be used to insert a new row / 是否用于判断插入新行的位置
-	 * @throws `RangeError` 不存在该行
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
