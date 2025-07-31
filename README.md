@@ -32,17 +32,41 @@ Parser.config = {
 		'indicator',
 	],
 };
-const root = Parser.parse(myWikitext); // Parse the wikitext and return the root node of the AST
-const template = root.querySelector<Parser.TranscludeToken>('template'); // Get the first template node
-const templates = root.querySelectorAll<Parser.TranscludeToken>('template'); // Get all template nodes
-const myTemplate = root.querySelector<Parser.TranscludeToken>('template#Template:My_Template')!; // Get the first template node by its name
-const myTemplates = root.querySelectorAll<Parser.TranscludeToken>('template#Template:My_Template'); // Get all template nodes by their name
-const param_1 = myTemplate.getArg(1)!; // Get the parameter `1` of the template
-const param_a = myTemplate.getArg('a'); // Get the parameter `a` of the template
-let value_1 = param_1.getValue(); // Get the value of the parameter `1`
-value_1 = myTemplate.getValue(1); // Get the value of the parameter `1` from the template node
-myTemplate.append('anonymous parameter', 'another anonymous parameter'); // Append new anonymouse parameters to the template
-param_1.setValue('new value'); // Set the value of the parameter `1`
-myTemplate.setValue(1, 'new value'); // Set the value of the parameter `1` from the template node
+
+// Parse the wikitext and return the root node of the AST
+const root = Parser.parse(myWikitext);
+
+// Get the first template node
+const template = root.querySelector<Parser.TranscludeToken>('template');
+
+// Get all template nodes
+const templates = root.querySelectorAll<Parser.TranscludeToken>('template');
+
+// Get the first template node by its name
+const myTemplate = root.querySelector<Parser.TranscludeToken>('template#Template:My_Template')!;
+
+// Get all template nodes by their name
+const myTemplates = root.querySelectorAll<Parser.TranscludeToken>('template#Template:My_Template');
+
+// Get the parameter `1` of the template
+const param_1 = myTemplate.getArg(1)!;
+
+// Get the parameter `a` of the template
+const param_a = myTemplate.getArg('a');
+
+// Get the value of the parameter `1`
+let value_1 = param_1.getValue();
+
+// Get the value of the parameter `1` from the template node
+value_1 = myTemplate.getValue(1);
+
+// Append new anonymouse parameters to the template
+myTemplate.append('anonymous parameter', 'another anonymous parameter');
+
+// Set the value of the parameter `1`
+param_1.setValue('new value');
+
+// Set the value of the parameter `1` from the template node
+myTemplate.setValue(1, 'new value');
 ```
 
