@@ -122,6 +122,16 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 
 		/* NOT FOR BROWSER END */
 
+		#getCondition<T>(selector: string): TokenPredicate<T> {
+			return getCondition<T>(
+				selector,
+				// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
+				!(this instanceof AstElement) ?
+					undefined : // eslint-disable-line @stylistic/operator-linebreak
+					this,
+			);
+		}
+
 		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
 			for (const child of this.childNodes) {
 				if (child.type === 'text') {
@@ -138,14 +148,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelector<T = Token>(selector: string): T | undefined {
-			const condition = getCondition<T>(
-				selector,
-				// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
-				!(this instanceof AstElement) ?
-					undefined : // eslint-disable-line @stylistic/operator-linebreak
-					this,
-			);
-			return this.getElementBy(condition);
+			return this.getElementBy(this.#getCondition<T>(selector));
 		}
 
 		getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
@@ -161,14 +164,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelectorAll<T = Token>(selector: string): T[] {
-			const condition = getCondition<T>(
-				selector,
-				// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
-				!(this instanceof AstElement) ?
-					undefined : // eslint-disable-line @stylistic/operator-linebreak
-					this,
-			);
-			return this.getElementsBy(condition);
+			return this.getElementsBy(this.#getCondition<T>(selector));
 		}
 
 		/* NOT FOR BROWSER */

@@ -339,7 +339,7 @@ export class Title {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp(
-				[...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'),
+				[...conversionTable.keys()].sort((a, b) => b.localeCompare(a)).map(escapeRegExp).join('|'),
 				'gu',
 			);
 			this.main = this.main.replace(regex, p => conversionTable.get(p)!);

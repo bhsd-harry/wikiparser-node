@@ -184,12 +184,12 @@ export abstract class TableToken extends TrBaseToken {
 		return errors;
 	}
 
+	// eslint-disable-next-line jsdoc/require-param
 	/**
 	 * Close the table syntax
 	 *
 	 * 闭合表格语法
 	 * @param syntax syntax of the table end / 表格结尾语法
-	 * @param halfParsed
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
