@@ -1,8 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"include": [
-		"test/**/*",
-		"typings/api.d.ts"
+		"test/**/*"
 	],
 	"compilerOptions": {
 		"emitDeclarationOnly": false

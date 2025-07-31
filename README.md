@@ -24,6 +24,8 @@ The full [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node) API is
 
 ```ts
 import Parser from 'wikiparser-template';
+import type {TranscludeToken} from 'wikiparser-template';
+
 Parser.config = {
 	ext: [ // You need to specify available extension tags
 		'pre',
@@ -37,16 +39,16 @@ Parser.config = {
 const root = Parser.parse(myWikitext);
 
 // Get the first template node
-const template = root.querySelector<Parser.TranscludeToken>('template');
+const template = root.querySelector<TranscludeToken>('template');
 
 // Get all template nodes
-const templates = root.querySelectorAll<Parser.TranscludeToken>('template');
+const templates = root.querySelectorAll<TranscludeToken>('template');
 
 // Get the first template node by its name
-const myTemplate = root.querySelector<Parser.TranscludeToken>('template#Template:My_Template')!;
+const myTemplate = root.querySelector<TranscludeToken>('template#Template:My_Template')!;
 
 // Get all template nodes by their name
-const myTemplates = root.querySelectorAll<Parser.TranscludeToken>('template#Template:My_Template');
+const myTemplates = root.querySelectorAll<TranscludeToken>('template#Template:My_Template');
 
 // Get the parameter `1` of the template
 const param_1 = myTemplate.getArg(1)!;

@@ -12,8 +12,6 @@
 	],
 	"compilerOptions": {
 		"lib": [
-			"dom",
-			"webWorker",
 			"es2024"
 		],
 		"target": "es2024",
@@ -32,7 +30,6 @@
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"useUnknownInCatchVariables": true,
-		"removeComments": true,
 		"skipLibCheck": true
 	}
 }

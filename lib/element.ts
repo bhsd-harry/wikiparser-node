@@ -109,4 +109,23 @@ export abstract class AstElement extends AstNode {
 	override toString(skip?: boolean, separator = ''): string {
 		return this.childNodes.map(child => child.toString(skip)).join(separator);
 	}
+
+	/**
+	 * 获取子节点的位置
+	 * @param node 子节点
+	 */
+	#getChildIndex(node: AstNodes): number {
+		const i = this.childNodes.indexOf(node);
+		return i;
+	}
+
+	/**
+	 * Remove a child node
+	 *
+	 * 移除子节点
+	 * @param node child node to be removed / 子节点
+	 */
+	removeChild<T extends AstNodes>(node: T): T {
+		return this.removeAt(this.#getChildIndex(node)) as T;
+	}
 }

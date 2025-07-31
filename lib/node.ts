@@ -80,4 +80,46 @@ export abstract class AstNode implements AstNodeBase {
 				this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
 	}
+
+	/** @private */
+	insertAdjacent(nodes: readonly (AstNodes | string)[], offset: 0 | 1): void {
+		const {parentNode} = this;
+		/* istanbul ignore if */
+		if (!parentNode) {
+			throw new Error('There is no parent node!');
+		}
+		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
+		for (let j = 0; j < nodes.length; j++) {
+			parentNode.insertAt(nodes[j] as string, i + j);
+		}
+	}
+
+	/**
+	 * Insert a batch of sibling nodes after the current node
+	 *
+	 * 在后方批量插入兄弟节点
+	 * @param nodes nodes to be inserted / 插入节点
+	 */
+	after(...nodes: (AstNodes | string)[]): void {
+		this.insertAdjacent(nodes, 1);
+	}
+
+	/**
+	 * Insert a batch of sibling nodes before the current node
+	 *
+	 * 在前方批量插入兄弟节点
+	 * @param nodes nodes to be inserted / 插入节点
+	 */
+	before(...nodes: (AstNodes | string)[]): void {
+		this.insertAdjacent(nodes, 0);
+	}
+
+	/**
+	 * Remove the current node
+	 *
+	 * 移除当前节点
+	 */
+	remove(): void {
+		this.parentNode?.removeChild(this as AstNode as AstNodes);
+	}
 }
