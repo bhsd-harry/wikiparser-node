@@ -37,7 +37,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print|text)\\b/\\1/' dist/lib/node.d.ts; node dist/script/declaration.js",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build": "npm run build:core && node dist/script/parserTests.js",
