@@ -35,6 +35,14 @@ export interface ElementLike {
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
 	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class ElementLike extends constructor implements ElementLike {
+		#getCondition<T>(selector: string): TokenPredicate<T> {
+			return getCondition<T>(
+				selector,
+				// @ts-expect-error only AstElement
+				this,
+			);
+		}
+
 		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
 			for (const child of this.childNodes) {
 				if (child.type === 'text') {
@@ -51,12 +59,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelector<T = Token>(selector: string): T | undefined {
-			const condition = getCondition<T>(
-				selector,
-				// @ts-expect-error only AstElement
-				this,
-			);
-			return this.getElementBy(condition);
+			return this.getElementBy(this.#getCondition<T>(selector));
 		}
 
 		getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
@@ -72,12 +75,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		querySelectorAll<T = Token>(selector: string): T[] {
-			const condition = getCondition<T>(
-				selector,
-				// @ts-expect-error only AstElement
-				this,
-			);
-			return this.getElementsBy(condition);
+			return this.getElementsBy(this.#getCondition<T>(selector));
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
