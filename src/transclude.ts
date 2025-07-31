@@ -419,13 +419,12 @@ export abstract class TranscludeToken extends Token {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
+	// eslint-disable-next-line jsdoc/require-param
 	/**
 	 * Get parameters with the specified name
 	 *
 	 * 获取指定参数
 	 * @param key parameter name / 参数名
-	 * @param exact whether to match anonymosity / 是否匹配匿名性
-	 * @param copy whether to return a copy / 是否返回一个备份
 	 */
 	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
 		const keyStr = String(key)
