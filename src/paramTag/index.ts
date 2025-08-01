@@ -33,7 +33,7 @@ export abstract class ParamTagToken extends Token {
 		wikitext?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
-		acceptable?: Acceptable,
+		acceptable?: WikiParserAcceptable,
 	) {
 		super(undefined, config, accum, {
 		});

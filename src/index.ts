@@ -118,7 +118,12 @@ export class Token extends AstElement {
 	}
 
 	/** @class */
-	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
+	constructor(
+		wikitext?: string,
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+		acceptable?: WikiParserAcceptable,
+	) {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
