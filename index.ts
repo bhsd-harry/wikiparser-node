@@ -133,7 +133,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			...minConfig,
 			...parserConfig,
 			excludes: [],
-		};
+		} satisfies Config;
 	},
 
 	/** @implements */
