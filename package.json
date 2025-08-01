@@ -79,7 +79,7 @@
 		"entities": "^6.0.0",
 		"mathjax": "^3.2.2",
 		"minimatch": "^10.0.1",
-		"stylelint": "^16.22.0",
+		"stylelint": "^16.23.0",
 		"vscode-css-languageservice": "^6.3.7",
 		"vscode-html-languageservice": "^5.5.1",
 		"vscode-json-languageservice": "^5.6.1"
@@ -98,7 +98,7 @@
 		"esbuild": "^0.25.5",
 		"eslint": "^8.57.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-jsdoc": "^51.3.3",
+		"eslint-plugin-jsdoc": "^52.0.2",
 		"eslint-plugin-json-es": "^1.6.0",
 		"eslint-plugin-markdown": "5.1.0",
 		"eslint-plugin-n": "^17.20.0",
