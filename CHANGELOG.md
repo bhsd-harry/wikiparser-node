@@ -1,3 +1,11 @@
+## v1.23.1
+
+*2025-08-02*
+
+**Changed**
+
+- Update the [`<img>` extension tag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)
+
 ## v1.23.0
 
 *2025-08-01*

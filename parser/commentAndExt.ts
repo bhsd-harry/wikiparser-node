@@ -28,13 +28,10 @@ const onlyincludeLeft = '<onlyinclude>',
 			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				ext.filter(tag => tag !== 'img').join('|')
-				// eslint-disable-next-line unicorn/prefer-string-raw
+				ext.join('|') // eslint-disable-next-line unicorn/prefer-string-raw
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))${
-				ext.includes('img') ? String.raw`|<img(\s[^>]*?)?(/?)>` : ''
-			}`,
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
 			'giu',
 		));
 	}) as [RegexGetter<string[]>, RegexGetter<string[]>];
@@ -117,23 +114,13 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			includeAttr?: string,
 			includeInner?: string,
 			includeClosing?: string,
-			imgAttr?: string,
-			imgClosing?: string,
 		) => {
 			const l = accum.length;
 			let ch = 'n';
-			if (name || newExt.includes('img') && imgClosing !== undefined) {
+			if (name) {
 				ch = 'e';
 				// @ts-expect-error abstract class
-				new ExtToken(
-					name ?? 'img',
-					name ? attr : imgAttr,
-					inner,
-					name ? closing : imgClosing && undefined,
-					newConfig,
-					include,
-					accum,
-				);
+				new ExtToken(name, attr, inner, closing, newConfig, include, accum);
 			} else if (substr.startsWith('<!--')) {
 				ch = 'c';
 				const closed = substr.endsWith('-->');
