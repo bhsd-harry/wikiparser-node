@@ -4,7 +4,7 @@ import type {
 import type {AstNodes} from '../lib/node';
 
 declare global {
-	type Acceptable = unknown;
+	type WikiParserAcceptable = unknown;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly childNodes: readonly AstNodes[];
