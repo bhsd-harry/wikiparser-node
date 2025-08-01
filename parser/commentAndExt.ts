@@ -18,8 +18,7 @@ const onlyincludeLeft = '<onlyinclude>',
 			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				ext.join('|')
-				// eslint-disable-next-line unicorn/prefer-string-raw
+				ext.join('|') // eslint-disable-next-line unicorn/prefer-string-raw
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
@@ -95,15 +94,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			if (name) {
 				ch = 'e';
 				// @ts-expect-error abstract class
-				new ExtToken(
-					name,
-					attr,
-					inner,
-					closing,
-					newConfig,
-					include,
-					accum,
-				);
+				new ExtToken(name, attr, inner, closing, newConfig, include, accum);
 			} else if (substr.startsWith('<!--')) {
 				ch = 'c';
 				const closed = substr.endsWith('-->');
