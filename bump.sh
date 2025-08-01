@@ -1,15 +1,14 @@
 #!/usr/local/bin/bash
-npm run lint && npm run build && npm test && npm run test:real
-if [[ $? -eq 0 ]]
+if [[ $2 == 'npm' ]]
 then
-	gsed -i -E "s|const version = '.+',|const version = '$1',|" extensions/base.ts
-	npm run build:ext
+	npm publish --tag "${3-latest}"
+else
+	npm run build && npm run lint && npm test
 	if [[ $? -eq 0 ]]
 	then
+		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 		git add -A
-		git commit -m "chore: bump version to v$1-b"
+		git commit -m "chore: bump version to v$1"
 		git push
-		git tag "v$1-b"
-		git push origin "v$1-b"
 	fi
 fi

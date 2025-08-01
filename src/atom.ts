@@ -33,7 +33,7 @@ export class AtomToken extends Token {
 		type: AtomTypes,
 		config?: Config,
 		accum?: Token[],
-		acceptable?: Acceptable,
+		acceptable?: WikiParserAcceptable,
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.#type = type;
