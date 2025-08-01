@@ -3,7 +3,7 @@ if [[ $2 == 'npm' ]]
 then
 	npm publish --tag "${3-latest}"
 else
-	npm run build && npm run lint && npm test
+	npm run build && npm run lint && npm test && npm run test:real
 	if [[ $? -eq 0 ]]
 	then
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json

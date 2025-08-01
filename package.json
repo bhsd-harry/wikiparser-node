@@ -36,7 +36,8 @@
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint": "npm run lint:ts",
 		"test:parser": "mocha dist/test/parserTests.js",
-		"test": "npm run test:parser"
+		"test": "npm run test:parser",
+		"test:real": "node dist/test/real.js"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^1.0.0",
@@ -47,6 +48,7 @@
 		"@types/node": "^24.0.10",
 		"@typescript-eslint/eslint-plugin": "^8.35.1",
 		"@typescript-eslint/parser": "^8.35.1",
+		"chalk": "^4.1.2",
 		"esbuild": "^0.25.5",
 		"eslint": "^8.57.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
