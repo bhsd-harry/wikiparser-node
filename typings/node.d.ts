@@ -29,7 +29,7 @@ declare global {
 		T extends 'tags' ? [string, string] :
 		T extends 'keys' ? Set<string> :
 		T extends 'protectedChildren' ? Ranges :
-		T extends 'acceptable' ? Acceptable | undefined :
+		T extends 'acceptable' ? WikiParserAcceptable | undefined :
 
 		/* NOT FOR BROWSER END */
 

@@ -66,7 +66,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		attr?: string,
 		config?: Config,
 		accum: Token[] = [],
-		acceptable?: Acceptable,
+		acceptable?: WikiParserAcceptable,
 	) {
 		super(undefined, config, accum, acceptable);
 		this.append(

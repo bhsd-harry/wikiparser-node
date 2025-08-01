@@ -37,7 +37,7 @@ export class SyntaxToken extends Token {
 		type: SyntaxTypes,
 		config?: Config,
 		accum?: Token[],
-		acceptable?: Acceptable,
+		acceptable?: WikiParserAcceptable,
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.#type = type;

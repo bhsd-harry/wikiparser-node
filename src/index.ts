@@ -131,7 +131,7 @@ const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id'];
  * 可接受的Token类型
  * @param value 可接受的Token类型
  */
-const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
+const getAcceptable = (value: WikiParserAcceptable): Record<string, Ranges> => {
 	const acceptable: Record<string, Ranges> = {};
 	for (const [k, v] of Object.entries(value)) {
 		if (k.startsWith('Stage-')) {
@@ -210,7 +210,12 @@ export class Token extends AstElement {
 	}
 
 	/** @class */
-	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
+	constructor(
+		wikitext?: string,
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+		acceptable?: WikiParserAcceptable,
+	) {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
@@ -524,7 +529,8 @@ export class Token extends AstElement {
 				/* NOT FOR BROWSER */
 
 			case 'acceptable':
-				this.#acceptable = value && ((): Record<string, Ranges> => getAcceptable(value as Acceptable));
+				this.#acceptable = value
+					&& ((): Record<string, Ranges> => getAcceptable(value as WikiParserAcceptable));
 				break;
 			case 'include':
 				this.#include = value as TokenAttribute<'include'>;
