@@ -1,5 +1,5 @@
 #!/usr/local/bin/bash
-npm run lint && npm run build && npm test && npm run test:real
+npm run build && npm run lint && npm test && npm run test:real
 if [[ $? -eq 0 ]]
 then
 	gsed -i -E "s|const version = '.+',|const version = '$1',|" extensions/base.ts
