@@ -24,7 +24,7 @@ The full [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node) API is
 
 ```ts
 import Parser from 'wikiparser-template';
-import type {TranscludeToken} from 'wikiparser-template';
+import type {Token, TranscludeToken, ParameterToken} from 'wikiparser-template';
 
 Parser.config = {
 	ext: [ // You need to specify available extension tags
@@ -36,31 +36,31 @@ Parser.config = {
 };
 
 // Parse the wikitext and return the root node of the AST
-const root = Parser.parse(myWikitext);
+const root: Token = Parser.parse(myWikitext);
 
 // Get the first template node
-const template = root.querySelector<TranscludeToken>('template');
+const template: TranscludeToken | undefined = root.querySelector<TranscludeToken>('template');
 
 // Get all template nodes
-const templates = root.querySelectorAll<TranscludeToken>('template');
+const templates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('template');
 
 // Get the first template node by its name
-const myTemplate = root.querySelector<TranscludeToken>('template#Template:My_Template')!;
+const myTemplate: TranscludeToken = root.querySelector<TranscludeToken>('template#Template:My_Template')!;
 
 // Get all template nodes by their name
-const myTemplates = root.querySelectorAll<TranscludeToken>('template#Template:My_Template');
+const myTemplates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('template#Template:My_Template_1, template#Template:My_Template_2');
 
 // Get the parameter `1` of the template
-const param_1 = myTemplate.getArg(1)!;
+const param_1: ParameterToken = myTemplate.getArg(1)!;
 
 // Get the parameter `a` of the template
-const param_a = myTemplate.getArg('a');
+const param_a: ParameterToken | undefined = myTemplate.getArg('a');
 
 // Get the value of the parameter `1`
-let value_1 = param_1.getValue();
+let value_1: string = param_1.getValue();
 
 // Get the value of the parameter `1` from the template node
-value_1 = myTemplate.getValue(1);
+value_1 = myTemplate.getValue(1)!;
 
 // Append new anonymouse parameters to the template
 myTemplate.append('anonymous parameter', 'another anonymous parameter');
