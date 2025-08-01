@@ -26,7 +26,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build:core",
 		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle-template.js",
 		"build:core": "npm run bundle:core && esbuild build/bundle-template.js --charset=utf8 --minify --target=es2017 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle.min.js && bash build.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
