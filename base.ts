@@ -126,7 +126,7 @@ interface Token extends AstNode {
 }
 
 export interface Parser {
-	config?: ConfigData;
+	config?: Partial<ConfigData>;
 
 	/**
 	 * Get the current parser configuration
