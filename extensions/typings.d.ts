@@ -30,7 +30,7 @@ import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, Co
 
 /* NOT EXPORTED */
 
-import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
+import {CodeMirror6, registerMediaWiki} from '@bhsd/codemirror-mediawiki';
 
 export type {
 	AST,
@@ -155,7 +155,7 @@ declare global {
 
 	module '/codemirror-mediawiki/*' {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
-		export {CodeMirror6};
+		export {CodeMirror6, registerMediaWiki};
 	}
 	module '/codejar-async/*' {
 		/** @see https://www.npmjs.com/package/codejar-async */
