@@ -9,33 +9,6 @@ import type {
 } from '../../internal';
 
 /**
- * a more sophisticated string-explode function
- * @param str string to be exploded
- */
-const explode = (str?: string): string[] => {
-	if (str === undefined) {
-		return [];
-	}
-	const regex = /-\{|\}-|\|/gu,
-		exploded: string[] = [];
-	let mt = regex.exec(str),
-		depth = 0,
-		lastIndex = 0;
-	while (mt) {
-		const {0: match, index} = mt;
-		if (match !== '|') {
-			depth += match === '-{' ? 1 : -1;
-		} else if (depth === 0) {
-			exploded.push(str.slice(lastIndex, index));
-			({lastIndex} = regex);
-		}
-		mt = regex.exec(str);
-	}
-	exploded.push(str.slice(lastIndex));
-	return exploded;
-};
-
-/**
  * image
  *
  * 图片
@@ -52,9 +25,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
-		this.safeAppend(explode(text).map(
-			// @ts-expect-error abstract class
-			(part): ImageParameterToken => new ImageParameterToken(part, config, accum),
-		));
+		// @ts-expect-error abstract class
+		this.append(new ImageParameterToken(text, config, accum) as ImageParameterToken);
 	}
 }

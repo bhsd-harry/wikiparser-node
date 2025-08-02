@@ -17,9 +17,4 @@ export abstract class ImageParameterToken extends Token {
 	override get type(): 'image-parameter' {
 		return 'image-parameter';
 	}
-
-	/** @private */
-	override text(): string {
-		return super.text().trim();
-	}
 }
