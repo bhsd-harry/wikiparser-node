@@ -1,9 +1,16 @@
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
 import {Token} from './index';
-import {NoincludeToken} from './nowiki/noinclude';
 import type {Config} from '../base';
-import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken, ExtToken} from '../internal';
+import type {
+	NoincludeToken,
+	CommentToken,
+	AttributesToken,
+	IncludeToken,
+	ArgToken,
+	TranscludeToken,
+	ExtToken,
+} from '../internal';
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 
@@ -42,14 +49,6 @@ export abstract class NestedToken extends Token {
 		wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);
 		wikitext &&= parseBraces(wikitext, config, accum);
 		accum.splice(length, 1);
-		wikitext &&= wikitext.replace(
-			/(^|\0\d+.\x7F)([^\0]+)(?=$|\0\d+.\x7F)/gu,
-			(_, lead: string, substr: string) => {
-				// @ts-expect-error abstract class
-				new NoincludeToken(substr, config, accum);
-				return `${lead}\0${accum.length}n\x7F`;
-			},
-		);
 		super(
 			wikitext,
 			config,

@@ -1,7 +1,6 @@
 import {multiLine} from '../mixin/multiLine';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
-import {NoincludeToken} from './nowiki/noinclude';
 import type {
 	Config,
 } from '../base';
@@ -11,13 +10,13 @@ import type {
 	ExtToken,
 } from '../internal';
 
-declare type Child = GalleryImageToken | NoincludeToken;
+declare type Child = GalleryImageToken;
 
 /**
  * gallery tag
  *
  * gallery标签
- * @classdesc `{childNodes: (GalleryImageToken|NoincludeToken|AstText)[]}`
+ * @classdesc `{childNodes: (GalleryImageToken|AstText)[]}`
  */
 @multiLine
 export abstract class GalleryToken extends Token {
@@ -39,8 +38,7 @@ export abstract class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
-				// @ts-expect-error abstract class
-				super.insertAt((line.trim() ? new NoincludeToken(line, config, accum) : line) as string);
+				super.insertAt(line);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -48,8 +46,7 @@ export abstract class GalleryToken extends Token {
 				// @ts-expect-error abstract class
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
-				// @ts-expect-error abstract class
-				super.insertAt(new NoincludeToken(line, config, accum) as NoincludeToken);
+				super.insertAt(line);
 			}
 		}
 	}

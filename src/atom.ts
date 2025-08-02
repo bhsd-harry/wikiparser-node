@@ -4,11 +4,7 @@ import type {Config} from '../base';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const atomTypes = [
 	'arg-name',
-	'attr-key',
-	'attr-value',
-	'ext-attr-dirty',
 	'template-name',
-	'link-target',
 	'heading-trail',
 	'magic-word-name',
 ] as const;

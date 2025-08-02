@@ -2,15 +2,13 @@ import {
 	removeComment,
 } from '../util/string';
 import {Token} from './index';
-import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {Config} from '../base';
-import type {ExtToken} from '../internal';
+import type {ExtToken, AstText} from '../internal';
 import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = `${AttributeTypes}s`;
-declare type AttributeDirty = `${AttributeTypes}-dirty`;
-declare type Child = AtomToken | AttributeToken;
+declare type Child = AstText | AttributeToken;
 
 /**
  * 将属性类型转换为单属性类型
@@ -19,16 +17,10 @@ declare type Child = AtomToken | AttributeToken;
 const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
 
 /**
- * 将属性类型转换为无效属性类型
- * @param type 属性类型
- */
-const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
-
-/**
  * attributes of extension and HTML tags
  *
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: (AtomToken|AttributeToken)[]}`
+ * @classdesc `{childNodes: (AstText|AttributeToken)[]}`
  */
 export abstract class AttributesToken extends Token {
 	readonly #type;
@@ -59,8 +51,7 @@ export abstract class AttributesToken extends Token {
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
-					super.insertAt(new AtomToken(out, toDirty(type), config, accum, {
-					}));
+					super.insertAt(out);
 					out = '';
 				}
 			};

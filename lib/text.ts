@@ -1,6 +1,3 @@
-import {
-	removeComment,
-} from '../util/string';
 import {AstNode} from './node';
 
 /**
@@ -24,7 +21,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		return skip && !this.parentNode?.getAttribute('built') ? removeComment(this.data) : this.data;
+		return this.data;
 	}
 
 	/** @private */

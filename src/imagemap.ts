@@ -1,7 +1,6 @@
 import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
 import {Token} from './index';
-import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import type {
 	AstText,
@@ -9,11 +8,11 @@ import type {
 	ExtToken,
 } from '../internal';
 
-declare type Child = GalleryImageToken | NoincludeToken;
+declare type Child = GalleryImageToken;
 
 /**
  * `<imagemap>`
- * @classdesc `{childNodes: [...NoincludeToken[], GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)[]]}`
+ * @classdesc `{childNodes: [...AstText[], GalleryImageToken, ...AstText[]]}`
  */
 @multiLine
 export abstract class ImagemapToken extends Token {
@@ -35,8 +34,7 @@ export abstract class ImagemapToken extends Token {
 		if (!inner) {
 			return;
 		}
-		const lines = inner.split('\n'),
-			SingleLineNoincludeToken = NoincludeToken;
+		const lines = inner.split('\n');
 		let first = true,
 			error = false;
 		for (const line of lines) {
@@ -68,12 +66,8 @@ export abstract class ImagemapToken extends Token {
 				} else {
 					error = true;
 				}
-			} else if (line.trim().split(/[\t ]/u, 1)[0] === 'desc') {
-				super.insertAt(line);
-				continue;
 			}
-			// @ts-expect-error abstract class
-			super.insertAt(new SingleLineNoincludeToken(line, config, accum) as SingleLineNoincludeToken);
+			super.insertAt(line);
 		}
 	}
 }

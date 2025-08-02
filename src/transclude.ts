@@ -17,7 +17,7 @@ declare type Child = AtomToken;
  * template or magic word
  *
  * 模板或魔术字
- * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
+ * @classdesc `{childNodes: [AtomToken, ...ParameterToken[]]}`
  */
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
@@ -150,9 +150,6 @@ export abstract class TranscludeToken extends Token {
 	setModifier(modifier: string): boolean {
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = removeComment(modifier).trim();
-		if (modifier && !lcModifier.endsWith(':')) {
-			return false;
-		}
 		const magicWord = lcModifier.slice(0, -1).toLowerCase(),
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);

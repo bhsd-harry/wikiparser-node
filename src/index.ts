@@ -78,7 +78,6 @@ export class Token extends AstElement {
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	readonly #accum;
 	#include?: boolean;
-	#built = false;
 
 	override get type(): TokenTypes {
 		return this.#type;
@@ -176,7 +175,6 @@ export class Token extends AstElement {
 				token?.afterBuild(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			}
 		}
-		this.#built = true;
 	}
 
 	/** @private */
@@ -219,8 +217,6 @@ export class Token extends AstElement {
 		switch (key) {
 			case 'config':
 				return this.#config as TokenAttribute<T>;
-			case 'built':
-				return this.#built as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}

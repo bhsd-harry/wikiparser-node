@@ -12,6 +12,5 @@ declare global {
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'nextSibling' | 'previousSibling' ? AstNodes | undefined :
 		T extends 'childNodes' ? AstNodes[] :
-		T extends 'built' ? boolean :
 		string;
 }

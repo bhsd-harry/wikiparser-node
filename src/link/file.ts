@@ -5,18 +5,18 @@ import type {
 } from '../../base';
 import type {
 	Token,
-	AtomToken,
+	AstText,
 } from '../../internal';
 
 /**
  * image
  *
  * 图片
- * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken[]]}`
+ * @classdesc `{childNodes: [AstText, ...ImageParameterToken[]]}`
  */
 export abstract class FileToken extends LinkBaseToken {
-	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
-	abstract override get lastChild(): AtomToken | ImageParameterToken;
+	declare readonly childNodes: readonly [AstText, ...ImageParameterToken[]];
+	abstract override get lastChild(): AstText | ImageParameterToken;
 
 	/**
 	 * @param link 文件名
@@ -25,7 +25,9 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
-		// @ts-expect-error abstract class
-		this.append(new ImageParameterToken(text, config, accum) as ImageParameterToken);
+		if (text !== undefined) {
+			// @ts-expect-error abstract class
+			this.append(new ImageParameterToken(text, config, accum) as ImageParameterToken);
+		}
 	}
 }

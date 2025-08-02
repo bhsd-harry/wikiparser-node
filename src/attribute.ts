@@ -1,28 +1,27 @@
 import Parser from '../index';
 import {Token} from './index';
-import {AtomToken} from './atom';
 import type {
 	Config,
 } from '../base';
-import type {AttributesToken} from '../internal';
+import type {AttributesToken, AstText} from '../internal';
 
-declare type Child = AtomToken | AttributeToken | undefined;
+declare type Child = AstText | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr';
 
 /**
  * attribute of extension and HTML tags
  *
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
+ * @classdesc `{childNodes: [AstText, Token|AstText]}`
  */
 export abstract class AttributeToken extends Token {
 	readonly #type;
 	#equal;
 	#quotes: [string?, string?];
 
-	declare readonly childNodes: readonly [AtomToken, Token];
-	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): Token;
+	declare readonly childNodes: readonly [AstText, Token | AstText];
+	abstract override get firstChild(): AstText;
+	abstract override get lastChild(): Token | AstText;
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): Child;
 	abstract override get previousSibling(): Child;
@@ -49,13 +48,8 @@ export abstract class AttributeToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		const keyToken = new AtomToken(
-			key,
-			'attr-key',
-			config,
-			accum,
-		);
-		let valueToken: Token;
+		const keyToken = key;
+		let valueToken: Token | string;
 		if (
 			tag === 'gallery' && key === 'caption'
 		) {
@@ -68,8 +62,7 @@ export abstract class AttributeToken extends Token {
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
-			valueToken = new AtomToken(value, 'attr-value', config, accum, {
-			});
+			valueToken = value ?? '';
 		}
 		super(undefined, config, accum);
 		this.#type = type;

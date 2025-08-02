@@ -1,8 +1,8 @@
 import {Token} from '../index';
-import {AtomToken} from '../atom';
 import type {
 	Config,
 } from '../../base';
+import type {AstText} from '../../internal';
 
 /**
  * internal link
@@ -14,9 +14,7 @@ export abstract class LinkBaseToken extends Token {
 	#delimiter;
 
 	abstract override get type(): 'gallery-image' | 'imagemap-image';
-	declare readonly childNodes: readonly [AtomToken, ...Token[]];
-	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): Token;
+	abstract override get firstChild(): AstText;
 
 	/**
 	 * @param link 链接标题
@@ -26,8 +24,7 @@ export abstract class LinkBaseToken extends Token {
 	constructor(link: string, linkText?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 		});
-		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
-		}));
+		this.insertAt(link);
 		this.#delimiter = delimiter;
 	}
 
