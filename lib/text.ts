@@ -189,9 +189,9 @@ export class AstText extends AstNode {
 			} else if (char === '<') {
 				rule = 'tag-like';
 				let key: string | undefined;
-				if (/^<\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
+				if (/^<\/?\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
 					key = 'invalid';
-				} else if (disallowedTags.has(tag!)) {
+				} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
 					key = 'disallowed';
 				}
 				severity = Parser.lintConfig.getSeverity(rule, key);
