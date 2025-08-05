@@ -99,7 +99,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	/** 切换CodeMirror语言 */
 	const setLang = (): void => {
 		cm.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
-		cm.lint((doc: unknown) => Linter.codemirror(String(doc)));
+		cm.lint(({doc}: {doc: unknown}) => Linter.codemirror(String(doc)));
 	};
 	setLang();
 	input2.addEventListener('change', setLang);

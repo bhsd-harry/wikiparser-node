@@ -48,7 +48,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
     });
     const setLang = () => {
         cm.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
-        cm.lint((doc) => Linter.codemirror(String(doc)));
+        cm.lint(({ doc }) => Linter.codemirror(String(doc)));
     };
     setLang();
     input2.addEventListener('change', setLang);
