@@ -6,8 +6,6 @@ import {execSync} from 'child_process';
 import assert from 'assert/strict';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/cm-util';
 import {error} from '../util/diff';
-// @ts-expect-error package.json
-import {name as pkg, version} from '../../package.json';
 import type {MwConfig, MagicWord} from '@bhsd/cm-util';
 import type {ConfigData} from '../base';
 
@@ -28,6 +26,9 @@ declare interface Response {
 declare interface Implementation {
 	files: Record<string, Function>;
 }
+
+declare const $PKG: string;
+declare const $VERSION: string;
 
 /**
  * Converts an array to an object.
@@ -100,6 +101,8 @@ const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
 	},
 };
 
+const pkg = $PKG,
+	version = $VERSION;
 let mwConfig: MwConfig | undefined;
 
 /**
