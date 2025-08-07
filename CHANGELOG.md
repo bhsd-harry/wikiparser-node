@@ -2,6 +2,10 @@
 
 *2025-08-08*
 
+**Added**
+
+- [`AstNode.prototype.remove`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#remove) now takes an optional `ownLine` parameter to remove the current line if it is empty
+
 **Fixed**
 
 - Now `<translate>` extension tags in HTML comments or `<includeonly>` tags are not parsed
