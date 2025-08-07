@@ -54,14 +54,14 @@
 		"color-name": "^2.0.0",
 		"entities": "^6.0.0",
 		"mathjax": "^3.2.2",
-		"stylelint": "^16.23.0",
+		"stylelint": "^16.23.1",
 		"vscode-css-languageservice": "^6.3.7",
 		"vscode-html-languageservice": "^5.5.1",
 		"vscode-json-languageservice": "^5.6.1"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^1.0.0",
-		"@bhsd/codemirror-mediawiki": "^2.30.2",
+		"@bhsd/codemirror-mediawiki": "^3.0.2",
 		"@bhsd/test-util": "^0.0.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
@@ -89,6 +89,7 @@
 		"mocha": "^11.7.1",
 		"monaco-editor": "^0.52.2",
 		"nyc": "^17.1.0",
+		"stylelint-config-recommended": "^17.0.0",
 		"typescript": "^5.8.2",
 		"v8r": "^5.0.0",
 		"vscode-languageserver-textdocument": "^1.0.12"
