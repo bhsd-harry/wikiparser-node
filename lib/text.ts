@@ -46,4 +46,18 @@ export class AstText extends AstNode {
 	replaceData(text: string): void {
 		this.#setData(text);
 	}
+
+	/**
+	 * Delete text
+	 *
+	 * 删减字符串
+	 * @param offset start position / 起始位置
+	 * @param count number of characters to be deleted / 删减字符数
+	 */
+	deleteData(offset: number, count = Infinity): void {
+		this.#setData(
+			this.data.slice(0, offset)
+			+ (offset < 0 && offset + count >= 0 ? '' : this.data.slice(offset + count)),
+		);
+	}
 }
