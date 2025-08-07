@@ -462,8 +462,9 @@ export interface LanguageService {
 	 *
 	 * 设置目标维基百科
 	 * @param wiki Wikipedia URL / 维基百科网址
+	 * @param email email address of the user / 用户的电子邮件地址
 	 */
-	setTargetWikipedia(wiki: string): Promise<void>;
+	setTargetWikipedia(wiki: string, email: string): Promise<void>;
 }
 
 export type SeverityLevel = 0 | 1 | 2;
