@@ -2,9 +2,12 @@
 
 import path from 'path';
 import fs from 'fs';
+import {execSync} from 'child_process';
 import assert from 'assert/strict';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/cm-util';
 import {error} from '../util/diff';
+// @ts-expect-error package.json
+import {name as pkg, version} from '../../package.json';
 import type {MwConfig, MagicWord} from '@bhsd/cm-util';
 import type {ConfigData} from '../base';
 
@@ -103,16 +106,23 @@ let mwConfig: MwConfig | undefined;
  * Get the parser configuration for a Wikimedia Foundation project.
  * @param site site nickname
  * @param url script path
+ * @param email email address of the user
  * @param force whether to overwrite the existing configuration
  * @param internal for internal use
  */
-export default async (site: string, url: string, force?: boolean, internal?: boolean): Promise<ConfigData> => {
+export default async (
+	site: string,
+	url: string,
+	email?: string,
+	force?: boolean,
+	internal?: boolean,
+): Promise<ConfigData> => {
 	// wrong calls
 	if (!site || !url) {
 		if (internal) {
 			throw new RangeError('Site nickname and script path are required!');
 		} else {
-			error('Usage: npx getParserConfig <site> <script path> [force]');
+			error('Usage: npx getParserConfig <site> <script path> [email] [force]');
 			process.exit(1);
 		}
 	}
@@ -128,7 +138,19 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 	if (/(?:\.php|\/)$/u.test(url)) {
 		url = url.slice(0, url.lastIndexOf('/'));
 	}
-	const m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`)).text(),
+	if (email === 'git') {
+		email = execSync('git config user.email', {encoding: 'utf8'}).trim();
+	}
+	const headers = email
+			? {
+				headers: {
+					'User-Agent': `${pkg}/${version} (https://www.npmjs.com/package/${pkg}; ${email}) Node.js/${
+						process.version
+					}`,
+				},
+			}
+			: undefined,
+		m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`, headers)).text(),
 		params = {
 			action: 'query',
 			meta: 'siteinfo',
@@ -145,7 +167,7 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 				functionhooks,
 			},
 		} = await (
-			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`)
+			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
 		).json() as Response;
 	eval(m); // eslint-disable-line no-eval
 	if (!mwConfig) {
@@ -177,7 +199,10 @@ export default async (site: string, url: string, force?: boolean, internal?: boo
 	}
 	if (!mwConfig.variableIDs) {
 		const {query: {variables}} = await (
-			await fetch(`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`)
+			await fetch(
+				`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`,
+				headers,
+			)
 		).json() as Response;
 		Object.assign(config, {variable: [...new Set([...variables, '='])]});
 	}

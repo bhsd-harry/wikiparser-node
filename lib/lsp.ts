@@ -1863,16 +1863,17 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 设置目标维基百科
 	 * @param wiki Wikipedia URL / 维基百科网址
+	 * @param email email address of the user / 用户的电子邮箱地址
 	 * @throws `RangeError` 不是有效的维基百科网址
 	 * @since v1.18.1
 	 */
-	async setTargetWikipedia(wiki: string): Promise<void> {
+	async setTargetWikipedia(wiki: string, email: string): Promise<void> {
 		const [site, host] = Parser.getWMFSite(wiki);
 		try {
 			const config: ConfigData = require(path.join('..', '..', 'config', site));
 			this.config = Parser.getConfig(config);
 		} catch {
-			this.config = await Parser.fetchConfig(site, `${host}/w`);
+			this.config = await Parser.fetchConfig(site, `${host}/w`, email);
 		}
 		Object.assign(this.config, {articlePath: `${host}/wiki/`});
 	}

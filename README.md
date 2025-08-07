@@ -17,7 +17,7 @@ WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext
 
 ## Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VSCode extension.
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension.
 
 ## Browser-compatible
 
@@ -62,9 +62,9 @@ For more browser extensions, please refer to the corresponding [documentation](h
 For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed, such as different language editions of Wikipedia and other [Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix), you can use the following command to obtain the parser configuration:
 
 ```sh
-npx getParserConfig <site> <script path> [force]
+npx getParserConfig <site> <script path> [email] [force]
 # For example:
-npx getParserConfig jawiki https://ja.wikipedia.org/w
+npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
 ```
 
 The generated configuration file will be saved in the `config` directory. You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).

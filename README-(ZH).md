@@ -17,7 +17,7 @@ WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/)
 
 ## Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VSCode 扩展。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code 扩展。
 
 ## Browser-compatible
 
@@ -62,9 +62,9 @@ npm i wikilint
 对于安装了 [CodeMirror 扩展](https://mediawiki.org/wiki/Extension:CodeMirror)的 MediaWiki 站点，如不同语言版本的维基百科和其他[由维基媒体基金会托管的站点](https://meta.wikimedia.org/wiki/Special:SiteMatrix)，可以使用以下命令获取解析器配置：
 
 ```sh
-npx getParserConfig <site> <script path> [force]
+npx getParserConfig <site> <script path> [email] [force]
 # 例如：
-npx getParserConfig jawiki https://ja.wikipedia.org/w
+npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
 ```
 
 生成的配置文件将保存在 `config` 目录下，然后就可以使用站点名称设置 [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config)。
