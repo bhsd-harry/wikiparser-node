@@ -14,22 +14,19 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 		console.log('%s %s', chalk.green('Cleaning declaration:'), file);
 		fs.writeFileSync(
 			fullPath,
-			content.replace(
-				regex,
-				(_, base: string, exp: string): string => {
-					const regex2 = new RegExp(String.raw`import \{\s*${base}\b.+?;\n`, 'su');
-					return (
-						regex2.test(content)
-							? ''
-							: regex2.exec(
-								fs.readFileSync(
-									path.join('src', file.replace(/d\.ts$/u, 'ts')),
-									'utf8',
-								),
-							)![0]
-					) + exp + base;
-				},
-			),
+			content.replace(regex, (_, base: string, exp: string): string => {
+				const regex2 = new RegExp(String.raw`import \{\s*${base}\b.+?;\n`, 'su');
+				return (
+					regex2.test(content)
+						? ''
+						: regex2.exec(
+							fs.readFileSync(
+								path.join('src', file.replace(/d\.ts$/u, 'ts')),
+								'utf8',
+							),
+						)![0]
+				) + exp + base;
+			}),
 		);
 	}
 }
