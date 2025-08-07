@@ -13,8 +13,10 @@ export const trimLc = (s: string): string => s.trim().toLowerCase();
  * @param s 更改后的字符串
  * @param stack 原始字符串片段
  */
-export const restore = (s: string, stack: string[]): string =>
-	s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => stack[p1]!);
+export function restore(s: string, stack: string[]): string {
+	// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+	return s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => stack[p1] as string);
+}
 
 /**
  * 生成正则替换函数

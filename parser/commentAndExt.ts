@@ -99,10 +99,22 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 				ch = 'c';
 				const closed = substr.endsWith('-->');
 				// @ts-expect-error abstract class
-				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
+				new CommentToken(
+					substr.slice(4, closed ? -3 : undefined),
+					closed,
+					config,
+					accum,
+				);
 			} else if (include) {
 				// @ts-expect-error abstract class
-				new IncludeToken(include, includeAttr, includeInner, includeClosing, config, accum);
+				new IncludeToken(
+					include,
+					includeAttr,
+					includeInner,
+					includeClosing,
+					config,
+					accum,
+				);
 			} else {
 				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
