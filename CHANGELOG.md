@@ -1,6 +1,10 @@
 ## v1.23.1
 
-*2025-08-02*
+*2025-08-08*
+
+**Fixed**
+
+- Now `<translate>` extension tags in HTML comments or `<includeonly>` tags are not parsed
 
 **Changed**
 

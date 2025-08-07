@@ -1,4 +1,5 @@
 import type {AstNodes} from '../lib/node';
+import type {Token} from '../internal';
 
 export {rawurldecode} from '@bhsd/common';
 
@@ -17,9 +18,21 @@ export const trimLc = (s: string): string => s.trim().toLowerCase();
  * 恢复原始字符串
  * @param s 更改后的字符串
  * @param stack 原始字符串片段
+ * @param translate 是否恢复`<translate>`或`<tvar>`标签
  */
-export const restore = (s: string, stack: string[]): string =>
-	s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => stack[p1]!);
+export function restore(s: string, stack: Token[], translate: 1 | 2): string;
+export function restore(s: string, stack: string[]): string; // eslint-disable-line jsdoc/require-jsdoc
+export function restore(s: string, stack: string[] | Token[], translate?: 1 | 2): string {
+	if (translate === 1) {
+		return s.replace(
+			/\0(\d+)g\x7F/gu,
+			(_, p1: number) => restore(String(stack[p1]), stack as Token[], 2),
+		);
+	} else if (translate === 2) {
+		return s.replace(/\0(\d+)n\x7F/gu, (_, p1: number) => String(stack[p1]));
+	}
+	return s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => stack[p1] as string);
+}
 
 /**
  * 生成正则替换函数

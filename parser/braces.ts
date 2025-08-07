@@ -106,36 +106,33 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		if (replaced !== undefined) {
 			wikitext = replaced;
 		}
-		replaced = wikitext.replace(
-			reReplace,
-			(m, p1?: string, p2?: string) => {
-				if (p1 !== undefined || typeof p2 === 'string') {
-					try {
-						const {length} = accum,
-							parts = (p1 ?? p2!).split('|');
-						// @ts-expect-error abstract class
-						new TranscludeToken(
-							restore(parts[0]!, linkStack),
-							parts.slice(1).map(part => {
-								const i = part.indexOf('=');
-								return (i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)])
-									.map(s => restore(s, linkStack));
-							}),
-							config,
-							accum,
-						);
-						return `\0${length}${getSymbol(parts[0]!)}\x7F`;
-					} catch (e) {
-						/* istanbul ignore if */
-						if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
-							throw e;
-						}
+		replaced = wikitext.replace(reReplace, (m, p1?: string, p2?: string) => {
+			if (p1 !== undefined || typeof p2 === 'string') {
+				try {
+					const {length} = accum,
+						parts = (p1 ?? p2!).split('|');
+					// @ts-expect-error abstract class
+					new TranscludeToken(
+						restore(parts[0]!, linkStack),
+						parts.slice(1).map(part => {
+							const i = part.indexOf('=');
+							return (i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)])
+								.map(s => restore(s, linkStack));
+						}),
+						config,
+						accum,
+					);
+					return `\0${length}${getSymbol(parts[0]!)}\x7F`;
+				} catch (e) {
+					/* istanbul ignore if */
+					if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
+						throw e;
 					}
 				}
-				linkStack.push(restore(m, linkStack));
-				return `\0${linkStack.length - 1}\x7F`;
-			},
-		);
+			}
+			linkStack.push(restore(m, linkStack));
+			return `\0${linkStack.length - 1}\x7F`;
+		});
 	} while (replaced !== wikitext);
 	wikitext = replaced;
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
