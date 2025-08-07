@@ -366,9 +366,9 @@
 		"dir",
 		"language",
 		"numberofwikis",
+		"pendingchangelevel",
 		"noexternallanglinks",
-		"wbreponame",
-		"pendingchangelevel"
+		"wbreponame"
 	],
 	"parserFunction": [
 		{

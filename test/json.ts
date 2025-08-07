@@ -134,7 +134,7 @@ for (const [file, config] of Object.entries(configs)) {
 			for (const key of ['namespaces', 'nsid', 'img'] as const) {
 				it(key, () => {
 					for (const [k, v] of Object.entries(config[key])) {
-						if (file === 'jawiki.json') {
+						if (file === 'jawiki.json' || file === 'mediawikiwiki.json') {
 							assert(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
 						} else {
 							assert.strictEqual(defaultConfig[key][k], v, `'${k}' not in defaultConfig.${key}`);
