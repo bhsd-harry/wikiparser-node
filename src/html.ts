@@ -206,8 +206,9 @@ export abstract class HtmlToken extends Token {
 				const childNodes = parentNode?.childNodes;
 				if (formattingTags.has(name)) {
 					if (
-						childNodes?.slice(0, childNodes.indexOf(this))
-							.some(({type, name: n}) => type === 'html' && n === name)
+						childNodes?.slice(0, childNodes.indexOf(this)).some(
+							tag => tag.type === 'html' && tag.name === name && !(tag as this).findMatchingTag(),
+						)
 					) {
 						error.suggestions = [{desc: 'close', range: [start + 1, start + 1], text: '/'}];
 					}
