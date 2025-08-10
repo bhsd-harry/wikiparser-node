@@ -2,7 +2,7 @@
 
 rm -rf dist/
 tsc && \
-npx esbuild ./base.ts ./util/sharable.ts --charset=utf8 --target=es2023 --format=esm --outdir=dist --out-extension:.js=.mjs
+esbuild ./base.ts ./util/sharable.ts --charset=utf8 --target=es2023 --format=esm --outdir=dist --out-extension:.js=.mjs
 if [[ $? -eq 0 ]]
 then
 	mv dist/util/sharable.d.ts dist/util/sharable.d.mts
