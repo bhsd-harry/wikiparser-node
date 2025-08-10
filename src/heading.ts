@@ -138,6 +138,8 @@ export abstract class HeadingToken extends Token {
 			}
 		}
 		if (severities[2]) {
+			const getRemove = /** @ignore */ (e: LintError): LintError.Fix =>
+				({desc: 'remove', range: [e.startIndex, e.endIndex], text: ''});
 			const rootStr = this.getRootNode().toString(),
 				quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
 				boldQuotes = quotes.filter(({bold}) => bold),
@@ -156,9 +158,12 @@ export abstract class HeadingToken extends Token {
 					),
 					end = start + level + innerStr.length;
 				if (rootStr.slice(e.endIndex, end).trim()) {
-					e.suggestions = [{desc: 'close', range: [end, end], text: `'''`}];
+					e.suggestions = [
+						getRemove(e),
+						{desc: 'close', range: [end, end], text: `'''`},
+					];
 				} else {
-					e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+					e.fix = getRemove(e);
 				}
 				errors.push(e);
 			}
@@ -174,7 +179,7 @@ export abstract class HeadingToken extends Token {
 				if (rootStr.slice(e.endIndex, end).trim()) {
 					e.suggestions = [{desc: 'close', range: [end, end], text: `''`}];
 				} else {
-					e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+					e.fix = getRemove(e);
 				}
 				errors.push(e);
 			}
