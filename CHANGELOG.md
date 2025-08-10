@@ -9,6 +9,7 @@
 **Fixed**
 
 - Now `<translate>` extension tags in HTML comments or `<includeonly>` tags are not parsed
+- The [bold-header](https://github.com/bhsd-harry/wikiparser-node/wiki/bold-header) rule now ignores bold apostrophes or tags inside extension tags
 
 **Changed**
 
