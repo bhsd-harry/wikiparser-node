@@ -148,8 +148,13 @@ export abstract class HtmlToken extends Token {
 		}
 		rule = 'bold-header';
 		s = Parser.lintConfig.getSeverity(rule, name);
-		if (s && (name === 'b' || name === 'strong') && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, rect, rule, 'bold in section header', s));
+		if (
+			s && (name === 'b' || name === 'strong')
+			&& this.closest('heading-title,ext')?.type === 'heading-title'
+		) {
+			const e = generateForSelf(this, rect, rule, 'bold in section header', s);
+			e.suggestions = [{desc: 'remove', range: [start, e.endIndex], text: ''}];
+			errors.push(e);
 		}
 		const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
 			isVoid = voidTags.includes(name),
