@@ -89,7 +89,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				});
 			}
 		}
-		if (s && bold && this.closest('heading-title')) {
+		if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
 			const e = generateForSelf(this, rect, rules[1], 'bold in section header', s);
 			e.suggestions = [{desc: 'remove', range: [start, start + 3], text: ''}];
 			errors.push(e);
