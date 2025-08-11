@@ -3,6 +3,7 @@ import {
 	isToken,
 } from '../util/debug';
 import {BoundingRect} from '../lib/rect';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -19,6 +20,7 @@ import type {QuoteToken, AstText} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
+@noEscape
 export abstract class HeadingToken extends Token {
 	#level;
 
