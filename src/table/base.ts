@@ -1,4 +1,5 @@
 import {attributesParent} from '../../mixin/attributesParent';
+import Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
@@ -8,6 +9,21 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 declare type TableTypes = 'table' | 'tr' | 'td';
 
 export interface TableBaseToken extends AttributesParentBase {}
+
+/**
+ * 转义表格语法
+ * @param syntax 表格语法节点
+ */
+const escapeTable = (syntax: SyntaxToken): void => {
+	const wikitext = syntax.childNodes.map(
+			child => child.type === 'text'
+				? child.data.replaceAll('|', '{{!}}')
+				: child.toString(),
+		).join(''),
+		{childNodes} = Parser
+			.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
+	syntax.safeReplaceChildren(childNodes);
+};
 
 /**
  * table row that contains the newline at the beginning but not at the end
@@ -47,5 +63,15 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,
 		);
+	}
+
+	override escape(): void {
+		for (const child of this.childNodes) {
+			if (child instanceof SyntaxToken) {
+				escapeTable(child);
+			} else {
+				child.escape();
+			}
+		}
 	}
 }

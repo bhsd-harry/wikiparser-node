@@ -255,4 +255,9 @@ export abstract class AttributeToken extends Token {
 	getValue(): string | true {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
 	}
+
+	override escape(): void {
+		this.#equal = '{{=}}';
+		this.lastChild.escape();
+	}
 }

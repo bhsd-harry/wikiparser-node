@@ -6,6 +6,7 @@ import {
 } from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
+import {noEscape} from '../../mixin/noEscape';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -30,7 +31,7 @@ const isLink = (type: string): boolean => type === 'redirect-target' || type ===
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
-@padded('[[')
+@noEscape @padded('[[')
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;

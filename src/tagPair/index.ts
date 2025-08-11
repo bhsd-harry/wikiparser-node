@@ -1,4 +1,5 @@
 import {gapped} from '../../mixin/gapped';
+import {noEscape} from '../../mixin/noEscape';
 import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstNodes} from '../../lib/node';
@@ -8,7 +9,7 @@ import type {AstNodes} from '../../lib/node';
  *
  * 成对标签
  */
-@gapped()
+@gapped() @noEscape
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
 	readonly #tags: [string, string];
