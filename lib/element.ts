@@ -72,16 +72,6 @@ export abstract class AstElement extends AstNode {
 		}
 	}
 
-	/**
-	 * Replace all child nodes
-	 *
-	 * 批量替换子节点
-	 * @param elements nodes to be inserted / 新的子节点
-	 */
-	replaceChildren(...elements: (AstNodes | string)[]): void {
-		this.safeReplaceChildren(elements);
-	}
-
 	/** @private */
 	safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
 		for (let i = this.length - 1; i >= 0; i--) {
@@ -108,5 +98,15 @@ export abstract class AstElement extends AstNode {
 	/** @private */
 	override toString(skip?: boolean, separator = ''): string {
 		return this.childNodes.map(child => child.toString(skip)).join(separator);
+	}
+
+	/**
+	 * Replace all child nodes
+	 *
+	 * 批量替换子节点
+	 * @param elements nodes to be inserted / 新的子节点
+	 */
+	replaceChildren(...elements: (AstNodes | string)[]): void {
+		this.safeReplaceChildren(elements);
 	}
 }

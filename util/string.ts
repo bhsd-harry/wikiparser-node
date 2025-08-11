@@ -1,7 +1,5 @@
 import type {AstNodes} from '../lib/node';
 
-export {rawurldecode} from '@bhsd/common';
-
 /**
  * trim and toLowerCase
  * @param s 字符串

@@ -39,9 +39,9 @@
 		"test:real": "node dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^1.0.0",
-		"@bhsd/common": "^1.0.0",
-		"@bhsd/test-util": "^0.0.0",
+		"@bhsd/code-standard": "^1.0.1",
+		"@bhsd/common": "^1.0.1",
+		"@bhsd/test-util": "^0.1.0",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.0.10",
