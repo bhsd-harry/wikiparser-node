@@ -4,12 +4,14 @@ import {
 	escape,
 } from '../util/string';
 import {getEndPos} from '../util/lint';
+import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes} from '../base';
 import type {
 	AttributeToken,
 	ExtToken,
+	TranscludeToken,
 } from '../internal';
 
 const sp = String.raw`[${zs}\t]*`,
@@ -72,6 +74,11 @@ export class AstText extends AstNode {
 
 	override get type(): 'text' {
 		return 'text';
+	}
+
+	/** text length / 文本长度 */
+	get length(): number {
+		return this.data.length;
 	}
 
 	/** @param text 包含文本 */
@@ -307,6 +314,55 @@ export class AstText extends AstNode {
 	 */
 	replaceData(text: string): void {
 		this.#setData(text);
+	}
+
+	/**
+	 * Split the text node into two parts
+	 *
+	 * 将文本子节点分裂为两部分
+	 * @param offset position to be splitted at / 分裂位置
+	 * @throws `RangeError` 错误的断开位置
+	 * @throws `Error` 没有父节点
+	 */
+	splitText(offset: number): AstText {
+		const {parentNode, data} = this;
+		/* istanbul ignore if */
+		if (!parentNode) {
+			throw new Error('The text node to be split has no parent node!');
+		}
+		const newText = new AstText(data.slice(offset));
+		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
+		this.setAttribute('data', data.slice(0, offset));
+		return newText;
+	}
+
+	/**
+	 * Escape `=` and `|`
+	 *
+	 * 转义 `=` 和 `|`
+	 * @since v1.1.4
+	 */
+	escape(): void {
+		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
+		const config = this.parentNode!.getAttribute('config');
+
+		/**
+		 * Get the last index of `=` or `|`
+		 * @param j start position from the end
+		 */
+		const lastIndexOf = (j?: number): number =>
+			Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
+		let i = lastIndexOf();
+		const callback = /** @ignore */ (): TranscludeToken =>
+			// @ts-expect-error abstract class
+			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
+		for (; i >= 0; i = lastIndexOf(i - 1)) {
+			if (i < this.length - 1) {
+				this.splitText(i + 1);
+			}
+			this.after(Shadow.run(callback));
+			this.#setData(this.data.slice(0, i));
+		}
 	}
 
 	/** @private */

@@ -279,6 +279,29 @@ export abstract class AstNode implements AstNodeBase {
 		return results;
 	}
 
+	/** @private */
+	insertAdjacent(nodes: readonly (AstNodes | string)[], offset: 0 | 1): void {
+		const {parentNode} = this;
+		/* istanbul ignore if */
+		if (!parentNode) {
+			throw new Error('There is no parent node!');
+		}
+		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
+		for (let j = 0; j < nodes.length; j++) {
+			parentNode.insertAt(nodes[j] as string, i + j);
+		}
+	}
+
+	/**
+	 * Insert a batch of sibling nodes after the current node
+	 *
+	 * 在后方批量插入兄弟节点
+	 * @param nodes nodes to be inserted / 插入节点
+	 */
+	after(...nodes: (AstNodes | string)[]): void {
+		this.insertAdjacent(nodes, 1);
+	}
+
 	/* PRINT ONLY */
 
 	/** @private */

@@ -12,6 +12,7 @@ import {
 } from '../util/constants';
 import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -29,7 +30,7 @@ declare type Child = AtomToken | SyntaxToken;
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
  */
-@gapped()
+@noEscape @gapped()
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';

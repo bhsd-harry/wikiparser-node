@@ -4,6 +4,7 @@ import {
 	print,
 } from '../util/string';
 import {padded} from '../mixin/padded';
+import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
@@ -15,7 +16,7 @@ import type {Config} from '../base';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
  */
-@padded('-{')
+@noEscape @padded('-{')
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;

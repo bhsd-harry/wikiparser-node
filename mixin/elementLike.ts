@@ -29,6 +29,14 @@ export interface ElementLike {
 	 * @param selector selector / 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
+
+	/**
+	 * Escape `=` and `|`
+	 *
+	 * 转义 `=` 和 `|`
+	 * @since v1.18.3
+	 */
+	escape(): void;
 }
 
 /** @ignore */
@@ -76,6 +84,12 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 
 		querySelectorAll<T = Token>(selector: string): T[] {
 			return this.getElementsBy(this.#getCondition<T>(selector));
+		}
+
+		escape(): void {
+			for (const child of this.childNodes) {
+				child.escape();
+			}
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */

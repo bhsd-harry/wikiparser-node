@@ -190,6 +190,16 @@ export abstract class TdToken extends TableBaseToken {
 		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
 	}
 
+	override escape(): void {
+		super.escape();
+		if (this.childNodes[1].toString()) {
+			this.#innerSyntax ||= '{{!}}';
+		}
+		if (this.#innerSyntax === '|') {
+			this.#innerSyntax = '{{!}}';
+		}
+	}
+
 	/** @private */
 	override print(): string {
 		const {childNodes: [syntax, attr, inner]} = this;

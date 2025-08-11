@@ -1,3 +1,4 @@
+import {noEscape} from '../../mixin/noEscape';
 import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstText} from '../../lib/text';
@@ -17,6 +18,7 @@ declare type NowikiTypes = 'ext-inner'
  * 纯文字Token，不会被解析
  * @classdesc `{childNodes: [AstText]}`
  */
+@noEscape
 export abstract class NowikiBaseToken extends Token {
 	abstract override get type(): NowikiTypes;
 	declare readonly childNodes: readonly [AstText];
