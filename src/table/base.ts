@@ -17,7 +17,7 @@ export interface TableBaseToken extends AttributesParentBase {}
 const escapeTable = (syntax: SyntaxToken): void => {
 	const wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
-				? child.data.replaceAll('|', '{{!}}')
+				? child.data.replace(/\|/gu, '{{!}}')
 				: child.toString(),
 		).join(''),
 		{childNodes} = Parser

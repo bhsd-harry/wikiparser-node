@@ -24,6 +24,7 @@ import type {
 	SignatureInformation,
 	ParameterInformation,
 	InlayHint,
+	CodeAction,
 } from 'vscode-languageserver-types';
 import type {
 	Config,
