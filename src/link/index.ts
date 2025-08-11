@@ -1,3 +1,4 @@
+import {rawurldecode} from '@bhsd/common';
 import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
@@ -8,7 +9,7 @@ import type {Token, AtomToken} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import {encode, rawurldecode} from '../../util/string';
+import {encode} from '../../util/string';
 
 /* NOT FOR BROWSER END */
 
@@ -33,14 +34,14 @@ export abstract class LinkToken extends LinkBaseToken {
 		return 'link';
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** link text / 链接显示文字 */
 	get innerText(): string {
 		return this.length > 1
 			? this.lastChild.text()
 			: rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
 	}
+
+	/* NOT FOR BROWSER */
 
 	set innerText(text) {
 		this.setLinkText(text);
@@ -66,7 +67,9 @@ export abstract class LinkToken extends LinkBaseToken {
 			rule = 'nested-link',
 			s = Parser.lintConfig.getSeverity(rule);
 		if (s && this.closest('ext-link-text')) {
-			errors.push(generateForSelf(this, {start}, rule, 'internal link in an external link', s));
+			const e = generateForSelf(this, {start}, rule, 'internal link in an external link', s);
+			e.suggestions = [{desc: 'delink', range: [start, e.endIndex], text: this.innerText}];
+			errors.push(e);
 		}
 		return errors;
 	}

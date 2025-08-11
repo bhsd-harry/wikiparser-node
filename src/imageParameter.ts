@@ -1,9 +1,8 @@
-import {getRegex} from '@bhsd/common';
+import {getRegex, rawurldecode} from '@bhsd/common';
 import {
 	extUrlChar,
 	extUrlCharFirst,
 	removeComment,
-	rawurldecode,
 	print,
 
 	/* NOT FOR BROWSER */

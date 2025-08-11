@@ -1,3 +1,4 @@
+import {rawurldecode} from '@bhsd/common';
 import {generateForChild} from '../../util/lint';
 import {
 	MAX_STAGE,
@@ -7,14 +8,6 @@ import {
 
 	classes,
 } from '../../util/constants';
-import {
-	rawurldecode,
-
-	/* NOT FOR BROWSER */
-
-	encode,
-	sanitize,
-} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
 import Parser from '../../index';
@@ -38,6 +31,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../../util/debug';
+import {encode, sanitize} from '../../util/string';
 import {noEscape} from '../../mixin/noEscape';
 import {cached} from '../../mixin/cached';
 

@@ -1,6 +1,6 @@
+import {rawurldecode} from '@bhsd/common';
 import {
 	decodeHtml,
-	rawurldecode,
 	trimLc,
 
 	/* NOT FOR BROWSER */
