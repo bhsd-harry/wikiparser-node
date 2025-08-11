@@ -1,6 +1,6 @@
+import {rawurldecode} from '@bhsd/common';
 import {
 	decodeHtml,
-	rawurldecode,
 	trimLc,
 } from '../util/string';
 import type {Config} from '../base';

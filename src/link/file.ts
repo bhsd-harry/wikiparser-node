@@ -122,7 +122,15 @@ export abstract class FileToken extends LinkBaseToken {
 			&& this.closest('ext-link-text')
 			&& (this.getValue('link') as string | undefined)?.trim() !== ''
 		) {
-			errors.push(generateForSelf(this, rect, rule, 'internal link in an external link', s));
+			const e = generateForSelf(this, rect, rule, 'internal link in an external link', s),
+				link = this.getArg('link');
+			if (link) {
+				const from = start + link.getRelativeIndex();
+				e.suggestions = [{desc: 'delink', range: [from, from + link.toString().length], text: 'link='}];
+			} else {
+				e.suggestions = [{desc: 'delink', range: [e.endIndex - 2, e.endIndex - 2], text: '|link='}];
+			}
+			errors.push(e);
 		}
 		rule = 'invalid-gallery';
 		s = Parser.lintConfig.getSeverity(rule, 'parameter');
