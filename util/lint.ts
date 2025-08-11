@@ -113,13 +113,7 @@ export const cache = <T>(
 	update: (value: Cached<T>) => void,
 	force?: boolean,
 ): T => {
-	if (
-		store
-
-		/* PRINT ONLY */
-
-		&& (force || Parser.viewOnly && store[0] === Shadow.rev)
-	) {
+	if (store && (force || Parser.viewOnly && store[0] === Shadow.rev)) {
 		return store[1];
 	}
 	const result = compute();

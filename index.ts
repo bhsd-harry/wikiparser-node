@@ -67,11 +67,7 @@ declare interface Parser extends ParserBase {
 	createLanguageService(uri?: object): LanguageService;
 }
 
-/* PRINT ONLY */
-
 let viewOnly = true;
-
-/* PRINT ONLY END */
 
 let lintConfig = getLintConfig();
 
@@ -89,8 +85,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		lintConfig = getLintConfig(config);
 	},
 
-	/* PRINT ONLY */
-
 	/** @implements */
 	get viewOnly() {
 		return viewOnly;
@@ -102,8 +96,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		viewOnly = value;
 	},
-
-	/* PRINT ONLY END */
 
 	/** @implements */
 	getConfig(config?: ConfigData) {

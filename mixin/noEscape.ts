@@ -1,5 +1,3 @@
-import {mixin} from '../util/debug';
-
 /**
  * 不需要转义的类
  * @ignore
@@ -12,6 +10,5 @@ export const noEscape = <T extends AstConstructor>(constructor: T): T => {
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(NoEscapeToken, constructor);
 	return NoEscapeToken;
 };
