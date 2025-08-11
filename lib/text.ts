@@ -15,8 +15,11 @@ import type {
 } from '../internal';
 
 const sp = String.raw`[${zs}\t]*`,
+	anySp = String.raw`[^\S\n]*`,
 	source =
-		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
+		String.raw`<${anySp}(?:/${
+			anySp
+		})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
 		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
 const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
