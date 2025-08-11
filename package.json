@@ -66,8 +66,8 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/cm-util": "^0.0.0",
-		"@bhsd/common": "^1.0.0",
+		"@bhsd/cm-util": "^0.0.1",
+		"@bhsd/common": "^1.0.1",
 		"@bhsd/stylelint-util": "^0.1.0",
 		"vscode-languageserver-types": "^3.17.5"
 	},
@@ -82,8 +82,8 @@
 		"vscode-json-languageservice": "^5.6.1"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^1.0.0",
-		"@bhsd/test-util": "^0.0.0",
+		"@bhsd/code-standard": "^1.0.1",
+		"@bhsd/test-util": "^0.1.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@types/color-name": "^2.0.0",
