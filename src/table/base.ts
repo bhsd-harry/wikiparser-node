@@ -14,6 +14,10 @@ import type {TdToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
+declare type TableTypes = 'table' | 'tr' | 'td';
+
+export interface TableBaseToken extends AttributesParentBase {}
+
 /**
  * 转义表格语法
  * @param syntax 表格语法节点
@@ -28,10 +32,6 @@ const escapeTable = (syntax: SyntaxToken): void => {
 			.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
 	syntax.safeReplaceChildren(childNodes);
 };
-
-declare type TableTypes = 'table' | 'tr' | 'td';
-
-export interface TableBaseToken extends AttributesParentBase {}
 
 /**
  * table row that contains the newline at the beginning but not at the end

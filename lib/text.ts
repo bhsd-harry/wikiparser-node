@@ -35,12 +35,15 @@ import {cached} from '../mixin/cached';
 /* NOT FOR BROWSER END */
 
 const sp = String.raw`[${zs}\t]*`,
+	anySp = String.raw`[^\S\n]*`,
 	source =
-		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
+		String.raw`<${anySp}(?:/${
+			anySp
+		})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
 		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
+/<[^\S\n]*(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
