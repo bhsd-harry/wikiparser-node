@@ -1,9 +1,8 @@
-import {getRegex} from '@bhsd/common';
+import {getRegex, rawurldecode} from '@bhsd/common';
 import {
 	extUrlChar,
 	extUrlCharFirst,
 	removeComment,
-	rawurldecode,
 } from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';

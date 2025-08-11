@@ -1,11 +1,9 @@
+import {rawurldecode} from '@bhsd/common';
 import {generateForChild} from '../../util/lint';
 import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../../util/constants';
-import {
-	rawurldecode,
-} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
 import Parser from '../../index';
