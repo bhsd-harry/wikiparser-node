@@ -1782,7 +1782,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param range range of the refactoring / 重构范围
 	 * @since v1.24.0
 	 */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	async provideRefactoringAction(text: string, range: Range): Promise<CodeAction[]> {
 		const {start, end} = range;
 		if (start.line === end.line && start.character === end.character) {
@@ -1791,11 +1790,14 @@ export class LanguageService implements LanguageServiceBase {
 		const lines = text.split(/\r?\n/u, end.line + 1),
 			selected = start.line === end.line
 				? lines[end.line]!.slice(start.character, end.character)
-				: lines[start.line]!.slice(start.character)
-					+ lines.slice(start.line + 1, end.line).join('\n')
-					+ lines[end.line]!.slice(0, end.character),
+				: `${lines[start.line]!.slice(start.character)}\n${
+					lines.slice(start.line + 1, end.line).join('\n')
+				}${lines.length === 2 ? '' : '\n'}${lines[end.line]!.slice(0, end.character)}`,
 			root = await this.#queueSignature(selected);
+		const {viewOnly} = Parser;
+		Parser.viewOnly = false;
 		root.escape();
+		Parser.viewOnly = viewOnly;
 		return [
 			{
 				title: 'Escape',

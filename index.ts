@@ -125,11 +125,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER ONLY END */
 
-/* PRINT ONLY */
-
 let viewOnly = true;
-
-/* PRINT ONLY END */
 
 let lintConfig = getLintConfig();
 
@@ -147,8 +143,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		lintConfig = getLintConfig(config);
 	},
 
-	/* PRINT ONLY */
-
 	/** @implements */
 	get viewOnly() {
 		return viewOnly;
@@ -160,8 +154,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		viewOnly = value;
 	},
-
-	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER ONLY */
 

@@ -510,12 +510,8 @@ export interface Parser {
 	/** @since v1.22.0 */
 	lintConfig: LintConfiguration;
 
-	/* PRINT ONLY */
-
 	/** @since v1.9.0 */
 	viewOnly: boolean;
-
-	/* PRINT ONLY END */
 
 	/**
 	 * Get the current parser configuration
