@@ -28,10 +28,10 @@ import type {
 	SignatureInformation,
 	ParameterInformation,
 	InlayHint,
+	CodeAction,
 
 	/* NOT FOR BROWSER ONLY */
 
-	CodeAction,
 	DocumentSymbol,
 } from 'vscode-languageserver-types';
 import type {
