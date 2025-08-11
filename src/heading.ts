@@ -1,4 +1,4 @@
-import {generateForChild, generateForSelf} from '../util/lint';
+import {generateForChild, generateForSelf, fixBy, fixByRemove, fixByClose} from '../util/lint';
 import {
 	isToken,
 
@@ -165,7 +165,7 @@ export abstract class HeadingToken extends Token {
 		if (severities[0] && this.level === 1) {
 			const e = generateForChild(firstChild, rect, rules[0], '<h1>', severities[0]);
 			if (!unbalanced) {
-				e.suggestions = [{desc: 'h2', range: [e.startIndex, e.endIndex], text: `=${innerStr}=`}];
+				e.suggestions = [fixBy(e, 'h2', `=${innerStr}=`)];
 			}
 			errors.push(e);
 		}
@@ -199,8 +199,6 @@ export abstract class HeadingToken extends Token {
 			}
 		}
 		if (severities[2]) {
-			const getRemove = /** @ignore */ (e: LintError): LintError.Fix =>
-				({desc: 'remove', range: [e.startIndex, e.endIndex], text: ''});
 			const rootStr = this.getRootNode().toString(),
 				quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
 				boldQuotes = quotes.filter(({bold}) => bold),
@@ -220,11 +218,11 @@ export abstract class HeadingToken extends Token {
 					end = start + level + innerStr.length;
 				if (rootStr.slice(e.endIndex, end).trim()) {
 					e.suggestions = [
-						getRemove(e),
-						{desc: 'close', range: [end, end], text: `'''`},
+						fixByRemove(e),
+						fixByClose(end, `'''`),
 					];
 				} else {
-					e.fix = getRemove(e);
+					e.fix = fixByRemove(e);
 				}
 				errors.push(e);
 			}
@@ -238,9 +236,9 @@ export abstract class HeadingToken extends Token {
 					),
 					end = start + level + innerStr.length;
 				if (rootStr.slice(e.endIndex, end).trim()) {
-					e.suggestions = [{desc: 'close', range: [end, end], text: `''`}];
+					e.suggestions = [fixByClose(end, `''`)];
 				} else {
-					e.fix = getRemove(e);
+					e.fix = fixByRemove(e);
 				}
 				errors.push(e);
 			}

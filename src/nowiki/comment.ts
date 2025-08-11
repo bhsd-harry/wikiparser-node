@@ -1,4 +1,4 @@
-import {generateForSelf} from '../../util/lint';
+import {generateForSelf, fixByClose} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
 import {padded} from '../../mixin/padded';
 import Parser from '../../index';
@@ -56,7 +56,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 			return [];
 		}
 		const e = generateForSelf(this, {start}, rule, Parser.msg('unclosed $1', 'HTML comment'), s);
-		e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: '-->'}];
+		e.suggestions = [fixByClose(e.endIndex, '-->')];
 		return [e];
 	}
 

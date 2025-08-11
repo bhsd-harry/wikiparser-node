@@ -1,5 +1,4 @@
-import {getRegex} from '@bhsd/common';
-import {generateForChild, generateForSelf} from '../util/lint';
+import {generateForChild, generateForSelf, fixBySpace} from '../util/lint';
 import {zs, text, decodeNumber} from '../util/string';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -20,6 +19,7 @@ import type {
 
 /* NOT FOR BROWSER */
 
+import {getRegex} from '@bhsd/common';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
@@ -205,10 +205,10 @@ export abstract class MagicLinkToken extends Token {
 					{index, 0: s} = regex.exec(data)!,
 					i = e.startIndex + index;
 				e.suggestions = pipe
-					? [{desc: 'whitespace', range: [i, i + 1], text: ' '}]
+					? [fixBySpace(i, 1)]
 					: [
-						{desc: 'whitespace', range: [i, i], text: ' '},
-						{desc: 'escape', range: [i, i + s.length], text: encodeURI(s)},
+						fixBySpace(i),
+						{desc: 'encode', range: [i, i + s.length], text: encodeURI(s)},
 					];
 				errors.push(e);
 			}

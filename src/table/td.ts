@@ -1,4 +1,4 @@
-import {generateForChild} from '../../util/lint';
+import {generateForChild, fixBy, fixByPipe} from '../../util/lint';
 import {
 	BuildMethod,
 
@@ -275,19 +275,13 @@ export abstract class TdToken extends TableBaseToken {
 						const e = generateForChild(child, rect, rule, 'additional "|" in a table cell', s);
 						if (double) {
 							const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
-							e.fix = {
-								desc: 'newline',
-								range: [e.startIndex, e.endIndex],
-								text: data.replace(/\|\|/gu, `\n${syntax}`),
-							};
+							e.fix = fixBy(
+								e,
+								'newline',
+								data.replace(/\|\|/gu, `\n${syntax}`),
+							);
 						} else {
-							e.suggestions = [
-								{
-									desc: 'escape',
-									range: [e.startIndex, e.endIndex],
-									text: data.replace(/\|/gu, '&#124;'),
-								},
-							];
+							e.suggestions = [fixByPipe(e.startIndex, data)];
 						}
 						errors.push(e);
 					}

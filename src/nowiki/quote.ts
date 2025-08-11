@@ -1,4 +1,4 @@
-import {generateForSelf} from '../../util/lint';
+import {generateForSelf, fixByRemove, fixByEscape} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
@@ -88,26 +88,27 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			const severity = severities[(closing.bold || closing.italic) && /[a-z\d]'$/iu.test(previousData) ? 1 : 0];
 			if (severity) {
 				const e = generateForSelf(this, rect, rules[0], Parser.msg('lonely "$1"', `'`), severity),
-					{startIndex: endIndex, startLine: endLine, startCol: endCol} = e,
+					{startLine: endLine, startCol: endCol} = e,
 					[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
-					startIndex = start - length;
-				errors.push({
-					...e,
-					startIndex,
-					endIndex,
-					endLine,
-					startCol: endCol - length,
-					endCol,
-					suggestions: [
-						{desc: 'escape', range: [startIndex, endIndex], text: '&apos;'.repeat(length)},
-						{desc: 'remove', range: [startIndex, endIndex], text: ''},
-					],
-				});
+					startIndex = start - length,
+					eNew: LintError = {
+						...e,
+						startIndex,
+						endIndex: start,
+						endLine,
+						startCol: endCol - length,
+						endCol,
+					};
+				eNew.suggestions = [
+					fixByEscape(startIndex, '&apos;', length),
+					fixByRemove(eNew),
+				];
+				errors.push(eNew);
 			}
 		}
 		if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
 			const e = generateForSelf(this, rect, rules[1], 'bold in section header', s);
-			e.suggestions = [{desc: 'remove', range: [start, start + 3], text: ''}];
+			e.suggestions = [fixByRemove(e)];
 			errors.push(e);
 		}
 		return errors;

@@ -1,5 +1,4 @@
-import {rawurldecode} from '@bhsd/common';
-import {generateForChild} from '../../util/lint';
+import {generateForChild, fixByRemove, fixByDecode, fixByPipe} from '../../util/lint';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -237,7 +236,7 @@ export abstract class LinkBaseToken extends Token {
 		s = Parser.lintConfig.getSeverity(rule);
 		if (s && encoded) {
 			const e = generateForChild(target, rect, rule, 'unnecessary URL encoding in an internal link', s);
-			e.fix = {desc: 'decode', range: [e.startIndex, e.endIndex], text: rawurldecode(target.text())};
+			e.fix = fixByDecode(e, target);
 			errors.push(e);
 		}
 		rule = 'pipe-like';
@@ -248,13 +247,7 @@ export abstract class LinkBaseToken extends Token {
 			if (textNode) {
 				const e = generateForChild(linkText!, rect, rule, 'additional "|" in the link text', s),
 					i = e.startIndex + linkText!.getRelativeIndex(j);
-				e.suggestions = [
-					{
-						desc: 'escape',
-						range: [i, i + textNode.data.length],
-						text: textNode.data.replace(/\|/gu, '&#124;'),
-					},
-				];
+				e.suggestions = [fixByPipe(i, textNode.data)];
 				errors.push(e);
 			}
 		}
@@ -265,14 +258,7 @@ export abstract class LinkBaseToken extends Token {
 				j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
 				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {
-				e.fix = {
-					desc: 'remove',
-					range: [
-						e.startIndex + target.getRelativeIndex(j) + textNode.data.indexOf('#'),
-						e.endIndex,
-					],
-					text: '',
-				};
+				e.fix = fixByRemove(e, target.getRelativeIndex(j) + textNode.data.indexOf('#'));
 			}
 			errors.push(e);
 		}

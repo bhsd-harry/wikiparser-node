@@ -1,5 +1,5 @@
 import {text} from '../util/string';
-import {generateForSelf, generateForChild} from '../util/lint';
+import {generateForSelf, generateForChild, fixBy, fixByRemove, fixByEscape} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
 import {gapped} from '../mixin/gapped';
@@ -142,8 +142,8 @@ export abstract class ArgToken extends Token {
 				e.startIndex--;
 				e.startCol--;
 				e.suggestions = [
-					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
-					{desc: 'escape', range: [e.startIndex, e.startIndex + 1], text: '{{!}}'},
+					fixByRemove(e),
+					fixByEscape(e.startIndex, '{{!}}'),
 				];
 				return e;
 			}));
@@ -151,7 +151,7 @@ export abstract class ArgToken extends Token {
 		if (s[1] && !this.getAttribute('include')) {
 			const e = generateForSelf(this, {start}, rules[1], 'unexpected template argument', s[1]);
 			if (argDefault) {
-				e.suggestions = [{desc: 'expand', range: [start, e.endIndex], text: argDefault.text()}];
+				e.suggestions = [fixBy(e, 'expand', argDefault.text())];
 			}
 			errors.push(e);
 		}

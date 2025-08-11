@@ -9,7 +9,7 @@ import {
 
 	sanitize,
 } from '../util/string';
-import {getEndPos} from '../util/lint';
+import {getEndPos, fixByUpper, fixBySpace, fixByEscape, fixByInsert} from '../util/lint';
 import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
@@ -125,12 +125,12 @@ export class AstText extends AstNode {
 		return 'text';
 	}
 
+	/* NOT FOR BROWSER */
+
 	/** text length / 文本长度 */
 	get length(): number {
 		return this.data.length;
 	}
-
-	/* NOT FOR BROWSER */
 
 	set length(n) {
 		if (n >= 0 && n < this.length) {
@@ -341,22 +341,22 @@ export class AstText extends AstNode {
 
 			// Suggestions
 			if (char === '<') {
-				e.suggestions = [{desc: 'escape', range: [startIndex, startIndex + 1], text: '&lt;'}];
+				e.suggestions = [fixByEscape(startIndex, '&lt;')];
 			} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
-				e.suggestions = [{desc: 'whitespace', range: [startIndex, startIndex], text: ' '}];
+				e.suggestions = [fixBySpace(startIndex)];
 			} else if (lbrack && type === 'ext-link-text') {
 				const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
-				e.suggestions = [{desc: 'escape', range: [i, i + 1], text: '&#93;'}];
+				e.suggestions = [fixByEscape(i, '&#93;')];
 			} else if (rbrack && brokenExtLink) {
 				const i = start - previousSibling!.toString().length;
-				e.suggestions = [{desc: 'left bracket', range: [i, i], text: '['}];
+				e.suggestions = [fixByInsert(i, 'left bracket', '[')];
 			} else if (magicLink) {
 				e.suggestions = [
 					...mt[0] === error
 						? []
-						: [{desc: 'uppercase', range: [startIndex, endIndex], text: error} satisfies LintError.Fix],
+						: [fixByUpper(e, error)],
 					...nextChar === ':' || nextChar === '：'
-						? [{desc: 'whitespace', range: [endIndex, endIndex + 1], text: ' '} satisfies LintError.Fix]
+						? [fixBySpace(endIndex, 1)]
 						: [],
 				];
 			}
@@ -450,7 +450,7 @@ export class AstText extends AstNode {
 			// @ts-expect-error abstract class
 			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
 		for (; i >= 0; i = lastIndexOf(i - 1)) {
-			if (i < this.length - 1) {
+			if (i < this.data.length - 1) {
 				this.splitText(i + 1);
 			}
 			parentNode.insertAt(Shadow.run(callback), index);

@@ -1,4 +1,4 @@
-import {generateForChild} from '../util/lint';
+import {generateForChild, fixByRemove, fixByComment} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
@@ -131,8 +131,8 @@ export abstract class NestedToken extends Token {
 			}).map(child => {
 				const e = generateForChild(child, rect, rule, Parser.msg('invalid content in <$1>', this.name), s);
 				e.suggestions = [
-					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
-					{desc: 'comment', range: [e.startIndex, e.endIndex], text: `<!--${child.toString()}-->`},
+					fixByRemove(e),
+					fixByComment(e, child.toString()),
 				];
 				return e;
 			}),

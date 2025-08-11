@@ -1,4 +1,4 @@
-import {generateForChild, provideValues} from '../util/lint';
+import {generateForChild, provideValues, fixBy, fixByClose, fixByRemove} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
@@ -278,7 +278,7 @@ export abstract class AttributeToken extends Token {
 			const s = Parser.lintConfig.getSeverity(rule, 'unknown');
 			if (s) {
 				const e = generateForChild(firstChild, rect!, rule, 'illegal attribute name', s);
-				e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
+				e.suggestions = [fixByRemove(start, length)];
 				return e;
 			}
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
@@ -306,8 +306,8 @@ export abstract class AttributeToken extends Token {
 			if (s) {
 				const e = generateForChild(lastChild, rect!, rule, 'nonzero tabindex', s);
 				e.suggestions = [
-					{desc: 'remove', range: [start, start + length], text: ''},
-					{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
+					fixByRemove(start, length),
+					fixBy(e, '0 tabindex', '0'),
 				];
 				return e;
 			}
@@ -360,7 +360,7 @@ export abstract class AttributeToken extends Token {
 			const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed $1', 'quotes'), s[0]);
 			e.startIndex--;
 			e.startCol--;
-			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: this.#quotes[0]!}];
+			e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
 			errors.push(e);
 		}
 		const e = this.#lint(start, rect);

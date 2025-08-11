@@ -1,4 +1,4 @@
-import {generateForSelf, generateForChild} from '../../util/lint';
+import {generateForSelf, generateForChild, fixByRemove, fixByClose} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {hiddenToken} from '../../mixin/hidden';
 import Parser from '../../index';
@@ -78,12 +78,12 @@ export abstract class IncludeToken extends TagPairToken {
 			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'include'));
 		if (s[0] && firstChild.data.trim()) {
 			const e = generateForChild(firstChild, rect, rules[0], 'useless attribute', s[0]);
-			e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
+			e.suggestions = [fixByRemove(e)];
 			errors.push(e);
 		}
 		if (s[1] && !closed) {
 			const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed $1', `<${name}>`), s[1]);
-			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: `</${name}>`}];
+			e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];
 			errors.push(e);
 		}
 		return errors;

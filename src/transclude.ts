@@ -9,7 +9,7 @@ import {
 
 	noWrap,
 } from '../util/string';
-import {generateForChild, generateForSelf} from '../util/lint';
+import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
 import {isToken, Shadow} from '../util/debug';
 import {
 	BuildMethod,
@@ -457,14 +457,7 @@ export abstract class TranscludeToken extends Token {
 				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
 				const e = generateForChild(child, rect, rule, 'useless fragment', s);
-				e.fix = {
-					desc: 'remove',
-					range: [
-						e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'),
-						e.endIndex,
-					],
-					text: '',
-				};
+				e.fix = fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'));
 				errors.push(e);
 			}
 		}
@@ -483,7 +476,7 @@ export abstract class TranscludeToken extends Token {
 			for (const [, args] of duplicatedArgs) {
 				errors.push(...args.map(arg => {
 					const e = generateForChild(arg, rect, rule, msg, s);
-					e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
+					e.suggestions = [fixByRemove(e, -1)];
 					return e;
 				}));
 			}

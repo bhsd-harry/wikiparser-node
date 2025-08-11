@@ -1,4 +1,4 @@
-import {generateForChild} from '../../util/lint';
+import {generateForChild, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {parseCommentAndExt} from '../../parser/commentAndExt';
 import {multiLine} from '../../mixin/multiLine';
@@ -92,7 +92,7 @@ export abstract class ParamTagToken extends Token {
 					str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
 				if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
 					const e = generateForChild(child, rect, rule, msg, s);
-					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
+					e.suggestions = [fixByRemove(e)];
 					errors.push(e);
 				} else {
 					const childErrors = child.lint(start, false);

@@ -1,3 +1,4 @@
+import {fixByRemove, fixByComment} from '../util/lint';
 import {multiLine} from '../mixin/multiLine';
 import Parser from '../index';
 import {Token} from './index';
@@ -149,22 +150,23 @@ export abstract class GalleryToken extends Token {
 					[,, severity] = s;
 				}
 				if (severity) {
-					const endIndex = start + length;
-					errors.push({
-						rule,
-						message: Parser.msg('invalid content in <$1>', 'gallery'),
-						severity,
-						startIndex: start,
-						endIndex,
-						startLine,
-						endLine: startLine,
-						startCol,
-						endCol: startCol + length,
-						suggestions: [
-							{desc: 'remove', range: [start, endIndex], text: ''},
-							{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
-						],
-					});
+					const endIndex = start + length,
+						e: LintError = {
+							rule,
+							message: Parser.msg('invalid content in <$1>', 'gallery'),
+							severity,
+							startIndex: start,
+							endIndex,
+							startLine,
+							endLine: startLine,
+							startCol,
+							endCol: startCol + length,
+						};
+					e.suggestions = [
+						fixByRemove(e),
+						fixByComment(e, str),
+					];
+					errors.push(e);
 				}
 			} else if (type !== 'noinclude' && type !== 'text') {
 				const childErrors = child.lint(start, re);

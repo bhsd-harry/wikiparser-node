@@ -1,5 +1,5 @@
 import {rawurldecode} from '@bhsd/common';
-import {generateForSelf} from '../../util/lint';
+import {generateForSelf, fixBy} from '../../util/lint';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
@@ -68,7 +68,7 @@ export abstract class LinkToken extends LinkBaseToken {
 			s = Parser.lintConfig.getSeverity(rule);
 		if (s && this.closest('ext-link-text')) {
 			const e = generateForSelf(this, {start}, rule, 'internal link in an external link', s);
-			e.suggestions = [{desc: 'delink', range: [start, e.endIndex], text: this.innerText}];
+			e.suggestions = [fixBy(e, 'delink', this.innerText)];
 			errors.push(e);
 		}
 		return errors;
