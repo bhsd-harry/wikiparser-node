@@ -1,4 +1,5 @@
 import {hiddenToken} from '../mixin/hidden';
+import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import {RedirectTargetToken} from './link/redirectTarget';
@@ -10,7 +11,6 @@ import {getRegex} from '@bhsd/common';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {fixedToken} from '../mixin/fixed';
-import {noEscape} from '../mixin/noEscape';
 
 /^(?:#redirect|#重定向)\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 const getPattern = getRegex<string[]>(
@@ -25,8 +25,8 @@ const getPattern = getRegex<string[]>(
  * 重定向
  * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
  */
-@fixedToken @noEscape
-@hiddenToken(false, false)
+@fixedToken
+@hiddenToken(false, false) @noEscape
 export abstract class RedirectToken extends Token {
 	readonly #pre;
 	readonly #post;

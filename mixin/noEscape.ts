@@ -1,5 +1,10 @@
 import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER */
+
 import {mixins} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 不需要转义的类

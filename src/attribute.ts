@@ -382,6 +382,11 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
 	}
 
+	override escape(): void {
+		this.#equal = '{{=}}';
+		this.lastChild.escape();
+	}
+
 	/* PRINT ONLY */
 
 	/** @private */
@@ -417,11 +422,6 @@ export abstract class AttributeToken extends Token {
 			token.lastChild.safeReplaceWith(value);
 			return token;
 		});
-	}
-
-	override escape(): void {
-		this.#equal = '{{=}}';
-		this.lastChild.escape();
 	}
 
 	/**

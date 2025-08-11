@@ -20,6 +20,7 @@ import {
 } from '../util/constants';
 import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -31,7 +32,6 @@ import type {AstText} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {noEscape} from '../mixin/noEscape';
 import {cached} from '../mixin/cached';
 
 declare interface Frame {
@@ -52,8 +52,7 @@ declare type Child = AtomToken | SyntaxToken;
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
  */
-@noEscape
-@gapped()
+@noEscape @gapped()
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';

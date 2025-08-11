@@ -1,11 +1,11 @@
 import {padded} from '../mixin/padded';
+import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
-import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 
 /* NOT FOR BROWSER END */
@@ -16,8 +16,7 @@ import Parser from '../index';
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
-@noEscape
-@padded('<onlyinclude>')
+@noEscape @padded('<onlyinclude>')
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';

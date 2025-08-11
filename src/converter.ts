@@ -4,6 +4,7 @@ import {
 	print,
 } from '../util/string';
 import {padded} from '../mixin/padded';
+import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
@@ -14,7 +15,6 @@ import type {Config} from '../base';
 import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {noEscape} from '../mixin/noEscape';
 import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -25,8 +25,7 @@ import {cached} from '../mixin/cached';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
  */
-@noEscape
-@padded('-{')
+@noEscape @padded('-{')
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;

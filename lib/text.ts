@@ -10,16 +10,17 @@ import {
 	sanitize,
 } from '../util/string';
 import {getEndPos} from '../util/lint';
+import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes} from '../base';
 import type {
 	AttributeToken,
 	ExtToken,
+	TranscludeToken,
 
 	/* NOT FOR BROWSER */
 
-	TranscludeToken,
 	CommentToken,
 	CategoryToken,
 	TableToken,
@@ -28,7 +29,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
-import {setChildNodes, Shadow} from '../util/debug';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
 
@@ -125,12 +125,12 @@ export class AstText extends AstNode {
 		return 'text';
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** text length / 文本长度 */
 	get length(): number {
 		return this.data.length;
 	}
+
+	/* NOT FOR BROWSER */
 
 	set length(n) {
 		if (n >= 0 && n < this.length) {
@@ -398,6 +398,59 @@ export class AstText extends AstNode {
 		this.#setData(text);
 	}
 
+	/**
+	 * Split the text node into two parts
+	 *
+	 * 将文本子节点分裂为两部分
+	 * @param offset position to be splitted at / 分裂位置
+	 * @throws `RangeError` 错误的断开位置
+	 * @throws `Error` 没有父节点
+	 */
+	splitText(offset: number): AstText {
+		/* istanbul ignore if */
+		if (offset > this.length || offset < -this.length) {
+			throw new RangeError(`Wrong offset to split: ${offset}`);
+		}
+		const {parentNode, data} = this;
+		/* istanbul ignore if */
+		if (!parentNode) {
+			throw new Error('The text node to be split has no parent node!');
+		}
+		const newText = new AstText(data.slice(offset));
+		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
+		this.setAttribute('data', data.slice(0, offset));
+		return newText;
+	}
+
+	/**
+	 * Escape `=` and `|`
+	 *
+	 * 转义 `=` 和 `|`
+	 * @since v1.1.4
+	 */
+	escape(): void {
+		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
+		const config = this.parentNode!.getAttribute('config');
+
+		/**
+		 * Get the last index of `=` or `|`
+		 * @param j start position from the end
+		 */
+		const lastIndexOf = (j?: number): number =>
+			Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
+		let i = lastIndexOf();
+		const callback = /** @ignore */ (): TranscludeToken =>
+			// @ts-expect-error abstract class
+			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
+		for (; i >= 0; i = lastIndexOf(i - 1)) {
+			if (i < this.length - 1) {
+				this.splitText(i + 1);
+			}
+			this.after(Shadow.run(callback));
+			this.#setData(this.data.slice(0, i));
+		}
+	}
+
 	/** @private */
 	print(): string {
 		return escape(this.data);
@@ -460,30 +513,6 @@ export class AstText extends AstNode {
 		return this.data.substr(offset, count);
 	}
 
-	/**
-	 * Split the text node into two parts
-	 *
-	 * 将文本子节点分裂为两部分
-	 * @param offset position to be splitted at / 分裂位置
-	 * @throws `RangeError` 错误的断开位置
-	 * @throws `Error` 没有父节点
-	 */
-	splitText(offset: number): AstText {
-		/* istanbul ignore if */
-		if (offset > this.length || offset < -this.length) {
-			throw new RangeError(`Wrong offset to split: ${offset}`);
-		}
-		const {parentNode, data} = this;
-		/* istanbul ignore if */
-		if (!parentNode) {
-			throw new Error('The text node to be split has no parent node!');
-		}
-		const newText = new AstText(data.slice(offset));
-		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
-		this.setAttribute('data', data.slice(0, offset));
-		return newText;
-	}
-
 	/** @private */
 	override getRelativeIndex(j?: number): number {
 		/* istanbul ignore else */
@@ -493,35 +522,6 @@ export class AstText extends AstNode {
 			throw new RangeError('Exceeding the text length range!');
 		}
 		return j;
-	}
-
-	/**
-	 * Escape `=` and `|`
-	 *
-	 * 转义 `=` 和 `|`
-	 * @since v1.1.4
-	 */
-	escape(): void {
-		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
-		const config = this.parentNode!.getAttribute('config');
-
-		/**
-		 * Get the last index of `=` or `|`
-		 * @param j start position from the end
-		 */
-		const lastIndexOf = (j?: number): number =>
-			Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
-		let i = lastIndexOf();
-		const callback = /** @ignore */ (): TranscludeToken =>
-			// @ts-expect-error abstract class
-			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
-		for (; i >= 0; i = lastIndexOf(i - 1)) {
-			if (i < this.length - 1) {
-				this.splitText(i + 1);
-			}
-			this.after(Shadow.run(callback));
-			this.#setData(this.data.slice(0, i));
-		}
 	}
 
 	/**

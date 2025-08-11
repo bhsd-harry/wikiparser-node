@@ -55,6 +55,14 @@ export interface ElementLike {
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
 
+	/**
+	 * Escape `=` and `|`
+	 *
+	 * 转义 `=` 和 `|`
+	 * @since v1.18.3
+	 */
+	escape(): void;
+
 	/* NOT FOR BROWSER */
 
 	/**
@@ -88,14 +96,6 @@ export interface ElementLike {
 	 * @param tag tag name / 标签名
 	 */
 	getElementsByTagName<T = Token>(tag: string): T[];
-
-	/**
-	 * Escape `=` and `|`
-	 *
-	 * 转义 `=` 和 `|`
-	 * @since v1.18.3
-	 */
-	escape(): void;
 }
 
 /** @ignore */
@@ -167,6 +167,16 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			return this.getElementsBy(this.#getCondition<T>(selector));
 		}
 
+		escape(): void {
+			for (const child of this.childNodes) {
+				child.escape();
+			}
+
+			/* NOT FOR BROWSER */
+
+			this.detach?.();
+		}
+
 		/* NOT FOR BROWSER */
 
 		getElementByTypes<T = Token>(types: string): T | undefined {
@@ -188,13 +198,6 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			return this.getElementsBy<T>(
 				(({type, name}) => name === tag && (type === 'html' || type === 'ext')) as TokenPredicate<T>,
 			);
-		}
-
-		escape(): void {
-			for (const child of this.childNodes) {
-				child.escape();
-			}
-			this.detach?.();
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */

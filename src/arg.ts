@@ -3,6 +3,7 @@ import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
 import {gapped} from '../mixin/gapped';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -17,7 +18,6 @@ import type {
 
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {noEscape} from '../mixin/noEscape';
 import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -28,8 +28,7 @@ import {cached} from '../mixin/cached';
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
  */
-@noEscape
-@padded('{{{') @gapped()
+@noEscape @padded('{{{') @gapped()
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];

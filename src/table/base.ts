@@ -1,4 +1,5 @@
 import {attributesParent} from '../../mixin/attributesParent';
+import Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
@@ -9,8 +10,9 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
-import Parser from '../../index';
 import type {TdToken} from '../../internal';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 转义表格语法
@@ -26,8 +28,6 @@ const escapeTable = (syntax: SyntaxToken): void => {
 			.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
 	syntax.safeReplaceChildren(childNodes);
 };
-
-/* NOT FOR BROWSER END */
 
 declare type TableTypes = 'table' | 'tr' | 'td';
 
@@ -87,6 +87,16 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		this.protectChildren([0, 1]);
 	}
 
+	override escape(): void {
+		for (const child of this.childNodes) {
+			if (child instanceof SyntaxToken) {
+				escapeTable(child);
+			} else {
+				child.escape();
+			}
+		}
+	}
+
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -103,16 +113,6 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 			}
 			return token;
 		});
-	}
-
-	override escape(): void {
-		for (const child of this.childNodes) {
-			if (child instanceof SyntaxToken) {
-				escapeTable(child);
-			} else {
-				child.escape();
-			}
-		}
 	}
 
 	/** @private */

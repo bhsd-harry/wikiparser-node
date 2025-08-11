@@ -6,6 +6,7 @@
 
 - [`AstNode.prototype.remove`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#remove) now takes an optional `ownLine` parameter to remove the current line if it is empty
 - Quick-fix suggestions for the [nested-link](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link) rule
+- [`LanguageService.prototype.provideRefactoringAction`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providerefactoringaction) that provides refactoring actions for the selected text
 
 **Fixed**
 

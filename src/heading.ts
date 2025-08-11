@@ -7,6 +7,7 @@ import {
 	Shadow,
 } from '../util/debug';
 import {BoundingRect} from '../lib/rect';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -24,7 +25,6 @@ import {sanitizeId} from '../util/string';
 import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
-import {noEscape} from '../mixin/noEscape';
 import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -35,7 +35,8 @@ import {cached} from '../mixin/cached';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-@fixedToken @sol() @noEscape
+@fixedToken @sol()
+@noEscape
 export abstract class HeadingToken extends Token {
 	#level;
 
