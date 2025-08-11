@@ -3,7 +3,7 @@ import {
 	removeComment,
 	escape,
 } from '../util/string';
-import {getEndPos} from '../util/lint';
+import {getEndPos, fixByUpper, fixBySpace, fixByEscape, fixByInsert} from '../util/lint';
 import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
@@ -268,22 +268,22 @@ export class AstText extends AstNode {
 
 			// Suggestions
 			if (char === '<') {
-				e.suggestions = [{desc: 'escape', range: [startIndex, startIndex + 1], text: '&lt;'}];
+				e.suggestions = [fixByEscape(startIndex, '&lt;')];
 			} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
-				e.suggestions = [{desc: 'whitespace', range: [startIndex, startIndex], text: ' '}];
+				e.suggestions = [fixBySpace(startIndex)];
 			} else if (lbrack && type === 'ext-link-text') {
 				const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
-				e.suggestions = [{desc: 'escape', range: [i, i + 1], text: '&#93;'}];
+				e.suggestions = [fixByEscape(i, '&#93;')];
 			} else if (rbrack && brokenExtLink) {
 				const i = start - previousSibling!.toString().length;
-				e.suggestions = [{desc: 'left bracket', range: [i, i], text: '['}];
+				e.suggestions = [fixByInsert(i, 'left bracket', '[')];
 			} else if (magicLink) {
 				e.suggestions = [
 					...mt[0] === error
 						? []
-						: [{desc: 'uppercase', range: [startIndex, endIndex], text: error} satisfies LintError.Fix],
+						: [fixByUpper(e, error)],
 					...nextChar === ':' || nextChar === '：'
-						? [{desc: 'whitespace', range: [endIndex, endIndex + 1], text: ' '} satisfies LintError.Fix]
+						? [fixBySpace(endIndex, 1)]
 						: [],
 				];
 			}

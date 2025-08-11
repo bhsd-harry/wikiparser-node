@@ -1,11 +1,11 @@
-import {getRegex, rawurldecode} from '@bhsd/common';
+import {getRegex} from '@bhsd/common';
 import {
 	extUrlChar,
 	extUrlCharFirst,
 	removeComment,
 	print,
 } from '../util/string';
-import {generateForSelf} from '../util/lint';
+import {generateForSelf, fixByRemove, fixByDecode} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../base';
@@ -198,7 +198,7 @@ export abstract class ImageParameterToken extends Token {
 				s = Parser.lintConfig.getSeverity(rule, 'parameter');
 			if (s) {
 				const e = generateForSelf(this, {start}, rule, 'invalid image parameter', s);
-				e.fix = {desc: 'remove', range: [start - 1, e.endIndex], text: ''};
+				e.fix = fixByRemove(e, -1);
 				errors.push(e);
 			}
 		} else if (typeof link === 'object' && link.encoded) {
@@ -206,7 +206,7 @@ export abstract class ImageParameterToken extends Token {
 				s = Parser.lintConfig.getSeverity(rule, 'file');
 			if (s) {
 				const e = generateForSelf(this, {start}, rule, 'unnecessary URL encoding in an internal link', s);
-				e.suggestions = [{desc: 'decode', range: [start, e.endIndex], text: rawurldecode(this.text())}];
+				e.suggestions = [fixByDecode(e, this)];
 				errors.push(e);
 			}
 		}

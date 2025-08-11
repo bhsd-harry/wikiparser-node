@@ -1273,7 +1273,7 @@ export class LanguageService implements LanguageServiceBase {
 		Parser.viewOnly = viewOnly;
 		return [
 			{
-				title: 'Escape',
+				title: 'Escape with magic words',
 				kind: 'refactor.rewrite',
 				edit: {
 					changes: {

@@ -1,4 +1,4 @@
-import {generateForChild} from '../../util/lint';
+import {generateForChild, fixByRemove} from '../../util/lint';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
@@ -47,7 +47,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			const e = generateForChild(this.lastChild, {start}, rule, 'useless link text', s);
 			e.startIndex--;
 			e.startCol--;
-			e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+			e.fix = fixByRemove(e);
 			errors.push(e);
 		}
 		return errors;
