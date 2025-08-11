@@ -124,6 +124,8 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER ONLY END */
 
+let viewOnly = true;
+
 let lintConfig = getLintConfig();
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
@@ -138,6 +140,18 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	set lintConfig(config: LintConfig) {
 		lintConfig = getLintConfig(config);
+	},
+
+	/** @implements */
+	get viewOnly() {
+		return viewOnly;
+	},
+
+	set viewOnly(value) {
+		if (viewOnly && !value) {
+			Shadow.rev++;
+		}
+		viewOnly = value;
 	},
 
 	/* NOT FOR BROWSER ONLY */

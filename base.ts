@@ -484,6 +484,9 @@ export interface Parser {
 	/** @since v1.22.0 */
 	lintConfig: LintConfiguration;
 
+	/** @since v1.9.0 */
+	viewOnly: boolean;
+
 	/**
 	 * Get the current parser configuration
 	 *
