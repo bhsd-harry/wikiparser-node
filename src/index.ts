@@ -53,6 +53,7 @@ import {
 import {
 	generateForSelf,
 	cache,
+	fixByRemove,
 
 	/* PRINT ONLY */
 
@@ -495,7 +496,7 @@ export class Token extends AstElement {
 						errors.push(...[...value].map(cat => {
 							const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
 							if (isCat) {
-								e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
+								e.suggestions = [fixByRemove(e)];
 							}
 							return e;
 						}));

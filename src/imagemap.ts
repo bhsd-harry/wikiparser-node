@@ -1,4 +1,4 @@
-import {generateForSelf, generateForChild} from '../util/lint';
+import {generateForSelf, generateForChild, fixBy, fixByRemove} from '../util/lint';
 import {isToken} from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import {multiLine} from '../mixin/multiLine';
@@ -145,8 +145,8 @@ export abstract class ImagemapToken extends Token {
 					}).map(child => {
 						const e = generateForChild(child, rect, rule, 'invalid link in <imagemap>', s);
 						e.suggestions = [
-							{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''},
-							{desc: 'comment', range: [e.startIndex, e.startIndex], text: '# '},
+							fixByRemove(e, -1),
+							fixBy(e, 'comment', '# '),
 						];
 						return e;
 					}),

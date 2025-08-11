@@ -2,7 +2,7 @@ import {
 	extUrlChar,
 	extUrlCharFirst,
 } from '../util/string';
-import {generateForChild} from '../util/lint';
+import {generateForChild, fixByEscape} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import type {
@@ -119,7 +119,7 @@ export abstract class ParameterToken extends Token {
 					e.startCol = e.endCol;
 					e.endIndex++;
 					e.endCol++;
-					e.fix = {desc: 'escape', range: [e.startIndex, e.endIndex], text: '{{=}}'};
+					e.fix = fixByEscape(e.startIndex, '{{=}}');
 					errors.push(e);
 				}
 			} catch {}

@@ -1,3 +1,4 @@
+import {rawurldecode} from '@bhsd/common';
 import {Shadow} from './debug';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -99,6 +100,101 @@ export const generateForChild = factory((child, start, line, col) => {
 });
 
 export const generateForSelf = factory((_, startIndex, startLine, startCol) => ({startIndex, startLine, startCol}));
+
+/**
+ * Quick fix
+ * @param e LintError
+ * @param desc description of the fix
+ * @param text replacement text
+ * @param offset offset to the start index
+ */
+export const fixBy = (e: LintError, desc: string, text: string, offset = 0): LintError.Fix =>
+	({desc, range: [e.startIndex + offset, e.endIndex], text});
+
+/**
+ * Quick fix: insert the text
+ * @param index the index to insert the text
+ * @param desc description of the fix
+ * @param text inserted text
+ */
+export const fixByInsert = (index: number, desc: string, text: string): LintError.Fix =>
+	({desc, range: [index, index], text});
+
+/**
+ * Quick fix: remove the error
+ * @param e LintError
+ * @param offset offset to the start index
+ * @param text replacement text
+ */
+export const fixByRemove = (e: LintError | number, offset = 0, text = ''): LintError.Fix =>
+	typeof e === 'number' ? {desc: 'remove', range: [e, e + offset], text} : fixBy(e, 'remove', text, offset);
+
+/**
+ * Quick fix: decode the link
+ * @param e LintError
+ * @param link the link to decode
+ */
+export const fixByDecode = (e: LintError, link: AstNodes): LintError.Fix =>
+	fixBy(e, 'decode', rawurldecode(link.text()));
+
+/**
+ * Quick fix: close the syntax
+ * @param index the index to insert the closing syntax
+ * @param text the closing syntax text
+ * @param offset offset to the start index
+ */
+export const fixByClose = (index: number, text: string, offset = 0): LintError.Fix =>
+	({desc: 'close', range: [index + offset, index], text});
+
+/**
+ * Quick fix: open the syntax
+ * @param index the index of the tag to open
+ */
+export const fixByOpen = (index: number): LintError.Fix => ({desc: 'open', range: [index + 1, index + 2], text: ''});
+
+/**
+ * Quick fix: comment out
+ * @param e LintError
+ * @param text the closing syntax text
+ */
+export const fixByComment = (e: LintError, text: string): LintError.Fix =>
+	fixBy(e, 'comment', `<!--${text}-->`);
+
+/**
+ * Quick fix: convert to upper case
+ * @param e LintError
+ * @param text the closing syntax text
+ */
+export const fixByUpper = (e: LintError, text: string): LintError.Fix =>
+	fixBy(e, 'uppercase', text.toUpperCase());
+
+/**
+ * Quick fix: insert space
+ * @param index the index to insert the space
+ * @param offset offset to the end index
+ */
+export const fixBySpace = (index: number, offset = 0): LintError.Fix =>
+	({desc: 'whitespace', range: [index, index + offset], text: ' '});
+
+/**
+ * Quick fix: escape the character
+ * @param index the index to escape the character
+ * @param char the escaped character
+ * @param offset offset to the end index
+ */
+export const fixByEscape = (index: number, char: string, offset = 1): LintError.Fix =>
+	({desc: 'escape', range: [index, index + offset], text: char.repeat(offset)});
+
+/**
+ * Quick fix: escape the `|` character
+ * @param index the index to escape the character
+ * @param text the text to be replaced
+ */
+export const fixByPipe = (index: number, text: string): LintError.Fix => ({
+	desc: 'escape',
+	range: [index, index + text.length],
+	text: text.replace(/\|/gu, '&#124;'),
+});
 
 /**
  * 缓存计算结果
