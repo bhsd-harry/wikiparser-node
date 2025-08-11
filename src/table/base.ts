@@ -66,11 +66,13 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	}
 
 	override escape(): void {
-		for (const child of this.childNodes) {
-			if (child instanceof SyntaxToken) {
-				escapeTable(child);
-			} else {
-				child.escape();
+		LSP: { // eslint-disable-line no-unused-labels
+			for (const child of this.childNodes) {
+				if (child instanceof SyntaxToken) {
+					escapeTable(child);
+				} else {
+					child.escape();
+				}
 			}
 		}
 	}

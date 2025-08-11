@@ -185,12 +185,14 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	override escape(): void {
-		super.escape();
-		if (this.childNodes[1].toString()) {
-			this.#innerSyntax ||= '{{!}}';
-		}
-		if (this.#innerSyntax === '|') {
-			this.#innerSyntax = '{{!}}';
+		LSP: { // eslint-disable-line no-unused-labels
+			super.escape();
+			if (this.childNodes[1].toString()) {
+				this.#innerSyntax ||= '{{!}}';
+			}
+			if (this.#innerSyntax === '|') {
+				this.#innerSyntax = '{{!}}';
+			}
 		}
 	}
 

@@ -86,8 +86,10 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 		}
 
 		escape(): void {
-			for (const child of this.childNodes) {
-				child.escape();
+			LSP: { // eslint-disable-line no-unused-labels
+				for (const child of this.childNodes) {
+					child.escape();
+				}
 			}
 		}
 	}

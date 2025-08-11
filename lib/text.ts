@@ -320,15 +320,18 @@ export class AstText extends AstNode {
 	 * @throws `Error` 没有父节点
 	 */
 	splitText(offset: number): AstText {
-		const {parentNode, data} = this;
-		/* istanbul ignore if */
-		if (!parentNode) {
-			throw new Error('The text node to be split has no parent node!');
+		LSP: { // eslint-disable-line no-unused-labels
+			const {parentNode, data} = this;
+			/* istanbul ignore if */
+			if (!parentNode) {
+				throw new Error('The text node to be split has no parent node!');
+			}
+			const newText = new AstText(data.slice(offset));
+			setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
+			this.setAttribute('data', data.slice(0, offset));
+			return newText;
 		}
-		const newText = new AstText(data.slice(offset));
-		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
-		this.setAttribute('data', data.slice(0, offset));
-		return newText;
+		this.lspError('AstText.splitText');
 	}
 
 	/**
@@ -339,31 +342,33 @@ export class AstText extends AstNode {
 	 * @throws `Error` 没有父节点
 	 */
 	escape(): void {
-		const {parentNode} = this;
-		/* istanbul ignore if */
-		if (!parentNode) {
-			throw new Error('The text node to be escaped has no parent node!');
-		}
-		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
-		const config = parentNode.getAttribute('config'),
-			index = parentNode.childNodes.indexOf(this) + 1;
-
-		/**
-		 * Get the last index of `=` or `|`
-		 * @param j start position from the end
-		 */
-		const lastIndexOf = (j?: number): number =>
-			Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
-		let i = lastIndexOf();
-		const callback = /** @ignore */ (): TranscludeToken =>
-			// @ts-expect-error abstract class
-			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
-		for (; i >= 0; i = lastIndexOf(i - 1)) {
-			if (i < this.data.length - 1) {
-				this.splitText(i + 1);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {parentNode} = this;
+			/* istanbul ignore if */
+			if (!parentNode) {
+				throw new Error('The text node to be escaped has no parent node!');
 			}
-			parentNode.insertAt(Shadow.run(callback), index);
-			this.#setData(this.data.slice(0, i));
+			const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
+			const config = parentNode.getAttribute('config'),
+				index = parentNode.childNodes.indexOf(this) + 1;
+
+			/**
+			 * Get the last index of `=` or `|`
+			 * @param j start position from the end
+			 */
+			const lastIndexOf = (j?: number): number =>
+				Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
+			let i = lastIndexOf();
+			const callback = /** @ignore */ (): TranscludeToken =>
+				// @ts-expect-error abstract class
+				new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
+			for (; i >= 0; i = lastIndexOf(i - 1)) {
+				if (i < this.data.length - 1) {
+					this.splitText(i + 1);
+				}
+				parentNode.insertAt(Shadow.run(callback), index);
+				this.#setData(this.data.slice(0, i));
+			}
 		}
 	}
 
