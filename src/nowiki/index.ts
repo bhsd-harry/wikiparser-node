@@ -1,5 +1,5 @@
 import {getRegex} from '@bhsd/common';
-import {generateForSelf} from '../../util/lint';
+import {generateForSelf, fixByRemove} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
@@ -39,7 +39,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			s = Parser.lintConfig.getSeverity(rule, name);
 		if (s && this.#lint()) {
 			const e = generateForSelf(this, {start}, rule, Parser.msg('nothing should be in <$1>', name), s);
-			e.fix = {desc: 'empty', range: [start, e.endIndex], text: ''};
+			e.fix = fixByRemove(e);
 			return [e];
 		}
 		return super.lint(start, getLintRegex(name));

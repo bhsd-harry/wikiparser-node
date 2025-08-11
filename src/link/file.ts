@@ -1,4 +1,4 @@
-import {generateForChild, generateForSelf} from '../../util/lint';
+import {generateForChild, generateForSelf, fixByRemove, fixByInsert} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
@@ -127,7 +127,7 @@ export abstract class FileToken extends LinkBaseToken {
 				const from = start + link.getRelativeIndex();
 				e.suggestions = [{desc: 'delink', range: [from, from + link.toString().length], text: 'link='}];
 			} else {
-				e.suggestions = [{desc: 'delink', range: [e.endIndex - 2, e.endIndex - 2], text: '|link='}];
+				e.suggestions = [fixByInsert(e.endIndex - 2, 'delink', '|link=')];
 			}
 			errors.push(e);
 		}
@@ -136,7 +136,7 @@ export abstract class FileToken extends LinkBaseToken {
 		if (s && unscaled) {
 			for (const arg of args.filter(({name}) => name === 'width')) {
 				const e = generateForChild(arg, rect, rule, 'invalid image parameter', s);
-				e.fix = {desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''};
+				e.fix = fixByRemove(e, -1);
 				errors.push(e);
 			}
 		}
@@ -170,7 +170,7 @@ export abstract class FileToken extends LinkBaseToken {
 				return false;
 			}
 			const e = generateForChild(arg, rect, rule, Parser.msg(`${msg} image $1 parameter`, p1), s);
-			e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
+			e.suggestions = [fixByRemove(e, -1)];
 			return e;
 		}).filter((e): e is LintError => e !== false);
 		for (const key of keys) {

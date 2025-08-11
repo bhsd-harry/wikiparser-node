@@ -1,4 +1,4 @@
-import {generateForChild} from '../util/lint';
+import {generateForChild, fixByRemove, fixByUpper} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
 import Parser from '../index';
@@ -100,9 +100,9 @@ export abstract class ConverterFlagsToken extends Token {
 				if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
 					const e = generateForChild(child, rect, rule, 'invalid conversion flag', s);
 					if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-						e.fix = {desc: 'uppercase', range: [e.startIndex, e.endIndex], text: flag.toUpperCase()};
+						e.fix = fixByUpper(e, flag);
 					} else {
-						e.suggestions = [{desc: 'remove', range: [e.startIndex - (i && 1), e.endIndex], text: ''}];
+						e.suggestions = [fixByRemove(e, i && -1)];
 					}
 					errors.push(e);
 				}

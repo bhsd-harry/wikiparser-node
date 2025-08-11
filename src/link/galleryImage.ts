@@ -1,4 +1,4 @@
-import {generateForSelf} from '../../util/lint';
+import {generateForSelf, fixByInsert} from '../../util/lint';
 import {
 	MAX_STAGE,
 } from '../../util/constants';
@@ -71,7 +71,7 @@ export abstract class GalleryImageToken extends FileToken {
 			s = Parser.lintConfig.getSeverity(rule, 'image');
 		if (s && this.#lint()) {
 			const e = generateForSelf(this, {start}, rule, 'invalid gallery image', s);
-			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
+			e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
 			errors.push(e);
 		}
 		return errors;

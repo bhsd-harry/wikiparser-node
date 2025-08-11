@@ -1,4 +1,4 @@
-import {generateForSelf, generateForChild} from '../util/lint';
+import {generateForSelf, generateForChild, fixByRemove, fixByOpen} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
@@ -182,8 +182,8 @@ export abstract class AttributesToken extends Token {
 			const e = generateForSelf(this, rect, rules[0], 'attributes of a closing tag', s[0]),
 				index = parentNode!.getAbsoluteIndex();
 			e.suggestions = [
-				{desc: 'remove', range: [start, e.endIndex], text: ''},
-				{desc: 'open', range: [index + 1, index + 2], text: ''},
+				fixByRemove(e),
+				fixByOpen(index),
 			];
 			errors.push(e);
 		}
@@ -201,7 +201,7 @@ export abstract class AttributesToken extends Token {
 					severity = s[wordRegex.test(str) ? 1 : 2];
 				if (str && severity) {
 					const e = generateForChild(attr, rect, rules[0], 'containing invalid attribute', severity);
-					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ' '}];
+					e.suggestions = [fixByRemove(e, 0, ' ')];
 					errors.push(e);
 				}
 			}
@@ -221,7 +221,7 @@ export abstract class AttributesToken extends Token {
 							Parser.msg('duplicated $1 attribute', key),
 							severity,
 						),
-						remove: LintError.Fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+						remove = fixByRemove(e);
 					if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
 						e.fix = remove;
 					} else {

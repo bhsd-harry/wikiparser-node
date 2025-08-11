@@ -1,4 +1,4 @@
-import {generateForSelf, cache} from '../util/lint';
+import {generateForSelf, cache, fixByRemove, fixByClose, fixByOpen} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import {attributesParent} from '../mixin/attributesParent';
@@ -137,7 +137,7 @@ export abstract class HtmlToken extends Token {
 		if (s) {
 			const e = generateForSelf(this, rect, rule, 'HTML tag in table attributes', s);
 			if (severity === 2) {
-				e.fix = {desc: 'remove', range: [start, e.endIndex], text: ''};
+				e.fix = fixByRemove(e);
 			}
 			errors.push(e);
 		}
@@ -153,7 +153,7 @@ export abstract class HtmlToken extends Token {
 			&& this.closest('heading-title,ext')?.type === 'heading-title'
 		) {
 			const e = generateForSelf(this, rect, rule, 'bold in section header', s);
-			e.suggestions = [{desc: 'remove', range: [start, e.endIndex], text: ''}];
+			e.suggestions = [fixByRemove(e)];
 			errors.push(e);
 		}
 		const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
@@ -164,30 +164,30 @@ export abstract class HtmlToken extends Token {
 		if (closing && (selfClosing || isVoid) || selfClosing && isNormal) {
 			s = Parser.lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
 			if (s) {
-				const error = generateForSelf(
+				const e = generateForSelf(
 						this,
 						rect,
 						rule,
 						closing ? 'tag that is both closing and self-closing' : 'invalid self-closing tag',
 						s,
 					),
-					open: LintError.Fix = {desc: 'open', range: [start + 1, start + 2], text: ''},
+					open = fixByOpen(start),
 					noSelfClosing: LintError.Fix = {
 						desc: 'no self-closing',
-						range: [error.endIndex - 2, error.endIndex - 1],
+						range: [e.endIndex - 2, e.endIndex - 1],
 						text: '',
 					};
 				if (isFlexible) {
-					error.suggestions = [open, noSelfClosing];
+					e.suggestions = [open, noSelfClosing];
 				} else if (closing) {
-					error.fix = isVoid ? open : noSelfClosing;
+					e.fix = isVoid ? open : noSelfClosing;
 				} else {
-					error.suggestions = [
+					e.suggestions = [
 						noSelfClosing,
-						{desc: 'close', range: [error.endIndex - 2, error.endIndex], text: `></${name}>`},
+						fixByClose(e.endIndex, `></${name}>`, -2),
 					];
 				}
-				errors.push(error);
+				errors.push(e);
 			}
 		} else if (!this.findMatchingTag()) {
 			const error = generateForSelf(this, rect, rule, closing ? 'unmatched closing tag' : 'unclosed tag'),
@@ -196,7 +196,7 @@ export abstract class HtmlToken extends Token {
 				s = Parser.lintConfig.getSeverity(rule, 'conditional');
 			} else if (closing) {
 				s = Parser.lintConfig.getSeverity(rule, 'closing');
-				error.suggestions = [{desc: 'remove', range: [start, error.endIndex], text: ''}];
+				error.suggestions = [fixByRemove(error)];
 			} else {
 				s = Parser.lintConfig.getSeverity(rule, 'opening');
 				const childNodes = parentNode?.childNodes;
@@ -206,7 +206,7 @@ export abstract class HtmlToken extends Token {
 							tag => tag.type === 'html' && tag.name === name && !(tag as this).findMatchingTag(),
 						)
 					) {
-						error.suggestions = [{desc: 'close', range: [start + 1, start + 1], text: '/'}];
+						error.suggestions = [fixByClose(start + 1, '/')];
 					}
 					if (this.closest('heading-title')) {
 						error.rule = 'format-leakage';
