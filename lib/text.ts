@@ -76,11 +76,6 @@ export class AstText extends AstNode {
 		return 'text';
 	}
 
-	/** text length / 文本长度 */
-	get length(): number {
-		return this.data.length;
-	}
-
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
@@ -341,10 +336,17 @@ export class AstText extends AstNode {
 	 *
 	 * 转义 `=` 和 `|`
 	 * @since v1.1.4
+	 * @throws `Error` 没有父节点
 	 */
 	escape(): void {
+		const {parentNode} = this;
+		/* istanbul ignore if */
+		if (!parentNode) {
+			throw new Error('The text node to be escaped has no parent node!');
+		}
 		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
-		const config = this.parentNode!.getAttribute('config');
+		const config = parentNode.getAttribute('config'),
+			index = parentNode.childNodes.indexOf(this) + 1;
 
 		/**
 		 * Get the last index of `=` or `|`
@@ -357,10 +359,10 @@ export class AstText extends AstNode {
 			// @ts-expect-error abstract class
 			new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
 		for (; i >= 0; i = lastIndexOf(i - 1)) {
-			if (i < this.length - 1) {
+			if (i < this.data.length - 1) {
 				this.splitText(i + 1);
 			}
-			this.after(Shadow.run(callback));
+			parentNode.insertAt(Shadow.run(callback), index);
 			this.#setData(this.data.slice(0, i));
 		}
 	}
