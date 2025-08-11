@@ -257,7 +257,9 @@ export abstract class AttributeToken extends Token {
 	}
 
 	override escape(): void {
-		this.#equal = '{{=}}';
-		this.lastChild.escape();
+		LSP: { // eslint-disable-line no-unused-labels
+			this.#equal = '{{=}}';
+			this.lastChild.escape();
+		}
 	}
 }
