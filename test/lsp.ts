@@ -1,6 +1,8 @@
 import {error} from '../util/diff';
 import './wikiparse';
-import type {Position} from 'vscode-languageserver-types';
+import type {
+	Position,
+} from 'vscode-languageserver-types';
 import type {SimplePage} from '@bhsd/test-util';
 import type {
 	LanguageService,
@@ -98,6 +100,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 			case 'provideRenameEdits':
 			case 'provideHover':
 			case 'provideSignatureHelp':
+			case 'provideRefactoringAction':
 			case 'include':
 				break;
 			case 'provideDocumentColors':
