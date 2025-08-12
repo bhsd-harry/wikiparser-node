@@ -185,7 +185,8 @@ export abstract class AstElement extends AstNode {
 
 		/* NOT FOR BROWSER END */
 
-		return setChildNodes(this as AstElement as Token, i, 1)[0]!;
+		// eslint-disable-next-line no-unused-labels
+		LSP: return setChildNodes(this as AstElement as Token, i, 1)[0]!;
 	}
 
 	/**
@@ -252,10 +253,12 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
-		for (let i = this.length - 1; i >= 0; i--) {
-			this.removeAt(i);
+		LSP: { // eslint-disable-line no-unused-labels
+			for (let i = this.length - 1; i >= 0; i--) {
+				this.removeAt(i);
+			}
+			this.safeAppend(elements);
 		}
-		this.safeAppend(elements);
 	}
 
 	/**

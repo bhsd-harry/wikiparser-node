@@ -193,17 +193,11 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
-			accum = this.getAttribute('accum'),
-			/* eslint-disable unicorn/no-negated-condition, @stylistic/operator-linebreak */
-			inner =
-				!halfParsed ?
-					Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes :
-					[syntax];
-			/* eslint-enable unicorn/no-negated-condition, @stylistic/operator-linebreak */
+			accum = this.getAttribute('accum');
 		if (!this.lastChild.is<SyntaxToken>('table-syntax')) {
 			Shadow.run(() => {
 				const token = new SyntaxToken(
-					undefined,
+					halfParsed ? syntax : undefined,
 					closingPattern,
 					'table-syntax',
 					config,
@@ -219,7 +213,14 @@ export abstract class TableToken extends TrBaseToken {
 				}
 			});
 		}
-		(this.lastChild as SyntaxToken).safeReplaceChildren(inner);
+
+		/* NOT FOR BROWSER */
+
+		if (!halfParsed) {
+			(this.lastChild as SyntaxToken).safeReplaceChildren(
+				Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes,
+			);
+		}
 	}
 
 	/**
