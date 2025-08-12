@@ -1,5 +1,11 @@
 import {error} from '../util/diff';
-import type {Position} from 'vscode-languageserver-types';
+import type {
+	Position,
+
+	/* NOT FOR BROWSER ONLY */
+
+	Range,
+} from 'vscode-languageserver-types';
 import type {SimplePage} from '@bhsd/test-util';
 import type {
 	LanguageService,
@@ -107,6 +113,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 		magicWordName = root.querySelector('magic-word-name'),
 		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke' as TokenTypes),
 		doubleUnderscore = root.querySelector('double-underscore'),
+		table = root.querySelector('table'),
 
 		/* NOT FOR BROWSER */
 
@@ -250,6 +257,16 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 				if (parserFunctionName) {
 					const pos = indexToPos(root, parserFunctionName.nextSibling!.getAbsoluteIndex());
 					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos), summary);
+				}
+				break;
+			case 'provideRefactoringAction':
+				if (table) {
+					const {top, left, height, width} = table.getBoundingClientRect(),
+						range: Range = {
+							start: {line: top, character: left},
+							end: {line: top + height - 1, character: (height === 1 ? left : 0) + width},
+						};
+					await wrap(method, title, () => lsp.provideRefactoringAction(content, range), summary);
 				}
 				break;
 
