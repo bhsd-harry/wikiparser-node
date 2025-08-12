@@ -233,6 +233,16 @@ const workerJS = (): void => {
 					postMessage([command, qid, await getLSP(qid, include).provideInlayHints(wikitext), wikitext]);
 				})();
 				break;
+			case 'codeAction':
+				(async () => {
+					postMessage([
+						command,
+						qid,
+						await getLSP(qid, include).provideRefactoringAction(wikitext, stage),
+						wikitext,
+					]);
+				})();
+				break;
 			case 'findStyleTokens':
 				postMessage([command, qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
 			// no default

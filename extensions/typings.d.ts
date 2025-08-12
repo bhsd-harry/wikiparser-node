@@ -23,6 +23,7 @@ import type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
+	CodeAction,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 // eslint-disable-next-line @stylistic/max-len
@@ -57,6 +58,7 @@ export type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
+	CodeAction,
 };
 
 export type Command = ['setI18N', Record<string, string>?]
@@ -74,6 +76,7 @@ export type Command = ['setI18N', Record<string, string>?]
 		boolean?,
 		number?,
 	]
+	| ['codeAction', number, string, boolean, Range]
 	| [
 		'completionItems'
 		| 'references'

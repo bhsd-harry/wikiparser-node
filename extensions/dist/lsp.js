@@ -68,6 +68,9 @@ class LanguageService {
     provideInlayHints(text) {
         return wikiparse.provide('inlayHints', __classPrivateFieldGet(this, _LanguageService_id, "f"), text, __classPrivateFieldGet(this, _LanguageService_include, "f"));
     }
+    provideRefactoringAction(text, range) {
+        return wikiparse.provide('codeAction', __classPrivateFieldGet(this, _LanguageService_id, "f"), text, __classPrivateFieldGet(this, _LanguageService_include, "f"), range);
+    }
     findStyleTokens() {
         return wikiparse.provide('findStyleTokens', __classPrivateFieldGet(this, _LanguageService_id, "f"));
     }

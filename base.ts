@@ -13,6 +13,7 @@ import type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
+	CodeAction,
 } from 'vscode-languageserver-types';
 
 export interface Config {
@@ -450,6 +451,15 @@ export interface LanguageService {
 	 * @param text source Wikitext / 源代码
 	 */
 	provideInlayHints(text: string): Promise<InlayHint[]>;
+
+	/**
+	 * Provide refactoring actions
+	 *
+	 * 提供重构操作
+	 * @param text source Wikitext / 源代码
+	 * @param range range of the refactoring / 重构范围
+	 */
+	provideRefactoringAction(text: string, range: Range): Promise<CodeAction[]>;
 
 	/** @private */
 	findStyleTokens(): Token[];

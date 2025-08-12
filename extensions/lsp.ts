@@ -14,6 +14,7 @@ import type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
+	CodeAction,
 	AST,
 } from './typings';
 
@@ -174,6 +175,17 @@ class LanguageService implements LanguageServiceBase {
 	/** @implements */
 	provideInlayHints(text: string): Promise<InlayHint[]> {
 		return wikiparse.provide('inlayHints', this.#id, text, this.#include) as Promise<InlayHint[]>;
+	}
+
+	/** @implements */
+	provideRefactoringAction(text: string, range: Range): Promise<CodeAction[]> {
+		return wikiparse.provide(
+			'codeAction',
+			this.#id,
+			text,
+			this.#include,
+			range,
+		) as Promise<CodeAction[]>;
 	}
 
 	/** @implements */
