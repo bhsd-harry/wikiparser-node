@@ -120,19 +120,16 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
-			accum = this.getAttribute('accum'),
-			inner =
-				[syntax];
+			accum = this.getAttribute('accum');
 		Shadow.run(() => {
 			const token = new SyntaxToken(
-				undefined,
+				halfParsed ? syntax : undefined,
 				'table-syntax',
 				config,
 				accum,
 			);
 			super.insertAt(token);
 		});
-		(this.lastChild as SyntaxToken).safeReplaceChildren(inner);
 	}
 
 	// eslint-disable-next-line jsdoc/require-param
