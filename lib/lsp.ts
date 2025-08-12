@@ -1782,18 +1782,31 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param range range of the refactoring / 重构范围
 	 * @since v1.24.0
 	 */
-	async provideRefactoringAction(text: string, range: Range): Promise<CodeAction[]> {
-		const {start, end} = range;
-		if (start.line === end.line && start.character === end.character) {
-			return [];
-		}
-		const lines = text.split(/\r?\n/u, end.line + 1),
+	async provideRefactoringAction(text: string, range?: Range): Promise<CodeAction[]> {
+		let lines: string[],
+			selected: string;
+		if (range) {
+			const {start, end} = range;
+			if (start.line === end.line && start.character === end.character) {
+				return [];
+			}
+			lines = text.split(/\r?\n/u, end.line + 1);
 			selected = start.line === end.line
 				? lines[end.line]!.slice(start.character, end.character)
 				: `${lines[start.line]!.slice(start.character)}\n${
 					lines.slice(start.line + 1, end.line).join('\n')
-				}${lines.length === 2 ? '' : '\n'}${lines[end.line]!.slice(0, end.character)}`,
-			root = await this.#queueSignature(selected);
+				}${lines.length === 2 ? '' : '\n'}${lines[end.line]!.slice(0, end.character)}`;
+		} else if (text) {
+			lines = text.split(/\r?\n/u);
+			selected = lines.join('\n');
+			range = {
+				start: {line: 0, character: 0},
+				end: {line: lines.length - 1, character: lines[lines.length - 1]!.length},
+			};
+		} else {
+			return [];
+		}
+		const root = await this.#queueSignature(selected);
 		const {viewOnly} = Parser;
 		Parser.viewOnly = false;
 		root.escape();

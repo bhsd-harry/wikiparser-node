@@ -443,7 +443,7 @@ export interface LanguageService {
 	 * @param text source Wikitext / 源代码
 	 * @param range range of the refactoring / 重构范围
 	 */
-	provideRefactoringAction(text: string, range: Range): Promise<CodeAction[]>;
+	provideRefactoringAction(text: string, range?: Range): Promise<CodeAction[]>;
 
 	/** @private */
 	findStyleTokens(): Token[];
