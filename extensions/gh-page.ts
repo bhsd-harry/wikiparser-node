@@ -1,12 +1,10 @@
-import {CodeMirror6, registerMediaWiki} from '/codemirror-mediawiki/dist/main.min.js';
+import {CodeMirror6} from '/codemirror-mediawiki/dist/demo.min.js';
 import {CodeJar} from '/codejar-async/dist/codejar.js';
 import type {ConfigData, AST} from './typings';
 
 declare global {
 	const monaco: PromiseLike<{editor: MonacoEditor}>;
 }
-
-registerMediaWiki();
 
 /**
  * Kebab case to Pascal case

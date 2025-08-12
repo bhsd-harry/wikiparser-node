@@ -13,6 +13,7 @@ declare global {
 		text(separator?: string): string;
 		lint(): LintError[];
 		print(opt?: PrintOpt): string;
+		lspError(method: string): never;
 	};
 
 	interface PrintOpt {

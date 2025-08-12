@@ -32,7 +32,8 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		}
 
 		hasAttr(key: string): boolean {
-			return this.#getAttributesChild().hasAttr(key);
+			LSP: return this.#getAttributesChild().hasAttr(key); // eslint-disable-line no-unused-labels
+			this.lspError('AttributesParent.hasAttr');
 		}
 
 		getAttr(key: string): string | true | undefined {
