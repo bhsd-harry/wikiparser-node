@@ -45,6 +45,7 @@ import type {
 
 	/* NOT FOR BROWSER ONLY */
 
+	LintConfiguration,
 	ConfigData,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
@@ -75,6 +76,7 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
+import {rules} from '../base';
 import {
 	EmbeddedJSONDocument,
 	EmbeddedCSSDocument,
@@ -101,7 +103,10 @@ declare interface CompletionConfig {
 	params: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
-	data: QuickFixData[];
+	data: (
+		QuickFixData
+		| FixAllData
+	)[];
 }
 
 export interface QuickFixData extends TextEdit {
@@ -111,6 +116,10 @@ export interface QuickFixData extends TextEdit {
 
 /* NOT FOR BROWSER ONLY */
 
+declare interface FixAllData {
+	rule?: LintError.Rule;
+}
+
 declare interface LilyPondError {
 	line: number;
 	col: number;
@@ -118,10 +127,7 @@ declare interface LilyPondError {
 }
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
-const cssRules = {
-		'block-no-empty': null,
-		'property-no-unknown': null,
-	},
+const cssRules = {'block-no-empty': null},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
 	mathTags = ['math', 'chem', 'ce'],
 	mathSelector = mathTags.map(s => `ext#${s}`).join(),
@@ -341,6 +347,29 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 });
 
 /* NOT FOR BROWSER ONLY */
+
+/**
+ * Get the fix-all data.
+ * @param root root token
+ * @param rule rule to be fixed
+ */
+const getFixAll = (root: Token, rule = ''): TextEdit[] => {
+	const {lintConfig} = Parser;
+	Parser.lintConfig = {} as unknown as LintConfiguration;
+	for (const key of rules) {
+		Parser.lintConfig[key] = key === rule ? lintConfig[key]! : 0;
+	}
+	const {output} = root.lint();
+	Parser.lintConfig = lintConfig;
+	return output === undefined
+		? []
+		: [
+			{
+				range: createNodeRange(root),
+				newText: output,
+			},
+		];
+};
 
 /**
  * Correct the position of an error.
@@ -1065,7 +1094,16 @@ export class LanguageService implements LanguageServiceBase {
 						rule,
 					message,
 					data: [
-						...fix ? [getQuickFix(root, fix, true)] : [],
+						...fix
+							? [
+								getQuickFix(root, fix, true),
+
+								/* NOT FOR BROWSER ONLY */
+
+								{rule},
+								{},
+							]
+							: [],
 						...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
 					],
 				}),
@@ -1836,15 +1874,40 @@ export class LanguageService implements LanguageServiceBase {
 	provideCodeAction(diagnostics: DiagnosticBase[]): CodeAction[] {
 		return diagnostics.filter((diagnostic): diagnostic is Diagnostic => diagnostic.data).flatMap(
 			diagnostic => diagnostic.data.map((data): CodeAction => ({
-				title: data.title,
-				kind: 'quickfix',
+				title: 'title' in data ? data.title : `Fix all: ${data.rule ?? 'WikiLint'}`,
+				kind: 'title' in data ? 'quickfix' : 'source.fixAll',
 				diagnostics: [diagnostic],
-				isPreferred: data.fix,
-				edit: {
-					changes: {'': [data]},
-				},
+				isPreferred: !('fix' in data) || data.fix,
+				...'range' in data
+					? {
+						edit: {
+							changes: {'': [data]},
+						},
+					}
+					: {data},
 			})),
 		);
+	}
+
+	/**
+	 * Resolve fix-all code action
+	 *
+	 * 实现修复全部代码的操作
+	 * @param action code action / 代码操作
+	 */
+	resolveCodeAction(action: CodeAction): CodeAction {
+		if (action.kind !== 'source.fixAll') {
+			return action;
+		}
+		const {rule} = action.data as FixAllData;
+		return {
+			...action,
+			edit: {
+				changes: {
+					'': getFixAll(this.#done, rule),
+				},
+			},
+		};
 	}
 
 	/**
