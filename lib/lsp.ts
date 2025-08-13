@@ -109,10 +109,7 @@ declare interface CompletionConfig {
 	params: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
-	data: (
-		QuickFixData
-		| FixAllData
-	)[];
+	data: QuickFixData[];
 }
 
 export interface QuickFixData extends TextEdit {
@@ -1107,16 +1104,7 @@ export class LanguageService implements LanguageServiceBase {
 						rule,
 					message,
 					data: [
-						...fix
-							? [
-								getQuickFix(root, fix, true),
-
-								/* NOT FOR BROWSER ONLY */
-
-								{rule},
-								{},
-							]
-							: [],
+						...fix ? [getQuickFix(root, fix, true)] : [],
 						...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
 					],
 				}),
@@ -1907,21 +1895,40 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideCodeAction(diagnostics: DiagnosticBase[]): CodeAction[] {
-		return diagnostics.filter((diagnostic): diagnostic is Diagnostic => diagnostic.data).flatMap(
-			diagnostic => diagnostic.data.map((data): CodeAction => ({
-				title: 'title' in data ? data.title : `Fix all: ${data.rule ?? 'WikiLint'}`,
-				kind: 'title' in data ? 'quickfix' : 'source.fixAll',
-				diagnostics: [diagnostic],
-				isPreferred: !('fix' in data) || data.fix,
-				...'range' in data
-					? {
-						edit: {
-							changes: {'': [data]},
-						},
-					}
-					: {data},
-			})),
-		);
+		const actionable = diagnostics.filter((diagnostic): diagnostic is Diagnostic => diagnostic.data),
+			fixable = actionable.filter(({source, data}) => source === 'WikiLint' && data.some(({fix}) => fix)),
+			fixableRules = [...new Set(fixable.map(({code}) => code as string))];
+		return [
+			...actionable.flatMap(
+				diagnostic => diagnostic.data.map((data): CodeAction => ({
+					title: data.title,
+					kind: 'quickfix',
+					diagnostics: [diagnostic],
+					isPreferred: data.fix,
+					edit: {
+						changes: {'': [data]},
+					},
+				})),
+			),
+			...fixable.length === 0
+				? []
+				: [
+					...fixableRules.map((rule): CodeAction => ({
+						title: `Fix all: ${rule}`,
+						kind: 'source.fixAll',
+						diagnostics: fixable.filter(({code}) => code === rule),
+						isPreferred: true,
+						data: {rule},
+					})),
+					{
+						title: 'Fix all: WikiLint',
+						kind: 'source.fixAll',
+						diagnostics: fixable,
+						isPreferred: true,
+						data: {},
+					},
+				],
+		];
 	}
 
 	/**

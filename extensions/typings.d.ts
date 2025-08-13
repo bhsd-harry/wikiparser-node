@@ -6,6 +6,7 @@ import type {CodeJar} from 'codejar-async';
 import type {
 	ColorInformation,
 	ColorPresentation,
+	CodeAction,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService} from '../base';
@@ -32,10 +33,11 @@ export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums
 
 export interface LanguageServiceBase extends Omit<
 	LanguageService,
-	'provideDocumentSymbols' | 'provideCodeAction' | 'findStyleTokens'
+	'provideDocumentSymbols' | 'provideCodeAction'
 > {
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
+	resolveCodeAction(rule?: string): Promise<CodeAction>;
 	findStyleTokens(): Promise<AST[]>;
 }
 
