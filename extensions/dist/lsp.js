@@ -71,6 +71,9 @@ class LanguageService {
     provideRefactoringAction(text, range) {
         return wikiparse.provide('codeAction', __classPrivateFieldGet(this, _LanguageService_id, "f"), text, __classPrivateFieldGet(this, _LanguageService_include, "f"), range);
     }
+    resolveCodeAction(rule = '') {
+        return wikiparse.provide('resolveCodeAction', __classPrivateFieldGet(this, _LanguageService_id, "f"), rule, __classPrivateFieldGet(this, _LanguageService_include, "f"));
+    }
     findStyleTokens() {
         return wikiparse.provide('findStyleTokens', __classPrivateFieldGet(this, _LanguageService_id, "f"));
     }

@@ -243,6 +243,18 @@ const workerJS = (): void => {
 					]);
 				})();
 				break;
+			case 'resolveCodeAction':
+				postMessage([
+					command,
+					qid,
+					getLSP(qid, include).resolveCodeAction({
+						title: `Fix all: ${wikitext || 'WikiLint'}`,
+						kind: 'source.fixAll',
+						data: {rule: wikitext},
+					}),
+					wikitext,
+				]);
+				break;
 			case 'findStyleTokens':
 				postMessage([command, qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
 			// no default

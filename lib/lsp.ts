@@ -3,6 +3,7 @@ import {
 	numToHex,
 	getRegex,
 } from '@bhsd/common';
+import {rules} from '../base';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos, provideValues} from '../util/lint';
 import {tidy} from '../util/string';
@@ -34,6 +35,7 @@ import type {
 	SignatureData,
 	SignatureInfo,
 	LintError,
+	LintConfiguration,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
@@ -74,6 +76,10 @@ declare interface Diagnostic extends DiagnosticBase {
 export interface QuickFixData extends TextEdit {
 	title: string;
 	fix: boolean;
+}
+
+declare interface FixAllData {
+	rule?: LintError.Rule;
 }
 
 export const tasks = new WeakMap<object, LanguageService>();
@@ -284,6 +290,33 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 	title: `${preferred ? 'Fix' : 'Suggestion'}: ${fix.desc}`,
 	fix: preferred,
 });
+
+/**
+ * Get the fix-all data.
+ * @param root root token
+ * @param rule rule to be fixed
+ */
+const getFixAll = (root: Token, rule?: string): TextEdit[] => {
+	const {lintConfig} = Parser;
+	if (rule) {
+		Parser.lintConfig = {} as unknown as LintConfiguration;
+		for (const key of rules) {
+			Parser.lintConfig[key] = key === rule ? lintConfig[key]! : 0;
+		}
+	}
+	const {output} = root.lint();
+	if (rule) {
+		Parser.lintConfig = lintConfig;
+	}
+	return output === undefined
+		? []
+		: [
+			{
+				range: createNodeRange(root),
+				newText: output,
+			},
+		];
+};
 
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
@@ -790,6 +823,28 @@ export class LanguageService implements LanguageServiceBase {
 			cssDiagnostics,
 			jsonDiagnostics,
 		].flat(2);
+	}
+
+	/**
+	 * Resolve fix-all code action
+	 *
+	 * 实现修复全部代码的操作
+	 * @param action code action / 代码操作
+	 * @since v1.24.0
+	 */
+	resolveCodeAction(action: CodeAction): CodeAction {
+		if (action.kind !== 'source.fixAll') {
+			return action;
+		}
+		const {rule} = action.data as FixAllData;
+		return {
+			...action,
+			edit: {
+				changes: {
+					'': getFixAll(this.#done, rule),
+				},
+			},
+		};
 	}
 
 	/**

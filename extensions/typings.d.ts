@@ -77,6 +77,7 @@ export type Command = ['setI18N', Record<string, string>?]
 		number?,
 	]
 	| ['codeAction', number, string, boolean, Range]
+	| ['resolveCodeAction', number, string, boolean]
 	| [
 		'completionItems'
 		| 'references'
@@ -120,6 +121,7 @@ export interface LanguageServiceBase extends Omit<
 > {
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
+	resolveCodeAction(rule?: string): Promise<CodeAction>;
 	findStyleTokens(): Promise<AST[]>;
 }
 

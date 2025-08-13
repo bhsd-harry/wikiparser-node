@@ -189,6 +189,16 @@ class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
+	resolveCodeAction(rule = ''): Promise<CodeAction> {
+		return wikiparse.provide(
+			'resolveCodeAction',
+			this.#id,
+			rule,
+			this.#include,
+		) as Promise<CodeAction>;
+	}
+
+	/** @implements */
 	findStyleTokens(): Promise<AST[]> {
 		return wikiparse.provide('findStyleTokens', this.#id) as Promise<AST[]>;
 	}
