@@ -39,7 +39,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			s = Parser.lintConfig.getSeverity(rule, name);
 		if (s && this.#lint()) {
 			const e = generateForSelf(this, {start}, rule, Parser.msg('nothing should be in <$1>', name), s);
-			e.fix = fixByRemove(e);
+			e.suggestions = [fixByRemove(e)];
 			return [e];
 		}
 		return super.lint(start, getLintRegex(name));

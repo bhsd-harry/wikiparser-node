@@ -137,7 +137,7 @@ export abstract class HtmlToken extends Token {
 		if (s) {
 			const e = generateForSelf(this, rect, rule, 'HTML tag in table attributes', s);
 			if (severity === 2) {
-				e.fix = fixByRemove(e);
+				e.suggestions = [fixByRemove(e)];
 			}
 			errors.push(e);
 		}

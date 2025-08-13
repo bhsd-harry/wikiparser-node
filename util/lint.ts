@@ -135,7 +135,11 @@ export const fixByRemove = (e: LintError | number, offset = 0, text = ''): LintE
  * @param link the link to decode
  */
 export const fixByDecode = (e: LintError, link: AstNodes): LintError.Fix =>
-	fixBy(e, 'decode', rawurldecode(link.text()));
+	fixBy(
+		e,
+		'decode',
+		rawurldecode(link.text().replace(/%(?=21|3[ce]|5[bd]|7[b-d])/giu, '%25')),
+	);
 
 /**
  * Quick fix: close the syntax
