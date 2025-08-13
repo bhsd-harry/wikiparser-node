@@ -34,7 +34,7 @@ export abstract class LinkToken extends LinkBaseToken {
 			s = Parser.lintConfig.getSeverity(rule);
 		if (s && this.closest('ext-link-text')) {
 			const e = generateForSelf(this, {start}, rule, 'internal link in an external link', s);
-			e.suggestions = [fixBy(e, 'delink', this.innerText)];
+			e.fix = fixBy(e, 'delink', this.innerText);
 			errors.push(e);
 		}
 		return errors;
