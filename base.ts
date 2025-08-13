@@ -399,6 +399,14 @@ export interface LanguageService {
 	provideDiagnostics(text: string, warning?: boolean): Promise<Diagnostic[]>;
 
 	/**
+	 * Resolve fix-all code action
+	 *
+	 * 实现修复全部代码的操作
+	 * @param action code action / 代码操作
+	 */
+	resolveCodeAction(action: CodeAction): CodeAction;
+
+	/**
 	 * Provide folding ranges
 	 *
 	 * 提供折叠范围
@@ -498,14 +506,6 @@ export interface LanguageService {
 	 * @param diagnostics grammar diagnostics / 语法诊断信息
 	 */
 	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[];
-
-	/**
-	 * Resolve fix-all code action
-	 *
-	 * 实现修复全部代码的操作
-	 * @param action code action / 代码操作
-	 */
-	resolveCodeAction(action: CodeAction): CodeAction;
 
 	/**
 	 * Provide document sections

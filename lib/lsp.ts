@@ -7,6 +7,7 @@ import {
 
 	sanitizeInlineStyle,
 } from '@bhsd/common';
+import {rules} from '../base';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos, provideValues} from '../util/lint';
 import {tidy} from '../util/string';
@@ -42,10 +43,10 @@ import type {
 	SignatureData,
 	SignatureInfo,
 	LintError,
+	LintConfiguration,
 
 	/* NOT FOR BROWSER ONLY */
 
-	LintConfiguration,
 	ConfigData,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
@@ -82,7 +83,6 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
-import {rules} from '../base';
 import {
 	EmbeddedJSONDocument,
 	EmbeddedCSSDocument,
@@ -120,11 +120,11 @@ export interface QuickFixData extends TextEdit {
 	fix: boolean;
 }
 
-/* NOT FOR BROWSER ONLY */
-
 declare interface FixAllData {
 	rule?: LintError.Rule;
 }
+
+/* NOT FOR BROWSER ONLY */
 
 declare interface LilyPondError {
 	line: number;
@@ -353,21 +353,23 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
 	fix: preferred,
 });
 
-/* NOT FOR BROWSER ONLY */
-
 /**
  * Get the fix-all data.
  * @param root root token
  * @param rule rule to be fixed
  */
-const getFixAll = (root: Token, rule = ''): TextEdit[] => {
+const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 	const {lintConfig} = Parser;
-	Parser.lintConfig = {} as unknown as LintConfiguration;
-	for (const key of rules) {
-		Parser.lintConfig[key] = key === rule ? lintConfig[key]! : 0;
+	if (rule) {
+		Parser.lintConfig = {} as unknown as LintConfiguration;
+		for (const key of rules) {
+			Parser.lintConfig[key] = key === rule ? lintConfig[key]! : 0;
+		}
 	}
 	const {output} = root.lint();
-	Parser.lintConfig = lintConfig;
+	if (rule) {
+		Parser.lintConfig = lintConfig;
+	}
 	return output === undefined
 		? []
 		: [
@@ -377,6 +379,8 @@ const getFixAll = (root: Token, rule = ''): TextEdit[] => {
 			},
 		];
 };
+
+/* NOT FOR BROWSER ONLY */
 
 /**
  * Correct the position of an error.
@@ -1304,6 +1308,28 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Resolve fix-all code action
+	 *
+	 * 实现修复全部代码的操作
+	 * @param action code action / 代码操作
+	 * @since v1.24.0
+	 */
+	resolveCodeAction(action: CodeAction): CodeAction {
+		if (action.kind !== 'source.fixAll') {
+			return action;
+		}
+		const {rule} = action.data as FixAllData;
+		return {
+			...action,
+			edit: {
+				changes: {
+					'': getFixAll(this.#done, rule),
+				},
+			},
+		};
+	}
+
+	/**
 	 * Provide folding ranges
 	 *
 	 * 提供折叠范围
@@ -1896,27 +1922,6 @@ export class LanguageService implements LanguageServiceBase {
 					: {data},
 			})),
 		);
-	}
-
-	/**
-	 * Resolve fix-all code action
-	 *
-	 * 实现修复全部代码的操作
-	 * @param action code action / 代码操作
-	 */
-	resolveCodeAction(action: CodeAction): CodeAction {
-		if (action.kind !== 'source.fixAll') {
-			return action;
-		}
-		const {rule} = action.data as FixAllData;
-		return {
-			...action,
-			edit: {
-				changes: {
-					'': getFixAll(this.#done, rule),
-				},
-			},
-		};
 	}
 
 	/**
