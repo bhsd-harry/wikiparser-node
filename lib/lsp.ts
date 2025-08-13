@@ -68,9 +68,7 @@ declare interface CompletionConfig {
 	params: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
-	data: (
-		QuickFixData
-	)[];
+	data: QuickFixData[];
 }
 
 export interface QuickFixData extends TextEdit {
@@ -803,13 +801,7 @@ export class LanguageService implements LanguageServiceBase {
 						rule,
 					message,
 					data: [
-						...fix
-							// eslint-disable-next-line @stylistic/array-bracket-newline
-							? [
-								getQuickFix(root, fix, true),
-								// eslint-disable-next-line @stylistic/array-bracket-newline
-							]
-							: [],
+						...fix ? [getQuickFix(root, fix, true)] : [],
 						...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
 					],
 				}),

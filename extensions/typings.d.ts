@@ -10,6 +10,7 @@ import type {CodeJar} from 'codejar-async';
 import type {
 	ColorInformation,
 	ColorPresentation,
+	CodeAction,
 
 	/* NOT EXPORTED */
 
@@ -23,7 +24,6 @@ import type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
-	CodeAction,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 // eslint-disable-next-line @stylistic/max-len
@@ -117,7 +117,7 @@ export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums
 
 export interface LanguageServiceBase extends Omit<
 	LanguageService,
-	'provideDocumentSymbols' | 'provideCodeAction' | 'findStyleTokens'
+	'provideDocumentSymbols' | 'provideCodeAction'
 > {
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
