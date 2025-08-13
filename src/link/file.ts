@@ -199,11 +199,13 @@ export abstract class FileToken extends LinkBaseToken {
 			vertAlignKeys = keys.filter(key => vertAlign.has(key)),
 			[fr] = frameKeys,
 			unscaled = fr === 'framed' || fr === 'manualthumb',
-			rect = new BoundingRect(this, start);
+			rect = new BoundingRect(this, start),
+			{extension} = this;
 		let rule: LintError.Rule = 'nested-link',
 			s = Parser.lintConfig.getSeverity(rule, 'file');
 		if (
 			s
+			&& extensions.has(extension!)
 			&& this.closest('ext-link-text')
 			&& (this.getValue('link') as string | undefined)?.trim() !== ''
 		) {
@@ -211,9 +213,9 @@ export abstract class FileToken extends LinkBaseToken {
 				link = this.getArg('link');
 			if (link) {
 				const from = start + link.getRelativeIndex();
-				e.suggestions = [{desc: 'delink', range: [from, from + link.toString().length], text: 'link='}];
+				e.fix = {desc: 'delink', range: [from, from + link.toString().length], text: 'link='};
 			} else {
-				e.suggestions = [fixByInsert(e.endIndex - 2, 'delink', '|link=')];
+				e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
 			}
 			errors.push(e);
 		}
@@ -235,8 +237,7 @@ export abstract class FileToken extends LinkBaseToken {
 			return errors;
 		}
 		rule = 'no-duplicate';
-		const {extension} = this,
-			severities = ['unknownImageParameter', 'imageParameter'].map(k => Parser.lintConfig.getSeverity(rule, k));
+		const severities = ['unknownImageParameter', 'imageParameter'].map(k => Parser.lintConfig.getSeverity(rule, k));
 
 		/**
 		 * 图片参数到语法错误的映射

@@ -1,6 +1,6 @@
 ## v1.24.0
 
-*2025-08-08*
+*2025-08-13*
 
 **Added**
 
@@ -13,6 +13,7 @@
 - Now `<translate>` extension tags in HTML comments or `<includeonly>` tags are not parsed
 - The [bold-header](https://github.com/bhsd-harry/wikiparser-node/wiki/bold-header) rule now ignores bold apostrophes or tags inside extension tags
 - No [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29) should be parsed inside a `<poem>` tag
+- Quick fixes for the [url-encoding](https://github.com/bhsd-harry/wikiparser-node/wiki/url-encoding) rule should ignore special characters including `!<>[]{|}`
 
 **Changed**
 

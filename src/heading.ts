@@ -215,14 +215,17 @@ export abstract class HeadingToken extends Token {
 						Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
 						severities[2],
 					),
-					end = start + level + innerStr.length;
+					end = start + level + innerStr.length,
+					remove = fixByRemove(e);
 				if (rootStr.slice(e.endIndex, end).trim()) {
 					e.suggestions = [
-						fixByRemove(e),
+						remove,
 						fixByClose(end, `'''`),
 					];
+				} else if (boldQuotes.length === 1 && italicQuotes.length === 0) {
+					e.fix = remove;
 				} else {
-					e.fix = fixByRemove(e);
+					e.suggestions = [remove];
 				}
 				errors.push(e);
 			}
@@ -237,8 +240,10 @@ export abstract class HeadingToken extends Token {
 					end = start + level + innerStr.length;
 				if (rootStr.slice(e.endIndex, end).trim()) {
 					e.suggestions = [fixByClose(end, `''`)];
-				} else {
+				} else if (italicQuotes.length === 1 && boldQuotes.length === 0) {
 					e.fix = fixByRemove(e);
+				} else {
+					e.suggestions = [fixByRemove(e)];
 				}
 				errors.push(e);
 			}
