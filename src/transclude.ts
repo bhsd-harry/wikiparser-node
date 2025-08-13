@@ -336,7 +336,7 @@ export abstract class TranscludeToken extends Token {
 				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
 				const e = generateForChild(child, rect, rule, 'useless fragment', s);
-				e.fix = fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'));
+				e.suggestions = [fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'))];
 				errors.push(e);
 			}
 		}

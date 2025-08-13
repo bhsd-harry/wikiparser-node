@@ -206,7 +206,7 @@ export abstract class ImageParameterToken extends Token {
 				s = Parser.lintConfig.getSeverity(rule, 'file');
 			if (s) {
 				const e = generateForSelf(this, {start}, rule, 'unnecessary URL encoding in an internal link', s);
-				e.suggestions = [fixByDecode(e, this)];
+				e.fix = fixByDecode(e, this);
 				errors.push(e);
 			}
 		}
