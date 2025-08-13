@@ -123,6 +123,9 @@ declare interface LintIgnore {
 	to: number | undefined;
 	rules: Set<string> | undefined;
 }
+declare type ExtendedLintError = LintError[] & {
+	output?: string;
+};
 
 const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id'];
 
@@ -624,7 +627,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	@readOnly(true)
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): ExtendedLintError {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
