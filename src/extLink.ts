@@ -73,7 +73,7 @@ export abstract class ExtLinkToken extends Token {
 			rule = 'var-anchor',
 			s = Parser.lintConfig.getSeverity(rule, 'extLink');
 		if (s && this.length === 1 && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, {start}, rule, 'variable anchor in a section header', s));
+			errors.push(generateForSelf(this, {start}, rule, 'variable-anchor', s));
 		}
 		return errors;
 	}

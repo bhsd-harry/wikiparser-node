@@ -264,7 +264,7 @@ export class AstText extends AstNode {
 				e: LintError = {
 					rule,
 					message: Parser.msg(
-						'lonely "$1"',
+						'lonely',
 						magicLink || char === 'h' || lConverter || rConverter ? error : char,
 					),
 					severity,
