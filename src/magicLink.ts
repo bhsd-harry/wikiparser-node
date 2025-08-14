@@ -104,7 +104,7 @@ export abstract class MagicLinkToken extends Token {
 			const rule = 'invalid-isbn',
 				s = Parser.lintConfig.getSeverity(rule);
 			if (s && this.#lint()) {
-				errors.push(generateForSelf(this, rect, rule, 'invalid ISBN', s));
+				errors.push(generateForSelf(this, rect, rule, 'invalid-isbn', s));
 			}
 			return errors;
 		}
@@ -120,7 +120,7 @@ export abstract class MagicLinkToken extends Token {
 						child,
 						rect,
 						rule,
-						Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
+						Parser.msg('in-url', pipe ? '"|"' : 'full-width-punctuation'),
 						severity,
 					),
 					{index, 0: s} = regex.exec(data)!,

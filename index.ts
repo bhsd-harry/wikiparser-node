@@ -129,9 +129,9 @@ let viewOnly = true;
 let lintConfig = getLintConfig();
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
-	config: 'default',
-	i18n: undefined,
 	rules,
+	config: 'default',
+	i18n: 'en',
 
 	/** @implements */
 	get lintConfig(): LintConfiguration {

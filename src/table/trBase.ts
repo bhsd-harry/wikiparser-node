@@ -33,7 +33,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 			rule = 'fostered-content',
 			s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? undefined : 'transclusion');
 		if (s) {
-			const error = generateForChild(inter, {start}, rule, 'content to be moved outside the table', s);
+			const error = generateForChild(inter, {start}, rule, 'content-outside-table', s);
 			error.startIndex++;
 			error.startLine++;
 			error.startCol = 0;

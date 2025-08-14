@@ -102,7 +102,7 @@ export abstract class HeadingToken extends Token {
 			errors.push(e);
 		}
 		if (severities[1] && unbalanced) {
-			const msg = Parser.msg('unbalanced $1 in a section header', '"="'),
+			const msg = Parser.msg('unbalanced-in-section-header', '"="'),
 				e = generateForChild(firstChild, rect, rules[1], msg, severities[1]);
 			if (innerStr === '=') {
 				//
@@ -127,7 +127,7 @@ export abstract class HeadingToken extends Token {
 			const rule = 'parsing-order',
 				severity = Parser.lintConfig.getSeverity(rule, s === 2 ? 'heading' : 'templateInTable');
 			if (severity) {
-				errors.push(generateForSelf(this, rect, rule, 'section header in HTML tag attributes', severity));
+				errors.push(generateForSelf(this, rect, rule, 'header-in-html', severity));
 			}
 		}
 		if (severities[2]) {
@@ -144,7 +144,7 @@ export abstract class HeadingToken extends Token {
 							left: rect.left + level,
 						},
 						rules[2],
-						Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
+						Parser.msg('unbalanced-in-section-header', 'bold-apostrophes'),
 						severities[2],
 					),
 					end = start + level + innerStr.length,
@@ -166,7 +166,7 @@ export abstract class HeadingToken extends Token {
 						italicQuotes[italicQuotes.length - 1]!,
 						{start: start + level},
 						rules[2],
-						Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
+						Parser.msg('unbalanced-in-section-header', 'italic-apostrophes'),
 						severities[2],
 					),
 					end = start + level + innerStr.length;

@@ -30,7 +30,7 @@ describe('API tests', () => {
 					: codes;
 			describe(file, () => {
 				beforeEach(() => {
-					Parser.i18n = undefined;
+					Parser.i18n = 'en';
 					Parser.lintConfig = {} as LintConfiguration;
 					if (typeof Parser.config === 'object') {
 						// @ts-expect-error delete readonly property

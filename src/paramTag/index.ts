@@ -58,7 +58,7 @@ export abstract class ParamTagToken extends Token {
 			return [];
 		}
 		const rect = new BoundingRect(this, start),
-			msg = Parser.msg('invalid parameter of <$1>', this.name),
+			msg = Parser.msg('invalid-parameter', this.name),
 			errors: LintError[] = [];
 		for (const child of this.childNodes) {
 			child.setAttribute('aIndex', start);

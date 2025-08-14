@@ -93,7 +93,7 @@ export abstract class GalleryToken extends Token {
 					const endIndex = start + length,
 						e: LintError = {
 							rule,
-							message: Parser.msg('invalid content in <$1>', 'gallery'),
+							message: Parser.msg('invalid-content', 'gallery'),
 							severity,
 							startIndex: start,
 							endIndex,

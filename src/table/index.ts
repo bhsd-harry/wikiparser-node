@@ -73,7 +73,7 @@ export abstract class TableToken extends TrBaseToken {
 			s = rules.map(rule => Parser.lintConfig.getSeverity(rule));
 		if (s[0] && !this.closed) {
 			errors.push(
-				generateForChild(this.firstChild, rect, rules[0], Parser.msg('unclosed $1', 'table'), s[0]),
+				generateForChild(this.firstChild, rect, rules[0], Parser.msg('unclosed', 'table'), s[0]),
 			);
 		}
 		if (s[1]) {
@@ -100,7 +100,7 @@ export abstract class TableToken extends TrBaseToken {
 				}
 				if (j < length) {
 					const row = this.getNthRow(j) as TrToken,
-						e = generateForChild(row, rect, rules[1], 'inconsistent table layout', s[1]);
+						e = generateForChild(row, rect, rules[1], 'inconsistent-table', s[1]);
 					e.startIndex++;
 					e.startLine++;
 					e.startCol = 0;

@@ -310,7 +310,7 @@ export abstract class TranscludeToken extends Token {
 			rule = 'invalid-invoke';
 			s = Parser.lintConfig.getSeverity(rule, 'name');
 			if (s) {
-				errors.push(generateForChild(childNodes[1], rect, rule, 'illegal module name', s));
+				errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
 			}
 		} else if (s) {
 			const child = childNodes[invoke ? 1 : 0] as AtomToken,
@@ -318,7 +318,7 @@ export abstract class TranscludeToken extends Token {
 					.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
 				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
-				const e = generateForChild(child, rect, rule, 'useless fragment', s);
+				const e = generateForChild(child, rect, rule, 'useless-fragment', s);
 				e.suggestions = [fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'))];
 				errors.push(e);
 			}
@@ -326,7 +326,7 @@ export abstract class TranscludeToken extends Token {
 		rule = 'invalid-invoke';
 		s = Parser.lintConfig.getSeverity(rule, 'function');
 		if (s && invoke && length === 2) {
-			errors.push(generateForSelf(this, rect, rule, 'missing module function', s));
+			errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
 			return errors;
 		}
 		rule = 'no-duplicate';
@@ -334,7 +334,7 @@ export abstract class TranscludeToken extends Token {
 		if (s) {
 			const duplicatedArgs = this.getDuplicatedArgs()
 					.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
-				msg = 'duplicated parameter';
+				msg = 'duplicate-parameter';
 			for (const [, args] of duplicatedArgs) {
 				errors.push(...args.map(arg => {
 					const e = generateForChild(arg, rect, rule, msg, s);

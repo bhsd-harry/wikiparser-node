@@ -70,7 +70,7 @@ export abstract class GalleryImageToken extends FileToken {
 			rule = 'invalid-gallery',
 			s = Parser.lintConfig.getSeverity(rule, 'image');
 		if (s && this.#lint()) {
-			const e = generateForSelf(this, {start}, rule, 'invalid gallery image', s);
+			const e = generateForSelf(this, {start}, rule, 'invalid-gallery', s);
 			e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
 			errors.push(e);
 		}
