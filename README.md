@@ -37,9 +37,9 @@ npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed, such as different language editions of Wikipedia and other [Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix), you can use the following command to obtain the parser configuration:
 
 ```sh
-npx getParserConfig <site> <script path> [force]
+npx getParserConfig <site> <script path> [user] [force]
 # For example:
-npx getParserConfig jawiki https://ja.wikipedia.org/w
+npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
 ```
 
 The generated configuration file will be saved in the `config` directory. You can then use the site name as the `--config` option.

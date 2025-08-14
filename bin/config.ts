@@ -109,14 +109,14 @@ let mwConfig: MwConfig | undefined;
  * Get the parser configuration for a Wikimedia Foundation project.
  * @param site site nickname
  * @param url script path
- * @param email email address of the user
+ * @param user URI for wiki userpage or email address of the user
  * @param force whether to overwrite the existing configuration
  * @param internal for internal use
  */
 export default async (
 	site: string,
 	url: string,
-	email?: string,
+	user?: string,
 	force?: boolean,
 	internal?: boolean,
 ): Promise<ConfigData> => {
@@ -125,7 +125,7 @@ export default async (
 		if (internal) {
 			throw new RangeError('Site nickname and script path are required!');
 		} else {
-			error('Usage: npx getParserConfig <site> <script path> [email] [force]');
+			error('Usage: npx getParserConfig <site> <script path> [user] [force]');
 			process.exit(1);
 		}
 	}
@@ -141,13 +141,13 @@ export default async (
 	if (/(?:\.php|\/)$/u.test(url)) {
 		url = url.slice(0, url.lastIndexOf('/'));
 	}
-	if (email === 'git') {
-		email = execSync('git config user.email', {encoding: 'utf8'}).trim();
+	if (user === 'git') {
+		user = execSync('git config user.email', {encoding: 'utf8'}).trim();
 	}
-	const headers = email
+	const headers = user
 			? {
 				headers: {
-					'User-Agent': `${pkg}/${version} (https://www.npmjs.com/package/${pkg}; ${email}) Node.js/${
+					'User-Agent': `${pkg}/${version} (https://www.npmjs.com/package/${pkg}; ${user}) Node.js/${
 						process.version
 					}`,
 				},
