@@ -7,9 +7,7 @@ Parser.config = require('../../config/default');
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
 	for (const {desc, wikitext, print} of tests) {
-		if (
-			wikitext && print
-		) {
+		if (wikitext && print) {
 			it(desc, () => {
 				const root = Parser.parse(wikitext);
 				try {
