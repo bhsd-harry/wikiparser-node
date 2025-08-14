@@ -137,6 +137,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 			case 'findStyleTokens':
 			case 'provideInlayHints':
 			case 'provideColorPresentations':
+			case 'resolveCodeAction':
 			case 'provideCodeAction':
 			case 'provideDefinition':
 			case 'setTargetWikipedia':
