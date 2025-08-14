@@ -349,6 +349,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getWMFSite(url) {
 		const mt = re.exec(url);
+		/* istanbul ignore if */
 		if (!mt) {
 			throw new RangeError('Not a recognizable WMF site!');
 		}
