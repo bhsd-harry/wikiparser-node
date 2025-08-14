@@ -208,6 +208,10 @@ export class AstText extends AstNode {
 			rootStr = root.toString(),
 			{ext, html, variants} = root.getAttribute('config'),
 			{top, left} = root.posFromIndex(start)!,
+			lintConfig = Parser.lintConfig['tag-like']!,
+			specified = typeof lintConfig === 'number'
+				? new Set()
+				: new Set(Object.keys(lintConfig[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
 			tags = new Set([
 				'onlyinclude',
 				'noinclude',
@@ -216,6 +220,7 @@ export class AstText extends AstNode {
 				...html[0],
 				...html[1],
 				...html[2],
+				...specified,
 				...disallowedTags,
 			]);
 		for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
@@ -270,6 +275,8 @@ export class AstText extends AstNode {
 				let key: string | undefined;
 				if (/^<\/?\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
 					key = 'invalid';
+				} else if (specified.has(tag)) {
+					key = tag;
 				} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
 					key = 'disallowed';
 				}

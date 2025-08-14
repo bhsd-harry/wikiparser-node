@@ -8,6 +8,7 @@
 - Quick-fix suggestions for the [nested-link](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link) rule
 - [`LanguageService.prototype.provideRefactoringAction`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providerefactoringaction) that provides refactoring actions for the selected text
 - [`LanguageService.prototype.resolveCodeAction`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolvecodeaction) that resolves fix-all code actions
+- The [tag-like](https://github.com/bhsd-harry/wikiparser-node/wiki/tag-like) rule now supports custom tags
 
 **Fixed**
 
