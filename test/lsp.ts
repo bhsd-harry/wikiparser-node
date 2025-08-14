@@ -94,6 +94,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 			case 'findStyleTokens':
 			case 'provideInlayHints':
 			case 'provideColorPresentations':
+			case 'resolveCodeAction':
 			case 'provideDefinition':
 			case 'provideReferences':
 			case 'resolveRenameLocation':
