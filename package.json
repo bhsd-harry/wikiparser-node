@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.24.0",
+	"version": "1.24.1",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
