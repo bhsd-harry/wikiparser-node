@@ -822,7 +822,7 @@ export class LanguageService implements LanguageServiceBase {
 	 *
 	 * 实现修复全部代码的操作
 	 * @param action code action / 代码操作
-	 * @since v1.24.0
+	 * @since v1.24.1
 	 */
 	resolveCodeAction(action: CodeAction): CodeAction {
 		if (action.kind !== 'source.fixAll') {
@@ -1308,7 +1308,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * 提供重构操作
 	 * @param text source Wikitext / 源代码
 	 * @param range range of the refactoring / 重构范围
-	 * @since v1.24.0
+	 * @since v1.24.1
 	 */
 	async provideRefactoringAction(text: string, range?: Range): Promise<CodeAction[]> {
 		let lines: string[],
