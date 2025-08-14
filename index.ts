@@ -162,10 +162,10 @@ declare interface Parser extends ParserBase {
 	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
 	 * @param site site nickname / 网站别名
 	 * @param url script path / 脚本路径
-	 * @param email email address of the user / 用户的电子邮件地址
+	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
 	 * @since v1.18.4
 	 */
-	fetchConfig(site: string, url: string, email?: string): Promise<Config>;
+	fetchConfig(site: string, url: string, user?: string): Promise<Config>;
 
 	/* NOT FOR BROWSER ONLY END */
 
@@ -563,8 +563,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* istanbul ignore next */
 	/** @implements */
-	async fetchConfig(site, url, email) {
-		return this.getConfig(await fetchConfig(site, url, email, false, true));
+	async fetchConfig(site, url, user) {
+		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},
 
 	/* NOT FOR BROWSER ONLY END */

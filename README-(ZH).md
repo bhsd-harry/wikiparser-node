@@ -62,7 +62,7 @@ npm i wikilint
 对于安装了 [CodeMirror 扩展](https://mediawiki.org/wiki/Extension:CodeMirror)的 MediaWiki 站点，如不同语言版本的维基百科和其他[由维基媒体基金会托管的站点](https://meta.wikimedia.org/wiki/Special:SiteMatrix)，可以使用以下命令获取解析器配置：
 
 ```sh
-npx getParserConfig <site> <script path> [email] [force]
+npx getParserConfig <site> <script path> [user] [force]
 # 例如：
 npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
 ```

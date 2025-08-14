@@ -62,7 +62,7 @@ For more browser extensions, please refer to the corresponding [documentation](h
 For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed, such as different language editions of Wikipedia and other [Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix), you can use the following command to obtain the parser configuration:
 
 ```sh
-npx getParserConfig <site> <script path> [email] [force]
+npx getParserConfig <site> <script path> [user] [force]
 # For example:
 npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
 ```

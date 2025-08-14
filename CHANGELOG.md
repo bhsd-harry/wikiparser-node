@@ -20,7 +20,7 @@
 **Changed**
 
 - Update the [`<img>` extension tag](https://github.com/moegirlwiki/mediawiki-extension-MoeImgTag)
-- According to the [Wikimedia Foundation's policy](https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy), the [`getParserConfig`](./README#cli-usage) executable, the [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#fetchconfig) method and the [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now requires an `email` parameter to identify the user when accessing Wikimedia sites
+- According to the [Wikimedia Foundation's policy](https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy), the [`getParserConfig`](./README#cli-usage) executable, the [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#fetchconfig) method and the [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now requires a `user` parameter to identify the user when accessing Wikimedia sites
 
 ## v1.23.0
 
