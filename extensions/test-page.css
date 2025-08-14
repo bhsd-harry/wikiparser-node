@@ -138,7 +138,7 @@ pre {
 	font-size: 100%;
 }
 .frame a {
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	text-decoration: none;
 	color: #0645ad;
 }
@@ -220,7 +220,7 @@ pre {
 	padding: 1em;
 	white-space: pre-wrap;
 	overflow: hidden;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 .frame code, .frame pre {
 	background: #f8f9fa;
@@ -434,7 +434,7 @@ pre {
 	font-weight: bold;
 	text-align: center;
 	display: block;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 .frame li.gallerybox {
 	vertical-align: top;
@@ -444,7 +444,7 @@ pre {
 	overflow: hidden;
 	font-size: 94%;
 	padding: 9px 4px 17px;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 .frame li.gallerybox div.thumb {
 	background-color: #f8f9fa;
@@ -470,7 +470,7 @@ pre {
 }
 .frame > pre.language-html > code {
 	white-space: pre-wrap;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	padding: 0;
 	border: 0;
 }
