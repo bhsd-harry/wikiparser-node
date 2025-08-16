@@ -60,6 +60,9 @@ const workerJS = () => {
                 break;
             case 'setConfig':
                 Parser.config = qid;
+                for (const lsp of lsps.values()) {
+                    Object.assign(lsp, { config: Parser.getConfig() });
+                }
                 delete last.wikitext;
                 break;
             case 'getConfig':
