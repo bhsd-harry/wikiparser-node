@@ -182,7 +182,7 @@ export abstract class HtmlToken extends Token {
 					),
 					open = fixByOpen(start),
 					noSelfClosing: LintError.Fix = {
-						desc: 'no self-closing',
+						desc: Parser.msg('no-self-closing'),
 						range: [e.endIndex - 2, e.endIndex - 1],
 						text: '',
 					};
