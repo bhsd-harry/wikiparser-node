@@ -128,7 +128,7 @@ export abstract class FileToken extends LinkBaseToken {
 				link = this.getArg('link');
 			if (link) {
 				const from = start + link.getRelativeIndex();
-				e.fix = {desc: 'delink', range: [from, from + link.toString().length], text: 'link='};
+				e.fix = {desc: Parser.msg('delink'), range: [from, from + link.toString().length], text: 'link='};
 			} else {
 				e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
 			}
