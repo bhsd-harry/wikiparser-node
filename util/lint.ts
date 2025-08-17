@@ -109,7 +109,7 @@ export const generateForSelf = factory((_, startIndex, startLine, startCol) => (
  * @param offset offset to the start index
  */
 export const fixBy = (e: LintError, desc: string, text: string, offset = 0): LintError.Fix =>
-	({desc, range: [e.startIndex + offset, e.endIndex], text});
+	({desc: Parser.msg(desc), range: [e.startIndex + offset, e.endIndex], text});
 
 /**
  * Quick fix: insert the text
@@ -118,7 +118,7 @@ export const fixBy = (e: LintError, desc: string, text: string, offset = 0): Lin
  * @param text inserted text
  */
 export const fixByInsert = (index: number, desc: string, text: string): LintError.Fix =>
-	({desc, range: [index, index], text});
+	({desc: Parser.msg(desc), range: [index, index], text});
 
 /**
  * Quick fix: remove the error
@@ -127,7 +127,9 @@ export const fixByInsert = (index: number, desc: string, text: string): LintErro
  * @param text replacement text
  */
 export const fixByRemove = (e: LintError | number, offset = 0, text = ''): LintError.Fix =>
-	typeof e === 'number' ? {desc: 'remove', range: [e, e + offset], text} : fixBy(e, 'remove', text, offset);
+	typeof e === 'number'
+		? {desc: Parser.msg('remove'), range: [e, e + offset], text}
+		: fixBy(e, 'remove', text, offset);
 
 /**
  * Quick fix: decode the link
@@ -148,13 +150,14 @@ export const fixByDecode = (e: LintError, link: AstNodes): LintError.Fix =>
  * @param offset offset to the start index
  */
 export const fixByClose = (index: number, text: string, offset = 0): LintError.Fix =>
-	({desc: 'close', range: [index + offset, index], text});
+	({desc: Parser.msg('close'), range: [index + offset, index], text});
 
 /**
  * Quick fix: open the syntax
  * @param index the index of the tag to open
  */
-export const fixByOpen = (index: number): LintError.Fix => ({desc: 'open', range: [index + 1, index + 2], text: ''});
+export const fixByOpen = (index: number): LintError.Fix =>
+	({desc: Parser.msg('open'), range: [index + 1, index + 2], text: ''});
 
 /**
  * Quick fix: comment out
@@ -178,7 +181,7 @@ export const fixByUpper = (e: LintError, text: string): LintError.Fix =>
  * @param offset offset to the end index
  */
 export const fixBySpace = (index: number, offset = 0): LintError.Fix =>
-	({desc: 'whitespace', range: [index, index + offset], text: ' '});
+	({desc: Parser.msg('whitespace'), range: [index, index + offset], text: ' '});
 
 /**
  * Quick fix: escape the character
@@ -187,7 +190,7 @@ export const fixBySpace = (index: number, offset = 0): LintError.Fix =>
  * @param offset offset to the end index
  */
 export const fixByEscape = (index: number, char: string, offset = 1): LintError.Fix =>
-	({desc: 'escape', range: [index, index + offset], text: char.repeat(offset)});
+	({desc: Parser.msg('escape'), range: [index, index + offset], text: char.repeat(offset)});
 
 /**
  * Quick fix: escape the `|` character
@@ -195,7 +198,7 @@ export const fixByEscape = (index: number, char: string, offset = 1): LintError.
  * @param text the text to be replaced
  */
 export const fixByPipe = (index: number, text: string): LintError.Fix => ({
-	desc: 'escape',
+	desc: Parser.msg('escape'),
 	range: [index, index + text.length],
 	text: text.replace(/\|/gu, '&#124;'),
 });
