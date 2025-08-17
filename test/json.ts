@@ -189,23 +189,29 @@ for (const [file, config] of Object.entries(configs)) {
 	}
 }
 
-const getI18n = /** @ignore */ (file: string): Set<string> =>
-	new Set(Object.keys(require(path.join(basePath, 'i18n', file)) as Record<string, string>));
+const getI18n = /** @ignore */ (file: string): Record<string, string> => require(path.join(basePath, 'i18n', file)),
+	getI18nKeys = /** @ignore */ (file: string): Set<string> => new Set(Object.keys(getI18n(file)));
 describe('i18n', () => {
-	const base = getI18n('en.json');
+	const base = getI18n('en.json'),
+		keys = getI18nKeys('en.json');
 	for (const file of fs.readdirSync('i18n')) {
 		if (file === 'en.json') {
-			continue;
+			it('en.json', () => {
+				for (const [key, value] of Object.entries(base)) {
+					assert.notStrictEqual(key, value, `'${key}' is the same as its value`);
+				}
+			});
+		} else {
+			const i18n = getI18nKeys(file);
+			it(`${file} vs. en.json`, () => { // eslint-disable-line @typescript-eslint/no-loop-func
+				for (const key of i18n) {
+					assert(keys.has(key), `'${key}' not in en.json`);
+				}
+				for (const key of keys) {
+					assert(i18n.has(key), `'${key}' not in ${file}`);
+				}
+			});
 		}
-		const i18n = getI18n(file);
-		it(`${file} vs. en.json`, () => { // eslint-disable-line @typescript-eslint/no-loop-func
-			for (const key of i18n) {
-				assert(base.has(key), `'${key}' not in en.json`);
-			}
-			for (const key of base) {
-				assert(i18n.has(key), `'${key}' not in ${file}`);
-			}
-		});
 	}
 });
 
