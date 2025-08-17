@@ -3,8 +3,8 @@ import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
+	enMsg,
 	minConfig,
-	en,
 } from './util/constants';
 import {tidy} from './util/string';
 import {getLintConfig} from './lib/lintConfig';
@@ -70,8 +70,8 @@ declare interface Parser extends ParserBase {
 
 let viewOnly = true;
 
-let lintConfig = getLintConfig();
-let i18n: Record<string, string> | undefined;
+let lintConfig = getLintConfig(),
+	i18n: Record<string, string> | undefined;
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	rules,
@@ -79,7 +79,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	get i18n() {
-		return {...en, ...i18n};
+		return {...enMsg, ...i18n};
 	},
 
 	set i18n(data: Record<string, string>) {
@@ -140,7 +140,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
+		return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
 	/** @implements */

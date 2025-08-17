@@ -6,6 +6,6 @@ export enum BuildMethod {
 	String,
 	Text,
 }
-export const minConfig: ConfigData = require('../config/minimum'),
-	en = require('../i18n/en.json');
 
+export const enMsg = require('../i18n/en.json');
+export const minConfig: ConfigData = require('../config/minimum');
