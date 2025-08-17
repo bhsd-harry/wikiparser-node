@@ -314,7 +314,7 @@
 
 **Fixed**
 
-- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) if [Stylelint](https://npmjs.com/package/stylelint) is unavailable
+- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) if [Stylelint](https://www.npmjs.com/package/stylelint) is unavailable
 - Manual upright parameters (e.g., `upright=$1`) of images are not treated as upright parameters
 - The magic words `#section`, `#section-x` and `#section-h` are recognized as aliases of `#lst`, `#lstx` and `#lsth`, respectively
 
@@ -451,7 +451,7 @@
 
 **Changed**
 
-- Full HTML entity decoding via [entities](https://npmjs.com/package/entities)
+- Full HTML entity decoding via [entities](https://www.npmjs.com/package/entities)
 
 **Removed**
 

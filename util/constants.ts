@@ -11,6 +11,8 @@ export enum BuildMethod {
 	Text,
 }
 
+export const enMsg = require('../../i18n/en.json'); // eslint-disable-line n/no-missing-require
+
 /* NOT FOR BROWSER */
 
 export const classes: Record<string, string> = {},

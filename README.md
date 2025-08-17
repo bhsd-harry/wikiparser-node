@@ -17,11 +17,11 @@ WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext
 
 ## Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension.
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension.
 
 ## Browser-compatible
 
-A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://codemirror.net/) and [Monaco](https://microsoft.github.io/monaco-editor/). ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
+A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki). ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
 
 # Installation
 
@@ -93,6 +93,9 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 
 ## HTML conversion
 
+<details>
+	<summary>Expand</summary>
+
 ### Extension
 
 1. Many extensions are not supported, such as `<indicator>` and `<ref>`.
@@ -140,3 +143,5 @@ A full database dump (`*.xml.bz2`) scan of Chinese Wikipedia's ~3.5 million arti
 ### Miscellaneous
 
 1. Illegal HTML entities ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Illegal%20character%20references%20(T106578%2C%20T113194))).
+
+</details>
