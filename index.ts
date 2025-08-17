@@ -4,6 +4,7 @@ import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
+	enMsg,
 } from './util/constants';
 import {tidy} from './util/string';
 import {getLintConfig} from './lib/lintConfig';
@@ -126,12 +127,29 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 let viewOnly = true;
 
-let lintConfig = getLintConfig();
+let lintConfig = getLintConfig(),
+	i18n: Record<string, string> | undefined;
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	rules,
 	config: 'default',
-	i18n: 'en',
+
+	/** @implements */
+	get i18n() {
+		return {...enMsg, ...i18n};
+	},
+
+	set i18n(data: Record<string, string> | string | undefined) {
+		/* NOT FOR BROWSER ONLY */
+
+		if (typeof data === 'string') { // eslint-disable-line unicorn/prefer-ternary
+			i18n = rootRequire(data, 'i18n') as Record<string, string>;
+		} else {
+			/* NOT FOR BROWSER ONLY END */
+
+			i18n = data;
+		}
+	},
 
 	/** @implements */
 	get lintConfig(): LintConfiguration {
@@ -213,16 +231,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		/* NOT FOR BROWSER ONLY */
-
-		if (typeof this.i18n === 'string') {
-			this.i18n = rootRequire(this.i18n, 'i18n') as Record<string, string>;
-			return this.msg(msg, arg);
-		}
-
-		/* NOT FOR BROWSER ONLY END */
-
-		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
+		return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
 	/** @implements */

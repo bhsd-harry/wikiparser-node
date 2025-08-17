@@ -6,7 +6,7 @@
 
 # WikiLint
 
-This is a minimal version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node). The [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension is written based on this package.
+This is a minimal version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node). The [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) and the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension is written based on this package.
 
 You can also directly lint Wikitext articles in the command line using this package:
 
