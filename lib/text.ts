@@ -359,7 +359,7 @@ export class AstText extends AstNode {
 				e.suggestions = [fixByEscape(i, '&#93;')];
 			} else if (rbrack && brokenExtLink) {
 				const i = start - previousSibling!.toString().length;
-				e.suggestions = [fixByInsert(i, 'left bracket', '[')];
+				e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
 			} else if (magicLink) {
 				e.suggestions = [
 					...mt[0] === error

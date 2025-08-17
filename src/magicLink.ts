@@ -208,7 +208,7 @@ export abstract class MagicLinkToken extends Token {
 					? [fixBySpace(i, 1)]
 					: [
 						fixBySpace(i),
-						{desc: 'encode', range: [i, i + s.length], text: encodeURI(s)},
+						{desc: Parser.msg('encode'), range: [i, i + s.length], text: encodeURI(s)},
 					];
 				errors.push(e);
 			}
