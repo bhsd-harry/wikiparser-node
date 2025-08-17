@@ -21,7 +21,7 @@
 	"frame": null,
 	"full-width-punctuation": "full-width punctuation",
 	"header-in-html": "section header in HTML tag attributes",
-	"horizontal-alignment": "horizontal-alignment",
+	"horizontal-alignment": null,
 	"html-comment": "HTML comment",
 	"html-in-table": "HTML tag in table attributes",
 	"illegal-attribute-name": "illegal attribute name",
@@ -72,6 +72,6 @@
 	"useless-fragment": "useless fragment",
 	"useless-link-text": "useless link text",
 	"variable-anchor": "variable anchor in a section header",
-	"vertical-alignment": "vertical-alignment",
+	"vertical-alignment": null,
 	"whitespace": null
 }
