@@ -107,7 +107,7 @@ export abstract class NestedToken extends Token {
 				const str = child.toString().trim();
 				return str && !regex.test(str);
 			}).map(child => {
-				const e = generateForChild(child, rect, rule, Parser.msg('invalid content in <$1>', this.name), s);
+				const e = generateForChild(child, rect, rule, Parser.msg('invalid-content', this.name), s);
 				e.suggestions = [
 					fixByRemove(e),
 					fixByComment(e, child.toString()),

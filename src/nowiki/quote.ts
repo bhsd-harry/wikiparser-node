@@ -71,7 +71,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		if (previousData?.endsWith(`'`)) {
 			const severity = severities[(closing.bold || closing.italic) && /[a-z\d]'$/iu.test(previousData) ? 1 : 0];
 			if (severity) {
-				const e = generateForSelf(this, rect, rules[0], Parser.msg('lonely "$1"', `'`), severity),
+				const e = generateForSelf(this, rect, rules[0], Parser.msg('lonely', `'`), severity),
 					{startLine: endLine, startCol: endCol} = e,
 					[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
 					startIndex = start - length,
@@ -91,7 +91,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			}
 		}
 		if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
-			const e = generateForSelf(this, rect, rules[1], 'bold in section header', s);
+			const e = generateForSelf(this, rect, rules[1], 'bold-in-header', s);
 			e.suggestions = [fixByRemove(e)];
 			errors.push(e);
 		}

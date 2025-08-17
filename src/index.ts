@@ -487,7 +487,7 @@ export class Token extends AstElement {
 				for (const [key, value] of record) {
 					if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
 						const isCat = !key.startsWith('#'),
-							msg = `duplicated ${isCat ? 'category' : 'id'}`,
+							msg: 'duplicate-category' | 'duplicate-id' = `duplicate-${isCat ? 'category' : 'id'}`,
 							severity = s[isCat ? 0 : 1] as LintError.Severity;
 						errors.push(...[...value].map(cat => {
 							const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);

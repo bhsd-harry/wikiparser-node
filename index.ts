@@ -4,6 +4,7 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 	minConfig,
+	en,
 } from './util/constants';
 import {tidy} from './util/string';
 import {getLintConfig} from './lib/lintConfig';
@@ -70,11 +71,20 @@ declare interface Parser extends ParserBase {
 let viewOnly = true;
 
 let lintConfig = getLintConfig();
+let i18n: Record<string, string> | undefined;
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
-	config: minConfig,
-	i18n: undefined,
 	rules,
+	config: minConfig,
+
+	/** @implements */
+	get i18n() {
+		return {...en, ...i18n};
+	},
+
+	set i18n(data: Record<string, string>) {
+		i18n = data;
+	},
 
 	/** @implements */
 	get lintConfig(): LintConfiguration {
