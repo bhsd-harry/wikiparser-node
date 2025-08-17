@@ -47,7 +47,7 @@ describe('API tests', () => {
 			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
-					Parser.i18n = undefined;
+					Parser.i18n = 'en';
 					Parser.lintConfig = {} as LintConfiguration;
 
 					/* NOT FOR BROWSER */

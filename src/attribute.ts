@@ -277,7 +277,7 @@ export abstract class AttributeToken extends Token {
 
 			const s = Parser.lintConfig.getSeverity(rule, 'unknown');
 			if (s) {
-				const e = generateForChild(firstChild, rect!, rule, 'illegal attribute name', s);
+				const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
 				e.suggestions = [fixByRemove(start, length)];
 				return e;
 			}
@@ -292,7 +292,7 @@ export abstract class AttributeToken extends Token {
 
 			rule = 'insecure-style';
 			const s = Parser.lintConfig.getSeverity(rule);
-			return s && generateForChild(lastChild, rect!, rule, 'insecure style', s);
+			return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
 			/* PRINT ONLY */
 
@@ -304,7 +304,7 @@ export abstract class AttributeToken extends Token {
 
 			const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
 			if (s) {
-				const e = generateForChild(lastChild, rect!, rule, 'nonzero tabindex', s);
+				const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
 				e.suggestions = [
 					fixByRemove(start, length),
 					fixBy(e, '0 tabindex', '0'),
@@ -324,7 +324,7 @@ export abstract class AttributeToken extends Token {
 				/* PRINT ONLY END */
 
 				const s = Parser.lintConfig.getSeverity(rule, 'value');
-				return s && generateForChild(lastChild, rect!, rule, 'illegal attribute value', s);
+				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
 			}
 		} else if (
 			typeof value === 'string' && (
@@ -344,7 +344,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY END */
 
 			const s = Parser.lintConfig.getSeverity(rule, 'value');
-			return s && generateForChild(lastChild, rect!, rule, 'illegal attribute value', s);
+			return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
 		}
 		return false;
 	}
@@ -357,7 +357,7 @@ export abstract class AttributeToken extends Token {
 			rules = ['unclosed-quote', 'obsolete-attr'] as const,
 			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
 		if (s[0] && !balanced) {
-			const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed $1', 'quotes'), s[0]);
+			const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
 			e.startIndex--;
 			e.startCol--;
 			e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
@@ -368,7 +368,7 @@ export abstract class AttributeToken extends Token {
 			errors.push(e);
 		}
 		if (s[1] && obsoleteAttrs[tag]?.has(name)) {
-			errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete attribute', s[1]));
+			errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
 		}
 		return errors;
 	}

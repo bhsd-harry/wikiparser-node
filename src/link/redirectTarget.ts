@@ -78,7 +78,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			rule = 'no-ignored',
 			s = Parser.lintConfig.getSeverity(rule, 'redirect');
 		if (s && this.length === 2) {
-			const e = generateForChild(this.lastChild, {start}, rule, 'useless link text', s);
+			const e = generateForChild(this.lastChild, {start}, rule, 'useless-link-text', s);
 			e.startIndex--;
 			e.startCol--;
 			e.fix = fixByRemove(e);

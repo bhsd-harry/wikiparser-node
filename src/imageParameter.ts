@@ -302,7 +302,7 @@ export abstract class ImageParameterToken extends Token {
 			const rule = 'invalid-gallery',
 				s = Parser.lintConfig.getSeverity(rule, 'parameter');
 			if (s) {
-				const e = generateForSelf(this, {start}, rule, 'invalid image parameter', s);
+				const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
 				e.fix = fixByRemove(e, -1);
 				errors.push(e);
 			}
@@ -310,7 +310,7 @@ export abstract class ImageParameterToken extends Token {
 			const rule = 'url-encoding',
 				s = Parser.lintConfig.getSeverity(rule, 'file');
 			if (s) {
-				const e = generateForSelf(this, {start}, rule, 'unnecessary URL encoding in an internal link', s);
+				const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
 				e.fix = fixByDecode(e, this);
 				errors.push(e);
 			}

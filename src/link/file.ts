@@ -209,7 +209,7 @@ export abstract class FileToken extends LinkBaseToken {
 			&& this.closest('ext-link-text')
 			&& (this.getValue('link') as string | undefined)?.trim() !== ''
 		) {
-			const e = generateForSelf(this, rect, rule, 'internal link in an external link', s),
+			const e = generateForSelf(this, rect, rule, 'link-in-extlink', s),
 				link = this.getArg('link');
 			if (link) {
 				const from = start + link.getRelativeIndex();
@@ -223,7 +223,7 @@ export abstract class FileToken extends LinkBaseToken {
 		s = Parser.lintConfig.getSeverity(rule, 'parameter');
 		if (s && unscaled) {
 			for (const arg of args.filter(({name}) => name === 'width')) {
-				const e = generateForChild(arg, rect, rule, 'invalid image parameter', s);
+				const e = generateForChild(arg, rect, rule, 'invalid-image-parameter', s);
 				e.fix = fixByRemove(e, -1);
 				errors.push(e);
 			}
@@ -248,7 +248,7 @@ export abstract class FileToken extends LinkBaseToken {
 		 */
 		const generate = (
 			tokens: ImageParameterToken[],
-			msg: string,
+			msg: 'conflicting' | 'duplicate',
 			p1: string,
 			severity: SeverityPredicate = true,
 		): LintError[] => tokens.map(arg => {
@@ -256,7 +256,9 @@ export abstract class FileToken extends LinkBaseToken {
 			if (!s) {
 				return false;
 			}
-			const e = generateForChild(arg, rect, rule, Parser.msg(`${msg} image $1 parameter`, p1), s);
+
+			/** `conflicting-image-parameter`或`duplicate-image-parameter` */
+			const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
 			e.suggestions = [fixByRemove(e, -1)];
 			return e;
 		}).filter((e): e is LintError => e !== false);
@@ -278,7 +280,7 @@ export abstract class FileToken extends LinkBaseToken {
 					const plainArgs = filterArgs(relevantArgs, transclusion);
 					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
 				}
-				errors.push(...generate(relevantArgs, 'duplicated', key, severity));
+				errors.push(...generate(relevantArgs, 'duplicate', key, severity));
 			}
 		}
 		if (frameKeys.length > 1) {

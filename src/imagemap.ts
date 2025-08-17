@@ -172,7 +172,7 @@ export abstract class ImagemapToken extends Token {
 						const str = child.toString().trim();
 						return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
 					}).map(child => {
-						const e = generateForChild(child, rect, rule, 'invalid link in <imagemap>', s);
+						const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
 						e.suggestions = [
 							fixByRemove(e, -1),
 							fixBy(e, 'comment', '# '),
@@ -181,7 +181,7 @@ export abstract class ImagemapToken extends Token {
 					}),
 				);
 			} else {
-				errors.push(generateForSelf(this, rect, rule, '<imagemap> without an image', s));
+				errors.push(generateForSelf(this, rect, rule, 'imagemap-without-image', s));
 			}
 		}
 		return errors;

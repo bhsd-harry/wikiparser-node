@@ -272,7 +272,7 @@ export abstract class TdToken extends TableBaseToken {
 					const double = data.includes('||'),
 						s = severities[double ? 1 : 0];
 					if (s) {
-						const e = generateForChild(child, rect, rule, 'additional "|" in a table cell', s);
+						const e = generateForChild(child, rect, rule, 'pipe-in-table', s);
 						if (double) {
 							const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
 							e.fix = fixBy(

@@ -279,7 +279,7 @@ export abstract class AttributesToken extends Token {
 			s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
 				.map(k => Parser.lintConfig.getSeverity(rules[0], k));
 		if (s[0] && this.#lint()) {
-			const e = generateForSelf(this, rect, rules[0], 'attributes of a closing tag', s[0]),
+			const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]),
 				index = parentNode!.getAbsoluteIndex();
 			e.suggestions = [
 				fixByRemove(e),
@@ -300,7 +300,7 @@ export abstract class AttributesToken extends Token {
 				const str = attr.text().trim(),
 					severity = s[wordRegex.test(str) ? 1 : 2];
 				if (str && severity) {
-					const e = generateForChild(attr, rect, rules[0], 'containing invalid attribute', severity);
+					const e = generateForChild(attr, rect, rules[0], 'invalid-attribute', severity);
 					e.suggestions = [fixByRemove(e, 0, ' ')];
 					errors.push(e);
 				}
@@ -318,7 +318,7 @@ export abstract class AttributesToken extends Token {
 							attr,
 							rect,
 							rules[1],
-							Parser.msg('duplicated $1 attribute', key),
+							Parser.msg('duplicate-attribute', key),
 							severity,
 						),
 						remove = fixByRemove(e);

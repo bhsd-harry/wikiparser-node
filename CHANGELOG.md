@@ -1,3 +1,11 @@
+## v1.25.0
+
+*2025-08-17*
+
+**Changed**
+
+- The message keys are all changed to follow the [Mediawiki convention](https://www.mediawiki.org/wiki/Manual:Coding_conventions#System_messages)
+
 ## v1.24.1
 
 *2025-08-14*

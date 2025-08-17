@@ -230,12 +230,12 @@ export abstract class LinkBaseToken extends Token {
 		let rule: LintError.Rule = 'unknown-page',
 			s = Parser.lintConfig.getSeverity(rule);
 		if (s && target.childNodes.some(({type: t}) => t === 'template')) {
-			errors.push(generateForChild(target, rect, rule, 'template in an internal link target', s));
+			errors.push(generateForChild(target, rect, rule, 'template-in-link', s));
 		}
 		rule = 'url-encoding';
 		s = Parser.lintConfig.getSeverity(rule);
 		if (s && encoded) {
-			const e = generateForChild(target, rect, rule, 'unnecessary URL encoding in an internal link', s);
+			const e = generateForChild(target, rect, rule, 'unnecessary-encoding', s);
 			e.fix = fixByDecode(e, target);
 			errors.push(e);
 		}
@@ -245,7 +245,7 @@ export abstract class LinkBaseToken extends Token {
 			const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
 				textNode = linkText?.childNodes[j!] as AstText | undefined;
 			if (textNode) {
-				const e = generateForChild(linkText!, rect, rule, 'additional "|" in the link text', s),
+				const e = generateForChild(linkText!, rect, rule, 'pipe-in-link', s),
 					i = e.startIndex + linkText!.getRelativeIndex(j);
 				e.suggestions = [fixByPipe(i, textNode.data)];
 				errors.push(e);
@@ -254,7 +254,7 @@ export abstract class LinkBaseToken extends Token {
 		rule = 'no-ignored';
 		s = Parser.lintConfig.getSeverity(rule, 'fragment');
 		if (s && fragment !== undefined && !isLink(type)) {
-			const e = generateForChild(target, rect, rule, 'useless fragment', s),
+			const e = generateForChild(target, rect, rule, 'useless-fragment', s),
 				j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
 				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {
