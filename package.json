@@ -55,7 +55,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^1.0.1",
-		"@bhsd/codemirror-mediawiki": "^3.1.0",
+		"@bhsd/codemirror-mediawiki": "^3.2.0",
 		"@bhsd/test-util": "^0.1.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",
