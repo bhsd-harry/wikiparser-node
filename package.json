@@ -22,11 +22,12 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle.js",
+		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP,LINT --outfile=build/bundle.js",
+		"bundle:es8": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle-es8.js",
 		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --outfile=build/bundle-lsp.js",
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
 		"build:core": "npm run bundle:core && esbuild build/bundle.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:es8": "esbuild build/bundle.js --charset=utf8 --minify --target=es2017 --format=iife --outfile=bundle/bundle-es8.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle-es8.min.js",
+		"build:es8": "npm run bundle:es8 && esbuild build/bundle-es8.js --charset=utf8 --minify --target=es2017 --format=iife --outfile=bundle/bundle-es8.min.js && eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle-es8.min.js",
 		"build:lsp": "npm run bundle:lsp && esbuild build/bundle-lsp.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle-lsp.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
@@ -39,8 +40,8 @@
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"prof": "node dist/test/prof.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
-		"test:unit": "mocha dist/test/test.js",
-		"test:parser": "mocha dist/test/parserTests.js",
+		"test:unit": "mocha --require bundle/bundle-lsp.min.js dist/test/test.js",
+		"test:parser": "mocha --require bundle/bundle.min.js dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"

@@ -53,7 +53,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** 片段标识符 */
 	get fragment(): string | undefined {
-		return this.#title.fragment;
+		LSP: return this.#title.fragment; // eslint-disable-line no-unused-labels
 	}
 
 	/* PRINT ONLY END */
@@ -123,46 +123,48 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		const errors = super.lint(start, re),
-			{childNodes: [target, linkText], type} = this,
-			{encoded, fragment} = this.#title,
-			rect = new BoundingRect(this, start);
-		let rule: LintError.Rule = 'unknown-page',
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				{childNodes: [target, linkText], type} = this,
+				{encoded, fragment} = this.#title,
+				rect = new BoundingRect(this, start);
+			let rule: LintError.Rule = 'unknown-page',
+				s = Parser.lintConfig.getSeverity(rule);
+			if (s && target.childNodes.some(({type: t}) => t === 'template')) {
+				errors.push(generateForChild(target, rect, rule, 'template-in-link', s));
+			}
+			rule = 'url-encoding';
 			s = Parser.lintConfig.getSeverity(rule);
-		if (s && target.childNodes.some(({type: t}) => t === 'template')) {
-			errors.push(generateForChild(target, rect, rule, 'template-in-link', s));
-		}
-		rule = 'url-encoding';
-		s = Parser.lintConfig.getSeverity(rule);
-		if (s && encoded) {
-			const e = generateForChild(target, rect, rule, 'unnecessary-encoding', s);
-			e.fix = fixByDecode(e, target);
-			errors.push(e);
-		}
-		rule = 'pipe-like';
-		s = Parser.lintConfig.getSeverity(rule, 'link');
-		if (s && (type === 'link' || type === 'category')) {
-			const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
-				textNode = linkText?.childNodes[j!] as AstText | undefined;
-			if (textNode) {
-				const e = generateForChild(linkText!, rect, rule, 'pipe-in-link', s),
-					i = e.startIndex + linkText!.getRelativeIndex(j);
-				e.suggestions = [fixByPipe(i, textNode.data)];
+			if (s && encoded) {
+				const e = generateForChild(target, rect, rule, 'unnecessary-encoding', s);
+				e.fix = fixByDecode(e, target);
 				errors.push(e);
 			}
-		}
-		rule = 'no-ignored';
-		s = Parser.lintConfig.getSeverity(rule, 'fragment');
-		if (s && fragment !== undefined && !isLink(type)) {
-			const e = generateForChild(target, rect, rule, 'useless-fragment', s),
-				j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
-				textNode = target.childNodes[j] as AstText | undefined;
-			if (textNode) {
-				e.fix = fixByRemove(e, target.getRelativeIndex(j) + textNode.data.indexOf('#'));
+			rule = 'pipe-like';
+			s = Parser.lintConfig.getSeverity(rule, 'link');
+			if (s && (type === 'link' || type === 'category')) {
+				const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
+					textNode = linkText?.childNodes[j!] as AstText | undefined;
+				if (textNode) {
+					const e = generateForChild(linkText!, rect, rule, 'pipe-in-link', s),
+						i = e.startIndex + linkText!.getRelativeIndex(j);
+					e.suggestions = [fixByPipe(i, textNode.data)];
+					errors.push(e);
+				}
 			}
-			errors.push(e);
+			rule = 'no-ignored';
+			s = Parser.lintConfig.getSeverity(rule, 'fragment');
+			if (s && fragment !== undefined && !isLink(type)) {
+				const e = generateForChild(target, rect, rule, 'useless-fragment', s),
+					j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
+					textNode = target.childNodes[j] as AstText | undefined;
+				if (textNode) {
+					e.fix = fixByRemove(e, target.getRelativeIndex(j) + textNode.data.indexOf('#'));
+				}
+				errors.push(e);
+			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */
@@ -181,11 +183,13 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start),
-			{type, fragment} = this;
-		if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
-			json['fragment'] = fragment;
+		const json = super.json(undefined, start);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {type, fragment} = this;
+			if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
+				json['fragment'] = fragment;
+			}
+			return json;
 		}
-		return json;
 	}
 }

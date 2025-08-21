@@ -89,7 +89,7 @@ const factory = (
 	};
 };
 
-export const generateForChild = factory((child, start, line, col) => {
+export const generateForChild = /* #__PURE__ */ factory((child, start, line, col) => {
 	const index = child.getRelativeIndex(),
 		{top, left} = child.parentNode!.posFromIndex(index)!;
 	return {
@@ -99,7 +99,8 @@ export const generateForChild = factory((child, start, line, col) => {
 	};
 });
 
-export const generateForSelf = factory((_, startIndex, startLine, startCol) => ({startIndex, startLine, startCol}));
+export const generateForSelf =
+	/* #__PURE__ */ factory((_, startIndex, startLine, startCol) => ({startIndex, startLine, startCol}));
 
 /**
  * Quick fix

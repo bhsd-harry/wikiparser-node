@@ -40,16 +40,18 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start, false),
-			rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, 'redirect');
-		if (s && this.length === 2) {
-			const e = generateForChild(this.lastChild, {start}, rule, 'useless-link-text', s);
-			e.startIndex--;
-			e.startCol--;
-			e.fix = fixByRemove(e);
-			errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, false),
+				rule = 'no-ignored',
+				s = Parser.lintConfig.getSeverity(rule, 'redirect');
+			if (s && this.length === 2) {
+				const e = generateForChild(this.lastChild, {start}, rule, 'useless-link-text', s);
+				e.startIndex--;
+				e.startCol--;
+				e.fix = fixByRemove(e);
+				errors.push(e);
+			}
+			return errors;
 		}
-		return errors;
 	}
 }

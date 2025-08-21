@@ -19,12 +19,8 @@ const removeClass = (ele, ...cls) => {
 };
 (async () => {
     const tests = await (await fetch('./test/parserTests.json')).json(), key = 'wikiparser-node-done', dones = new Set(JSON.parse(localStorage.getItem(key))), isGH = location.hostname.endsWith('.github.io'), isIframe = self !== top, select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
-    Parser.config = await (await fetch('./config/default.json')).json();
-    wikiparse.print = (wikitext, include, stage) => {
-        const printed = Parser.parse(wikitext, include, stage).print();
-        return Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, printed]]);
-    };
-    wikiparse.highlight(pre, false, true);
+    wikiparse.setConfig(await (await fetch('./config/default.json')).json());
+    await wikiparse.highlight(pre, false, true);
     btn.disabled = !select.value;
     if (!isGH) {
         btn.style.display = '';

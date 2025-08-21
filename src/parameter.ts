@@ -12,7 +12,8 @@ import type {
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
-const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
+const linkRegex = /* #__PURE__ */ (() =>
+	new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu'))();
 
 /**
  * template or magic word parameter
@@ -43,10 +44,12 @@ export abstract class ParameterToken extends Token {
 
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
-		try {
-			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-		} catch {
-			return false;
+		LSP: { // eslint-disable-line no-unused-labels
+			try {
+				return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
+			} catch {
+				return false;
+			}
 		}
 	}
 
@@ -104,26 +107,28 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'unescaped',
-			s = Parser.lintConfig.getSeverity(rule);
-		if (s) {
-			const {firstChild} = this,
-				link = linkRegex.exec(firstChild.text())?.[0];
-			try {
-				if (link && new URL(link).search) {
-					const e = generateForChild(firstChild, {start}, rule, 'unescaped-query', s);
-					e.startIndex = e.endIndex;
-					e.startLine = e.endLine;
-					e.startCol = e.endCol;
-					e.endIndex++;
-					e.endCol++;
-					e.fix = fixByEscape(e.startIndex, '{{=}}');
-					errors.push(e);
-				}
-			} catch {}
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'unescaped',
+				s = Parser.lintConfig.getSeverity(rule);
+			if (s) {
+				const {firstChild} = this,
+					link = linkRegex.exec(firstChild.text())?.[0];
+				try {
+					if (link && new URL(link).search) {
+						const e = generateForChild(firstChild, {start}, rule, 'unescaped-query', s);
+						e.startIndex = e.endIndex;
+						e.startLine = e.endLine;
+						e.startCol = e.endCol;
+						e.endIndex++;
+						e.endCol++;
+						e.fix = fixByEscape(e.startIndex, '{{=}}');
+						errors.push(e);
+					}
+				} catch {}
+			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */
@@ -134,7 +139,9 @@ export abstract class ParameterToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
+			return json;
+		}
 	}
 }

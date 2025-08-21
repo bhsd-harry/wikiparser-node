@@ -458,97 +458,100 @@ export class Token extends AstElement {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): ExtendedLintError {
-		let errors = super.lint(start, re);
-		if (this.type === 'root') {
-			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
-				r = 'no-duplicate',
-				s = ['category', 'id'].map(key => Parser.lintConfig.getSeverity(r, key)),
-				selector = lintSelectors.filter((_, i) => s[i]).join();
-			if (selector) {
-				for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
-					let key;
-					if (cat.is<CategoryToken>('category')) {
-						key = cat.name;
-					} else {
-						const value = cat.getValue();
-						if (value && value !== true) {
-							key = `#${value}`;
-						}
-					}
-					if (key) {
-						const thisCat = record.get(key);
-						if (thisCat) {
-							thisCat.add(cat);
+		LINT: { // eslint-disable-line no-unused-labels
+			let errors = super.lint(start, re);
+			if (this.type === 'root') {
+				const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
+					r = 'no-duplicate',
+					s = ['category', 'id'].map(key => Parser.lintConfig.getSeverity(r, key)),
+					selector = lintSelectors.filter((_, i) => s[i]).join();
+				if (selector) {
+					for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
+						let key;
+						if (cat.is<CategoryToken>('category')) {
+							key = cat.name;
 						} else {
-							record.set(key, new Set([cat]));
+							const value = cat.getValue();
+							if (value && value !== true) {
+								key = `#${value}`;
+							}
+						}
+						if (key) {
+							const thisCat = record.get(key);
+							if (thisCat) {
+								thisCat.add(cat);
+							} else {
+								record.set(key, new Set([cat]));
+							}
+						}
+					}
+					for (const [key, value] of record) {
+						if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
+							const isCat = !key.startsWith('#'),
+								msg: 'duplicate-category' | 'duplicate-id' = `duplicate-${isCat ? 'category' : 'id'}`,
+								severity = s[isCat ? 0 : 1] as LintError.Severity;
+							errors.push(...[...value].map(cat => {
+								const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
+								if (isCat) {
+									e.suggestions = [fixByRemove(e)];
+								}
+								return e;
+							}));
 						}
 					}
 				}
-				for (const [key, value] of record) {
-					if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
-						const isCat = !key.startsWith('#'),
-							msg: 'duplicate-category' | 'duplicate-id' = `duplicate-${isCat ? 'category' : 'id'}`,
-							severity = s[isCat ? 0 : 1] as LintError.Severity;
-						errors.push(...[...value].map(cat => {
-							const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
-							if (isCat) {
-								e.suggestions = [fixByRemove(e)];
-							}
-							return e;
-						}));
-					}
+				const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
+					wikitext = this.toString(),
+					ignores: LintIgnore[] = [];
+				let mt = regex.exec(wikitext);
+				while (mt) {
+					const {1: type, index} = mt,
+						detail = mt[2]?.trim();
+					ignores.push({
+						line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
+						from: type === 'disable' ? regex.lastIndex : undefined,
+						to: type === 'enable' ? regex.lastIndex : undefined,
+						rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
+					});
+					mt = regex.exec(wikitext);
 				}
-			}
-			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
-				wikitext = this.toString(),
-				ignores: LintIgnore[] = [];
-			let mt = regex.exec(wikitext);
-			while (mt) {
-				const {1: type, index} = mt,
-					detail = mt[2]?.trim();
-				ignores.push({
-					line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
-					from: type === 'disable' ? regex.lastIndex : undefined,
-					to: type === 'enable' ? regex.lastIndex : undefined,
-					rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
+				errors = errors.filter(({rule, startLine, startIndex}) => {
+					const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
+					for (const {line, from, to, rules} of ignores) {
+						if (line > startLine + 1) {
+							break;
+						} else if (rules && !rules.has(rule)) {
+							continue;
+						} else if (line === startLine && from === undefined && to === undefined) {
+							return false;
+						} else if (from! <= startIndex && from! > nearest.pos) {
+							nearest.pos = from!;
+							nearest.type = 'from';
+						} else if (to! <= startIndex && to! > nearest.pos) {
+							nearest.pos = to!;
+							nearest.type = 'to';
+						}
+					}
+					return nearest.type !== 'from';
 				});
-				mt = regex.exec(wikitext);
-			}
-			errors = errors.filter(({rule, startLine, startIndex}) => {
-				const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
-				for (const {line, from, to, rules} of ignores) {
-					if (line > startLine + 1) {
-						break;
-					} else if (rules && !rules.has(rule)) {
-						continue;
-					} else if (line === startLine && from === undefined && to === undefined) {
-						return false;
-					} else if (from! <= startIndex && from! > nearest.pos) {
-						nearest.pos = from!;
-						nearest.type = 'from';
-					} else if (to! <= startIndex && to! > nearest.pos) {
-						nearest.pos = to!;
-						nearest.type = 'to';
+				if (errors.some(({fix}) => fix)) {
+					// 倒序修复，跳过嵌套的修复
+					const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[]).sort(
+						({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo,
+					);
+					let i = Infinity,
+						output = wikitext;
+					for (const {range: [from, to], text: t} of fixable) {
+						if (to <= i) {
+							output = output.slice(0, from) + t + output.slice(to);
+							i = from;
+						}
 					}
+					Object.assign(errors, {output});
 				}
-				return nearest.type !== 'from';
-			});
-			if (errors.some(({fix}) => fix)) {
-				// 倒序修复，跳过嵌套的修复
-				const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[])
-					.sort(({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo);
-				let i = Infinity,
-					output = wikitext;
-				for (const {range: [from, to], text: t} of fixable) {
-					if (to <= i) {
-						output = output.slice(0, from) + t + output.slice(to);
-						i = from;
-					}
-				}
-				Object.assign(errors, {output});
 			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */

@@ -130,105 +130,107 @@ export abstract class HtmlToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{name, parentNode, closing, selfClosing} = this,
-			rect = new BoundingRect(this, start),
-			severity = this.inTableAttrs();
-		let rule: LintError.Rule = 'h1',
-			s = Parser.lintConfig.getSeverity(rule, 'html');
-		if (s && name === 'h1' && !closing) {
-			const e = generateForSelf(this, rect, rule, '<h1>', s);
-			e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
-			errors.push(e);
-		}
-		rule = 'parsing-order';
-		s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? 'html' : 'templateInTable');
-		if (s) {
-			const e = generateForSelf(this, rect, rule, 'html-in-table', s);
-			if (severity === 2) {
-				e.suggestions = [fixByRemove(e)];
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				{name, parentNode, closing, selfClosing} = this,
+				rect = new BoundingRect(this, start),
+				severity = this.inTableAttrs();
+			let rule: LintError.Rule = 'h1',
+				s = Parser.lintConfig.getSeverity(rule, 'html');
+			if (s && name === 'h1' && !closing) {
+				const e = generateForSelf(this, rect, rule, '<h1>', s);
+				e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
+				errors.push(e);
 			}
-			errors.push(e);
-		}
-		rule = 'obsolete-tag';
-		s = Parser.lintConfig.getSeverity(rule, name);
-		if (s && obsoleteTags.has(name)) {
-			errors.push(generateForSelf(this, rect, rule, 'obsolete-tag', s));
-		}
-		rule = 'bold-header';
-		s = Parser.lintConfig.getSeverity(rule, name);
-		if (
-			s && (name === 'b' || name === 'strong')
-			&& this.closest('heading-title,ext')?.type === 'heading-title'
-		) {
-			const e = generateForSelf(this, rect, rule, 'bold-in-header', s);
-			e.suggestions = [fixByRemove(e)];
-			errors.push(e);
-		}
-		const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
-			isVoid = voidTags.includes(name),
-			isFlexible = flexibleTags.includes(name),
-			isNormal = !isVoid && !isFlexible;
-		rule = 'unmatched-tag';
-		if (closing && (selfClosing || isVoid) || selfClosing && isNormal) {
-			s = Parser.lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
+			rule = 'parsing-order';
+			s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? 'html' : 'templateInTable');
 			if (s) {
-				const e = generateForSelf(
-						this,
-						rect,
-						rule,
-						closing ? 'closing-and-self-closing' : 'invalid-self-closing',
-						s,
-					),
-					open = fixByOpen(start),
-					noSelfClosing: LintError.Fix = {
-						desc: Parser.msg('no-self-closing'),
-						range: [e.endIndex - 2, e.endIndex - 1],
-						text: '',
-					};
-				if (isFlexible) {
-					e.suggestions = [open, noSelfClosing];
-				} else if (closing) {
-					e.fix = isVoid ? open : noSelfClosing;
-				} else {
-					e.suggestions = [
-						noSelfClosing,
-						fixByClose(e.endIndex, `></${name}>`, -2),
-					];
+				const e = generateForSelf(this, rect, rule, 'html-in-table', s);
+				if (severity === 2) {
+					e.suggestions = [fixByRemove(e)];
 				}
 				errors.push(e);
 			}
-		} else if (!this.findMatchingTag()) {
-			const error = generateForSelf(this, rect, rule, closing ? 'unmatched-closing' : 'unclosed-tag'),
-				ancestor = this.closest<TranscludeToken>('magic-word');
-			if (ancestor && magicWords.has(ancestor.name)) {
-				s = Parser.lintConfig.getSeverity(rule, 'conditional');
-			} else if (closing) {
-				s = Parser.lintConfig.getSeverity(rule, 'closing');
-				error.suggestions = [fixByRemove(error)];
-			} else {
-				s = Parser.lintConfig.getSeverity(rule, 'opening');
-				const childNodes = parentNode?.childNodes;
-				if (formattingTags.has(name)) {
-					if (
-						childNodes?.slice(0, childNodes.indexOf(this)).some(
-							tag => tag.type === 'html' && tag.name === name && !(tag as this).findMatchingTag(),
-						)
-					) {
-						error.suggestions = [fixByClose(start + 1, '/')];
+			rule = 'obsolete-tag';
+			s = Parser.lintConfig.getSeverity(rule, name);
+			if (s && obsoleteTags.has(name)) {
+				errors.push(generateForSelf(this, rect, rule, 'obsolete-tag', s));
+			}
+			rule = 'bold-header';
+			s = Parser.lintConfig.getSeverity(rule, name);
+			if (
+				s && (name === 'b' || name === 'strong')
+				&& this.closest('heading-title,ext')?.type === 'heading-title'
+			) {
+				const e = generateForSelf(this, rect, rule, 'bold-in-header', s);
+				e.suggestions = [fixByRemove(e)];
+				errors.push(e);
+			}
+			const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
+				isVoid = voidTags.includes(name),
+				isFlexible = flexibleTags.includes(name),
+				isNormal = !isVoid && !isFlexible;
+			rule = 'unmatched-tag';
+			if (closing && (selfClosing || isVoid) || selfClosing && isNormal) {
+				s = Parser.lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
+				if (s) {
+					const e = generateForSelf(
+							this,
+							rect,
+							rule,
+							closing ? 'closing-and-self-closing' : 'invalid-self-closing',
+							s,
+						),
+						open = fixByOpen(start),
+						noSelfClosing: LintError.Fix = {
+							desc: Parser.msg('no-self-closing'),
+							range: [e.endIndex - 2, e.endIndex - 1],
+							text: '',
+						};
+					if (isFlexible) {
+						e.suggestions = [open, noSelfClosing];
+					} else if (closing) {
+						e.fix = isVoid ? open : noSelfClosing;
+					} else {
+						e.suggestions = [
+							noSelfClosing,
+							fixByClose(e.endIndex, `></${name}>`, -2),
+						];
 					}
-					if (this.closest('heading-title')) {
-						error.rule = 'format-leakage';
-						s = Parser.lintConfig.getSeverity('format-leakage', name);
+					errors.push(e);
+				}
+			} else if (!this.findMatchingTag()) {
+				const error = generateForSelf(this, rect, rule, closing ? 'unmatched-closing' : 'unclosed-tag'),
+					ancestor = this.closest<TranscludeToken>('magic-word');
+				if (ancestor && magicWords.has(ancestor.name)) {
+					s = Parser.lintConfig.getSeverity(rule, 'conditional');
+				} else if (closing) {
+					s = Parser.lintConfig.getSeverity(rule, 'closing');
+					error.suggestions = [fixByRemove(error)];
+				} else {
+					s = Parser.lintConfig.getSeverity(rule, 'opening');
+					const childNodes = parentNode?.childNodes;
+					if (formattingTags.has(name)) {
+						if (
+							childNodes?.slice(0, childNodes.indexOf(this)).some(
+								tag => tag.type === 'html' && tag.name === name && !(tag as this).findMatchingTag(),
+							)
+						) {
+							error.suggestions = [fixByClose(start + 1, '/')];
+						}
+						if (this.closest('heading-title')) {
+							error.rule = 'format-leakage';
+							s = Parser.lintConfig.getSeverity('format-leakage', name);
+						}
 					}
 				}
+				if (s) {
+					error.severity = s;
+					errors.push(error);
+				}
 			}
-			if (s) {
-				error.severity = s;
-				errors.push(error);
-			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/**
@@ -297,7 +299,9 @@ export abstract class HtmlToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
+			return json;
+		}
 	}
 }

@@ -244,17 +244,19 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		const errors: LintError[] = [];
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!;
-			child.setAttribute('aIndex', cur);
-			const childErrors = child.lint(cur, re);
-			if (childErrors.length > 0) {
-				errors.push(...childErrors);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors: LintError[] = [];
+			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
+				const child = this.childNodes[i]!;
+				child.setAttribute('aIndex', cur);
+				const childErrors = child.lint(cur, re);
+				if (childErrors.length > 0) {
+					errors.push(...childErrors);
+				}
+				cur += child.toString().length + this.getGaps(i);
 			}
-			cur += child.toString().length + this.getGaps(i);
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */
@@ -282,23 +284,26 @@ export abstract class AstElement extends AstNode {
 	 * @param start
 	 */
 	json(file?: string, start = this.getAbsoluteIndex()): AST {
-		const json = {
-			...this, // eslint-disable-line @typescript-eslint/no-misused-spread
-			type: this.type,
-			range: [start, start + this.toString().length],
-			childNodes: [],
-		} as unknown as AST;
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				{length} = child.toString();
-			child.setAttribute('aIndex', cur);
-			json.childNodes!.push(
-				child.type === 'text'
-					? {data: child.data, range: [cur, cur + length]} as unknown as AST
-					: child.json(undefined, cur),
-			);
-			cur += length + this.getGaps(i);
+		LSP: { // eslint-disable-line no-unused-labels
+			const json = {
+				...this, // eslint-disable-line @typescript-eslint/no-misused-spread
+				type: this.type,
+				range: [start, start + this.toString().length],
+				childNodes: [],
+			} as unknown as AST;
+			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
+				const child = this.childNodes[i]!,
+					{length} = child.toString();
+				child.setAttribute('aIndex', cur);
+				json.childNodes!.push(
+					child.type === 'text'
+						? {data: child.data, range: [cur, cur + length]} as unknown as AST
+						: child.json(undefined, cur),
+				);
+				cur += length + this.getGaps(i);
+			}
+			return json;
 		}
-		return json;
+		this.lspError('AstElement.json');
 	}
 }

@@ -140,34 +140,36 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1)),
-			rule = 'pipe-like',
-			severities = ['td', 'double'].map(key => Parser.lintConfig.getSeverity(rule, key));
-		for (const child of this.lastChild.childNodes) {
-			if (child.type === 'text') {
-				const {data} = child;
-				if (data.includes('|')) {
-					const double = data.includes('||'),
-						s = severities[double ? 1 : 0];
-					if (s) {
-						const e = generateForChild(child, rect, rule, 'pipe-in-table', s);
-						if (double) {
-							const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
-							e.fix = fixBy(
-								e,
-								'newline',
-								data.replace(/\|\|/gu, `\n${syntax}`),
-							);
-						} else {
-							e.suggestions = [fixByPipe(e.startIndex, data)];
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1)),
+				rule = 'pipe-like',
+				severities = ['td', 'double'].map(key => Parser.lintConfig.getSeverity(rule, key));
+			for (const child of this.lastChild.childNodes) {
+				if (child.type === 'text') {
+					const {data} = child;
+					if (data.includes('|')) {
+						const double = data.includes('||'),
+							s = severities[double ? 1 : 0];
+						if (s) {
+							const e = generateForChild(child, rect, rule, 'pipe-in-table', s);
+							if (double) {
+								const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
+								e.fix = fixBy(
+									e,
+									'newline',
+									data.replace(/\|\|/gu, `\n${syntax}`),
+								);
+							} else {
+								e.suggestions = [fixByPipe(e.startIndex, data)];
+							}
+							errors.push(e);
 						}
-						errors.push(e);
 					}
 				}
 			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/**
@@ -204,9 +206,11 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start),
-			{rowspan, colspan} = this;
-		Object.assign(json, {subtype: this.subtype}, rowspan !== 1 && {rowspan}, colspan !== 1 && {colspan});
-		return json;
+		const json = super.json(undefined, start);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {rowspan, colspan} = this;
+			Object.assign(json, {subtype: this.subtype}, rowspan !== 1 && {rowspan}, colspan !== 1 && {colspan});
+			return json;
+		}
 	}
 }

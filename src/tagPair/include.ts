@@ -39,21 +39,23 @@ export abstract class IncludeToken extends TagPairToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors: LintError[] = [],
-			{firstChild, closed, name} = this,
-			rect = new BoundingRect(this, start),
-			rules = ['no-ignored', 'unclosed-comment'] as const,
-			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'include'));
-		if (s[0] && firstChild.data.trim()) {
-			const e = generateForChild(firstChild, rect, rules[0], 'useless-attribute', s[0]);
-			e.suggestions = [fixByRemove(e)];
-			errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors: LintError[] = [],
+				{firstChild, closed, name} = this,
+				rect = new BoundingRect(this, start),
+				rules = ['no-ignored', 'unclosed-comment'] as const,
+				s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'include'));
+			if (s[0] && firstChild.data.trim()) {
+				const e = generateForChild(firstChild, rect, rules[0], 'useless-attribute', s[0]);
+				e.suggestions = [fixByRemove(e)];
+				errors.push(e);
+			}
+			if (s[1] && !closed) {
+				const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed', `<${name}>`), s[1]);
+				e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];
+				errors.push(e);
+			}
+			return errors;
 		}
-		if (s[1] && !closed) {
-			const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed', `<${name}>`), s[1]);
-			e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];
-			errors.push(e);
-		}
-		return errors;
 	}
 }

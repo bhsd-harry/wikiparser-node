@@ -43,13 +43,8 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 		container = document.getElementById('frame')!,
 		container1 = document.getElementById('frame1')!,
 		container2 = document.getElementById('frame2')!;
-	Parser.config = await (await fetch('./config/default.json')).json();
-	/** @implements */
-	wikiparse.print = (wikitext, include, stage): Promise<[number, string, string][]> => {
-		const printed = Parser.parse(wikitext, include, stage).print();
-		return Promise.resolve([[stage ?? Infinity, wikitext, printed]]);
-	};
-	wikiparse.highlight!(pre, false, true);
+	wikiparse.setConfig(await (await fetch('./config/default.json')).json() as import('./typings').ConfigData);
+	await wikiparse.highlight!(pre, false, true);
 	btn.disabled = !select.value;
 	if (!isGH) {
 		btn.style.display = '';

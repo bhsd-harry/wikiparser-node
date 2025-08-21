@@ -14,18 +14,20 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	 * @since v1.16.5
 	 */
 	get indent(): number {
-		return this.innerText.split(':').length - 1;
+		LSP: return this.innerText.split(':').length - 1; // eslint-disable-line no-unused-labels
 	}
 
 	/* PRINT ONLY END */
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start),
-			{indent} = this;
-		if (indent) {
-			json['indent'] = indent;
+		const json = super.json(undefined, start);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {indent} = this;
+			if (indent) {
+				json['indent'] = indent;
+			}
+			return json;
 		}
-		return json;
 	}
 }
