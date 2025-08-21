@@ -30,11 +30,6 @@ export abstract class ArgToken extends Token {
 		return 'arg';
 	}
 
-	/** default value / 预设值 */
-	get default(): string | false {
-		return this.childNodes[1]?.text() ?? false;
-	}
-
 	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
@@ -82,39 +77,41 @@ export abstract class ArgToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const {childNodes: [argName, argDefault, ...rest]} = this;
-		argName.setAttribute('aIndex', start + 3);
-		const errors = argName.lint(start + 3, re);
-		if (argDefault) {
-			const index = start + 4 + argName.toString().length;
-			argDefault.setAttribute('aIndex', index);
-			const childErrors = argDefault.lint(index, re);
-			if (childErrors.length > 0) {
-				errors.push(...childErrors);
-			}
-		}
-		const rules = ['no-ignored', 'no-arg'] as const,
-			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'arg') as LintError.Severity);
-		if (s[0] && rest.length > 0) {
-			const rect = new BoundingRect(this, start);
-			errors.push(...rest.map(child => {
-				const e = generateForChild(child, rect, rules[0], 'invisible-triple-braces', s[0]);
-				e.startIndex--;
-				e.startCol--;
-				e.suggestions = [
-					fixByRemove(e),
-					fixByEscape(e.startIndex, '{{!}}'),
-				];
-				return e;
-			}));
-		}
-		if (s[1] && !this.getAttribute('include')) {
-			const e = generateForSelf(this, {start}, rules[1], 'unexpected-argument', s[1]);
+		LINT: { // eslint-disable-line no-unused-labels
+			const {childNodes: [argName, argDefault, ...rest]} = this;
+			argName.setAttribute('aIndex', start + 3);
+			const errors = argName.lint(start + 3, re);
 			if (argDefault) {
-				e.suggestions = [fixBy(e, 'expand', argDefault.text())];
+				const index = start + 4 + argName.toString().length;
+				argDefault.setAttribute('aIndex', index);
+				const childErrors = argDefault.lint(index, re);
+				if (childErrors.length > 0) {
+					errors.push(...childErrors);
+				}
 			}
-			errors.push(e);
+			const rules = ['no-ignored', 'no-arg'] as const,
+				s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'arg') as LintError.Severity);
+			if (s[0] && rest.length > 0) {
+				const rect = new BoundingRect(this, start);
+				errors.push(...rest.map(child => {
+					const e = generateForChild(child, rect, rules[0], 'invisible-triple-braces', s[0]);
+					e.startIndex--;
+					e.startCol--;
+					e.suggestions = [
+						fixByRemove(e),
+						fixByEscape(e.startIndex, '{{!}}'),
+					];
+					return e;
+				}));
+			}
+			if (s[1] && !this.getAttribute('include')) {
+				const e = generateForSelf(this, {start}, rules[1], 'unexpected-argument', s[1]);
+				if (argDefault) {
+					e.suggestions = [fixBy(e, 'expand', argDefault.text())];
+				}
+				errors.push(e);
+			}
+			return errors;
 		}
-		return errors;
 	}
 }

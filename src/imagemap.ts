@@ -131,30 +131,32 @@ export abstract class ImagemapToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start),
-			{childNodes, image} = this,
-			rule = 'invalid-imagemap',
-			s = Parser.lintConfig.getSeverity(rule, image ? 'link' : 'image');
-		if (s) {
-			if (image) {
-				errors.push(
-					...childNodes.filter(child => {
-						const str = child.toString().trim();
-						return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
-					}).map(child => {
-						const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
-						e.suggestions = [
-							fixByRemove(e, -1),
-							fixBy(e, 'comment', '# '),
-						];
-						return e;
-					}),
-				);
-			} else {
-				errors.push(generateForSelf(this, rect, rule, 'imagemap-without-image', s));
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rect = new BoundingRect(this, start),
+				{childNodes, image} = this,
+				rule = 'invalid-imagemap',
+				s = Parser.lintConfig.getSeverity(rule, image ? 'link' : 'image');
+			if (s) {
+				if (image) {
+					errors.push(
+						...childNodes.filter(child => {
+							const str = child.toString().trim();
+							return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
+						}).map(child => {
+							const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
+							e.suggestions = [
+								fixByRemove(e, -1),
+								fixBy(e, 'comment', '# '),
+							];
+							return e;
+						}),
+					);
+				} else {
+					errors.push(generateForSelf(this, rect, rule, 'imagemap-without-image', s));
+				}
 			}
+			return errors;
 		}
-		return errors;
 	}
 }

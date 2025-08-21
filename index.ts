@@ -39,7 +39,7 @@ import fetchConfig from './bin/config';
 declare interface Parser extends ParserBase {
 	default: Parser;
 	/** @since v1.5.1 */
-	rules: readonly LintError.Rule[];
+	readonly rules: readonly LintError.Rule[];
 	/** @private */
 	lintConfig: LintConfiguration;
 
@@ -127,16 +127,22 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 let viewOnly = true;
 
-let lintConfig = getLintConfig(),
+let lintConfig = (() => {
+		LINT: return getLintConfig(); // eslint-disable-line no-unused-labels
+	})(),
 	i18n: Record<string, string> | undefined;
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
-	rules,
 	config: 'default',
 
 	/** @implements */
+	get rules() {
+		LINT: return rules; // eslint-disable-line no-unused-labels
+	},
+
+	/** @implements */
 	get i18n() {
-		return {...enMsg, ...i18n};
+		LINT: return {...enMsg, ...i18n}; // eslint-disable-line no-unused-labels
 	},
 
 	set i18n(data: Record<string, string> | string | undefined) {
@@ -147,17 +153,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else {
 			/* NOT FOR BROWSER ONLY END */
 
-			i18n = data;
+			LINT: i18n = data; // eslint-disable-line no-unused-labels
 		}
 	},
 
 	/** @implements */
 	get lintConfig(): LintConfiguration {
-		return lintConfig;
+		LINT: return lintConfig; // eslint-disable-line no-unused-labels
 	},
 
 	set lintConfig(config: LintConfig) {
-		lintConfig = getLintConfig(config);
+		LINT: lintConfig = getLintConfig(config); // eslint-disable-line no-unused-labels
 	},
 
 	/** @implements */
@@ -231,7 +237,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
+		LINT: { // eslint-disable-line no-unused-labels
+			return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
+		}
 	},
 
 	/** @implements */
@@ -269,9 +277,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		wikitext = tidy(wikitext);
 		let types: Stage[] | undefined;
-		if (typeof maxStage !== 'number') {
-			types = Array.isArray(maxStage) ? maxStage : [maxStage];
-			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+		LINT: { // eslint-disable-line no-unused-labels
+			if (typeof maxStage !== 'number') {
+				types = Array.isArray(maxStage) ? maxStage : [maxStage];
+				maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+			}
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const root = Shadow.run(() => {
@@ -307,40 +317,42 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	async partialParse(wikitext, watch, include, config = Parser.getConfig()) {
-		const {Token}: typeof import('./src/index') = require('./src/index');
-		const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
-			{running} = Shadow;
-		Shadow.running = true;
-		const token = new Token(tidy(wikitext), config);
-		token.type = 'root';
-		let i = 0;
-		try {
-			await new Promise<void>(resolve => {
-				const /** @ignore */ check = (): void => {
-						if (watch() === wikitext) {
-							i++;
-							set(parseOnce, 0);
-						} else {
-							resolve();
-						}
-					},
-					/** @ignore */ parseOnce = (): void => {
-						if (i === MAX_STAGE + 1) {
-							token.afterBuild();
-							resolve();
-						} else {
-							token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
-							check();
-						}
-					};
-				set(parseOnce, 0);
-			});
-		} catch (e) /* istanbul ignore next */ {
+		LSP: { // eslint-disable-line no-unused-labels
+			const {Token}: typeof import('./src/index') = require('./src/index');
+			const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
+				{running} = Shadow;
+			Shadow.running = true;
+			const token = new Token(tidy(wikitext), config);
+			token.type = 'root';
+			let i = 0;
+			try {
+				await new Promise<void>(resolve => {
+					const /** @ignore */ check = (): void => {
+							if (watch() === wikitext) {
+								i++;
+								set(parseOnce, 0);
+							} else {
+								resolve();
+							}
+						},
+						/** @ignore */ parseOnce = (): void => {
+							if (i === MAX_STAGE + 1) {
+								token.afterBuild();
+								resolve();
+							} else {
+								token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
+								check();
+							}
+						};
+					set(parseOnce, 0);
+				});
+			} catch (e) /* istanbul ignore next */ {
+				Shadow.running = running;
+				throw e;
+			}
 			Shadow.running = running;
-			throw e;
+			return token;
 		}
-		Shadow.running = running;
-		return token;
 	},
 
 	/** @implements */
@@ -384,6 +396,7 @@ const def: PropertyDescriptorMap = {
 		/* NOT FOR BROWSER ONLY */
 
 		'fetchConfig',
+		'lintCSS',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {

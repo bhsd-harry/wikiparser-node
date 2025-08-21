@@ -5,4 +5,5 @@ export enum BuildMethod {
 	Text,
 }
 
-export const enMsg = require('../../i18n/en.json'); // eslint-disable-line n/no-missing-require
+// eslint-disable-next-line n/no-missing-require
+export const enMsg = /* #__PURE__ */ (() => require('../../i18n/en.json'))();

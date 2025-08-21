@@ -29,13 +29,14 @@ const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0,
  */
 const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
 
-let wordRegex: RegExp;
-try {
-	// eslint-disable-next-line prefer-regex-literals
-	wordRegex = new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
-} catch /* istanbul ignore next */ {
-	wordRegex = /[^\W_]/u;
-}
+const wordRegex = /* #__PURE__ */ ((): RegExp => {
+	try {
+		// eslint-disable-next-line prefer-regex-literals
+		return new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
+	} catch /* istanbul ignore next */ {
+		return /[^\W_]/u;
+	}
+})();
 
 /**
  * attributes of extension and HTML tags
@@ -170,67 +171,69 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{parentNode, childNodes} = this,
-			attrs = new Map<string, AttributeToken[]>(),
-			duplicated = new Set<string>(),
-			rect = new BoundingRect(this, start),
-			rules = ['no-ignored', 'no-duplicate'] as const,
-			s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
-				.map(k => Parser.lintConfig.getSeverity(rules[0], k));
-		if (s[0] && this.#lint()) {
-			const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]),
-				index = parentNode!.getAbsoluteIndex();
-			e.suggestions = [
-				fixByRemove(e),
-				fixByOpen(index),
-			];
-			errors.push(e);
-		}
-		for (const attr of childNodes) {
-			if (attr instanceof AttributeToken) {
-				const {name} = attr;
-				if (attrs.has(name)) {
-					duplicated.add(name);
-					attrs.get(name)!.push(attr);
-				} else {
-					attrs.set(name, [attr]);
-				}
-			} else {
-				const str = attr.text().trim(),
-					severity = s[wordRegex.test(str) ? 1 : 2];
-				if (str && severity) {
-					const e = generateForChild(attr, rect, rules[0], 'invalid-attribute', severity);
-					e.suggestions = [fixByRemove(e, 0, ' ')];
-					errors.push(e);
-				}
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				{parentNode, childNodes} = this,
+				attrs = new Map<string, AttributeToken[]>(),
+				duplicated = new Set<string>(),
+				rect = new BoundingRect(this, start),
+				rules = ['no-ignored', 'no-duplicate'] as const,
+				s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
+					.map(k => Parser.lintConfig.getSeverity(rules[0], k));
+			if (s[0] && this.#lint()) {
+				const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]),
+					index = parentNode!.getAbsoluteIndex();
+				e.suggestions = [
+					fixByRemove(e),
+					fixByOpen(index),
+				];
+				errors.push(e);
 			}
-		}
-		const severity = Parser.lintConfig.getSeverity(rules[1], 'attribute');
-		if (severity && duplicated.size > 0) {
-			for (const key of duplicated) {
-				const pairs = attrs.get(key)!.map(attr => {
-					const value = attr.getValue();
-					return [attr, value === true ? '' : value] as const;
-				});
-				errors.push(...pairs.map(([attr, value], i) => {
-					const e = generateForChild(
-							attr,
-							rect,
-							rules[1],
-							Parser.msg('duplicate-attribute', key),
-							severity,
-						),
-						remove = fixByRemove(e);
-					if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
-						e.fix = remove;
+			for (const attr of childNodes) {
+				if (attr instanceof AttributeToken) {
+					const {name} = attr;
+					if (attrs.has(name)) {
+						duplicated.add(name);
+						attrs.get(name)!.push(attr);
 					} else {
-						e.suggestions = [remove];
+						attrs.set(name, [attr]);
 					}
-					return e;
-				}));
+				} else {
+					const str = attr.text().trim(),
+						severity = s[wordRegex.test(str) ? 1 : 2];
+					if (str && severity) {
+						const e = generateForChild(attr, rect, rules[0], 'invalid-attribute', severity);
+						e.suggestions = [fixByRemove(e, 0, ' ')];
+						errors.push(e);
+					}
+				}
 			}
+			const severity = Parser.lintConfig.getSeverity(rules[1], 'attribute');
+			if (severity && duplicated.size > 0) {
+				for (const key of duplicated) {
+					const pairs = attrs.get(key)!.map(attr => {
+						const value = attr.getValue();
+						return [attr, value === true ? '' : value] as const;
+					});
+					errors.push(...pairs.map(([attr, value], i) => {
+						const e = generateForChild(
+								attr,
+								rect,
+								rules[1],
+								Parser.msg('duplicate-attribute', key),
+								severity,
+							),
+							remove = fixByRemove(e);
+						if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
+							e.fix = remove;
+						} else {
+							e.suggestions = [remove];
+						}
+						return e;
+					}));
+				}
+			}
+			return errors;
 		}
-		return errors;
 	}
 }

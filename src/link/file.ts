@@ -105,116 +105,127 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			args = filterArgs(this.getAllArgs(), argTypes),
-			keys = [...new Set(args.map(({name}) => name))],
-			frameKeys = keys.filter(key => frame.has(key)),
-			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
-			vertAlignKeys = keys.filter(key => vertAlign.has(key)),
-			[fr] = frameKeys,
-			unscaled = fr === 'framed' || fr === 'manualthumb',
-			rect = new BoundingRect(this, start),
-			{extension} = this;
-		let rule: LintError.Rule = 'nested-link',
-			s = Parser.lintConfig.getSeverity(rule, 'file');
-		if (
-			s
-			&& extensions.has(extension!)
-			&& this.closest('ext-link-text')
-			&& (this.getValue('link') as string | undefined)?.trim() !== ''
-		) {
-			const e = generateForSelf(this, rect, rule, 'link-in-extlink', s),
-				link = this.getArg('link');
-			if (link) {
-				const from = start + link.getRelativeIndex();
-				e.fix = {desc: Parser.msg('delink'), range: [from, from + link.toString().length], text: 'link='};
-			} else {
-				e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
-			}
-			errors.push(e);
-		}
-		rule = 'invalid-gallery';
-		s = Parser.lintConfig.getSeverity(rule, 'parameter');
-		if (s && unscaled) {
-			for (const arg of args.filter(({name}) => name === 'width')) {
-				const e = generateForChild(arg, rect, rule, 'invalid-image-parameter', s);
-				e.fix = fixByRemove(e, -1);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				args = filterArgs(this.getAllArgs(), argTypes),
+				keys = [...new Set(args.map(({name}) => name))],
+				frameKeys = keys.filter(key => frame.has(key)),
+				horizAlignKeys = keys.filter(key => horizAlign.has(key)),
+				vertAlignKeys = keys.filter(key => vertAlign.has(key)),
+				[fr] = frameKeys,
+				unscaled = fr === 'framed' || fr === 'manualthumb',
+				rect = new BoundingRect(this, start),
+				{extension} = this;
+			let rule: LintError.Rule = 'nested-link',
+				s = Parser.lintConfig.getSeverity(rule, 'file');
+			if (
+				s
+				&& extensions.has(extension!)
+				&& this.closest('ext-link-text')
+				&& (this.getValue('link') as string | undefined)?.trim() !== ''
+			) {
+				const e = generateForSelf(this, rect, rule, 'link-in-extlink', s),
+					link = this.getArg('link');
+				if (link) {
+					const from = start + link.getRelativeIndex();
+					e.fix = {
+						desc: Parser.msg('delink'),
+						range: [from, from + link.toString().length],
+						text: 'link=',
+					};
+				} else {
+					e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
+				}
 				errors.push(e);
 			}
-		}
-		if (
-			args.length === keys.length
-			&& frameKeys.length < 2
-			&& horizAlignKeys.length < 2
-			&& vertAlignKeys.length < 2
-		) {
+			rule = 'invalid-gallery';
+			s = Parser.lintConfig.getSeverity(rule, 'parameter');
+			if (s && unscaled) {
+				for (const arg of args.filter(({name}) => name === 'width')) {
+					const e = generateForChild(arg, rect, rule, 'invalid-image-parameter', s);
+					e.fix = fixByRemove(e, -1);
+					errors.push(e);
+				}
+			}
+			if (
+				args.length === keys.length
+				&& frameKeys.length < 2
+				&& horizAlignKeys.length < 2
+				&& vertAlignKeys.length < 2
+			) {
+				return errors;
+			}
+			rule = 'no-duplicate';
+			const severities = ['unknownImageParameter', 'imageParameter']
+				.map(k => Parser.lintConfig.getSeverity(rule, k));
+
+			/**
+			 * 图片参数到语法错误的映射
+			 * @param tokens 图片参数节点
+			 * @param msg 消息键
+			 * @param p1 替换$1
+			 * @param severity 错误等级
+			 */
+			const generate = (
+				tokens: ImageParameterToken[],
+				msg: 'conflicting' | 'duplicate',
+				p1: string,
+				severity: SeverityPredicate = true,
+			): LintError[] => tokens.map(arg => {
+				s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
+				if (!s) {
+					return false;
+				}
+
+				/** `conflicting-image-parameter`或`duplicate-image-parameter` */
+				const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
+				e.suggestions = [fixByRemove(e, -1)];
+				return e;
+			}).filter((e): e is LintError => e !== false);
+			for (const key of keys) {
+				if (key === 'invalid' || key === 'width' && unscaled) {
+					continue;
+				}
+				const isCaption = key === 'caption';
+				let relevantArgs = args.filter(({name}) => name === key);
+				if (isCaption) {
+					relevantArgs = [
+						...relevantArgs.slice(0, -1).filter(arg => arg.text()),
+						...relevantArgs.slice(-1),
+					];
+				}
+				if (relevantArgs.length > 1) {
+					let severity: SeverityPredicate = !isCaption || !extension || extensions.has(extension);
+					if (isCaption && severity) {
+						const plainArgs = filterArgs(relevantArgs, transclusion);
+						severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
+					}
+					errors.push(...generate(relevantArgs, 'duplicate', key, severity));
+				}
+			}
+			if (frameKeys.length > 1) {
+				errors.push(...generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'));
+			}
+			if (horizAlignKeys.length > 1) {
+				errors.push(
+					...generate(
+						args.filter(({name}) => horizAlign.has(name)),
+						'conflicting',
+						'horizontal-alignment',
+					),
+				);
+			}
+			if (vertAlignKeys.length > 1) {
+				errors.push(
+					...generate(
+						args.filter(({name}) => vertAlign.has(name)),
+						'conflicting',
+						'vertical-alignment',
+					),
+				);
+			}
 			return errors;
 		}
-		rule = 'no-duplicate';
-		const severities = ['unknownImageParameter', 'imageParameter'].map(k => Parser.lintConfig.getSeverity(rule, k));
-
-		/**
-		 * 图片参数到语法错误的映射
-		 * @param tokens 图片参数节点
-		 * @param msg 消息键
-		 * @param p1 替换$1
-		 * @param severity 错误等级
-		 */
-		const generate = (
-			tokens: ImageParameterToken[],
-			msg: 'conflicting' | 'duplicate',
-			p1: string,
-			severity: SeverityPredicate = true,
-		): LintError[] => tokens.map(arg => {
-			s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
-			if (!s) {
-				return false;
-			}
-
-			/** `conflicting-image-parameter`或`duplicate-image-parameter` */
-			const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
-			e.suggestions = [fixByRemove(e, -1)];
-			return e;
-		}).filter((e): e is LintError => e !== false);
-		for (const key of keys) {
-			if (key === 'invalid' || key === 'width' && unscaled) {
-				continue;
-			}
-			const isCaption = key === 'caption';
-			let relevantArgs = args.filter(({name}) => name === key);
-			if (isCaption) {
-				relevantArgs = [
-					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
-					...relevantArgs.slice(-1),
-				];
-			}
-			if (relevantArgs.length > 1) {
-				let severity: SeverityPredicate = !isCaption || !extension || extensions.has(extension);
-				if (isCaption && severity) {
-					const plainArgs = filterArgs(relevantArgs, transclusion);
-					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
-				}
-				errors.push(...generate(relevantArgs, 'duplicate', key, severity));
-			}
-		}
-		if (frameKeys.length > 1) {
-			errors.push(...generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'));
-		}
-		if (horizAlignKeys.length > 1) {
-			errors.push(
-				...generate(
-					args.filter(({name}) => horizAlign.has(name)),
-					'conflicting',
-					'horizontal-alignment',
-				),
-			);
-		}
-		if (vertAlignKeys.length > 1) {
-			errors.push(
-				...generate(args.filter(({name}) => vertAlign.has(name)), 'conflicting', 'vertical-alignment'),
-			);
-		}
-		return errors;
 	}
 
 	/**

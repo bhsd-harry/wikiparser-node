@@ -171,21 +171,23 @@ export abstract class ExtToken extends TagPairToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start);
-		if (this.name !== 'nowiki') {
-			const s = this.inHtmlAttrs(),
-				rule = 'parsing-order',
-				severity = s && Parser.lintConfig.getSeverity(rule, s === 2 ? 'ext' : 'templateInTable');
-			if (severity) {
-				errors.push(generateForSelf(this, rect, rule, 'ext-in-html', severity));
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rect = new BoundingRect(this, start);
+			if (this.name !== 'nowiki') {
+				const s = this.inHtmlAttrs(),
+					rule = 'parsing-order',
+					severity = s && Parser.lintConfig.getSeverity(rule, s === 2 ? 'ext' : 'templateInTable');
+				if (severity) {
+					errors.push(generateForSelf(this, rect, rule, 'ext-in-html', severity));
+				}
 			}
+			const rule = 'var-anchor',
+				s = Parser.lintConfig.getSeverity(rule, 'ref');
+			if (s && this.name === 'ref' && this.closest('heading-title')) {
+				errors.push(generateForSelf(this, rect, rule, 'variable-anchor', s));
+			}
+			return errors;
 		}
-		const rule = 'var-anchor',
-			s = Parser.lintConfig.getSeverity(rule, 'ref');
-		if (s && this.name === 'ref' && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, rect, rule, 'variable-anchor', s));
-		}
-		return errors;
 	}
 }

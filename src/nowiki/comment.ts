@@ -27,17 +27,19 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		if (this.closed) {
-			return [];
+		LINT: { // eslint-disable-line no-unused-labels
+			if (this.closed) {
+				return [];
+			}
+			const rule = 'unclosed-comment',
+				s = Parser.lintConfig.getSeverity(rule);
+			if (!s) {
+				return [];
+			}
+			const e = generateForSelf(this, {start}, rule, Parser.msg('unclosed', 'html-comment'), s);
+			e.suggestions = [fixByClose(e.endIndex, '-->')];
+			return [e];
 		}
-		const rule = 'unclosed-comment',
-			s = Parser.lintConfig.getSeverity(rule);
-		if (!s) {
-			return [];
-		}
-		const e = generateForSelf(this, {start}, rule, Parser.msg('unclosed', 'html-comment'), s);
-		e.suggestions = [fixByClose(e.endIndex, '-->')];
-		return [e];
 	}
 
 	/** @private */

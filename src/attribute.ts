@@ -181,32 +181,40 @@ export abstract class AttributeToken extends Token {
 			|| (name === 'itemtype' || name === 'itemid' || name === 'itemref')
 			&& !parentNode?.hasAttr('itemscope')
 		) {
-			const s = Parser.lintConfig.getSeverity(rule, 'unknown');
-			if (s) {
-				const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
-				e.suggestions = [fixByRemove(start, length)];
-				return e;
+			LINT: { // eslint-disable-line no-unused-labels
+				const s = Parser.lintConfig.getSeverity(rule, 'unknown');
+				if (s) {
+					const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
+					e.suggestions = [fixByRemove(start, length)];
+					return e;
+				}
 			}
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
-			rule = 'insecure-style';
-			const s = Parser.lintConfig.getSeverity(rule);
-			return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
+			LINT: { // eslint-disable-line no-unused-labels
+				rule = 'insecure-style';
+				const s = Parser.lintConfig.getSeverity(rule);
+				return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
+			}
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
-			const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
-			if (s) {
-				const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
-				e.suggestions = [
-					fixByRemove(start, length),
-					fixBy(e, '0 tabindex', '0'),
-				];
-				return e;
+			LINT: { // eslint-disable-line no-unused-labels
+				const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
+				if (s) {
+					const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
+					e.suggestions = [
+						fixByRemove(start, length),
+						fixBy(e, '0 tabindex', '0'),
+					];
+					return e;
+				}
 			}
 		} else if (simple && type !== 'ext-attr') {
 			const data = provideValues(tag, name),
 				v = String(value).toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
-				const s = Parser.lintConfig.getSeverity(rule, 'value');
-				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+				LINT: { // eslint-disable-line no-unused-labels
+					const s = Parser.lintConfig.getSeverity(rule, 'value');
+					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+				}
 			}
 		} else if (
 			typeof value === 'string' && (
@@ -217,34 +225,38 @@ export abstract class AttributeToken extends Token {
 					.test(value)
 			)
 		) {
-			const s = Parser.lintConfig.getSeverity(rule, 'value');
-			return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+			LINT: { // eslint-disable-line no-unused-labels
+				const s = Parser.lintConfig.getSeverity(rule, 'value');
+				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+			}
 		}
 		return false;
 	}
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{balanced, firstChild, lastChild, name, tag} = this,
-			rect = new BoundingRect(this, start),
-			rules = ['unclosed-quote', 'obsolete-attr'] as const,
-			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
-		if (s[0] && !balanced) {
-			const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
-			e.startIndex--;
-			e.startCol--;
-			e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
-			errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				{balanced, firstChild, lastChild, name, tag} = this,
+				rect = new BoundingRect(this, start),
+				rules = ['unclosed-quote', 'obsolete-attr'] as const,
+				s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
+			if (s[0] && !balanced) {
+				const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
+				e.startIndex--;
+				e.startCol--;
+				e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
+				errors.push(e);
+			}
+			const e = this.#lint(start, rect);
+			if (e) {
+				errors.push(e);
+			}
+			if (s[1] && obsoleteAttrs[tag]?.has(name)) {
+				errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
+			}
+			return errors;
 		}
-		const e = this.#lint(start, rect);
-		if (e) {
-			errors.push(e);
-		}
-		if (s[1] && obsoleteAttrs[tag]?.has(name)) {
-			errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
-		}
-		return errors;
 	}
 
 	/**
