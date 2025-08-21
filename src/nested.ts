@@ -20,12 +20,12 @@ import {clone} from '../mixin/clone';
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 
 const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']),
-	lintRegex = [false, true].map(article => {
+	lintRegex = /* #__PURE__ */ (() => [false, true].map(article => {
 		const noinclude = article ? 'includeonly' : 'noinclude';
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		/^(?:<noinclude(?:\s[^>]*)?\/?>|<\/noinclude\s*>)$/iu;
 		return new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu');
-	}) as [RegExp, RegExp];
+	}) as [RegExp, RegExp])();
 
 /**
  * extension tag that has a nested structure
@@ -109,34 +109,36 @@ export abstract class NestedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, this.name);
-		if (!s) {
-			return errors;
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'no-ignored',
+				s = Parser.lintConfig.getSeverity(rule, this.name);
+			if (!s) {
+				return errors;
+			}
+			const rect = new BoundingRect(this, start),
+				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
+			return [
+				...errors,
+				...this.childNodes.filter(child => {
+					const {type, name} = child;
+					if (type === 'ext') {
+						return !this.#tags.includes(name);
+					} else if (childTypes.has(type)) {
+						return false;
+					}
+					const str = child.toString().trim();
+					return str && !regex.test(str);
+				}).map(child => {
+					const e = generateForChild(child, rect, rule, Parser.msg('invalid-content', this.name), s);
+					e.suggestions = [
+						fixByRemove(e),
+						fixByComment(e, child.toString()),
+					];
+					return e;
+				}),
+			];
 		}
-		const rect = new BoundingRect(this, start),
-			regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
-		return [
-			...errors,
-			...this.childNodes.filter(child => {
-				const {type, name} = child;
-				if (type === 'ext') {
-					return !this.#tags.includes(name);
-				} else if (childTypes.has(type)) {
-					return false;
-				}
-				const str = child.toString().trim();
-				return str && !regex.test(str);
-			}).map(child => {
-				const e = generateForChild(child, rect, rule, Parser.msg('invalid-content', this.name), s);
-				e.suggestions = [
-					fixByRemove(e),
-					fixByComment(e, child.toString()),
-				];
-				return e;
-			}),
-		];
 	}
 
 	/* NOT FOR BROWSER */

@@ -91,7 +91,7 @@ export abstract class PreToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return super.lint(start, /<\s*\/\s*(pre)\b/giu);
+		LINT: return super.lint(start, /<\s*\/\s*(pre)\b/giu); // eslint-disable-line no-unused-labels
 	}
 
 	/* NOT FOR BROWSER */

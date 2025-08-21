@@ -50,7 +50,7 @@ You can download the code via CDN, for example:
 or
 
 ```html
-<script src="//unpkg.com/wikiparser-node/bundle/bundle.min.js"></script>
+<script src="//unpkg.com/wikiparser-node/bundle/bundle-lsp.min.js"></script>
 ```
 
 For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-%28EN%29).

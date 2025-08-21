@@ -176,44 +176,46 @@ export abstract class MagicLinkToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start),
-			{type, childNodes} = this;
-		if (type === 'magic-link') {
-			const rule = 'invalid-isbn',
-				s = Parser.lintConfig.getSeverity(rule);
-			if (s && this.#lint()) {
-				errors.push(generateForSelf(this, rect, rule, 'invalid-isbn', s));
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rect = new BoundingRect(this, start),
+				{type, childNodes} = this;
+			if (type === 'magic-link') {
+				const rule = 'invalid-isbn',
+					s = Parser.lintConfig.getSeverity(rule);
+				if (s && this.#lint()) {
+					errors.push(generateForSelf(this, rect, rule, 'invalid-isbn', s));
+				}
+				return errors;
+			}
+			const pipe = type === 'ext-link-url',
+				rule = 'unterminated-url',
+				severity = Parser.lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
+			if (severity) {
+				const regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
+					child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
+				if (child) {
+					const {data} = child,
+						e = generateForChild(
+							child,
+							rect,
+							rule,
+							Parser.msg('in-url', pipe ? '"|"' : 'full-width-punctuation'),
+							severity,
+						),
+						{index, 0: s} = regex.exec(data)!,
+						i = e.startIndex + index;
+					e.suggestions = pipe
+						? [fixBySpace(i, 1)]
+						: [
+							fixBySpace(i),
+							{desc: Parser.msg('encode'), range: [i, i + s.length], text: encodeURI(s)},
+						];
+					errors.push(e);
+				}
 			}
 			return errors;
 		}
-		const pipe = type === 'ext-link-url',
-			rule = 'unterminated-url',
-			severity = Parser.lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
-		if (severity) {
-			const regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
-				child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
-			if (child) {
-				const {data} = child,
-					e = generateForChild(
-						child,
-						rect,
-						rule,
-						Parser.msg('in-url', pipe ? '"|"' : 'full-width-punctuation'),
-						severity,
-					),
-					{index, 0: s} = regex.exec(data)!,
-					i = e.startIndex + index;
-				e.suggestions = pipe
-					? [fixBySpace(i, 1)]
-					: [
-						fixBySpace(i),
-						{desc: Parser.msg('encode'), range: [i, i + s.length], text: encodeURI(s)},
-					];
-				errors.push(e);
-			}
-		}
-		return errors;
 	}
 
 	/**

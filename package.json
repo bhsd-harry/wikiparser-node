@@ -36,7 +36,7 @@
 	"bin": {
 		"getParserConfig": "bin/config.js"
 	},
-	"browser": "/bundle/bundle.min.js",
+	"browser": "/bundle/bundle-lsp.min.js",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,

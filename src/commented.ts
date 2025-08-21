@@ -64,7 +64,8 @@ export abstract class CommentedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return super.lint(start, new RegExp(String.raw`<\s*(?:\/\s*)?(${this.name})\b`, 'giu'));
+		// eslint-disable-next-line no-unused-labels
+		LINT: return super.lint(start, new RegExp(String.raw`<\s*(?:\/\s*)?(${this.name})\b`, 'giu'));
 	}
 
 	/* NOT FOR BROWSER */

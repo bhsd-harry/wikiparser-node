@@ -296,26 +296,28 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{link, name} = this;
-		if (name === 'invalid') {
-			const rule = 'invalid-gallery',
-				s = Parser.lintConfig.getSeverity(rule, 'parameter');
-			if (s) {
-				const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
-				e.fix = fixByRemove(e, -1);
-				errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				{link, name} = this;
+			if (name === 'invalid') {
+				const rule = 'invalid-gallery',
+					s = Parser.lintConfig.getSeverity(rule, 'parameter');
+				if (s) {
+					const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
+					e.fix = fixByRemove(e, -1);
+					errors.push(e);
+				}
+			} else if (typeof link === 'object' && link.encoded) {
+				const rule = 'url-encoding',
+					s = Parser.lintConfig.getSeverity(rule, 'file');
+				if (s) {
+					const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
+					e.fix = fixByDecode(e, this);
+					errors.push(e);
+				}
 			}
-		} else if (typeof link === 'object' && link.encoded) {
-			const rule = 'url-encoding',
-				s = Parser.lintConfig.getSeverity(rule, 'file');
-			if (s) {
-				const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
-				e.fix = fixByDecode(e, this);
-				errors.push(e);
-			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** 是否是不可变参数 */

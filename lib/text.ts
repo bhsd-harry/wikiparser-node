@@ -34,20 +34,19 @@ import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
-const sp = String.raw`[${zs}\t]*`,
-	anySp = String.raw`[^\S\n]*`,
-	source =
-		String.raw`<${anySp}(?:/${
-			anySp
-		})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
-			sp
-		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
+const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
+	anySp = /* #__PURE__ */ (() => String.raw`[^\S\n]*`)(),
+	source =/* #__PURE__ */ (() => String.raw`<${anySp}(?:/${
+		anySp
+	})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
+		sp
+	}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`)();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<[^\S\n]*(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
-const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
+const errorSyntax = /* #__PURE__ */ (() => new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'))();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
-const errorSyntaxUrl = new RegExp(source, 'giu'),
+const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
 		'[': /[[\]]/u,
@@ -107,13 +106,14 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 		'param',
 		'xmp',
 	]);
-let wordRegex: RegExp;
-try {
-	// eslint-disable-next-line prefer-regex-literals
-	wordRegex = new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
-} catch /* istanbul ignore next */ {
-	wordRegex = /\w/u;
-}
+const wordRegex = /* #__PURE__ */ ((): RegExp => {
+	try {
+		// eslint-disable-next-line prefer-regex-literals
+		return new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
+	} catch /* istanbul ignore next */ {
+		return /\w/u;
+	}
+})();
 
 /**
  * text node
@@ -170,210 +170,212 @@ export class AstText extends AstNode {
 
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp | false): LintError[] {
-		if (errorRegex === false) {
-			return [];
-		}
-		const {data, parentNode, nextSibling, previousSibling} = this;
-		/* istanbul ignore if */
-		if (!parentNode) {
-			throw new Error('An isolated text node cannot be linted!');
-		}
-		const {type, name, parentNode: grandparent} = parentNode;
-		if (type === 'attr-value') {
-			const {name: grandName, tag} = grandparent as AttributeToken;
-			if (
-				tag === 'ref' && (grandName === 'name' || grandName === 'follow')
-				|| grandName === 'group' && (tag === 'ref' || tag === 'references')
-				|| tag === 'choose' && (grandName === 'before' || grandName === 'after')
-			) {
+		LINT: { // eslint-disable-line no-unused-labels
+			if (errorRegex === false) {
 				return [];
 			}
-		}
-		errorRegex ??= type === 'free-ext-link'
-			|| type === 'ext-link-url'
-			|| type === 'ext-link-text'
-			|| type === 'image-parameter' && name === 'link'
-			|| type === 'attr-value'
-			? errorSyntaxUrl
-			: errorSyntax;
-		if (data.search(errorRegex) === -1) {
-			return [];
-		}
-		errorRegex.lastIndex = 0;
-		const errors: LintError[] = [],
-			nextType = nextSibling?.type,
-			nextName = nextSibling?.name,
-			previousType = previousSibling?.type,
-			root = this.getRootNode(),
-			rootStr = root.toString(),
-			{ext, html, variants} = root.getAttribute('config'),
-			{top, left} = root.posFromIndex(start)!,
-			lintConfig = Parser.lintConfig['tag-like']!,
-			specified = typeof lintConfig === 'number'
-				? new Set()
-				: new Set(Object.keys(lintConfig[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
-			tags = new Set([
-				'onlyinclude',
-				'noinclude',
-				'includeonly',
-				...ext,
-				...html[0],
-				...html[1],
-				...html[2],
-				...specified,
-				...disallowedTags,
-			]);
-		for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
-			const [, tag, prefix] = mt;
-			let {index, 0: error} = mt;
-			if (prefix && prefix !== ']') {
-				const {length} = prefix;
-				index += length;
-				error = error.slice(length);
+			const {data, parentNode, nextSibling, previousSibling} = this;
+			/* istanbul ignore if */
+			if (!parentNode) {
+				throw new Error('An isolated text node cannot be linted!');
 			}
-			error = error.toLowerCase();
-			const [char] = error,
-				magicLink = char === 'r' || char === 'p' || char === 'i',
-				lbrace = char === '{',
-				rbrace = char === '}',
-				lbrack = char === '[',
-				rbrack = char === ']';
-			let {length} = error;
-			if (
-				char === '<' && !tags.has(tag!.toLowerCase())
-				|| lbrack && type === 'ext-link-text' && (
-					/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
-					&& nextSibling.innerText?.includes(']')
-				)
-				|| magicLink && (!parentNode.isPlain() || noLinkTypes.has(type))
-			) {
-				continue;
-			} else if (rbrack && (index || length > 1)) {
-				errorRegex.lastIndex--;
+			const {type, name, parentNode: grandparent} = parentNode;
+			if (type === 'attr-value') {
+				const {name: grandName, tag} = grandparent as AttributeToken;
+				if (
+					tag === 'ref' && (grandName === 'name' || grandName === 'follow')
+					|| grandName === 'group' && (tag === 'ref' || tag === 'references')
+					|| tag === 'choose' && (grandName === 'before' || grandName === 'after')
+				) {
+					return [];
+				}
 			}
+			errorRegex ??= type === 'free-ext-link'
+				|| type === 'ext-link-url'
+				|| type === 'ext-link-text'
+				|| type === 'image-parameter' && name === 'link'
+				|| type === 'attr-value'
+				? errorSyntaxUrl
+				: errorSyntax;
+			if (data.search(errorRegex) === -1) {
+				return [];
+			}
+			errorRegex.lastIndex = 0;
+			const errors: LintError[] = [],
+				nextType = nextSibling?.type,
+				nextName = nextSibling?.name,
+				previousType = previousSibling?.type,
+				root = this.getRootNode(),
+				rootStr = root.toString(),
+				{ext, html, variants} = root.getAttribute('config'),
+				{top, left} = root.posFromIndex(start)!,
+				lintConfig = Parser.lintConfig['tag-like']!,
+				specified = typeof lintConfig === 'number'
+					? new Set()
+					: new Set(Object.keys(lintConfig[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
+				tags = new Set([
+					'onlyinclude',
+					'noinclude',
+					'includeonly',
+					...ext,
+					...html[0],
+					...html[1],
+					...html[2],
+					...specified,
+					...disallowedTags,
+				]);
+			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
+				const [, tag, prefix] = mt;
+				let {index, 0: error} = mt;
+				if (prefix && prefix !== ']') {
+					const {length} = prefix;
+					index += length;
+					error = error.slice(length);
+				}
+				error = error.toLowerCase();
+				const [char] = error,
+					magicLink = char === 'r' || char === 'p' || char === 'i',
+					lbrace = char === '{',
+					rbrace = char === '}',
+					lbrack = char === '[',
+					rbrack = char === ']';
+				let {length} = error;
+				if (
+					char === '<' && !tags.has(tag!.toLowerCase())
+					|| lbrack && type === 'ext-link-text' && (
+						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
+						|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
+						&& nextSibling.innerText?.includes(']')
+					)
+					|| magicLink && (!parentNode.isPlain() || noLinkTypes.has(type))
+				) {
+					continue;
+				} else if (rbrack && (index || length > 1)) {
+					errorRegex.lastIndex--;
+				}
 
-			// Rule & Severity
-			let startIndex = start + index,
-				endIndex = startIndex + length,
-				rule: LintError.Rule | undefined,
-				severity: LintError.Severity | false;
-			const nextChar = rootStr[endIndex],
-				previousChar = rootStr[startIndex - 1],
-				leftBracket = lbrace || lbrack,
-				lConverter = lbrace && previousChar === '-' && variants.length > 0,
-				rConverter = rbrace && nextChar === '-' && variants.length > 0,
-				brokenExtLink = lbrack && nextType === 'free-ext-link' && !data.slice(index + 1).trim()
-					|| rbrack && previousType === 'free-ext-link'
-					&& !data.slice(0, index).includes(']');
-			if (magicLink) {
-				rule = 'lonely-http';
-				error = error.toUpperCase();
-				severity = Parser.lintConfig.getSeverity(rule, error);
-			} else if (char === '<') {
-				rule = 'tag-like';
-				let key: string | undefined;
-				if (/^<\/?\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
-					key = 'invalid';
-				} else if (specified.has(tag)) {
-					key = tag;
-				} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
-					key = 'disallowed';
-				}
-				severity = Parser.lintConfig.getSeverity(rule, key);
-			} else if (lConverter || rConverter) {
-				rule = 'lonely-bracket';
-				severity = Parser.lintConfig.getSeverity(rule, 'converter');
-				if (lConverter && index > 0) {
-					error = '-{';
-					index--;
-					startIndex--;
-					length = 2;
-				} else if (rConverter && index < data.length - 1) {
-					error = '}-';
-					endIndex++;
-					length = 2;
-				}
-			} else if (brokenExtLink) {
-				rule = 'lonely-bracket';
-				severity = Parser.lintConfig.getSeverity(rule, 'extLink');
-			} else if (leftBracket || rbrace || rbrack) {
-				rule = 'lonely-bracket';
-				if (length > 1 || lbrace && nextChar === char || rbrace && previousChar === char) {
-					severity = Parser.lintConfig.getSeverity(rule, 'double');
-				} else {
-					if (!lbrack || type !== 'ext-link-text') {
-						const regex = regexes[char],
-							remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
-						if (
-							lbrace && regex.exec(remains)?.[0] === '}'
-							|| rbrace && regex.exec(remains)?.[0] === '{'
-						) {
-							continue;
-						} else if (!remains.includes(char)) {
-							const sibling = leftBracket ? 'nextSibling' : 'previousSibling';
-							let cur = this[sibling];
-							while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
-								cur = cur[sibling];
-							}
-							if (cur && regex.exec(cur.data)![0] !== char) {
+				// Rule & Severity
+				let startIndex = start + index,
+					endIndex = startIndex + length,
+					rule: LintError.Rule | undefined,
+					severity: LintError.Severity | false;
+				const nextChar = rootStr[endIndex],
+					previousChar = rootStr[startIndex - 1],
+					leftBracket = lbrace || lbrack,
+					lConverter = lbrace && previousChar === '-' && variants.length > 0,
+					rConverter = rbrace && nextChar === '-' && variants.length > 0,
+					brokenExtLink = lbrack && nextType === 'free-ext-link' && !data.slice(index + 1).trim()
+						|| rbrack && previousType === 'free-ext-link'
+						&& !data.slice(0, index).includes(']');
+				if (magicLink) {
+					rule = 'lonely-http';
+					error = error.toUpperCase();
+					severity = Parser.lintConfig.getSeverity(rule, error);
+				} else if (char === '<') {
+					rule = 'tag-like';
+					let key: string | undefined;
+					if (/^<\/?\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
+						key = 'invalid';
+					} else if (specified.has(tag)) {
+						key = tag;
+					} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
+						key = 'disallowed';
+					}
+					severity = Parser.lintConfig.getSeverity(rule, key);
+				} else if (lConverter || rConverter) {
+					rule = 'lonely-bracket';
+					severity = Parser.lintConfig.getSeverity(rule, 'converter');
+					if (lConverter && index > 0) {
+						error = '-{';
+						index--;
+						startIndex--;
+						length = 2;
+					} else if (rConverter && index < data.length - 1) {
+						error = '}-';
+						endIndex++;
+						length = 2;
+					}
+				} else if (brokenExtLink) {
+					rule = 'lonely-bracket';
+					severity = Parser.lintConfig.getSeverity(rule, 'extLink');
+				} else if (leftBracket || rbrace || rbrack) {
+					rule = 'lonely-bracket';
+					if (length > 1 || lbrace && nextChar === char || rbrace && previousChar === char) {
+						severity = Parser.lintConfig.getSeverity(rule, 'double');
+					} else {
+						if (!lbrack || type !== 'ext-link-text') {
+							const regex = regexes[char],
+								remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
+							if (
+								lbrace && regex.exec(remains)?.[0] === '}'
+								|| rbrace && regex.exec(remains)?.[0] === '{'
+							) {
 								continue;
+							} else if (!remains.includes(char)) {
+								const sibling = leftBracket ? 'nextSibling' : 'previousSibling';
+								let cur = this[sibling];
+								while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
+									cur = cur[sibling];
+								}
+								if (cur && regex.exec(cur.data)![0] !== char) {
+									continue;
+								}
 							}
 						}
+						severity = Parser.lintConfig.getSeverity(rule, 'single');
 					}
-					severity = Parser.lintConfig.getSeverity(rule, 'single');
+				} else {
+					rule = 'lonely-http';
+					severity = Parser.lintConfig.getSeverity(rule);
 				}
-			} else {
-				rule = 'lonely-http';
-				severity = Parser.lintConfig.getSeverity(rule);
-			}
-			if (!severity) {
-				continue;
-			}
+				if (!severity) {
+					continue;
+				}
 
-			// LintError
-			const pos = this.posFromIndex(index)!,
-				{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left),
-				e: LintError = {
-					rule,
-					message: Parser.msg(
-						'lonely',
-						magicLink || char === 'h' || lConverter || rConverter ? error : char,
-					),
-					severity,
-					startIndex,
-					endIndex,
-					startLine,
-					endLine: startLine,
-					startCol,
-					endCol: startCol + length,
-				};
+				// LintError
+				const pos = this.posFromIndex(index)!,
+					{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left),
+					e: LintError = {
+						rule,
+						message: Parser.msg(
+							'lonely',
+							magicLink || char === 'h' || lConverter || rConverter ? error : char,
+						),
+						severity,
+						startIndex,
+						endIndex,
+						startLine,
+						endLine: startLine,
+						startCol,
+						endCol: startCol + length,
+					};
 
-			// Suggestions
-			if (char === '<') {
-				e.suggestions = [fixByEscape(startIndex, '&lt;')];
-			} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
-				e.suggestions = [fixBySpace(startIndex)];
-			} else if (lbrack && type === 'ext-link-text') {
-				const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
-				e.suggestions = [fixByEscape(i, '&#93;')];
-			} else if (rbrack && brokenExtLink) {
-				const i = start - previousSibling!.toString().length;
-				e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
-			} else if (magicLink) {
-				e.suggestions = [
-					...mt[0] === error
-						? []
-						: [fixByUpper(e, error)],
-					...nextChar === ':' || nextChar === '：'
-						? [fixBySpace(endIndex, 1)]
-						: [],
-				];
+				// Suggestions
+				if (char === '<') {
+					e.suggestions = [fixByEscape(startIndex, '&lt;')];
+				} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
+					e.suggestions = [fixBySpace(startIndex)];
+				} else if (lbrack && type === 'ext-link-text') {
+					const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
+					e.suggestions = [fixByEscape(i, '&#93;')];
+				} else if (rbrack && brokenExtLink) {
+					const i = start - previousSibling!.toString().length;
+					e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
+				} else if (magicLink) {
+					e.suggestions = [
+						...mt[0] === error
+							? []
+							: [fixByUpper(e, error)],
+						...nextChar === ':' || nextChar === '：'
+							? [fixBySpace(endIndex, 1)]
+							: [],
+					];
+				}
+
+				errors.push(e);
 			}
-
-			errors.push(e);
+			return errors;
 		}
-		return errors;
 	}
 
 	/**

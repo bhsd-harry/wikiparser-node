@@ -73,37 +73,39 @@ export abstract class ParamTagToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, this.name);
-		if (!s) {
-			return [];
-		}
-		const rect = new BoundingRect(this, start),
-			msg = Parser.msg('invalid-parameter', this.name),
-			errors: LintError[] = [];
-		for (const child of this.childNodes) {
-			child.setAttribute('aIndex', start);
-			const grandChildren = child.childNodes
-				.filter(({type}) => type !== 'comment' && type !== 'include' && type !== 'noinclude');
-			if (grandChildren.some(({type}) => type === 'ext')) {
-				errors.push(generateForChild(child, rect, rule, msg, s));
-			} else {
-				const i = grandChildren.findIndex(({type}) => type !== 'text'),
-					str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
-				if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
-					const e = generateForChild(child, rect, rule, msg, s);
-					e.suggestions = [fixByRemove(e)];
-					errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const rule = 'no-ignored',
+				s = Parser.lintConfig.getSeverity(rule, this.name);
+			if (!s) {
+				return [];
+			}
+			const rect = new BoundingRect(this, start),
+				msg = Parser.msg('invalid-parameter', this.name),
+				errors: LintError[] = [];
+			for (const child of this.childNodes) {
+				child.setAttribute('aIndex', start);
+				const grandChildren = child.childNodes
+					.filter(({type}) => type !== 'comment' && type !== 'include' && type !== 'noinclude');
+				if (grandChildren.some(({type}) => type === 'ext')) {
+					errors.push(generateForChild(child, rect, rule, msg, s));
 				} else {
-					const childErrors = child.lint(start, false);
-					if (childErrors.length > 0) {
-						errors.push(...childErrors);
+					const i = grandChildren.findIndex(({type}) => type !== 'text'),
+						str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
+					if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
+						const e = generateForChild(child, rect, rule, msg, s);
+						e.suggestions = [fixByRemove(e)];
+						errors.push(e);
+					} else {
+						const childErrors = child.lint(start, false);
+						if (childErrors.length > 0) {
+							errors.push(...childErrors);
+						}
 					}
 				}
+				start += child.toString().length + 1;
 			}
-			start += child.toString().length + 1;
+			return errors;
 		}
-		return errors;
 	}
 
 	/* NOT FOR BROWSER */

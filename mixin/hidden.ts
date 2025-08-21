@@ -23,7 +23,7 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 
 		override lint(start?: number): LintError[] {
 			// @ts-expect-error private argument
-			return linter ? [] : super.lint(start);
+			LINT: return linter ? [] : super.lint(start); // eslint-disable-line no-unused-labels
 		}
 
 		/* NOT FOR BROWSER */

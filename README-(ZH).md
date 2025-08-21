@@ -50,7 +50,7 @@ npm i wikilint
 或
 
 ```html
-<script src="//unpkg.com/wikiparser-node/bundle/bundle.min.js"></script>
+<script src="//unpkg.com/wikiparser-node/bundle/bundle-lsp.min.js"></script>
 ```
 
 更多浏览器端可用的插件请查阅对应[文档](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)。

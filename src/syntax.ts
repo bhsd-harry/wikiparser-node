@@ -49,7 +49,7 @@ export class SyntaxToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return super.lint(start, false);
+		LINT: return super.lint(start, false); // eslint-disable-line no-unused-labels
 	}
 
 	/* NOT FOR BROWSER */

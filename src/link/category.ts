@@ -35,8 +35,10 @@ export abstract class CategoryToken extends LinkBaseToken {
 
 	/** sort key / 分类排序关键字 */
 	get sortkey(): string | undefined {
-		const {childNodes: [, child]} = this;
-		return child && decodeHtml(child.text());
+		LSP: { // eslint-disable-line no-unused-labels
+			const {childNodes: [, child]} = this;
+			return child && decodeHtml(child.text());
+		}
 	}
 
 	/* PRINT ONLY END */
@@ -51,12 +53,14 @@ export abstract class CategoryToken extends LinkBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start),
-			{sortkey} = this;
-		if (sortkey) {
-			json['sortkey'] = sortkey;
+		const json = super.json(undefined, start);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {sortkey} = this;
+			if (sortkey) {
+				json['sortkey'] = sortkey;
+			}
+			return json;
 		}
-		return json;
 	}
 
 	/* NOT FOR BROWSER */

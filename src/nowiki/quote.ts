@@ -77,48 +77,52 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {previousSibling, bold, closing} = this,
-			previousData = previousSibling?.type === 'text' ? previousSibling.data : undefined,
-			errors: LintError[] = [],
-			rect = new BoundingRect(this, start),
-			rules = ['lonely-apos', 'bold-header'] as const,
-			severities = [undefined, 'word'].map(key => Parser.lintConfig.getSeverity(rules[0], key)),
-			s = Parser.lintConfig.getSeverity(rules[1]);
-		if (previousData?.endsWith(`'`)) {
-			const severity = severities[(closing.bold || closing.italic) && /[a-z\d]'$/iu.test(previousData) ? 1 : 0];
-			if (severity) {
-				const e = generateForSelf(this, rect, rules[0], Parser.msg('lonely', `'`), severity),
-					{startLine: endLine, startCol: endCol} = e,
-					[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
-					startIndex = start - length,
-					eNew: LintError = {
-						...e,
-						startIndex,
-						endIndex: start,
-						endLine,
-						startCol: endCol - length,
-						endCol,
-					};
-				eNew.suggestions = [
-					fixByEscape(startIndex, '&apos;', length),
-					fixByRemove(eNew),
-				];
-				errors.push(eNew);
+		LINT: { // eslint-disable-line no-unused-labels
+			const {previousSibling, bold, closing} = this,
+				previousData = previousSibling?.type === 'text' ? previousSibling.data : undefined,
+				errors: LintError[] = [],
+				rect = new BoundingRect(this, start),
+				rules = ['lonely-apos', 'bold-header'] as const,
+				severities = [undefined, 'word'].map(key => Parser.lintConfig.getSeverity(rules[0], key)),
+				s = Parser.lintConfig.getSeverity(rules[1]);
+			if (previousData?.endsWith(`'`)) {
+				const severity = severities[(closing.bold || closing.italic) && /[a-z\d]'$/iu.test(previousData) ? 1 : 0];
+				if (severity) {
+					const e = generateForSelf(this, rect, rules[0], Parser.msg('lonely', `'`), severity),
+						{startLine: endLine, startCol: endCol} = e,
+						[, {length}] = /(?:^|[^'])('+)$/u.exec(previousData) as string[] as [string, string],
+						startIndex = start - length,
+						eNew: LintError = {
+							...e,
+							startIndex,
+							endIndex: start,
+							endLine,
+							startCol: endCol - length,
+							endCol,
+						};
+					eNew.suggestions = [
+						fixByEscape(startIndex, '&apos;', length),
+						fixByRemove(eNew),
+					];
+					errors.push(eNew);
+				}
 			}
+			if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
+				const e = generateForSelf(this, rect, rules[1], 'bold-in-header', s);
+				e.suggestions = [fixByRemove(e)];
+				errors.push(e);
+			}
+			return errors;
 		}
-		if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
-			const e = generateForSelf(this, rect, rules[1], 'bold-in-header', s);
-			e.suggestions = [fixByRemove(e)];
-			errors.push(e);
-		}
-		return errors;
 	}
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {bold: this.bold, italic: this.italic});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {bold: this.bold, italic: this.italic});
+			return json;
+		}
 	}
 
 	/* NOT FOR BROWSER */

@@ -40,22 +40,24 @@ export abstract class TrBaseToken extends TableBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			inter = this.childNodes.find(({type}) => type === 'table-inter');
-		if (!inter) {
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				inter = this.childNodes.find(({type}) => type === 'table-inter');
+			if (!inter) {
+				return errors;
+			}
+			const severity = isFostered(inter),
+				rule = 'fostered-content',
+				s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? undefined : 'transclusion');
+			if (s) {
+				const error = generateForChild(inter, {start}, rule, 'content-outside-table', s);
+				error.startIndex++;
+				error.startLine++;
+				error.startCol = 0;
+				errors.push(error);
+			}
 			return errors;
 		}
-		const severity = isFostered(inter),
-			rule = 'fostered-content',
-			s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? undefined : 'transclusion');
-		if (s) {
-			const error = generateForChild(inter, {start}, rule, 'content-outside-table', s);
-			error.startIndex++;
-			error.startLine++;
-			error.startCol = 0;
-			errors.push(error);
-		}
-		return errors;
 	}
 
 	/**

@@ -151,13 +151,15 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'var-anchor',
-			s = Parser.lintConfig.getSeverity(rule, 'extLink');
-		if (s && this.length === 1 && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, {start}, rule, 'variable-anchor', s));
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'var-anchor',
+				s = Parser.lintConfig.getSeverity(rule, 'extLink');
+			if (s && this.length === 1 && this.closest('heading-title')) {
+				errors.push(generateForSelf(this, {start}, rule, 'variable-anchor', s));
+			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */
