@@ -106,26 +106,28 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'unescaped',
-			s = Parser.lintConfig.getSeverity(rule);
-		if (s) {
-			const {firstChild} = this,
-				link = linkRegex.exec(firstChild.text())?.[0];
-			try {
-				if (link && new URL(link).search) {
-					const e = generateForChild(firstChild, {start}, rule, 'unescaped-query', s);
-					e.startIndex = e.endIndex;
-					e.startLine = e.endLine;
-					e.startCol = e.endCol;
-					e.endIndex++;
-					e.endCol++;
-					e.fix = fixByEscape(e.startIndex, '{{=}}');
-					errors.push(e);
-				}
-			} catch {}
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'unescaped',
+				s = Parser.lintConfig.getSeverity(rule);
+			if (s) {
+				const {firstChild} = this,
+					link = linkRegex.exec(firstChild.text())?.[0];
+				try {
+					if (link && new URL(link).search) {
+						const e = generateForChild(firstChild, {start}, rule, 'unescaped-query', s);
+						e.startIndex = e.endIndex;
+						e.startLine = e.endLine;
+						e.startCol = e.endCol;
+						e.endIndex++;
+						e.endCol++;
+						e.fix = fixByEscape(e.startIndex, '{{=}}');
+						errors.push(e);
+					}
+				} catch {}
+			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */

@@ -240,17 +240,19 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		const errors: LintError[] = [];
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!;
-			child.setAttribute('aIndex', cur);
-			const childErrors = child.lint(cur, re);
-			if (childErrors.length > 0) {
-				errors.push(...childErrors);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors: LintError[] = [];
+			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
+				const child = this.childNodes[i]!;
+				child.setAttribute('aIndex', cur);
+				const childErrors = child.lint(cur, re);
+				if (childErrors.length > 0) {
+					errors.push(...childErrors);
+				}
+				cur += child.toString().length + this.getGaps(i);
 			}
-			cur += child.toString().length + this.getGaps(i);
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */

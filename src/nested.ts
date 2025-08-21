@@ -87,33 +87,35 @@ export abstract class NestedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, this.name);
-		if (!s) {
-			return errors;
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'no-ignored',
+				s = Parser.lintConfig.getSeverity(rule, this.name);
+			if (!s) {
+				return errors;
+			}
+			const rect = new BoundingRect(this, start),
+				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
+			return [
+				...errors,
+				...this.childNodes.filter(child => {
+					const {type, name} = child;
+					if (type === 'ext') {
+						return !this.#tags.includes(name);
+					} else if (childTypes.has(type)) {
+						return false;
+					}
+					const str = child.toString().trim();
+					return str && !regex.test(str);
+				}).map(child => {
+					const e = generateForChild(child, rect, rule, Parser.msg('invalid-content', this.name), s);
+					e.suggestions = [
+						fixByRemove(e),
+						fixByComment(e, child.toString()),
+					];
+					return e;
+				}),
+			];
 		}
-		const rect = new BoundingRect(this, start),
-			regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
-		return [
-			...errors,
-			...this.childNodes.filter(child => {
-				const {type, name} = child;
-				if (type === 'ext') {
-					return !this.#tags.includes(name);
-				} else if (childTypes.has(type)) {
-					return false;
-				}
-				const str = child.toString().trim();
-				return str && !regex.test(str);
-			}).map(child => {
-				const e = generateForChild(child, rect, rule, Parser.msg('invalid-content', this.name), s);
-				e.suggestions = [
-					fixByRemove(e),
-					fixByComment(e, child.toString()),
-				];
-				return e;
-			}),
-		];
 	}
 }

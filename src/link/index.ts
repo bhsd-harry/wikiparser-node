@@ -29,14 +29,16 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'nested-link',
-			s = Parser.lintConfig.getSeverity(rule);
-		if (s && this.closest('ext-link-text')) {
-			const e = generateForSelf(this, {start}, rule, 'link-in-extlink', s);
-			e.fix = fixBy(e, 'delink', this.innerText);
-			errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'nested-link',
+				s = Parser.lintConfig.getSeverity(rule);
+			if (s && this.closest('ext-link-text')) {
+				const e = generateForSelf(this, {start}, rule, 'link-in-extlink', s);
+				e.fix = fixBy(e, 'delink', this.innerText);
+				errors.push(e);
+			}
+			return errors;
 		}
-		return errors;
 	}
 }

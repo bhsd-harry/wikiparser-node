@@ -94,34 +94,36 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const variantFlags = this.getVariantFlags(),
-			unknownFlags = this.getUnknownFlags(),
-			validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
-			emptyFlagCount = this.#flags!.filter(flag => !flag).length,
-			knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
-			errors = super.lint(start, re);
-		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
-			return errors;
-		}
-		const rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, 'conversionFlag');
-		if (s) {
-			const rect = new BoundingRect(this, start);
-			for (let i = 0; i < this.length; i++) {
-				const child = this.childNodes[i]!,
-					flag = child.text().trim();
-				if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
-					const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
-					if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-						e.fix = fixByUpper(e, flag);
-					} else {
-						e.suggestions = [fixByRemove(e, i && -1)];
+		LINT: { // eslint-disable-line no-unused-labels
+			const variantFlags = this.getVariantFlags(),
+				unknownFlags = this.getUnknownFlags(),
+				validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
+				emptyFlagCount = this.#flags!.filter(flag => !flag).length,
+				knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
+				errors = super.lint(start, re);
+			if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
+				return errors;
+			}
+			const rule = 'no-ignored',
+				s = Parser.lintConfig.getSeverity(rule, 'conversionFlag');
+			if (s) {
+				const rect = new BoundingRect(this, start);
+				for (let i = 0; i < this.length; i++) {
+					const child = this.childNodes[i]!,
+						flag = child.text().trim();
+					if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
+						const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
+						if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
+							e.fix = fixByUpper(e, flag);
+						} else {
+							e.suggestions = [fixByRemove(e, i && -1)];
+						}
+						errors.push(e);
 					}
-					errors.push(e);
 				}
 			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/** @private */

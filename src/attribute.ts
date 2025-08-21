@@ -279,26 +279,28 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{balanced, firstChild, lastChild, name, tag} = this,
-			rect = new BoundingRect(this, start),
-			rules = ['unclosed-quote', 'obsolete-attr'] as const,
-			s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
-		if (s[0] && !balanced) {
-			const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
-			e.startIndex--;
-			e.startCol--;
-			e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
-			errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				{balanced, firstChild, lastChild, name, tag} = this,
+				rect = new BoundingRect(this, start),
+				rules = ['unclosed-quote', 'obsolete-attr'] as const,
+				s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
+			if (s[0] && !balanced) {
+				const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
+				e.startIndex--;
+				e.startCol--;
+				e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
+				errors.push(e);
+			}
+			const e = this.#lint(start, rect);
+			if (e) {
+				errors.push(e);
+			}
+			if (s[1] && obsoleteAttrs[tag]?.has(name)) {
+				errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
+			}
+			return errors;
 		}
-		const e = this.#lint(start, rect);
-		if (e) {
-			errors.push(e);
-		}
-		if (s[1] && obsoleteAttrs[tag]?.has(name)) {
-			errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
-		}
-		return errors;
 	}
 
 	/**

@@ -70,15 +70,17 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			rule = 'invalid-gallery',
-			s = Parser.lintConfig.getSeverity(rule, 'image');
-		if (s && this.#lint()) {
-			const e = generateForSelf(this, {start}, rule, 'invalid-gallery', s);
-			e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
-			errors.push(e);
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re),
+				rule = 'invalid-gallery',
+				s = Parser.lintConfig.getSeverity(rule, 'image');
+			if (s && this.#lint()) {
+				const e = generateForSelf(this, {start}, rule, 'invalid-gallery', s);
+				e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
+				errors.push(e);
+			}
+			return errors;
 		}
-		return errors;
 	}
 
 	/* PRINT ONLY */

@@ -128,7 +128,9 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 let viewOnly = true;
 
-let lintConfig = getLintConfig(),
+let lintConfig = (() => {
+		LINT: return getLintConfig(); // eslint-disable-line no-unused-labels
+	})(),
 	i18n: Record<string, string> | undefined;
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
@@ -141,7 +143,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	get i18n() {
-		return {...enMsg, ...i18n};
+		LINT: return {...enMsg, ...i18n}; // eslint-disable-line no-unused-labels
 	},
 
 	set i18n(data: Record<string, string> | string | undefined) {
@@ -152,7 +154,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else {
 			/* NOT FOR BROWSER ONLY END */
 
-			i18n = data;
+			LINT: i18n = data; // eslint-disable-line no-unused-labels
 		}
 	},
 

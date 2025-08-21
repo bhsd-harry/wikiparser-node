@@ -314,53 +314,55 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		if (!this.isTemplate()) {
-			return errors;
-		}
-		const {type, childNodes, length} = this,
-			rect = new BoundingRect(this, start),
-			invoke = type === 'magic-word';
-		let rule: LintError.Rule = 'no-ignored',
-			s = Parser.lintConfig.getSeverity(rule, 'fragment');
-		if (invoke && !this.#getTitle().valid) {
+		LINT: { // eslint-disable-line no-unused-labels
+			const errors = super.lint(start, re);
+			if (!this.isTemplate()) {
+				return errors;
+			}
+			const {type, childNodes, length} = this,
+				rect = new BoundingRect(this, start),
+				invoke = type === 'magic-word';
+			let rule: LintError.Rule = 'no-ignored',
+				s = Parser.lintConfig.getSeverity(rule, 'fragment');
+			if (invoke && !this.#getTitle().valid) {
+				rule = 'invalid-invoke';
+				s = Parser.lintConfig.getSeverity(rule, 'name');
+				if (s) {
+					errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
+				}
+			} else if (s) {
+				const child = childNodes[invoke ? 1 : 0] as AtomToken,
+					i = child.childNodes
+						.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
+					textNode = child.childNodes[i] as AstText | undefined;
+				if (textNode) {
+					const e = generateForChild(child, rect, rule, 'useless-fragment', s);
+					e.suggestions = [fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'))];
+					errors.push(e);
+				}
+			}
 			rule = 'invalid-invoke';
-			s = Parser.lintConfig.getSeverity(rule, 'name');
+			s = Parser.lintConfig.getSeverity(rule, 'function');
+			if (s && invoke && length === 2) {
+				errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
+				return errors;
+			}
+			rule = 'no-duplicate';
+			s = Parser.lintConfig.getSeverity(rule, 'parameter');
 			if (s) {
-				errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
+				const duplicatedArgs = this.getDuplicatedArgs()
+						.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
+					msg = 'duplicate-parameter';
+				for (const [, args] of duplicatedArgs) {
+					errors.push(...args.map(arg => {
+						const e = generateForChild(arg, rect, rule, msg, s);
+						e.suggestions = [fixByRemove(e, -1)];
+						return e;
+					}));
+				}
 			}
-		} else if (s) {
-			const child = childNodes[invoke ? 1 : 0] as AtomToken,
-				i = child.childNodes
-					.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
-				textNode = child.childNodes[i] as AstText | undefined;
-			if (textNode) {
-				const e = generateForChild(child, rect, rule, 'useless-fragment', s);
-				e.suggestions = [fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'))];
-				errors.push(e);
-			}
-		}
-		rule = 'invalid-invoke';
-		s = Parser.lintConfig.getSeverity(rule, 'function');
-		if (s && invoke && length === 2) {
-			errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
 			return errors;
 		}
-		rule = 'no-duplicate';
-		s = Parser.lintConfig.getSeverity(rule, 'parameter');
-		if (s) {
-			const duplicatedArgs = this.getDuplicatedArgs()
-					.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
-				msg = 'duplicate-parameter';
-			for (const [, args] of duplicatedArgs) {
-				errors.push(...args.map(arg => {
-					const e = generateForChild(arg, rect, rule, msg, s);
-					e.suggestions = [fixByRemove(e, -1)];
-					return e;
-				}));
-			}
-		}
-		return errors;
 	}
 
 	/**

@@ -29,7 +29,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 	abstract class AttributesParent extends constructor implements AttributesParentBase {
 		/** AttributesToken子节点 */
 		#getAttributesChild(): AttributesToken {
-			return this.childNodes[i] as AttributesToken;
+			LINT: return this.childNodes[i] as AttributesToken; // eslint-disable-line no-unused-labels
 		}
 
 		hasAttr(key: string): boolean {
@@ -37,7 +37,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		}
 
 		getAttr(key: string): string | true | undefined {
-			return this.#getAttributesChild().getAttr(key);
+			LINT: return this.#getAttributesChild().getAttr(key); // eslint-disable-line no-unused-labels
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */
