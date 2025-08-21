@@ -12,10 +12,10 @@ import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeTo
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 
 const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']),
-	lintRegex = [false, true].map(article => {
+	lintRegex = /* #__PURE__ */ (() => [false, true].map(article => {
 		const noinclude = article ? 'includeonly' : 'noinclude';
 		return new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu');
-	}) as [RegExp, RegExp];
+	}) as [RegExp, RegExp])();
 
 /**
  * extension tag that has a nested structure

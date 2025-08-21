@@ -14,16 +14,15 @@ import type {
 	TranscludeToken,
 } from '../internal';
 
-const sp = String.raw`[${zs}\t]*`,
-	anySp = String.raw`[^\S\n]*`,
-	source =
-		String.raw`<${anySp}(?:/${
-			anySp
-		})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
-			sp
-		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
-const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
-const errorSyntaxUrl = new RegExp(source, 'giu'),
+const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
+	anySp = /* #__PURE__ */ (() => String.raw`[^\S\n]*`)(),
+	source =/* #__PURE__ */ (() => String.raw`<${anySp}(?:/${
+		anySp
+	})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
+		sp
+	}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`)();
+const errorSyntax = /* #__PURE__ */ (() => new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'))();
+const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
 		'[': /[[\]]/u,
@@ -58,13 +57,14 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 		'select',
 		'textarea',
 	]);
-let wordRegex: RegExp;
-try {
-	// eslint-disable-next-line prefer-regex-literals
-	wordRegex = new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
-} catch /* istanbul ignore next */ {
-	wordRegex = /\w/u;
-}
+const wordRegex = /* #__PURE__ */ ((): RegExp => {
+	try {
+		// eslint-disable-next-line prefer-regex-literals
+		return new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
+	} catch /* istanbul ignore next */ {
+		return /\w/u;
+	}
+})();
 
 /**
  * text node

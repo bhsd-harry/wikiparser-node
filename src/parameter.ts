@@ -12,7 +12,8 @@ import type {
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
-const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
+const linkRegex = /* #__PURE__ */ (() =>
+	new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu'))();
 
 /**
  * template or magic word parameter

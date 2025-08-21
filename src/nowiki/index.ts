@@ -5,7 +5,7 @@ import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
 
-const getLintRegex = getRegex(
+const getLintRegex = /* #__PURE__ */ getRegex(
 	name => new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'),
 );
 const voidExt = new Set(['languages', 'section', 'templatestyles']);

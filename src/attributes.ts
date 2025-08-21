@@ -29,13 +29,14 @@ const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0,
  */
 const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
 
-let wordRegex: RegExp;
-try {
-	// eslint-disable-next-line prefer-regex-literals
-	wordRegex = new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
-} catch /* istanbul ignore next */ {
-	wordRegex = /[^\W_]/u;
-}
+const wordRegex = /* #__PURE__ */ ((): RegExp => {
+	try {
+		// eslint-disable-next-line prefer-regex-literals
+		return new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
+	} catch /* istanbul ignore next */ {
+		return /[^\W_]/u;
+	}
+})();
 
 /**
  * attributes of extension and HTML tags
