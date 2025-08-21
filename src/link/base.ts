@@ -53,7 +53,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** 片段标识符 */
 	get fragment(): string | undefined {
-		return this.#title.fragment;
+		LSP: return this.#title.fragment; // eslint-disable-line no-unused-labels
 	}
 
 	/* PRINT ONLY END */
@@ -181,11 +181,13 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start),
-			{type, fragment} = this;
-		if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
-			json['fragment'] = fragment;
+		const json = super.json(undefined, start);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {type, fragment} = this;
+			if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
+				json['fragment'] = fragment;
+			}
+			return json;
 		}
-		return json;
 	}
 }

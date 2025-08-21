@@ -101,7 +101,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {bold: this.bold, italic: this.italic});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {bold: this.bold, italic: this.italic});
+			return json;
+		}
 	}
 }

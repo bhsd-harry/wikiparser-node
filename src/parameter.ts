@@ -43,10 +43,12 @@ export abstract class ParameterToken extends Token {
 
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
-		try {
-			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-		} catch {
-			return false;
+		LSP: { // eslint-disable-line no-unused-labels
+			try {
+				return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
+			} catch {
+				return false;
+			}
 		}
 	}
 
@@ -134,7 +136,9 @@ export abstract class ParameterToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
+			return json;
+		}
 	}
 }

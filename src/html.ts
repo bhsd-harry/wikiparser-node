@@ -297,7 +297,9 @@ export abstract class HtmlToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
+			return json;
+		}
 	}
 }

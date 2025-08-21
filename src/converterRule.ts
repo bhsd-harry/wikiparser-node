@@ -28,7 +28,8 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** language variant / 语言变体 */
 	get variant(): string {
-		return this.childNodes[this.length - 2]?.text().trim().toLowerCase() ?? '';
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.childNodes[this.length - 2]?.text().trim().toLowerCase() ?? '';
 	}
 
 	/* PRINT ONLY END */
@@ -90,7 +91,9 @@ export abstract class ConverterRuleToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		json['variant'] = this.variant;
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			json['variant'] = this.variant;
+			return json;
+		}
 	}
 }

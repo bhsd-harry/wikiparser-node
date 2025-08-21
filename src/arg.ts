@@ -33,7 +33,7 @@ export abstract class ArgToken extends Token {
 
 	/** default value / 预设值 */
 	get default(): string | false {
-		return this.childNodes[1]?.text() ?? false;
+		LSP: return this.childNodes[1]?.text() ?? false; // eslint-disable-line no-unused-labels
 	}
 
 	/** @param parts 以'|'分隔的各部分 */
@@ -127,7 +127,9 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		json['default'] = this.default;
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			json['default'] = this.default;
+			return json;
+		}
 	}
 }

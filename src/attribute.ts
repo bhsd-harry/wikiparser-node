@@ -323,7 +323,9 @@ export abstract class AttributeToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		json['tag'] = this.tag;
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			json['tag'] = this.tag;
+			return json;
+		}
 	}
 }

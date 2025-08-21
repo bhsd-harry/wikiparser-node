@@ -278,23 +278,25 @@ export abstract class AstElement extends AstNode {
 	 * @param start
 	 */
 	json(file?: string, start = this.getAbsoluteIndex()): AST {
-		const json = {
-			...this, // eslint-disable-line @typescript-eslint/no-misused-spread
-			type: this.type,
-			range: [start, start + this.toString().length],
-			childNodes: [],
-		} as unknown as AST;
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				{length} = child.toString();
-			child.setAttribute('aIndex', cur);
-			json.childNodes!.push(
-				child.type === 'text'
-					? {data: child.data, range: [cur, cur + length]} as unknown as AST
-					: child.json(undefined, cur),
-			);
-			cur += length + this.getGaps(i);
+		LSP: { // eslint-disable-line no-unused-labels
+			const json = {
+				...this, // eslint-disable-line @typescript-eslint/no-misused-spread
+				type: this.type,
+				range: [start, start + this.toString().length],
+				childNodes: [],
+			} as unknown as AST;
+			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
+				const child = this.childNodes[i]!,
+					{length} = child.toString();
+				child.setAttribute('aIndex', cur);
+				json.childNodes!.push(
+					child.type === 'text'
+						? {data: child.data, range: [cur, cur + length]} as unknown as AST
+						: child.json(undefined, cur),
+				);
+				cur += length + this.getGaps(i);
+			}
+			return json;
 		}
-		return json;
 	}
 }

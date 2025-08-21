@@ -201,7 +201,9 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		json['level'] = this.level;
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			json['level'] = this.level;
+			return json;
+		}
 	}
 }

@@ -47,7 +47,7 @@ export abstract class GalleryToken extends Token {
 	 * @since v1.12.5
 	 */
 	get widths(): number {
-		return this.#getSize('widths');
+		LSP: return this.#getSize('widths'); // eslint-disable-line no-unused-labels
 	}
 
 	/**
@@ -57,7 +57,7 @@ export abstract class GalleryToken extends Token {
 	 * @since v1.12.5
 	 */
 	get heights(): number {
-		return this.#getSize('heights');
+		LSP: return this.#getSize('heights'); // eslint-disable-line no-unused-labels
 	}
 
 	/* PRINT ONLY END */
@@ -159,7 +159,9 @@ export abstract class GalleryToken extends Token {
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
-		Object.assign(json, {widths: this.widths, heights: this.heights});
-		return json;
+		LSP: { // eslint-disable-line no-unused-labels
+			Object.assign(json, {widths: this.widths, heights: this.heights});
+			return json;
+		}
 	}
 }
