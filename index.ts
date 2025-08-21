@@ -397,6 +397,7 @@ const def: PropertyDescriptorMap = {
 		/* NOT FOR BROWSER ONLY */
 
 		'fetchConfig',
+		'lintCSS',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
