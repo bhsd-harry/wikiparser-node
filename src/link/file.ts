@@ -87,7 +87,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @since v1.5.3
 	 */
 	get extension(): string | undefined {
-		LINT: return this.getAttribute('title').extension; // eslint-disable-line no-unused-labels
+		return this.getAttribute('title').extension;
 	}
 
 	/**
@@ -235,7 +235,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取所有图片参数节点
 	 */
 	getAllArgs(): ImageParameterToken[] {
-		LINT: return this.childNodes.slice(1) as ImageParameterToken[]; // eslint-disable-line no-unused-labels
+		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**
@@ -245,7 +245,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
-		LINT: return this.getAllArgs().filter(({name}) => key === name); // eslint-disable-line no-unused-labels
+		return this.getAllArgs().filter(({name}) => key === name);
 	}
 
 	/**
@@ -255,10 +255,8 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getArg(key: string): ImageParameterToken | undefined {
-		LINT: { // eslint-disable-line no-unused-labels
-			const args = this.getArgs(key);
-			return args[key === 'manualthumb' ? 0 : args.length - 1];
-		}
+		const args = this.getArgs(key);
+		return args[key === 'manualthumb' ? 0 : args.length - 1];
 	}
 
 	/**
@@ -268,7 +266,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getValue(key: string): string | true | undefined {
-		LINT: return this.getArg(key)?.getValue(); // eslint-disable-line no-unused-labels
+		return this.getArg(key)?.getValue();
 	}
 
 	/** @private */

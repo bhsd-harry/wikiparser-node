@@ -149,10 +149,8 @@ export abstract class AttributesToken extends Token {
 	 * @param key attribute name / 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
-		LINT: { // eslint-disable-line no-unused-labels
-			const tokens = this.getAttrTokens(key);
-			return tokens[tokens.length - 1];
-		}
+		const tokens = this.getAttrTokens(key);
+		return tokens[tokens.length - 1];
 	}
 
 	/**
@@ -162,7 +160,7 @@ export abstract class AttributesToken extends Token {
 	 * @param key attribute name / 属性键
 	 */
 	getAttr(key: string): string | true | undefined {
-		LINT: return this.getAttrToken(key)?.getValue(); // eslint-disable-line no-unused-labels
+		return this.getAttrToken(key)?.getValue();
 	}
 
 	/** 是否位于闭合标签内 */

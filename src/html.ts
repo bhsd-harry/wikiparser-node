@@ -239,7 +239,7 @@ export abstract class HtmlToken extends Token {
 	 * 搜索匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		LINT: return cache<this | undefined>( // eslint-disable-line no-unused-labels
+		return cache<this | undefined>(
 			this.#match,
 			() => {
 				const {name, parentNode, closing, selfClosing} = this,

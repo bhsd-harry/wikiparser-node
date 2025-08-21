@@ -442,9 +442,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取重名参数
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		LINT: { // eslint-disable-line no-unused-labels
-			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
-		}
+		return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 	}
 
 	/**

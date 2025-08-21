@@ -54,7 +54,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** whether the table is closed / 表格是否闭合 */
 	get closed(): boolean {
-		LINT: return this.lastChild.is<SyntaxToken>('table-syntax'); // eslint-disable-line no-unused-labels
+		return this.lastChild.is<SyntaxToken>('table-syntax');
 	}
 
 	/**
@@ -143,41 +143,39 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	@cached(false)
 	getLayout(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
-		LINT: { // eslint-disable-line no-unused-labels
-			const rows = this.getAllRows(),
-				{length} = rows,
-				layout = Layout.from(emptyArray(length, () => []));
-			for (let i = 0; i < layout.length; i++) {
-				const rowLayout = layout[i]!;
-				let j = 0,
-					k = 0,
-					last: boolean | undefined;
-				for (const cell of rows[i]!.childNodes.slice(2)) {
-					if (cell.is<TdToken>('td')) {
-						if (cell.isIndependent()) {
-							last = cell.subtype !== 'caption';
-						}
-						if (last) {
-							const coords: TableCoords = {row: i, column: j},
-								{rowspan, colspan} = cell;
-							j++;
-							while (rowLayout[k]) {
-								k++;
-							}
-							for (let y = i; y < Math.min(i + rowspan, length); y++) {
-								for (let x = k; x < k + colspan; x++) {
-									layout[y]![x] = coords;
-								}
-							}
-							k += colspan;
-						}
-					} else if (isRowEnd(cell)) {
-						break;
+		const rows = this.getAllRows(),
+			{length} = rows,
+			layout = Layout.from(emptyArray(length, () => []));
+		for (let i = 0; i < layout.length; i++) {
+			const rowLayout = layout[i]!;
+			let j = 0,
+				k = 0,
+				last: boolean | undefined;
+			for (const cell of rows[i]!.childNodes.slice(2)) {
+				if (cell.is<TdToken>('td')) {
+					if (cell.isIndependent()) {
+						last = cell.subtype !== 'caption';
 					}
+					if (last) {
+						const coords: TableCoords = {row: i, column: j},
+							{rowspan, colspan} = cell;
+						j++;
+						while (rowLayout[k]) {
+							k++;
+						}
+						for (let y = i; y < Math.min(i + rowspan, length); y++) {
+							for (let x = k; x < k + colspan; x++) {
+								layout[y]![x] = coords;
+							}
+						}
+						k += colspan;
+					}
+				} else if (isRowEnd(cell)) {
+					break;
 				}
 			}
-			return layout;
 		}
+		return layout;
 	}
 
 	/**
@@ -186,7 +184,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取所有行
 	 */
 	getAllRows(): (TrToken | this)[] {
-		LINT: return [ // eslint-disable-line no-unused-labels
+		return [
 			...super.getRowCount() ? [this] : [],
 			...this.childNodes.slice(1)
 				.filter((child): child is TrToken => child.is<TrToken>('tr') && child.getRowCount() > 0),
@@ -201,30 +199,28 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
-		LINT: { // eslint-disable-line no-unused-labels
-			const isRow = super.getRowCount();
-			if (
-				n === 0
-				// eslint-disable-next-line @stylistic/no-extra-parens
-				&& (
-					isRow
-				)
-			) {
-				return this;
-			} else if (isRow) {
+		const isRow = super.getRowCount();
+		if (
+			n === 0
+			// eslint-disable-next-line @stylistic/no-extra-parens
+			&& (
+				isRow
+			)
+		) {
+			return this;
+		} else if (isRow) {
+			n--;
+		}
+		for (const child of this.childNodes.slice(2)) {
+			const {type} = child;
+			if (type === 'tr' && child.getRowCount()) {
 				n--;
-			}
-			for (const child of this.childNodes.slice(2)) {
-				const {type} = child;
-				if (type === 'tr' && child.getRowCount()) {
-					n--;
-					if (n < 0) {
-						return child;
-					}
+				if (n < 0) {
+					return child;
 				}
 			}
-			return undefined;
 		}
+		return undefined;
 	}
 
 	/** @private */

@@ -44,12 +44,12 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** rowspan */
 	get rowspan(): number {
-		LINT: return this.getAttr('rowspan'); // eslint-disable-line no-unused-labels
+		return this.getAttr('rowspan');
 	}
 
 	/** colspan */
 	get colspan(): number {
-		LINT: return this.getAttr('colspan'); // eslint-disable-line no-unused-labels
+		return this.getAttr('colspan');
 	}
 
 	/** cell type / 单元格类型 */
@@ -182,10 +182,8 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		LINT: { // eslint-disable-line no-unused-labels
-			const value = super.getAttr(key);
-			return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
-		}
+		const value = super.getAttr(key);
+		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
 	}
 
 	override escape(): void {

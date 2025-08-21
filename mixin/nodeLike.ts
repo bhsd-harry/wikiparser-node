@@ -35,11 +35,11 @@ export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
 		}
 
 		get offsetHeight(): number {
-			LINT: return this.getDimension().height; // eslint-disable-line no-unused-labels
+			return this.getDimension().height;
 		}
 
 		get offsetWidth(): number {
-			LINT: return this.getDimension().width; // eslint-disable-line no-unused-labels
+			return this.getDimension().width;
 		}
 	}
 	/* eslint-enable jsdoc/require-jsdoc */

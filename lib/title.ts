@@ -34,7 +34,7 @@ export class Title {
 
 	/** 片段标识符 */
 	get fragment(): string | undefined {
-		LINT: return this.#fragment; // eslint-disable-line no-unused-labels
+		return this.#fragment;
 	}
 
 	/** main part without the namespace / 不含命名空间的标题主体部分 */
@@ -162,7 +162,7 @@ export class Title {
 
 	/** @private */
 	setFragment(fragment: string): void {
-		LINT: this.#fragment = fragment; // eslint-disable-line no-unused-labels
+		this.#fragment = fragment;
 	}
 
 	/**

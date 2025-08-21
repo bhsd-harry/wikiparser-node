@@ -264,7 +264,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 						if (key === 'main') {
 							t.main = s;
 						} else {
-							LINT: t.setFragment(s); // eslint-disable-line no-unused-labels
+							t.setFragment(s);
 						}
 					}
 				}
