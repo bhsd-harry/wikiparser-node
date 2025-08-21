@@ -31,10 +31,14 @@ export abstract class ArgToken extends Token {
 		return 'arg';
 	}
 
+	/* PRINT ONLY */
+
 	/** default value / 预设值 */
 	get default(): string | false {
 		LSP: return this.childNodes[1]?.text() ?? false; // eslint-disable-line no-unused-labels
 	}
+
+	/* PRINT ONLY END */
 
 	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: readonly string[], config: Config, accum: Token[] = []) {

@@ -102,7 +102,9 @@ export abstract class ImageParameterToken extends Token {
 
 	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
-		return this.name === 'link' ? validate('link', super.text(), this.getAttribute('config')) : undefined;
+		LINT: return this.name === 'link' // eslint-disable-line no-unused-labels
+			? validate('link', super.text(), this.getAttribute('config'))
+			: undefined;
 	}
 
 	/** @param str 图片参数 */
@@ -215,7 +217,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** 是否是不可变参数 */
 	#isVoid(): string | boolean {
-		return this.#syntax && !this.#syntax.includes('$1');
+		LINT: return this.#syntax && !this.#syntax.includes('$1'); // eslint-disable-line no-unused-labels
 	}
 
 	/**
@@ -224,7 +226,8 @@ export abstract class ImageParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string | true {
-		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+		// eslint-disable-next-line no-unused-labels
+		LINT: return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
 
 	/** @private */

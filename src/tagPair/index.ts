@@ -23,7 +23,7 @@ export abstract class TagPairToken extends Token {
 
 	/** inner wikitext / 内部wikitext */
 	get innerText(): string | undefined {
-		return this.selfClosing ? undefined : this.lastChild.text();
+		LINT: return this.selfClosing ? undefined : this.lastChild.text(); // eslint-disable-line no-unused-labels
 	}
 
 	/**

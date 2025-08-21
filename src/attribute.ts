@@ -71,7 +71,7 @@ export abstract class AttributeToken extends Token {
 
 	/** whether the quotes are balanced / 引号是否匹配 */
 	get balanced(): boolean {
-		return !this.#equal || this.#quotes[0] === this.#quotes[1];
+		LINT: return !this.#equal || this.#quotes[0] === this.#quotes[1]; // eslint-disable-line no-unused-labels
 	}
 
 	/**
@@ -193,11 +193,13 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			const s = Parser.lintConfig.getSeverity(rule, 'unknown');
-			if (s) {
-				const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
-				e.suggestions = [fixByRemove(start, length)];
-				return e;
+			LINT: { // eslint-disable-line no-unused-labels
+				const s = Parser.lintConfig.getSeverity(rule, 'unknown');
+				if (s) {
+					const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
+					e.suggestions = [fixByRemove(start, length)];
+					return e;
+				}
 			}
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			/* PRINT ONLY */
@@ -208,9 +210,11 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			rule = 'insecure-style';
-			const s = Parser.lintConfig.getSeverity(rule);
-			return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
+			LINT: { // eslint-disable-line no-unused-labels
+				rule = 'insecure-style';
+				const s = Parser.lintConfig.getSeverity(rule);
+				return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
+			}
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
 			/* PRINT ONLY */
 
@@ -220,14 +224,16 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
-			if (s) {
-				const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
-				e.suggestions = [
-					fixByRemove(start, length),
-					fixBy(e, '0 tabindex', '0'),
-				];
-				return e;
+			LINT: { // eslint-disable-line no-unused-labels
+				const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
+				if (s) {
+					const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
+					e.suggestions = [
+						fixByRemove(start, length),
+						fixBy(e, '0 tabindex', '0'),
+					];
+					return e;
+				}
 			}
 		} else if (simple && type !== 'ext-attr') {
 			const data = provideValues(tag, name),
@@ -241,8 +247,10 @@ export abstract class AttributeToken extends Token {
 
 				/* PRINT ONLY END */
 
-				const s = Parser.lintConfig.getSeverity(rule, 'value');
-				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+				LINT: { // eslint-disable-line no-unused-labels
+					const s = Parser.lintConfig.getSeverity(rule, 'value');
+					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+				}
 			}
 		} else if (
 			typeof value === 'string' && (
@@ -261,8 +269,10 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			const s = Parser.lintConfig.getSeverity(rule, 'value');
-			return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+			LINT: { // eslint-disable-line no-unused-labels
+				const s = Parser.lintConfig.getSeverity(rule, 'value');
+				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+			}
 		}
 		return false;
 	}

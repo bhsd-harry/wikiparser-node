@@ -151,9 +151,11 @@ export abstract class GalleryToken extends Token {
 	 * @param key `widths` 或 `heights`
 	 */
 	#getSize(key: 'widths' | 'heights'): number {
-		const widths = this.parentNode?.getAttr(key),
-			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
-		return mt && Number(mt) || 120;
+		LSP: { // eslint-disable-line no-unused-labels
+			const widths = this.parentNode?.getAttr(key),
+				mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
+			return mt && Number(mt) || 120;
+		}
 	}
 
 	/** @private */

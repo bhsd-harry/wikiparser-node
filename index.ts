@@ -40,7 +40,7 @@ import fetchConfig from './bin/config';
 declare interface Parser extends ParserBase {
 	default: Parser;
 	/** @since v1.5.1 */
-	rules: readonly LintError.Rule[];
+	readonly rules: readonly LintError.Rule[];
 	/** @private */
 	lintConfig: LintConfiguration;
 
@@ -132,8 +132,12 @@ let lintConfig = getLintConfig(),
 	i18n: Record<string, string> | undefined;
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
-	rules,
 	config: 'default',
+
+	/** @implements */
+	get rules() {
+		LINT: return rules; // eslint-disable-line no-unused-labels
+	},
 
 	/** @implements */
 	get i18n() {
@@ -154,11 +158,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	get lintConfig(): LintConfiguration {
-		return lintConfig;
+		LINT: return lintConfig; // eslint-disable-line no-unused-labels
 	},
 
 	set lintConfig(config: LintConfig) {
-		lintConfig = getLintConfig(config);
+		LINT: lintConfig = getLintConfig(config); // eslint-disable-line no-unused-labels
 	},
 
 	/** @implements */
@@ -232,7 +236,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
+		LINT: { // eslint-disable-line no-unused-labels
+			return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
+		}
 	},
 
 	/** @implements */
@@ -256,7 +262,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 						if (key === 'main') {
 							t.main = s;
 						} else {
-							t.setFragment(s);
+							LINT: t.setFragment(s); // eslint-disable-line no-unused-labels
 						}
 					}
 				}
@@ -270,9 +276,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		wikitext = tidy(wikitext);
 		let types: Stage[] | undefined;
-		if (typeof maxStage !== 'number') {
-			types = Array.isArray(maxStage) ? maxStage : [maxStage];
-			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+		LINT: { // eslint-disable-line no-unused-labels
+			if (typeof maxStage !== 'number') {
+				types = Array.isArray(maxStage) ? maxStage : [maxStage];
+				maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+			}
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const root = Shadow.run(() => {

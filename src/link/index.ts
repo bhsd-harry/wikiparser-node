@@ -22,7 +22,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** link text / 链接显示文字 */
 	get innerText(): string {
-		return this.length > 1
+		LINT: return this.length > 1 // eslint-disable-line no-unused-labels
 			? this.lastChild.text()
 			: rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
 	}
