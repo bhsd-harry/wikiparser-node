@@ -48,6 +48,7 @@ const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 		'wgMaxTocLevel',
 		'wgParserEnableLegacyHeadingDOM',
 		'extension',
+		'wgLocaltimezone',
 	].join('|')})\s*=.+|${
 		[
 			'showtitle',
@@ -78,6 +79,7 @@ const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 		].join('|')
 	}|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*)|pst )+$`, 'u'),
 	files = new Set(fs.readdirSync('test/core/'));
+files.delete('ThirdPartyNotices');
 files.delete('parserTests.txt');
 for (const file of ['parserTests.txt', ...files]) {
 	tests.push({desc: file.slice(0, -4)});

@@ -1,3 +1,4 @@
+import {removeComment} from '../util/string';
 import Parser from '../index';
 import {parseQuotes} from './quotes';
 import {parseExternalLinks} from './externalLinks';
@@ -55,7 +56,9 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 			s += `[[${x}`;
 			continue;
 		}
-		const force = link.trim().startsWith(':');
+		// eslint-disable-next-line prefer-const
+		let trimmed = removeComment(link).trim();
+		const force = trimmed.startsWith(':');
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
@@ -68,7 +71,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 
 			interwiki,
 		} = Parser.normalizeTitle(
-			link,
+			trimmed,
 			0,
 			false,
 			config,

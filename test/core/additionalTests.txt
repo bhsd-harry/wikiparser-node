@@ -1,0 +1,371 @@
+!! test
+Multiple <onlyinclude> being included
+!! wikitext
+{{Includes4}}
+!! html
+<p>FooBaz
+</p>
+!! end
+
+!! test
+#vardefine at SOL
+!! wikitext
+{{#vardefine:test|heading}}==Heading==
+{{#vardefine:test|hr}}----
+{{#vardefine:test|list}};dt:dd
+{{#vardefine:test|table}}{|
+|-
+! !!
+|}
+!! end
+
+!! test
+Case-sensitive behavior switches in lower cases
+!! wikitext
+__index__
+!! end
+
+!! test
+Category / whitespace (newline and non-newline) interactions
+!! wikitext
+x
+[[Category:A]] [[Category:B]]
+y
+!! html
+<p>x
+y
+</p>
+!! end
+
+!! test
+Nested file links
+!! wikitext
+[[file:thumb.jpg|[[file:thumb.png|Thumb|thumb]]|thumb]]
+[[file:thumb.jpg|[[file:thumb.png|[[T]]humb|thumb]]|thumb]]
+!! end
+
+!! test
+&lt; in an external link
+!! wikitext
+[https://mediawiki.org/&LT;&lt;text]
+[https://mediawiki.org/&GT;&gt;text]
+!! end
+
+!! test
+Magic links in lower cases
+!! wikitext
+pmid 1 PMID 1
+rfc 1 RFC 1
+isbn 1234567890 ISBN 1234567890
+!! end
+
+!! test
+Font of text following an external link
+!! wikitext
+[//a ''b]c
+!! html
+<p><a rel="nofollow" class="external text" href="//a"><i>b</i></a><i>c</i>
+</p>
+!! end
+
+!! test
+Interaction between apostrophes and <b> tags
+!! wikitext
+'''a</b>b<b>c'''d
+!! html
+<p><b>a</b>b<b>c</b>d
+</p>
+!! end
+
+!! test
+Function hook and variable
+!! wikitext
+{{uc}}{{server:}}
+!! html
+<p><a href="/index.php?title=Template:Uc&amp;action=edit&amp;redlink=1" class="new" title="Template:Uc (page does not exist)">Template:Uc</a><a href="/index.php?title=Template:Server:&amp;action=edit&amp;redlink=1" class="new" title="Template:Server: (page does not exist)">Template:Server:</a>
+</p>
+!! end
+
+!! test
+New tvar syntax
+!! wikitext
+<translate><tvar name="name">contents</tvar></translate>
+!! html
+<p>contents
+</p>
+!! end
+
+!! test
+Unicode number before autolinks
+!! wikitext
+１http://example.com
+!! html
+<p>１http://example.com
+</p>
+!! end
+
+!! test
+Common prefix ';'
+!! wikitext
+;;;t3:::d3
+;;;;;t5::::::d5
+
+;t1
+;*t1:d1
+;*t1:d1
+!! html
+<dl><dt>t3</dt>
+<dd><dl><dt></dt>
+<dd><dl><dt></dt>
+<dd>d3</dd></dl></dd></dl></dd></dl>
+<dl><dt>t5</dt>
+<dd><dl><dt></dt>
+<dd><dl><dt></dt>
+<dd><dl><dt></dt>
+<dd><dl><dt></dt>
+<dd>:d5</dd></dl></dd></dl></dd></dl></dd></dl></dd></dl>
+<dl><dt>t1</dt></dl>
+<dl><dt>t1</dt>
+<dd><ul><li>d1</li>
+<li>t1:d1</li></ul></dd></dl>
+!! end
+
+!! test
+Extension tag in language conversion
+!! wikitext
+-{<pre>foo</pre>}-
+
+-{<pre>foo</pre>|bar}-
+!! html
+<pre>foo</pre><p>
+bar</p>
+!! end
+
+!! test
+Template in language conversion
+!! wikitext
+-{{{1x|foo}} }-
+
+-{{{1x|foo}}|bar}-
+!! html
+<p>foo 
+</p><p>bar
+</p>
+!! end
+
+!! test
+Template variable in language conversion
+!! wikitext
+-{{{{foo}}} }-
+
+-{{{{foo}}}|bar}-
+
+-{{{{foo|baz}}} }-
+
+-{{{{foo|baz}}}|bar}-
+!! html
+<p>{{{foo}}} 
+</p><p>bar
+</p><p>baz 
+</p><p>bar
+</p>
+!! end
+
+!! test
+Section heading in language conversion
+!! wikitext
+-{
+==foo==
+}-
+
+-{
+==foo==
+|bar}-
+!! html
+<p class="mw-empty-elt">
+</p>
+<div class="mw-heading mw-heading2"><h2 id="foo">foo</h2></div>
+<p class="mw-empty-elt">
+</p><p>bar
+</p>
+!! end
+
+!! test
+HTML tag in language conversion
+!! wikitext
+-{<b>foo</b>}-
+
+-{<b>foo</b>|bar}-
+!! html
+<p><b>foo</b>
+</p><p>bar
+</p>
+!! end
+
+!! test
+Table in language conversion
+!! wikitext
+-{
+{|
+|foo
+|}}-
+
+-{
+{|
+|foo
+|}|bar}-
+!! html
+<p class="mw-empty-elt">
+</p>
+<table>
+<tbody><tr>
+<td>foo
+</td></tr></tbody></table>
+<p>bar</p>
+!! end
+
+!! test
+Hr in language conversion
+!! wikitext
+-{
+----}-
+
+-{
+----|bar}-
+!! html
+<p class="mw-empty-elt">
+</p>
+<hr />
+<p>bar</p>
+!! end
+
+!! test
+Internal link in language conversion
+!! wikitext
+-{[[foo]]}-
+
+-{[[foo]]|bar}-
+!! html
+<p><a href="/wiki/Foo" title="Foo">foo</a>
+</p><p>bar
+</p>
+!! end
+
+!! test
+Quote in language conversion
+!! wikitext
+-{''foo''}-
+
+-{''foo''|bar}-
+!! html
+<p><i>foo</i>
+</p><p>bar
+</p>
+!! end
+
+!! test
+External link in language conversion
+!! wikitext
+-{[//foo]}-
+
+-{[//foo]|bar}-
+!! html
+<p><a rel="nofollow" class="external autonumber" href="https://foo">[1]</a>
+</p><p>bar
+</p>
+!! end
+
+!! test
+List in language conversion
+!! wikitext
+-{
+*foo}-
+
+-{
+*foo|bar}-
+!! html
+<p class="mw-empty-elt">
+</p>
+<ul><li>foo</li></ul>
+<p>bar</p>
+!! end
+
+!! test
+Magic link in language conversion
+!! wikitext
+-{PMID 1}-
+
+-{PMID 1|bar}-
+!! html
+<p><a class="external mw-magiclink-pmid" rel="nofollow" href="//www.ncbi.nlm.nih.gov/pubmed/1?dopt=Abstract">PMID 1</a>
+</p><p>bar
+</p>
+!! end
+
+!! test
+Nested <poem><pre>
+!! wikitext
+<poem><pre>
+this
+is
+a
+test
+</pre></poem>
+!! html
+<div class="poem">
+<pre><br />
+this<br />
+is<br />
+a<br />
+test<br />
+</pre>
+</div>
+!! end
+
+!! test
+Precedence of table over links
+!! wikitext
+{|
+! [[Foo!!]]
+| [[Bar
+|Baz]]
+|}
+!! html
+<table>
+<tbody><tr>
+<th>[[Foo</th>
+<th>]]
+</th>
+<td>[[Bar
+</td>
+<td>Baz]]
+</td></tr></tbody></table>
+!! end
+
+!! test
+Upper-case language variant is acceptable in conversion rules
+!! wikitext
+-{zh-Hans:a;zh-Hant:b}-
+!! html
+<p>a
+</p>
+!! end
+
+!! test
+Do not translate external URL
+!! wikitext
+<translate>[<tvar name=1>http://example.net</tvar> text]</translate>
+
+[<!-- -->//example.net text]
+!! html
+<p><a rel="nofollow" class="external text" href="http://example.net">text</a>
+</p><p><a rel="nofollow" class="external text" href="//example.net">text</a>
+</p>
+!! end
+
+!! test
+Commented <translate> tags
+!! wikitext
+<!-- <translate><tvar name=1></tvar></translate> --><includeonly><translate><tvar name=2></tvar></translate></includeonly>
+!! html
+!! end
