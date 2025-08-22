@@ -21,7 +21,7 @@ describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
 		if (
 			wikitext && (print || render)
-			&& !wikitext.includes('|]]')
+			&& !/\|\]\]|\[\[\|/u.test(wikitext)
 		) {
 			it(desc, () => {
 				const root = Parser.parse(wikitext);

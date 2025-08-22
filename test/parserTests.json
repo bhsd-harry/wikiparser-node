@@ -1440,6 +1440,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;small&gt;</span>\n\n<span class=\"wpb-list\">** </span>123<span class=\"wpb-html\">&lt;/small&gt;</span></span>"
 	},
 	{
+		"desc": "4. Category at the end of a bare <li> list item",
+		"wikitext": "<li>Broken list\n== Section ==\n* Proper list\n\n[[Category:Foo]]",
+		"html": "<li>Broken list\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Section\">Section</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Section\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<ul><li>Proper list</li></ul></li>",
+		"render": "<li>Broken list\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Section\">Section</h2></div>\n<ul><li>Proper list</li></ul>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;li&gt;</span>Broken list\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> Section </span>==</span>\n<span class=\"wpb-list\">* </span>Proper list\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span></span>"
+	},
+	{
 		"desc": "Parsoid: unknown parser function (T314524)",
 		"wikitext": "{{#tag:b|This is a known parser function}}\n\nNow show the unknown parser functions for comparison.\n\n{{#foo}}\n\n{{#foo:bar|bat}}",
 		"html": "<p><b>This is a known parser function</b>\n</p><p>Now show the unknown parser functions for comparison.\n</p><p>{{#foo}}\n</p><p>{{#foo:bar|bat}}\n</p>",
@@ -6716,7 +6723,7 @@
 	{
 		"desc": "<ref> defined in <references> error conditions",
 		"wikitext": "<ref name=\"foo\" group=\"2\" />\n\n<references group=\"2\">\n<ref name=\"foo\" />\n<ref name=\"unused\">BAR</ref>\n<ref name=\"foo\" group=\"1\">bad group</ref>\n<ref name=\"bar\" group=\"1\" />\n<ref>BAR BAR</ref>\n</references>",
-		"html": "<p><sup id=\"cite_ref-foo_1-0\" class=\"reference\"><a href=\"#cite_note-foo-1\"><span class=\"cite-bracket\">&#91;</span>2 1<span class=\"cite-bracket\">&#93;</span></a></sup>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-foo-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-foo_1-0\">↑</a></span> <span class=\"reference-text\"> <span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: Invalid <code>&lt;ref&gt;</code> tag; no text was provided for refs named <code>foo</code></span></span>\n</li>\n</ol></div>\n<p><span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag with name \"foo\" defined in <code>&lt;references&gt;</code> group \"2\" has no content.</span><br />\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag with name \"unused\" defined in <code>&lt;references&gt;</code> is not used in prior text.</span><br />\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag in <code>&lt;references&gt;</code> has conflicting group attribute \"1\".</span><br />\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag defined in <code>&lt;references&gt;</code> has no name attribute.</span>\n</p>",
+		"html": "<p><sup id=\"cite_ref-foo_1-0\" class=\"reference\"><a href=\"#cite_note-foo-1\"><span class=\"cite-bracket\">&#91;</span>2 1<span class=\"cite-bracket\">&#93;</span></a></sup>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-foo-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-foo_1-0\">↑</a></span> <span class=\"reference-text\">bad group <span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag in <code>&lt;references&gt;</code> has conflicting group attribute \"1\".</span></span>\n</li>\n</ol></div>\n<p><span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag with name \"foo\" defined in <code>&lt;references&gt;</code> group \"2\" has no content.</span><br />\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag with name \"unused\" defined in <code>&lt;references&gt;</code> is not used in prior text.</span><br />\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag in <code>&lt;references&gt;</code> has conflicting group attribute \"1\".</span><br />\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: <code>&lt;ref&gt;</code> tag defined in <code>&lt;references&gt;</code> has no name attribute.</span>\n</p>",
 		"render": "<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">group</span>=\"<span class=\"wpb-attr-value\">2</span>\"</span> </span>/&gt;</span>\n\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">group</span>=\"<span class=\"wpb-attr-value\">2</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-noinclude\">\n</span><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span> </span>/&gt;</span><span class=\"wpb-noinclude\">\n</span><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">unused</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">BAR</span>&lt;/ref&gt;</span><span class=\"wpb-noinclude\">\n</span><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">group</span>=\"<span class=\"wpb-attr-value\">1</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">bad group</span>&lt;/ref&gt;</span><span class=\"wpb-noinclude\">\n</span><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">group</span>=\"<span class=\"wpb-attr-value\">1</span>\"</span> </span>/&gt;</span><span class=\"wpb-noinclude\">\n</span><span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">BAR BAR</span>&lt;/ref&gt;</span><span class=\"wpb-noinclude\">\n</span></span>&lt;/references&gt;</span></span>"
 	},
@@ -7417,8 +7424,8 @@
 	},
 	{
 		"desc": "Templates: Wiki Tables: 7. Fosterable <ref>s should get fostered",
-		"wikitext": "{{PartialTable}}<ref>foo</ref>\n|}\n\n<references />",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">PartialTable</span>}}</span><span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/ref&gt;</span>\n|}\n\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
+		"wikitext": "{{PartialTable}}<ref>foo</ref>\n|-\n|}\n\n<references />",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">PartialTable</span>}}</span><span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/ref&gt;</span>\n|-\n|}\n\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
 		"desc": "Template nested in extension tag in template",
@@ -8615,11 +8622,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://[2404:130:0:1000::187:2]/index.php</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2373</span>, section 2.2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/unicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FF01::101]/multicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::1]/loopback</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::]/unspecified</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::13.1.68.3]/ipv4compat</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]/ipv4compat</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2732</span>, section 2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080:0:0:0:8:800:200C:417A]/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[3ffe:2a00:100:7031::1]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/foo</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::192.9.5.5]/ipng</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[2010:836B:4179::836B:4179]</span></span>"
 	},
 	{
-		"desc": "Ensure html2wt b/c for stashed RFC target links (T382963)",
-		"wikitext": "RFC 1234\n\nRFC 1234",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC 1234</span>\n\n<span class=\"wpb-magic-link\">RFC 1234</span></span>"
-	},
-	{
 		"desc": "Unicode text around autolinks",
 		"wikitext": "größhttps://foo.org\n\ngröß https://foo.org\n\n아들 고건 사진https://foo.org\n\n💩https://foo.org",
 		"html": "<p>größhttps://foo.org\n</p><p>größ <a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p>",
@@ -8809,11 +8811,63 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#time</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Y-m-d H:i</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> 2011-11-12 23:00 America/New_York </span></span>}}</span></span>"
 	},
 	{
-		"desc": "Explicitely specified output language (Dutch)",
+		"desc": "Explicitly specified output language (Dutch)",
 		"wikitext": "{{#time:d F Y|1988-02-28|nl}}",
 		"html": "<p>28 februari 1988\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#time</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">d F Y</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1988-02-28</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nl</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timel: UTC",
+		"wikitext": "{{#timel: Y-m-d H:i | 15 January 2001}}",
+		"html": "<p>2001-01-15 00:00\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timel</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> Y-m-d H:i </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> 15 January 2001</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timel: Melbourne",
+		"wikitext": "{{#timel: Y-m-d H:i | 16 January 2001}}",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timel</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> Y-m-d H:i </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> 16 January 2001</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timef: one parameter",
+		"wikitext": "{{#timef:15 January 2001}}",
+		"html": "<p>00:00, 15 January 2001\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timef</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">15 January 2001</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timef: date only",
+		"wikitext": "{{#timef:15 January 2001|date}}",
+		"html": "<p>15 January 2001\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timef</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">15 January 2001</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">date</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timef: time only",
+		"wikitext": "{{#timef:15 January 2001|time}}",
+		"html": "<p>00:00\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timef</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">15 January 2001</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">time</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timef: \"pretty\" format",
+		"wikitext": "{{#timef:15 January 2001|pretty}}",
+		"html": "<p>15 January\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timef</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">15 January 2001</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">pretty</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timef: ja parameter",
+		"wikitext": "{{#timef:15 January 2001|both|ja}}",
+		"html": "<p>2001年1月15日 (月) 00:00\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timef</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">15 January 2001</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">both</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ja</span></span>}}</span></span>"
+	},
+	{
+		"desc": "#timefl: one parameter",
+		"wikitext": "{{#timefl:17 January 2001}}",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#timefl</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">17 January 2001</span></span>}}</span></span>"
 	},
 	{
 		"desc": "#titleparts",
@@ -10251,6 +10305,18 @@
 		"html": "<p>Taiwan, is China\n</p>",
 		"render": "<p>China;zh-Hant-TW:Taiwan, is China\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China;zh-Hant-TW:Taiwan</span></span>}-</span>, is China</span>"
+	},
+	{
+		"desc": "html2wt support for edited wildcard rule (strip trailing semi where needed)",
+		"wikitext": "test: -{H|zh:content; }-",
+		"print": "<span class=\"wpb-root\">test: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">content</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"> </span></span>}-</span></span>"
+	},
+	{
+		"desc": "html2wt support for wildcard rule with whitespace around flag value",
+		"wikitext": "test: -{ H  |all variants}-",
+		"html": "<p>test: \n</p>",
+		"render": "<p>test: \n</p>",
+		"print": "<span class=\"wpb-root\">test: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\"> H  </span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">all variants</span></span>}-</span></span>"
 	},
 	{
 		"desc": "Filter syntax for language variants",
@@ -15393,40 +15459,30 @@
 	{
 		"desc": "Old tvar syntax should not break too hard.",
 		"wikitext": "<translate><tvar|plop>pouet</></translate>",
-		"html": "<p>pouet\n</p>",
-		"render": "<p>pouet\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-noinclude\">&lt;tvar|plop&gt;</span>pouet<span class=\"wpb-noinclude\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "Old tvar syntax should not pull content in cell attributes",
 		"wikitext": "{|\n|<translate>hello <tvar|var>variable</></translate>\n|}",
-		"html": "<table>\n<tbody><tr>\n<td>hello variable\n</td></tr></tbody></table>",
-		"render": "<table>\n<tbody><tr>\n<td>hello variable\n</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-noinclude\">&lt;tvar|var&gt;</span>variable<span class=\"wpb-noinclude\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Annotation markers starting lines should neither insert pre nor merge ranges",
 		"wikitext": "<translate><!--T:1--> translate 1</translate>\n<translate><!--T:2--> translate 2</translate>",
-		"html": "<p>translate 1\ntranslate 2\n</p>",
-		"render": "<p>translate 1\ntranslate 2\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-comment\">&lt;!--T:1--&gt;</span> translate 1</span>&lt;/translate&gt;</span>\n<span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-comment\">&lt;!--T:2--&gt;</span> translate 2</span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "tvar in a template should get stripped",
 		"wikitext": "<translate>{{1x|<tvar|var>hello</>}}</translate>",
-		"html": "<p>hello\n</p>",
-		"render": "<p>hello\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-noinclude\">&lt;tvar|var&gt;</span>hello<span class=\"wpb-noinclude\">&lt;/&gt;</span></span></span>}}</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "tvar with old syntax containing template markup should not break",
 		"wikitext": "<translate>hello <tvar|code>{{1x|</>world<tvar|code2>}}</></translate>",
-		"html": "<p>hello world\n</p>",
-		"render": "<p>hello world\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-noinclude\">&lt;tvar|code&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-noinclude\">&lt;/&gt;</span>world<span class=\"wpb-noinclude\">&lt;tvar|code2&gt;</span></span></span>}}</span><span class=\"wpb-noinclude\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
-		"desc": "urlFragmentModes"
+		"desc": "urlFragmentModesTests"
 	},
 	{
 		"desc": "Legacy fragment encoding",

@@ -1,3 +1,4 @@
+import {removeComment} from '../util/string';
 import Parser from '../index';
 import {parseQuotes} from './quotes';
 import {parseExternalLinks} from './externalLinks';
@@ -20,7 +21,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = config.inExt
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u
-			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]])?)?\]\]([\s\S]*)$/u,
+			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])*)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]])?)?\]\]([\s\S]*)$/u,
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;
 	for (let i = 0; i < bits.length; i++) {
@@ -48,16 +49,19 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 			s += `[[${x}`;
 			continue;
 		}
-		const force = link.trim().startsWith(':');
+		let trimmed = removeComment(link).trim();
+		const force = trimmed.startsWith(':');
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
+		} else if (!trimmed && text && !text.includes('\n')) {
+			trimmed = removeComment(text).trim();
 		}
 		const {
 			ns,
 			valid,
 		} = Parser.normalizeTitle(
-			link,
+			trimmed,
 			0,
 			false,
 			config,
