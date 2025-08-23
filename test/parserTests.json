@@ -542,7 +542,7 @@
 		"wikitext": "[[Thomas Bek (bishop of St David's)|]]",
 		"html": "<p>[[Thomas Bek (bishop of St David's)|]]\n</p>",
 		"render": "<p>[[Thomas Bek (bishop of St David's)|]]\n</p>",
-		"print": "<span class=\"wpb-root\">[[Thomas Bek (bishop of St David's)|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Thomas Bek (bishop of St David's)</span>|]]</span></span>"
 	},
 	{
 		"desc": "Piped link with empty link text",
@@ -4651,7 +4651,7 @@
 	{
 		"desc": "Complex edit comment with link with more than one pipe (T99346)",
 		"wikitext": "Created page with \"<noinclude>[[Category:Requests for permissions/Bot|{{subst:#titleparts:{{subst:PAGENAME}}|1|3}}]]</noinclude> === [[User:MineoBot|]] 8=== {{Request for permissions/links|Mineo...\"",
-		"print": "<span class=\"wpb-root\">Created page with \"<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Requests for permissions/Bot</span>|<span class=\"wpb-link-text\"><span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">#titleparts</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">3</span></span>}}</span></span>]]</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span> === [[User:MineoBot|]] 8=== {{Request for permissions/links|Mineo...\"</span>"
+		"print": "<span class=\"wpb-root\">Created page with \"<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Requests for permissions/Bot</span>|<span class=\"wpb-link-text\"><span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">#titleparts</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">3</span></span>}}</span></span>]]</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span> === <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">User:MineoBot</span>|]]</span> 8=== {{Request for permissions/links|Mineo...\"</span>"
 	},
 	{
 		"desc": "Space normalisation on autocomment (T24784)",
@@ -13962,12 +13962,12 @@
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\")",
 		"wikitext": "[[Article (context)|]]\n[[Bar:Article|]]\n[[:Bar:Article|]]\n[[Bar:Article (context)|]]\n[[:Bar:Article (context)|]]\n[[|Article]]\n[[|Article (context)]]\n[[Bar:X (Y) Z|]]\n[[:Bar:X (Y) Z|]]",
-		"print": "<span class=\"wpb-root\">[[Article (context)|]]\n[[Bar:Article|]]\n[[:Bar:Article|]]\n[[Bar:Article (context)|]]\n[[:Bar:Article (context)|]]\n[[|Article]]\n[[|Article (context)]]\n[[Bar:X (Y) Z|]]\n[[:Bar:X (Y) Z|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Article (context)</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article (context)</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article (context)</span>|]]</span>\n[[|Article]]\n[[|Article (context)]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:X (Y) Z</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:X (Y) Z</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with interwiki prefix",
 		"wikitext": "[[interwiki:Article|]]\n[[:interwiki:Article|]]\n[[interwiki:Bar:Article|]]\n[[:interwiki:Bar:Article|]]",
-		"print": "<span class=\"wpb-root\">[[interwiki:Article|]]\n[[:interwiki:Article|]]\n[[interwiki:Bar:Article|]]\n[[:interwiki:Bar:Article|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">interwiki:Article</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:interwiki:Article</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">interwiki:Bar:Article</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:interwiki:Bar:Article</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with parens in title",
@@ -13977,17 +13977,17 @@
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with single, double-width and Arabic comma in title",
 		"wikitext": "[[|Otherplace]]\n[[Otherplace, Elsewhere|]]\n[[Otherplace, Elsewhere, Anywhere|]]\n[[Otherplace，Elsewhere|]]\n[[Otherplace، Elsewhere|]]",
-		"print": "<span class=\"wpb-root\">[[|Otherplace]]\n[[Otherplace, Elsewhere|]]\n[[Otherplace, Elsewhere, Anywhere|]]\n[[Otherplace，Elsewhere|]]\n[[Otherplace، Elsewhere|]]</span>"
+		"print": "<span class=\"wpb-root\">[[|Otherplace]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace, Elsewhere</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace, Elsewhere, Anywhere</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace，Elsewhere</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace، Elsewhere</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with parens and comma",
 		"wikitext": "[[|Otherplace]]\n[[Otherplace (place), Elsewhere|]]",
-		"print": "<span class=\"wpb-root\">[[|Otherplace]]\n[[Otherplace (place), Elsewhere|]]</span>"
+		"print": "<span class=\"wpb-root\">[[|Otherplace]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace (place), Elsewhere</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with comma and parens",
 		"wikitext": "[[|Yes, you.]]\n[[Me, Myself, and I (1937 song)|]]",
-		"print": "<span class=\"wpb-root\">[[|Yes, you.]]\n[[Me, Myself, and I (1937 song)|]]</span>"
+		"print": "<span class=\"wpb-root\">[[|Yes, you.]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Me, Myself, and I (1937 song)</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with namespace",
@@ -14017,22 +14017,22 @@
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with full-width parens and no space (Japanese and Chinese style, T32149)",
 		"wikitext": "[[Article（context）|]]\n[[Bar:Article（context）|]]\n[[:Bar:Article（context）|]]\n[[|Article（context）]]\n[[Bar:X（Y）Z|]]\n[[:Bar:X（Y）Z|]]",
-		"print": "<span class=\"wpb-root\">[[Article（context）|]]\n[[Bar:Article（context）|]]\n[[:Bar:Article（context）|]]\n[[|Article（context）]]\n[[Bar:X（Y）Z|]]\n[[:Bar:X（Y）Z|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Article（context）</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article（context）</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article（context）</span>|]]</span>\n[[|Article（context）]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:X（Y）Z</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:X（Y）Z</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with full-width parens and space (Japanese and Chinese style, T32149)",
 		"wikitext": "[[Article （context）|]]\n[[Bar:Article （context）|]]\n[[:Bar:Article （context）|]]\n[[|Article （context）]]\n[[Bar:X （Y） Z|]]\n[[:Bar:X （Y） Z|]]",
-		"print": "<span class=\"wpb-root\">[[Article （context）|]]\n[[Bar:Article （context）|]]\n[[:Bar:Article （context）|]]\n[[|Article （context）]]\n[[Bar:X （Y） Z|]]\n[[:Bar:X （Y） Z|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Article （context）</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article （context）</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article （context）</span>|]]</span>\n[[|Article （context）]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:X （Y） Z</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:X （Y） Z</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with parens and no space (Korean style, T32149)",
 		"wikitext": "[[Article(context)|]]\n[[Bar:Article(context)|]]\n[[:Bar:Article(context)|]]\n[[|Article(context)]]\n[[Bar:X(Y)Z|]]\n[[:Bar:X(Y)Z|]]",
-		"print": "<span class=\"wpb-root\">[[Article(context)|]]\n[[Bar:Article(context)|]]\n[[:Bar:Article(context)|]]\n[[|Article(context)]]\n[[Bar:X(Y)Z|]]\n[[:Bar:X(Y)Z|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Article(context)</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article(context)</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article(context)</span>|]]</span>\n[[|Article(context)]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:X(Y)Z</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:X(Y)Z</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with commas (T23660)",
 		"wikitext": "[[Article (context), context|]]\n[[Article (context)，context|]]\n[[Bar:Article (context), context|]]\n[[Bar:Article (context)，context|]]\n[[:Bar:Article (context), context|]]\n[[:Bar:Article (context)，context|]]",
-		"print": "<span class=\"wpb-root\">[[Article (context), context|]]\n[[Article (context)，context|]]\n[[Bar:Article (context), context|]]\n[[Bar:Article (context)，context|]]\n[[:Bar:Article (context), context|]]\n[[:Bar:Article (context)，context|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Article (context), context</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Article (context)，context</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article (context), context</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bar:Article (context)，context</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article (context), context</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Bar:Article (context)，context</span>|]]</span></span>"
 	},
 	{
 		"desc": "Parsoid: backwards pipe trick",
@@ -14071,12 +14071,12 @@
 	{
 		"desc": "Category with empty sort key",
 		"wikitext": "[[Category:MediaWiki User's Guide|]]",
-		"print": "<span class=\"wpb-root\">[[Category:MediaWiki User's Guide|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:MediaWiki User's Guide</span>|]]</span></span>"
 	},
 	{
 		"desc": "Category with empty sort key and parentheses",
 		"wikitext": "[[Category:Foo (bar)|]]",
-		"print": "<span class=\"wpb-root\">[[Category:Foo (bar)|]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo (bar)</span>|]]</span></span>"
 	},
 	{
 		"desc": "Category with link tail",

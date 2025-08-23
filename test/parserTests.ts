@@ -19,28 +19,29 @@ const split = (str: string): string[] => str
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
-		if (
-			wikitext && (print || render)
-			&& !/\|\]\]|\[\[\|/u.test(wikitext)
-		) {
-			it(desc, () => {
-				const root = Parser.parse(wikitext);
-				try {
-					assert.deepStrictEqual(
-						root.toString(),
-						wikitext.replaceAll('\0', ''),
-						'解析过程中不可逆地修改了原始文本！',
-					);
-					if (print) {
-						assert.deepStrictEqual(split(root.print()), split(print));
+		if (wikitext && (print || render)) {
+			if (wikitext.includes('[[|')) {
+				it.skip(desc);
+			} else {
+				it(desc, () => {
+					const root = Parser.parse(wikitext);
+					try {
+						assert.deepStrictEqual(
+							root.toString(),
+							wikitext.replaceAll('\0', ''),
+							'解析过程中不可逆地修改了原始文本！',
+						);
+						if (print) {
+							assert.deepStrictEqual(split(root.print()), split(print));
+						}
+					} catch (e) {
+						if (e instanceof assert.AssertionError) {
+							e.cause = {message: `\n${wikitext}`};
+						}
+						throw e;
 					}
-				} catch (e) {
-					if (e instanceof assert.AssertionError) {
-						e.cause = {message: `\n${wikitext}`};
-					}
-					throw e;
-				}
-			});
+				});
+			}
 		}
 	}
 });
