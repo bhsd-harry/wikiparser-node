@@ -19,9 +19,9 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
  */
 export const parseLinks = (wikitext: string, config: Config, accum: Token[], tidy?: boolean): string => {
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
-	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
+	const regex = config.inExt
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u
-			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]])?)?\]\]([\s\S]*)$/u,
+			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])*)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]])?)?\]\]([\s\S]*)$/u,
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;
 	for (let i = 0; i < bits.length; i++) {
@@ -111,6 +111,9 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 			) {
 				SomeLinkToken = CategoryToken;
 			}
+		}
+		if (text === undefined && delimiter) {
+			text = '';
 		}
 		s += `\0${accum.length}l\x7F${after!}`;
 		// @ts-expect-error abstract class
