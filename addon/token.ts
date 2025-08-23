@@ -115,7 +115,7 @@ const expand = (
 	stack: string[] = [],
 ): Token => {
 	const n = accum.length,
-		token = new Token(wikitext, config, accum);
+		token = new Token(wikitext, {...config, inExt: true}, accum);
 	token.type = 'root';
 	token.parseOnce(0, include);
 	if (context !== false) {

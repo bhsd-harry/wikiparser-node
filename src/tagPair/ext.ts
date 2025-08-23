@@ -74,6 +74,7 @@ export abstract class ExtToken extends TagPairToken {
 				...config,
 				ext: config.ext.filter(e => e !== lcName),
 				excludes: [...config.excludes],
+				inExt: true,
 			};
 		let innerToken: Token;
 		switch (lcName) {
