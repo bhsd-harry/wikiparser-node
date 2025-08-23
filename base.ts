@@ -39,6 +39,8 @@ export interface Config {
 	/** @private */
 	readonly excludes: string[];
 	/** @private */
+	inExt?: boolean;
+	/** @private */
 	regexRedirect?: RegExp;
 	/** @private */
 	regexHrAndDoubleUnderscore?: RegExp;

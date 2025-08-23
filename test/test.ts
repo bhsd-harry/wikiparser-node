@@ -40,7 +40,9 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (!/^\/\/ (?:print|json)(?!\S)| \(main\)| \(print\)| \(browser\)/u.test(first)) {
+					if (/^\/\/ (?:print|json)(?!\S)| \(main\)| \(print\)| \(browser\)/u.test(first)) {
+						it.skip(first.slice(3));
+					} else {
 						it(first.slice(3), async () => {
 							try {
 								await eval(code); // eslint-disable-line no-eval
