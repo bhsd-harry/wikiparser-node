@@ -106,6 +106,8 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER ONLY */
 
+	configPaths: string[];
+
 	/** @private */
 	lintCSS: boolean;
 
@@ -305,15 +307,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* NOT FOR BROWSER */
 
-	/** @implements */
-	get redirects() {
-		return redirectMap;
-	},
-
-	set redirects(redirects: Map<string, string>) {
-		redirectMap = redirects instanceof RedirectMap ? redirects : new RedirectMap(redirects);
-	},
-
 	conversionTable: new Map(),
 
 	templates: new RedirectMap(undefined, false),
@@ -325,9 +318,20 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	tagHooks: new Map(),
 
+	/** @implements */
+	get redirects() {
+		return redirectMap;
+	},
+
+	set redirects(redirects: Map<string, string>) {
+		redirectMap = redirects instanceof RedirectMap ? redirects : new RedirectMap(redirects);
+	},
+
 	/* NOT FOR BROWSER END */
 
 	/* NOT FOR BROWSER ONLY */
+
+	configPaths: [],
 
 	lintCSS: true,
 
@@ -338,7 +342,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* NOT FOR BROWSER ONLY */
 
 		if (!config && typeof this.config === 'string') {
-			this.config = rootRequire(this.config, 'config') as ConfigData;
+			if (!path.isAbsolute(this.config)) {
+				for (const p of this.configPaths) {
+					try {
+						this.config = require(path.resolve(process.cwd(), p, this.config as string));
+						break;
+					} catch {}
+				}
+			}
+			if (typeof this.config === 'string') {
+				this.config = rootRequire(this.config, 'config') as ConfigData;
+			}
 			/* istanbul ignore if */
 			if (
 				this.config.doubleUnderscore.length < 3
@@ -713,7 +727,6 @@ const def: PropertyDescriptorMap = {
 		/* NOT FOR BROWSER ONLY */
 
 		'fetchConfig',
-		'lintCSS',
 
 		/* NOT FOR BROWSER ONLY END */
 

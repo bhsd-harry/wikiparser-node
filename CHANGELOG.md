@@ -1,3 +1,11 @@
+## v1.25.1
+
+*2025-08-25*
+
+**Added**
+
+- [`Parser.configPaths`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#configpaths) that is used to specify additional paths to look for parser configuration files
+
 ## v1.25.0
 
 *2025-08-19*

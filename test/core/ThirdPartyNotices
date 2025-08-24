@@ -6,7 +6,7 @@ under which such components were received are set forth below.
 
 
 
-%% MediaWiki (https://github.com/wikimedia/mediawiki)
+%% MediaWiki (https://gerrit.wikimedia.org/g/mediawiki/core)
 =========================================
 == License and copyright information ==
 
@@ -395,7 +395,7 @@ END OF MediaWiki NOTICES AND INFORMATION
 
 
 
-%% MediaWiki/extensions/Cite (https://github.com/wikimedia/mediawiki-extensions-Cite)
+%% MediaWiki/extensions/Cite (https://gerrit.wikimedia.org/g/mediawiki/extensions/Cite)
 =========================================
 GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
@@ -741,7 +741,7 @@ END OF MediaWiki/extensions/Cite NOTICES AND INFORMATION
 
 
 
-%% MediaWiki/extensions/Scribunto (https://github.com/wikimedia/mediawiki-extensions-Scribunto)
+%% MediaWiki/extensions/Scribunto (https://gerrit.wikimedia.org/g/mediawiki/extensions/Scribunto)
 =========================================
 The majority of Scribunto is licensed under the GNU General Public License,
 version 2 or later. The text of this license is included below.
@@ -1125,7 +1125,7 @@ END OF MediaWiki/extensions/Scribunto NOTICES AND INFORMATION
 
 
 
-%% MediaWiki/extensions/Poem (https://github.com/wikimedia/mediawiki-extensions-Poem)
+%% MediaWiki/extensions/Poem (https://gerrit.wikimedia.org/g/mediawiki/extensions/Poem)
 =========================================
 Creative Commons Legal Code
 
@@ -1253,7 +1253,7 @@ END OF MediaWiki/extensions/Poem NOTICES AND INFORMATION
 
 
 
-%% MediaWiki/extensions/ParserFunctions (https://github.com/wikimedia/mediawiki-extensions-ParserFunctions)
+%% MediaWiki/extensions/ParserFunctions (https://gerrit.wikimedia.org/g/mediawiki/extensions/ParserFunctions)
 =========================================
 The ParserFunctions extension may be copied and redistributed under the GNU
 General Public License, version 2.0 or, at your option, any later version.
@@ -1543,7 +1543,7 @@ END OF MediaWiki/extensions/ParserFunctions NOTICES AND INFORMATION
 
 
 
-%% MediaWiki/extensions/Translate (https://github.com/wikimedia/mediawiki-extensions-Translate)
+%% MediaWiki/extensions/Translate (https://gerrit.wikimedia.org/g/mediawiki/extensions/Translate)
 =========================================
 The license text below "----" applies to all files within this distribution, other
 than those that are in a directory which contains files named "LICENSE" or
