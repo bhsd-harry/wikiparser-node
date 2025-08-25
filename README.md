@@ -16,21 +16,22 @@ npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 
 ## CLI Options
 
-| Option | Description | Default |
-| :----- | :---------- | :------ |
-| `-c`, `--config` \<path or preset config\> | Choose parser's configuration | `default` |
-| `--cache` | Enable caching | `false` |
-| `--cache-file` \<path\> | Specify cache file and enable caching | `.wikilintcache` |
-| `--ext` \<extension\> | Specify file extension<br>Can be used multiple times | all files |
-| `--fix` | Automatically fix problems | `false` |
-| `-h`, `--help` | Print available options | |
-| `-i`, `--include` | Parse for inclusion | `false` |
-| `--ignore` \<pattern\> | Ignore files matching the glob pattern<br>Can be used multiple times | |
-| `-l`, `--lang` \<path or preset language\> | Choose i18n language | English |
-| `-q`, `--quiet` | Report errors only | errors and warnings |
-| `-r`, `--recursive` | Recursively lint files | `false` |
-| `-s`, `--strict` | Exit when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
-| `-v`, `--version` | Print package version | |
+| Option | Argument | Description | Default |
+| :----- | :------- | :---------- | :------ |
+| `-c`, `--config` | \<path or preset config\> | Choose parser's configuration | `default` |
+| `--cache` | | Enable caching | `false` |
+| `--cache-file` | \<path\> | Specify cache file and enable caching | `.wikilintcache` |
+| `--ext` | \<extension\> | Specify file extension<br>Can be used multiple times | all files |
+| `--fix` | | Automatically fix problems | `false` |
+| `-h`, `--help` | | Print available options | |
+| `-i`, `--include` | | Parse for inclusion | `false` |
+| `--ignore` | \<pattern\> | Ignore files matching the glob pattern<br>Can be used multiple times | |
+| `-l`, `--lang` | \<path or preset language\> | Choose i18n language | English |
+| `--lc`, `--lint-config` | \<path\> | Specify lint config file | `.wikilintrc.json`<br>`.wikilintrc.js`<br>`.wikilintrc.cjs`<br>`.wikilintrc.mjs` |
+| `-q`, `--quiet` | | Report errors only | errors and warnings |
+| `-r`, `--recursive` | | Recursively lint files | `false` |
+| `-s`, `--strict` | | Exit when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
+| `-v`, `--version` | | Print package version | |
 
 ## Configuration
 

@@ -5,7 +5,7 @@ import path from 'path';
 import assert from 'assert';
 import Parser from '../index';
 import type {Chalk} from 'chalk';
-import type {LintError} from '../base';
+import type {LintError, LintConfiguration} from '../base';
 
 declare type CacheItems = Record<string, [number, string, number, LintError[]]>;
 declare interface Cache {
@@ -39,6 +39,7 @@ Available options:
 -i, --include                           Parse for inclusion
 --ignore <pattern>                      Ignore files that match the pattern
 -l, --lang <path or preset language>    Choose i18n language
+--lc, --lint-config <path>              Specify lint config file
 -q, --quiet                             Report errors only
 -r, --recursive                         Lint files in directories recursively
 -s, --strict                            Exit when there is an error or warning
@@ -51,6 +52,7 @@ Available options:
 		fs.readdirSync(configPath).filter(file => file.endsWith('.json'))
 			.map(file => file.slice(0, -5)),
 	),
+	lintConfigDefaults = ['.wikilintrc.json', '.wikilintrc.js', '.wikilintrc.cjs', '.wikilintrc.mjs'],
 	i18n = new Set(
 		fs.readdirSync(path.join(root, 'i18n')).filter(file => file.endsWith('.json'))
 			.map(file => file.slice(0, -5)),
@@ -60,6 +62,7 @@ Available options:
 	ignorePatterns: string[] = [],
 	jobs: Promise<void>[] = [];
 let files: string[] = [],
+	lintConfigFile: string | undefined,
 	cacheFile = '.wikilintcache',
 	cache: Cache | undefined,
 	exiting = false,
@@ -110,6 +113,39 @@ const throwOnConfig = (config: string | undefined): void => {
 		}
 		Parser.config = config;
 	}
+};
+
+/**
+ * throw if `--lc` or `--lint-config` option is incorrect
+ * @param config lintConfig input
+ * @throws `Error` unrecognized lintConfig input
+ */
+const throwOnLintConfig = (config: string | undefined): void => {
+	if (throwOnInput(config, '--lc/--lint-config', 'a path')) {
+		lintConfigFile = path.resolve('.', config);
+	}
+};
+
+/**
+ * load lintConfig
+ * @param file lintConfig file path
+ */
+const loadLintConfig = async (file: string): Promise<LintConfiguration> => {
+	const symbol = Symbol('lintConfig');
+	let lintConfig: unknown = symbol;
+	try {
+		lintConfig = require(file);
+	} catch {}
+	if (lintConfig === symbol) {
+		lintConfig = await import(file);
+	}
+	if (lintConfig && typeof lintConfig === 'object' && 'default' in lintConfig) {
+		lintConfig = lintConfig.default;
+	}
+	if (lintConfig !== undefined && lintConfig !== null && typeof lintConfig !== 'object') {
+		exit(`Not a valid lint config file: ${lintConfigFile}`);
+	}
+	return lintConfig as LintConfiguration;
 };
 
 /**
@@ -180,6 +216,10 @@ for (let i = 2; i < argv.length; i++) {
 		case '-c':
 		case '--config':
 			throwOnConfig(argv[++i]);
+			break;
+		case '--lc':
+		case '--lint-config':
+			throwOnLintConfig(argv[++i]);
 			break;
 		case '--cache':
 			caching = true;
@@ -320,86 +360,110 @@ try {
 } catch {
 	minimatch = path.matchesGlob.bind(path); // eslint-disable-line n/no-unsupported-features/node-builtins
 }
-for (const file of new Set(files.map(f => path.resolve(f)))) {
-	const stat = fs.statSync(file);
-	if (stat.isDirectory()) {
-		console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
-		exiting = true;
-		continue;
-	} else if (ignorePatterns.some(ignore => minimatch(file, ignore))) {
-		continue;
-	}
-	const fileCache = obj?.[file];
-	let wikitext = fs.readFileSync(file, 'utf8'),
-		problems: LintError[] & {output?: string},
-		update = false;
-	if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
-		[,,, problems] = fileCache;
-	} else {
-		problems = Parser.parse(wikitext, include).lint();
-		update = true;
-	}
-	if (fixing && problems.output !== undefined) {
-		wikitext = problems.output;
-		jobs.push(fs.promises.writeFile(file, wikitext));
-		problems = Parser.parse(wikitext, include).lint();
-		update = true;
-	}
-	if (caching && update) {
-		obj![file] = [stat.mtimeMs, config, mtimeMs, problems];
-	}
-	const errors = problems.filter(({severity}) => severity === 'error'),
-		fixable = problems.filter(({fix}) => fix),
-		nLocalErr = errors.length,
-		nLocalWarn = problems.length - nLocalErr,
-		nLocalFixableErr = fixable.filter(({severity}) => severity === 'error').length,
-		nLocalFixableWarn = fixable.length - nLocalFixableErr;
-	if (quiet) {
-		problems = errors;
-	} else {
-		nWarn += nLocalWarn;
-		nFixableWarn += nLocalFixableWarn;
-	}
-	if (problems.length > 0) {
-		console.error(`\n${chalk.underline('%s')}`, file);
-		const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
-			maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
-			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
-		for (const {rule, message, severity, startLine, startCol} of problems) {
-			console.error(
-				`  ${chalk.dim('%s:%s')}  %s  %s  ${chalk.dim('%s')}`,
-				String(startLine).padStart(maxLineChars),
-				String(startCol).padEnd(maxColChars),
-				coloredSeverity(severity),
-				message.padEnd(maxMessageChars),
-				rule,
-			);
-		}
-	}
-	nErr += nLocalErr;
-	nFixableErr += nLocalFixableErr;
-	exiting ||= Boolean(nLocalErr || strict && nLocalWarn);
-}
-
-if (nErr || nWarn) {
-	console.error(
-		chalk.red.bold('%s'),
-		`\n✖ ${plural(nErr + nWarn, 'problem')} (${
-			plural(nErr, 'error')
-		}, ${plural(nWarn, 'warning')})`,
-	);
-	if (nFixableErr || nFixableWarn) {
-		console.error(
-			chalk.red.bold('%s'),
-			`  ${plural(nFixableErr, 'error')} and ${
-				plural(nFixableWarn, 'warning')
-			} potentially fixable with the \`--fix\` option.`,
-		);
-	}
-	console.error();
-}
 
 (async () => {
+	if (lintConfigFile) {
+		try {
+			Parser.lintConfig = await loadLintConfig(lintConfigFile);
+		} catch {
+			exit(`Cannot load lint config file: ${lintConfigFile}`);
+		}
+	} else {
+		await (async () => {
+			let cur = process.cwd(),
+				last: string | undefined;
+			while (last !== cur) {
+				for (const file of lintConfigDefaults) {
+					try {
+						Parser.lintConfig = await loadLintConfig(path.join(cur, file));
+						return;
+					} catch {}
+				}
+				last = cur;
+				cur = path.dirname(cur);
+			}
+		})();
+	}
+
+	for (const file of new Set(files.map(f => path.resolve(f)))) {
+		const stat = fs.statSync(file);
+		if (stat.isDirectory()) {
+			console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
+			exiting = true;
+			continue;
+		} else if (ignorePatterns.some(ignore => minimatch(file, ignore))) {
+			continue;
+		}
+		const fileCache = obj?.[file];
+		let wikitext = fs.readFileSync(file, 'utf8'),
+			problems: LintError[] & {output?: string},
+			update = false;
+		if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
+			[,,, problems] = fileCache;
+		} else {
+			problems = Parser.parse(wikitext, include).lint();
+			update = true;
+		}
+		if (fixing && problems.output !== undefined) {
+			wikitext = problems.output;
+			jobs.push(fs.promises.writeFile(file, wikitext));
+			problems = Parser.parse(wikitext, include).lint();
+			update = true;
+		}
+		if (caching && update) {
+			obj![file] = [stat.mtimeMs, config, mtimeMs, problems];
+		}
+		const errors = problems.filter(({severity}) => severity === 'error'),
+			fixable = problems.filter(({fix}) => fix),
+			nLocalErr = errors.length,
+			nLocalWarn = problems.length - nLocalErr,
+			nLocalFixableErr = fixable.filter(({severity}) => severity === 'error').length,
+			nLocalFixableWarn = fixable.length - nLocalFixableErr;
+		if (quiet) {
+			problems = errors;
+		} else {
+			nWarn += nLocalWarn;
+			nFixableWarn += nLocalFixableWarn;
+		}
+		if (problems.length > 0) {
+			console.error(`\n${chalk.underline('%s')}`, file);
+			const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
+				maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
+				maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
+			for (const {rule, message, severity, startLine, startCol} of problems) {
+				console.error(
+					`  ${chalk.dim('%s:%s')}  %s  %s  ${chalk.dim('%s')}`,
+					String(startLine).padStart(maxLineChars),
+					String(startCol).padEnd(maxColChars),
+					coloredSeverity(severity),
+					message.padEnd(maxMessageChars),
+					rule,
+				);
+			}
+		}
+		nErr += nLocalErr;
+		nFixableErr += nLocalFixableErr;
+		exiting ||= Boolean(nLocalErr || strict && nLocalWarn);
+	}
+
+	if (nErr || nWarn) {
+		console.error(
+			chalk.red.bold('%s'),
+			`\n✖ ${plural(nErr + nWarn, 'problem')} (${
+				plural(nErr, 'error')
+			}, ${plural(nWarn, 'warning')})`,
+		);
+		if (nFixableErr || nFixableWarn) {
+			console.error(
+				chalk.red.bold('%s'),
+				`  ${plural(nFixableErr, 'error')} and ${
+					plural(nFixableWarn, 'warning')
+				} potentially fixable with the \`--fix\` option.`,
+			);
+		}
+		console.error();
+	}
+
 	await Promise.all(jobs);
 	if (caching) {
 		fs.writeFileSync(cacheFile, JSON.stringify(cache), 'utf8');
