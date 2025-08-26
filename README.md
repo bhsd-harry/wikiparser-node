@@ -80,7 +80,7 @@ Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Ho
 
 # Performance
 
-A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps) of Chinese Wikipedia's ~2.9 million articles (parsing and linting) on a personal MacBook Air takes about 50 minutes.
+A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps) of English Wikipedia's ~19 million articles (parsing and linting) on a personal MacBook Air takes about 5 hours.
 
 # Known issues
 

@@ -80,7 +80,7 @@ Parser.config = 'jawiki';
 
 # 性能
 
-在一台个人的 MacBook Air 上对中文维基百科约 290 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 50 分钟。
+在一台个人的 MacBook Air 上对英文维基百科约 1900 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 5 小时。
 
 # 已知问题
 

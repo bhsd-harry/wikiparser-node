@@ -749,6 +749,7 @@ export default Parser;
 export type {
 	Config,
 	ConfigData,
+	LintConfig,
 	LintError,
 	TokenTypes,
 	LanguageService,
