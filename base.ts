@@ -477,7 +477,6 @@ export type SeverityLevel = 0 | 1 | 2;
 export type LintConfigValue = SeverityLevel | [SeverityLevel, Record<string, unknown>];
 export type LintConfig = Partial<Record<LintError.Rule, LintConfigValue>>;
 export interface LintConfiguration extends LintConfig {
-	/** @private */
 	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false;
 }
 
@@ -487,7 +486,7 @@ export interface Parser {
 		| undefined;
 
 	/** @since v1.22.0 */
-	lintConfig: LintConfiguration;
+	lintConfig: LintConfig;
 
 	/** @since v1.9.0 */
 	viewOnly: boolean;

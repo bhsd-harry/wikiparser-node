@@ -27,7 +27,7 @@ import type {
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 // eslint-disable-next-line @stylistic/max-len
-import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser, LintConfiguration} from '../base';
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
 
 /* NOT EXPORTED */
 
@@ -38,7 +38,6 @@ export type {
 	Config,
 	ConfigData,
 	LintConfig,
-	LintConfiguration,
 	LintError,
 	LanguageService,
 	SignatureData,

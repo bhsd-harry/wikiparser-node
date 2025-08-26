@@ -36,6 +36,7 @@ describe('API tests', () => {
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
+					// @ts-expect-error extended interface
 					Parser.lintConfig = {} as LintConfiguration;
 					if (typeof Parser.config === 'object') {
 						// @ts-expect-error delete readonly property
@@ -82,6 +83,7 @@ describe('API tests', () => {
 									assert.strictEqual(
 										// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 										typeof lintConfig[cur] === 'number'
+										// @ts-expect-error method of LintConfiguration
 										=== (Parser.lintConfig.getSeverity(cur as LintError.Rule) === 'error'),
 										Parser.parse(block).lint()
 											.some(({rule, severity}) => rule === cur && severity === 'error'),

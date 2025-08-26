@@ -7,7 +7,6 @@ import type {
 	wikiparse as Wikiparse,
 	Command,
 	LintConfig,
-	LintConfiguration,
 } from './typings';
 
 declare type WorkerListener<T> = (e: {data: [string, number, T, string]}) => void;
@@ -95,7 +94,7 @@ const workerJS = (): void => {
 				Parser.i18n = qid;
 				break;
 			case 'setLintConfig':
-				Parser.lintConfig = qid as LintConfiguration;
+				Parser.lintConfig = qid!;
 				break;
 			case 'setConfig':
 				Parser.config = qid;
