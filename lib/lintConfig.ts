@@ -3,7 +3,10 @@ import type {
 	LintError,
 	SeverityLevel,
 	LintConfigValue,
+	LintRuleConfig,
+	LintRuleConfiguration as LintRuleConfigurationBase,
 	LintConfig,
+	FullLintConfig,
 	LintConfiguration as LintConfigurationBase,
 } from '../base';
 
@@ -14,7 +17,7 @@ const severities = new Set([0, 1, 2]),
 		[2, 'error'],
 	]);
 
-const defaultLintConfig: LintConfig = {
+const defaultLintRuleConfig: LintRuleConfig = {
 	'bold-header': [
 		1,
 		{
@@ -221,6 +224,14 @@ const defaultLintConfig: LintConfig = {
 		},
 	],
 };
+Object.freeze(defaultLintRuleConfig);
+
+const defaultLintConfig: Omit<FullLintConfig, 'rules'> = {
+	configurationComment: 'lint',
+	ignoreDisables: false,
+	fix: true,
+	computeEditInfo: true,
+};
 Object.freeze(defaultLintConfig);
 
 /**
@@ -244,9 +255,11 @@ const validateConfigValue = (value: unknown): boolean => validateSeverity(value)
  * @param value 语法检查规则值
  * @throws `RangeError` 未知的规则或无效的值
  */
-const set = (obj: LintConfigurationBase, key: LintError.Rule, value: LintConfigValue): boolean => {
+const set = (obj: LintRuleConfig, key: LintError.Rule, value?: LintConfigValue): boolean => {
 	if (!rules.includes(key)) {
 		throw new RangeError(`Unknown lint rule: ${key}`);
+	} else if (value === undefined) {
+		return false;
 	} else if (validateConfigValue(value)) {
 		obj[key] = value;
 		return true;
@@ -254,37 +267,79 @@ const set = (obj: LintConfigurationBase, key: LintError.Rule, value: LintConfigV
 	throw new RangeError(`Invalid lint config for ${key}: ${JSON.stringify(value)}`);
 };
 
-/** 语法检查设置 */
-export class LintConfiguration implements LintConfigurationBase {
-	/** @param config 语法检查设置 */
-	constructor(config?: LintConfig) {
+interface LintRuleConfiguration extends LintRuleConfigurationBase {}
+
+/** 语法规则设置 */
+class LintRuleConfiguration implements LintRuleConfigurationBase {
+	/** @param config 语法规则设置 */
+	constructor(config?: LintRuleConfig) {
 		Object.assign(
 			this,
 			structuredClone(
-				defaultLintConfig,
+				defaultLintRuleConfig,
 			),
 		);
 		if (!config) {
 			return;
 		}
-		for (const [key, value] of Object.entries(config) as [LintError.Rule, LintConfigValue][]) {
-			set(this, key, value);
+		for (const [key, value] of Object.entries(config)) {
+			set(this, key as LintError.Rule, value);
 		}
 	}
 
 	/** @implements */
-	getSeverity(this: LintConfigurationBase, rule: LintError.Rule, key?: string): LintError.Severity | false {
+	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
 		const value = this[rule]!;
 		if (typeof value === 'number') {
 			return dict.get(value)!;
 		}
-		return key ? dict.get(value[1][key] as SeverityLevel) ?? dict.get(value[0])! : dict.get(value[0])!;
+		return key ? dict.get(value[1][key]!) ?? dict.get(value[0])! : dict.get(value[0])!;
 	}
 }
 
-/**
- * 获取语法检查设置
- * @param config 语法检查设置
- */
-export const getLintConfig = (config?: LintConfig): LintConfiguration =>
-	new Proxy(new LintConfiguration(config), {set});
+export interface LintConfiguration extends LintConfigurationBase {}
+
+/** 语法检查设置 */
+export class LintConfiguration implements LintConfigurationBase {
+	#rules: LintRuleConfiguration;
+
+	/** @implements */
+	get rules(): LintRuleConfiguration {
+		return this.#rules;
+	}
+
+	set rules(config: LintRuleConfig | undefined) {
+		this.#rules = new Proxy(new LintRuleConfiguration(config), {
+			set,
+			/** @ignore */
+			deleteProperty(): boolean {
+				return false;
+			},
+		}) as LintRuleConfiguration;
+	}
+
+	/** @param config 语法检查设置 */
+	constructor(config?: LintConfig) {
+		Object.assign(this, defaultLintConfig);
+		if (
+			config
+			&& !('rules' in config)
+			&& Object.keys(config).some(key => rules.includes(key as LintError.Rule))
+		) {
+			this.rules = config;
+		} else {
+			const {rules: ruleConfig, ...other} = (config ?? {}) as FullLintConfig;
+			this.rules = ruleConfig;
+			for (const [key, value] of Object.entries(other)) {
+				if (value as unknown !== undefined && Object.prototype.hasOwnProperty.call(defaultLintConfig, key)) {
+					(this as Record<string, unknown>)[key] = value;
+				}
+			}
+		}
+	}
+
+	/** @implements */
+	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
+		return this.#rules.getSeverity(rule, key);
+	}
+}

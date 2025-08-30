@@ -43,7 +43,7 @@ import type {
 	SignatureData,
 	SignatureInfo,
 	LintError,
-	LintConfiguration,
+	LintRuleConfig,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -349,16 +349,16 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
  * @param rule rule to be fixed
  */
 const getFixAll = (root: Token, rule?: string): TextEdit[] => {
-	const {lintConfig} = Parser;
+	const {lintConfig: {rules: ruleConfig}} = Parser;
 	if (rule) {
-		Parser.lintConfig = {} as unknown as LintConfiguration;
+		Parser.lintConfig.rules = undefined as unknown as LintRuleConfig;
 		for (const key of rules) {
-			Parser.lintConfig[key] = key === rule ? lintConfig[key]! : 0;
+			Parser.lintConfig.rules[key] = key === rule ? ruleConfig[key]! : 0;
 		}
 	}
 	const {output} = root.lint();
 	if (rule) {
-		Parser.lintConfig = lintConfig;
+		Parser.lintConfig.rules = ruleConfig;
 	}
 	return output === undefined
 		? []

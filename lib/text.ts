@@ -135,7 +135,7 @@ export class AstText extends AstNode {
 				rootStr = root.toString(),
 				{ext, html, variants} = root.getAttribute('config'),
 				{top, left} = root.posFromIndex(start)!,
-				lintConfig = Parser.lintConfig['tag-like']!,
+				lintConfig = Parser.lintConfig.rules['tag-like']!,
 				specified = typeof lintConfig === 'number'
 					? new Set()
 					: new Set(Object.keys(lintConfig[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
@@ -148,7 +148,7 @@ export class AstText extends AstNode {
 					...html[1],
 					...html[2],
 					...specified,
-					...disallowedTags,
+					...Parser.lintConfig.getSeverity('tag-like', 'disallowed') ? disallowedTags : [],
 				]);
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 				const [, tag, prefix] = mt;

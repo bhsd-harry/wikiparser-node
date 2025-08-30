@@ -5,7 +5,8 @@ import path from 'path';
 import assert from 'assert';
 import Parser from '../index';
 import type {Chalk} from 'chalk';
-import type {LintError, LintConfiguration} from '../base';
+import type {LintError} from '../base';
+import type {LintConfiguration} from '../lib/lintConfig';
 
 declare type CacheItems = Record<string, [number, string, number, LintError[]]>;
 declare interface Cache {
@@ -384,6 +385,8 @@ try {
 			}
 		})();
 	}
+	Parser.lintConfig.computeEditInfo = false;
+	Parser.lintConfig.fix = true;
 
 	for (const file of new Set(files.map(f => path.resolve(f)))) {
 		const stat = fs.statSync(file);
