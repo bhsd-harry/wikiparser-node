@@ -36,8 +36,7 @@ describe('API tests', () => {
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
-					// @ts-expect-error extended interface
-					Parser.lintConfig = {} as LintConfiguration;
+					Parser.lintConfig = undefined as unknown as LintConfiguration;
 					if (typeof Parser.config === 'object') {
 						// @ts-expect-error delete readonly property
 						delete Parser.config.articlePath;
