@@ -558,24 +558,24 @@ export class Token extends AstElement {
 				}
 
 				/* NOT FOR BROWSER ONLY */
-			} else if (Parser.lintCSS && isAttr(this, true)) {
+			} else if (isAttr(this, true)) {
 				const rule = 'invalid-css',
 					s = Parser.lintConfig.getSeverity(rule),
 					sWarn = Parser.lintConfig.getSeverity(rule, 'warn');
-				if (s) {
+				if (s || sWarn) {
 					const root = this.getRootNode(),
 						textDoc = new EmbeddedCSSDocument(root, this);
 					errors.push(
 						...cssLSP!.doValidation(textDoc, textDoc.styleSheet)
 							.filter(
 								({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
-									&& (sWarn || severity === 1),
+									&& (severity === 1 ? s : sWarn),
 							)
 							.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
 								code: code as string,
 								rule: 'invalid-css',
 								message,
-								severity: severity === 1 ? s : sWarn as LintError.Severity,
+								severity: (severity === 1 ? s : sWarn) as LintError.Severity,
 								startLine: line,
 								startCol: character,
 								startIndex: root.indexFromPos(line, character)!,

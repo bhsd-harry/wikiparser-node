@@ -7,13 +7,12 @@ import {
 	enMsg,
 } from './util/constants';
 import {tidy} from './util/string';
-import {getLintConfig} from './lib/lintConfig';
+import {LintConfiguration} from './lib/lintConfig';
 import type {
 	Config,
 	ConfigData,
 	LintError,
 	LintConfig,
-	LintConfiguration,
 	TokenTypes,
 	Parser as ParserBase,
 	Stage,
@@ -47,9 +46,6 @@ declare interface Parser extends ParserBase {
 	/* NOT FOR BROWSER ONLY */
 
 	configPaths: string[];
-
-	/** @private */
-	lintCSS: boolean;
 
 	/* NOT FOR BROWSER ONLY END */
 
@@ -131,7 +127,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 let viewOnly = true;
 
 let lintConfig = (() => {
-		LINT: return getLintConfig(); // eslint-disable-line no-unused-labels
+		LINT: return new LintConfiguration(); // eslint-disable-line no-unused-labels
 	})(),
 	i18n: Record<string, string> | undefined;
 
@@ -166,7 +162,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	set lintConfig(config: LintConfig) {
-		LINT: lintConfig = getLintConfig(config); // eslint-disable-line no-unused-labels
+		LINT: lintConfig = new LintConfiguration(config); // eslint-disable-line no-unused-labels
 	},
 
 	/** @implements */
@@ -184,8 +180,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* NOT FOR BROWSER ONLY */
 
 	configPaths: [],
-
-	lintCSS: true,
 
 	/* NOT FOR BROWSER ONLY END */
 
