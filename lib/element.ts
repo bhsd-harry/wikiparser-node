@@ -279,7 +279,7 @@ export abstract class AstElement extends AstNode {
 		/* NOT FOR BROWSER END */
 
 		const oldText = this.childNodes[i] as AstText;
-		if (oldText.type === 'text') { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		if (oldText.type as unknown === 'text') {
 			const {data} = oldText;
 			oldText.replaceData(str);
 			return data;

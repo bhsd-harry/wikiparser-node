@@ -48,7 +48,7 @@ describe('API tests', () => {
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = 'en';
-					Parser.lintConfig = {} as LintConfiguration;
+					Parser.lintConfig = undefined as unknown as LintConfiguration;
 
 					/* NOT FOR BROWSER */
 
