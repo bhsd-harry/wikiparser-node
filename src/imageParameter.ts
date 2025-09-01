@@ -193,10 +193,11 @@ export abstract class ImageParameterToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
+				{lintConfig} = Parser,
 				{link, name} = this;
 			if (name === 'invalid') {
 				const rule = 'invalid-gallery',
-					s = Parser.lintConfig.getSeverity(rule, 'parameter');
+					s = lintConfig.getSeverity(rule, 'parameter');
 				if (s) {
 					const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
 					e.fix = fixByRemove(e, -1);
@@ -204,7 +205,7 @@ export abstract class ImageParameterToken extends Token {
 				}
 			} else if (typeof link === 'object' && link.encoded) {
 				const rule = 'url-encoding',
-					s = Parser.lintConfig.getSeverity(rule, 'file');
+					s = lintConfig.getSeverity(rule, 'file');
 				if (s) {
 					const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
 					e.fix = fixByDecode(e, this);

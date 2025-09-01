@@ -295,16 +295,17 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
  * @param rule rule to be fixed
  */
 const getFixAll = (root: Token, rule?: string): TextEdit[] => {
-	const {lintConfig: {rules: ruleConfig}} = Parser;
+	const {lintConfig} = Parser,
+		{rules: ruleConfig} = lintConfig;
 	if (rule) {
-		Parser.lintConfig.rules = undefined as unknown as LintRuleConfig;
+		lintConfig.rules = undefined as unknown as LintRuleConfig;
 		for (const key of rules) {
-			Parser.lintConfig.rules[key] = key === rule ? ruleConfig[key]! : 0;
+			lintConfig.rules[key] = key === rule ? ruleConfig[key]! : 0;
 		}
 	}
 	const {output} = root.lint();
 	if (rule) {
-		Parser.lintConfig.rules = ruleConfig;
+		lintConfig.rules = ruleConfig;
 	}
 	return output === undefined
 		? []

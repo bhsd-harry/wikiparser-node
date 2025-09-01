@@ -100,10 +100,11 @@ export abstract class MagicLinkToken extends Token {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
 				rect = new BoundingRect(this, start),
+				{lintConfig} = Parser,
 				{type, childNodes} = this;
 			if (type === 'magic-link') {
 				const rule = 'invalid-isbn',
-					s = Parser.lintConfig.getSeverity(rule);
+					s = lintConfig.getSeverity(rule);
 				if (s && this.#lint()) {
 					errors.push(generateForSelf(this, rect, rule, 'invalid-isbn', s));
 				}
@@ -111,7 +112,7 @@ export abstract class MagicLinkToken extends Token {
 			}
 			const pipe = type === 'ext-link-url',
 				rule = 'unterminated-url',
-				severity = Parser.lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
+				severity = lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
 			if (severity) {
 				const regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
 					child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
