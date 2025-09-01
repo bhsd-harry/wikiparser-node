@@ -299,13 +299,16 @@ export abstract class ImageParameterToken extends Token {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
 				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				{link, name} = this;
 			if (name === 'invalid') {
 				const rule = 'invalid-gallery',
 					s = lintConfig.getSeverity(rule, 'parameter');
 				if (s) {
 					const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
-					e.fix = fixByRemove(e, -1);
+					if (computeEditInfo || fix) {
+						e.fix = fixByRemove(e, -1);
+					}
 					errors.push(e);
 				}
 			} else if (typeof link === 'object' && link.encoded) {
@@ -313,7 +316,9 @@ export abstract class ImageParameterToken extends Token {
 					s = lintConfig.getSeverity(rule, 'file');
 				if (s) {
 					const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
-					e.fix = fixByDecode(e, this);
+					if (computeEditInfo || fix) {
+						e.fix = fixByDecode(e, this);
+					}
 					errors.push(e);
 				}
 			}

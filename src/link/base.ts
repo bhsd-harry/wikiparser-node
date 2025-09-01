@@ -228,6 +228,7 @@ export abstract class LinkBaseToken extends Token {
 				{childNodes: [target, linkText], type} = this,
 				{encoded, fragment} = this.#title,
 				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				rect = new BoundingRect(this, start);
 			let rule: LintError.Rule = 'unknown-page',
 				s = lintConfig.getSeverity(rule);
@@ -238,7 +239,9 @@ export abstract class LinkBaseToken extends Token {
 			s = lintConfig.getSeverity(rule);
 			if (s && encoded) {
 				const e = generateForChild(target, rect, rule, 'unnecessary-encoding', s);
-				e.fix = fixByDecode(e, target);
+				if (computeEditInfo || fix) {
+					e.fix = fixByDecode(e, target);
+				}
 				errors.push(e);
 			}
 			rule = 'pipe-like';
@@ -247,20 +250,24 @@ export abstract class LinkBaseToken extends Token {
 				const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
 					textNode = linkText?.childNodes[j!] as AstText | undefined;
 				if (textNode) {
-					const e = generateForChild(linkText!, rect, rule, 'pipe-in-link', s),
-						i = e.startIndex + linkText!.getRelativeIndex(j);
-					e.suggestions = [fixByPipe(i, textNode.data)];
+					const e = generateForChild(linkText!, rect, rule, 'pipe-in-link', s);
+					if (computeEditInfo) {
+						const i = e.startIndex + linkText!.getRelativeIndex(j);
+						e.suggestions = [fixByPipe(i, textNode.data)];
+					}
 					errors.push(e);
 				}
 			}
 			rule = 'no-ignored';
 			s = lintConfig.getSeverity(rule, 'fragment');
 			if (s && fragment !== undefined && !isLink(type)) {
-				const e = generateForChild(target, rect, rule, 'useless-fragment', s),
-					j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
-					textNode = target.childNodes[j] as AstText | undefined;
-				if (textNode) {
-					e.fix = fixByRemove(e, target.getRelativeIndex(j) + textNode.data.indexOf('#'));
+				const e = generateForChild(target, rect, rule, 'useless-fragment', s);
+				if (computeEditInfo || fix) {
+					const j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
+						textNode = target.childNodes[j] as AstText | undefined;
+					if (textNode) {
+						e.fix = fixByRemove(e, target.getRelativeIndex(j) + textNode.data.indexOf('#'));
+					}
 				}
 				errors.push(e);
 			}

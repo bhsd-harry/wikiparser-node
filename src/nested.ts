@@ -112,7 +112,8 @@ export abstract class NestedToken extends Token {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
 				rule = 'no-ignored',
-				s = Parser.lintConfig.getSeverity(rule, this.name);
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule, this.name);
 			if (!s) {
 				return errors;
 			}
@@ -131,10 +132,12 @@ export abstract class NestedToken extends Token {
 					return str && !regex.test(str);
 				}).map(child => {
 					const e = generateForChild(child, rect, rule, Parser.msg('invalid-content', this.name), s);
-					e.suggestions = [
-						fixByRemove(e),
-						fixByComment(e, child.toString()),
-					];
+					if (lintConfig.computeEditInfo) {
+						e.suggestions = [
+							fixByRemove(e),
+							fixByComment(e, child.toString()),
+						];
+					}
 					return e;
 				}),
 			];

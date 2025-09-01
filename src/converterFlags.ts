@@ -145,12 +145,14 @@ export abstract class ConverterFlagsToken extends Token {
 				validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
 				emptyFlagCount = this.#flags!.filter(flag => !flag).length,
 				knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
+				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				errors = super.lint(start, re);
 			if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 				return errors;
 			}
 			const rule = 'no-ignored',
-				s = Parser.lintConfig.getSeverity(rule, 'conversionFlag');
+				s = lintConfig.getSeverity(rule, 'conversionFlag');
 			if (s) {
 				const rect = new BoundingRect(this, start);
 				for (let i = 0; i < this.length; i++) {
@@ -158,10 +160,12 @@ export abstract class ConverterFlagsToken extends Token {
 						flag = child.text().trim();
 					if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
 						const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
-						if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-							e.fix = fixByUpper(e, flag);
-						} else {
-							e.suggestions = [fixByRemove(e, i && -1)];
+						if (computeEditInfo || fix) {
+							if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
+								e.fix = fixByUpper(e, flag);
+							} else if (computeEditInfo) {
+								e.suggestions = [fixByRemove(e, i && -1)];
+							}
 						}
 						errors.push(e);
 					}

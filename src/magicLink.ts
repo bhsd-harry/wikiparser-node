@@ -203,15 +203,17 @@ export abstract class MagicLinkToken extends Token {
 							rule,
 							Parser.msg('in-url', pipe ? '"|"' : 'full-width-punctuation'),
 							severity,
-						),
-						{index, 0: s} = regex.exec(data)!,
-						i = e.startIndex + index;
-					e.suggestions = pipe
-						? [fixBySpace(i, 1)]
-						: [
-							fixBySpace(i),
-							{desc: Parser.msg('encode'), range: [i, i + s.length], text: encodeURI(s)},
-						];
+						);
+					if (lintConfig.computeEditInfo) {
+						const {index, 0: s} = regex.exec(data)!,
+							i = e.startIndex + index;
+						e.suggestions = pipe
+							? [fixBySpace(i, 1)]
+							: [
+								fixBySpace(i),
+								{desc: Parser.msg('encode'), range: [i, i + s.length], text: encodeURI(s)},
+							];
+					}
 					errors.push(e);
 				}
 			}

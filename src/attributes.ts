@@ -279,15 +279,18 @@ export abstract class AttributesToken extends Token {
 				rect = new BoundingRect(this, start),
 				rules = ['no-ignored', 'no-duplicate'] as const,
 				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
 					.map(k => lintConfig.getSeverity(rules[0], k));
 			if (s[0] && this.#lint()) {
-				const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]),
-					index = parentNode!.getAbsoluteIndex();
-				e.suggestions = [
-					fixByRemove(e),
-					fixByOpen(index),
-				];
+				const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]);
+				if (computeEditInfo) {
+					const index = parentNode!.getAbsoluteIndex();
+					e.suggestions = [
+						fixByRemove(e),
+						fixByOpen(index),
+					];
+				}
 				errors.push(e);
 			}
 			for (const attr of childNodes) {
@@ -304,7 +307,9 @@ export abstract class AttributesToken extends Token {
 						severity = s[wordRegex.test(str) ? 1 : 2];
 					if (str && severity) {
 						const e = generateForChild(attr, rect, rules[0], 'invalid-attribute', severity);
-						e.suggestions = [fixByRemove(e, 0, ' ')];
+						if (computeEditInfo) {
+							e.suggestions = [fixByRemove(e, 0, ' ')];
+						}
 						errors.push(e);
 					}
 				}
@@ -318,17 +323,19 @@ export abstract class AttributesToken extends Token {
 					});
 					errors.push(...pairs.map(([attr, value], i) => {
 						const e = generateForChild(
-								attr,
-								rect,
-								rules[1],
-								Parser.msg('duplicate-attribute', key),
-								severity,
-							),
-							remove = fixByRemove(e);
-						if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
-							e.fix = remove;
-						} else {
-							e.suggestions = [remove];
+							attr,
+							rect,
+							rules[1],
+							Parser.msg('duplicate-attribute', key),
+							severity,
+						);
+						if (computeEditInfo || fix) {
+							const remove = fixByRemove(e);
+							if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
+								e.fix = remove;
+							} else if (computeEditInfo) {
+								e.suggestions = [remove];
+							}
 						}
 						return e;
 					}));

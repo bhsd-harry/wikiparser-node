@@ -52,10 +52,13 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		LINT: { // eslint-disable-line no-unused-labels
 			const {name} = this,
 				rule = 'void-ext',
-				s = Parser.lintConfig.getSeverity(rule, name);
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule, name);
 			if (s && this.#lint()) {
 				const e = generateForSelf(this, {start}, rule, Parser.msg('nothing-in', name), s);
-				e.suggestions = [fixByRemove(e)];
+				if (lintConfig.computeEditInfo) {
+					e.suggestions = [fixByRemove(e)];
+				}
 				return [e];
 			}
 			return super.lint(start, getLintRegex(name));

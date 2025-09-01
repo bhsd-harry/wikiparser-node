@@ -116,7 +116,7 @@ module.exports = {
 			},
 		},
 		{
-			files: '**/*.md/**',
+			files: '**/*.md/*.js',
 			globals: {
 				assert: 'readonly',
 				document: 'readonly',

@@ -133,7 +133,8 @@ export abstract class GalleryToken extends Token {
 			const {top, left} = this.getRootNode().posFromIndex(start)!,
 				errors: LintError[] = [],
 				rule = 'no-ignored',
-				s = ['Image', 'NoImage', 'Comment'].map(k => Parser.lintConfig.getSeverity(rule, `gallery${k}`));
+				{lintConfig} = Parser,
+				s = ['Image', 'NoImage', 'Comment'].map(k => lintConfig.getSeverity(rule, `gallery${k}`));
 			for (let i = 0; i < this.length; i++) {
 				const child = this.childNodes[i]!,
 					str = child.toString(),
@@ -163,10 +164,12 @@ export abstract class GalleryToken extends Token {
 								startCol,
 								endCol: startCol + length,
 							};
-						e.suggestions = [
-							fixByRemove(e),
-							fixByComment(e, str),
-						];
+						if (lintConfig.computeEditInfo) {
+							e.suggestions = [
+								fixByRemove(e),
+								fixByComment(e, str),
+							];
+						}
 						errors.push(e);
 					}
 				} else if (type !== 'noinclude' && type !== 'text') {

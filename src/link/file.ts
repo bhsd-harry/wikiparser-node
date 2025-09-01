@@ -202,6 +202,7 @@ export abstract class FileToken extends LinkBaseToken {
 				unscaled = fr === 'framed' || fr === 'manualthumb',
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				{extension} = this;
 			let rule: LintError.Rule = 'nested-link',
 				s = lintConfig.getSeverity(rule, 'file');
@@ -211,17 +212,19 @@ export abstract class FileToken extends LinkBaseToken {
 				&& this.closest('ext-link-text')
 				&& (this.getValue('link') as string | undefined)?.trim() !== ''
 			) {
-				const e = generateForSelf(this, rect, rule, 'link-in-extlink', s),
-					link = this.getArg('link');
-				if (link) {
-					const from = start + link.getRelativeIndex();
-					e.fix = {
-						desc: Parser.msg('delink'),
-						range: [from, from + link.toString().length],
-						text: 'link=',
-					};
-				} else {
-					e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
+				const e = generateForSelf(this, rect, rule, 'link-in-extlink', s);
+				if (computeEditInfo || fix) {
+					const link = this.getArg('link');
+					if (link) {
+						const from = start + link.getRelativeIndex();
+						e.fix = {
+							desc: Parser.msg('delink'),
+							range: [from, from + link.toString().length],
+							text: 'link=',
+						};
+					} else {
+						e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
+					}
 				}
 				errors.push(e);
 			}
@@ -230,7 +233,9 @@ export abstract class FileToken extends LinkBaseToken {
 			if (s && unscaled) {
 				for (const arg of args.filter(({name}) => name === 'width')) {
 					const e = generateForChild(arg, rect, rule, 'invalid-image-parameter', s);
-					e.fix = fixByRemove(e, -1);
+					if (computeEditInfo || fix) {
+						e.fix = fixByRemove(e, -1);
+					}
 					errors.push(e);
 				}
 			}
@@ -265,7 +270,9 @@ export abstract class FileToken extends LinkBaseToken {
 
 				/** `conflicting-image-parameter`或`duplicate-image-parameter` */
 				const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
-				e.suggestions = [fixByRemove(e, -1)];
+				if (computeEditInfo) {
+					e.suggestions = [fixByRemove(e, -1)];
+				}
 				return e;
 			}).filter((e): e is LintError => e !== false);
 			for (const key of keys) {

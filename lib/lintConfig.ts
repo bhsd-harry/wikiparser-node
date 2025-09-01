@@ -295,9 +295,6 @@ class LintRuleConfiguration implements LintRuleConfigurationBase {
 
 	/** @implements */
 	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
-		if (!rules.includes(rule)) {
-			throw new RangeError(`Unknown rule: ${rule}`);
-		}
 		const value = this[rule]!;
 		if (typeof value === 'number') {
 			return dict.get(value)!;
