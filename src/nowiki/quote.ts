@@ -83,8 +83,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				errors: LintError[] = [],
 				rect = new BoundingRect(this, start),
 				rules = ['lonely-apos', 'bold-header'] as const,
-				severities = [undefined, 'word'].map(key => Parser.lintConfig.getSeverity(rules[0], key)),
-				s = Parser.lintConfig.getSeverity(rules[1]);
+				{lintConfig} = Parser,
+				severities = [undefined, 'word'].map(key => lintConfig.getSeverity(rules[0], key)),
+				s = lintConfig.getSeverity(rules[1]);
 			if (previousData?.endsWith(`'`)) {
 				const severity = severities[(closing.bold || closing.italic) && /[a-z\d]'$/iu.test(previousData) ? 1 : 0];
 				if (severity) {

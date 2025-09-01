@@ -278,8 +278,9 @@ export abstract class AttributesToken extends Token {
 				duplicated = new Set<string>(),
 				rect = new BoundingRect(this, start),
 				rules = ['no-ignored', 'no-duplicate'] as const,
+				{lintConfig} = Parser,
 				s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
-					.map(k => Parser.lintConfig.getSeverity(rules[0], k));
+					.map(k => lintConfig.getSeverity(rules[0], k));
 			if (s[0] && this.#lint()) {
 				const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]),
 					index = parentNode!.getAbsoluteIndex();
@@ -308,7 +309,7 @@ export abstract class AttributesToken extends Token {
 					}
 				}
 			}
-			const severity = Parser.lintConfig.getSeverity(rules[1], 'attribute');
+			const severity = lintConfig.getSeverity(rules[1], 'attribute');
 			if (severity && duplicated.size > 0) {
 				for (const key of duplicated) {
 					const pairs = attrs.get(key)!.map(attr => {

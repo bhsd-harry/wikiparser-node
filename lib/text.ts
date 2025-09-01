@@ -209,10 +209,11 @@ export class AstText extends AstNode {
 				rootStr = root.toString(),
 				{ext, html, variants} = root.getAttribute('config'),
 				{top, left} = root.posFromIndex(start)!,
-				lintConfig = Parser.lintConfig.rules['tag-like']!,
-				specified = typeof lintConfig === 'number'
+				{lintConfig} = Parser,
+				tagLike = lintConfig.rules['tag-like']!,
+				specified = typeof tagLike === 'number'
 					? new Set()
-					: new Set(Object.keys(lintConfig[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
+					: new Set(Object.keys(tagLike[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
 				tags = new Set([
 					'onlyinclude',
 					'noinclude',
@@ -222,7 +223,7 @@ export class AstText extends AstNode {
 					...html[1],
 					...html[2],
 					...specified,
-					...Parser.lintConfig.getSeverity('tag-like', 'disallowed') ? disallowedTags : [],
+					...lintConfig.getSeverity('tag-like', 'disallowed') ? disallowedTags : [],
 				]);
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 				const [, tag, prefix] = mt;
@@ -270,7 +271,7 @@ export class AstText extends AstNode {
 				if (magicLink) {
 					rule = 'lonely-http';
 					error = error.toUpperCase();
-					severity = Parser.lintConfig.getSeverity(rule, error);
+					severity = lintConfig.getSeverity(rule, error);
 				} else if (char === '<') {
 					rule = 'tag-like';
 					let key: string | undefined;
@@ -281,10 +282,10 @@ export class AstText extends AstNode {
 					} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
 						key = 'disallowed';
 					}
-					severity = Parser.lintConfig.getSeverity(rule, key);
+					severity = lintConfig.getSeverity(rule, key);
 				} else if (lConverter || rConverter) {
 					rule = 'lonely-bracket';
-					severity = Parser.lintConfig.getSeverity(rule, 'converter');
+					severity = lintConfig.getSeverity(rule, 'converter');
 					if (lConverter && index > 0) {
 						error = '-{';
 						index--;
@@ -297,11 +298,11 @@ export class AstText extends AstNode {
 					}
 				} else if (brokenExtLink) {
 					rule = 'lonely-bracket';
-					severity = Parser.lintConfig.getSeverity(rule, 'extLink');
+					severity = lintConfig.getSeverity(rule, 'extLink');
 				} else if (leftBracket || rbrace || rbrack) {
 					rule = 'lonely-bracket';
 					if (length > 1 || lbrace && nextChar === char || rbrace && previousChar === char) {
-						severity = Parser.lintConfig.getSeverity(rule, 'double');
+						severity = lintConfig.getSeverity(rule, 'double');
 					} else {
 						if (!lbrack || type !== 'ext-link-text') {
 							const regex = regexes[char],
@@ -322,11 +323,11 @@ export class AstText extends AstNode {
 								}
 							}
 						}
-						severity = Parser.lintConfig.getSeverity(rule, 'single');
+						severity = lintConfig.getSeverity(rule, 'single');
 					}
 				} else {
 					rule = 'lonely-http';
-					severity = Parser.lintConfig.getSeverity(rule);
+					severity = lintConfig.getSeverity(rule);
 				}
 				if (!severity) {
 					continue;

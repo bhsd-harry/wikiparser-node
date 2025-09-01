@@ -201,9 +201,10 @@ export abstract class FileToken extends LinkBaseToken {
 				[fr] = frameKeys,
 				unscaled = fr === 'framed' || fr === 'manualthumb',
 				rect = new BoundingRect(this, start),
+				{lintConfig} = Parser,
 				{extension} = this;
 			let rule: LintError.Rule = 'nested-link',
-				s = Parser.lintConfig.getSeverity(rule, 'file');
+				s = lintConfig.getSeverity(rule, 'file');
 			if (
 				s
 				&& extensions.has(extension!)
@@ -225,7 +226,7 @@ export abstract class FileToken extends LinkBaseToken {
 				errors.push(e);
 			}
 			rule = 'invalid-gallery';
-			s = Parser.lintConfig.getSeverity(rule, 'parameter');
+			s = lintConfig.getSeverity(rule, 'parameter');
 			if (s && unscaled) {
 				for (const arg of args.filter(({name}) => name === 'width')) {
 					const e = generateForChild(arg, rect, rule, 'invalid-image-parameter', s);
@@ -242,8 +243,7 @@ export abstract class FileToken extends LinkBaseToken {
 				return errors;
 			}
 			rule = 'no-duplicate';
-			const severities = ['unknownImageParameter', 'imageParameter']
-				.map(k => Parser.lintConfig.getSeverity(rule, k));
+			const severities = ['unknownImageParameter', 'imageParameter'].map(k => lintConfig.getSeverity(rule, k));
 
 			/**
 			 * 图片参数到语法错误的映射
