@@ -98,7 +98,7 @@
 		"esbuild": "^0.25.5",
 		"eslint": "^8.57.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-jsdoc": "^52.0.2",
+		"eslint-plugin-jsdoc": "^54.1.1",
 		"eslint-plugin-json-es": "^1.6.0",
 		"eslint-plugin-n": "^17.20.0",
 		"eslint-plugin-promise": "^7.2.1",

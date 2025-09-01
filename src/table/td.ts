@@ -143,7 +143,9 @@ export abstract class TdToken extends TableBaseToken {
 			const errors = super.lint(start, re),
 				rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1)),
 				rule = 'pipe-like',
-				severities = ['td', 'double'].map(key => Parser.lintConfig.getSeverity(rule, key));
+				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
+				severities = ['td', 'double'].map(key => lintConfig.getSeverity(rule, key));
 			for (const child of this.lastChild.childNodes) {
 				if (child.type === 'text') {
 					const {data} = child;
@@ -152,15 +154,17 @@ export abstract class TdToken extends TableBaseToken {
 							s = severities[double ? 1 : 0];
 						if (s) {
 							const e = generateForChild(child, rect, rule, 'pipe-in-table', s);
-							if (double) {
-								const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
-								e.fix = fixBy(
-									e,
-									'newline',
-									data.replace(/\|\|/gu, `\n${syntax}`),
-								);
-							} else {
-								e.suggestions = [fixByPipe(e.startIndex, data)];
+							if (computeEditInfo || fix) {
+								if (double) {
+									const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
+									e.fix = fixBy(
+										e,
+										'newline',
+										data.replace(/\|\|/gu, `\n${syntax}`),
+									);
+								} else if (computeEditInfo) {
+									e.suggestions = [fixByPipe(e.startIndex, data)];
+								}
 							}
 							errors.push(e);
 						}

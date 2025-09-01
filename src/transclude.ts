@@ -305,6 +305,7 @@ export abstract class TranscludeToken extends Token {
 			const {type, childNodes, length} = this,
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
+				{computeEditInfo} = lintConfig,
 				invoke = type === 'magic-word';
 			let rule: LintError.Rule = 'no-ignored',
 				s = lintConfig.getSeverity(rule, 'fragment');
@@ -321,7 +322,14 @@ export abstract class TranscludeToken extends Token {
 					textNode = child.childNodes[i] as AstText | undefined;
 				if (textNode) {
 					const e = generateForChild(child, rect, rule, 'useless-fragment', s);
-					e.suggestions = [fixByRemove(e, child.getRelativeIndex(i) + textNode.data.indexOf('#'))];
+					if (computeEditInfo) {
+						e.suggestions = [
+							fixByRemove(
+								e,
+								child.getRelativeIndex(i) + textNode.data.indexOf('#'),
+							),
+						];
+					}
 					errors.push(e);
 				}
 			}
@@ -340,7 +348,9 @@ export abstract class TranscludeToken extends Token {
 				for (const [, args] of duplicatedArgs) {
 					errors.push(...args.map(arg => {
 						const e = generateForChild(arg, rect, rule, msg, s);
-						e.suggestions = [fixByRemove(e, -1)];
+						if (computeEditInfo) {
+							e.suggestions = [fixByRemove(e, -1)];
+						}
 						return e;
 					}));
 				}

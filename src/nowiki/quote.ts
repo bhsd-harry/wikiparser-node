@@ -67,6 +67,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				rect = new BoundingRect(this, start),
 				rules = ['lonely-apos', 'bold-header'] as const,
 				{lintConfig} = Parser,
+				{computeEditInfo} = lintConfig,
 				severities = [undefined, 'word'].map(key => lintConfig.getSeverity(rules[0], key)),
 				s = lintConfig.getSeverity(rules[1]);
 			if (previousData?.endsWith(`'`)) {
@@ -84,16 +85,20 @@ export abstract class QuoteToken extends NowikiBaseToken {
 							startCol: endCol - length,
 							endCol,
 						};
-					eNew.suggestions = [
-						fixByEscape(startIndex, '&apos;', length),
-						fixByRemove(eNew),
-					];
+					if (computeEditInfo) {
+						eNew.suggestions = [
+							fixByEscape(startIndex, '&apos;', length),
+							fixByRemove(eNew),
+						];
+					}
 					errors.push(eNew);
 				}
 			}
 			if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
 				const e = generateForSelf(this, rect, rules[1], 'bold-in-header', s);
-				e.suggestions = [fixByRemove(e)];
+				if (computeEditInfo) {
+					e.suggestions = [fixByRemove(e)];
+				}
 				errors.push(e);
 			}
 			return errors;

@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import Parser = require('../index');
 import type {
 	LintError,
+	LintRuleConfig,
 } from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
 
@@ -63,18 +64,23 @@ describe('API tests', () => {
 						});
 					}
 				}
-				const cur = file.slice(0, -3);
+				const cur = file.slice(0, -3) as LintError.Rule;
 				for (const code of md.matchAll(re)) {
 					const [, config, wikitext] = code as string[] as [string, string, string];
 					it(config, () => {
-						const lintConfig = JSON.parse(config);
-						Parser.lintConfig = lintConfig;
+						const rules: LintRuleConfig = JSON.parse(config);
+						Parser.lintConfig = {
+							rules,
+							fix: false,
+							computeEditInfo: false,
+							ignoreDisables: true,
+						} as LintConfiguration;
 						for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
 							try {
 								assert.strictEqual(
 									// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-									typeof lintConfig[cur] === 'number'
-									=== (Parser.lintConfig.getSeverity(cur as LintError.Rule) === 'error'),
+									typeof rules[cur] === 'number'
+									=== (Parser.lintConfig.getSeverity(cur) === 'error'),
 									Parser.parse(block).lint()
 										.some(({rule, severity}) => rule === cur && severity === 'error'),
 								);

@@ -167,6 +167,7 @@ export abstract class AttributeToken extends Token {
 			attrs = extAttrs[tag],
 			attrs2 = htmlAttrs[tag],
 			{lintConfig} = Parser,
+			{computeEditInfo} = lintConfig,
 			{length} = this.toString();
 		let rule: LintError.Rule = 'illegal-attr';
 		if (
@@ -186,7 +187,9 @@ export abstract class AttributeToken extends Token {
 				const s = lintConfig.getSeverity(rule, 'unknown');
 				if (s) {
 					const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
-					e.suggestions = [fixByRemove(start, length)];
+					if (computeEditInfo) {
+						e.suggestions = [fixByRemove(start, length)];
+					}
 					return e;
 				}
 			}
@@ -201,10 +204,12 @@ export abstract class AttributeToken extends Token {
 				const s = lintConfig.getSeverity(rule, 'tabindex');
 				if (s) {
 					const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
-					e.suggestions = [
-						fixByRemove(start, length),
-						fixBy(e, '0 tabindex', '0'),
-					];
+					if (computeEditInfo) {
+						e.suggestions = [
+							fixByRemove(start, length),
+							fixBy(e, '0 tabindex', '0'),
+						];
+					}
 					return e;
 				}
 			}
@@ -241,12 +246,15 @@ export abstract class AttributeToken extends Token {
 				{balanced, firstChild, lastChild, name, tag} = this,
 				rect = new BoundingRect(this, start),
 				rules = ['unclosed-quote', 'obsolete-attr'] as const,
-				s = rules.map(rule => Parser.lintConfig.getSeverity(rule, name));
+				{lintConfig} = Parser,
+				s = rules.map(rule => lintConfig.getSeverity(rule, name));
 			if (s[0] && !balanced) {
 				const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
 				e.startIndex--;
 				e.startCol--;
-				e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
+				if (lintConfig.computeEditInfo) {
+					e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
+				}
 				errors.push(e);
 			}
 			const e = this.#lint(start, rect);

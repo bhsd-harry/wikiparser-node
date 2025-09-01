@@ -32,12 +32,15 @@ export abstract class CommentToken extends NowikiBaseToken {
 				return [];
 			}
 			const rule = 'unclosed-comment',
-				s = Parser.lintConfig.getSeverity(rule);
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule);
 			if (!s) {
 				return [];
 			}
 			const e = generateForSelf(this, {start}, rule, Parser.msg('unclosed', 'html-comment'), s);
-			e.suggestions = [fixByClose(e.endIndex, '-->')];
+			if (lintConfig.computeEditInfo) {
+				e.suggestions = [fixByClose(e.endIndex, '-->')];
+			}
 			return [e];
 		}
 	}

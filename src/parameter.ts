@@ -94,7 +94,8 @@ export abstract class ParameterToken extends Token {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
 				rule = 'unescaped',
-				s = Parser.lintConfig.getSeverity(rule);
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule);
 			if (s) {
 				const {firstChild} = this,
 					link = linkRegex.exec(firstChild.text())?.[0];
@@ -106,7 +107,9 @@ export abstract class ParameterToken extends Token {
 						e.startCol = e.endCol;
 						e.endIndex++;
 						e.endCol++;
-						e.fix = fixByEscape(e.startIndex, '{{=}}');
+						if (lintConfig.computeEditInfo || lintConfig.fix) {
+							e.fix = fixByEscape(e.startIndex, '{{=}}');
+						}
 						errors.push(e);
 					}
 				} catch {}
