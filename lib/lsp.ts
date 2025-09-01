@@ -350,7 +350,9 @@ const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickF
  */
 const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 	const {lintConfig} = Parser,
-		{rules: ruleConfig} = lintConfig;
+		{rules: ruleConfig, fix, computeEditInfo} = lintConfig;
+	lintConfig.fix = true;
+	lintConfig.computeEditInfo = false;
 	if (rule) {
 		lintConfig.rules = undefined as unknown as LintRuleConfig;
 		for (const key of rules) {
@@ -358,6 +360,8 @@ const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 		}
 	}
 	const {output} = root.lint();
+	lintConfig.fix = fix!;
+	lintConfig.computeEditInfo = computeEditInfo!;
 	if (rule) {
 		lintConfig.rules = ruleConfig;
 	}
@@ -1063,8 +1067,12 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideDiagnostics(text: string, warning = true): Promise<DiagnosticBase[]> {
 		const root = await this.#queue(text),
-			errors = root.lint(),
-			diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
+			{lintConfig} = Parser,
+			needFix = lintConfig.fix!;
+		lintConfig.fix = false;
+		const errors = root.lint();
+		lintConfig.fix = needFix;
+		const diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
 				({
 					startLine,
 					startCol,

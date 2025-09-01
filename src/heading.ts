@@ -104,10 +104,11 @@ export abstract class HeadingToken extends Token {
 				s = this.inHtmlAttrs(),
 				rules = ['h1', 'unbalanced-header', 'format-leakage'] as const,
 				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				severities = rules.map(rule => lintConfig.getSeverity(rule, 'apostrophe'));
 			if (severities[0] && this.level === 1) {
 				const e = generateForChild(firstChild, rect, rules[0], '<h1>', severities[0]);
-				if (!unbalanced) {
+				if (computeEditInfo && !unbalanced) {
 					e.suggestions = [fixBy(e, 'h2', `=${innerStr}=`)];
 				}
 				errors.push(e);
@@ -115,7 +116,7 @@ export abstract class HeadingToken extends Token {
 			if (severities[1] && unbalanced) {
 				const msg = Parser.msg('unbalanced-in-section-header', '"="'),
 					e = generateForChild(firstChild, rect, rules[1], msg, severities[1]);
-				if (innerStr === '=') {
+				if (!computeEditInfo || innerStr === '=') {
 					//
 				} else if (unbalancedStart) {
 					const [extra] = /^=+/u.exec(innerStr)!,
@@ -148,45 +149,53 @@ export abstract class HeadingToken extends Token {
 					italicQuotes = quotes.filter(({italic}) => italic);
 				if (boldQuotes.length % 2) {
 					const e = generateForChild(
-							boldQuotes[boldQuotes.length - 1]!,
-							{
-								...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
-								start: start + level,
-								left: rect.left + level,
-							},
-							rules[2],
-							Parser.msg('unbalanced-in-section-header', 'bold-apostrophes'),
-							severities[2],
-						),
-						end = start + level + innerStr.length,
-						remove = fixByRemove(e);
-					if (rootStr.slice(e.endIndex, end).trim()) {
-						e.suggestions = [
-							remove,
-							fixByClose(end, `'''`),
-						];
-					} else if (boldQuotes.length === 1 && italicQuotes.length === 0) {
-						e.fix = remove;
-					} else {
-						e.suggestions = [remove];
+						boldQuotes[boldQuotes.length - 1]!,
+						{
+							...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
+							start: start + level,
+							left: rect.left + level,
+						},
+						rules[2],
+						Parser.msg('unbalanced-in-section-header', 'bold-apostrophes'),
+						severities[2],
+					);
+					if (computeEditInfo || fix) {
+						const end = start + level + innerStr.length,
+							remove = fixByRemove(e);
+						if (rootStr.slice(e.endIndex, end).trim()) {
+							if (computeEditInfo) {
+								e.suggestions = [
+									remove,
+									fixByClose(end, `'''`),
+								];
+							}
+						} else if (boldQuotes.length === 1 && italicQuotes.length === 0) {
+							e.fix = remove;
+						} else if (computeEditInfo) {
+							e.suggestions = [remove];
+						}
 					}
 					errors.push(e);
 				}
 				if (italicQuotes.length % 2) {
 					const e = generateForChild(
-							italicQuotes[italicQuotes.length - 1]!,
-							{start: start + level},
-							rules[2],
-							Parser.msg('unbalanced-in-section-header', 'italic-apostrophes'),
-							severities[2],
-						),
-						end = start + level + innerStr.length;
-					if (rootStr.slice(e.endIndex, end).trim()) {
-						e.suggestions = [fixByClose(end, `''`)];
-					} else if (italicQuotes.length === 1 && boldQuotes.length === 0) {
-						e.fix = fixByRemove(e);
-					} else {
-						e.suggestions = [fixByRemove(e)];
+						italicQuotes[italicQuotes.length - 1]!,
+						{start: start + level},
+						rules[2],
+						Parser.msg('unbalanced-in-section-header', 'italic-apostrophes'),
+						severities[2],
+					);
+					if (computeEditInfo || fix) {
+						const end = start + level + innerStr.length;
+						if (rootStr.slice(e.endIndex, end).trim()) {
+							if (computeEditInfo) {
+								e.suggestions = [fixByClose(end, `''`)];
+							}
+						} else if (italicQuotes.length === 1 && boldQuotes.length === 0) {
+							e.fix = fixByRemove(e);
+						} else if (computeEditInfo) {
+							e.suggestions = [fixByRemove(e)];
+						}
 					}
 					errors.push(e);
 				}
