@@ -459,7 +459,8 @@ export class Token extends AstElement {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): ExtendedLintError {
 		LINT: { // eslint-disable-line no-unused-labels
-			const {lintConfig} = Parser;
+			const {lintConfig} = Parser,
+				{computeEditInfo, fix: needFix, ignoreDisables, configurationComment} = lintConfig;
 			let errors = super.lint(start, re);
 			if (this.type === 'root') {
 				const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
@@ -494,7 +495,7 @@ export class Token extends AstElement {
 								severity = s[isCat ? 0 : 1] as LintError.Severity;
 							errors.push(...[...value].map(cat => {
 								const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
-								if (isCat) {
+								if (computeEditInfo && isCat) {
 									e.suggestions = [fixByRemove(e)];
 								}
 								return e;
@@ -502,10 +503,10 @@ export class Token extends AstElement {
 						}
 					}
 				}
-				if (!lintConfig.ignoreDisables) {
+				if (!ignoreDisables) {
 					const regex = new RegExp(
 							String.raw`<!--\s*${
-								lintConfig.configurationComment
+								configurationComment
 							}-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->`,
 							'gu',
 						),
@@ -542,7 +543,7 @@ export class Token extends AstElement {
 						return nearest.type !== 'from';
 					});
 				}
-				if (lintConfig.fix && errors.some(({fix}) => fix)) {
+				if (needFix && errors.some(({fix}) => fix)) {
 					// 倒序修复，跳过嵌套的修复
 					const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[]).sort(
 						({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo,
@@ -556,6 +557,12 @@ export class Token extends AstElement {
 						}
 					}
 					Object.assign(errors, {output});
+				}
+				if (!computeEditInfo) {
+					for (const e of errors) {
+						delete e.fix;
+						delete e.suggestions;
+					}
 				}
 			}
 			return errors;

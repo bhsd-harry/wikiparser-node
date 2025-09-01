@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import {mock} from './wikiparse';
 import type {
 	LintError,
+	LintRuleConfig,
 	Parser as ParserBase,
 } from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
@@ -70,20 +71,26 @@ describe('API tests', () => {
 						});
 					}
 				}
-				const cur = file.slice(0, -3);
+				const cur = file.slice(0, -3) as LintError.Rule;
+				// @ts-expect-error Node.js-only rule
 				if (cur !== 'invalid-css') {
 					for (const code of md.matchAll(re)) {
 						const [, config, wikitext] = code as string[] as [string, string, string];
 						it(config, () => {
-							const lintConfig = JSON.parse(config);
-							Parser.lintConfig = lintConfig;
+							const rules: LintRuleConfig = JSON.parse(config);
+							Parser.lintConfig = {
+								rules,
+								fix: false,
+								computeEditInfo: false,
+								ignoreDisables: true,
+							} as LintConfiguration;
 							for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
 								try {
 									assert.strictEqual(
 										// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-										typeof lintConfig[cur] === 'number'
+										typeof rules[cur] === 'number'
 										// @ts-expect-error method of LintConfiguration
-										=== (Parser.lintConfig.getSeverity(cur as LintError.Rule) === 'error'),
+										=== (Parser.lintConfig.getSeverity(cur) === 'error'),
 										Parser.parse(block).lint()
 											.some(({rule, severity}) => rule === cur && severity === 'error'),
 									);

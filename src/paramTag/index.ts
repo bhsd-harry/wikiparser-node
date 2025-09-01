@@ -54,7 +54,8 @@ export abstract class ParamTagToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: { // eslint-disable-line no-unused-labels
 			const rule = 'no-ignored',
-				s = Parser.lintConfig.getSeverity(rule, this.name);
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule, this.name);
 			if (!s) {
 				return [];
 			}
@@ -72,7 +73,9 @@ export abstract class ParamTagToken extends Token {
 						str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
 					if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
 						const e = generateForChild(child, rect, rule, msg, s);
-						e.suggestions = [fixByRemove(e)];
+						if (lintConfig.computeEditInfo) {
+							e.suggestions = [fixByRemove(e)];
+						}
 						errors.push(e);
 					} else {
 						const childErrors = child.lint(start, false);

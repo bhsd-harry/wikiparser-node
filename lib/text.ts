@@ -279,25 +279,27 @@ export class AstText extends AstNode {
 					};
 
 				// Suggestions
-				if (char === '<') {
-					e.suggestions = [fixByEscape(startIndex, '&lt;')];
-				} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
-					e.suggestions = [fixBySpace(startIndex)];
-				} else if (lbrack && type === 'ext-link-text') {
-					const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
-					e.suggestions = [fixByEscape(i, '&#93;')];
-				} else if (rbrack && brokenExtLink) {
-					const i = start - previousSibling!.toString().length;
-					e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
-				} else if (magicLink) {
-					e.suggestions = [
-						...mt[0] === error
-							? []
-							: [fixByUpper(e, error)],
-						...nextChar === ':' || nextChar === '：'
-							? [fixBySpace(endIndex, 1)]
-							: [],
-					];
+				if (lintConfig.computeEditInfo) {
+					if (char === '<') {
+						e.suggestions = [fixByEscape(startIndex, '&lt;')];
+					} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
+						e.suggestions = [fixBySpace(startIndex)];
+					} else if (lbrack && type === 'ext-link-text') {
+						const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
+						e.suggestions = [fixByEscape(i, '&#93;')];
+					} else if (rbrack && brokenExtLink) {
+						const i = start - previousSibling!.toString().length;
+						e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
+					} else if (magicLink) {
+						e.suggestions = [
+							...mt[0] === error
+								? []
+								: [fixByUpper(e, error)],
+							...nextChar === ':' || nextChar === '：'
+								? [fixBySpace(endIndex, 1)]
+								: [],
+						];
+					}
 				}
 
 				errors.push(e);

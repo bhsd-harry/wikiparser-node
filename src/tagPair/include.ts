@@ -44,15 +44,21 @@ export abstract class IncludeToken extends TagPairToken {
 				{firstChild, closed, name} = this,
 				rect = new BoundingRect(this, start),
 				rules = ['no-ignored', 'unclosed-comment'] as const,
-				s = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'include'));
+				{lintConfig} = Parser,
+				{computeEditInfo} = lintConfig,
+				s = rules.map(rule => lintConfig.getSeverity(rule, 'include'));
 			if (s[0] && firstChild.data.trim()) {
 				const e = generateForChild(firstChild, rect, rules[0], 'useless-attribute', s[0]);
-				e.suggestions = [fixByRemove(e)];
+				if (computeEditInfo) {
+					e.suggestions = [fixByRemove(e)];
+				}
 				errors.push(e);
 			}
 			if (s[1] && !closed) {
 				const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed', `<${name}>`), s[1]);
-				e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];
+				if (computeEditInfo) {
+					e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];
+				}
 				errors.push(e);
 			}
 			return errors;

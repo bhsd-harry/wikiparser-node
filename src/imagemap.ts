@@ -136,7 +136,8 @@ export abstract class ImagemapToken extends Token {
 				rect = new BoundingRect(this, start),
 				{childNodes, image} = this,
 				rule = 'invalid-imagemap',
-				s = Parser.lintConfig.getSeverity(rule, image ? 'link' : 'image');
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule, image ? 'link' : 'image');
 			if (s) {
 				if (image) {
 					errors.push(
@@ -145,10 +146,12 @@ export abstract class ImagemapToken extends Token {
 							return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
 						}).map(child => {
 							const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
-							e.suggestions = [
-								fixByRemove(e, -1),
-								fixBy(e, 'comment', '# '),
-							];
+							if (lintConfig.computeEditInfo) {
+								e.suggestions = [
+									fixByRemove(e, -1),
+									fixBy(e, 'comment', '# '),
+								];
+							}
 							return e;
 						}),
 					);

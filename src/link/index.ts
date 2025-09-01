@@ -32,10 +32,13 @@ export abstract class LinkToken extends LinkBaseToken {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
 				rule = 'nested-link',
-				s = Parser.lintConfig.getSeverity(rule);
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule);
 			if (s && this.closest('ext-link-text')) {
 				const e = generateForSelf(this, {start}, rule, 'link-in-extlink', s);
-				e.fix = fixBy(e, 'delink', this.innerText);
+				if (lintConfig.computeEditInfo || lintConfig.fix) {
+					e.fix = fixBy(e, 'delink', this.innerText);
+				}
 				errors.push(e);
 			}
 			return errors;

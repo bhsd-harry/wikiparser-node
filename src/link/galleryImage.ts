@@ -73,10 +73,13 @@ export abstract class GalleryImageToken extends FileToken {
 		LINT: { // eslint-disable-line no-unused-labels
 			const errors = super.lint(start, re),
 				rule = 'invalid-gallery',
-				s = Parser.lintConfig.getSeverity(rule, 'image');
+				{lintConfig} = Parser,
+				s = lintConfig.getSeverity(rule, 'image');
 			if (s && this.#lint()) {
 				const e = generateForSelf(this, {start}, rule, 'invalid-gallery', s);
-				e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
+				if (lintConfig.computeEditInfo) {
+					e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
+				}
 				errors.push(e);
 			}
 			return errors;

@@ -135,19 +135,22 @@ export abstract class HtmlToken extends Token {
 				{name, parentNode, closing, selfClosing} = this,
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
+				{computeEditInfo, fix} = lintConfig,
 				severity = this.inTableAttrs();
 			let rule: LintError.Rule = 'h1',
 				s = lintConfig.getSeverity(rule, 'html');
 			if (s && name === 'h1' && !closing) {
 				const e = generateForSelf(this, rect, rule, '<h1>', s);
-				e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
+				if (computeEditInfo) {
+					e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
+				}
 				errors.push(e);
 			}
 			rule = 'parsing-order';
 			s = severity && lintConfig.getSeverity(rule, severity === 2 ? 'html' : 'templateInTable');
 			if (s) {
 				const e = generateForSelf(this, rect, rule, 'html-in-table', s);
-				if (severity === 2) {
+				if (computeEditInfo && severity === 2) {
 					e.suggestions = [fixByRemove(e)];
 				}
 				errors.push(e);
@@ -164,7 +167,9 @@ export abstract class HtmlToken extends Token {
 				&& this.closest('heading-title,ext')?.type === 'heading-title'
 			) {
 				const e = generateForSelf(this, rect, rule, 'bold-in-header', s);
-				e.suggestions = [fixByRemove(e)];
+				if (computeEditInfo) {
+					e.suggestions = [fixByRemove(e)];
+				}
 				errors.push(e);
 			}
 			const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
@@ -176,27 +181,31 @@ export abstract class HtmlToken extends Token {
 				s = lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
 				if (s) {
 					const e = generateForSelf(
-							this,
-							rect,
-							rule,
-							closing ? 'closing-and-self-closing' : 'invalid-self-closing',
-							s,
-						),
-						open = fixByOpen(start),
-						noSelfClosing: LintError.Fix = {
-							desc: Parser.msg('no-self-closing'),
-							range: [e.endIndex - 2, e.endIndex - 1],
-							text: '',
-						};
-					if (isFlexible) {
-						e.suggestions = [open, noSelfClosing];
-					} else if (closing) {
-						e.fix = isVoid ? open : noSelfClosing;
-					} else {
-						e.suggestions = [
-							noSelfClosing,
-							fixByClose(e.endIndex, `></${name}>`, -2),
-						];
+						this,
+						rect,
+						rule,
+						closing ? 'closing-and-self-closing' : 'invalid-self-closing',
+						s,
+					);
+					if (computeEditInfo || fix) {
+						const open = fixByOpen(start),
+							noSelfClosing: LintError.Fix = {
+								desc: Parser.msg('no-self-closing'),
+								range: [e.endIndex - 2, e.endIndex - 1],
+								text: '',
+							};
+						if (isFlexible) {
+							if (computeEditInfo) {
+								e.suggestions = [open, noSelfClosing];
+							}
+						} else if (closing) {
+							e.fix = isVoid ? open : noSelfClosing;
+						} else if (computeEditInfo) {
+							e.suggestions = [
+								noSelfClosing,
+								fixByClose(e.endIndex, `></${name}>`, -2),
+							];
+						}
 					}
 					errors.push(e);
 				}
