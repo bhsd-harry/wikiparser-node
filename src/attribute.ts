@@ -18,6 +18,7 @@ import type {
 	Config,
 	AST,
 } from '../base';
+import type {LintConfiguration} from '../lib/lintConfig';
 import type {AttributesToken} from '../internal';
 
 declare type Child = AtomToken | AttributeToken | undefined;
@@ -170,10 +171,14 @@ export abstract class AttributeToken extends Token {
 			value = this.getValue(),
 			attrs = extAttrs[tag],
 			attrs2 = htmlAttrs[tag],
-			{lintConfig} = Parser,
-			{computeEditInfo} = lintConfig,
 			{length} = this.toString();
-		let rule: LintError.Rule = 'illegal-attr';
+		let rule: LintError.Rule = 'illegal-attr',
+			lintConfig: LintConfiguration,
+			computeEditInfo: boolean | undefined;
+		LINT: { // eslint-disable-line no-unused-labels
+			({lintConfig} = Parser);
+			({computeEditInfo} = lintConfig);
+		}
 		if (
 			!attrs?.has(name)
 			&& !attrs2?.has(name)
