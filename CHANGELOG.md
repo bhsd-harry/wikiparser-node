@@ -1,3 +1,11 @@
+## v1.26.0
+
+*2025-09-02*
+
+**Added**
+
+- [`Parser.lintConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lintconfig) now supports more properties, including [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#rule-configuration), [`computeEditInfo`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#computeeditinfo), [`fix`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#fix) and [`ignoreDisables`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#ignoredisables)
+
 ## v1.25.1
 
 *2025-08-27*
