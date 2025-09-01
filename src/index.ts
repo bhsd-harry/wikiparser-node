@@ -454,11 +454,13 @@ export class Token extends AstElement {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): ExtendedLintError {
 		LINT: { // eslint-disable-line no-unused-labels
+			const {lintConfig} = Parser;
 			let errors = super.lint(start, re);
 			if (this.type === 'root') {
 				const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
 					r = 'no-duplicate',
-					s = ['category', 'id'].map(key => Parser.lintConfig.getSeverity(r, key)),
+					s = ['category', 'id'].map(key => lintConfig.getSeverity(r, key)),
+					wikitext = this.toString(),
 					selector = lintSelectors.filter((_, i) => s[i]).join();
 				if (selector) {
 					for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
@@ -495,41 +497,47 @@ export class Token extends AstElement {
 						}
 					}
 				}
-				const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
-					wikitext = this.toString(),
-					ignores: LintIgnore[] = [];
-				let mt = regex.exec(wikitext);
-				while (mt) {
-					const {1: type, index} = mt,
-						detail = mt[2]?.trim();
-					ignores.push({
-						line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
-						from: type === 'disable' ? regex.lastIndex : undefined,
-						to: type === 'enable' ? regex.lastIndex : undefined,
-						rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
-					});
-					mt = regex.exec(wikitext);
-				}
-				errors = errors.filter(({rule, startLine, startIndex}) => {
-					const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
-					for (const {line, from, to, rules} of ignores) {
-						if (line > startLine + 1) {
-							break;
-						} else if (rules && !rules.has(rule)) {
-							continue;
-						} else if (line === startLine && from === undefined && to === undefined) {
-							return false;
-						} else if (from! <= startIndex && from! > nearest.pos) {
-							nearest.pos = from!;
-							nearest.type = 'from';
-						} else if (to! <= startIndex && to! > nearest.pos) {
-							nearest.pos = to!;
-							nearest.type = 'to';
-						}
+				if (!lintConfig.ignoreDisables) {
+					const regex = new RegExp(
+							String.raw`<!--\s*${
+								lintConfig.configurationComment
+							}-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->`,
+							'gu',
+						),
+						ignores: LintIgnore[] = [];
+					let mt = regex.exec(wikitext);
+					while (mt) {
+						const {1: type, index} = mt,
+							detail = mt[2]?.trim();
+						ignores.push({
+							line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
+							from: type === 'disable' ? regex.lastIndex : undefined,
+							to: type === 'enable' ? regex.lastIndex : undefined,
+							rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
+						});
+						mt = regex.exec(wikitext);
 					}
-					return nearest.type !== 'from';
-				});
-				if (errors.some(({fix}) => fix)) {
+					errors = errors.filter(({rule, startLine, startIndex}) => {
+						const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
+						for (const {line, from, to, rules} of ignores) {
+							if (line > startLine + 1) {
+								break;
+							} else if (rules && !rules.has(rule)) {
+								continue;
+							} else if (line === startLine && from === undefined && to === undefined) {
+								return false;
+							} else if (from! <= startIndex && from! > nearest.pos) {
+								nearest.pos = from!;
+								nearest.type = 'from';
+							} else if (to! <= startIndex && to! > nearest.pos) {
+								nearest.pos = to!;
+								nearest.type = 'to';
+							}
+						}
+						return nearest.type !== 'from';
+					});
+				}
+				if (lintConfig.fix && errors.some(({fix}) => fix)) {
 					// 倒序修复，跳过嵌套的修复
 					const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[]).sort(
 						({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo,
@@ -548,8 +556,8 @@ export class Token extends AstElement {
 				/* NOT FOR BROWSER ONLY */
 			} else if (isAttr(this, true)) {
 				const rule = 'invalid-css',
-					s = Parser.lintConfig.getSeverity(rule),
-					sWarn = Parser.lintConfig.getSeverity(rule, 'warn');
+					s = lintConfig.getSeverity(rule),
+					sWarn = lintConfig.getSeverity(rule, 'warn');
 				if (s || sWarn) {
 					const root = this.getRootNode(),
 						textDoc = new EmbeddedCSSDocument(root, this);

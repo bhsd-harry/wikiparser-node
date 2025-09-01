@@ -94,7 +94,8 @@ export abstract class HeadingToken extends Token {
 				rect = new BoundingRect(this, start),
 				s = this.inHtmlAttrs(),
 				rules = ['h1', 'unbalanced-header', 'format-leakage'] as const,
-				severities = rules.map(rule => Parser.lintConfig.getSeverity(rule, 'apostrophe'));
+				{lintConfig} = Parser,
+				severities = rules.map(rule => lintConfig.getSeverity(rule, 'apostrophe'));
 			if (severities[0] && this.level === 1) {
 				const e = generateForChild(firstChild, rect, rules[0], '<h1>', severities[0]);
 				if (!unbalanced) {
@@ -126,7 +127,7 @@ export abstract class HeadingToken extends Token {
 			}
 			if (s) {
 				const rule = 'parsing-order',
-					severity = Parser.lintConfig.getSeverity(rule, s === 2 ? 'heading' : 'templateInTable');
+					severity = lintConfig.getSeverity(rule, s === 2 ? 'heading' : 'templateInTable');
 				if (severity) {
 					errors.push(generateForSelf(this, rect, rule, 'header-in-html', severity));
 				}

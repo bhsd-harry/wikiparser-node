@@ -304,12 +304,13 @@ export abstract class TranscludeToken extends Token {
 			}
 			const {type, childNodes, length} = this,
 				rect = new BoundingRect(this, start),
+				{lintConfig} = Parser,
 				invoke = type === 'magic-word';
 			let rule: LintError.Rule = 'no-ignored',
-				s = Parser.lintConfig.getSeverity(rule, 'fragment');
+				s = lintConfig.getSeverity(rule, 'fragment');
 			if (invoke && !this.#getTitle().valid) {
 				rule = 'invalid-invoke';
-				s = Parser.lintConfig.getSeverity(rule, 'name');
+				s = lintConfig.getSeverity(rule, 'name');
 				if (s) {
 					errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
 				}
@@ -325,13 +326,13 @@ export abstract class TranscludeToken extends Token {
 				}
 			}
 			rule = 'invalid-invoke';
-			s = Parser.lintConfig.getSeverity(rule, 'function');
+			s = lintConfig.getSeverity(rule, 'function');
 			if (s && invoke && length === 2) {
 				errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
 				return errors;
 			}
 			rule = 'no-duplicate';
-			s = Parser.lintConfig.getSeverity(rule, 'parameter');
+			s = lintConfig.getSeverity(rule, 'parameter');
 			if (s) {
 				const duplicatedArgs = this.getDuplicatedArgs()
 						.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),

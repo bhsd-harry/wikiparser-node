@@ -125,16 +125,17 @@ export abstract class HtmlToken extends Token {
 			const errors = super.lint(start, re),
 				{name, parentNode, closing, selfClosing} = this,
 				rect = new BoundingRect(this, start),
+				{lintConfig} = Parser,
 				severity = this.inTableAttrs();
 			let rule: LintError.Rule = 'h1',
-				s = Parser.lintConfig.getSeverity(rule, 'html');
+				s = lintConfig.getSeverity(rule, 'html');
 			if (s && name === 'h1' && !closing) {
 				const e = generateForSelf(this, rect, rule, '<h1>', s);
 				e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
 				errors.push(e);
 			}
 			rule = 'parsing-order';
-			s = severity && Parser.lintConfig.getSeverity(rule, severity === 2 ? 'html' : 'templateInTable');
+			s = severity && lintConfig.getSeverity(rule, severity === 2 ? 'html' : 'templateInTable');
 			if (s) {
 				const e = generateForSelf(this, rect, rule, 'html-in-table', s);
 				if (severity === 2) {
@@ -143,12 +144,12 @@ export abstract class HtmlToken extends Token {
 				errors.push(e);
 			}
 			rule = 'obsolete-tag';
-			s = Parser.lintConfig.getSeverity(rule, name);
+			s = lintConfig.getSeverity(rule, name);
 			if (s && obsoleteTags.has(name)) {
 				errors.push(generateForSelf(this, rect, rule, 'obsolete-tag', s));
 			}
 			rule = 'bold-header';
-			s = Parser.lintConfig.getSeverity(rule, name);
+			s = lintConfig.getSeverity(rule, name);
 			if (
 				s && (name === 'b' || name === 'strong')
 				&& this.closest('heading-title,ext')?.type === 'heading-title'
@@ -163,7 +164,7 @@ export abstract class HtmlToken extends Token {
 				isNormal = !isVoid && !isFlexible;
 			rule = 'unmatched-tag';
 			if (closing && (selfClosing || isVoid) || selfClosing && isNormal) {
-				s = Parser.lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
+				s = lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
 				if (s) {
 					const e = generateForSelf(
 							this,
@@ -194,12 +195,12 @@ export abstract class HtmlToken extends Token {
 				const error = generateForSelf(this, rect, rule, closing ? 'unmatched-closing' : 'unclosed-tag'),
 					ancestor = this.closest<TranscludeToken>('magic-word');
 				if (ancestor && magicWords.has(ancestor.name)) {
-					s = Parser.lintConfig.getSeverity(rule, 'conditional');
+					s = lintConfig.getSeverity(rule, 'conditional');
 				} else if (closing) {
-					s = Parser.lintConfig.getSeverity(rule, 'closing');
+					s = lintConfig.getSeverity(rule, 'closing');
 					error.suggestions = [fixByRemove(error)];
 				} else {
-					s = Parser.lintConfig.getSeverity(rule, 'opening');
+					s = lintConfig.getSeverity(rule, 'opening');
 					const childNodes = parentNode?.childNodes;
 					if (formattingTags.has(name)) {
 						if (
@@ -211,7 +212,7 @@ export abstract class HtmlToken extends Token {
 						}
 						if (this.closest('heading-title')) {
 							error.rule = 'format-leakage';
-							s = Parser.lintConfig.getSeverity('format-leakage', name);
+							s = lintConfig.getSeverity('format-leakage', name);
 						}
 					}
 				}
