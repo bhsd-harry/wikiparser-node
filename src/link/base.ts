@@ -127,21 +127,22 @@ export abstract class LinkBaseToken extends Token {
 			const errors = super.lint(start, re),
 				{childNodes: [target, linkText], type} = this,
 				{encoded, fragment} = this.#title,
+				{lintConfig} = Parser,
 				rect = new BoundingRect(this, start);
 			let rule: LintError.Rule = 'unknown-page',
-				s = Parser.lintConfig.getSeverity(rule);
+				s = lintConfig.getSeverity(rule);
 			if (s && target.childNodes.some(({type: t}) => t === 'template')) {
 				errors.push(generateForChild(target, rect, rule, 'template-in-link', s));
 			}
 			rule = 'url-encoding';
-			s = Parser.lintConfig.getSeverity(rule);
+			s = lintConfig.getSeverity(rule);
 			if (s && encoded) {
 				const e = generateForChild(target, rect, rule, 'unnecessary-encoding', s);
 				e.fix = fixByDecode(e, target);
 				errors.push(e);
 			}
 			rule = 'pipe-like';
-			s = Parser.lintConfig.getSeverity(rule, 'link');
+			s = lintConfig.getSeverity(rule, 'link');
 			if (s && (type === 'link' || type === 'category')) {
 				const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
 					textNode = linkText?.childNodes[j!] as AstText | undefined;
@@ -153,7 +154,7 @@ export abstract class LinkBaseToken extends Token {
 				}
 			}
 			rule = 'no-ignored';
-			s = Parser.lintConfig.getSeverity(rule, 'fragment');
+			s = lintConfig.getSeverity(rule, 'fragment');
 			if (s && fragment !== undefined && !isLink(type)) {
 				const e = generateForChild(target, rect, rule, 'useless-fragment', s),
 					j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),

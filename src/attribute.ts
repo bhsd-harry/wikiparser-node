@@ -170,6 +170,7 @@ export abstract class AttributeToken extends Token {
 			value = this.getValue(),
 			attrs = extAttrs[tag],
 			attrs2 = htmlAttrs[tag],
+			{lintConfig} = Parser,
 			{length} = this.toString();
 		let rule: LintError.Rule = 'illegal-attr';
 		if (
@@ -194,7 +195,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY END */
 
 			LINT: { // eslint-disable-line no-unused-labels
-				const s = Parser.lintConfig.getSeverity(rule, 'unknown');
+				const s = lintConfig.getSeverity(rule, 'unknown');
 				if (s) {
 					const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
 					e.suggestions = [fixByRemove(start, length)];
@@ -212,7 +213,7 @@ export abstract class AttributeToken extends Token {
 
 			LINT: { // eslint-disable-line no-unused-labels
 				rule = 'insecure-style';
-				const s = Parser.lintConfig.getSeverity(rule);
+				const s = lintConfig.getSeverity(rule);
 				return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
 			}
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
@@ -225,7 +226,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY END */
 
 			LINT: { // eslint-disable-line no-unused-labels
-				const s = Parser.lintConfig.getSeverity(rule, 'tabindex');
+				const s = lintConfig.getSeverity(rule, 'tabindex');
 				if (s) {
 					const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
 					e.suggestions = [
@@ -248,7 +249,7 @@ export abstract class AttributeToken extends Token {
 				/* PRINT ONLY END */
 
 				LINT: { // eslint-disable-line no-unused-labels
-					const s = Parser.lintConfig.getSeverity(rule, 'value');
+					const s = lintConfig.getSeverity(rule, 'value');
 					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
 				}
 			}
@@ -270,7 +271,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY END */
 
 			LINT: { // eslint-disable-line no-unused-labels
-				const s = Parser.lintConfig.getSeverity(rule, 'value');
+				const s = lintConfig.getSeverity(rule, 'value');
 				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
 			}
 		}
