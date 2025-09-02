@@ -52,7 +52,7 @@
 	},
 	"optionalDependencies": {
 		"chalk": "^4.1.2",
-		"stylelint": "^16.23.1"
+		"stylelint": "^16.24.0",
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^1.0.1",
@@ -79,7 +79,7 @@
 		"eslint-plugin-unicorn": "^56.0.1",
 		"http-server": "^14.1.1",
 		"mocha": "^11.7.1",
-		"monaco-editor": "^0.52.2",
+		"monaco-editor": "^0.53.0",
 		"stylelint-config-recommended": "^17.0.0",
 		"typescript": "^5.8.2",
 		"v8r": "^5.0.0"
