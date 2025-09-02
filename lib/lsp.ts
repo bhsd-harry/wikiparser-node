@@ -1033,7 +1033,7 @@ export class LanguageService implements LanguageServiceBase {
 					];
 			}
 		} else if (type === 'ext-inner' && mathTags.includes(cur!.name!)) {
-			const word = /\\\w+$/u.exec(curLine!.slice(0, character))?.[0];
+			const word = /(?<!\\)\\[a-z]+$/iu.exec(curLine!.slice(0, character))?.[0];
 			if (word) {
 				const data = this.#mathData;
 				return getCompletion(
@@ -1251,7 +1251,7 @@ export class LanguageService implements LanguageServiceBase {
 						return [];
 					}
 					const hasCe = name === 'math' && token.hasAttr('chem'),
-						mathErrors: DiagnosticBase[] = [...innerText!.matchAll(/\\\w+/gu)]
+						mathErrors: DiagnosticBase[] = [...innerText!.matchAll(/(?<!\\)\\[a-z]+/giu)]
 							.filter(([macro]) => !(hasCe && macro === String.raw`\ce` || data.has(macro)))
 							.map(({0: macro, index}): DiagnosticBase => {
 								const aIndex = lastChild.getAbsoluteIndex() + index;
@@ -1270,7 +1270,7 @@ export class LanguageService implements LanguageServiceBase {
 							if (e && typeof e === 'object' && 'id' in e && 'message' in e) {
 								mathErrors.push({
 									range: createNodeRange(lastChild),
-									severity: 1,
+									severity: 2,
 									source: 'MathJax',
 									code: e.id as string,
 									message: e.message as string,
