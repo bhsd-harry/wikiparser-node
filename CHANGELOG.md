@@ -1,10 +1,14 @@
 ## v1.26.0
 
-*2025-09-02*
+*2025-09-12*
 
 **Added**
 
 - [`Parser.lintConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lintconfig) now supports more properties, including [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#rule-configuration), [`computeEditInfo`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#computeeditinfo), [`fix`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#fix) and [`ignoreDisables`](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#ignoredisables)
+
+**Fixed**
+
+- TeX macro detection in [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics)
 
 ## v1.25.1
 

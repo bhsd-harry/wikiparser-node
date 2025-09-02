@@ -86,7 +86,7 @@
 		"color-name": "^2.0.0",
 		"entities": "^6.0.0",
 		"mathjax": "^3.2.2",
-		"stylelint": "^16.23.1",
+		"stylelint": "^16.24.0",
 		"vscode-css-languageservice": "^6.3.7",
 		"vscode-html-languageservice": "^5.5.1",
 		"vscode-json-languageservice": "^5.6.1"
@@ -115,7 +115,7 @@
 		"eslint-plugin-regexp": "^2.9.0",
 		"eslint-plugin-unicorn": "^56.0.1",
 		"mocha": "^11.7.1",
-		"monaco-editor": "^0.52.2",
+		"monaco-editor": "^0.53.0",
 		"nyc": "^17.1.0",
 		"typescript": "^5.8.2",
 		"v8r": "^5.0.0",
