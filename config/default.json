@@ -549,6 +549,7 @@
 		"dir",
 		"interwikilink",
 		"interlanguagelink",
+		"contentmodel",
 		"timef",
 		"timefl",
 		"pendingchangelevel",
@@ -654,6 +655,7 @@
 		"numberofadmins",
 		"cascadingsources",
 		"bcp47",
+		"contentmodel",
 		"dir",
 		"language",
 		"numberofwikis",
@@ -1343,6 +1345,7 @@
 			"#dir": "dir",
 			"#interwikilink": "interwikilink",
 			"#interlanguagelink": "interlanguagelink",
+			"#contentmodel": "contentmodel",
 			"#timef": "timef",
 			"#timefl": "timefl",
 			"USERLANGUAGE": "userlanguage"
