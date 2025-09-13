@@ -172,7 +172,12 @@ export default async (
 		} = await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
 		).json() as Response;
-	eval(m); // eslint-disable-line no-eval
+	try {
+		eval(m); // eslint-disable-line no-eval
+	} catch (e) {
+		console.log(m);
+		throw e;
+	}
 	if (!mwConfig) {
 		throw new RangeError('Extension:CodeMirror is not installed!');
 	}

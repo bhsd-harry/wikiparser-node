@@ -183,6 +183,7 @@
 			"#dir": "dir",
 			"#interwikilink": "interwikilink",
 			"#interlanguagelink": "interlanguagelink",
+			"#contentmodel": "contentmodel",
 			"#timef": "timef",
 			"#timefl": "timefl"
 		},
