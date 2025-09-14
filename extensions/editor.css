@@ -3,7 +3,7 @@
 	display: block;
 	box-sizing: border-box;
 	width: 100%;
-	resize: vertical;
+	resize: vertical; /* stylelint-disable-line plugin/use-baseline */
 	font-family: monospace;
 	background: none !important;
 	caret-color: #000;
@@ -12,7 +12,7 @@
 	position: absolute;
 	inset: 0;
 	-webkit-user-select: none;
-	user-select: none;
+	user-select: none; /* stylelint-disable-line plugin/use-baseline */
 }
 #wikiPretty + .wikiparsed, #wikiPretty {
 	outline: none;

@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.25.1",
+	"version": "1.26.0",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -52,10 +52,10 @@
 	},
 	"optionalDependencies": {
 		"chalk": "^4.1.2",
-		"stylelint": "^16.24.0",
+		"stylelint": "^16.24.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^1.0.1",
+		"@bhsd/code-standard": "^1.1.0",
 		"@bhsd/codemirror-mediawiki": "^3.4.1",
 		"@bhsd/test-util": "^0.1.0",
 		"@codemirror/lint": "^6.8.5",
@@ -81,6 +81,7 @@
 		"mocha": "^11.7.1",
 		"monaco-editor": "^0.53.0",
 		"stylelint-config-recommended": "^17.0.0",
+		"stylelint-plugin-use-baseline": "^0.9.1",
 		"typescript": "^5.8.2",
 		"v8r": "^5.0.0"
 	},
