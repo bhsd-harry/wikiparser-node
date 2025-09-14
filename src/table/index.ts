@@ -74,9 +74,7 @@ export abstract class TableToken extends TrBaseToken {
 				rules = ['unclosed-table', 'table-layout'] as const,
 				s = rules.map(rule => Parser.lintConfig.getSeverity(rule));
 			if (s[0] && !this.closed) {
-				errors.push(
-					generateForChild(this.firstChild, rect, rules[0], Parser.msg('unclosed', 'table'), s[0]),
-				);
+				errors.push(generateForChild(this.firstChild, rect, rules[0], 'unclosed-table', s[0]));
 			}
 			if (s[1]) {
 				const layout = this.getLayout(),
