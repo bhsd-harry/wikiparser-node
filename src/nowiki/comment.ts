@@ -57,7 +57,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 			if (!s) {
 				return [];
 			}
-			const e = generateForSelf(this, {start}, rule, Parser.msg('unclosed', 'html-comment'), s);
+			const e = generateForSelf(this, {start}, rule, 'unclosed-comment', s);
 			if (lintConfig.computeEditInfo) {
 				e.suggestions = [fixByClose(e.endIndex, '-->')];
 			}
