@@ -254,7 +254,7 @@ export abstract class AttributeToken extends Token {
 				{lintConfig} = Parser,
 				s = rules.map(rule => lintConfig.getSeverity(rule, name));
 			if (s[0] && !balanced) {
-				const e = generateForChild(lastChild, rect, rules[0], Parser.msg('unclosed', 'quotes'), s[0]);
+				const e = generateForChild(lastChild, rect, rules[0], 'unclosed-quotes', s[0]);
 				e.startIndex--;
 				e.startCol--;
 				if (lintConfig.computeEditInfo) {
