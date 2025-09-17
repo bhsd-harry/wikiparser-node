@@ -10,12 +10,15 @@ import type {
 	LintConfiguration as LintConfigurationBase,
 } from '../base';
 
-const severities = new Set([0, 1, 2]),
-	dict = new Map<SeverityLevel, LintError.Severity | false>([
-		[0, false],
-		[1, 'warning'],
-		[2, 'error'],
-	]);
+const dict = new Map<SeverityLevel | undefined, LintError.Severity | false>([
+	[0, false],
+	[1, 'warning'],
+	[2, 'error'],
+	[false, false],
+	['off', false],
+	['warning', 'warning'],
+	['error', 'error'],
+]);
 
 const defaultLintRuleConfig: LintRuleConfig = {
 	'bold-header': [
@@ -229,15 +232,14 @@ Object.freeze(defaultLintConfig);
  * 验证错误级别是否符合规范
  * @param severity 错误级别
  */
-const validateSeverity = (severity: unknown): boolean => typeof severity === 'number' && severities.has(severity);
+const validateSeverity = (severity: unknown): boolean => dict.has(severity as SeverityLevel);
 
 /**
  * 验证设置值是否符合规范
  * @param value 设置值
  */
 const validateConfigValue = (value: unknown): boolean => validateSeverity(value)
-	|| Array.isArray(value) && value.length === 2
-	&& validateSeverity(value[0]) && value[1] && typeof value[1] === 'object';
+	|| Array.isArray(value) && validateSeverity(value[0]) && (value.length === 1 || typeof value[1] === 'object');
 
 /**
  * 设置语法检查规则
@@ -247,14 +249,16 @@ const validateConfigValue = (value: unknown): boolean => validateSeverity(value)
  * @throws `RangeError` 未知的规则或无效的值
  */
 const set = (obj: LintRuleConfig, key: LintError.Rule, value?: LintConfigValue): boolean => {
+	/* istanbul ignore if */
 	if (!rules.includes(key)) {
 		throw new RangeError(`Unknown lint rule: ${key}`);
-	} else if (value === undefined) {
+	} else /* istanbul ignore if */ if (value === undefined) {
 		return false;
 	} else if (validateConfigValue(value)) {
 		obj[key] = value;
 		return true;
 	}
+	/* istanbul ignore next */
 	throw new RangeError(`Invalid lint config for ${key}: ${JSON.stringify(value)}`);
 };
 
@@ -283,10 +287,10 @@ class LintRuleConfiguration implements LintRuleConfigurationBase {
 	/** @implements */
 	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
 		const value = this[rule]!;
-		if (typeof value === 'number') {
+		if (typeof value !== 'object') {
 			return dict.get(value)!;
 		}
-		return key ? dict.get(value[1][key]!) ?? dict.get(value[0])! : dict.get(value[0])!;
+		return key ? dict.get(value[1]?.[key]) ?? dict.get(value[0])! : dict.get(value[0])!;
 	}
 }
 
@@ -306,6 +310,7 @@ export class LintConfiguration implements LintConfigurationBase {
 			set,
 			/** @ignore */
 			deleteProperty(): boolean {
+				/* istanbul ignore next */
 				return false;
 			},
 		}) as LintRuleConfiguration;
