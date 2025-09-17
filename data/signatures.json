@@ -390,9 +390,18 @@
 						"label": "NOSEP",
 						"const": true
 					}
+				],
+				[
+					{
+						"label": "unformatted number"
+					},
+					{
+						"label": "LOSSLESS",
+						"const": true
+					}
 				]
 			],
-			"description": "Takes an unformatted number (Arabic, no group separators and `.` as decimal separator) and outputs it in the localized digit script and formatted with decimal and decimal group separators, according to the page language.\n\nThe `|R` parameter can be used to reverse the behavior, for use in mathematical situations: it's reliable and should be used only to deformat numbers which are known to be formatted exactly as formatnum formats them with the wiki's locale.\n\nThe `NOSEP` (\"no separators\") parameter means that no group / decimal separators are changed; formatnum will only transform the digits themselves in languages which don't use the [Hindu–Arabic numeral system](https://en.wikipedia.org/wiki/Hindu%E2%80%93Arabic_numeral_system). `NOSEP` can also prevent non-standard digit groupings you wouldn't expect."
+			"description": "Takes an unformatted number (Arabic, no group separators and `.` as decimal separator) and outputs it in the localized digit script and formatted with decimal and decimal group separators, according to the page language.\n\nThe `|R` parameter can be used to reverse the behavior, for use in mathematical situations: it's reliable and should be used only to deformat numbers which are known to be formatted exactly as formatnum formats them with the wiki's locale.\n\nThe `NOSEP` (\"no separators\") parameter means that no group / decimal separators are changed; formatnum will only transform the digits themselves in languages which don't use the [Hindu–Arabic numeral system](https://en.wikipedia.org/wiki/Hindu%E2%80%93Arabic_numeral_system). `NOSEP` can also prevent non-standard digit groupings you wouldn't expect.\n\nBy default, the formatted number may be slightly imprecise. The `LOSSLESS` parameter can be added to instead use the unformatted (exact) number in this case."
 		},
 		{
 			"aliases": [
@@ -611,7 +620,7 @@
 					}
 				]
 			],
-			"description": "Outputs a plural form appropriate for the given language. For English, the singular form (second parameter) is used if the absolute value of the first parameter is an expression equalling one; and the the plural form (third parameter) is used otherwise. See further documentation [on translatewiki.net](https://translatewiki.net/wiki/Plural#Plural_in_MediaWiki)."
+			"description": "Outputs a plural form appropriate for the given language. For English, the singular form (second parameter) is used if the absolute value of the first parameter is an expression equalling one; and the plural form (third parameter) is used otherwise. See further documentation [on translatewiki.net](https://translatewiki.net/wiki/Plural#Plural_in_MediaWiki)."
 		},
 		{
 			"aliases": [
@@ -639,7 +648,21 @@
 						"label": "username"
 					},
 					{
-						"label": "text for every gender"
+						"label": "gender-neutral text"
+					}
+				],
+				[
+					{
+						"label": "username"
+					},
+					{
+						"label": "male text"
+					},
+					{
+						"label": "female text"
+					},
+					{
+						"label": "text for unspecified gender"
 					}
 				],
 				[
@@ -654,7 +677,7 @@
 						"label": "female text"
 					},
 					{
-						"label": "text for unspecified"
+						"label": "text for unspecified gender"
 					}
 				],
 				[
@@ -669,11 +692,27 @@
 						"label": "female text"
 					},
 					{
-						"label": "text for unspecified"
+						"label": "text for unspecified gender"
 					}
 				]
 			],
-			"description": "A switch for the gender set in Special:Preferences.\n\n**Note:** If 3rd parameter is omitted and user hasn't defined their gender, then `male text` is returned.\n\nA blank username field (`{{GENDER:|`) means the current user, but can be used only in interface messages (MediaWiki namespace).\n\nA dot username (`.`) means the default user gender on this wiki."
+			"description": "A switch for the gender set by the user in Special:Preferences.\n\nIf only two parameters are used (for male and female text) but the 3rd parameter is omitted, and user hasn't defined their gender, then the first parameter (`male text`) is returned as a default.\n\nA blank username field (`{{GENDER:|`) means the current user, but can be used only in interface messages (MediaWiki namespace).\n\nUsing a dot (`.`) in the username field produces the output corresponding to the default user gender on this wiki."
+		},
+		{
+			"aliases": [
+				"#FORMAL"
+			],
+			"signatures": [
+				[
+					{
+						"label": "informal text"
+					},
+					{
+						"label": "formal text"
+					}
+				]
+			],
+			"description": "A switch for the formality index set by the configuration for certain languages. The default formality index is 0 (informal), but some language codes have the formality index 1 (formal). For these languages, what is displayed for the end user depends on whether their interface language is set to the formal or informal language code."
 		},
 		{
 			"aliases": [
@@ -1848,7 +1887,7 @@
 					}
 				]
 			],
-			"description": "Outputs the protection level (e.g. \"autoconfirmed\", \"sysop\") for a given action (e.g. \"edit\", \"move\") on the current page. Returns an empty string if not protected.\n\n**[Expensive]** Outputs the protection level on the specified page."
+			"description": "Outputs the protection level (e.g. `autoconfirmed`, `sysop`) for a given action (e.g. `edit`, `move`) on the current page. Returns an empty string if not protected.\n\n**[Expensive]** Outputs the protection level on the specified page."
 		},
 		{
 			"aliases": [
@@ -1897,7 +1936,7 @@
 					}
 				]
 			],
-			"description": "Unique revision ID. It is always empty in preview, thus one can show an error message only in preview. May be disabled in [miser mode (all WMF wikis)](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgMiserMode) returning `-` instead when not in preview.\n\n**[Expensive]** Unique revision ID of the last revision on the specified page."
+			"description": "Unique revision ID.\n\nIt is always empty in preview, thus one can show an error message only in preview. May be disabled in [miser mode (all WMF wikis)](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgMiserMode) returning `-` instead when not in preview.\n\n**Warning**: This variable **cannot** be [substituted](https://www.mediawiki.org/wiki/Help:Substitution).\n\n**[Expensive]** Unique revision ID of the last revision on the specified page."
 		},
 		{
 			"aliases": [
@@ -2257,7 +2296,7 @@
 					}
 				]
 			],
-			"description": "Namespace and full page title (including all subpage levels)."
+			"description": "Namespace and full page name (including all subpage levels)."
 		},
 		{
 			"aliases": [
@@ -2271,7 +2310,7 @@
 					}
 				]
 			],
-			"description": "URL encoded namespace and full page title (including all subpage levels)."
+			"description": "URL encoded namespace and full page name (including all subpage levels)."
 		},
 		{
 			"aliases": [
@@ -2285,7 +2324,7 @@
 					}
 				]
 			],
-			"description": "Full page title (including all subpage levels) without the namespace."
+			"description": "The page name, including all subpage levels, but without the namespace."
 		},
 		{
 			"aliases": [
@@ -2299,7 +2338,7 @@
 					}
 				]
 			],
-			"description": "URL encoded full page title (including all subpage levels) without the namespace."
+			"description": "URL encoded page name, including all subpage levels, but without the namespace."
 		},
 		{
 			"aliases": [
@@ -2313,7 +2352,7 @@
 					}
 				]
 			],
-			"description": "Page title of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) level without the namespace."
+			"description": "Page name of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) level without the namespace."
 		},
 		{
 			"aliases": [
@@ -2327,7 +2366,7 @@
 					}
 				]
 			],
-			"description": "URL encoded page title of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) level without the namespace."
+			"description": "URL encoded page name of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) level without the namespace."
 		},
 		{
 			"aliases": [
@@ -2369,7 +2408,7 @@
 					}
 				]
 			],
-			"description": "The [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) title. If no subpage exists the value of `{{PAGENAME}}` is returned."
+			"description": "The [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) title. If no subpage exists, the value of `{{PAGENAME}}` is returned."
 		},
 		{
 			"aliases": [
@@ -2383,7 +2422,7 @@
 					}
 				]
 			],
-			"description": "The URL encoded [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) title. If no subpage exists the value of `{{PAGENAME}}` is returned."
+			"description": "The URL encoded [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) title. If no subpage exists, the value of `{{PAGENAME}}` is returned."
 		},
 		{
 			"aliases": [
