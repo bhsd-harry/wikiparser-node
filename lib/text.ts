@@ -137,9 +137,9 @@ export class AstText extends AstNode {
 				{top, left} = root.posFromIndex(start)!,
 				{lintConfig} = Parser,
 				tagLike = lintConfig.rules['tag-like']!,
-				specified = typeof tagLike === 'number'
-					? new Set()
-					: new Set(Object.keys(tagLike[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed')),
+				specified = typeof tagLike === 'object' && tagLike[1]
+					? new Set(Object.keys(tagLike[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed'))
+					: new Set(),
 				tags = new Set([
 					'onlyinclude',
 					'noinclude',
