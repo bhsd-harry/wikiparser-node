@@ -8,7 +8,7 @@ import type {
 } from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
 
-const re = /`(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\n```)+)$/gmu;
+const re = /\*\*((?:in)?correct)\*\* .+ `(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\n```)+)$/gmu;
 
 /**
  * Mock CRLF
@@ -66,7 +66,7 @@ describe('API tests', () => {
 				}
 				const cur = file.slice(0, -3) as LintError.Rule;
 				for (const code of md.matchAll(re)) {
-					const [, config, wikitext] = code as string[] as [string, string, string];
+					const [, state, config, wikitext] = code as string[] as [string, string, string, string];
 					it(config, () => {
 						const rules: LintRuleConfig = JSON.parse(config);
 						Parser.lintConfig = {
@@ -78,9 +78,7 @@ describe('API tests', () => {
 						for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
 							try {
 								assert.strictEqual(
-									// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-									typeof rules[cur] === 'number'
-									=== (Parser.lintConfig.getSeverity(cur) === 'error'),
+									state === 'incorrect',
 									Parser.parse(block).lint()
 										.some(({rule, severity}) => rule === cur && severity === 'error'),
 								);

@@ -576,7 +576,7 @@ export class Token extends AstElement {
 							)
 							.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
 								code: code as string,
-								rule: 'invalid-css',
+								rule,
 								message,
 								severity: (severity === 1 ? s : sWarn) as LintError.Severity,
 								startLine: line,
