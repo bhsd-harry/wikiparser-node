@@ -1926,6 +1926,33 @@
 		},
 		{
 			"aliases": [
+				"#contentmodel"
+			],
+			"signatures": [
+				[],
+				[
+					{
+						"label": "canonical",
+						"const": true
+					},
+					{
+						"label": "page name"
+					}
+				],
+				[
+					{
+						"label": "local",
+						"const": true
+					},
+					{
+						"label": "page name"
+					}
+				]
+			],
+			"description": "The canonical or localized name of the content model of the specified page."
+		},
+		{
+			"aliases": [
 				"revisionid"
 			],
 			"signatures": [
