@@ -1,3 +1,11 @@
+## v1.26.1
+
+*2025-09-18*
+
+**Fixed**
+
+- The `id` attribute of a section header starting with underscores (`_`)
+
 ## v1.26.0
 
 *2025-09-14*
