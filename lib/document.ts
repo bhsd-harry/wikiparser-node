@@ -43,6 +43,7 @@ export const loadMathJax = (id = 'mathjax'): Promise<Jax> | undefined => {
 		});
 		return MathJax;
 	} catch {
+		/* istanbul ignore next */
 		return undefined;
 	}
 };
@@ -69,12 +70,14 @@ export const jsonLSP = (() => {
 						schema,
 					};
 				} catch {
+					/* istanbul ignore next */
 					return false;
 				}
 			}).filter(Boolean) as SchemaConfiguration[],
 		});
 		return lsp;
 	} catch {
+		/* istanbul ignore next */
 		return undefined;
 	}
 })();
@@ -84,6 +87,7 @@ export const cssLSP = (() => {
 		return (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 			.getCSSLanguageService();
 	} catch {
+		/* istanbul ignore next */
 		return undefined;
 	}
 })();
@@ -93,6 +97,7 @@ export const htmlData = (() => {
 		return (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
 			.getDefaultHTMLDataProvider();
 	} catch {
+		/* istanbul ignore next */
 		return undefined;
 	}
 })();
@@ -101,6 +106,7 @@ export const stylelint = (async () => {
 	try {
 		return (await import('stylelint')).default;
 	} catch {
+		/* istanbul ignore next */
 		return undefined;
 	}
 })();

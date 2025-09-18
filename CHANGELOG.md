@@ -1,10 +1,15 @@
 ## v1.26.1
 
-*2025-09-18*
+*2025-09-19*
 
 **Fixed**
 
 - The `id` attribute of a section header starting with underscores (`_`)
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should report evil attribute values such as `javascript:`
+
+**Changed**
+
+- The [rule severity](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#rule-configuration) can now be specified as a string: `'off'`, `'warning'` or `'error'`, which are equivalent to `0`, `1` and `2`, respectively
 
 ## v1.26.0
 

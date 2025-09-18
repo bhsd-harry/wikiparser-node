@@ -124,6 +124,7 @@ module.exports = {
 				wikiparse: 'readonly',
 			},
 			rules: {
+				'class-methods-use-this': 0,
 				'no-unused-vars': [
 					2,
 					{

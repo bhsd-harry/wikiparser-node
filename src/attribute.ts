@@ -328,23 +328,6 @@ export abstract class AttributeToken extends Token {
 					return e;
 				}
 			}
-		} else if (simple && type !== 'ext-attr') {
-			const data = provideValues(tag, name),
-				v = String(value).toLowerCase();
-			if (data.length > 0 && data.every(n => n !== v)) {
-				/* PRINT ONLY */
-
-				if (start === undefined) {
-					return true;
-				}
-
-				/* PRINT ONLY END */
-
-				LINT: { // eslint-disable-line no-unused-labels
-					const s = lintConfig.getSeverity(rule, 'value');
-					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
-				}
-			}
 		} else if (
 			typeof value === 'string' && (
 				(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
@@ -365,6 +348,23 @@ export abstract class AttributeToken extends Token {
 			LINT: { // eslint-disable-line no-unused-labels
 				const s = lintConfig.getSeverity(rule, 'value');
 				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+			}
+		} else if (simple && type !== 'ext-attr') {
+			const data = provideValues(tag, name),
+				v = String(value).toLowerCase();
+			if (data.length > 0 && data.every(n => n !== v)) {
+				/* PRINT ONLY */
+
+				if (start === undefined) {
+					return true;
+				}
+
+				/* PRINT ONLY END */
+
+				LINT: { // eslint-disable-line no-unused-labels
+					const s = lintConfig.getSeverity(rule, 'value');
+					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
+				}
 			}
 		}
 		return false;
