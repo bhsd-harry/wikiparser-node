@@ -4339,14 +4339,14 @@
 		"desc": "anchorencode encodes like the TOC generator: (T20431)",
 		"wikitext": "===_ +:.3A%3A _ &&amp;]] x===\n{{anchorencode: _ +:.3A%3A _ &&amp;]] x}}\n\n__NOEDITSECTION__",
 		"html": "<div class=\"mw-heading mw-heading3\"><h3 id=\"+:.3A%3A_&amp;&amp;]]_x\"><span id=\".2B:.3A.253A_.26.26.5D.5D_x\"></span>_ +:.3A%3A _ &amp;&amp;]] x</h3></div>\n<p>+:.3A%253A_&amp;&amp;&#93;&#93;_x\n</p><p><br />\n</p>",
-		"render": "<div class=\"mw-heading mw-heading3\"><h3 id=\"_+:.3A%3A_&amp;&amp;]]_x\">_ +:.3A%3A _ &&amp;]] x</h3></div>\n<p><br>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading3\"><h3 id=\"+:.3A%3A_&amp;&amp;]]_x\">_ +:.3A%3A _ &&amp;]] x</h3></div>\n<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">===<span class=\"wpb-heading-title\">_ +:.3A%3A _ &amp;&amp;amp;]] x</span>===</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> _ +:.3A%3A _ &amp;&amp;amp;]] x</span></span>}}</span>\n\n<span class=\"wpb-double-underscore\">__NOEDITSECTION__</span></span>"
 	},
 	{
 		"desc": "anchorencode encodes like the TOC generator: (T20431) (legacy)",
 		"wikitext": "===_ +:.3A%3A&&amp;]]===\n{{anchorencode: _ +:.3A%3A&&amp;]] }}\n__NOEDITSECTION__",
 		"html": "<div class=\"mw-heading mw-heading3\"><h3 id=\".2B:.3A.253A.26.26.5D.5D\">_ +:.3A%3A&amp;&amp;]]</h3></div>\n<p>.2B:.3A.253A.26.26.5D.5D\n</p>",
-		"render": "<div class=\"mw-heading mw-heading3\"><h3 id=\"_+:.3A%3A&amp;&amp;]]\">_ +:.3A%3A&&amp;]]</h3></div>\n<p><br>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading3\"><h3 id=\"+:.3A%3A&amp;&amp;]]\">_ +:.3A%3A&&amp;]]</h3></div>\n<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">===<span class=\"wpb-heading-title\">_ +:.3A%3A&amp;&amp;amp;]]</span>===</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> _ +:.3A%3A&amp;&amp;amp;]] </span></span>}}</span>\n<span class=\"wpb-double-underscore\">__NOEDITSECTION__</span></span>"
 	},
 	{
