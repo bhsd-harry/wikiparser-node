@@ -13,7 +13,7 @@ declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
 wikiparse.setConfig(Parser.config);
 
-const re = /`(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\n```)+)$/gmu;
+const re = /\*\*((?:in)?correct)\*\* .+ `(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\n```)+)$/gmu;
 
 /**
  * Mock CRLF
@@ -75,7 +75,7 @@ describe('API tests', () => {
 				// @ts-expect-error Node.js-only rule
 				if (cur !== 'invalid-css') {
 					for (const code of md.matchAll(re)) {
-						const [, config, wikitext] = code as string[] as [string, string, string];
+						const [, state, config, wikitext] = code as string[] as [string, string, string, string];
 						it(config, () => {
 							const rules: LintRuleConfig = JSON.parse(config);
 							Parser.lintConfig = {
@@ -87,10 +87,7 @@ describe('API tests', () => {
 							for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
 								try {
 									assert.strictEqual(
-										// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-										typeof rules[cur] === 'number'
-										// @ts-expect-error method of LintConfiguration
-										=== (Parser.lintConfig.getSeverity(cur) === 'error'),
+										state === 'incorrect',
 										Parser.parse(block).lint()
 											.some(({rule, severity}) => rule === cur && severity === 'error'),
 									);
