@@ -5,6 +5,9 @@ import {
 	removeComment,
 } from '../util/string';
 import {generateForSelf, fixByRemove, fixByDecode} from '../util/lint';
+import {
+	MAX_STAGE,
+} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../base';
@@ -134,6 +137,9 @@ export abstract class ImageParameterToken extends Token {
 				this.#syntax = mt[1] + param[0] + mt[3]!;
 			}
 			this.setAttribute('name', param[1]);
+			if (param[1] === 'alt') {
+				this.setAttribute('stage', MAX_STAGE - 1);
+			}
 			return;
 		}
 		super(
@@ -170,7 +176,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override isPlain(): boolean {
-		return this.name === 'caption';
+		return this.name === 'caption' || this.name === 'alt';
 	}
 
 	/** @private */
