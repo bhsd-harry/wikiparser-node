@@ -1,6 +1,10 @@
 ## v1.26.1
 
-*2025-09-19*
+*2025-09-20*
+
+**Added**
+
+- Language conversion in the `alt` parameter of images
 
 **Fixed**
 
