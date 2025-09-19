@@ -20,7 +20,7 @@ const tests: Test[] = [],
 		'html/php+disabled',
 		'html/*',
 	]),
-	re = /^!!\s*options(?:\n(?:parsoid=(?:wt2html.*|\{(?:(?!$)[^}]+|$(?:(?!^\}$)[\s\S])+^)\})|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata|showflags|extlinks|templates|links|special))*\n!/mu;
+	re = /^!!\s*options(?:\n(?:parsoid=(?:wt2html.*|\{(?:(?!$)[^}]+|$(?:(?!^\}$)[\s\S])+^)\})|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh)(?: .*)?|cat|subpage|showindicators|djvu|showmedia|showtocdata|showflags|extlinks|templates|links|special))*\n!/mu;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
 const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
@@ -100,7 +100,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)?.[1]!.trim();
 		if (
 			!wikitext
-			|| /<(?:div|span|static|aside)?tag\b|\{\{\s*#spantag:/iu.test(wikitext)
+			|| /<(?:div|span|static|aside)?tag\b|\{\{\s*#(?:div|span)tag:/iu.test(wikitext)
 			|| /\b(?:NULL\b|array\s*\()/u.test(html!)
 			|| /\blanguage=(?!en|zh)/u.test(option!)
 		) {

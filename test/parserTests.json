@@ -928,6 +928,8 @@
 	{
 		"desc": "Internal link with en linktrail: no apostrophes (T29473)",
 		"wikitext": "[[Something]]'nice",
+		"html": "<p><a href=\"/index.php?title=Something&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Something (page does not exist)\">Something</a>'nice\n</p>",
+		"render": "<p><a href=\"/wiki/Something\" title=\"Something\">Something</a>'nice\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Something</span>]]</span>'nice</span>"
 	},
 	{
@@ -4830,6 +4832,8 @@
 	{
 		"desc": "T33490 ucfırst (with a dotless i) with English language",
 		"wikitext": "{{ucfırst:blah}}",
+		"html": "<p><a href=\"/index.php?title=Template:Ucf%C4%B1rst:blah&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Ucfırst:blah (page does not exist)\">Template:Ucfırst:blah</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Template%3AUcf%C4%B1rst%3Ablah?action=edit&redlink=1\" class=\"new\" title=\"Template:Ucfırst:blah (page does not exist)\">Template:Ucfırst:blah</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">ucfırst:blah</span>}}</span></span>"
 	},
 	{
@@ -6185,11 +6189,6 @@
 		"html": "<p>123\n</p>",
 		"render": "<p>123\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">1<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span></span>|<span class=\"wpb-arg-default\">1x<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span></span>}}}</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Parser function contents using isRawHTML flag",
-		"wikitext": "DoBlockLevels and LanguageConverter still run on isHTML content:\n{{#divtag:<!--protect newline-->\n:foo -{raw}- <b>bold</b>\n|raw|isHTML}}\n\nBut with isRawHTML the result is left alone:\n{{#divtag:<!--protect newline-->\n:foo -{raw}- <b>bold</b>\n|raw|isRawHTML}}",
-		"print": "<span class=\"wpb-root\">DoBlockLevels and LanguageConverter still run on isHTML content:\n{{#divtag:<span class=\"wpb-comment\">&lt;!--protect newline--&gt;</span>\n<span class=\"wpb-list\">:</span>foo <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">raw</span></span>}-</span> <span class=\"wpb-html\">&lt;b&gt;</span>bold<span class=\"wpb-html\">&lt;/b&gt;</span>\n|raw|isHTML}}\n\nBut with isRawHTML the result is left alone:\n{{#divtag:<span class=\"wpb-comment\">&lt;!--protect newline--&gt;</span>\n<span class=\"wpb-list\">:</span>foo <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">raw</span></span>}-</span> <span class=\"wpb-html\">&lt;b&gt;</span>bold<span class=\"wpb-html\">&lt;/b&gt;</span>\n|raw|isRawHTML}}</span>"
 	},
 	{
 		"desc": "additionalTests"
@@ -10285,11 +10284,15 @@
 	{
 		"desc": "Language converter: output gets cut off unexpectedly (T7757)",
 		"wikitext": "this bit is safe: }-\n\nbut if we add a conversion instance: -{zh-cn:xxx;zh-tw:yyy}-\n\nthen we get cut off here: }-\n\nall additional text is vanished",
+		"html": "<p>this bit is safe: }-\n</p><p>but if we add a conversion instance: xxx\n</p><p>then we get cut off here: }-\n</p><p>all additional text is vanished\n</p>",
+		"render": "<p>this bit is safe: }-\n</p><p>but if we add a conversion instance: xxx\n</p><p>then we get cut off here: }-\n</p><p>all additional text is vanished\n</p>",
 		"print": "<span class=\"wpb-root\">this bit is safe: }-\n\nbut if we add a conversion instance: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">xxx</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">yyy</span></span>}-</span>\n\nthen we get cut off here: }-\n\nall additional text is vanished</span>"
 	},
 	{
 		"desc": "Don't convert blue categorylinks to another variant (T35210)",
 		"wikitext": "[[A]][[Category:分类]]",
+		"html": "<p><a href=\"/wiki/A\" title=\"A\">A</a>\n</p>",
+		"render": "<p><a href=\"/wiki/A\" title=\"A\">A</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">A</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:分类</span>]]</span></span>"
 	},
 	{
@@ -12424,6 +12427,8 @@
 	{
 		"desc": "Escape HTML special chars in image alt text with LanguageConverter",
 		"wikitext": "[[File:Foobar.jpg|& < > \"]]",
+		"html": "<p><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"&amp; &lt; &gt; &quot;\"><img alt=\"&amp; &lt; &gt; &quot;\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>",
+		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"& &lt; &gt; &quot;\"><img alt=\"& &lt; &gt; &quot;\" src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">&amp; &lt; &gt; \"</span>]]</span></span>"
 	},
 	{
@@ -12793,6 +12798,8 @@
 	{
 		"desc": "Gallery override link with absolute external link with LanguageConverter",
 		"wikitext": "<gallery>\nFile:foobar.jpg|caption|alt=galleryalt|link=http://www.example.org\n</gallery>",
+		"html": "<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"http://www.example.org\" title=\"caption\" rel=\"nofollow\"><img alt=\"galleryalt\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\">caption</div>\n\t\t</li>\n</ul>",
+		"render": "<ul class=\"gallery\">\n\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px\"><span><a href=\"http://www.example.org/\" title=\"caption\" rel=\"nofollow\"><img alt=\"galleryalt\" src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\" width=\"120\" height=\"120\"></a></span></div>\n\t\t<div class=\"gallerytext\">caption</div>\n\t</li>\n</ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:foobar.jpg</span>|<span class=\"wpb-image-caption\">caption</span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\">galleryalt</span></span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-free-ext-link\">http://www.example.org</span></span></span></span>\n</span>&lt;/gallery&gt;</span></span>"
 	},
 	{
@@ -12958,6 +12965,8 @@
 	{
 		"desc": "Don't break gallery if language converter markup is inside.",
 		"wikitext": "<gallery>\nFile:Foobar.jpg|alt=-{R|bat}-|[[File:foobar.jpg|20px|desc|alt=-{R|foo}-|-{R|bar}-]]\nFile:Foobar.jpg|alt=galleryalt|{{Test|unamedParam|alt=-{R|param}-}}\n</gallery>",
+		"html": "<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img alt=\"bat\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"bar\"><img alt=\"foo\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/20px-Foobar.jpg\" decoding=\"async\" width=\"20\" height=\"2\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/30px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/40px-Foobar.jpg 2x\" /></a></span></div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"This is a test template\"><img alt=\"galleryalt\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\">This is a test template</div>\n\t\t</li>\n</ul>",
+		"render": "<ul class=\"gallery\">\n\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px\"><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img alt=\"-{R|bat}-\" src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\" width=\"120\" height=\"120\"></a></span></div>\n\t\t<div class=\"gallerytext\"><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"bar\"><img alt=\"-{R|foo}-\" src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\" width=\"20\"></a></span></div>\n\t</li>\n\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px\"><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"This is a test template\"><img alt=\"galleryalt\" src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\" width=\"120\" height=\"120\"></a></span></div>\n\t\t<div class=\"gallerytext\">This is a test template</div>\n\t</li>\n</ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\">-{R|bat}-</span></span>|<span class=\"wpb-image-caption\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">20</span>px</span>|<span class=\"wpb-image-caption\">desc</span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\">-{R|foo}-</span></span>|<span class=\"wpb-image-caption\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>]]</span></span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\">galleryalt</span></span>|<span class=\"wpb-image-caption\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Test</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">unamedParam</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">alt</span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">param</span></span>}-</span></span></span>}}</span></span></span>\n</span>&lt;/gallery&gt;</span></span>"
 	},
 	{
@@ -13739,16 +13748,22 @@
 	{
 		"desc": "Preprocessor precedence 2: template is rightmost opening",
 		"wikitext": "-{{1x|foo}-}}-",
+		"html": "<p>-foo}--\n</p>",
+		"render": "<p>-foo}--\n</p>",
 		"print": "<span class=\"wpb-root\">-<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo}-</span></span>}}</span>-</span>"
 	},
 	{
 		"desc": "Preprocessor precedence 3: language converter is rightmost opening",
 		"wikitext": "{{1x|hi}}\n\n{{-{R|1x|hi}}}-\n\n[[-{R|raw]]}-",
+		"html": "<p>hi\n</p><p>{{1x|hi}}\n</p><p>[[raw]]\n</p>",
+		"render": "<p>hi\n</p><p>{{1x|hi}}\n</p><p>[[raw]]\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span>\n\n{{<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">1x|hi}}</span></span>}-</span>\n\n[[<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">raw]]</span></span>}-</span></span>"
 	},
 	{
 		"desc": "Preprocessor precedence 4: left-most angle bracket",
 		"wikitext": "<!--{raw}-->",
+		"html": "",
+		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!--{raw}--&gt;</span></span>"
 	},
 	{
@@ -13775,6 +13790,8 @@
 	{
 		"desc": "Preprocessor precedence 8: broken language converter is rightmost opening",
 		"wikitext": "[[Foo-{R|raw]]",
+		"html": "<p>[[Foo-{R|raw]]\n</p>",
+		"render": "<p>[[Foo-{R|raw]]\n</p>",
 		"print": "<span class=\"wpb-root\">[[Foo-{R|raw]]</span>"
 	},
 	{
@@ -13787,6 +13804,8 @@
 	{
 		"desc": "Preprocessor precedence 10: groups of braces with leading dash",
 		"wikitext": "{{Preprocessor precedence 10|Three|raw2|Bullet|1|2}}",
+		"html": "<dl><dt>1</dt>\n<dd>raw</dd>\n<dt>2</dt>\n<dd>-</dd></dl>\n<ul><li>Bar-</li></ul>\n<dl><dt>3</dt>\n<dd>-Three-</dd>\n<dt>4</dt>\n<dd>raw2</dd>\n<dt>5</dt>\n<dd>-</dd></dl>\n<ul><li>Bar-</li></ul>\n<dl><dt>6</dt>\n<dd>-Three-</dd>\n<dt>7</dt>\n<dd>raw2</dd></dl>",
+		"render": "<dl><dt>1</dt>\n<dd>raw</dd>\n<dt>2</dt>\n<dd>-</dd></dl>\n<ul><li>Bar-</li></ul>\n<dl><dt>3</dt>\n<dd>-Three-</dd>\n<dt>4</dt>\n<dd>raw2</dd>\n<dt>5</dt>\n<dd>-</dd></dl>\n<ul><li>Bar-</li></ul>\n<dl><dt>6</dt>\n<dd>-Three-</dd>\n<dt>7</dt>\n<dd>raw2</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Preprocessor precedence 10</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Three</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">raw2</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Bullet</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2</span></span>}}</span></span>"
 	},
 	{
@@ -13820,6 +13839,8 @@
 	{
 		"desc": "Preprocessor precedence 16: matching closing braces to opening braces",
 		"wikitext": "-{{{1x|foo}}bar}-",
+		"html": "<p>foobar\n</p>",
+		"render": "<p>foobar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span>bar</span></span>}-</span></span>"
 	},
 	{
