@@ -86,7 +86,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @since v1.5.3
 	 */
 	get extension(): string | undefined {
-		return this.getAttribute('title').extension;
+		LSP: return this.getAttribute('title').extension; // eslint-disable-line no-unused-labels
 	}
 
 	/**
@@ -117,7 +117,10 @@ export abstract class FileToken extends LinkBaseToken {
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
-				{extension} = this;
+				{
+					ns,
+					extension,
+				} = this.getAttribute('title');
 			let rule: LintError.Rule = 'nested-link',
 				s = lintConfig.getSeverity(rule, 'file');
 			if (
@@ -143,6 +146,12 @@ export abstract class FileToken extends LinkBaseToken {
 				errors.push(e);
 			}
 			rule = 'invalid-gallery';
+			s = lintConfig.getSeverity(rule, 'extension');
+			if (
+				s && ns === 6 && !extension
+			) {
+				errors.push(generateForSelf(this, rect, rule, 'missing-extension', s));
+			}
 			s = lintConfig.getSeverity(rule, 'parameter');
 			if (s && unscaled) {
 				for (const arg of args.filter(({name}) => name === 'width')) {

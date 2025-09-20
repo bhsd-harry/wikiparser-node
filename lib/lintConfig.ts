@@ -58,6 +58,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 	'invalid-gallery': [
 		2,
 		{
+			// extension: 2,
 			// image: 2,
 			parameter: 1,
 		},

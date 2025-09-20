@@ -44,6 +44,7 @@
 	"left-bracket": "左括号",
 	"link-in-extlink": "外链中的内链",
 	"lonely": "孤立的\"$1\"",
+	"missing-extension": "缺少文件扩展名",
 	"missing-function": "缺少Scribunto模块函数名",
 	"newline": "换行",
 	"no-self-closing": "移除自封闭",
