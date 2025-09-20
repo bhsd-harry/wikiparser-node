@@ -44,6 +44,7 @@
 	"left-bracket": "左括號",
 	"link-in-extlink": "外部連結裡的內部連結",
 	"lonely": "孤立的\"$1\"",
+	"missing-extension": "缺少檔案副檔名",
 	"missing-function": "缺少Scribunto模組函式名稱",
 	"newline": "換行",
 	"no-self-closing": "移除自封閉",

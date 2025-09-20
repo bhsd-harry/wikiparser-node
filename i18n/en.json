@@ -44,6 +44,7 @@
 	"left-bracket": "opening bracket",
 	"link-in-extlink": "internal link in an external link",
 	"lonely": "lonely \"$1\"",
+	"missing-extension": "missing file extension",
 	"missing-function": "missing Scribunto module function name",
 	"newline": null,
 	"no-self-closing": "no self-closing",
