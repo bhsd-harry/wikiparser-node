@@ -10,7 +10,8 @@
 					"description": "An array of aliases for the magic word",
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"pattern": "^[^A-Z]+$"
 					},
 					"minItems": 1,
 					"uniqueItems": true
