@@ -1,10 +1,11 @@
-## v1.26.1
+## v1.27.0
 
 *2025-09-20*
 
 **Added**
 
 - Language conversion in the `alt` parameter of images
+- [`FileToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#lint) now also reports missing file extensions
 
 **Fixed**
 
