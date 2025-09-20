@@ -210,7 +210,8 @@ export abstract class FileToken extends LinkBaseToken {
 					/* NOT FOR BROWSER */
 
 					interwiki,
-				} = this.getAttribute('title');
+				} = this.getAttribute('title'),
+				{firstChild} = this;
 			let rule: LintError.Rule = 'nested-link',
 				s = lintConfig.getSeverity(rule, 'file');
 			if (
@@ -238,7 +239,7 @@ export abstract class FileToken extends LinkBaseToken {
 			rule = 'invalid-gallery';
 			s = lintConfig.getSeverity(rule, 'extension');
 			if (
-				s && ns === 6 && !extension
+				s && ns === 6 && !extension && !firstChild.querySelector('arg,magic-word,template')
 				&& !interwiki
 			) {
 				errors.push(generateForSelf(this, rect, rule, 'missing-extension', s));
