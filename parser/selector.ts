@@ -202,6 +202,7 @@ const matches = (
 				case ':optional':
 					return isProtected(token) === false;
 				case ':scope':
+					/* istanbul ignore if */
 					if (!scope) {
 						throw new SyntaxError('The :scope pseudo-selector must be used with an element node.');
 					}
@@ -423,7 +424,7 @@ const checkToken = (
 	 * @throws `SyntaxError` 非法的选择器
 	 */
 	const needUniversal = (): void => {
-		/* istanbul ignore if */
+		/* istanbul ignore next */
 		if (step.length === 0 && (condition.length > 1 || !has)) {
 			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
 		}
