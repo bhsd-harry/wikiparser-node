@@ -946,8 +946,8 @@ export abstract class TranscludeToken extends Token {
 	 * Get the module name and module function name
 	 *
 	 * 获取模块名和模块函数名
-	 * @throws `Error` 仅用于模块
 	 * @since v1.16.4
+	 * @throws `Error` 仅用于模块
 	 */
 	getModule(): [string, string | undefined] {
 		/* istanbul ignore if */
@@ -962,8 +962,8 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 获取 [frame 对象](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object)
 	 * @param context template calling this module / 调用该模块的模板
-	 * @throws `Error` 仅用于模块
 	 * @since v1.22.0
+	 * @throws `Error` 仅用于模块
 	 */
 	getFrame(context?: this): Frame {
 		/* istanbul ignore if */

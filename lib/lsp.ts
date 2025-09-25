@@ -1998,8 +1998,8 @@ export class LanguageService implements LanguageServiceBase {
 	 * 设置目标维基百科
 	 * @param wiki Wikipedia URL / 维基百科网址
 	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
-	 * @throws `RangeError` 不是有效的维基百科网址
 	 * @since v1.18.1
+	 * @throws `RangeError` 不是有效的维基百科网址
 	 */
 	async setTargetWikipedia(wiki: string, user: string): Promise<void> {
 		const [site, host] = Parser.getWMFSite(wiki);

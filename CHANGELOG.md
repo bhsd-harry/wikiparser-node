@@ -1,3 +1,11 @@
+## v1.28.0
+
+*2025-09-26*
+
+**Added**
+
+- Better support for `<tvar>` tags from [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate)
+
 ## v1.27.0
 
 *2025-09-20*

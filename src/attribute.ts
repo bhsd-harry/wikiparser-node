@@ -539,10 +539,10 @@ export abstract class AttributeToken extends Token {
 	 * 获取或设置某一样式属性的值
 	 * @param key style property / 样式属性
 	 * @param value style property value / 样式属性值
+	 * @since v1.17.1
 	 * @throws `Error` 不是style属性
 	 * @throws `Error` 复杂的style属性
 	 * @throws `Error` 无CSS语言服务
-	 * @since v1.17.1
 	 */
 	css(key: string, value?: string): string | undefined {
 		const {name, lastChild} = this;
