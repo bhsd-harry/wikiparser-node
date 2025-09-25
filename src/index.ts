@@ -32,7 +32,7 @@
 // i: RFC/PMID/ISBN
 // l: LinkToken
 // m: `{{server}}`、`{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// n: NoIncludeToken、IncludeToken、DoubleUnderscoreToken或`{{#vardefine:}}`
+// n: NoIncludeToken、IncludeToken、TvarToken、DoubleUnderscoreToken或`{{#vardefine:}}`
 // o: RedirectToken
 // q: QuoteToken
 // r: HrToken

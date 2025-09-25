@@ -80,6 +80,7 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? this.lastChild.toString(skip) : super.toString(skip, '=');
 	}
 
+	/** @private */
 	override text(): string {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}

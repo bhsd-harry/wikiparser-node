@@ -86,7 +86,11 @@ export abstract class TagToken extends Token {
 					stack = [this],
 					{rev} = Shadow;
 				for (const token of siblings) {
-					if (!token.is<this>(type) || token.name !== name || isFlexible && token.selfClosing) {
+					if (
+						!token.is<this>(type)
+						|| type === 'html' && token.name !== name
+						|| isFlexible && token.selfClosing
+					) {
 						continue;
 					} else if (token.#closing === closing) {
 						stack.push(token);
