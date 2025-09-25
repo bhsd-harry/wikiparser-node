@@ -1,7 +1,12 @@
 import {Token} from './index';
 import type {Config, LintError} from '../base';
 
-declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax' | 'translate-attr';
+declare type SyntaxTypes = 'heading-trail'
+	| 'magic-word-name'
+	| 'table-syntax'
+	| 'redirect-syntax'
+	| 'translate-attr'
+	| 'tvar-name';
 
 /**
  * plain token that satisfies specific grammar syntax
