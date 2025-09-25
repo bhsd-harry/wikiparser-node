@@ -1,5 +1,5 @@
 import {AttributesToken} from '../src/attributes';
-import {HtmlToken} from '../src/html';
+import {HtmlToken} from '../src/tag/html';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 

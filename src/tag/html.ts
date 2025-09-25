@@ -1,16 +1,14 @@
-import {generateForSelf, cache, fixByRemove, fixByClose, fixByOpen} from '../util/lint';
-import {Shadow} from '../util/debug';
-import {BoundingRect} from '../lib/rect';
-import {attributesParent} from '../mixin/attributesParent';
-import Parser from '../index';
-import {Token} from './index';
-import type {Cached} from '../util/lint';
+import {generateForSelf, fixByRemove, fixByClose, fixByOpen} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
+import {attributesParent} from '../../mixin/attributesParent';
+import Parser from '../../index';
+import {TagToken} from './index';
 import type {
 	Config,
 	LintError,
-} from '../base';
-import type {AttributesParentBase} from '../mixin/attributesParent';
-import type {AttributesToken, TranscludeToken} from '../internal';
+} from '../../base';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
+import type {Token, AttributesToken, TranscludeToken} from '../../internal';
 
 export interface HtmlToken extends AttributesParentBase {}
 
@@ -51,12 +49,9 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * @classdesc `{childNodes: [AttributesToken]}`
  */
 @attributesParent()
-export abstract class HtmlToken extends Token {
+export abstract class HtmlToken extends TagToken {
 	declare readonly name: string;
-	#closing;
 	#selfClosing;
-	#tag;
-	#match: Cached<this | undefined> | undefined;
 
 	declare readonly childNodes: readonly [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
@@ -71,9 +66,9 @@ export abstract class HtmlToken extends Token {
 		return this.#selfClosing;
 	}
 
-	/** whether to be a closing tag / 是否是闭合标签 */
-	get closing(): boolean {
-		return this.#closing;
+	/** @private */
+	override get closing(): boolean {
+		return super.closing;
 	}
 
 	/**
@@ -90,33 +85,24 @@ export abstract class HtmlToken extends Token {
 		config?: Config,
 		accum?: Token[],
 	) {
-		super(undefined, config, accum);
-		this.insertAt(attr);
+		super(name, attr, closing, config, accum);
 		this.setAttribute('name', name.toLowerCase());
-		this.#closing = closing;
 		this.#selfClosing = selfClosing;
-		this.#tag = name;
 	}
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString(skip)}${this.#selfClosing ? '/' : ''}>`;
+		return super.toString(skip, this.#selfClosing ? '/' : '');
 	}
 
 	/** @private */
 	override text(): string {
-		const {
-				closing,
-			} = this,
-			tag = this.#tag + (closing ? '' : super.text());
-		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding'
-			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttribute<T>
-			: super.getAttribute(key);
+		const {closing, selfClosing, name} = this,
+			{html: [,, voidTags]} = this.getAttribute('config');
+		if (voidTags.includes(name)) {
+			return closing && name !== 'br' ? '' : super.text('/');
+		}
+		return super.text(selfClosing && !closing ? '/' : '');
 	}
 
 	/** @private */
@@ -232,56 +218,5 @@ export abstract class HtmlToken extends Token {
 			}
 			return errors;
 		}
-	}
-
-	/**
-	 * Find the matching tag
-	 *
-	 * 搜索匹配的标签
-	 */
-	findMatchingTag(): this | undefined {
-		return cache<this | undefined>(
-			this.#match,
-			() => {
-				const {name, parentNode, closing, selfClosing} = this,
-					{html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
-					isVoid = voidTags.includes(name),
-					isFlexible = flexibleTags.includes(name);
-				if (isVoid || isFlexible && selfClosing) { // 自封闭标签
-					return this;
-				} else if (!parentNode) {
-					return undefined;
-				}
-				const {childNodes} = parentNode,
-					i = childNodes.indexOf(this),
-					siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1),
-					stack = [this],
-					{rev} = Shadow;
-				for (const token of siblings) {
-					if (!token.is<this>('html') || token.name !== name || isFlexible && token.#selfClosing) {
-						continue;
-					} else if (token.#closing === closing) {
-						stack.push(token);
-					} else {
-						const top = stack.pop()!;
-						if (top === this) {
-							return token;
-						}
-						top.#match = [rev, token];
-						token.#match = [rev, top];
-					}
-				}
-				for (const token of stack) {
-					token.#match = [rev, undefined];
-				}
-				return undefined;
-			},
-			value => {
-				this.#match = value;
-				if (value[1] && value[1] !== this) {
-					value[1].#match = [Shadow.rev, this];
-				}
-			},
-		);
 	}
 }
