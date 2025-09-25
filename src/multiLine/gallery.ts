@@ -1,42 +1,32 @@
-import {fixByRemove, fixByComment} from '../util/lint';
-import {multiLine} from '../mixin/multiLine';
-import Parser from '../index';
-import {Token} from './index';
-import {GalleryImageToken} from './link/galleryImage';
-import {NoincludeToken} from './nowiki/noinclude';
+import {fixByRemove, fixByComment} from '../../util/lint';
+import Parser from '../../index';
+import {MultiLineToken} from './index';
+import {GalleryImageToken} from '../link/galleryImage';
+import {CommentLineToken} from '../nowiki/commentLine';
 import type {
 	Config,
 	LintError,
 	AST,
-} from '../base';
+} from '../../base';
 import type {
 	AstText,
-	AttributesToken,
-	ExtToken,
-} from '../internal';
+	Token,
+} from '../../internal';
 
-declare type Child = GalleryImageToken | NoincludeToken;
+declare type Child = GalleryImageToken | CommentLineToken;
 
 /**
  * gallery tag
  *
  * gallery标签
- * @classdesc `{childNodes: (GalleryImageToken|NoincludeToken|AstText)[]}`
+ * @classdesc `{childNodes: (GalleryImageToken|CommentLineToken|AstText)[]}`
  */
-@multiLine
-export abstract class GalleryToken extends Token {
+export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (Child | AstText)[];
 	abstract override get firstChild(): Child | AstText | undefined;
 	abstract override get lastChild(): Child | AstText | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
 
 	/* PRINT ONLY */
 
@@ -70,7 +60,7 @@ export abstract class GalleryToken extends Token {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
 				// @ts-expect-error abstract class
-				super.insertAt((line.trim() ? new NoincludeToken(line, config, accum) : line) as string);
+				super.insertAt((line.trim() ? new CommentLineToken(line, config, accum) : line) as string);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -79,7 +69,7 @@ export abstract class GalleryToken extends Token {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
 				// @ts-expect-error abstract class
-				super.insertAt(new NoincludeToken(line, config, accum) as NoincludeToken);
+				super.insertAt(new CommentLineToken(line, config, accum) as CommentLineToken);
 			}
 		}
 	}

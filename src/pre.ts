@@ -41,9 +41,9 @@ export abstract class PreToken extends Token {
 				str = '';
 			while (i && j) {
 				// @ts-expect-error abstract class
-				new NoincludeToken(i[0], config, accum);
+				new NoincludeToken(i[0], config, accum, true);
 				// @ts-expect-error abstract class
-				new NoincludeToken(j[0], config, accum);
+				new NoincludeToken(j[0], config, accum, true);
 				str += `${wikitext.slice(lastIndex, i.index)}\0${accum.length - 1}n\x7F${
 					wikitext.slice(i.index + length, j.index)
 				}\0${accum.length}n\x7F`;

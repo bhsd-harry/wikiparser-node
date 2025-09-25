@@ -135,7 +135,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 				);
 			} else {
 				// @ts-expect-error abstract class
-				new NoincludeToken(substr, config, accum);
+				new NoincludeToken(substr, config, accum, true);
 			}
 			return `\0${l}${ch}\x7F`;
 		},
