@@ -27,8 +27,9 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 
 		/* NOT FOR BROWSER */
 
-		dispatchEvent(): void { // eslint-disable-line @typescript-eslint/class-methods-use-this
-			//
+		override dispatchEvent(e: Event, data: unknown): void {
+			e.stopPropagation();
+			super.dispatchEvent(e, data);
 		}
 
 		@cached()

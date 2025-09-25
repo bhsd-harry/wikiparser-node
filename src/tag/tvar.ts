@@ -51,17 +51,11 @@ export abstract class TvarToken extends TagToken {
 	constructor(tag: string, attr: string, closing: boolean, config?: Config, accum?: Token[]) {
 		/* NOT FOR BROWSER */
 
-		let pattern: RegExp,
-			name: string | undefined;
+		let pattern: RegExp;
 		if (closing) {
 			pattern = tag ? newClosingPattern : legacyClosingPattern;
-		} else if (legacyPattern.test(attr)) {
-			pattern = legacyPattern;
-			[, name] = legacyPattern.exec(attr)!;
 		} else {
-			pattern = newPattern;
-			const mt = newPattern.exec(attr)!;
-			name = mt[2] ?? mt[3];
+			pattern = legacyPattern.test(attr) ? legacyPattern : newPattern;
 		}
 
 		/* NOT FOR BROWSER END */
@@ -79,7 +73,7 @@ export abstract class TvarToken extends TagToken {
 		/* NOT FOR BROWSER */
 
 		if (!closing) {
-			this.setAttribute('name', name!);
+			this.#setName(attr, pattern);
 		}
 	}
 
@@ -89,6 +83,39 @@ export abstract class TvarToken extends TagToken {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/**
+	 * 设置name
+	 * @param attr 标签属性
+	 * @param pattern 标签属性模式
+	 */
+	#setName(attr: string, pattern: RegExp): void {
+		let name: string | undefined;
+		if (pattern === legacyPattern) {
+			[, name] = legacyPattern.exec(attr)!;
+		} else {
+			const mt = newPattern.exec(attr)!;
+			name = mt[2] ?? mt[3];
+		}
+		this.setAttribute('name', name!);
+	}
+
+	override afterBuild(): void {
+		super.afterBuild();
+		if (!this.closing) {
+			const /** @implements */ tvarListener: AstListener = ({prevTarget}) => {
+				const {firstChild} = this;
+				if (prevTarget === firstChild) {
+					const {pattern} = firstChild,
+						attr = firstChild.toString();
+					if (pattern.test(attr)) {
+						this.#setName(attr, pattern);
+					}
+				}
+			};
+			this.addEventListener(['remove', 'insert', 'replace', 'text'], tvarListener);
+		}
+	}
 
 	override cloneNode(): this {
 		const config = this.getAttribute('config');

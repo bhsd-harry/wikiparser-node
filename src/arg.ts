@@ -102,7 +102,7 @@ export abstract class ArgToken extends Token {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
 
-	/** 设置name */
+	/** 更新name */
 	#setName(): void {
 		// eslint-disable-next-line no-unused-labels
 		LSP: this.setAttribute('name', this.firstChild.text().trim());
