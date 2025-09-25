@@ -17,7 +17,6 @@ const atomTypes = [
 	'invoke-module',
 	'template-name',
 	'link-target',
-	'param-line',
 ] as const;
 
 declare type AtomTypes = typeof atomTypes[number];
