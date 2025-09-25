@@ -1,5 +1,4 @@
-import type {AstNodes} from '../lib/node';
-import type {Token} from '../internal';
+import type {AstNodes, Token} from '../internal';
 
 export const zs = String.raw` \xA0\u1680\u2000-\u200A\u202F\u205F\u3000`;
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F${zs}\uFFFD]`;

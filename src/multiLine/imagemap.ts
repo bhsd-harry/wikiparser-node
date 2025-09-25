@@ -1,39 +1,29 @@
-import {generateForSelf, generateForChild, fixBy, fixByRemove} from '../util/lint';
-import {isToken} from '../util/debug';
-import {BoundingRect} from '../lib/rect';
-import {multiLine} from '../mixin/multiLine';
-import Parser from '../index';
-import {Token} from './index';
-import {NoincludeToken} from './nowiki/noinclude';
-import {GalleryImageToken} from './link/galleryImage';
-import {ImagemapLinkToken} from './imagemapLink';
-import type {LintError} from '../base';
+import {generateForSelf, generateForChild, fixBy, fixByRemove} from '../../util/lint';
+import {isToken} from '../../util/debug';
+import {BoundingRect} from '../../lib/rect';
+import Parser from '../../index';
+import {MultiLineToken} from './index';
+import {CommentLineToken} from '../nowiki/commentLine';
+import {GalleryImageToken} from '../link/galleryImage';
+import {ImagemapLinkToken} from '../imagemapLink';
+import type {LintError} from '../../base';
 import type {
 	AstText,
-	AttributesToken,
-	ExtToken,
-} from '../internal';
+	Token,
+} from '../../internal';
 
-declare type Child = GalleryImageToken | NoincludeToken;
+declare type Child = GalleryImageToken | CommentLineToken;
 
 /**
  * `<imagemap>`
- * @classdesc `{childNodes: [...NoincludeToken[], GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)[]]}`
+ * @classdesc `{childNodes: [...CommentLineToken[], GalleryImageToken, ...(CommentLineToken|ImagemapLinkToken|AstText)[]]}`
  */
-@multiLine
-export abstract class ImagemapToken extends Token {
+export abstract class ImagemapToken extends MultiLineToken {
 	declare readonly name: 'imagemap';
 
 	declare readonly childNodes: readonly (Child | ImagemapLinkToken | AstText)[];
 	abstract override get firstChild(): Child | undefined;
 	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
@@ -48,8 +38,7 @@ export abstract class ImagemapToken extends Token {
 			return;
 		}
 		const lines = inner.split('\n'),
-			protocols = new Set(config.protocol.split('|')),
-			SingleLineNoincludeToken = NoincludeToken;
+			protocols = new Set(config.protocol.split('|'));
 		let first = true,
 			error = false;
 		for (const line of lines) {
@@ -125,7 +114,7 @@ export abstract class ImagemapToken extends Token {
 				}
 			}
 			// @ts-expect-error abstract class
-			super.insertAt(new SingleLineNoincludeToken(line, config, accum) as SingleLineNoincludeToken);
+			super.insertAt(new CommentLineToken(line, config, accum) as CommentLineToken);
 		}
 	}
 
@@ -143,7 +132,8 @@ export abstract class ImagemapToken extends Token {
 					errors.push(
 						...childNodes.filter(child => {
 							const str = child.toString().trim();
-							return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
+							return child.is<CommentLineToken>('noinclude')
+								&& str && !str.startsWith('#');
 						}).map(child => {
 							const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
 							if (lintConfig.computeEditInfo) {
