@@ -1,7 +1,9 @@
 import type {
 	LintError,
 } from '../base';
-import type {AstNodes} from '../lib/node';
+import type {
+	AstNodes,
+} from '../internal';
 
 declare global {
 	type WikiParserAcceptable = unknown;
