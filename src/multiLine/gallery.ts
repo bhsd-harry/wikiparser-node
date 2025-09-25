@@ -1,67 +1,59 @@
-import {fixByRemove, fixByComment} from '../util/lint';
-import {multiLine} from '../mixin/multiLine';
-import Parser from '../index';
-import {Token} from './index';
-import {GalleryImageToken} from './link/galleryImage';
-import {NoincludeToken} from './nowiki/noinclude';
+import {fixByRemove, fixByComment} from '../../util/lint';
+import Parser from '../../index';
+import {MultiLineToken} from './index';
+import {GalleryImageToken} from '../link/galleryImage';
+import {CommentLineToken} from '../nowiki/commentLine';
 import type {
 	Config,
 	LintError,
 	AST,
-} from '../base';
+} from '../../base';
 import type {
 	AstText,
-	AttributesToken,
-	ExtToken,
+	Token,
 
 	/* NOT FOR BROWSER */
 
 	AstNodes,
-} from '../internal';
+} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {Shadow, isToken} from '../util/debug';
-import {classes} from '../util/constants';
-import {html} from '../util/html';
-import {clone} from '../mixin/clone';
-import {cached} from '../mixin/cached';
+import {Shadow, isToken} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {html} from '../../util/html';
+import {clone} from '../../mixin/clone';
+import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
-declare type Child = GalleryImageToken | NoincludeToken;
+declare type Child = GalleryImageToken | CommentLineToken;
 
 /**
  * gallery tag
  *
  * gallery标签
- * @classdesc `{childNodes: (GalleryImageToken|NoincludeToken|AstText)[]}`
+ * @classdesc `{childNodes: (GalleryImageToken|CommentLineToken|AstText)[]}`
  */
-@multiLine
-export abstract class GalleryToken extends Token {
+export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (Child | AstText)[];
 	abstract override get firstChild(): Child | AstText | undefined;
 	abstract override get lastChild(): Child | AstText | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
 	abstract override get firstElementChild(): Child | undefined;
 	abstract override get lastElementChild(): Child | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
+
+	/** all images / 所有图片 */
+	override get images(): GalleryImageToken[] {
+		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
+	}
 
 	/* NOT FOR BROWSER END */
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
 
 	/* PRINT ONLY */
 
@@ -87,25 +79,16 @@ export abstract class GalleryToken extends Token {
 
 	/* PRINT ONLY END */
 
-	/* NOT FOR BROWSER */
-
-	/** all images / 所有图片 */
-	override get images(): GalleryImageToken[] {
-		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', GalleryImageToken: ':', NoincludeToken: ':',
+			AstText: ':', GalleryImageToken: ':', CommentLineToken: ':',
 		});
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
 				// @ts-expect-error abstract class
-				super.insertAt((line.trim() ? new NoincludeToken(line, config, accum) : line) as string);
+				super.insertAt((line.trim() ? new CommentLineToken(line, config, accum) : line) as string);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -114,7 +97,7 @@ export abstract class GalleryToken extends Token {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
 				// @ts-expect-error abstract class
-				super.insertAt(new NoincludeToken(line, config, accum) as NoincludeToken);
+				super.insertAt(new CommentLineToken(line, config, accum) as CommentLineToken);
 			}
 		}
 	}
@@ -237,16 +220,15 @@ export abstract class GalleryToken extends Token {
 		throw new SyntaxError(`Invalid file name: ${file}`);
 	}
 
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 插入不可见内容
-	 */
+	/** @private */
 	override insertAt(token: string, i?: number): AstText;
+	/** @private */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
-		if (!Shadow.running && (typeof token === 'string' && token.trim() || token instanceof NoincludeToken)) {
+		if (
+			!Shadow.running
+			&& (typeof token === 'string' ? token.trim() : !token.is<GalleryImageToken>('gallery-image'))
+		) {
 			throw new RangeError('Please do not insert invisible content into <gallery>!');
 		}
 		return super.insertAt(token as T, i);

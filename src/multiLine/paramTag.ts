@@ -1,12 +1,11 @@
 import {generateForChild, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {parseCommentAndExt} from '../../parser/commentAndExt';
-import {multiLine} from '../../mixin/multiLine';
 import Parser from '../../index';
-import {Token} from '../index';
+import {MultiLineToken} from './index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../base';
-import type {AttributesToken, ExtToken} from '../../internal';
+import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 
@@ -20,31 +19,18 @@ import {singleLine} from '../../mixin/singleLine';
  * `<dynamicpagelist>`
  * @classdesc `{childNodes: AtomToken[]}`
  */
-@multiLine
-export abstract class ParamTagToken extends Token {
-	declare readonly name: string;
-
+export abstract class ParamTagToken extends MultiLineToken {
 	declare readonly childNodes: readonly AtomToken[];
 	abstract override get firstChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): AtomToken[];
 	abstract override get firstElementChild(): AtomToken | undefined;
 	abstract override get lastElementChild(): AtomToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
 
 	/** @class */
 	constructor(

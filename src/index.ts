@@ -836,10 +836,7 @@ export class Token extends AstElement {
 		this.setAttribute('childNodes', [...childNodes, ...elements]);
 	}
 
-	/**
-	 * @override
-	 * @param i position of the child node / 移除位置
-	 */
+	/** @private */
 	override removeAt(i: number): AstNodes {
 		const {length, childNodes} = this;
 		i += i < 0 ? length : 0;

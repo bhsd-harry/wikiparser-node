@@ -1,7 +1,7 @@
 import {undo, Shadow, mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import {text} from '../util/string';
-import type {AstNodes} from '../lib/node';
+import type {AstNodes} from '../internal';
 
 export interface SyntaxBase {
 	/** @private */

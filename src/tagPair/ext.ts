@@ -103,13 +103,13 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'dynamicpagelist': {
-				const {ParamTagToken}: typeof import('../paramTag/index') = require('../paramTag/index');
+				const {ParamTagToken}: typeof import('../multiLine/paramTag') = require('../multiLine/paramTag');
 				// @ts-expect-error abstract class
 				innerToken = new ParamTagToken(include, inner, newConfig, accum);
 				break;
 			}
 			case 'inputbox': {
-				const {InputboxToken}: typeof import('../paramTag/inputbox') = require('../paramTag/inputbox');
+				const {InputboxToken}: typeof import('../multiLine/inputbox') = require('../multiLine/inputbox');
 				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(include, inner, newConfig, accum);
 				break;
@@ -149,13 +149,13 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'gallery': {
-				const {GalleryToken}: typeof import('../gallery') = require('../gallery');
+				const {GalleryToken}: typeof import('../multiLine/gallery') = require('../multiLine/gallery');
 				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			case 'imagemap': {
-				const {ImagemapToken}: typeof import('../imagemap') = require('../imagemap');
+				const {ImagemapToken}: typeof import('../multiLine/imagemap') = require('../multiLine/imagemap');
 				// @ts-expect-error abstract class
 				innerToken = new ImagemapToken(inner, newConfig, accum);
 				break;

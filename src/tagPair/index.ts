@@ -2,7 +2,7 @@ import {gapped} from '../../mixin/gapped';
 import {noEscape} from '../../mixin/noEscape';
 import {Token} from '../index';
 import type {Config} from '../../base';
-import type {AstNodes} from '../../lib/node';
+import type {AstNodes} from '../../internal';
 
 /* NOT FOR BROWSER */
 

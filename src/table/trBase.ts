@@ -134,10 +134,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return super.toString(skip);
 	}
 
-	/**
-	 * @override
-	 * @param i position of the child node / 移除位置
-	 */
+	/** @private */
 	override removeAt(i: number): AstNodes {
 		i += i < 0 ? this.length : 0;
 		const child = this.childNodes[i];

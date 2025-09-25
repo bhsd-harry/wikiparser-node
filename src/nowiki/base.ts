@@ -1,7 +1,7 @@
 import {noEscape} from '../../mixin/noEscape';
 import {Token} from '../index';
 import type {Config} from '../../base';
-import type {AstText} from '../../lib/text';
+import type {AstText} from '../../internal';
 
 /* NOT FOR BROWSER */
 

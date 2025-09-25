@@ -60,18 +60,18 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 			/(<tvar\|[^>]+>)([\s\S]*?)(<\/>)/gu,
 			(_, p1: string, p2: string, p3: string) => {
 				// @ts-expect-error abstract class
-				new NoincludeToken(p1, config, accum);
+				new NoincludeToken(p1, config, accum, true);
 				// @ts-expect-error abstract class
-				new NoincludeToken(p3, config, accum);
+				new NoincludeToken(p3, config, accum, true);
 				return `\0${accum.length - 1}n\x7F${p2}\0${accum.length}n\x7F`;
 			},
 		).replace(
 			/(<tvar\s+name\s*=(?:\s*(?:(["'])[\s\S]*?\2|[^"'\s>]+))?\s*>)([\s\S]*?)(<\/tvar\s*>)/giu,
 			(_, p1: string, __, p3: string, p4: string) => {
 				// @ts-expect-error abstract class
-				new NoincludeToken(p1, config, accum);
+				new NoincludeToken(p1, config, accum, true);
 				// @ts-expect-error abstract class
-				new NoincludeToken(p4, config, accum);
+				new NoincludeToken(p4, config, accum, true);
 				return `\0${accum.length - 1}n\x7F${p3}\0${accum.length}n\x7F`;
 			},
 		);

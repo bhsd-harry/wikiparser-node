@@ -4,6 +4,9 @@ import {NowikiBaseToken} from './base';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
+import {Shadow} from '../../util/debug';
+import type {Config} from '../../base';
+import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -14,9 +17,25 @@ import {classes} from '../../util/constants';
  */
 @hiddenToken()
 export abstract class NoincludeToken extends NowikiBaseToken {
+	/* NOT FOR BROWSER */
+
+	#fixed;
+
+	/* NOT FOR BROWSER END */
+
 	override get type(): 'noinclude' {
 		return 'noinclude';
 	}
+
+	/* NOT FOR BROWSER */
+
+	/** @param fixed 是否不可更改 */
+	constructor(wikitext: string, config?: Config, accum?: Token[], fixed = false) {
+		super(wikitext, config, accum);
+		this.#fixed = fixed;
+	}
+
+	/* NOT FOR BROWSER END */
 
 	/** @private */
 	override toString(skip?: boolean): string {
@@ -25,11 +44,15 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	override cloneNode(): this {
+		return Shadow.run(() => {
+			const C = this.constructor as new (...args: any[]) => this;
+			return new C(this.innerText, this.getAttribute('config'), [], this.#fixed);
+		});
+	}
+
 	override setText(str: string): string {
-		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s[^>]*)?\/?>$/iu.test(this.innerText)) {
-			this.constructorError('cannot change the text content');
-		}
-		return super.setText(str);
+		return this.#fixed ? this.constructorError('cannot change the text content') : super.setText(str);
 	}
 }
 

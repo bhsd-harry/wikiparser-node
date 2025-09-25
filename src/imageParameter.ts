@@ -379,13 +379,9 @@ export abstract class ImageParameterToken extends Token {
 		});
 	}
 
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `Error` 不接受自定义输入的图片参数
-	 */
+	/** @private */
 	override insertAt(token: string, i?: number): AstText;
+	/** @private */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		if (!Shadow.running && this.#isVoid()) {

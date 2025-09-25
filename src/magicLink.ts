@@ -266,12 +266,9 @@ export abstract class MagicLinkToken extends Token {
 		return token;
 	}
 
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的节点
-	 * @param i position to be inserted at / 插入位置
-	 */
+	/** @private */
 	override insertAt(token: string, i?: number): AstText;
+	/** @private */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		if (typeof token !== 'string') {

@@ -1,62 +1,48 @@
-import {generateForSelf, generateForChild, fixBy, fixByRemove} from '../util/lint';
-import {isToken} from '../util/debug';
-import {BoundingRect} from '../lib/rect';
-import {multiLine} from '../mixin/multiLine';
-import Parser from '../index';
-import {Token} from './index';
-import {NoincludeToken} from './nowiki/noinclude';
-import {GalleryImageToken} from './link/galleryImage';
-import {ImagemapLinkToken} from './imagemapLink';
-import type {LintError} from '../base';
+import {generateForSelf, generateForChild, fixBy, fixByRemove} from '../../util/lint';
+import {isToken} from '../../util/debug';
+import {BoundingRect} from '../../lib/rect';
+import Parser from '../../index';
+import {MultiLineToken} from './index';
+import {CommentLineToken} from '../nowiki/commentLine';
+import {GalleryImageToken} from '../link/galleryImage';
+import {ImagemapLinkToken} from '../imagemapLink';
+import type {LintError} from '../../base';
 import type {
 	AstText,
-	AttributesToken,
-	ExtToken,
+	Token,
 
 	/* NOT FOR BROWSER */
 
 	AstNodes,
-} from '../internal';
+} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
-import {clone} from '../mixin/clone';
-import {singleLine} from '../mixin/singleLine';
+import {classes} from '../../util/constants';
+import {clone} from '../../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
-declare type Child = GalleryImageToken | NoincludeToken;
+declare type Child = GalleryImageToken | CommentLineToken;
 
 /**
  * `<imagemap>`
- * @classdesc `{childNodes: [...NoincludeToken[], GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)[]]}`
+ * @classdesc `{childNodes: [...CommentLineToken[], GalleryImageToken, ...(CommentLineToken|ImagemapLinkToken|AstText)[]]}`
  */
-@multiLine
-export abstract class ImagemapToken extends Token {
+export abstract class ImagemapToken extends MultiLineToken {
 	declare readonly name: 'imagemap';
 
 	declare readonly childNodes: readonly (Child | ImagemapLinkToken | AstText)[];
 	abstract override get firstChild(): Child | undefined;
 	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): (Child | ImagemapLinkToken)[];
 	abstract override get firstElementChild(): Child | undefined;
 	abstract override get lastElementChild(): Child | ImagemapLinkToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
@@ -66,14 +52,13 @@ export abstract class ImagemapToken extends Token {
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', NoincludeToken: ':', AstText: ':',
+			GalleryImageToken: ':', ImagemapLinkToken: ':', CommentLineToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;
 		}
 		const lines = inner.split('\n'),
-			protocols = new Set(config.protocol.split('|')),
-			SingleLineNoincludeToken = singleLine()(NoincludeToken);
+			protocols = new Set(config.protocol.split('|'));
 		let first = true,
 			error = false;
 		for (const line of lines) {
@@ -154,7 +139,7 @@ export abstract class ImagemapToken extends Token {
 				}
 			}
 			// @ts-expect-error abstract class
-			super.insertAt(new SingleLineNoincludeToken(line, config, accum) as SingleLineNoincludeToken);
+			super.insertAt(new CommentLineToken(line, config, accum) as CommentLineToken);
 		}
 	}
 
@@ -172,7 +157,8 @@ export abstract class ImagemapToken extends Token {
 					errors.push(
 						...childNodes.filter(child => {
 							const str = child.toString().trim();
-							return child.is<NoincludeToken>('noinclude') && str && !str.startsWith('#');
+							return child.is<CommentLineToken>('noinclude')
+								&& str && !str.startsWith('#');
 						}).map(child => {
 							const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
 							if (lintConfig.computeEditInfo) {
@@ -203,14 +189,9 @@ export abstract class ImagemapToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `Error` 当前缺少合法图片
-	 * @throws `RangeError` 已有一张合法图片
-	 */
+	/** @private */
 	override insertAt(token: string, i?: number): AstText;
+	/** @private */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		const {image} = this;
@@ -226,11 +207,7 @@ export abstract class ImagemapToken extends Token {
 		return super.insertAt(token as T, i);
 	}
 
-	/**
-	 * @override
-	 * @param i position of the child node /移除位置
-	 * @throws `Error` 禁止移除图片
-	 */
+	/** @private */
 	override removeAt(i: number): AstNodes {
 		if (this.childNodes[i]?.is<GalleryImageToken>('imagemap-image')) {
 			throw new Error('Do not remove the image in <imagemap>!');
