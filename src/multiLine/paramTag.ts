@@ -3,7 +3,7 @@ import {BoundingRect} from '../../lib/rect';
 import {parseCommentAndExt} from '../../parser/commentAndExt';
 import Parser from '../../index';
 import {MultiLineToken} from './index';
-import {AtomToken} from '../atom';
+import {ParamLineToken} from '../paramLine';
 import type {LintError} from '../../base';
 import type {Token} from '../../internal';
 
@@ -11,24 +11,23 @@ import type {Token} from '../../internal';
 
 import {classes} from '../../util/constants';
 import {clone} from '../../mixin/clone';
-import {singleLine} from '../../mixin/singleLine';
 
 /* NOT FOR BROWSER END */
 
 /**
  * `<dynamicpagelist>`
- * @classdesc `{childNodes: AtomToken[]}`
+ * @classdesc `{childNodes: ParamLineToken[]}`
  */
 export abstract class ParamTagToken extends MultiLineToken {
-	declare readonly childNodes: readonly AtomToken[];
-	abstract override get firstChild(): AtomToken | undefined;
-	abstract override get lastChild(): AtomToken | undefined;
+	declare readonly childNodes: readonly ParamLineToken[];
+	abstract override get firstChild(): ParamLineToken | undefined;
+	abstract override get lastChild(): ParamLineToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): AtomToken[];
-	abstract override get firstElementChild(): AtomToken | undefined;
-	abstract override get lastElementChild(): AtomToken | undefined;
+	abstract override get children(): ParamLineToken[];
+	abstract override get firstElementChild(): ParamLineToken | undefined;
+	abstract override get lastElementChild(): ParamLineToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -41,14 +40,13 @@ export abstract class ParamTagToken extends MultiLineToken {
 		acceptable?: WikiParserAcceptable,
 	) {
 		super(undefined, config, accum, {
-			AtomToken: ':',
+			ParamLineToken: ':',
 		});
 		if (wikitext) {
-			const SingleLineAtomToken = singleLine(!acceptable)(AtomToken);
 			this.append(
 				...wikitext.split('\n')
 					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))
-					.map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
+					.map(line => new ParamLineToken(line, config, accum, {
 						'Stage-1': ':', ...acceptable,
 					})),
 			);

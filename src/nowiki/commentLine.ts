@@ -12,7 +12,7 @@ import {singleLine} from '../../mixin/singleLine';
  *
  * 某些扩展标签内被忽略的行
  */
-@singleLine()
+@singleLine
 export abstract class CommentLineToken extends NoincludeToken {}
 
 classes['CommentLineToken'] = __filename;

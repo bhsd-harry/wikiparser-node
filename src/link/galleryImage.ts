@@ -29,7 +29,7 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
  *
  * 图库图片
  */
-@singleLine()
+@singleLine
 @padded('')
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */

@@ -20,7 +20,7 @@ import type {Title} from '../lib/title';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-@fixedToken @singleLine()
+@fixedToken @singleLine
 export abstract class ImagemapLinkToken extends Token {
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;

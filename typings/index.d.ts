@@ -5,7 +5,13 @@ import type {
 
 	Config,
 } from '../base';
-import type {AstNodes} from '../lib/node';
+import type {
+	AstNodes,
+
+	/* NOT FOR BROWSER */
+
+	Token,
+} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -26,6 +32,7 @@ declare global {
 
 		/* NOT FOR BROWSER */
 
+		readonly parentNode: Token | undefined;
 		afterBuild(): void;
 		insertAt(token: unknown, i?: number): unknown;
 		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
