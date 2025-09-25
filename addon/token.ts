@@ -8,7 +8,7 @@ import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
-import {HtmlToken} from '../src/html';
+import {HtmlToken} from '../src/tag/html';
 import {AttributesToken} from '../src/attributes';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';

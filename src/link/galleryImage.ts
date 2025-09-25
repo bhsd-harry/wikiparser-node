@@ -41,11 +41,12 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/* NOT FOR BROWSER */
 
-	/** image link / 图片链接 */
+	/** @private */
 	override get link(): string | Title {
 		return this.type === 'imagemap-image' ? '' : super.link;
 	}
 
+	/** @private */
 	override set link(value: string) {
 		if (this.type !== 'imagemap-image') {
 			super.link = value;

@@ -1,25 +1,23 @@
-import {generateForSelf, cache, fixByRemove, fixByClose, fixByOpen} from '../util/lint';
-import {Shadow} from '../util/debug';
-import {BoundingRect} from '../lib/rect';
-import {attributesParent} from '../mixin/attributesParent';
-import Parser from '../index';
-import {Token} from './index';
-import type {Cached} from '../util/lint';
+import {generateForSelf, fixByRemove, fixByClose, fixByOpen} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
+import {attributesParent} from '../../mixin/attributesParent';
+import Parser from '../../index';
+import {TagToken} from './index';
 import type {
 	Config,
 	LintError,
 	AST,
-} from '../base';
-import type {AttributesParentBase} from '../mixin/attributesParent';
-import type {AttributesToken, TranscludeToken} from '../internal';
+} from '../../base';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
+import type {Token, AttributesToken, TranscludeToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
-import {getId} from '../util/html';
-import {fixedToken} from '../mixin/fixed';
-import {cached} from '../mixin/cached';
-import type {AstRange} from '../lib/range';
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {getId} from '../../util/html';
+import {cached} from '../../mixin/cached';
+import type {AstRange} from '../../lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -61,14 +59,10 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-@fixedToken
 @attributesParent()
-export abstract class HtmlToken extends Token {
+export abstract class HtmlToken extends TagToken {
 	declare readonly name: string;
-	#closing;
 	#selfClosing;
-	#tag;
-	#match: Cached<this | undefined> | undefined;
 
 	declare readonly childNodes: readonly [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
@@ -91,26 +85,25 @@ export abstract class HtmlToken extends Token {
 		return this.#selfClosing;
 	}
 
-	/** whether to be a closing tag / 是否是闭合标签 */
-	get closing(): boolean {
-		return this.#closing;
+	/** @private */
+	override get closing(): boolean {
+		return super.closing;
 	}
 
 	/* NOT FOR BROWSER */
 
-	/** @throws `Error` 自封闭标签或空标签 */
-	set closing(value) {
-		if (!value) {
-			this.#closing = false;
-			return;
-		} else if (this.selfClosing) {
-			throw new Error('This is a self-closing tag!');
+	/** @private */
+	override set closing(value) {
+		if (value) {
+			if (this.#selfClosing) {
+				throw new Error('This is a self-closing tag!');
+			}
+			const {html: [,, tags]} = this.getAttribute('config');
+			if (tags.includes(this.name)) {
+				throw new Error('This is a void tag!');
+			}
 		}
-		const {html: [,, tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error('This is a void tag!');
-		}
-		this.#closing = true;
+		super.closing = value;
 	}
 
 	/** @throws `Error` 闭合标签或无效自封闭标签 */
@@ -144,55 +137,24 @@ export abstract class HtmlToken extends Token {
 		config?: Config,
 		accum?: Token[],
 	) {
-		super(undefined, config, accum);
-		this.insertAt(attr);
+		super(name, attr, closing, config, accum);
 		this.setAttribute('name', name.toLowerCase());
-		this.#closing = closing;
 		this.#selfClosing = selfClosing;
-		this.#tag = name;
 	}
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString(skip)}${this.#selfClosing ? '/' : ''}>`;
+		return super.toString(skip, this.#selfClosing ? '/' : '');
 	}
 
 	/** @private */
 	override text(): string {
-		const {
-				closing,
-
-				/* NOT FOR BROWSER */
-
-				name,
-			} = this,
-			{html: [,, voidTags]} = this.getAttribute('config'),
-			tag = this.#tag + (closing ? '' : super.text());
-
-		/* NOT FOR BROWSER */
-
+		const {closing, selfClosing, name} = this,
+			{html: [,, voidTags]} = this.getAttribute('config');
 		if (voidTags.includes(name)) {
-			return closing && name !== 'br' ? '' : `<${tag}/>`;
+			return closing && name !== 'br' ? '' : super.text('/');
 		}
-
-		/* NOT FOR BROWSER END */
-
-		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* PRINT ONLY */
-
-		if (key === 'invalid') {
-			return (this.inTableAttrs() === 2) as TokenAttribute<T>;
-		}
-
-		/* PRINT ONLY END */
-
-		return key === 'padding'
-			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttribute<T>
-			: super.getAttribute(key);
+		return super.text(selfClosing && !closing ? '/' : '');
 	}
 
 	/** @private */
@@ -310,67 +272,16 @@ export abstract class HtmlToken extends Token {
 		}
 	}
 
-	/**
-	 * Find the matching tag
-	 *
-	 * 搜索匹配的标签
-	 */
-	findMatchingTag(): this | undefined {
-		return cache<this | undefined>(
-			this.#match,
-			() => {
-				const {name, parentNode, closing, selfClosing} = this,
-					{html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
-					isVoid = voidTags.includes(name),
-					isFlexible = flexibleTags.includes(name);
-				if (isVoid || isFlexible && selfClosing) { // 自封闭标签
-					return this;
-				} else if (!parentNode) {
-					return undefined;
-				}
-				const {childNodes} = parentNode,
-					i = childNodes.indexOf(this),
-					siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1),
-					stack = [this],
-					{rev} = Shadow;
-				for (const token of siblings) {
-					if (!token.is<this>('html') || token.name !== name || isFlexible && token.#selfClosing) {
-						continue;
-					} else if (token.#closing === closing) {
-						stack.push(token);
-					} else {
-						const top = stack.pop()!;
-						if (top === this) {
-							return token;
-						}
-						if (Parser.viewOnly) {
-							top.#match = [rev, token];
-							token.#match = [rev, top];
-						}
-					}
-				}
-				if (Parser.viewOnly) {
-					for (const token of stack) {
-						token.#match = [rev, undefined];
-					}
-				}
-				return undefined;
-			},
-			value => {
-				this.#match = value;
-				if (value[1] && value[1] !== this) {
-					value[1].#match = [Shadow.rev, this];
-				}
-			},
-		);
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'invalid' ? (this.inTableAttrs() === 2) as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
 	override print(): string {
-		return super.print({
-			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`,
-			post: `${this.#selfClosing ? '/' : ''}&gt;`,
-		});
+		return super.print({post: `${this.#selfClosing ? '/' : ''}&gt;`});
 	}
 
 	/** @private */
@@ -382,13 +293,15 @@ export abstract class HtmlToken extends Token {
 		}
 	}
 
+	/* PRINT ONLY END */
+
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');
 		// @ts-expect-error abstract class
-		return Shadow.run((): this => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config));
+		return Shadow.run((): this => new HtmlToken(this.tag, attr, this.closing, this.#selfClosing, config));
 	}
 
 	/**
@@ -404,7 +317,7 @@ export abstract class HtmlToken extends Token {
 			throw new RangeError(`Invalid HTML tag: ${tag}`);
 		}
 		this.setAttribute('name', name);
-		this.#tag = tag;
+		this.tag = tag;
 	}
 
 	/**
@@ -433,7 +346,7 @@ export abstract class HtmlToken extends Token {
 			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
 		if (imbalance < 0) {
 			this.#selfClosing = false;
-			this.#closing = true;
+			this.closing = true;
 		} else {
 			throw new Error(
 				`Cannot fix invalid self-closing tag: The previous ${imbalance} closing tag(s) are unmatched`,
@@ -470,26 +383,14 @@ export abstract class HtmlToken extends Token {
 		return result;
 	}
 
-	/**
-	 * Get the range of the HTML tag pair
-	 *
-	 * 获取HTML标签对的范围
-	 * @since v1.23.0
-	 */
-	getRange(): AstRange | undefined {
-		const {closing, selfClosing, name} = this,
+	/** @private */
+	override getRange(): AstRange | undefined {
+		const {selfClosing, name} = this,
 			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config');
 		if (voidTags.includes(name) || selfClosing && selfClosingTags.includes(name)) {
 			return undefined;
 		}
-		const matched = this.findMatchingTag();
-		if (!matched) {
-			return undefined;
-		}
-		const range = this.createRange();
-		range.setStartAfter(closing ? matched : this);
-		range.setEndBefore(closing ? this : matched);
-		return range;
+		return super.getRange();
 	}
 }
 

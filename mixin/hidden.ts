@@ -16,7 +16,6 @@ import {cached} from './cached';
 export const hiddenToken = (linter = true, html = true) => <T extends AstConstructor>(constructor: T): T => {
 	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class AnyHiddenToken extends constructor {
-		/** 没有可见部分 */
 		override text(): string {
 			return '';
 		}

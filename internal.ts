@@ -17,7 +17,7 @@ export type {SyntaxToken} from './src/syntax';
 export type {ParameterToken} from './src/parameter';
 export type {TranscludeToken} from './src/transclude';
 export type {HeadingToken} from './src/heading';
-export type {HtmlToken} from './src/html';
+export type {HtmlToken} from './src/tag/html';
 export type {TdToken} from './src/table/td';
 export type {TrToken} from './src/table/tr';
 export type {TableToken} from './src/table/index';
