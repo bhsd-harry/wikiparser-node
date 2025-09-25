@@ -3,18 +3,18 @@ import {BoundingRect} from '../../lib/rect';
 import {parseCommentAndExt} from '../../parser/commentAndExt';
 import Parser from '../../index';
 import {MultiLineToken} from './index';
-import {AtomToken} from '../atom';
+import {ParamLineToken} from '../paramLine';
 import type {LintError} from '../../base';
 import type {Token} from '../../internal';
 
 /**
  * `<dynamicpagelist>`
- * @classdesc `{childNodes: AtomToken[]}`
+ * @classdesc `{childNodes: ParamLineToken[]}`
  */
 export abstract class ParamTagToken extends MultiLineToken {
-	declare readonly childNodes: readonly AtomToken[];
-	abstract override get firstChild(): AtomToken | undefined;
-	abstract override get lastChild(): AtomToken | undefined;
+	declare readonly childNodes: readonly ParamLineToken[];
+	abstract override get firstChild(): ParamLineToken | undefined;
+	abstract override get lastChild(): ParamLineToken | undefined;
 
 	/** @class */
 	constructor(
@@ -27,11 +27,10 @@ export abstract class ParamTagToken extends MultiLineToken {
 		super(undefined, config, accum, {
 		});
 		if (wikitext) {
-			const SingleLineAtomToken = AtomToken;
 			this.append(
 				...wikitext.split('\n')
 					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))
-					.map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
+					.map(line => new ParamLineToken(line, config, accum, {
 					})),
 			);
 		}
