@@ -130,6 +130,11 @@ export abstract class AttributeToken extends Token {
 		this.setAttribute('name', trimLc(removeComment(key)));
 	}
 
+	/** 更新name */
+	#setName(): void {
+		this.setAttribute('name', trimLc(this.firstChild.text()));
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		if (this.#equal.includes('\0')) {
@@ -138,7 +143,7 @@ export abstract class AttributeToken extends Token {
 		if (this.parentNode) {
 			this.#tag = this.parentNode.name;
 		}
-		this.setAttribute('name', trimLc(this.firstChild.text()));
+		this.#setName();
 		super.afterBuild();
 	}
 
