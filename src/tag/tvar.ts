@@ -43,6 +43,16 @@ export abstract class TvarToken extends TagToken {
 		return super.closing;
 	}
 
+	/* NOT FOR BROWSER */
+
+	/** whether to use the legacy syntax / 是否使用旧语法 */
+	get legacy(): boolean {
+		const {pattern} = this.firstChild;
+		return pattern === legacyPattern || pattern === legacyClosingPattern;
+	}
+
+	/* NOT FOR BROWSER END */
+
 	/**
 	 * @param tag 标签名
 	 * @param attr 标签属性
