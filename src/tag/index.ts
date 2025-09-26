@@ -21,7 +21,7 @@ export abstract class TagToken extends Token {
 	abstract override get firstChild(): AttributesToken | SyntaxToken;
 	abstract override get lastChild(): AttributesToken | SyntaxToken;
 	abstract override get type(): 'html' | 'tvar';
-	abstract get selfClosing(): boolean;
+	abstract get selfClosing(): boolean | undefined;
 
 	/** whether to be a closing tag / 是否是闭合标签 */
 	get closing(): boolean {
@@ -41,8 +41,8 @@ export abstract class TagToken extends Token {
 	}
 
 	/** @private */
-	override toString(skip?: boolean, separator = ''): string {
-		return `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(skip)}${separator}>`;
+	override toString(skip?: boolean): string {
+		return `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(skip)}${this.selfClosing ? '/' : ''}>`;
 	}
 
 	/** @private */
@@ -67,7 +67,13 @@ export abstract class TagToken extends Token {
 		return cache<this | undefined>(
 			this.#match,
 			() => {
-				const {type, name, parentNode, closing, selfClosing} = this;
+				const {
+					type,
+					name,
+					parentNode,
+					closing,
+					selfClosing,
+				} = this;
 				let isVoid = false,
 					isFlexible = false;
 				if (type === 'html') {
@@ -88,11 +94,13 @@ export abstract class TagToken extends Token {
 				for (const token of siblings) {
 					if (
 						!token.is<this>(type)
-						|| type === 'html' && token.name !== name
-						|| isFlexible && token.selfClosing
+						|| type === 'html' && (token.name !== name || isFlexible && token.selfClosing)
 					) {
 						continue;
 					} else if (token.#closing === closing) {
+						if (type === 'tvar') {
+							return undefined;
+						}
 						stack.push(token);
 					} else {
 						const top = stack.pop()!;

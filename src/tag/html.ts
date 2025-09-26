@@ -91,11 +91,6 @@ export abstract class HtmlToken extends TagToken {
 	}
 
 	/** @private */
-	override toString(skip?: boolean): string {
-		return super.toString(skip, this.#selfClosing ? '/' : '');
-	}
-
-	/** @private */
 	override text(): string {
 		const {closing, selfClosing, name} = this,
 			{html: [,, voidTags]} = this.getAttribute('config');
