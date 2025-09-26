@@ -224,11 +224,6 @@ export abstract class HtmlToken extends TagToken {
 	}
 
 	/** @private */
-	override print(): string {
-		return super.print({post: `${this.#selfClosing ? '/' : ''}&gt;`});
-	}
-
-	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels

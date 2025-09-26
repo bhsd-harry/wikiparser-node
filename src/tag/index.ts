@@ -130,11 +130,10 @@ export abstract class TagToken extends Token {
 	}
 
 	/** @private */
-	override print(opt?: PrintOpt): string {
+	override print(): string {
 		return super.print({
 			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
-			post: '&gt;',
-			...opt,
+			post: `${this.selfClosing ? '/' : ''}&gt;`,
 		});
 	}
 }
