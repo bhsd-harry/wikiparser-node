@@ -8,14 +8,14 @@
 	font-style: italic;
 }
 
-.wpb-ext, .wpb-html {
+.wpb-ext, .wpb-html, .wpb-tvar {
 	color: #14866d;
 	font-weight: bold;
 }
 .wpb-ext-attrs, .wpb-html-attrs {
 	font-weight: normal;
 }
-.wpb-ext-attr > .wpb-attr-value, .wpb-html-attr > .wpb-attr-value {
+.wpb-ext-attr > .wpb-attr-value, .wpb-html-attr > .wpb-attr-value, .wpb-tvar-name {
 	color: #179b1c;
 }
 .wpb-ext-inner {

@@ -6258,7 +6258,7 @@
 		"wikitext": "<translate><tvar name=\"name\">contents</tvar></translate>",
 		"html": "<p>contents\n</p>",
 		"render": "<p>contents\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\"> name=\"name\"</span>&gt;</span>contents<span class=\"wpb-noinclude\">&lt;/tvar&gt;</span></span>&lt;/translate&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\"> name=\"name\"</span>&gt;</span>contents<span class=\"wpb-tvar\">&lt;/tvar&gt;</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "Unicode number before autolinks",
@@ -6384,7 +6384,7 @@
 		"wikitext": "<translate>[<tvar name=1>http://example.net</tvar> text]</translate>\n\n[<!-- -->//example.net text]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.net\">text</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"//example.net\">text</a>\n</p>",
 		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.net/\">text</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"https://example.net/\">text</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\"><span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\"> name=1</span>&gt;</span>http://example.net<span class=\"wpb-noinclude\">&lt;/tvar&gt;</span></span> <span class=\"wpb-ext-link-text\">text</span>]</span></span>&lt;/translate&gt;</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\"><span class=\"wpb-comment\">&lt;!-- --&gt;</span>//example.net</span> <span class=\"wpb-ext-link-text\">text</span>]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\"><span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\"> name=1</span>&gt;</span>http://example.net<span class=\"wpb-tvar\">&lt;/tvar&gt;</span></span> <span class=\"wpb-ext-link-text\">text</span>]</span></span>&lt;/translate&gt;</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\"><span class=\"wpb-comment\">&lt;!-- --&gt;</span>//example.net</span> <span class=\"wpb-ext-link-text\">text</span>]</span></span>"
 	},
 	{
 		"desc": "Commented <translate> tags",
@@ -15480,12 +15480,12 @@
 	{
 		"desc": "Old tvar syntax should not break too hard.",
 		"wikitext": "<translate><tvar|plop>pouet</></translate>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\">|plop</span>&gt;</span>pouet<span class=\"wpb-noinclude\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|plop</span>&gt;</span>pouet<span class=\"wpb-tvar\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "Old tvar syntax should not pull content in cell attributes",
 		"wikitext": "{|\n|<translate>hello <tvar|var>variable</></translate>\n|}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\">|var</span>&gt;</span>variable<span class=\"wpb-noinclude\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|var</span>&gt;</span>variable<span class=\"wpb-tvar\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Annotation markers starting lines should neither insert pre nor merge ranges",
@@ -15495,12 +15495,12 @@
 	{
 		"desc": "tvar in a template should get stripped",
 		"wikitext": "<translate>{{1x|<tvar|var>hello</>}}</translate>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\">|var</span>&gt;</span>hello<span class=\"wpb-noinclude\">&lt;/&gt;</span></span></span>}}</span></span>&lt;/translate&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|var</span>&gt;</span>hello<span class=\"wpb-tvar\">&lt;/&gt;</span></span></span>}}</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "tvar with old syntax containing template markup should not break",
 		"wikitext": "<translate>hello <tvar|code>{{1x|</>world<tvar|code2>}}</></translate>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\">|code</span>&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-noinclude\">&lt;/&gt;</span>world<span class=\"wpb-noinclude\">&lt;tvar<span class=\"wpb-tvar-name\">|code2</span>&gt;</span></span></span>}}</span><span class=\"wpb-noinclude\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|code</span>&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-tvar\">&lt;/&gt;</span>world<span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|code2</span>&gt;</span></span></span>}}</span><span class=\"wpb-tvar\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
 		"desc": "urlFragmentModesTests"
