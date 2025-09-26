@@ -51,6 +51,7 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 		});
 	}
 
+	/* istanbul ignore next */
 	override setText(str: string): string {
 		return this.#fixed ? this.constructorError('cannot change the text content') : super.setText(str);
 	}

@@ -87,11 +87,6 @@ export abstract class TvarToken extends TagToken {
 		}
 	}
 
-	/** @private */
-	override print(): string {
-		return super.print({class: 'noinclude'});
-	}
-
 	/* NOT FOR BROWSER */
 
 	/**
