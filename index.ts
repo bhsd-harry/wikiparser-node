@@ -423,5 +423,6 @@ export type {
 	TokenTypes,
 	LanguageService,
 	QuickFixData,
+	Title,
 };
 export type * from './internal';
