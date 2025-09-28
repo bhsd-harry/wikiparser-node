@@ -278,5 +278,6 @@ export type {
 	TokenTypes,
 	LanguageService,
 	QuickFixData,
+	Title,
 	AST,
 };
