@@ -39,6 +39,7 @@ import {getRegex} from '@bhsd/common';
 import {RedirectMap} from './lib/redirectMap';
 import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
+import type {AstRange} from './lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -748,6 +749,11 @@ export type {
 	TokenTypes,
 	LanguageService,
 	QuickFixData,
+	Title,
 	AST,
+
+	/* NOT FOR BROWSER */
+
+	AstRange,
 };
 export type * from './internal';
