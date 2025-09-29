@@ -6,8 +6,6 @@ import {NoincludeToken} from './nowiki/noinclude';
 import type {Config, LintError} from '../base';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
-declare type Child = NoincludeToken | ConverterToken;
-
 /**
  * `<pre>`
  * @classdesc `{childNodes: (AstText|NoincludeToken|ConverterToken)[]}`
@@ -15,9 +13,9 @@ declare type Child = NoincludeToken | ConverterToken;
 export abstract class PreToken extends Token {
 	declare readonly name: 'pre';
 
-	declare readonly childNodes: readonly (AstText | Child)[];
-	abstract override get firstChild(): AstText | Child | undefined;
-	abstract override get lastChild(): AstText | Child | undefined;
+	declare readonly childNodes: readonly (NoincludeToken | ConverterToken | AstText)[];
+	abstract override get firstChild(): NoincludeToken | ConverterToken | AstText | undefined;
+	abstract override get lastChild(): NoincludeToken | ConverterToken | AstText | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;

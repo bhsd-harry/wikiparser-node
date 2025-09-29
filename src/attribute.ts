@@ -21,7 +21,6 @@ import type {
 import type {LintConfiguration} from '../lib/lintConfig';
 import type {AttributesToken} from '../internal';
 
-declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
@@ -58,8 +57,8 @@ export abstract class AttributeToken extends Token {
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
 	abstract override get parentNode(): AttributesToken | undefined;
-	abstract override get nextSibling(): Child;
-	abstract override get previousSibling(): Child;
+	abstract override get nextSibling(): AtomToken | this | undefined;
+	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	override get type(): AttributeTypes {
 		return this.#type;
