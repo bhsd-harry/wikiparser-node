@@ -54,6 +54,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 			const rule = 'unclosed-comment',
 				{lintConfig} = Parser,
 				s = lintConfig.getSeverity(rule);
+			/* istanbul ignore if */
 			if (!s) {
 				return [];
 			}
@@ -69,6 +70,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	override toString(skip?: boolean): string {
 		/* NOT FOR BROWSER */
 
+		/* istanbul ignore if */
 		if (!this.closed && this.nextSibling) {
 			Parser.error('Auto-closing HTML comment', this);
 			this.closed = true;

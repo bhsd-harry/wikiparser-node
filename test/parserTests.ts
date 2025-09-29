@@ -19,6 +19,17 @@ const merge = (html: string): string =>
 
 /* PRINT ONLY */
 
+const entities = {lt: '<', gt: '>', amp: '&'};
+
+/**
+ * 移除HTML标签
+ * @param str HTML字符串
+ */
+const deprint = (str: string): string => str.replace(
+	/<[^<]+?>|&([lg]t|amp);/gu,
+	(_, s?: keyof typeof entities) => s ? entities[s] : '',
+);
+
 /**
  * HTML字符串分行
  * @param str HTML字符串
@@ -34,7 +45,8 @@ describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext);
+				const root = Parser.parse(wikitext),
+					tidied = wikitext.replaceAll('\0', '');
 
 				/* NOT FOR BROWSER */
 
@@ -43,13 +55,19 @@ describe('Parser tests', () => {
 				/* NOT FOR BROWSER END */
 
 				try {
-					assert.deepStrictEqual(
+					assert.strictEqual(
 						root.toString(),
-						wikitext.replaceAll('\0', ''),
+						tidied,
 						'解析过程中不可逆地修改了原始文本！',
 					);
 					if (print) {
-						assert.deepStrictEqual(split(root.print()), split(print));
+						const printed = root.print();
+						assert.strictEqual(
+							deprint(printed),
+							tidied,
+							'高亮过程中不可逆地修改了原始文本！',
+						);
+						assert.deepStrictEqual(split(printed), split(print));
 					}
 
 					/* NOT FOR BROWSER */

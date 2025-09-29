@@ -40,7 +40,7 @@ export abstract class IncludeToken extends TagPairToken {
 	/* NOT FOR BROWSER */
 
 	override get innerText(): string | undefined {
-		return this.selfClosing ? undefined : this.lastChild.data;
+		return super.innerText;
 	}
 
 	override set innerText(text) {
