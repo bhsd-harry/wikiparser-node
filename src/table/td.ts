@@ -35,7 +35,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
-	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
+	abstract override get nextSibling(): TrToken | SyntaxToken | this | undefined;
 	abstract override get previousSibling(): Token | undefined;
 
 	override get type(): 'td' {

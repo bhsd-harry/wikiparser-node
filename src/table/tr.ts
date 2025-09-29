@@ -12,7 +12,7 @@ export abstract class TrToken extends TrBaseToken {
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...TdToken[]];
 	abstract override get lastChild(): AttributesToken | TdToken;
 	abstract override get parentNode(): TableToken | undefined;
-	abstract override get nextSibling(): this | SyntaxToken | undefined;
+	abstract override get nextSibling(): SyntaxToken | this | undefined;
 	abstract override get previousSibling(): Token | undefined;
 
 	override get type(): 'tr' {
