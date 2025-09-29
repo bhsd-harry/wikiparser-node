@@ -7,11 +7,12 @@ describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext);
+				const root = Parser.parse(wikitext),
+					tidied = wikitext.replaceAll('\0', '');
 				try {
-					assert.deepStrictEqual(
+					assert.strictEqual(
 						root.toString(),
-						wikitext.replaceAll('\0', ''),
+						tidied,
 						'解析过程中不可逆地修改了原始文本！',
 					);
 				} catch (e) {
