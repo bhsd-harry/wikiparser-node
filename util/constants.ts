@@ -22,7 +22,7 @@ export const classes: Record<string, string> = {},
 
 export const aliases = [
 	['AstText'],
-	['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
+	['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken', 'TranslateToken'],
 	['ArgToken', 'TranscludeToken', 'HeadingToken'],
 	['HtmlToken'],
 	['TableToken'],

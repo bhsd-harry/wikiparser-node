@@ -1,4 +1,5 @@
 import {Token} from './index';
+import type {ParamTagToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -13,7 +14,19 @@ import {clone} from '../mixin/clone';
  * 某些扩展标签的参数
  */
 @singleLine
-export class ParamLineToken extends Token {
+export abstract class ParamLineToken extends Token {
+	abstract override get parentNode(): ParamTagToken | undefined;
+	abstract override get nextSibling(): this | undefined;
+	abstract override get previousSibling(): this | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get parentElement(): ParamTagToken | undefined;
+	abstract override get nextElementSibling(): this | undefined;
+	abstract override get previousElementSibling(): this | undefined;
+
+	/* NOT FOR BROWSER END */
+
 	override get type(): 'param-line' {
 		return 'param-line';
 	}
@@ -22,6 +35,7 @@ export class ParamLineToken extends Token {
 
 	@clone
 	override cloneNode(): this {
+		// @ts-expect-error abstract class
 		return new ParamLineToken(
 			undefined,
 			this.getAttribute('config'),

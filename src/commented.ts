@@ -15,9 +15,9 @@ import {clone} from '../mixin/clone';
  * @classdesc `{childNodes: (AstText|CommentToken)[]}`
  */
 export abstract class CommentedToken extends Token {
-	declare readonly childNodes: readonly (AstText | CommentToken)[];
-	abstract override get firstChild(): AstText | CommentToken | undefined;
-	abstract override get lastChild(): AstText | CommentToken | undefined;
+	declare readonly childNodes: readonly (CommentToken | AstText)[];
+	abstract override get firstChild(): CommentToken | AstText | undefined;
+	abstract override get lastChild(): CommentToken | AstText | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;

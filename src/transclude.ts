@@ -44,8 +44,6 @@ const basicMagicWords = new Map([['=', '='], ['!', '|']]);
 
 /* NOT FOR BROWSER END */
 
-declare type Child = AtomToken | SyntaxToken;
-
 /**
  * template or magic word
  *
@@ -68,17 +66,17 @@ export abstract class TranscludeToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	declare readonly name: string;
-	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
+	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstChild(): Child;
-	abstract override get lastChild(): Child | ParameterToken;
+	abstract override get firstChild(): AtomToken | SyntaxToken;
+	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): [Child, ...ParameterToken[]]
+	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstElementChild(): Child;
-	abstract override get lastElementChild(): Child | ParameterToken;
+	abstract override get firstElementChild(): AtomToken | SyntaxToken;
+	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/* NOT FOR BROWSER END */
 

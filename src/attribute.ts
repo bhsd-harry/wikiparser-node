@@ -59,7 +59,6 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 
 /* NOT FOR BROWSER END */
 
-declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
@@ -97,8 +96,8 @@ export abstract class AttributeToken extends Token {
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
 	abstract override get parentNode(): AttributesToken | undefined;
-	abstract override get nextSibling(): Child;
-	abstract override get previousSibling(): Child;
+	abstract override get nextSibling(): AtomToken | this | undefined;
+	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -106,8 +105,8 @@ export abstract class AttributeToken extends Token {
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastElementChild(): Token;
 	abstract override get parentElement(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): Child;
-	abstract override get previousElementSibling(): Child;
+	abstract override get nextElementSibling(): AtomToken | this | undefined;
+	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -185,14 +184,12 @@ export abstract class AttributeToken extends Token {
 				excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
-				AstText: ':',
-				ArgToken: ':',
-				TranscludeToken: ':',
+				'Stage-2': ':',
+				'!HeadingToken': '',
 				LinkToken: ':',
 				FileToken: ':',
 				CategoryToken: ':',
 				QuoteToken: ':',
-				ExtLinkToken: ':',
 				MagicLinkToken: ':',
 				ConverterToken: ':',
 			});

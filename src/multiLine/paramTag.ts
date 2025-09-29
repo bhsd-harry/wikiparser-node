@@ -46,8 +46,9 @@ export abstract class ParamTagToken extends MultiLineToken {
 			this.append(
 				...wikitext.split('\n')
 					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))
-					.map(line => new ParamLineToken(line, config, accum, {
-						'Stage-1': ':', ...acceptable,
+					// @ts-expect-error abstract class
+					.map((line): ParamLineToken => new ParamLineToken(line, config, accum, {
+						'Stage-1': ':', ...acceptable ?? {'!ExtToken': ''},
 					})),
 			);
 		}

@@ -32,7 +32,6 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
-declare type Child = AtomToken | AttributeToken;
 
 /**
  * 将属性类型转换为单属性类型
@@ -66,17 +65,17 @@ export abstract class AttributesToken extends Token {
 	readonly #type;
 	#classList: Set<string> | undefined;
 
-	declare readonly childNodes: readonly Child[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | undefined;
+	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
+	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
+	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | HtmlToken | TableTokens | undefined;
 	abstract override get previousSibling(): SyntaxToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
+	abstract override get children(): (AtomToken | AttributeToken)[];
+	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
+	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentElement(): ExtToken | HtmlToken | TableTokens | undefined;
 	abstract override get previousElementSibling(): SyntaxToken | undefined;
 
@@ -406,7 +405,7 @@ export abstract class AttributesToken extends Token {
 	 * @param i position to be inserted at / 插入位置
 	 * @throws `RangeError` 标签不匹配
 	 */
-	override insertAt<T extends Child>(token: T, i = this.length): T {
+	override insertAt<T extends AtomToken | AttributeToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
 			if (!Shadow.running && token.toString().trim()) {
 				this.constructorError('can only insert AttributeToken');

@@ -23,8 +23,6 @@ import {clone} from '../../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
-declare type Child = GalleryImageToken | CommentLineToken;
-
 /**
  * `<imagemap>`
  * @classdesc `{childNodes: [...CommentLineToken[], GalleryImageToken, ...(CommentLineToken|ImagemapLinkToken|AstText)[]]}`
@@ -32,15 +30,15 @@ declare type Child = GalleryImageToken | CommentLineToken;
 export abstract class ImagemapToken extends MultiLineToken {
 	declare readonly name: 'imagemap';
 
-	declare readonly childNodes: readonly (Child | ImagemapLinkToken | AstText)[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
+	declare readonly childNodes: readonly (GalleryImageToken | CommentLineToken | ImagemapLinkToken | AstText)[];
+	abstract override get firstChild(): GalleryImageToken | CommentLineToken | undefined;
+	abstract override get lastChild(): GalleryImageToken | CommentLineToken | ImagemapLinkToken | AstText | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (Child | ImagemapLinkToken)[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | ImagemapLinkToken | undefined;
+	abstract override get children(): (GalleryImageToken | CommentLineToken | ImagemapLinkToken)[];
+	abstract override get firstElementChild(): GalleryImageToken | CommentLineToken | undefined;
+	abstract override get lastElementChild(): GalleryImageToken | CommentLineToken | ImagemapLinkToken | undefined;
 
 	/* NOT FOR BROWSER END */
 

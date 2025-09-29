@@ -27,8 +27,6 @@ import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
-declare type Child = GalleryImageToken | CommentLineToken;
-
 /**
  * gallery tag
  *
@@ -38,15 +36,15 @@ declare type Child = GalleryImageToken | CommentLineToken;
 export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: readonly (Child | AstText)[];
-	abstract override get firstChild(): Child | AstText | undefined;
-	abstract override get lastChild(): Child | AstText | undefined;
+	declare readonly childNodes: readonly (GalleryImageToken | CommentLineToken | AstText)[];
+	abstract override get firstChild(): GalleryImageToken | CommentLineToken | AstText | undefined;
+	abstract override get lastChild(): GalleryImageToken | CommentLineToken | AstText | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
+	abstract override get children(): (GalleryImageToken | CommentLineToken)[];
+	abstract override get firstElementChild(): GalleryImageToken | CommentLineToken | undefined;
+	abstract override get lastElementChild(): GalleryImageToken | CommentLineToken | undefined;
 
 	/** all images / 所有图片 */
 	override get images(): GalleryImageToken[] {

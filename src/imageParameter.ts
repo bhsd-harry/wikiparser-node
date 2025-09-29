@@ -237,7 +237,7 @@ export abstract class ImageParameterToken extends Token {
 				this.#syntax = str;
 			} else {
 				super(mt[2], config, accum, {
-					'Stage-2': ':', '!HeadingToken': ':',
+					'Stage-2': ':', '!HeadingToken': '',
 				});
 				this.#syntax = mt[1] + param[0] + mt[3]!;
 			}
