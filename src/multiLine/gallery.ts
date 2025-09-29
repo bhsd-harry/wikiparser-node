@@ -12,8 +12,6 @@ import type {
 	Token,
 } from '../../internal';
 
-declare type Child = GalleryImageToken | CommentLineToken;
-
 /**
  * gallery tag
  *
@@ -23,9 +21,9 @@ declare type Child = GalleryImageToken | CommentLineToken;
 export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: readonly (Child | AstText)[];
-	abstract override get firstChild(): Child | AstText | undefined;
-	abstract override get lastChild(): Child | AstText | undefined;
+	declare readonly childNodes: readonly (GalleryImageToken | CommentLineToken | AstText)[];
+	abstract override get firstChild(): GalleryImageToken | CommentLineToken | AstText | undefined;
+	abstract override get lastChild(): GalleryImageToken | CommentLineToken | AstText | undefined;
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {

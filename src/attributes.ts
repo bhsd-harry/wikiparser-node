@@ -15,7 +15,6 @@ import type {TableTokens} from './table/index';
 
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
-declare type Child = AtomToken | AttributeToken;
 
 /**
  * 将属性类型转换为单属性类型
@@ -48,9 +47,9 @@ export abstract class AttributesToken extends Token {
 	declare readonly name: string;
 	readonly #type;
 
-	declare readonly childNodes: readonly Child[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | undefined;
+	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
+	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
+	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | HtmlToken | TableTokens | undefined;
 	abstract override get previousSibling(): SyntaxToken | undefined;
 

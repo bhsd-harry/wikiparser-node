@@ -20,8 +20,6 @@ import type {Config, LintError} from '../base';
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
 
-declare type Child = AtomToken | SyntaxToken;
-
 /**
  * template or magic word
  *
@@ -38,10 +36,10 @@ export abstract class TranscludeToken extends Token {
 	#title: Title;
 
 	declare readonly name: string;
-	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
+	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstChild(): Child;
-	abstract override get lastChild(): Child | ParameterToken;
+	abstract override get firstChild(): AtomToken | SyntaxToken;
+	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
