@@ -607,10 +607,12 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		if (this.isTemplate()) {
-			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
+		LINT: { // eslint-disable-line no-unused-labels
+			if (this.isTemplate()) {
+				return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
+			}
+			throw new Error('TranscludeToken.getDuplicatedArgs method is only for template!');
 		}
-		throw new Error('TranscludeToken.getDuplicatedArgs method is only for template!');
 	}
 
 	/**

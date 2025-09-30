@@ -245,8 +245,10 @@ export abstract class AstNode implements AstNodeBase {
 				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
 				break;
 			case 'aIndex':
-				if (Parser.viewOnly) {
-					this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
+				LINT: { // eslint-disable-line no-unused-labels
+					if (Parser.viewOnly) {
+						this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
+					}
 				}
 				break;
 			default:
@@ -323,21 +325,25 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param index character index / 字符位置
 	 */
 	posFromIndex(index: number): Position | undefined {
-		const {length} = String(this);
-		index += index < 0 ? length : 0;
-		if (index >= 0 && index <= length) {
-			const lines = this.getLines(),
-				top = lines.findIndex(([,, end]) => index <= end);
-			return {top, left: index - lines[top]![1]};
+		LINT: { // eslint-disable-line no-unused-labels
+			const {length} = String(this);
+			index += index < 0 ? length : 0;
+			if (index >= 0 && index <= length) {
+				const lines = this.getLines(),
+					top = lines.findIndex(([,, end]) => index <= end);
+				return {top, left: index - lines[top]![1]};
+			}
+			return undefined;
 		}
-		return undefined;
 	}
 
 	/** @private */
 	getDimension(): Dimension {
-		const lines = this.getLines(),
-			last = lines[lines.length - 1]!;
-		return {height: lines.length, width: last[2] - last[1]};
+		LINT: { // eslint-disable-line no-unused-labels
+			const lines = this.getLines(),
+				last = lines[lines.length - 1]!;
+			return {height: lines.length, width: last[2] - last[1]};
+		}
 	}
 
 	/** @private */
@@ -352,37 +358,39 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param j rank of the child node / 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
-		if (j === undefined) {
-			const {parentNode} = this;
-			return parentNode
-				? parentNode.getRelativeIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes))
-				: 0;
-		}
+		LINT: { // eslint-disable-line no-unused-labels
+			if (j === undefined) {
+				const {parentNode} = this;
+				return parentNode
+					? parentNode.getRelativeIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes))
+					: 0;
+			}
 
-		/* NOT FOR BROWSER */
+			/* NOT FOR BROWSER */
 
-		this.verifyChild(j, 1);
+			this.verifyChild(j, 1);
 
-		/* NOT FOR BROWSER END */
+			/* NOT FOR BROWSER END */
 
-		return cache<number>(
-			this.#rIndex[j],
-			() => {
-				const {childNodes} = this,
-					n = j + (j < 0 ? childNodes.length : 0);
-				let acc = this.getAttribute('padding');
-				for (let i = 0; i < n; i++) {
-					if (Parser.viewOnly) {
-						this.#rIndex[i] = [Shadow.rev, acc];
+			return cache<number>(
+				this.#rIndex[j],
+				() => {
+					const {childNodes} = this,
+						n = j + (j < 0 ? childNodes.length : 0);
+					let acc = this.getAttribute('padding');
+					for (let i = 0; i < n; i++) {
+						if (Parser.viewOnly) {
+							this.#rIndex[i] = [Shadow.rev, acc];
+						}
+						acc += childNodes[i]!.toString().length + this.getGaps(i);
 					}
-					acc += childNodes[i]!.toString().length + this.getGaps(i);
-				}
-				return acc;
-			},
-			value => {
-				this.#rIndex[j] = value;
-			},
-		);
+					return acc;
+				},
+				value => {
+					this.#rIndex[j] = value;
+				},
+			);
+		}
 	}
 
 	/**
@@ -391,7 +399,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * 获取当前节点的绝对位置
 	 */
 	getAbsoluteIndex(): number {
-		return cache<number>(
+		LINT: return cache<number>( // eslint-disable-line no-unused-labels
 			this.#aIndex,
 			() => {
 				const {parentNode} = this;
@@ -435,14 +443,16 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	@cached(false)
 	getLines(): [string, number, number][] {
-		const results: [string, number, number][] = [];
-		let start = 0;
-		for (const line of String(this).split('\n')) {
-			const end = start + line.length;
-			results.push([line, start, end]);
-			start = end + 1;
+		LINT: { // eslint-disable-line no-unused-labels
+			const results: [string, number, number][] = [];
+			let start = 0;
+			for (const line of String(this).split('\n')) {
+				const end = start + line.length;
+				results.push([line, start, end]);
+				start = end + 1;
+			}
+			return results;
 		}
-		return results;
 	}
 
 	/* PRINT ONLY */

@@ -121,7 +121,7 @@ export abstract class AttributeToken extends Token {
 
 	/** whether the quotes are balanced / 引号是否匹配 */
 	get balanced(): boolean {
-		return !this.#equal || this.#quotes[0] === this.#quotes[1];
+		LINT: return !this.#equal || this.#quotes[0] === this.#quotes[1]; // eslint-disable-line no-unused-labels
 	}
 
 	/* NOT FOR BROWSER */
