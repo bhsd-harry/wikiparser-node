@@ -85,7 +85,7 @@ export abstract class TagToken extends Token {
 				}
 				if (isVoid || isFlexible && selfClosing) { // 自封闭标签
 					return this;
-				} else if (!parentNode) {
+				} else /* istanbul ignore if */ if (!parentNode) {
 					return undefined;
 				}
 				const {childNodes} = parentNode,
@@ -100,6 +100,7 @@ export abstract class TagToken extends Token {
 					) {
 						continue;
 					} else if (token.#closing === closing) {
+						/* istanbul ignore if */
 						if (type === 'tvar') {
 							return undefined;
 						}
