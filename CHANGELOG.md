@@ -10,6 +10,10 @@
 
 - [`TranslateToken.prototype.setAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranslateToken-%28EN%29#setattr) and [`TranslateToken.prototype.toggleAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranslateToken-%28EN%29#toggleattr)
 
+**Changed**
+
+- The default severity of the [`both`](https://github.com/bhsd-harry/wikiparser-node/wiki/unmatched-tag#both) and [`selfClosing`](https://github.com/bhsd-harry/wikiparser-node/wiki/unmatched-tag#selfclosing) options of the [unmatched-tag](https://github.com/bhsd-harry/wikiparser-node/wiki/unmatched-tag) rule is now `error` instead of `warning`
+
 ## v1.27.0
 
 *2025-09-20*
