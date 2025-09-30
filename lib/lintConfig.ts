@@ -182,11 +182,11 @@ const defaultLintRuleConfig: LintRuleConfig = {
 	'unmatched-tag': [
 		1,
 		{
-			// both: 1,
+			both: 2,
 			// closing: 1,
 			// conditional: 1,
 			// opening: 1,
-			// selfClosing: 1,
+			selfClosing: 2,
 		},
 	],
 	'unterminated-url': [
