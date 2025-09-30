@@ -304,6 +304,5 @@ export abstract class AstElement extends AstNode {
 			}
 			return json;
 		}
-		this.lspError('AstElement.json');
 	}
 }

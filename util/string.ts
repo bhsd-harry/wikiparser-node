@@ -103,5 +103,3 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
 	const {pre = '', post = '', sep = ''} = opt;
 	return pre + childNodes.map(child => child.print()).join(sep) + post;
 };
-
-/* PRINT ONLY END */

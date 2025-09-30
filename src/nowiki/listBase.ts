@@ -17,8 +17,6 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 		LSP: return this.innerText.split(':').length - 1; // eslint-disable-line no-unused-labels
 	}
 
-	/* PRINT ONLY END */
-
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		LSP: { // eslint-disable-line no-unused-labels

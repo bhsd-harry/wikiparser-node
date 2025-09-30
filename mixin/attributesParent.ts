@@ -24,22 +24,24 @@ export interface AttributesParentBase {
  * @param i AttributesToken子节点的位置
  */
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T): T => {
-	/* eslint-disable jsdoc/require-jsdoc */
-	abstract class AttributesParent extends constructor implements AttributesParentBase {
-		/** AttributesToken子节点 */
-		#getAttributesChild(): AttributesToken {
-			return this.childNodes[i] as AttributesToken;
-		}
+	LINT: { // eslint-disable-line no-unused-labels
+		/* eslint-disable jsdoc/require-jsdoc */
+		abstract class AttributesParent extends constructor implements AttributesParentBase {
+			/** AttributesToken子节点 */
+			#getAttributesChild(): AttributesToken {
+				return this.childNodes[i] as AttributesToken;
+			}
 
-		hasAttr(key: string): boolean {
-			LSP: return this.#getAttributesChild().hasAttr(key); // eslint-disable-line no-unused-labels
-			this.lspError('AttributesParent.hasAttr');
-		}
+			hasAttr(key: string): boolean {
+				LSP: return this.#getAttributesChild().hasAttr(key); // eslint-disable-line no-unused-labels
+				this.lspError('AttributesParent.hasAttr');
+			}
 
-		getAttr(key: string): string | true | undefined {
-			return this.#getAttributesChild().getAttr(key);
+			getAttr(key: string): string | true | undefined {
+				return this.#getAttributesChild().getAttr(key);
+			}
 		}
+		/* eslint-enable jsdoc/require-jsdoc */
+		return AttributesParent;
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
-	return AttributesParent;
 };
