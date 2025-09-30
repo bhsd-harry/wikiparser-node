@@ -122,7 +122,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	 * @param nowrap 是否nowrap
 	 */
 	#setNowrap(nowrap: unknown): void {
-		this.firstChild.setText(nowrap ? ' nowrap' : '');
+		this.firstChild.replaceChildren(nowrap ? ' nowrap' : '');
 	}
 
 	/** @implements */

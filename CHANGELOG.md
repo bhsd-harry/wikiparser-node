@@ -1,10 +1,14 @@
 ## v1.28.0
 
-*2025-09-26*
+*2025-09-30*
 
 **Added**
 
 - Better support for `<tvar>` tags from [Extension:Translate](https://www.mediawiki.org/wiki/Extension:Translate)
+
+**Fixed**
+
+- [`TranslateToken.prototype.setAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranslateToken-%28EN%29#setattr) and [`TranslateToken.prototype.toggleAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranslateToken-%28EN%29#toggleattr)
 
 ## v1.27.0
 
