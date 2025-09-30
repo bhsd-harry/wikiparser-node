@@ -136,8 +136,8 @@ export abstract class ArgToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels
+			const json = super.json(undefined, start);
 			json['default'] = this.default;
 			return json;
 		}

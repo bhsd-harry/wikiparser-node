@@ -223,8 +223,8 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels
+			const json = super.json(undefined, start);
 			json['closed'] = this.closed;
 			return json;
 		}
