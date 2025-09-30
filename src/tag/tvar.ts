@@ -139,11 +139,12 @@ export abstract class TvarToken extends TagToken {
 	 */
 	setName(name: string): void {
 		const {closing, firstChild} = this;
+		/* istanbul ignore if */
 		if (closing) {
 			throw new Error('Cannot set name of a closing tvar tag');
 		} else if (firstChild.pattern === legacyPattern) {
 			firstChild.replaceChildren(`|${name}`);
-		} else if (name.includes('"') && name.includes("'")) {
+		} else /* istanbul ignore if */ if (name.includes('"') && name.includes("'")) {
 			throw new SyntaxError('Tvar name cannot contain both single and double quotes');
 		} else {
 			const quote = name.includes('"') ? "'" : '"';
