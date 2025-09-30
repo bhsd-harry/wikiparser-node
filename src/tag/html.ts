@@ -85,12 +85,27 @@ export abstract class HtmlToken extends TagToken {
 		return this.#selfClosing;
 	}
 
+	/* NOT FOR BROWSER */
+
+	/** @throws `Error` 闭合标签或无效自封闭标签 */
+	set selfClosing(value) {
+		if (!value) {
+			this.#selfClosing = false;
+			return;
+		} else if (this.closing) {
+			throw new Error('This is a closing tag!');
+		}
+		const {html: [tags]} = this.getAttribute('config');
+		if (tags.includes(this.name)) {
+			throw new Error(`<${this.name}> tag cannot be self-closing!`);
+		}
+		this.#selfClosing = true;
+	}
+
 	/** @private */
 	override get closing(): boolean {
 		return super.closing;
 	}
-
-	/* NOT FOR BROWSER */
 
 	/** @private */
 	override set closing(value) {
@@ -104,21 +119,6 @@ export abstract class HtmlToken extends TagToken {
 			}
 		}
 		super.closing = value;
-	}
-
-	/** @throws `Error` 闭合标签或无效自封闭标签 */
-	set selfClosing(value) { // eslint-disable-line grouped-accessor-pairs
-		if (!value) {
-			this.#selfClosing = false;
-			return;
-		} else if (this.closing) {
-			throw new Error('This is a closing tag!');
-		}
-		const {html: [tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error(`<${this.name}> tag cannot be self-closing!`);
-		}
-		this.#selfClosing = true;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -276,9 +276,9 @@ export abstract class HtmlToken extends TagToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels
-			Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
+			const json = super.json(undefined, start);
+			json['selfClosing'] = this.#selfClosing;
 			return json;
 		}
 	}

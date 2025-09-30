@@ -38,12 +38,12 @@ export abstract class TvarToken extends TagToken {
 		return 'tvar';
 	}
 
+	/* NOT FOR BROWSER */
+
 	/** @private */
 	override get closing(): boolean {
 		return super.closing;
 	}
-
-	/* NOT FOR BROWSER */
 
 	/** whether to use the legacy syntax / 是否使用旧语法 */
 	get legacy(): boolean {

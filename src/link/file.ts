@@ -378,9 +378,9 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels
-			const {extension} = this;
+			const json = super.json(undefined, start),
+				{extension} = this;
 			if (extension) {
 				json['extension'] = extension;
 			}
