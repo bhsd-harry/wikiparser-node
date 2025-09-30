@@ -201,14 +201,15 @@ export abstract class ImageParameterToken extends Token {
 			const errors = super.lint(start, re),
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
-				{link, name} = this;
-			if (name === 'invalid') {
+				{link, name} = this,
+				value = name === 'width' && this.getValue() as string | false;
+			if (name === 'invalid' || value && value.endsWith('px')) {
 				const rule = 'invalid-gallery',
 					s = lintConfig.getSeverity(rule, 'parameter');
 				if (s) {
 					const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
 					if (computeEditInfo || fix) {
-						e.fix = fixByRemove(e, -1);
+						e.fix = value ? fixByRemove(e, 0, value) : fixByRemove(e, -1);
 					}
 					errors.push(e);
 				}
