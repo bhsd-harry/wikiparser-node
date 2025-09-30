@@ -32,7 +32,8 @@ const escapeTable = (syntax: SyntaxToken): void => {
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token[]]}`
  */
-export abstract class TableBaseToken extends attributesParent(1)(Token) {
+@attributesParent(1)
+export abstract class TableBaseToken extends Token {
 	abstract override get type(): TableTypes;
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
