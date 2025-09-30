@@ -38,7 +38,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 * @since v1.16.5
 	 */
 	get closing(): Partial<Font> {
-		return {
+		LINT: return { // eslint-disable-line no-unused-labels
 			...this.bold ? {bold: this.#closing.bold} : undefined,
 			...this.italic ? {italic: this.#closing.italic} : undefined,
 		};

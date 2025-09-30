@@ -220,7 +220,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** 是否是不可变参数 */
 	#isVoid(): string | boolean {
-		return this.#syntax && !this.#syntax.includes('$1');
+		LINT: return this.#syntax && !this.#syntax.includes('$1'); // eslint-disable-line no-unused-labels
 	}
 
 	/**
@@ -229,6 +229,7 @@ export abstract class ImageParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string | true {
-		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+		// eslint-disable-next-line no-unused-labels
+		LINT: return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
 }

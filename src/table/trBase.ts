@@ -50,7 +50,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * 获取行数
 	 */
 	getRowCount(): number {
-		return Number(this.childNodes.some(
+		LINT: return Number(this.childNodes.some( // eslint-disable-line no-unused-labels
 			child => child instanceof TdToken
 				&& child.isIndependent()
 				&& !child.firstChild.text().endsWith('+'),

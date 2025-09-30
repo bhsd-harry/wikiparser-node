@@ -41,60 +41,62 @@ export interface ElementLike {
 
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
-	/* eslint-disable jsdoc/require-jsdoc */
-	abstract class ElementLike extends constructor implements ElementLike {
-		#getCondition<T>(selector: string): TokenPredicate<T> {
-			return getCondition<T>(
-				selector,
-				// @ts-expect-error only AstElement
-				this,
-			);
-		}
-
-		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-			for (const child of this.childNodes) {
-				if (child.type === 'text') {
-					continue;
-				} else if (condition(child)) {
-					return child;
-				}
-				const descendant = child.getElementBy(condition);
-				if (descendant) {
-					return descendant;
-				}
+	LINT: { // eslint-disable-line no-unused-labels
+		/* eslint-disable jsdoc/require-jsdoc */
+		abstract class ElementLike extends constructor implements ElementLike {
+			#getCondition<T>(selector: string): TokenPredicate<T> {
+				return getCondition<T>(
+					selector,
+					// @ts-expect-error only AstElement
+					this,
+				);
 			}
-			return undefined;
-		}
 
-		querySelector<T = Token>(selector: string): T | undefined {
-			return this.getElementBy(this.#getCondition<T>(selector));
-		}
-
-		getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
-			for (const child of this.childNodes) {
-				if (child.type === 'text') {
-					continue;
-				} else if (condition(child)) {
-					descendants.push(child);
-				}
-				child.getElementsBy(condition, descendants);
-			}
-			return descendants;
-		}
-
-		querySelectorAll<T = Token>(selector: string): T[] {
-			return this.getElementsBy(this.#getCondition<T>(selector));
-		}
-
-		escape(): void {
-			LSP: { // eslint-disable-line no-unused-labels
+			getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
 				for (const child of this.childNodes) {
-					child.escape();
+					if (child.type === 'text') {
+						continue;
+					} else if (condition(child)) {
+						return child;
+					}
+					const descendant = child.getElementBy(condition);
+					if (descendant) {
+						return descendant;
+					}
+				}
+				return undefined;
+			}
+
+			querySelector<T = Token>(selector: string): T | undefined {
+				return this.getElementBy(this.#getCondition<T>(selector));
+			}
+
+			getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
+				for (const child of this.childNodes) {
+					if (child.type === 'text') {
+						continue;
+					} else if (condition(child)) {
+						descendants.push(child);
+					}
+					child.getElementsBy(condition, descendants);
+				}
+				return descendants;
+			}
+
+			querySelectorAll<T = Token>(selector: string): T[] {
+				return this.getElementsBy(this.#getCondition<T>(selector));
+			}
+
+			escape(): void {
+				LSP: { // eslint-disable-line no-unused-labels
+					for (const child of this.childNodes) {
+						child.escape();
+					}
 				}
 			}
 		}
+		/* eslint-enable jsdoc/require-jsdoc */
+		mixin(ElementLike, constructor);
+		return ElementLike;
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
-	mixin(ElementLike, constructor);
-	return ElementLike;
 };

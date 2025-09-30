@@ -245,9 +245,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		LINT: { // eslint-disable-line no-unused-labels
-			return msg && ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
-		}
+		LINT: return msg // eslint-disable-line no-unused-labels
+		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
 	/** @implements */
