@@ -3,7 +3,9 @@ import {Shadow} from '../../util/debug';
 import Parser from '../../index';
 import {Token} from '../index';
 import type {Cached} from '../../util/lint';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 import type {AttributesToken, SyntaxToken} from '../../internal';
 
 /**
@@ -64,7 +66,7 @@ export abstract class TagToken extends Token {
 	 * 搜索匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		return cache<this | undefined>(
+		LINT: return cache<this | undefined>( // eslint-disable-line no-unused-labels
 			this.#match,
 			() => {
 				const {

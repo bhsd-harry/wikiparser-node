@@ -66,11 +66,6 @@ export abstract class HtmlToken extends TagToken {
 		return this.#selfClosing;
 	}
 
-	/** @private */
-	override get closing(): boolean {
-		return super.closing;
-	}
-
 	/**
 	 * @param name 标签名
 	 * @param attr 标签属性
