@@ -18,11 +18,6 @@ export abstract class TvarToken extends TagToken {
 		return 'tvar';
 	}
 
-	/** @private */
-	override get closing(): boolean {
-		return super.closing;
-	}
-
 	/**
 	 * @param tag 标签名
 	 * @param attr 标签属性

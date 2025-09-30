@@ -191,9 +191,9 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels
-			const {type, fragment} = this;
+			const json = super.json(undefined, start),
+				{type, fragment} = this;
 			if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
 				json['fragment'] = fragment;
 			}

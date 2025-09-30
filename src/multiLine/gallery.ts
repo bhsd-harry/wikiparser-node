@@ -153,8 +153,8 @@ export abstract class GalleryToken extends MultiLineToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		const json = super.json(undefined, start);
 		LSP: { // eslint-disable-line no-unused-labels
+			const json = super.json(undefined, start);
 			Object.assign(json, {widths: this.widths, heights: this.heights});
 			return json;
 		}
