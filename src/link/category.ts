@@ -28,8 +28,6 @@ export abstract class CategoryToken extends LinkBaseToken {
 		}
 	}
 
-	/* PRINT ONLY END */
-
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
 		LSP: { // eslint-disable-line no-unused-labels
