@@ -85,7 +85,7 @@ wgFragmentMode=["legacy"]
 !! html/php
 <p><sup id="cite_ref-n.2525.2532.2530n_1-0" class="reference"><a href="#cite_note-n.2525.2532.2530n-1"><span class="cite-bracket">&#91;</span>g%25%32%30g 1<span class="cite-bracket">&#93;</span></a></sup>
 </p>
-<div class="mw-references-wrap"><ol class="references">
+<div class="mw-references-wrap"><ol class="references" data-mw-group="g%25%32%30g">
 <li id="cite_note-n.2525.2532.2530n-1"><span class="mw-cite-backlink"><a href="#cite_ref-n.2525.2532.2530n_1-0">↑</a></span> <span class="reference-text">A</span>
 </li>
 </ol></div>
@@ -101,7 +101,7 @@ wgFragmentMode=["html5"]
 !! html/php
 <p><sup id="cite_ref-n%25%32%30n_1-0" class="reference"><a href="#cite_note-n%2525%2532%2530n-1"><span class="cite-bracket">&#91;</span>g%25%32%30g 1<span class="cite-bracket">&#93;</span></a></sup>
 </p>
-<div class="mw-references-wrap"><ol class="references">
+<div class="mw-references-wrap"><ol class="references" data-mw-group="g%25%32%30g">
 <li id="cite_note-n%25%32%30n-1"><span class="mw-cite-backlink"><a href="#cite_ref-n%2525%2532%2530n_1-0">↑</a></span> <span class="reference-text">A</span>
 </li>
 </ol></div>
@@ -117,7 +117,7 @@ wgFragmentMode=["legacy"]
 !! html/php
 <p><sup id="cite_ref-a_.2520a_1-0" class="reference"><a href="#cite_note-a_.2520a-1"><span class="cite-bracket">&#91;</span>b_ %20b 1<span class="cite-bracket">&#93;</span></a></sup>
 </p>
-<div class="mw-references-wrap"><ol class="references">
+<div class="mw-references-wrap"><ol class="references" data-mw-group="b_ %20b">
 <li id="cite_note-a_.2520a-1"><span class="mw-cite-backlink"><a href="#cite_ref-a_.2520a_1-0">↑</a></span> <span class="reference-text">A</span>
 </li>
 </ol></div>
@@ -133,7 +133,7 @@ wgFragmentMode=["html5"]
 !! html/php
 <p><sup id="cite_ref-a_%20a_1-0" class="reference"><a href="#cite_note-a_%2520a-1"><span class="cite-bracket">&#91;</span>b_ %20b 1<span class="cite-bracket">&#93;</span></a></sup>
 </p>
-<div class="mw-references-wrap"><ol class="references">
+<div class="mw-references-wrap"><ol class="references" data-mw-group="b_ %20b">
 <li id="cite_note-a_%20a-1"><span class="mw-cite-backlink"><a href="#cite_ref-a_%2520a_1-0">↑</a></span> <span class="reference-text">A</span>
 </li>
 </ol></div>
@@ -141,7 +141,7 @@ wgFragmentMode=["html5"]
 <p><sup class="mw-ref reference" id="cite_ref-a_%20a_1-0" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"name":"a_ %20a","group":"b_ %20b"},"body":{"id":"mw-reference-text-cite_note-a_%20a-1"}}'><a href="./Parser_test#cite_note-a_%2520a-1" data-mw-group="b_ %20b"><span class="mw-reflink-text"><span class="cite-bracket">[</span>b_ %20b 1<span class="cite-bracket">]</span></span></a></sup></p>
 <div class="mw-references-wrap" typeof="mw:Extension/references" data-mw='{"name":"references","attrs":{"group":"b_ %20b"}}'>
 <ol class="mw-references references" data-mw-group="b_ %20b">
-<li id="cite_note-a_%20a-1"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-a_%2520a_1-0" data-mw-group="b_ %20b" rel="mw:referencedBy"><span class="mw-linkback-text">↑ </span></a></span> <span id="mw-reference-text-cite_note-a_%20a-1" class="mw-reference-text reference-text">A</span></li>
+<li id="cite_note-a_%20a-1" data-mw-footnote-number="1"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-a_%2520a_1-0" data-mw-group="b_ %20b" rel="mw:referencedBy"><span class="mw-linkback-text">↑ </span></a></span> <span id="mw-reference-text-cite_note-a_%20a-1" class="mw-reference-text reference-text" data-mw-group="b_ %20b">A</span></li>
 </ol>
 </div>
 !! end

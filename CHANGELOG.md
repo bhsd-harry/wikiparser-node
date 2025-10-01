@@ -1,3 +1,11 @@
+## v1.28.1
+
+*2025-10-01*
+
+**Added**
+
+- Parse the `details` attribute of a `<ref>` extension tag
+
 ## v1.28.0
 
 *2025-09-30*
