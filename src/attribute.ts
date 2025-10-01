@@ -104,6 +104,7 @@ export abstract class AttributeToken extends Token {
 			valueToken.setAttribute('stage', MAX_STAGE - 1);
 		} else if (
 			tag === 'gallery' && key === 'caption'
+			|| tag === 'ref' && key === 'details'
 			|| tag === 'choose' && (key === 'before' || key === 'after')
 		) {
 			const newConfig: Config = {
