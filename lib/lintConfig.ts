@@ -78,6 +78,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 		},
 	],
 	'invalid-isbn': 2,
+	'invalid-url': 1,
 	'lonely-apos': [
 		1,
 		{
