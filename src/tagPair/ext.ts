@@ -184,10 +184,17 @@ export abstract class ExtToken extends TagPairToken {
 					errors.push(generateForSelf(this, rect, rule, 'ext-in-html', severity));
 				}
 			}
-			const rule = 'var-anchor',
+			if (this.name === 'ref') {
+				let rule: LintError.Rule = 'var-anchor',
+					s = lintConfig.getSeverity(rule, 'ref');
+				if (s && this.closest('heading-title')) {
+					errors.push(generateForSelf(this, rect, rule, 'variable-anchor', s));
+				}
+				rule = 'nested-link';
 				s = lintConfig.getSeverity(rule, 'ref');
-			if (s && this.name === 'ref' && this.closest('heading-title')) {
-				errors.push(generateForSelf(this, rect, rule, 'variable-anchor', s));
+				if (s && this.closest('link,ext-link-text')) {
+					errors.push(generateForSelf(this, rect, rule, 'ref-in-link', s));
+				}
 			}
 			return errors;
 		}
