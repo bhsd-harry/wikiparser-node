@@ -56,6 +56,7 @@
 	"prefix": "前綴",
 	"pipe-in-link": "連結文本中多餘的\"|\"",
 	"pipe-in-table": "表格儲存格中多餘的\"|\"",
+	"ref-in-link": "內部或外部連結裡的<ref>",
 	"remove": "移除",
 	"template-in-link": "內部連結目標包含模板",
 	"unbalanced-in-section-header": "章節標題裡未成對的$1",

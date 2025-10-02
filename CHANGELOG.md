@@ -5,6 +5,7 @@
 **Added**
 
 - Parse the `details` attribute of a `<ref>` extension tag
+- New option [`ref`](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link#ref) for the [nested-link](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link) rule
 
 ## v1.28.0
 

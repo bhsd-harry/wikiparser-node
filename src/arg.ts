@@ -141,9 +141,9 @@ export abstract class ArgToken extends Token {
 			const rules = ['no-ignored', 'no-arg'] as const,
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
+				rect = new BoundingRect(this, start),
 				s = rules.map(rule => lintConfig.getSeverity(rule, 'arg') as LintError.Severity);
 			if (s[0] && rest.length > 0) {
-				const rect = new BoundingRect(this, start);
 				errors.push(...rest.map(child => {
 					const e = generateForChild(child, rect, rules[0], 'invisible-triple-braces', s[0]);
 					e.startIndex--;
@@ -158,7 +158,7 @@ export abstract class ArgToken extends Token {
 				}));
 			}
 			if (s[1] && !this.getAttribute('include')) {
-				const e = generateForSelf(this, {start}, rules[1], 'unexpected-argument', s[1]);
+				const e = generateForSelf(this, rect, rules[1], 'unexpected-argument', s[1]);
 				if (computeEditInfo && argDefault) {
 					e.suggestions = [fixBy(e, 'expand', argDefault.text())];
 				}

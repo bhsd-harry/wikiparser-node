@@ -111,6 +111,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 		2,
 		{
 			// file: 2,
+			// ref: 2,
 		},
 	],
 	'no-arg': 1,
