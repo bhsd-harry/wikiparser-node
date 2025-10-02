@@ -191,6 +191,7 @@ export const rules = /* #__PURE__ */ (() => {
 		'invalid-imagemap',
 		'invalid-invoke',
 		'invalid-isbn',
+		'invalid-url',
 		'lonely-apos',
 		'lonely-bracket',
 		'lonely-http',

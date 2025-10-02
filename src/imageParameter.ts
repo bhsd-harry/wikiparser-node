@@ -58,6 +58,19 @@ const getSyntaxRegex = getRegex(syntax => new RegExp(
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
+/**
+ * 获取网址
+ * @param link 外链
+ */
+const getUrl = (link: string): string => {
+	if (!link) {
+		return link;
+	} else if (link.startsWith('//')) {
+		link = `https:${link}`;
+	}
+	return new URL(link).href;
+};
+
 /* eslint-disable jsdoc/check-param-names */
 /**
  * 检查图片参数是否合法
@@ -321,15 +334,27 @@ export abstract class ImageParameterToken extends Token {
 					}
 					errors.push(e);
 				}
-			} else if (typeof link === 'object' && link.encoded) {
-				const rule = 'url-encoding',
-					s = lintConfig.getSeverity(rule, 'file');
-				if (s) {
-					const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
-					if (computeEditInfo || fix) {
-						e.fix = fixByDecode(e, this);
+			} else if (name === 'link') {
+				if (typeof link === 'string') {
+					const rule = 'invalid-url',
+						s = lintConfig.getSeverity(rule);
+					if (s) {
+						try {
+							getUrl(link);
+						} catch {
+							errors.push(generateForSelf(this, {start}, rule, 'invalid-url', s));
+						}
 					}
-					errors.push(e);
+				} else if (link!.encoded) {
+					const rule = 'url-encoding',
+						s = lintConfig.getSeverity(rule, 'file');
+					if (s) {
+						const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
+						if (computeEditInfo || fix) {
+							e.fix = fixByDecode(e, this);
+						}
+						errors.push(e);
+					}
 				}
 			}
 			return errors;
@@ -426,15 +451,11 @@ export abstract class ImageParameterToken extends Token {
 	 * @since v1.11.0
 	 */
 	getUrl(articlePath?: string): string | undefined {
-		let {link} = this;
+		const {link} = this;
 		if (!link) {
 			return link;
-		} else if (typeof link !== 'string') {
-			return link.getUrl(articlePath);
-		} else if (link.startsWith('//')) {
-			link = `https:${link}`;
 		}
-		return new URL(link).href;
+		return typeof link === 'string' ? getUrl(link) : link.getUrl(articlePath);
 	}
 }
 

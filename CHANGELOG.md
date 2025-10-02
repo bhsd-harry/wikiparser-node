@@ -1,11 +1,11 @@
 ## v1.28.1
 
-*2025-10-01*
+*2025-10-12*
 
 **Added**
 
 - Parse the `details` attribute of a `<ref>` extension tag
-- New option [`ref`](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link#ref) for the [nested-link](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link) rule
+- New categories of linting errors, including `<ref>` tags in internal or external links, and invalid URLs
 
 ## v1.28.0
 

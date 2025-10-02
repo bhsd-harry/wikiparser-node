@@ -189,9 +189,18 @@ export abstract class MagicLinkToken extends Token {
 				}
 				return errors;
 			}
-			const pipe = type === 'ext-link-url',
-				rule = 'unterminated-url',
-				severity = lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
+			let rule: LintError.Rule = 'invalid-url',
+				severity = lintConfig.getSeverity(rule);
+			if (severity) {
+				try {
+					this.getUrl();
+				} catch {
+					errors.push(generateForSelf(this, rect, rule, 'invalid-url', severity));
+				}
+			}
+			const pipe = type === 'ext-link-url';
+			rule = 'unterminated-url';
+			severity = lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
 			if (severity) {
 				const regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
 					child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
