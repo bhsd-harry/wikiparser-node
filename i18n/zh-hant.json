@@ -39,6 +39,7 @@
 	"invalid-isbn": "無效的ISBN",
 	"invalid-parameter": "<$1>的無效參數",
 	"invalid-self-closing": "無效自封閉標籤",
+	"invalid-url": "無效的URL",
 	"invisible-triple-braces": "三重括號內的不可見部分",
 	"italic-apostrophes": "斜體撇號",
 	"left-bracket": "左括號",
