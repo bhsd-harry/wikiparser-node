@@ -56,6 +56,7 @@
 	"prefix": null,
 	"pipe-in-link": "additional \"|\" in the link text",
 	"pipe-in-table": "additional \"|\" in a table cell",
+	"ref-in-link": "<ref> in an internal or external link",
 	"remove": null,
 	"template-in-link": "template in an internal link target",
 	"unbalanced-in-section-header": "unbalanced $1 in a section header",
