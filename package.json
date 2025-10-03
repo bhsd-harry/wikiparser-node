@@ -52,11 +52,11 @@
 	},
 	"optionalDependencies": {
 		"chalk": "^4.1.2",
-		"stylelint": "^16.24.0"
+		"stylelint": "^16.25.0"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^1.2.0",
-		"@bhsd/codemirror-mediawiki": "^3.4.2",
+		"@bhsd/codemirror-mediawiki": "^3.5.1",
 		"@bhsd/test-util": "^0.1.0",
 		"@codemirror/lint": "^6.8.5",
 		"@stylistic/eslint-plugin": "^3.1.0",

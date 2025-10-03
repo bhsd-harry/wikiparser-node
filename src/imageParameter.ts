@@ -9,6 +9,7 @@ import {generateForSelf, fixByRemove, fixByDecode} from '../util/lint';
 import {
 	MAX_STAGE,
 } from '../util/constants';
+import {Shadow} from '../util/debug';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../base';
@@ -118,7 +119,19 @@ export abstract class ImageParameterToken extends Token {
 
 	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
-		return this.name === 'link' ? validate('link', super.text(), this.getAttribute('config')) : undefined;
+		LINT: { // eslint-disable-line no-unused-labels
+			if (this.name !== 'link') {
+				return undefined;
+			}
+			const value = super.text().trim();
+			return Shadow.run((): string | Title => {
+				const token = new Token(value, this.getAttribute('config'));
+				token.parseOnce(0, this.getAttribute('include')).parseOnce();
+				return /^\0\d+m\x7F/u.test(token.toString())
+					? value
+					: validate('link', value, this.getAttribute('config'));
+			});
+		}
 	}
 
 	/** @param str 图片参数 */
@@ -230,7 +243,7 @@ export abstract class ImageParameterToken extends Token {
 				if (typeof link === 'string') {
 					const rule = 'invalid-url',
 						s = lintConfig.getSeverity(rule);
-					if (s) {
+					if (s && !this.querySelector('magic-word')) {
 						try {
 							getUrl(link);
 						} catch {
