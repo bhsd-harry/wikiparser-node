@@ -112,7 +112,7 @@ export abstract class MagicLinkToken extends Token {
 			}
 			let rule: LintError.Rule = 'invalid-url',
 				severity = lintConfig.getSeverity(rule);
-			if (severity) {
+			if (severity && !this.querySelector('magic-word')) {
 				try {
 					this.getUrl();
 				} catch {
