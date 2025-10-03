@@ -60,10 +60,7 @@ const explode = (str?: string): string[] => {
  * @param types token types to be filtered
  */
 const filterArgs = (args: ImageParameterToken[], types: Set<TokenTypes | 'text'>): ImageParameterToken[] =>
-	args.filter(({childNodes}) => {
-		const visibleNodes = childNodes.filter(node => node.text().trim());
-		return visibleNodes.length !== 1 || !types.has(visibleNodes[0]!.type);
-	});
+	args.filter(({childNodes}) => !childNodes.some(node => node.text().trim() && types.has(node.type)));
 
 /**
  * image
