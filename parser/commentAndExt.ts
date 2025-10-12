@@ -83,10 +83,12 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			return str;
 		}
 	}
-	const {ext} = config,
-		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar'),
-		newConfig = {...config, ext: newExt};
+	const {ext} = config;
+	let newExt = ext,
+		newConfig = config;
 	if (ext.includes('translate')) {
+		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar');
+		newConfig = {...config, ext: newExt};
 		const stack: string[] = [];
 		wikitext = wikitext.replace(/<nowiki>[\s\S]*?<\/nowiki>/giu, m => {
 			stack.push(m);
