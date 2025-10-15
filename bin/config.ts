@@ -196,12 +196,13 @@ export default async (
 				...namespacealiases.filter(({id}) => filterGadget(id)).map(({id, alias}) => [alias.toLowerCase(), id]),
 			]),
 			articlePath: articlepath,
-		};
-	config.doubleUnderscore[0] = [];
-	config.doubleUnderscore[1] = [];
-	Object.assign(config.parserFunction[0], getConfig(magicwords, ({name}) => name === 'msgnw'));
-	config.parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
-	config.parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
+		},
+		{doubleUnderscore, parserFunction, variable} = config;
+	doubleUnderscore[0] = [];
+	doubleUnderscore[1] = [];
+	Object.assign(parserFunction[0], getConfig(magicwords, ({name}) => name === 'msgnw'));
+	parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
+	parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
 	if (!mwConfig.functionHooks) {
 		Object.assign(config, {functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw']});
 	}
@@ -214,11 +215,11 @@ export default async (
 		).json() as Response;
 		Object.assign(config, {variable: [...new Set([...variables, '='])]});
 	}
-	if ('#choose' in config.parserFunction[0]) {
-		delete config.parserFunction[0]['choose'];
-		const i = config.variable.indexOf('choose');
+	if ('#choose' in parserFunction[0]) {
+		delete parserFunction[0]['choose'];
+		const i = variable.indexOf('choose');
 		if (i !== -1) {
-			config.variable.splice(i, 1);
+			variable.splice(i, 1);
 		}
 	}
 
