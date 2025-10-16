@@ -1,6 +1,6 @@
 (() => {
 var _a;
-const version = '1.28.0', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+const version = '1.28.1', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
