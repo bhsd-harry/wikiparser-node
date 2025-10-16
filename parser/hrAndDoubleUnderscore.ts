@@ -1,3 +1,4 @@
+import {isUnderscore} from '@bhsd/cm-util';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';
@@ -15,11 +16,16 @@ export const parseHrAndDoubleUnderscore = (
 	config: Config,
 	accum: Token[],
 ): string => {
-	const {doubleUnderscore: [insensitive, sensitive, aliases]} = config;
-	config.insensitiveDoubleUnderscore ??= new Set(insensitive);
-	config.sensitiveDoubleUnderscore ??= new Set(sensitive);
+	const {doubleUnderscore: [insensitive, sensitive, aliases]} = config,
+		all = [...insensitive, ...sensitive];
+	config.insensitiveDoubleUnderscore ??= new Set(insensitive.filter(isUnderscore));
+	config.sensitiveDoubleUnderscore ??= new Set(sensitive.filter(isUnderscore));
 	config.regexHrAndDoubleUnderscore ??= new RegExp(
-		`__(${[...insensitive, ...sensitive].join('|')})__`,
+		`__(${
+			all.filter(isUnderscore).join('|')
+		})__|＿{2}(${
+			all.filter(s => !isUnderscore(s)).map(s => s.slice(2, -2)).join('|')
+		})＿{2}`,
 		'giu',
 	);
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
@@ -29,13 +35,14 @@ export const parseHrAndDoubleUnderscore = (
 		// @ts-expect-error abstract class
 		new HrToken(m, config, accum);
 		return `${lead}\0${accum.length - 1}r\x7F`;
-	}).replace(config.regexHrAndDoubleUnderscore, (m, p1: string) => {
-		const caseSensitive = config.sensitiveDoubleUnderscore!.has(p1),
-			lc = p1.toLowerCase(),
+	}).replace(config.regexHrAndDoubleUnderscore, (m, p1?: string, p2?: string) => {
+		const key = p1 ?? p2!,
+			caseSensitive = config.sensitiveDoubleUnderscore!.has(key),
+			lc = key.toLowerCase(),
 			caseInsensitive = config.insensitiveDoubleUnderscore!.has(lc);
 		if (caseSensitive || caseInsensitive) {
 			// @ts-expect-error abstract class
-			new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
+			new DoubleUnderscoreToken(key, caseSensitive, Boolean(p2), config, accum);
 			return `\0${accum.length - 1}${
 				caseInsensitive && (aliases?.[lc] ?? /* istanbul ignore next */ lc) === 'toc' ? 'u' : 'n'
 			}\x7F`;
