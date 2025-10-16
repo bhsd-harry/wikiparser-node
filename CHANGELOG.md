@@ -1,11 +1,12 @@
 ## v1.28.1
 
-*2025-10-12*
+*2025-10-16*
 
 **Added**
 
 - Parse the `details` attribute of a `<ref>` extension tag
 - New categories of linting errors, including `<ref>` tags in internal or external links, and invalid URLs
+- Parse behavior switches with full-width underscores (`＿＿`)
 
 ## v1.28.0
 
