@@ -7,6 +7,7 @@ import {
 
 	sanitizeInlineStyle,
 } from '@bhsd/common';
+import {isUnderscore} from '@bhsd/cm-util';
 import {rules} from '../base';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos, provideValues} from '../util/lint';
@@ -772,7 +773,9 @@ export class LanguageService implements LanguageServiceBase {
 						Array.isArray(sensitive) ? /* istanbul ignore next */ sensitive : Object.keys(sensitive),
 						other,
 					].flat(2),
-					switches: (doubleUnderscore.slice(0, 2) as string[][]).flat().map(w => `__${w}__`),
+					switches: (doubleUnderscore.slice(0, 2) as string[][]).flat()
+						.filter(isUnderscore)
+						.map(w => `__${w}__`),
 					protocols: protocol.split('|'),
 					params: Object.keys(img)
 						.filter(k => k.endsWith('$1') || !k.includes('$1'))
