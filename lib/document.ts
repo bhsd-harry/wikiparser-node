@@ -6,41 +6,36 @@ import type {JSONDocument, SchemaConfiguration} from 'vscode-json-languageservic
 import type {Stylesheet} from 'vscode-css-languageservice';
 import type {Token, AttributeToken} from '../internal';
 
-declare interface Jax {
-	tex2mml(tex: string): string;
+export interface TexvcLocation {
+	offset: number;
+	line: number;
+	column: number;
 }
-declare interface mathjax {
-	init(config: unknown): Promise<Jax>;
+declare interface Texvcjs {
+	check(input: string, options?: {usemhchem?: boolean}): {
+		status: '+';
+	} | {
+		status: 'C';
+	} | {
+		status: 'F' | 'S';
+		error: {
+			message: string;
+			location: {
+				start: TexvcLocation;
+				end: TexvcLocation;
+			};
+		};
+	};
 }
 
-let MathJax: Promise<Jax> | undefined;
-
-/**
- * Load MathJax
- * @param id MathJax module ID
- */
-export const loadMathJax = (id = 'mathjax'): Promise<Jax> | undefined => {
+export const texvcjs = (() => {
 	try {
-		const jax: mathjax = require(id);
-		MathJax ??= jax.init({
-			loader: {
-				load: ['input/tex', '[tex]/mhchem'],
-			},
-			tex: {
-				packages: {'[+]': ['mhchem']},
-				/** @ignore */
-				formatError(_: unknown, error: unknown): never {
-					throw error;
-				},
-			},
-			startup: {typeset: false},
-		});
-		return MathJax;
+		return require('mathoid-texvcjs') as Texvcjs;
 	} catch {
 		/* istanbul ignore next */
 		return undefined;
 	}
-};
+})();
 
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
