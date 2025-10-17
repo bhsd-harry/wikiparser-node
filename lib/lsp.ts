@@ -79,6 +79,9 @@ import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
 import {
+	mathTags,
+} from '../util/constants';
+import {
 	EmbeddedJSONDocument,
 	EmbeddedCSSDocument,
 	jsonLSP,
@@ -86,7 +89,6 @@ import {
 	jsonTags,
 	htmlData,
 	stylelint,
-	loadMathJax,
 } from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
@@ -126,9 +128,8 @@ declare interface LilyPondError {
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
 const cssRules = {'block-no-empty': null},
+	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
-	mathTags = ['math', 'chem', 'ce'],
-	mathSelector = mathTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
 let colors: Promise<RegExp | false> | undefined;
 
@@ -473,11 +474,9 @@ export class LanguageService implements LanguageServiceBase {
 	/* NOT FOR BROWSER ONLY */
 
 	/** @private */
-	declare mathjax: string | undefined;
 	lilypond: string;
 	#lilypondData: string[];
 	#mathData: string[];
-	#mathSet: Set<string>;
 
 	/* NOT FOR BROWSER ONLY END */
 
@@ -491,7 +490,6 @@ export class LanguageService implements LanguageServiceBase {
 			extDir = path.join(dataDir, 'ext');
 		this.#lilypondData = require(path.join(extDir, 'score'));
 		this.#mathData = require(path.join(extDir, 'math'));
-		this.#mathSet = new Set(this.#mathData);
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -1035,7 +1033,7 @@ export class LanguageService implements LanguageServiceBase {
 						),
 					];
 			}
-		} else if (type === 'ext-inner' && mathTags.includes(cur!.name!)) {
+		} else if (type === 'ext-inner' && mathTags.has(cur!.name!)) {
 			const word = /(?<!\\)\\[a-z]+$/iu.exec(curLine!.slice(0, character))?.[0];
 			if (word) {
 				const data = this.#mathData;
@@ -1098,9 +1096,8 @@ export class LanguageService implements LanguageServiceBase {
 					severity: severity === 'error' ? 1 : 2,
 					source:
 						/* eslint-disable @stylistic/operator-linebreak */
-						rule === 'invalid-css' ?
-							'css' :
-							'WikiLint',
+						sources[rule] ??
+						'WikiLint',
 					code:
 						code ??
 						/* eslint-enable @stylistic/operator-linebreak */
@@ -1245,44 +1242,6 @@ export class LanguageService implements LanguageServiceBase {
 				}));
 			}
 		}
-		const MathJax = await loadMathJax(this.mathjax),
-			data = this.#mathSet,
-			mathDiagnostics = root.querySelectorAll<ExtToken>(mathSelector)
-				.map(token => {
-					const {selfClosing, innerText, lastChild, name} = token;
-					if (selfClosing) {
-						return [];
-					}
-					const hasCe = name === 'math' && token.hasAttr('chem'),
-						mathErrors: DiagnosticBase[] = [...innerText!.matchAll(/(?<!\\)\\[a-z]+/giu)]
-							.filter(([macro]) => !(hasCe && macro === String.raw`\ce` || data.has(macro)))
-							.map(({0: macro, index}): DiagnosticBase => {
-								const aIndex = lastChild.getAbsoluteIndex() + index;
-								return {
-									range: createRange(root, aIndex, aIndex + macro.length),
-									severity: 2,
-									source: 'MathJax',
-									code: 'UnknownMacro',
-									message: `Unknown macro "${macro}"`,
-								};
-							});
-					if (MathJax) {
-						try {
-							MathJax.tex2mml(name === 'math' ? innerText! : String.raw`\ce{${innerText}}`);
-						} catch (e) {
-							if (e && typeof e === 'object' && 'id' in e && 'message' in e) {
-								mathErrors.push({
-									range: createNodeRange(lastChild),
-									severity: 2,
-									source: 'MathJax',
-									code: e.id as string,
-									message: e.message as string,
-								});
-							}
-						}
-					}
-					return mathErrors;
-				});
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -1294,7 +1253,6 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY */
 
 			lilypondDiagnostics,
-			mathDiagnostics,
 		].flat(2);
 	}
 
