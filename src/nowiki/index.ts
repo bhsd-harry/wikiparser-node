@@ -35,10 +35,14 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: { // eslint-disable-line no-unused-labels
-			const {name} = this,
-				rule = 'void-ext',
-				{lintConfig} = Parser,
+			const {
+					name,
+				} = this,
+				{lintConfig} = Parser;
+			/* eslint-disable prefer-const */
+			let rule: LintError.Rule = 'void-ext',
 				s = lintConfig.getSeverity(rule, name);
+			/* eslint-enable prefer-const */
 			if (s && this.#lint()) {
 				const e = generateForSelf(this, {start}, rule, Parser.msg('nothing-in', name), s);
 				if (lintConfig.computeEditInfo) {
@@ -46,7 +50,8 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				}
 				return [e];
 			}
-			return super.lint(start, getLintRegex(name));
+			const errors = super.lint(start, getLintRegex(name));
+			return errors;
 		}
 	}
 
