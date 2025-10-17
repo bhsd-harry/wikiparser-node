@@ -220,6 +220,7 @@ export const rules = /* #__PURE__ */ (() => {
 		/* NOT FOR BROWSER ONLY */
 
 		'invalid-css',
+		'invalid-math',
 	] as const;
 	Object.freeze(arr);
 	return arr;

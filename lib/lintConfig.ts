@@ -235,6 +235,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			warn: 1,
 		},
 	],
+	'invalid-math': 2,
 };
 Object.freeze(defaultLintRuleConfig);
 

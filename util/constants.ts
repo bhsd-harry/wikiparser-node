@@ -14,6 +14,12 @@ export enum BuildMethod {
 // eslint-disable-next-line n/no-missing-require
 export const enMsg = /* #__PURE__ */ (() => require('../../i18n/en.json'))();
 
+/* NOT FOR BROWSER ONLY */
+
+export const mathTags = new Set(['math', 'chem', 'ce']);
+
+/* NOT FOR BROWSER ONLY END */
+
 /* NOT FOR BROWSER */
 
 export const classes: Record<string, string> = {},

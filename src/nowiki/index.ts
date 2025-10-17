@@ -5,11 +5,35 @@ import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
 
-/* NOT FOR BROWSER */
+/* NOT FOR BROWSER ONLY */
 
-import {classes} from '../../util/constants';
+import {
+	mathTags,
 
-/* NOT FOR BROWSER END */
+	/* NOT FOR BROWSER */
+
+	classes,
+} from '../../util/constants';
+import {texvcjs} from '../../lib/document';
+import type {TexvcLocation} from '../../lib/document';
+
+/** @ignore */
+const updateLocation = (
+	{startIndex, startLine, startCol, endIndex, endCol}: LintError,
+	{offset, line, column}: TexvcLocation,
+	isChem: boolean,
+): [number, number, number] => {
+	const n = isChem ? 4 : 0,
+		index = startIndex + offset - n,
+		beyond = index > endIndex;
+	return [
+		beyond ? endIndex : index,
+		startLine + line - 1,
+		beyond ? endCol : (line === 1 ? startCol - n : 0) + column - 1,
+	];
+};
+
+/* NOT FOR BROWSER ONLY END */
 
 /<\s*(?:\/\s*)?(nowiki)\b/giu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 const getLintRegex = /* #__PURE__ */ getRegex(
@@ -50,9 +74,16 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: { // eslint-disable-line no-unused-labels
-			const {name} = this,
-				rule = 'void-ext',
-				{lintConfig} = Parser,
+			const {
+					name,
+
+					/* NOT FOR BROWSER ONLY */
+
+					innerText,
+					previousSibling,
+				} = this,
+				{lintConfig} = Parser;
+			let rule: LintError.Rule = 'void-ext',
 				s = lintConfig.getSeverity(rule, name);
 			if (s && this.#lint()) {
 				const e = generateForSelf(this, {start}, rule, Parser.msg('nothing-in', name), s);
@@ -61,7 +92,33 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				}
 				return [e];
 			}
-			return super.lint(start, getLintRegex(name));
+			const errors = super.lint(start, getLintRegex(name));
+
+			/* NOT FOR BROWSER ONLY */
+
+			rule = 'invalid-math';
+			s = lintConfig.getSeverity(rule);
+			if (s && texvcjs && mathTags.has(name)) {
+				const isChem = name !== 'math',
+					result = texvcjs.check(
+						isChem ? String.raw`\ce{${innerText}}` : innerText,
+						{usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem'))},
+					);
+				if (result.status !== '+') {
+					const e = generateForSelf(this, {start}, rule, 'chem-required', s);
+					if (result.status !== 'C') {
+						const {error: {message, location}} = result;
+						e.message = message;
+						[e.endIndex, e.endLine, e.endCol] = updateLocation(e, location.end, isChem);
+						[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, isChem);
+					}
+					errors.push(e);
+				}
+			}
+
+			/* NOT FOR BROWSER ONLY END */
+
+			return errors;
 		}
 	}
 

@@ -1,3 +1,11 @@
+## v1.29.0
+
+*2025-10-18*
+
+**Changed**
+
+- [Extension:Math](https://www.mediawiki.org/wiki/Extension:Math) is now linted via [texvcjs](https://www.npmjs.com/package/mathoid-texvcjs) instead of [MathJax](https://www.mathjax.org/)
+
 ## v1.28.1
 
 *2025-10-16*
