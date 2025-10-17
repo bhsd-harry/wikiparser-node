@@ -561,7 +561,7 @@ export class Token extends AstElement {
 				}
 
 				/* NOT FOR BROWSER ONLY */
-			} else if (isAttr(this, true)) {
+			} else if (cssLSP && isAttr(this, true)) {
 				const rule = 'invalid-css',
 					s = lintConfig.getSeverity(rule),
 					sWarn = lintConfig.getSeverity(rule, 'warn');
@@ -569,7 +569,7 @@ export class Token extends AstElement {
 					const root = this.getRootNode(),
 						textDoc = new EmbeddedCSSDocument(root, this);
 					errors.push(
-						...cssLSP!.doValidation(textDoc, textDoc.styleSheet)
+						...cssLSP.doValidation(textDoc, textDoc.styleSheet)
 							.filter(
 								({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
 									&& (severity === 1 ? s : sWarn),
