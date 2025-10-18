@@ -75,13 +75,6 @@ import type {
 	AttributesToken,
 } from '../internal';
 
-/* NOT FOR BROWSER ONLY */
-
-import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
-import {isAttr} from '../lib/lsp';
-
-/* NOT FOR BROWSER ONLY END */
-
 declare interface LintIgnore {
 	line: number;
 	from: number | undefined;
@@ -571,37 +564,6 @@ export class Token extends AstElement {
 						delete e.suggestions;
 					}
 				}
-
-				/* NOT FOR BROWSER ONLY */
-			} else if (cssLSP && isAttr(this, true)) {
-				const rule = 'invalid-css',
-					s = lintConfig.getSeverity(rule),
-					sWarn = lintConfig.getSeverity(rule, 'warn');
-				if (s || sWarn) {
-					const root = this.getRootNode(),
-						textDoc = new EmbeddedCSSDocument(root, this);
-					errors.push(
-						...cssLSP.doValidation(textDoc, textDoc.styleSheet)
-							.filter(
-								({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
-									&& (severity === 1 ? s : sWarn),
-							)
-							.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
-								code: code as string,
-								rule,
-								message,
-								severity: (severity === 1 ? s : sWarn) as LintError.Severity,
-								startLine: line,
-								startCol: character,
-								startIndex: root.indexFromPos(line, character)!,
-								endLine: end.line,
-								endCol: end.character,
-								endIndex: root.indexFromPos(end.line, end.character)!,
-							})),
-					);
-				}
-
-				/* NOT FOR BROWSER ONLY END */
 			}
 			return errors;
 		}
