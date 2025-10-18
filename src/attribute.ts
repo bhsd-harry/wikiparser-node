@@ -19,6 +19,12 @@ import type {
 import type {LintConfiguration} from '../lib/lintConfig';
 import type {AttributesToken} from '../internal';
 
+/* NOT FOR BROWSER ONLY */
+
+import {cssLSP, EmbeddedCSSDocument} from '../lib/document';
+
+/* NOT FOR BROWSER ONLY END */
+
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
@@ -274,6 +280,43 @@ export abstract class AttributeToken extends Token {
 			if (s[1] && obsoleteAttrs[tag]?.has(name)) {
 				errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
 			}
+
+			/* NOT FOR BROWSER ONLY */
+
+			const rule = 'invalid-css',
+				sError = lintConfig.getSeverity(rule),
+				sWarn = lintConfig.getSeverity(rule, 'warn');
+			if (
+				cssLSP
+				&& (sError || sWarn)
+				&& name === 'style'
+				&& lastChild.length === 1 && lastChild.firstChild!.type === 'text'
+			) {
+				const root = this.getRootNode(),
+					textDoc = new EmbeddedCSSDocument(root, lastChild);
+				errors.push(
+					...cssLSP.doValidation(textDoc, textDoc.styleSheet)
+						.filter(
+							({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
+								&& (severity === 1 ? sError : sWarn),
+						)
+						.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
+							code: code as string,
+							rule,
+							message,
+							severity: (severity === 1 ? sError : sWarn) as LintError.Severity,
+							startLine: line,
+							startCol: character,
+							startIndex: root.indexFromPos(line, character)!,
+							endLine: end.line,
+							endCol: end.character,
+							endIndex: root.indexFromPos(end.line, end.character)!,
+						})),
+				);
+			}
+
+			/* NOT FOR BROWSER ONLY END */
+
 			return errors;
 		}
 	}
