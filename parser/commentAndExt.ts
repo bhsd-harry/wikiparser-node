@@ -104,52 +104,56 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		);
 		wikitext = restore(wikitext, stack);
 	}
-	return wikitext.replace(
-		getRegex[includeOnly ? 1 : 0](newExt),
-		(
-			substr,
-			name?: string,
-			attr?: string,
-			inner?: string,
-			closing?: string,
-			include?: string,
-			includeAttr?: string,
-			includeInner?: string,
-			includeClosing?: string,
-		) => {
-			const l = accum.length;
-			let ch = 'n';
-			if (name) {
-				ch = 'e';
-				// @ts-expect-error abstract class
-				new ExtToken(name, attr, inner, closing, newConfig, include, accum);
-			} else if (substr.startsWith('<!--')) {
-				ch = 'c';
-				const closed = substr.endsWith('-->');
-				// @ts-expect-error abstract class
-				new CommentToken(
-					restore(substr, accum, 1).slice(4, closed ? -3 : undefined),
-					closed,
-					config,
-					accum,
-				);
-			} else if (include) {
-				// @ts-expect-error abstract class
-				new IncludeToken(
-					include,
-					includeAttr && restore(includeAttr, accum, 1),
-					includeInner && restore(includeInner, accum, 1),
-					includeClosing,
-					config,
-					accum,
-				);
-			} else {
-				// @ts-expect-error abstract class
-				new NoincludeToken(substr, config, accum, true);
-			}
-			return `\0${l}${ch}\x7F`;
-		},
-	);
+	const re = getRegex[includeOnly ? 1 : 0](newExt);
+	re.lastIndex = 0;
+	return re.test(wikitext)
+		? wikitext.replace(
+			re,
+			(
+				substr,
+				name?: string,
+				attr?: string,
+				inner?: string,
+				closing?: string,
+				include?: string,
+				includeAttr?: string,
+				includeInner?: string,
+				includeClosing?: string,
+			) => {
+				const l = accum.length;
+				let ch = 'n';
+				if (name) {
+					ch = 'e';
+					// @ts-expect-error abstract class
+					new ExtToken(name, attr, inner, closing, newConfig, include, accum);
+				} else if (substr.startsWith('<!--')) {
+					ch = 'c';
+					const closed = substr.endsWith('-->');
+					// @ts-expect-error abstract class
+					new CommentToken(
+						restore(substr, accum, 1).slice(4, closed ? -3 : undefined),
+						closed,
+						config,
+						accum,
+					);
+				} else if (include) {
+					// @ts-expect-error abstract class
+					new IncludeToken(
+						include,
+						includeAttr && restore(includeAttr, accum, 1),
+						includeInner && restore(includeInner, accum, 1),
+						includeClosing,
+						config,
+						accum,
+					);
+				} else {
+					// @ts-expect-error abstract class
+					new NoincludeToken(substr, config, accum, true);
+				}
+				return `\0${l}${ch}\x7F`;
+			},
+		)
+		: wikitext;
 };
 
 parsers['parseCommentAndExt'] = __filename;
