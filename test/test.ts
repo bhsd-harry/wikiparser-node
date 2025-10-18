@@ -73,7 +73,7 @@ describe('API tests', () => {
 				}
 				const cur = file.slice(0, -3) as LintError.Rule;
 				// @ts-expect-error Node.js-only rule
-				if (cur !== 'invalid-css') {
+				if (cur !== 'invalid-css' && cur !== 'invalid-math') {
 					for (const code of md.matchAll(re)) {
 						const [, state, config, wikitext] = code as string[] as [string, string, string, string];
 						it(config, () => {

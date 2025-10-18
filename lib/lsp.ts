@@ -116,7 +116,7 @@ const getLinkRegex = getRegex(protocol => new RegExp(`^(?:${protocol}|//)`, 'iu'
  * @param token.firstChild
  * @param style whether it is a style attribute
  */
-export const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean): boolean | undefined =>
+const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean): boolean | undefined =>
 	type === 'attr-value' && length === 1 && firstChild!.type === 'text'
 	&& (
 		!style
