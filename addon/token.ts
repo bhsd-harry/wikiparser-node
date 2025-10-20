@@ -10,8 +10,10 @@ import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {HtmlToken} from '../src/tag/html';
 import {AttributesToken} from '../src/attributes';
+import {expandedMagicWords, expandMagicWord} from './magicWords';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
+import type {MagicWord} from './magicWords';
 import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
 const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
@@ -21,36 +23,6 @@ const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 		'ifeq',
 		'ifexist',
 		'switch',
-	]),
-	expandedMagicWords = new Set([
-		'currentmonth',
-		'currentmonth1',
-		'currentmonthname',
-		'currentmonthnamegen',
-		'currentmonthabbrev',
-		'currentday',
-		'currentday2',
-		'currentdayname',
-		'currentyear',
-		'currenttime',
-		'currenthour',
-		'currentweek',
-		'currentdow',
-		'currenttimestamp',
-		'localmonth',
-		'localmonth1',
-		'localmonthname',
-		'localmonthnamegen',
-		'localmonthabbrev',
-		'localday',
-		'localday2',
-		'localdayname',
-		'localyear',
-		'localtime',
-		'localhour',
-		'localweek',
-		'localdow',
-		'localtimestamp',
 	]);
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:table|\/(?:td|th)|\/?(?:tr|caption|dt|dd|li))\b/iu;
@@ -206,81 +178,7 @@ const expand = (
 			} else if (Parser.functionHooks.has(name)) {
 				return context === false ? m : Parser.functionHooks.get(name)!(target, context || undefined);
 			} else if (expandedMagicWords.has(name)) {
-				if (context === false) {
-					return m;
-				}
-				switch (name) {
-					case 'currentyear':
-						return `${prev}${now.getUTCFullYear()}`;
-					case 'currentmonth':
-						return prev + String(now.getUTCMonth() + 1).padStart(2, '0');
-					case 'currentmonth1':
-						return `${prev}${now.getUTCMonth() + 1}`;
-					case 'currentmonthname':
-					case 'currentmonthnamegen':
-						return prev + now.toLocaleString('default', {month: 'long', timeZone: 'UTC'});
-					case 'currentmonthabbrev':
-						return prev + now.toLocaleString('default', {month: 'short', timeZone: 'UTC'});
-					case 'currentday':
-						return `${prev}${now.getUTCDate()}`;
-					case 'currentday2':
-						return prev + String(now.getUTCDate()).padStart(2, '0');
-					case 'currentdow':
-						return `${prev}${now.getUTCDay()}`;
-					case 'currentdayname':
-						return prev + now.toLocaleString('default', {weekday: 'long', timeZone: 'UTC'});
-					case 'currenttime':
-						return `${prev}${
-							String(now.getUTCHours()).padStart(2, '0')
-						}:${String(now.getUTCMinutes()).padStart(2, '0')}`;
-					case 'currenthour':
-						return prev + String(now.getUTCHours()).padStart(2, '0');
-					case 'currentweek': {
-						const firstDay = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
-						return `${prev}${Math.ceil((now.getTime() - firstDay.getTime()) / 1e3 / 60 / 60 / 24 / 7)}`;
-					}
-					case 'currenttimestamp':
-						return prev + now.toISOString().slice(0, 19)
-							.replace(/[-:T]/gu, '');
-					case 'localyear':
-						return `${prev}${now.getFullYear()}`;
-					case 'localmonth':
-						return prev + String(now.getMonth() + 1).padStart(2, '0');
-					case 'localmonth1':
-						return `${prev}${now.getMonth() + 1}`;
-					case 'localmonthname':
-					case 'localmonthnamegen':
-						return prev + now.toLocaleString('default', {month: 'long'});
-					case 'localmonthabbrev':
-						return prev + now.toLocaleString('default', {month: 'short'});
-					case 'localday':
-						return `${prev}${now.getDate()}`;
-					case 'localday2':
-						return prev + String(now.getDate()).padStart(2, '0');
-					case 'localdow':
-						return `${prev}${now.getDay()}`;
-					case 'localdayname':
-						return prev + now.toLocaleString('default', {weekday: 'long'});
-					case 'localtime':
-						return `${prev}${
-							String(now.getHours()).padStart(2, '0')
-						}:${String(now.getMinutes()).padStart(2, '0')}`;
-					case 'localhour':
-						return prev + String(now.getHours()).padStart(2, '0');
-					case 'localweek': {
-						const firstDay = new Date(now.getFullYear(), 0, 1);
-						return `${prev}${Math.ceil((now.getTime() - firstDay.getTime()) / 1e3 / 60 / 60 / 24 / 7)}`;
-					}
-					case 'localtimestamp':
-						return prev
-							+ String(now.getFullYear())
-							+ String(now.getMonth() + 1).padStart(2, '0')
-							+ String(now.getDate()).padStart(2, '0')
-							+ String(now.getHours()).padStart(2, '0')
-							+ String(now.getMinutes()).padStart(2, '0')
-							+ String(now.getSeconds()).padStart(2, '0');
-					// no default
-				}
+				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now)}`;
 			} else if (!solvedMagicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {
