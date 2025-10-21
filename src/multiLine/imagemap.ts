@@ -49,7 +49,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 					{
 						valid,
 						ns,
-					} = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true});
+					} = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true, page: ''});
 				if (
 					valid
 					&& ns === 6
@@ -78,8 +78,11 @@ export abstract class ImagemapToken extends MultiLineToken {
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
 					if (
-						this.normalizeTitle(mtIn[1], 0, {halfParsed: true, temporary: true, selfLink: true})
-							.valid
+						this.normalizeTitle(
+							mtIn[1],
+							0,
+							{halfParsed: true, temporary: true, selfLink: true, page: ''},
+						).valid
 					) {
 						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
