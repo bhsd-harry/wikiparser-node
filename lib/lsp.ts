@@ -641,69 +641,67 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY END */
 
-		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
-			.flatMap(token => {
-				const {
-					type,
-					childNodes,
-
-					/* NOT FOR BROWSER ONLY */
-
-					parentNode,
-				} = token;
-				if (type !== 'attr-value' && !isPlain(token)) {
-					return [];
-
-					/* NOT FOR BROWSER ONLY */
-				} else if (isAttr(token, true)) {
-					const textDoc = new EmbeddedCSSDocument(root, token);
-					return cssLSP!.findDocumentColors(textDoc, textDoc.styleSheet);
-
-					/* NOT FOR BROWSER ONLY END */
-				}
+		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse().flatMap(token => {
+			const {
+				type,
+				childNodes,
 
 				/* NOT FOR BROWSER ONLY */
 
-				const isStyle = re && type === 'attr-value' && parentNode!.name === 'style';
+				parentNode,
+			} = token;
+			if (type !== 'attr-value' && !isPlain(token)) {
+				return [];
+
+				/* NOT FOR BROWSER ONLY */
+			} else if (isAttr(token, true)) {
+				const textDoc = new EmbeddedCSSDocument(root, token);
+				return cssLSP!.findDocumentColors(textDoc, textDoc.styleSheet);
+
+				/* NOT FOR BROWSER ONLY END */
+			}
+
+			/* NOT FOR BROWSER ONLY */
+
+			const isStyle = re && type === 'attr-value' && parentNode!.name === 'style';
+
+			/* NOT FOR BROWSER ONLY END */
+
+			return childNodes.filter((child): child is AstText => child.type === 'text').reverse().flatMap(child => {
+				const {data} = child,
+					parts = splitColors(data, hsl).filter(([,,, isColor]) => isColor);
+
+				/* NOT FOR BROWSER ONLY */
+
+				if (isStyle) {
+					parts.push(
+						...[...data.matchAll(re)].map(
+							({index, 0: s}): [string, number, number, true] =>
+								[s, index, index + s.length, true],
+						),
+					);
+				}
 
 				/* NOT FOR BROWSER ONLY END */
 
-				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
-					.flatMap(child => {
-						const {data} = child,
-							parts = splitColors(data, hsl).filter(([,,, isColor]) => isColor);
-
-						/* NOT FOR BROWSER ONLY */
-
-						if (isStyle) {
-							parts.push(
-								...[...data.matchAll(re)].map(
-									({index, 0: s}): [string, number, number, true] =>
-										[s, index, index + s.length, true],
-								),
-							);
-						}
-
-						/* NOT FOR BROWSER ONLY END */
-
-						if (parts.length === 0) {
-							return [];
-						}
-						const start = child.getAbsoluteIndex();
-						return parts.map(([s, from, to]): ColorInformation | false => {
-							const color = rgba(s);
-							return color.length === 4 && {
-								color: {
-									red: color[0] / 255,
-									green: color[1] / 255,
-									blue: color[2] / 255,
-									alpha: color[3],
-								},
-								range: createRange(root, start + from, start + to),
-							};
-						}).filter(Boolean) as ColorInformation[];
-					});
+				if (parts.length === 0) {
+					return [];
+				}
+				const start = child.getAbsoluteIndex();
+				return parts.map(([s, from, to]): ColorInformation | false => {
+					const color = rgba(s);
+					return color.length === 4 && {
+						color: {
+							red: color[0] / 255,
+							green: color[1] / 255,
+							blue: color[2] / 255,
+							alpha: color[3],
+						},
+						range: createRange(root, start + from, start + to),
+					};
+				}).filter(Boolean) as ColorInformation[];
 			});
+		});
 	}
 
 	/**
@@ -1430,8 +1428,7 @@ export class LanguageService implements LanguageServiceBase {
 								ns = name === 'filepath' ? 6 : 274;
 							// no default
 						}
-						const title = Parser
-							.normalizeTitle(target, ns, false, this.config, {temporary: true});
+						const title = Parser.normalizeTitle(target, ns, false, this.config, {temporary: true});
 						if (!title.valid) {
 							return false;
 						}
