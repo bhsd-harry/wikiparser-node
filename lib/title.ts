@@ -44,7 +44,8 @@ export class Title {
 	#path: string;
 	#ns;
 	#fragment;
-	#page;
+	/** @private */
+	page;
 	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
@@ -165,7 +166,7 @@ export class Title {
 		config: Config,
 		{temporary, decode, selfLink, page = ''}: TitleOptions = {},
 	) {
-		this.#page = page;
+		this.page = page;
 		const trimmed = title.trim(),
 			subpage = trimmed.startsWith('../');
 		if (decode && title.includes('%')) {
@@ -249,42 +250,64 @@ export class Title {
 	}
 
 	/**
+	 * 生成标题
+	 * @param prefix 前缀
+	 */
+	#getTitle(prefix: string): [boolean, string] {
+		let title = (prefix + this.main).replace(/ /gu, '_');
+		if (title.startsWith('/')) {
+			title = this.page + title.replace(/\/$/u, '');
+		} else if (title.startsWith('../') && this.page.includes('/')) {
+			const [level, sub] = resolve(title),
+				dirs = this.page.split('/');
+			if (dirs.length > level) {
+				title = dirs.slice(0, -level).join('/') + (sub && '/') + sub;
+			}
+		}
+		const media = title.startsWith('Media:');
+		let redirected = this.redirects.get(media ? `File:${title.slice(6)}` : title);
+		if (redirected) {
+			const hash = redirected.indexOf('#');
+			this.#redirectFragment = hash === -1 ? undefined : redirected.slice(hash + 1);
+			redirected = hash === -1 ? redirected : redirected.slice(0, hash);
+			return [true, media ? redirected.replace(/^File:/u, 'Media:') : redirected];
+		}
+		return [false, title];
+	}
+
+	/**
 	 * Check if the title is a redirect
 	 *
 	 * 检测是否是重定向
 	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
-		const prefix =
-			this.interwiki + (this.interwiki && ':') + // eslint-disable-line @stylistic/operator-linebreak
-			this.prefix;
-		let title = (prefix + this.main).replace(/ /gu, '_');
-		if (title.startsWith('/')) {
-			title = this.#page + title;
-		} else if (title.startsWith('../') && this.#page.includes('/')) {
-			const [level, sub] = resolve(title),
-				dirs = this.#page.split('/');
-			if (dirs.length > level) {
-				title = dirs.slice(0, -level).join('/') + (sub && '/') + sub;
-			}
-		}
+		const {
+				prefix,
+				main,
+
+				/* NOT FOR BROWSER */
+
+				interwiki,
+			} = this,
+			pre =
+				interwiki + (interwiki && ':') + // eslint-disable-line @stylistic/operator-linebreak
+				prefix,
+			result = this.#getTitle(pre);
 
 		/* NOT FOR BROWSER */
 
-		let redirected = this.#redirect(title);
-		if (redirected) {
-			return [true, redirected];
+		if (result[0]) {
+			return result;
 		}
 		this.autoConvert();
-		title = (prefix + this.main).replaceAll(' ', '_');
-		redirected = this.#redirect(title);
-		if (redirected) {
-			return [true, redirected];
+		if (this.main !== main) {
+			return this.#getTitle(pre);
 		}
 
 		/* NOT FOR BROWSER END */
 
-		return [false, title];
+		return result;
 	}
 
 	/** @private */
@@ -337,25 +360,6 @@ export class Title {
 				? ''
 				: `#${this.#fragment ?? this.#redirectFragment}`
 		);
-	}
-
-	/**
-	 * 处理重定向
-	 * @param title 原标题
-	 */
-	#redirect(title: string): string {
-		const media = title.startsWith('Media:');
-		if (media) {
-			title = `File:${title.slice(6)}`;
-		}
-		const redirected = this.redirects.get(title);
-		if (redirected) {
-			const hash = redirected.indexOf('#');
-			title = hash === -1 ? redirected : redirected.slice(0, hash);
-			this.#redirectFragment = hash === -1 ? undefined : redirected.slice(hash + 1);
-			return media ? title.replace(/^File:/u, 'Media:') : title;
-		}
-		return '';
 	}
 
 	/**

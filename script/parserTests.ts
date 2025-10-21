@@ -96,19 +96,20 @@ for (const file of ['parserTests.txt', ...files]) {
 	}
 	for (const [test] of cases) {
 		const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
-			option = regex.options.exec(test)?.[1]!.trim(),
+			option = regex.options.exec(test)?.[1]!.trim() ?? '',
 			html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)?.[1]!.trim();
 		if (
 			!wikitext
 			|| /<(?:div|span|static|aside)?tag\b|\{\{\s*#(?:div|span)tag:/iu.test(wikitext)
 			|| /\b(?:NULL\b|array\s*\()/u.test(html!)
-			|| /\blanguage=(?!en|zh)/u.test(option!)
+			|| /\blanguage=(?!en|zh)/u.test(option)
 		) {
 			continue;
 		}
 		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,
-			root = Parser.parse(wikitext),
-			t: Test = {desc, wikitext};
+			title = /\btitle=\s*\[\[([^\]]+)/u.exec(option)?.[1],
+			root = Parser.parse(wikitext, title!),
+			t: Test = {desc, wikitext, title};
 		if (/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test) && (!test.includes('options') || re.test(test))) {
 			t.html = html!;
 			try {

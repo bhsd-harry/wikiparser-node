@@ -42,10 +42,10 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, wikitext, print, render} of tests) {
+	for (const {desc, title, wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext),
+				const root = Parser.parse(wikitext, title!),
 					tidied = wikitext.replaceAll('\0', '');
 
 				/* NOT FOR BROWSER */
