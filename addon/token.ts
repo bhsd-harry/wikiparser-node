@@ -196,10 +196,13 @@ const expand = (
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
-					const {
-						valid,
-						interwiki,
-					} = Parser.normalizeTitle(var1, 0, include, config, {halfParsed: true, temporary: true});
+					const {valid, interwiki} = Parser.normalizeTitle(
+						var1,
+						0,
+						include,
+						config,
+						{halfParsed: true, temporary: true, page: ''},
+					);
 					bool = valid && !interwiki;
 				}
 				return parseIf(accum, prev, c[bool ? 2 : 3]);
