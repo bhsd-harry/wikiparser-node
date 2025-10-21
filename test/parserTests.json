@@ -718,6 +718,7 @@
 	{
 		"desc": "Link containing \"#<\" and \"#>\" % as a hex sequences- these are valid section anchors",
 		"wikitext": "[[%23%3c]][[%23%3e]]",
+		"title": "Main Page",
 		"html": "<p><a href=\"#&lt;\">#&lt;</a><a href=\"#&gt;\">#&gt;</a>\n</p>",
 		"render": "<p><a href=\"#%3C\">#&lt;</a><a href=\"#%3E\">#&gt;</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%23%3c</span>]]</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%23%3e</span>]]</span></span>"
@@ -865,6 +866,7 @@
 	{
 		"desc": "T2337: Escaped self-links should be bold",
 		"wikitext": "[[Bu&#103;462]] [[Bug462]]",
+		"title": "Bug462",
 		"html": "<p><a class=\"mw-selflink selflink\">Bu&#103;462</a> <a class=\"mw-selflink selflink\">Bug462</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Bug462\" title=\"Bug462\">Bu&#103;462</a> <a href=\"/wiki/Bug462\" title=\"Bug462\">Bug462</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bu&amp;#103;462</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bug462</span>]]</span></span>"
@@ -872,6 +874,7 @@
 	{
 		"desc": "Self-link to section should not be bold",
 		"wikitext": "[[Main Page#section]]",
+		"title": "Main Page",
 		"html": "<p><a class=\"mw-selflink-fragment\" href=\"#section\">Main Page#section</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Main_Page#section\" title=\"Main Page\">Main Page#section</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page#section</span>]]</span></span>"
@@ -879,6 +882,7 @@
 	{
 		"desc": "Self-link hash fragment should be escaped",
 		"wikitext": "[[Main Page#section with spaces]]",
+		"title": "Main Page",
 		"html": "<p><a class=\"mw-selflink-fragment\" href=\"#section_with_spaces\">Main Page#section with spaces</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Main_Page#section_with_spaces\" title=\"Main Page\">Main Page#section with spaces</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page#section with spaces</span>]]</span></span>"
@@ -886,6 +890,7 @@
 	{
 		"desc": "Self-link to numeric title",
 		"wikitext": "[[0]]",
+		"title": "0",
 		"html": "<p><a class=\"mw-selflink selflink\">0</a>\n</p>",
 		"render": "<p><a href=\"/wiki/0\" title=\"0\">0</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">0</span>]]</span></span>"
@@ -893,6 +898,7 @@
 	{
 		"desc": "Link to numeric-equivalent title",
 		"wikitext": "[[00]]",
+		"title": "0",
 		"html": "<p><a href=\"/wiki/00\" title=\"00\">00</a>\n</p>",
 		"render": "<p><a href=\"/wiki/00\" title=\"00\">00</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">00</span>]]</span></span>"
@@ -942,6 +948,7 @@
 	{
 		"desc": "Handle title parsing for subpages",
 		"wikitext": "123",
+		"title": "/123123",
 		"html": "<p>123\n</p>",
 		"render": "<p>123\n</p>",
 		"print": "<span class=\"wpb-root\">123</span>"
@@ -949,13 +956,15 @@
 	{
 		"desc": "Link to a subpage from a namespace other than main",
 		"wikitext": "[[/123]]",
+		"title": "User:Test",
 		"html": "<p><a href=\"/wiki/User:Test/123\" title=\"User:Test/123\">/123</a>\n</p>",
-		"render": "<p><a href=\"/wiki/%2F123\" title=\"/123\">/123</a>\n</p>",
+		"render": "<p><a href=\"/wiki/User%3ATest%2F123\" title=\"User:Test/123\">/123</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/123</span>]]</span></span>"
 	},
 	{
 		"desc": "Ensure that transclusion titles are not url-decoded",
 		"wikitext": "{{Bar%C3%A9}} {{/Bar%C3%A9}}",
+		"title": "Test",
 		"html": "<p>{{Bar%C3%A9}} {{/Bar%C3%A9}}\n</p>",
 		"render": "<p>{{Bar%C3%A9}} {{/Bar%C3%A9}}\n</p>",
 		"print": "<span class=\"wpb-root\">{{Bar%C3%A9}} {{/Bar%C3%A9}}</span>"
@@ -963,6 +972,7 @@
 	{
 		"desc": "Purely hash wikilink",
 		"wikitext": "[[#a|b]]",
+		"title": "User:Test/123",
 		"html": "<p><a href=\"#a\">b</a>\n</p>",
 		"render": "<p><a href=\"#a\">b</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#a</span>|<span class=\"wpb-link-text\">b</span>]]</span></span>"
@@ -970,6 +980,7 @@
 	{
 		"desc": "Purely hash wikilink on file page",
 		"wikitext": "[[#a|b]]",
+		"title": "File:Foobar.jpg",
 		"html": "<p><a href=\"#a\">b</a>\n</p>",
 		"render": "<p><a href=\"#a\">b</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#a</span>|<span class=\"wpb-link-text\">b</span>]]</span></span>"
@@ -977,6 +988,7 @@
 	{
 		"desc": "Purely hash wikilink on category page",
 		"wikitext": "[[#a|b]]",
+		"title": "Category:Foobar",
 		"html": "<p><a href=\"#a\">b</a>\n</p>",
 		"render": "<p><a href=\"#a\">b</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#a</span>|<span class=\"wpb-link-text\">b</span>]]</span></span>"
@@ -984,6 +996,7 @@
 	{
 		"desc": "Serialization of purely hash wikilink",
 		"wikitext": "[[#a|<nowiki>[[</nowiki>]]",
+		"title": "User:Test/123",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#a</span>|<span class=\"wpb-link-text\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">[[</span>&lt;/nowiki&gt;</span></span>]]</span></span>"
 	},
 	{
@@ -2618,20 +2631,23 @@
 	{
 		"desc": "Subpage link",
 		"wikitext": "[[/subpage]]",
+		"title": "Subpage test",
 		"html": "<p><a href=\"/wiki/Subpage_test/subpage\" title=\"Subpage test/subpage\">/subpage</a>\n</p>",
-		"render": "<p><a href=\"/wiki/%2Fsubpage\" title=\"/subpage\">/subpage</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2Fsubpage\" title=\"Subpage test/subpage\">/subpage</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/subpage</span>]]</span></span>"
 	},
 	{
 		"desc": "Subpage noslash link",
 		"wikitext": "[[/subpage/]]",
+		"title": "Subpage test",
 		"html": "<p><a href=\"/wiki/Subpage_test/subpage\" title=\"Subpage test/subpage\">subpage</a>\n</p>",
-		"render": "<p><a href=\"/wiki/%2Fsubpage%2F\" title=\"/subpage/\">/subpage/</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2Fsubpage\" title=\"Subpage test/subpage\">/subpage/</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/subpage/</span>]]</span></span>"
 	},
 	{
 		"desc": "Relative subpage noslash link",
 		"wikitext": "[[../../subpage/]]\n\n[[../../subpage]]",
+		"title": "Subpage test/1/2/3/4",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../subpage/</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../subpage</span>]]</span></span>"
 	},
 	{
@@ -2658,13 +2674,15 @@
 	{
 		"desc": "T2561: {{/Subpage}}",
 		"wikitext": "{{/Subpage}}",
+		"title": "Page",
 		"html": "<p><a href=\"/index.php?title=Page/Subpage&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Page/Subpage (page does not exist)\">Page/Subpage</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3A%2FSubpage?action=edit&redlink=1\" class=\"new\" title=\"Template:/Subpage (page does not exist)\">Template:/Subpage</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Page%2FSubpage?action=edit&redlink=1\" class=\"new\" title=\"Page/Subpage (page does not exist)\">Page/Subpage</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">/Subpage</span>}}</span></span>"
 	},
 	{
 		"desc": "Subpage with namespaces",
 		"wikitext": "[[User:../subpage]]\n[[meatball:../subpage]]",
+		"title": "Subpage test/1/2/3/4",
 		"html": "<p>[[User:../subpage]]\n[[meatball:../subpage]]\n</p>",
 		"render": "<p>[[User:../subpage]]\n<a href=\"/wiki/Meatball%3A..%2Fsubpage\" title=\"Meatball:../subpage\">meatball:../subpage</a>\n</p>",
 		"print": "<span class=\"wpb-root\">[[User:../subpage]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:../subpage</span>]]</span></span>"
@@ -2672,6 +2690,7 @@
 	{
 		"desc": "T335847: Resolve forward slash title",
 		"wikitext": "===123===",
+		"title": "/",
 		"html": "<div class=\"mw-heading mw-heading3\"><h3 id=\"123\">123</h3><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=/&amp;action=edit&amp;section=1\" title=\"Edit section: 123\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
 		"render": "<div class=\"mw-heading mw-heading3\"><h3 id=\"123\">123</h3></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">===<span class=\"wpb-heading-title\">123</span>===</span></span>"
@@ -2679,13 +2698,15 @@
 	{
 		"desc": "T335847: Resolve subpage of control title",
 		"wikitext": "[[../Hi]]",
+		"title": "Asdf",
 		"html": "<p>[[../Hi]]\n</p>",
-		"render": "<p><a href=\"/wiki/..%2FHi\" title=\"../Hi\">../Hi</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../Hi</span>]]</span></span>"
+		"render": "<p>[[../Hi]]\n</p>",
+		"print": "<span class=\"wpb-root\">[[../Hi]]</span>"
 	},
 	{
 		"desc": "T335847: Resolve subpage of forward slash title",
 		"wikitext": "[[../Hi]]",
+		"title": "/",
 		"html": "<p><a href=\"/index.php?title=/Hi&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"/Hi (page does not exist)\">/Hi</a>\n</p>",
 		"render": "<p><a href=\"/wiki/..%2FHi\" title=\"../Hi\">../Hi</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../Hi</span>]]</span></span>"
@@ -3525,6 +3546,7 @@
 	{
 		"desc": "Sanitizer: Escaping of spaces, multibyte characters, colons & other stuff in id=\"\"",
 		"wikitext": "<span id=\"æ: v\">byte</span>[[#æ: v|backlink]]",
+		"title": "Main Page",
 		"html": "<p><span id=\"æ:_v\">byte</span><a href=\"#æ:_v\">backlink</a>\n</p>",
 		"render": "<p><span id=\"æ:_v\">byte</span><a href=\"#%C3%A6%3A_v\">backlink</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">æ: v</span>\"</span></span>&gt;</span>byte<span class=\"wpb-html\">&lt;/span&gt;</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#æ: v</span>|<span class=\"wpb-link-text\">backlink</span>]]</span></span>"
@@ -4141,6 +4163,7 @@
 	{
 		"desc": "Say the magic word",
 		"wikitext": "*{{PAGENAME}}\n*{{PAGENAMEE}}\n*{{FULLPAGENAME}}\n*{{FULLPAGENAMEE}}\n*{{BASEPAGENAME}}\n*{{BASEPAGENAMEE}}\n*{{SUBPAGENAME}}\n*{{SUBPAGENAMEE}}\n*{{ROOTPAGENAME}}\n*{{ROOTPAGENAMEE}}\n*{{TALKPAGENAME}}\n*{{TALKPAGENAMEE}}\n*{{SUBJECTPAGENAME}}\n*{{SUBJECTPAGENAMEE}}\n*{{NAMESPACEE}}\n*{{NAMESPACE}}\n*{{NAMESPACENUMBER}}\n*{{TALKSPACE}}\n*{{TALKSPACEE}}\n*{{SUBJECTSPACE}}\n*{{SUBJECTSPACEE}}\n*{{Dynamic|{{NUMBEROFUSERS}}|{{NUMBEROFPAGES}}|{{CURRENTVERSION}}|{{CONTENTLANGUAGE}}|{{DIRECTIONMARK}}|{{CURRENTTIMESTAMP}}|{{NUMBEROFARTICLES}}}}",
+		"title": "Parser test",
 		"html": "<ul><li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Talk:Parser test</li>\n<li>Talk:Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li>0</li>\n<li>Talk</li>\n<li>Talk</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li><a href=\"/index.php?title=Template:Dynamic&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Dynamic (page does not exist)\">Template:Dynamic</a></li></ul>",
 		"render": "<ul><li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li><a href=\"/wiki/Template%3ADynamic?action=edit&redlink=1\" class=\"new\" title=\"Template:Dynamic (page does not exist)\">Template:Dynamic</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACENUMBER</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Dynamic</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFUSERS</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFPAGES</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTVERSION</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CONTENTLANGUAGE</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DIRECTIONMARK</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTTIMESTAMP</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFARTICLES</span>}}</span></span></span>}}</span></span>"
@@ -4207,27 +4230,31 @@
 	{
 		"desc": "Parents of subpages, one level up",
 		"wikitext": "[[../|L2]]",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1/L2\" title=\"Subpage test/L1/L2\">L2</a>\n</p>",
-		"render": "<p><a href=\"/wiki/..%2F\" title=\"../\">L2</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2FL2\" title=\"Subpage test/L1/L2\">L2</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../</span>|<span class=\"wpb-link-text\">L2</span>]]</span></span>"
 	},
 	{
 		"desc": "Parents of subpages, one level up, not named",
 		"wikitext": "[[../]]",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1/L2\" title=\"Subpage test/L1/L2\">Subpage test/L1/L2</a>\n</p>",
-		"render": "<p><a href=\"/wiki/..%2F\" title=\"../\">../</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2FL2\" title=\"Subpage test/L1/L2\">../</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../</span>]]</span></span>"
 	},
 	{
 		"desc": "Parents of subpages, two levels up",
 		"wikitext": "[[../../|L1]]2\n\n[[../../|L1]]l",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1\" title=\"Subpage test/L1\">L1</a>2\n</p><p><a href=\"/wiki/Subpage_test/L1\" title=\"Subpage test/L1\">L1l</a>\n</p>",
-		"render": "<p><a href=\"/wiki/..%2F..%2F\" title=\"../../\">L1</a>2\n</p><p><a href=\"/wiki/..%2F..%2F\" title=\"../../\">L1</a>l\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2FL1\" title=\"Subpage test/L1\">L1</a>2\n</p><p><a href=\"/wiki/Subpage_test%2FL1\" title=\"Subpage test/L1\">L1</a>l\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../</span>|<span class=\"wpb-link-text\">L1</span>]]</span>2\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../</span>|<span class=\"wpb-link-text\">L1</span>]]</span>l</span>"
 	},
 	{
 		"desc": "Parents of subpages, two levels up, without trailing slash or name.",
 		"wikitext": "[[../..]]",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p>[[../..]]\n</p>",
 		"render": "<p>[[../..]]\n</p>",
 		"print": "<span class=\"wpb-root\">[[../..]]</span>"
@@ -4235,29 +4262,33 @@
 	{
 		"desc": "Parents of subpages, two levels up, with lots of extra trailing slashes.",
 		"wikitext": "[[../../////]]",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1\" title=\"Subpage test/L1\">Subpage test/L1</a>\n</p>",
-		"render": "<p><a href=\"/wiki/..%2F..%2F%2F%2F%2F%2F\" title=\"../../////\">../../////</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2F%2F%2F%2F%2F\" title=\"Subpage test/L1/////\">../../////</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../////</span>]]</span></span>"
 	},
 	{
 		"desc": "Transclusion of a sibling page (one level up)",
 		"wikitext": "{{../L3Sibling}}",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p>Sibling article\n</p>",
-		"render": "<p><a href=\"/wiki/..%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"../L3Sibling (page does not exist)\">../L3Sibling</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2FL2%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"Subpage test/L1/L2/L3Sibling (page does not exist)\">Subpage test/L1/L2/L3Sibling</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../L3Sibling</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of a child page",
 		"wikitext": "{{/L3Sibling}}",
+		"title": "Subpage test/L1/L2",
 		"html": "<p>Sibling article\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3A%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"Template:/L3Sibling (page does not exist)\">Template:/L3Sibling</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2FL2%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"Subpage test/L1/L2/L3Sibling (page does not exist)\">Subpage test/L1/L2/L3Sibling</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">/L3Sibling</span>}}</span></span>"
 	},
 	{
 		"desc": "Non-transclusion because of too many up levels",
 		"wikitext": "{{../../../../More than parent}}",
+		"title": "Subpage test/L1/L2/L3",
 		"html": "<p>{{../../../../More than parent}}\n</p>",
-		"render": "<p><a href=\"/wiki/..%2F..%2F..%2F..%2FMore_than_parent?action=edit&redlink=1\" class=\"new\" title=\"../../../../More than parent (page does not exist)\">../../../../More than parent</a>\n</p>",
+		"render": "<p>{{../../../../More than parent}}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../../../../More than parent</span>}}</span></span>"
 	},
 	{
@@ -4584,56 +4615,67 @@
 	{
 		"desc": "Edit comment with section link (non-local, eg in history list)",
 		"wikitext": "/* External links */ removed bogus entries",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\">/* External links */ removed bogus entries</span>"
 	},
 	{
 		"desc": "Edit comment with section link and text before it (non-local, eg in history list)",
 		"wikitext": "pre-comment text /* External links */ removed bogus entries",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\">pre-comment text /* External links */ removed bogus entries</span>"
 	},
 	{
 		"desc": "Edit comment with section link (local, eg in diff view)",
 		"wikitext": "/* External links */ removed bogus entries",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\">/* External links */ removed bogus entries</span>"
 	},
 	{
 		"desc": "Edit comment with section link that has a link in it",
 		"wikitext": "/* [[A link]] */",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\">/* <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">A link</span>]]</span> */</span>"
 	},
 	{
 		"desc": "Edit comment with section link that has a template in it",
 		"wikitext": "/* {{foobar|param}} */",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\">/* <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">foobar</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">param</span></span>}}</span> */</span>"
 	},
 	{
 		"desc": "Edit comment with subpage link (T16080)",
 		"wikitext": "Poked at a [[/subpage]] here...",
+		"title": "Subpage test",
 		"print": "<span class=\"wpb-root\">Poked at a <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/subpage</span>]]</span> here...</span>"
 	},
 	{
 		"desc": "Edit comment with subpage link and link text (T16080)",
 		"wikitext": "Poked at a [[/subpage|neat little page]] here...",
+		"title": "Subpage test",
 		"print": "<span class=\"wpb-root\">Poked at a <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/subpage</span>|<span class=\"wpb-link-text\">neat little page</span>]]</span> here...</span>"
 	},
 	{
 		"desc": "Edit comment with bogus subpage link in non-subpage NS (T16080)",
 		"wikitext": "Poked at a [[/subpage]] here...",
+		"title": "Subpage test",
 		"print": "<span class=\"wpb-root\">Poked at a <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/subpage</span>]]</span> here...</span>"
 	},
 	{
 		"desc": "Edit comment with bare anchor link (local, as on diff)",
 		"wikitext": "[[#section]]",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#section</span>]]</span></span>"
 	},
 	{
 		"desc": "Edit comment with bare anchor link (non-local, as on history)",
 		"wikitext": "[[#section]]",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#section</span>]]</span></span>"
 	},
 	{
 		"desc": "Anchor starting with underscore",
 		"wikitext": "[[#_ref|One]]",
+		"title": "Foo",
 		"html": "<p><a href=\"#_ref\">One</a>\n</p>",
 		"render": "<p><a href=\"#_ref\">One</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#_ref</span>|<span class=\"wpb-link-text\">One</span>]]</span></span>"
@@ -4658,6 +4700,7 @@
 	{
 		"desc": "Space normalisation on autocomment (T24784)",
 		"wikitext": "/* __hello__world__ */",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\">/* __hello__world__ */</span>"
 	},
 	{
@@ -4673,51 +4716,61 @@
 	{
 		"desc": "Verify that displaytitle works (T24501) RestrictDisplayTitle=false",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:whatever}}",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">whatever</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle works (T24501) RestrictDisplayTitle=true mismatch",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:whatever}}",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">whatever</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle works (T24501) RestrictDisplayTitle=true matching",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:screen}}",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">screen</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle works (T24501) AllowDisplayTitle=false",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:screen}}",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">screen</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle works (T24501) AllowDisplayTitle=false no DISPLAYTITLE",
 		"wikitext": "this is not the title",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title</span>"
 	},
 	{
 		"desc": "Verify that displaytitle handles inline CSS styles (T28547) - rejected value",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:<span style=\"display: none;\">s</span>creen}}",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">display: none;</span>\"</span></span>&gt;</span>s<span class=\"wpb-html\">&lt;/span&gt;</span>creen</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle handles inline CSS styles (T28547) - accepted value",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:<span style=\"color: red;\">s</span>creen}}",
+		"title": "Screen",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color: red;</span>\"</span></span>&gt;</span>s<span class=\"wpb-html\">&lt;/span&gt;</span>creen</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle encodes & to &amp; (T291985)",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:art&copy}}",
+		"title": "Art&copy",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">art&amp;copy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that displaytitle encodes &amp; to &amp; (T291985)",
 		"wikitext": "this is not the title\n{{DISPLAYTITLE:art&amp;copy}}",
+		"title": "Art&copy",
 		"print": "<span class=\"wpb-root\">this is not the title\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DISPLAYTITLE</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">art&amp;amp;copy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Verify that without displaytitle the title encodes & to &amp; (T291985)",
 		"wikitext": "this is not the title",
+		"title": "Art&copy",
 		"print": "<span class=\"wpb-root\">this is not the title</span>"
 	},
 	{
@@ -4839,6 +4892,7 @@
 	{
 		"desc": "T34057: Title needed when expanding <h> nodes.",
 		"wikitext": "{{int:T34057}}",
+		"title": "Main Page",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"OK\">OK</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: OK\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">int</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">T34057</span></span>}}</span></span>"
@@ -4846,6 +4900,7 @@
 	{
 		"desc": "Title needed when expanding templates.",
 		"wikitext": "{{Template with pagename}}",
+		"title": "Main Page",
 		"html": "<p>This is Main Page.\n</p>",
 		"render": "<p>This is .\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template with pagename</span>}}</span></span>"
@@ -7436,6 +7491,7 @@
 	{
 		"desc": "Template nested in extension tag in template",
 		"wikitext": "{{1x|hi<ref>[[ho|{{1x|hi}}]]</ref>}}\n{{1x|hi<ref>[http://test.com?q={{1x|ho}}]</ref>}}\n{{1x|hi<ref>-{ho|{{1x|hi}}}-</ref>}}\n<references />",
+		"title": "Main Page",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi<span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">ho</span>|<span class=\"wpb-link-text\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span></span>]]</span></span>&lt;/ref&gt;</span></span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi<span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com?q=</span><span class=\"wpb-ext-link-text\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ho</span></span>}}</span></span>]</span></span>&lt;/ref&gt;</span></span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi<span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\">ho</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span></span></span>}-</span></span>&lt;/ref&gt;</span></span></span>}}</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -9312,6 +9368,7 @@
 	{
 		"desc": "T28375: TOC with italics",
 		"wikitext": "__TOC__\n==''Lost'' episodes==",
+		"title": "Main Page",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Lost_episodes\"><span class=\"tocnumber\">1</span> <span class=\"toctext\"><i>Lost</i> episodes</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Lost_episodes\"><i>Lost</i> episodes</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: Lost episodes\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
 		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Lost_episodes\"><i>Lost</i> episodes</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__TOC__</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"><span class=\"wpb-quote\">''</span>Lost<span class=\"wpb-quote\">''</span> episodes</span>==</span></span>"
@@ -9319,6 +9376,7 @@
 	{
 		"desc": "T28375: TOC with bold",
 		"wikitext": "__TOC__\n=='''should be bold''' then normal text==",
+		"title": "Main Page",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#should_be_bold_then_normal_text\"><span class=\"tocnumber\">1</span> <span class=\"toctext\"><b>should be bold</b> then normal text</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"should_be_bold_then_normal_text\"><b>should be bold</b> then normal text</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: should be bold then normal text\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
 		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"should_be_bold_then_normal_text\"><b>should be bold</b> then normal text</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__TOC__</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"><span class=\"wpb-quote\">'''</span>should be bold<span class=\"wpb-quote\">'''</span> then normal text</span>==</span></span>"
@@ -9326,6 +9384,7 @@
 	{
 		"desc": "T35845: Headings become cursive in TOC when they contain an image",
 		"wikitext": "__TOC__\n==Image [[Image:foobar.jpg]]==",
+		"title": "Main Page",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Image\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">Image</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Image\">Image <span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span></h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: Image\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
 		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Image\">Image <span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a></span></h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__TOC__</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Image <span class=\"wpb-file\">[[<span class=\"wpb-link-target\">Image:foobar.jpg</span>]]</span></span>==</span></span>"
@@ -9333,6 +9392,7 @@
 	{
 		"desc": "T35845 (2): Headings become bold in TOC when they contain a blockquote",
 		"wikitext": "__TOC__\n==<blockquote>Quote</blockquote>==",
+		"title": "Main Page",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Quote\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">Quote</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Quote\"><blockquote><p>Quote</p></blockquote></h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: Quote\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
 		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Quote\"><blockquote>Quote</blockquote></h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__TOC__</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"><span class=\"wpb-html\">&lt;blockquote&gt;</span>Quote<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>==</span></span>"
@@ -9340,6 +9400,7 @@
 	{
 		"desc": "Unclosed tags in TOC",
 		"wikitext": "__TOC__\n==Proof: 2 < 3==\n<small>Hanc marginis exiguitas non caperet.</small>\nQED",
+		"title": "Main Page",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Proof:_2_&lt;_3\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">Proof: 2 &lt; 3</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Proof:_2_&lt;_3\"><span id=\"Proof:_2_.3C_3\"></span>Proof: 2 &lt; 3</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: Proof: 2 &lt; 3\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<p><small>Hanc marginis exiguitas non caperet.</small>\nQED\n</p>",
 		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Proof:_2_<_3\">Proof: 2 &lt; 3</h2></div>\n<p><small>Hanc marginis exiguitas non caperet.</small>\nQED\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__TOC__</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Proof: 2 &lt; 3</span>==</span>\n<span class=\"wpb-html\">&lt;small&gt;</span>Hanc marginis exiguitas non caperet.<span class=\"wpb-html\">&lt;/small&gt;</span>\nQED</span>"
@@ -10191,6 +10252,7 @@
 	{
 		"desc": "Link scenarios with escaped fragments",
 		"wikitext": "[[#Is this great?]]\n[[Foo#Is this great?]]\n[[meatball:Foo#Is this great?]]\n[[:en:Foo#Is this great?]]",
+		"title": "Main Page",
 		"html": "<p><a href=\"#Is_this_great?\">#Is this great?</a>\n<a href=\"/wiki/Foo#Is_this_great?\" title=\"Foo\">Foo#Is this great?</a>\n<a href=\"http://www.usemod.com/cgi-bin/mb.pl?Foo#Is_this_great.3F\" class=\"extiw\" title=\"meatball:Foo\">meatball:Foo#Is this great?</a>\n<a href=\"//en.wikipedia.org/wiki/Foo#Is_this_great?\" class=\"extiw\" title=\"en:Foo\">en:Foo#Is this great?</a>\n</p>",
 		"render": "<p><a href=\"#Is_this_great%3F\">#Is this great?</a>\n<a href=\"/wiki/Foo#Is_this_great%3F\" title=\"Foo\">Foo#Is this great?</a>\n<a href=\"/wiki/Meatball%3AFoo#Is_this_great%3F\" title=\"Meatball:Foo\">meatball:Foo#Is this great?</a>\n<a href=\"/wiki/En%3AFoo#Is_this_great%3F\" title=\"En:Foo\">en:Foo#Is this great?</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Is this great?</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo#Is this great?</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:Foo#Is this great?</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:en:Foo#Is this great?</span>]]</span></span>"
@@ -10231,6 +10293,7 @@
 	{
 		"desc": "Local interwiki link: self-link to current page",
 		"wikitext": "[[local:Main Page]]",
+		"title": "Main Page",
 		"html": "<p><a class=\"mw-selflink selflink\">local:Main Page</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Local%3AMain_Page\" title=\"Local:Main Page\">local:Main Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">local:Main Page</span>]]</span></span>"
@@ -10288,6 +10351,7 @@
 	{
 		"desc": "Self-links and interwiki",
 		"wikitext": "[[local:Main Page]]\n\n[[meatball:Main Page]]\n\n[[mi:Main Page]]\n\n[[local:Main Page#anchor]]\n\n[[meatball:Main Page#anchor]]",
+		"title": "Main Page",
 		"html": "<p><a class=\"mw-selflink selflink\">local:Main Page</a>\n</p><p><a href=\"http://www.usemod.com/cgi-bin/mb.pl?Main_Page\" class=\"extiw\" title=\"meatball:Main Page\">meatball:Main Page</a>\n</p><p><a class=\"mw-selflink selflink\">mi:Main Page</a>\n</p><p><a class=\"mw-selflink-fragment\" href=\"#anchor\">local:Main Page#anchor</a>\n</p><p><a href=\"http://www.usemod.com/cgi-bin/mb.pl?Main_Page#anchor\" class=\"extiw\" title=\"meatball:Main Page\">meatball:Main Page#anchor</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Local%3AMain_Page\" title=\"Local:Main Page\">local:Main Page</a>\n</p><p><a href=\"/wiki/Meatball%3AMain_Page\" title=\"Meatball:Main Page\">meatball:Main Page</a>\n</p><p><a href=\"/wiki/Mi%3AMain_Page\" title=\"Mi:Main Page\">mi:Main Page</a>\n</p><p><a href=\"/wiki/Local%3AMain_Page#anchor\" title=\"Local:Main Page\">local:Main Page#anchor</a>\n</p><p><a href=\"/wiki/Meatball%3AMain_Page#anchor\" title=\"Meatball:Main Page\">meatball:Main Page#anchor</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">local:Main Page</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:Main Page</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">mi:Main Page</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">local:Main Page#anchor</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:Main Page#anchor</span>]]</span></span>"
@@ -10483,6 +10547,7 @@
 	{
 		"desc": "Partly disable title conversion if variant == main language code",
 		"wikitext": "-{T|zh-cn:CN;zh-tw:TW}-",
+		"title": "ZH",
 		"html": "<span class=\"mw-page-title-main\">ZH</span>\n<p class=\"mw-empty-elt\">\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">CN</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">TW</span></span>}-</span></span>"
@@ -10490,6 +10555,7 @@
 	{
 		"desc": "Partly disable title conversion if variant == main language code, more",
 		"wikitext": "-{T|TW}-",
+		"title": "ZH",
 		"html": "<span class=\"mw-page-title-main\">ZH</span>\n<p class=\"mw-empty-elt\">\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">TW</span></span>}-</span></span>"
@@ -11325,6 +11391,7 @@
 	{
 		"desc": "Magic Word: {{FULLPAGENAME}}",
 		"wikitext": "{{FULLPAGENAME}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User:Ævar Arnfjörð Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span></span>"
@@ -11332,6 +11399,7 @@
 	{
 		"desc": "Magic Word: {{FULLPAGENAMEE}}",
 		"wikitext": "{{FULLPAGENAMEE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User:%C3%86var_Arnfj%C3%B6r%C3%B0_Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAMEE</span>}}</span></span>"
@@ -11339,6 +11407,7 @@
 	{
 		"desc": "Magic Word: {{TALKSPACE}}",
 		"wikitext": "{{TALKSPACE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User talk\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACE</span>}}</span></span>"
@@ -11346,6 +11415,7 @@
 	{
 		"desc": "Magic Word: {{TALKSPACE}}, same namespace",
 		"wikitext": "{{TALKSPACE}}",
+		"title": "User talk:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User talk\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACE</span>}}</span></span>"
@@ -11353,6 +11423,7 @@
 	{
 		"desc": "Magic Word: {{TALKSPACE}}, main namespace",
 		"wikitext": "{{TALKSPACE}}",
+		"title": "Parser Test",
 		"html": "<p>Talk\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACE</span>}}</span></span>"
@@ -11360,6 +11431,7 @@
 	{
 		"desc": "Magic Word: {{TALKSPACEE}}",
 		"wikitext": "{{TALKSPACEE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User_talk\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACEE</span>}}</span></span>"
@@ -11367,6 +11439,7 @@
 	{
 		"desc": "Magic Word: {{SUBJECTSPACE}}",
 		"wikitext": "{{SUBJECTSPACE}}",
+		"title": "User talk:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACE</span>}}</span></span>"
@@ -11374,6 +11447,7 @@
 	{
 		"desc": "Magic Word: {{SUBJECTSPACE}}, same namespace",
 		"wikitext": "{{SUBJECTSPACE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACE</span>}}</span></span>"
@@ -11381,6 +11455,7 @@
 	{
 		"desc": "Magic Word: {{SUBJECTSPACE}}, main namespace",
 		"wikitext": "{{SUBJECTSPACE}}",
+		"title": "Parser Test",
 		"html": "",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACE</span>}}</span></span>"
@@ -11388,6 +11463,7 @@
 	{
 		"desc": "Magic Word: {{SUBJECTSPACEE}}",
 		"wikitext": "{{SUBJECTSPACEE}}",
+		"title": "User talk:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACEE</span>}}</span></span>"
@@ -11395,6 +11471,7 @@
 	{
 		"desc": "Magic Word: {{NAMESPACE}}",
 		"wikitext": "{{NAMESPACE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACE</span>}}</span></span>"
@@ -11402,6 +11479,7 @@
 	{
 		"desc": "Magic Word: {{NAMESPACEE}}",
 		"wikitext": "{{NAMESPACEE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACEE</span>}}</span></span>"
@@ -11409,6 +11487,7 @@
 	{
 		"desc": "Magic Word: {{NAMESPACENUMBER}}",
 		"wikitext": "{{NAMESPACENUMBER}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>2\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACENUMBER</span>}}</span></span>"
@@ -11416,6 +11495,7 @@
 	{
 		"desc": "Magic Word: {{SUBPAGENAME}}",
 		"wikitext": "{{SUBPAGENAME}}",
+		"title": "Ævar Arnfjörð Bjarmason/sub ö",
 		"html": "<p>sub ö\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAME</span>}}</span></span>"
@@ -11423,6 +11503,7 @@
 	{
 		"desc": "Magic Word: {{SUBPAGENAMEE}}",
 		"wikitext": "{{SUBPAGENAMEE}}",
+		"title": "Ævar Arnfjörð Bjarmason/sub ö",
 		"html": "<p>sub_%C3%B6\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAMEE</span>}}</span></span>"
@@ -11430,6 +11511,7 @@
 	{
 		"desc": "Magic Word: {{ROOTPAGENAME}}",
 		"wikitext": "{{ROOTPAGENAME}}",
+		"title": "Ævar Arnfjörð Bjarmason/sub/sub2",
 		"html": "<p>Ævar Arnfjörð Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span></span>"
@@ -11437,6 +11519,7 @@
 	{
 		"desc": "Magic Word: {{ROOTPAGENAMEE}}",
 		"wikitext": "{{ROOTPAGENAMEE}}",
+		"title": "Ævar Arnfjörð Bjarmason/sub/sub2",
 		"html": "<p>%C3%86var_Arnfj%C3%B6r%C3%B0_Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAMEE</span>}}</span></span>"
@@ -11444,6 +11527,7 @@
 	{
 		"desc": "Magic Word: {{BASEPAGENAME}}",
 		"wikitext": "{{BASEPAGENAME}}",
+		"title": "Ævar Arnfjörð Bjarmason/sub",
 		"html": "<p>Ævar Arnfjörð Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAME</span>}}</span></span>"
@@ -11451,6 +11535,7 @@
 	{
 		"desc": "Magic Word: {{BASEPAGENAMEE}}",
 		"wikitext": "{{BASEPAGENAMEE}}",
+		"title": "Ævar Arnfjörð Bjarmason/sub",
 		"html": "<p>%C3%86var_Arnfj%C3%B6r%C3%B0_Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAMEE</span>}}</span></span>"
@@ -11458,6 +11543,7 @@
 	{
 		"desc": "Magic Word: {{TALKPAGENAME}}",
 		"wikitext": "{{TALKPAGENAME}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User talk:Ævar Arnfjörð Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAME</span>}}</span></span>"
@@ -11465,6 +11551,7 @@
 	{
 		"desc": "Magic Word: {{TALKPAGENAMEE}}",
 		"wikitext": "{{TALKPAGENAMEE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User_talk:%C3%86var_Arnfj%C3%B6r%C3%B0_Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAMEE</span>}}</span></span>"
@@ -11472,6 +11559,7 @@
 	{
 		"desc": "Magic Word: {{SUBJECTPAGENAME}}",
 		"wikitext": "{{SUBJECTPAGENAME}}",
+		"title": "User talk:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User:Ævar Arnfjörð Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAME</span>}}</span></span>"
@@ -11479,6 +11567,7 @@
 	{
 		"desc": "Magic Word: {{SUBJECTPAGENAMEE}}",
 		"wikitext": "{{SUBJECTPAGENAMEE}}",
+		"title": "User talk:Ævar Arnfjörð Bjarmason",
 		"html": "<p>User:%C3%86var_Arnfj%C3%B6r%C3%B0_Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAMEE</span>}}</span></span>"
@@ -11493,6 +11582,7 @@
 	{
 		"desc": "Magic Word: {{PAGENAME}}",
 		"wikitext": "{{PAGENAME}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>Ævar Arnfjörð Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span></span>"
@@ -11500,6 +11590,7 @@
 	{
 		"desc": "Magic Word: {{PAGENAME}} with metacharacters",
 		"wikitext": "''{{PAGENAME}}''",
+		"title": "'foo & bar = baz'",
 		"html": "<p><i>&#39;foo &#38; bar &#61; baz&#39;</i>\n</p>",
 		"render": "<p><i></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span><span class=\"wpb-quote\">''</span></span>"
@@ -11507,6 +11598,7 @@
 	{
 		"desc": "Magic Word: {{PAGENAME}} with metacharacters (T28781)",
 		"wikitext": "{{PAGENAME}}",
+		"title": "*RFC 1234 http://example.com/",
 		"html": "<p>&#42;RFC&#32;1234 http&#58;//example.com/\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span></span>"
@@ -11514,6 +11606,7 @@
 	{
 		"desc": "Magic Word: {{PAGENAMEE}}",
 		"wikitext": "{{PAGENAMEE}}",
+		"title": "User:Ævar Arnfjörð Bjarmason",
 		"html": "<p>%C3%86var_Arnfj%C3%B6r%C3%B0_Bjarmason\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAMEE</span>}}</span></span>"
@@ -11521,6 +11614,7 @@
 	{
 		"desc": "Magic Word: {{PAGENAMEE}} with metacharacters (T28781)",
 		"wikitext": "{{PAGENAMEE}}",
+		"title": "*RFC 1234 http://example.com/",
 		"html": "<p>&#42;RFC_1234_http&#58;//example.com/\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAMEE</span>}}</span></span>"
@@ -11550,6 +11644,7 @@
 	{
 		"desc": "Magic Word: {{REVISIONTIMESTAMP}} on not-yet-existing current page",
 		"wikitext": "{{REVISIONTIMESTAMP}}",
+		"title": "This page does not exist",
 		"html": "<p>19700101000203\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">REVISIONTIMESTAMP</span>}}</span></span>"
@@ -11557,6 +11652,7 @@
 	{
 		"desc": "Magic Word: {{REVISIONTIMESTAMP:{{PAGENAME}}}} on not-yet-existing current page",
 		"wikitext": "{{REVISIONTIMESTAMP:{{PAGENAME}}}}",
+		"title": "This page does not exist",
 		"html": "<p>19700101000203\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">REVISIONTIMESTAMP</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span></span></span>}}</span></span>"
@@ -11576,6 +11672,7 @@
 	{
 		"desc": "Magic Word: {{REVISIONUSER}} on not-yet-existing current page",
 		"wikitext": "{{REVISIONUSER}}",
+		"title": "This page does not exist",
 		"html": "",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">REVISIONUSER</span>}}</span></span>"
@@ -11583,6 +11680,7 @@
 	{
 		"desc": "Magic Word: {{REVISIONUSER:{{PAGENAME}}}} on not-yet-existing current page",
 		"wikitext": "{{REVISIONUSER:{{PAGENAME}}}}",
+		"title": "This page does not exist",
 		"html": "",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">REVISIONUSER</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span></span></span>}}</span></span>"
@@ -11753,11 +11851,13 @@
 	{
 		"desc": "1. HIDDENCAT sets tracking category on category page",
 		"wikitext": "__HIDDENCAT__",
+		"title": "123",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__HIDDENCAT__</span></span>"
 	},
 	{
 		"desc": "2. HIDDENCAT sets tracking category on category page",
 		"wikitext": "__HIDDENCAT__",
+		"title": "Category:123",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__HIDDENCAT__</span></span>"
 	},
 	{
@@ -13980,6 +14080,7 @@
 	{
 		"desc": "safesubst self: does not work during normal parse - T276476",
 		"wikitext": "{{SafeSubstSelfTest}}",
+		"title": "Template:SafeSubstSelfTest",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">SafeSubstSelfTest</span>}}</span></span>"
 	},
 	{
@@ -13992,6 +14093,7 @@
 	{
 		"desc": "subst: with whitespace - variable vs. template",
 		"wikitext": "Variable: {{subst: ROOTPAGENAME}}\nVariable: {{subst:ROOTPAGENAME}}\nTemplate: {{subst: ROOTPAGENAME|template}}\nTemplate: {{subst:ROOTPAGENAME|template}}",
+		"title": "TestSubstVariable",
 		"print": "<span class=\"wpb-root\">Variable: <span class=\"wpb-magic-word\">{{subst: <span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\nVariable: <span class=\"wpb-magic-word\">{{subst:<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\nTemplate: <span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst: </span><span class=\"wpb-template-name\">ROOTPAGENAME</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">template</span></span>}}</span>\nTemplate: <span class=\"wpb-template\">{{<span class=\"wpb-magic-word\">subst:</span><span class=\"wpb-template-name\">ROOTPAGENAME</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">template</span></span>}}</span></span>"
 	},
 	{
@@ -14007,46 +14109,55 @@
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with parens in title",
 		"wikitext": "[[|Article]]",
+		"title": "Somearticle (context)",
 		"print": "<span class=\"wpb-root\">[[|Article]]</span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with single, double-width and Arabic comma in title",
 		"wikitext": "[[|Otherplace]]\n[[Otherplace, Elsewhere|]]\n[[Otherplace, Elsewhere, Anywhere|]]\n[[Otherplace，Elsewhere|]]\n[[Otherplace، Elsewhere|]]",
+		"title": "Someplace, Somewhere",
 		"print": "<span class=\"wpb-root\">[[|Otherplace]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace, Elsewhere</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace, Elsewhere, Anywhere</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace，Elsewhere</span>|]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace، Elsewhere</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with parens and comma",
 		"wikitext": "[[|Otherplace]]\n[[Otherplace (place), Elsewhere|]]",
+		"title": "Someplace (IGNORED), Somewhere",
 		"print": "<span class=\"wpb-root\">[[|Otherplace]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Otherplace (place), Elsewhere</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with comma and parens",
 		"wikitext": "[[|Yes, you.]]\n[[Me, Myself, and I (1937 song)|]]",
+		"title": "Who, me? (context)",
 		"print": "<span class=\"wpb-root\">[[|Yes, you.]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Me, Myself, and I (1937 song)</span>|]]</span></span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with namespace",
 		"wikitext": "[[|Article]]",
+		"title": "Ns:Somearticle",
 		"print": "<span class=\"wpb-root\">[[|Article]]</span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with namespace and parens",
 		"wikitext": "[[|Article]]",
+		"title": "Ns:Somearticle (context)",
 		"print": "<span class=\"wpb-root\">[[|Article]]</span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with namespace and comma",
 		"wikitext": "[[|Article]]",
+		"title": "Ns:Somearticle, Context, Whatever",
 		"print": "<span class=\"wpb-root\">[[|Article]]</span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with namespace, comma and parens",
 		"wikitext": "[[|Article]]",
+		"title": "Ns:Somearticle, Context (context)",
 		"print": "<span class=\"wpb-root\">[[|Article]]</span>"
 	},
 	{
 		"desc": "pre-save transform: context links (\"pipe trick\") with namespace, parens and comma",
 		"wikitext": "[[|Article]]",
+		"title": "Ns:Somearticle (IGNORED), Context",
 		"print": "<span class=\"wpb-root\">[[|Article]]</span>"
 	},
 	{
@@ -15532,6 +15643,7 @@
 	{
 		"desc": "#translation as magic word for valid language code",
 		"wikitext": "{{#translation:}}",
+		"title": "Test/mr",
 		"html": "<p>/mr\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#translation</span>:}}</span></span>"
@@ -15539,6 +15651,7 @@
 	{
 		"desc": "#translation as magic word for source page",
 		"wikitext": "{{#translation:}}",
+		"title": "Test",
 		"html": "",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#translation</span>:}}</span></span>"
@@ -15546,6 +15659,7 @@
 	{
 		"desc": "#translation as magic word for invalid language code",
 		"wikitext": "{{#translation:}}",
+		"title": "Test/ugaaa",
 		"html": "",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#translation</span>:}}</span></span>"
