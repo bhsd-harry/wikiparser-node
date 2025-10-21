@@ -81,7 +81,7 @@ function validate(
 				0,
 				false,
 				config,
-				{halfParsed, decode: true, selfLink: true},
+				{halfParsed, decode: true, selfLink: true, page: ''},
 			);
 			return title.valid && title;
 		}

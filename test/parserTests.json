@@ -6461,7 +6461,7 @@
 		"wikitext": "{{#ifexist:../ifexist|yes|no}}",
 		"title": "Root/ifexist",
 		"html": "<p>no\n</p>",
-		"render": "<p>yes\n</p>",
+		"render": "<p>no\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">../ifexist</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">yes</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">no</span></span>}}</span></span>"
 	},
 	{
@@ -6477,8 +6477,8 @@
 		"wikitext": "#redirect [[../test]]",
 		"title": "Root/redirect",
 		"html": "<ol><li>redirect <a href=\"/w/index.php?title=Root/test&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Root/test (page does not exist)\">Root/test</a></li></ol>",
-		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/..%2Ftest\" title=\"../test\">../test</a></li></ul>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#redirect </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">../test</span>]]</span></span></span>"
+		"render": "<ol><li>redirect <a href=\"/wiki/Root%2Ftest\" title=\"Root/test\">../test</a></li></ol>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">#</span>redirect <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../test</span>]]</span></span>"
 	},
 	{
 		"desc": "Subpage in image link",
@@ -6493,8 +6493,8 @@
 		"wikitext": "[[File:Foobar.jpg|link=../test]]",
 		"title": "Root/image",
 		"html": "<p><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"link=../test\"><img alt=\"link=../test\" src=\"//upload.wikimedia.org/wikipedia/commons/3/3a/Foobar.jpg\" decoding=\"async\" width=\"240\" height=\"28\" class=\"mw-file-element\" data-file-width=\"240\" data-file-height=\"28\"></a></span>\n</p>",
-		"render": "<p><span><a href=\"/wiki/..%2Ftest\" title=\"../test\"><img src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a></span>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">../test</span></span>]]</span></span>"
+		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"link=../test\"><img alt=\"link=../test\" src=\"/wiki/File%3AFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a></span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">link=../test</span>]]</span></span>"
 	},
 	{
 		"desc": "badCharacters"
