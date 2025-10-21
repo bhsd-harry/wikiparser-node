@@ -76,6 +76,13 @@ declare interface Parser extends ParserBase {
 		config?: Config,
 		page?: string,
 	): Token;
+	parse(
+		wikitext: string,
+		page: string,
+		include?: boolean,
+		maxStage?: number | Stage | Stage[],
+		config?: Config,
+	): Token;
 
 	/** @private */
 	partialParse(wikitext: string, watch: () => string, include?: boolean, config?: Config): Promise<Token>;
@@ -288,8 +295,26 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig(), page = '') {
+	parse(wikitext, includeOrPage, maxStageOrInclude, configOrStage, pageOrConfig) {
 		wikitext = tidy(wikitext);
+		let include: boolean,
+			maxStage: number | Stage | Stage[] | undefined,
+			config: Config | undefined,
+			page: string | undefined;
+		if (typeof includeOrPage === 'string') {
+			include = Boolean(maxStageOrInclude);
+			maxStage = configOrStage as number | Stage | Stage[] | undefined;
+			config = pageOrConfig as Config | undefined;
+			page = includeOrPage;
+		} else {
+			include = Boolean(includeOrPage);
+			maxStage = maxStageOrInclude as number | Stage | Stage[] | undefined;
+			config = configOrStage as Config | undefined;
+			page = pageOrConfig as string | undefined;
+		}
+		maxStage ??= MAX_STAGE;
+		config ??= this.getConfig();
+		page ??= '';
 		let types: Stage[] | undefined;
 		LINT: { // eslint-disable-line no-unused-labels
 			if (typeof maxStage !== 'number') {
