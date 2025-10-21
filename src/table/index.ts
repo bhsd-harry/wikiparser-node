@@ -120,14 +120,12 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax syntax of the table end / 表格结尾语法
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
-		const config = this.getAttribute('config'),
-			accum = this.getAttribute('accum');
 		Shadow.run(() => {
 			const token = new SyntaxToken(
 				halfParsed ? syntax : undefined,
 				'table-syntax',
-				config,
-				accum,
+				this.getAttribute('config'),
+				this.getAttribute('accum'),
 			);
 			super.insertAt(token);
 		});
