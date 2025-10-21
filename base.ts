@@ -585,6 +585,13 @@ export interface Parser {
 		config?: Config,
 		page?: string,
 	): Token;
+	parse(
+		wikitext: string,
+		page: string,
+		include?: boolean,
+		maxStage?: number | Stage | Stage[],
+		config?: Config,
+	): Token;
 
 	/**
 	 * Create a language server

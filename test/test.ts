@@ -10,13 +10,11 @@ import type {LintConfiguration} from '../lib/lintConfig';
 
 /* NOT FOR BROWSER */
 
-import type {Config} from '../base';
 import type {Token} from '../internal';
 
 if (process.env['CLONENODE']) {
 	const parse = Parser.parse.bind(Parser);
-	Parser.parse = /** @implements */ (...args: [string, boolean?, number?, Config?]): Token =>
-		parse(...args).cloneNode();
+	Parser.parse = /** @implements */ (...args: [string]): Token => parse(...args).cloneNode();
 }
 
 Parser.warning = false;
