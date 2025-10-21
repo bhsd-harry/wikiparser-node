@@ -18,7 +18,7 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
  * @param page 页面名称
  * @param tidy 是否整理链接
  */
-export const parseLinks = (wikitext: string, config: Config, accum: Token[], page: string, tidy?: boolean): string => {
+export const parseLinks = (wikitext: string, config: Config, accum: Token[], page?: string, tidy?: boolean): string => {
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = config.inExt
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u
