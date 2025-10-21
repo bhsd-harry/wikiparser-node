@@ -443,7 +443,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config);
 				root.type = 'root';
-				root.pageName = opt?.page ?? '';
+				root.pageName = opt?.page;
 				root.parseOnce(0, include).parseOnce();
 				const t = new Title(root.toString(), defaultNs, config, opt);
 				root.build();
@@ -492,7 +492,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		maxStage ??= MAX_STAGE;
 		config ??= this.getConfig();
-		page ??= '';
 		let types: Stage[] | undefined;
 		LINT: { // eslint-disable-line no-unused-labels
 			if (typeof maxStage !== 'number') {
@@ -731,7 +730,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		const file = path.join(__dirname, '..', 'errors', main),
 			wikitext = fs.readFileSync(file, 'utf8');
-		const {stage, include, config, page = ''}: ParsingError = require(`${file}.json`),
+		const {stage, include, config, page}: ParsingError = require(`${file}.json`),
 			{Token}: typeof import('./src/index') = require('./src/index');
 		Shadow.run(() => {
 			const halfParsed = stage < MAX_STAGE,

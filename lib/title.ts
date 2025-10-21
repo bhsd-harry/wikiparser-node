@@ -21,7 +21,7 @@ export interface TitleOptions {
 	decode?: boolean | undefined;
 	selfLink?: boolean | undefined;
 	halfParsed?: boolean | undefined;
-	page?: string;
+	page?: string | undefined;
 }
 
 /**
@@ -164,7 +164,7 @@ export class Title {
 		title: string,
 		defaultNs: number,
 		config: Config,
-		{temporary, decode, selfLink, page = ''}: TitleOptions = {},
+		{temporary, decode, selfLink, page}: TitleOptions = {},
 	) {
 		this.page = page;
 		const trimmed = title.trim(),
@@ -225,7 +225,7 @@ export class Title {
 			|| selfLink && this.ns === 0 && this.#fragment !== undefined,
 		)
 		&& decodeHtml(title) === title
-		&& (level === 0 || !page || page.split('/', level + 1).length > level)
+		&& (level === 0 || page === undefined || page.split('/', level + 1).length > level)
 		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(sub);
 		this.main = title;
 		this.#namespaces = config.namespaces;
@@ -256,8 +256,8 @@ export class Title {
 	#getTitle(prefix: string): [boolean, string] {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
-			title = this.page + title.replace(/\/$/u, '');
-		} else if (title.startsWith('../') && this.page.includes('/')) {
+			title = (this.page ?? '') + title.replace(/(.)\/$/u, '$1');
+		} else if (title.startsWith('../') && this.page?.includes('/')) {
 			const [level, sub] = resolve(title),
 				dirs = this.page.split('/');
 			if (dirs.length > level) {

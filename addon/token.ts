@@ -80,7 +80,7 @@ const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): stri
  */
 const expand = (
 	wikitext: string,
-	page: string,
+	page: string | undefined,
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
@@ -196,8 +196,10 @@ const expand = (
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
-					const {valid, interwiki} = Parser
-						.normalizeTitle(var1, 0, include, config, {halfParsed: true, temporary: true});
+					const {
+						valid,
+						interwiki,
+					} = Parser.normalizeTitle(var1, 0, include, config, {halfParsed: true, temporary: true});
 					bool = valid && !interwiki;
 				}
 				return parseIf(accum, prev, c[bool ? 2 : 3]);

@@ -755,9 +755,7 @@ export abstract class TableToken extends TrBaseToken {
 			firstRow = super.toHtmlInternal(opt),
 			newline = opt?.nowrap ? ' ' : '\n';
 		return `${
-			[this, ...tr].flatMap(filter)
-				.map(token => token.toHtmlInternal(newOpt).trim())
-				.join(' ')
+			[this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(newOpt).trim()).join(' ')
 		}<table${childNodes[1].toHtmlInternal()}>${newline}<tbody>${
 			firstRow + (tr.length > 0 && firstRow.endsWith('</tr>') ? newline : '')
 		}${html(tr, newline, opt)}${tr.length === 0 && !firstRow ? '<tr><td></td></tr>' : ''}</tbody></table>`;

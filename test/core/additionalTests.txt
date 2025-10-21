@@ -369,3 +369,67 @@ Commented <translate> tags
 <!-- <translate><tvar name=1></tvar></translate> --><includeonly><translate><tvar name=2></tvar></translate></includeonly>
 !! html
 !! end
+
+!! test
+Subpage in #ifexist
+!! options
+title=[[Root]]
+!! wikitext
+{{#ifexist:/ifexist|yes|no}}
+!! html
+<p>no
+</p>
+!! end
+
+!! test
+Parent directory in #ifexist
+!! options
+title=[[Root/ifexist]]
+!! wikitext
+{{#ifexist:../ifexist|yes|no}}
+!! html
+<p>no
+</p>
+!! end
+
+!! test
+Subpage in redirect
+!! options
+title=[[Root]]
+!! wikitext
+#redirect [[/redirect]]
+!! html
+<ul class="redirectText"><li><a href="/w/index.php?title=/redirect&amp;action=edit&amp;redlink=1" class="new" title="/redirect (page does not exist)">/redirect</a></li></ul></div>
+!! end
+
+!! test
+Parent directory in redirect
+!! options
+title=[[Root/redirect]]
+!! wikitext
+#redirect [[../test]]
+!! html
+<ol><li>redirect <a href="/w/index.php?title=Root/test&amp;action=edit&amp;redlink=1" class="new" title="Root/test (page does not exist)">Root/test</a></li></ol>
+!! end
+
+!! test
+Subpage in image link
+!! options
+title=[[Root]]
+!! wikitext
+[[File:Foobar.jpg|link=/image]]
+!! html
+<p><span class="mw-default-size" typeof="mw:File"><a href="/wiki//image" title="/image"><img src="//upload.wikimedia.org/wikipedia/commons/3/3a/Foobar.jpg" decoding="async" width="240" height="28" class="mw-file-element" data-file-width="240" data-file-height="28"></a></span>
+</p>
+!! end
+
+!! test
+Parent directory in image link
+!! options
+title=[[Root/image]]
+!! wikitext
+[[File:Foobar.jpg|link=../test]]
+!! html
+<p><span class="mw-default-size" typeof="mw:File"><a href="/wiki/File:Foobar.jpg" class="mw-file-description" title="link=../test"><img alt="link=../test" src="//upload.wikimedia.org/wikipedia/commons/3/3a/Foobar.jpg" decoding="async" width="240" height="28" class="mw-file-element" data-file-width="240" data-file-height="28"></a></span>
+</p>
+!! end

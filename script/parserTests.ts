@@ -124,11 +124,16 @@ for (const file of ['parserTests.txt', ...files]) {
 }
 fs.writeFileSync('test/parserTests.json', JSON.stringify(tests, null, '\t'));
 
-const unused = fs.readdirSync('test/templates').filter(
-	file => !Parser.templates.has(
-		decodeURIComponent(file.slice(0, -5).replaceAll('꞉', ':')),
-	),
-);
+const dir = 'test/templates',
+	unused = fs.readdirSync(dir, {withFileTypes: true, recursive: true})
+		.filter(dirent => {
+			const {name, parentPath} = dirent;
+			return dirent.isFile()
+				&& !Parser.templates.has(
+					decodeURIComponent(path.relative(dir, path.join(parentPath, name.slice(0, -5))))
+						.replaceAll('꞉', ':'),
+				);
+		});
 if (unused.length > 0) {
 	console.log('Unused templates', unused.sort());
 }
