@@ -6,6 +6,10 @@
 
 - [`Token.pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property that gets or sets the page name
 
+**Fixed**
+
+- [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#templatedir) can now have a nested file structure to support subpages
+
 **Changed**
 
 - [Extension:Math](https://www.mediawiki.org/wiki/Extension:Math) is now linted via [texvcjs](https://www.npmjs.com/package/mathoid-texvcjs) instead of [MathJax](https://www.mathjax.org/)

@@ -4272,7 +4272,7 @@
 		"wikitext": "{{../L3Sibling}}",
 		"title": "Subpage test/L1/L2/L3",
 		"html": "<p>Sibling article\n</p>",
-		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2FL2%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"Subpage test/L1/L2/L3Sibling (page does not exist)\">Subpage test/L1/L2/L3Sibling</a>\n</p>",
+		"render": "<p>Sibling article\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../L3Sibling</span>}}</span></span>"
 	},
 	{
@@ -4280,7 +4280,7 @@
 		"wikitext": "{{/L3Sibling}}",
 		"title": "Subpage test/L1/L2",
 		"html": "<p>Sibling article\n</p>",
-		"render": "<p><a href=\"/wiki/Subpage_test%2FL1%2FL2%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"Subpage test/L1/L2/L3Sibling (page does not exist)\">Subpage test/L1/L2/L3Sibling</a>\n</p>",
+		"render": "<p>Sibling article\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">/L3Sibling</span>}}</span></span>"
 	},
 	{

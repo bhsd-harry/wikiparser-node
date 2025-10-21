@@ -144,11 +144,13 @@ const expand = (
 					} else if (!path.isAbsolute(Parser.templateDir)) {
 						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 					}
-					const file = fs.readdirSync(Parser.templateDir, {withFileTypes: true})
+					const file = fs.readdirSync(Parser.templateDir, {withFileTypes: true, recursive: true})
 						.filter(dirent => dirent.isFile())
-						.find(({name: fl}) => {
-							const t = fl.replace(/\.(?:wiki|txt)$/iu, '')
-								.replaceAll('꞉', ':');
+						.find(({name: fl, parentPath}) => {
+							const t = path.relative(
+								Parser.templateDir!,
+								path.join(parentPath, fl.replace(/\.(?:wiki|txt)$/iu, '')),
+							).replaceAll('꞉', ':');
 							try {
 								return decodeURIComponent(t) === title;
 							} catch {

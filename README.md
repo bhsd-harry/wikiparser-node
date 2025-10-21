@@ -103,7 +103,6 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 ### Transclusion
 
 1. Most parser functions are not supported.
-1. Transclusion of a subpage is not supported ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#T2561%3A%20%7B%7B%2FSubpage%7D%7D)).
 
 ### Heading
 

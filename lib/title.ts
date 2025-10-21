@@ -264,6 +264,9 @@ export class Title {
 				title = dirs.slice(0, -level).join('/') + (sub && '/') + sub;
 			}
 		}
+
+		/* NOT FOR BROWSER */
+
 		const media = title.startsWith('Media:');
 		let redirected = this.redirects.get(media ? `File:${title.slice(6)}` : title);
 		if (redirected) {
@@ -272,6 +275,9 @@ export class Title {
 			redirected = hash === -1 ? redirected : redirected.slice(0, hash);
 			return [true, media ? redirected.replace(/^File:/u, 'Media:') : redirected];
 		}
+
+		/* NOT FOR BROWSER */
+
 		return [false, title];
 	}
 
@@ -284,10 +290,10 @@ export class Title {
 	getRedirection(): [boolean, string] {
 		const {
 				prefix,
-				main,
 
 				/* NOT FOR BROWSER */
 
+				main,
 				interwiki,
 			} = this,
 			pre =
