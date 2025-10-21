@@ -288,10 +288,15 @@ export abstract class HtmlToken extends TagToken {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const [attr] = this.cloneChildNodes() as [AttributesToken],
-			config = this.getAttribute('config');
+		const [attr] = this.cloneChildNodes() as [AttributesToken];
 		// @ts-expect-error abstract class
-		return Shadow.run((): this => new HtmlToken(this.tag, attr, this.closing, this.#selfClosing, config));
+		return Shadow.run((): this => new HtmlToken(
+			this.tag,
+			attr,
+			this.closing,
+			this.#selfClosing,
+			this.getAttribute('config'),
+		));
 	}
 
 	/**
@@ -323,10 +328,7 @@ export abstract class HtmlToken extends TagToken {
 			return;
 		} else if (firstChild.text().trim()) {
 			this.#selfClosing = false;
-			this.after(
-				Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'))
-					.firstChild!,
-			);
+			this.after(Parser.parseWithRef(`</${this.name}>`, this, 3, false).firstChild!);
 			return;
 		}
 		const {childNodes} = parentNode,

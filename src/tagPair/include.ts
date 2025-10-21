@@ -101,11 +101,15 @@ export abstract class IncludeToken extends TagPairToken {
 
 	override cloneNode(): this {
 		const tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			{innerText} = this,
-			closing = this.selfClosing || !this.closed ? undefined : tags[1];
+			{innerText, firstChild: {data}, selfClosing, closed} = this;
 		// @ts-expect-error abstract class
-		return Shadow.run((): this => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config));
+		return Shadow.run((): this => new IncludeToken(
+			tags[0],
+			data,
+			innerText,
+			selfClosing || !closed ? undefined : tags[1],
+			this.getAttribute('config'),
+		));
 	}
 
 	/**

@@ -231,11 +231,14 @@ export abstract class ParameterToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const [key, value] = this.cloneChildNodes() as [Token, Token],
-			config = this.getAttribute('config');
+		const [key, value] = this.cloneChildNodes() as [Token, Token];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
+			const token: this = new ParameterToken(
+				this.anon ? Number(this.name) : undefined,
+				undefined,
+				this.getAttribute('config'),
+			);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			if (this.anon) {
@@ -267,13 +270,7 @@ export abstract class ParameterToken extends Token {
 	 * @param value parameter value / 参数值
 	 */
 	setValue(value: string): void {
-		const {childNodes} = Parser.parse(
-			value,
-			this.getAttribute('include'),
-			undefined,
-			this.getAttribute('config'),
-			this.pageName,
-		);
+		const {childNodes} = Parser.parseWithRef(value, this);
 		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
@@ -287,20 +284,14 @@ export abstract class ParameterToken extends Token {
 	 * @throws `RangeError` 更名造成重复参数
 	 */
 	rename(key: string, force?: boolean): void {
-		const {parentNode, anon, pageName} = this;
+		const {parentNode, anon} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {
 			throw new Error('ParameterToken.rename method is only for template parameters!');
 		} else if (anon) {
 			parentNode?.anonToNamed();
 		}
-		const root = Parser.parse(
-				key,
-				this.getAttribute('include'),
-				undefined,
-				this.getAttribute('config'),
-				pageName,
-			),
+		const root = Parser.parseWithRef(key, this),
 			name = this.trimName(root, false);
 		if (this.name === name) {
 			Parser.warn('The actual parameter name is not changed', name);

@@ -321,11 +321,14 @@ export abstract class LinkBaseToken extends Token {
 	 * @param link link target / 链接目标
 	 */
 	setTarget(link: string): void {
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(link, this.getAttribute('include'), 2, config, this.pageName),
-			token = Shadow.run(() => new AtomToken(undefined, 'link-target', config, [], {
-				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
-			}));
+		const {childNodes} = Parser.parseWithRef(link, this, 2),
+			token = Shadow.run(() => new AtomToken(
+				undefined,
+				'link-target',
+				this.getAttribute('config'),
+				[],
+				{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
+			));
 		token.safeAppend(childNodes);
 		this.firstChild.safeReplaceWith(token);
 	}
@@ -351,18 +354,12 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkStr link text / 链接显示文字
 	 */
 	setLinkText(linkStr?: string): void {
-		const {childNodes, lastChild, length, pageName} = this;
+		const {childNodes, lastChild, length} = this;
 		if (linkStr === undefined) {
 			childNodes[1]?.remove();
 			return;
 		}
-		const root = Parser.parse(
-			linkStr,
-			this.getAttribute('include'),
-			undefined,
-			this.getAttribute('config'),
-			pageName,
-		);
+		const root = Parser.parseWithRef(linkStr, this);
 		if (length === 1) {
 			root.type = 'link-text';
 			root.setAttribute('acceptable', {

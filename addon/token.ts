@@ -125,14 +125,13 @@ const expand = (
 				if (context === false) {
 					return m;
 				}
-				const c = target.getAttribute('config'),
-					{title, valid} = Parser.normalizeTitle(
-						removeComment(f.toString()),
-						10,
-						include,
-						c,
-						{halfParsed: true, temporary: true, page},
-					);
+				const {title, valid} = Parser.normalizeTitle(
+					removeComment(f.toString()),
+					10,
+					include,
+					target.getAttribute('config'),
+					{halfParsed: true, temporary: true, page},
+				);
 				if (!valid) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(target)] = undefined;
@@ -358,11 +357,12 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 };
 
 Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
-	const config = this.getAttribute('config');
-	return Shadow.run(
-		// @ts-expect-error abstract class
-		(): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config),
-	);
+	// @ts-expect-error abstract class
+	return Shadow.run((): CommentToken => new CommentToken(
+		data.replaceAll('-->', '--&gt;'),
+		true,
+		this.getAttribute('config'),
+	));
 };
 
 Token.prototype.createElement = /** @implements */ function(

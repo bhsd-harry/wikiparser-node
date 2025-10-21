@@ -192,16 +192,14 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax syntax of the table end / 表格结尾语法
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
-		const config = this.getAttribute('config'),
-			accum = this.getAttribute('accum');
 		if (!this.lastChild.is<SyntaxToken>('table-syntax')) {
 			Shadow.run(() => {
 				const token = new SyntaxToken(
 					halfParsed ? syntax : undefined,
 					closingPattern,
 					'table-syntax',
-					config,
-					accum,
+					this.getAttribute('config'),
+					this.getAttribute('accum'),
 					{'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':'},
 				);
 				super.insertAt(token);
@@ -218,7 +216,7 @@ export abstract class TableToken extends TrBaseToken {
 
 		if (!halfParsed) {
 			(this.lastChild as SyntaxToken).safeReplaceChildren(
-				Parser.parse(syntax, this.getAttribute('include'), 2, config, this.pageName).childNodes,
+				Parser.parseWithRef(syntax, this, 2).childNodes,
 			);
 		}
 	}

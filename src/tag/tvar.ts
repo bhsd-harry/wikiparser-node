@@ -123,9 +123,13 @@ export abstract class TvarToken extends TagToken {
 	}
 
 	override cloneNode(): this {
-		const config = this.getAttribute('config');
 		// @ts-expect-error abstract class
-		return Shadow.run((): this => new TvarToken(this.tag, this.firstChild.toString(), this.closing, config));
+		return Shadow.run((): this => new TvarToken(
+			this.tag,
+			this.firstChild.toString(),
+			this.closing,
+			this.getAttribute('config'),
+		));
 	}
 
 	/**

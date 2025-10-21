@@ -247,13 +247,7 @@ export abstract class ArgToken extends Token {
 	 * @param name new argument name / 新参数名
 	 */
 	setName(name: string): void {
-		const {childNodes} = Parser.parse(
-			name,
-			this.getAttribute('include'),
-			2,
-			this.getAttribute('config'),
-			this.pageName,
-		);
+		const {childNodes} = Parser.parseWithRef(name, this, 2);
 		this.firstChild.safeReplaceChildren(childNodes);
 	}
 
@@ -268,14 +262,8 @@ export abstract class ArgToken extends Token {
 			this.removeAt(1);
 			return;
 		}
-		const {childNodes: [, oldDefault], pageName} = this,
-			root = Parser.parse(
-				value,
-				this.getAttribute('include'),
-				undefined,
-				this.getAttribute('config'),
-				pageName,
-			);
+		const {childNodes: [, oldDefault]} = this,
+			root = Parser.parseWithRef(value, this);
 		if (oldDefault) {
 			oldDefault.safeReplaceChildren(root.childNodes);
 		} else {

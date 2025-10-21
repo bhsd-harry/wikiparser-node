@@ -109,11 +109,17 @@ export abstract class RedirectToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes() as [SyntaxToken, RedirectTargetToken],
-			config = this.getAttribute('config');
+		const cloned = this.cloneChildNodes() as [SyntaxToken, RedirectTargetToken];
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new RedirectToken(this.#pre, undefined, '', undefined, this.#post, config);
+			const token: this = new RedirectToken(
+				this.#pre,
+				undefined,
+				'',
+				undefined,
+				this.#post,
+				this.getAttribute('config'),
+			);
 			token.firstChild.safeReplaceWith(cloned[0]);
 			token.lastChild.safeReplaceWith(cloned[1]);
 			return token;

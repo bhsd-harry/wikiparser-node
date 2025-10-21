@@ -161,12 +161,14 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	}
 
 	override cloneNode(): this {
-		const inner = this.lastChild.cloneNode(),
-			config = this.getAttribute('config'),
-			attr = this.firstChild.toString() || undefined;
+		const inner = this.lastChild.cloneNode();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new TranslateToken(attr, undefined, config);
+			const token: this = new TranslateToken(
+				this.firstChild.toString() || undefined,
+				undefined,
+				this.getAttribute('config'),
+			);
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});

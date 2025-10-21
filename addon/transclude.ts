@@ -13,16 +13,11 @@ import type {TableToken} from '../internal';
 TranscludeToken.prototype.newAnonArg =
 	/** @implements */
 	function(val): ParameterToken {
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(
-				val,
-				this.getAttribute('include'),
-				undefined,
-				config,
-				this.pageName,
-			),
-			// @ts-expect-error abstract class
-			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
+		const {childNodes} = Parser.parseWithRef(val, this),
+			token = Shadow.run(
+				// @ts-expect-error abstract class
+				(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
+			);
 		token.lastChild.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
 		return this.insertAt(token);
 	};
@@ -39,13 +34,12 @@ TranscludeToken.prototype.setValue =
 			arg.setValue(value);
 			return;
 		}
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			{pageName} = this,
-			k = Parser.parse(key, include, undefined, config, pageName),
-			v = Parser.parse(value, include, undefined, config, pageName),
-			// @ts-expect-error abstract class
-			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
+		const k = Parser.parseWithRef(key, this),
+			v = Parser.parseWithRef(value, this),
+			token = Shadow.run(
+				// @ts-expect-error abstract class
+				(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
+			);
 		token.firstChild.safeAppend(k.childNodes);
 		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
 		this.insertAt(token);
@@ -54,59 +48,62 @@ TranscludeToken.prototype.setValue =
 TranscludeToken.prototype.replaceTemplate =
 	/** @implements */
 	function(title): void {
-		const {type, firstChild, pageName} = this;
+		const {type, firstChild} = this;
 		/* istanbul ignore if */
 		if (type === 'magic-word') {
 			throw new Error('TranscludeToken.replaceTemplate method is only for templates!');
 		}
-		const {childNodes} = Parser
-			.parse(title, this.getAttribute('include'), 2, this.getAttribute('config'), pageName);
+		const {childNodes} = Parser.parseWithRef(title, this, 2);
 		(firstChild as AtomToken).safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.replaceModule =
 	/** @implements */
 	function(title): void {
-		const {type, name, length, childNodes: [, mod], pageName} = this;
+		const {type, name, length, childNodes: [, mod]} = this;
 		/* istanbul ignore if */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
-		}
-		const config = this.getAttribute('config');
-		if (length === 1) {
+		} else if (length === 1) {
 			Token.prototype.insertAt.call(
 				this,
-				Shadow.run(() => new AtomToken(undefined, 'invoke-module', config, [], {
-					'Stage-1': ':', '!ExtToken': '',
-				})),
+				Shadow.run(() => new AtomToken(
+					undefined,
+					'invoke-module',
+					this.getAttribute('config'),
+					[],
+					{'Stage-1': ':', '!ExtToken': ''},
+				)),
 			);
 			return;
 		}
-		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, config, pageName);
+		const {childNodes} = Parser.parseWithRef(title, this, 2);
 		(mod as AtomToken).safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.replaceFunction =
 	/** @implements */
 	function(func): void {
-		const {type, name, length, childNodes: [,, fun], pageName} = this;
+		const {type, name, length, childNodes: [,, fun]} = this;
 		/* istanbul ignore next */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
 		} else if (length < 2) {
 			throw new Error('No module name specified!');
-		}
-		const config = this.getAttribute('config');
-		if (length === 2) {
+		} else if (length === 2) {
 			Token.prototype.insertAt.call(
 				this,
-				Shadow.run(() => new AtomToken(undefined, 'invoke-function', config, [], {
-					'Stage-1': ':', '!ExtToken': '',
-				})),
+				Shadow.run(() => new AtomToken(
+					undefined,
+					'invoke-function',
+					this.getAttribute('config'),
+					[],
+					{'Stage-1': ':', '!ExtToken': ''},
+				)),
 			);
 			return;
 		}
-		const {childNodes} = Parser.parse(func, this.getAttribute('include'), 2, config, pageName);
+		const {childNodes} = Parser.parseWithRef(func, this, 2);
 		(fun as AtomToken).safeReplaceChildren(childNodes);
 	};
 
@@ -202,17 +199,13 @@ TranscludeToken.prototype.escapeTables =
 			return this;
 		}
 		const stripped = this.toString().slice(2, -2),
-			include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			{pageName} = this,
-			parsed = Parser.parse(stripped, include, 4, config, pageName);
+			parsed = Parser.parseWithRef(stripped, this, 4);
 		for (const table of parsed.childNodes) {
 			if (table.is<TableToken>('table')) {
 				table.escape();
 			}
 		}
-		const {firstChild, length} = Parser
-			.parse(`{{${parsed.toString()}}}`, include, undefined, config, pageName);
+		const {firstChild, length} = Parser.parseWithRef(`{{${parsed.toString()}}}`, this);
 		/* istanbul ignore if */
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('Failed to escape tables!');

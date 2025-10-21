@@ -245,13 +245,7 @@ export abstract class ConverterRuleToken extends Token {
 	 * @param to target of language conversion / 转换目标
 	 */
 	setTo(to: string): void {
-		const {childNodes} = Parser.parse(
-			to,
-			this.getAttribute('include'),
-			undefined,
-			this.getAttribute('config'),
-			this.pageName,
-		);
+		const {childNodes} = Parser.parseWithRef(to, this);
 		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
@@ -262,9 +256,13 @@ export abstract class ConverterRuleToken extends Token {
 	 * @param variant language variant / 语言变体
 	 */
 	setVariant(variant: string): void {
-		const config = this.getAttribute('config');
 		if (this.length === 1) {
-			super.insertAt(Shadow.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
+			super.insertAt(
+				Shadow.run(
+					() => new AtomToken(variant, 'converter-rule-variant', this.getAttribute('config')),
+				),
+				0,
+			);
 		} else {
 			this.childNodes[this.length - 2]!.setText(variant);
 		}
@@ -278,15 +276,18 @@ export abstract class ConverterRuleToken extends Token {
 	 * @throws `Error` 尚未指定语言变体
 	 */
 	setFrom(from: string): void {
-		const {variant, unidirectional, pageName} = this;
+		const {variant, unidirectional} = this;
 		if (!variant) {
 			throw new Error('Please specify the language variant first!');
 		}
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config, pageName);
+		const {childNodes} = Parser.parseWithRef(from, this);
 		if (!unidirectional) {
 			super.insertAt(
-				Shadow.run(() => new AtomToken(undefined, 'converter-rule-from', config)),
+				Shadow.run(() => new AtomToken(
+					undefined,
+					'converter-rule-from',
+					this.getAttribute('config'),
+				)),
 				0,
 			);
 		}

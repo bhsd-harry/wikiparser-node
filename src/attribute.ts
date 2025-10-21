@@ -497,11 +497,18 @@ export abstract class AttributeToken extends Token {
 
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
-			k = key.toString(),
-			config = this.getAttribute('config');
+			k = key.toString();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new AttributeToken(this.type, this.tag, k, this.#equal, '', this.#quotes, config);
+			const token: this = new AttributeToken(
+				this.type,
+				this.tag,
+				k,
+				this.#equal,
+				'',
+				this.#quotes,
+				this.getAttribute('config'),
+			);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			return token;
@@ -536,19 +543,13 @@ export abstract class AttributeToken extends Token {
 			this.#equal = '';
 			return;
 		}
-		const {type, lastChild, pageName} = this;
+		const {type, lastChild} = this;
 		if (type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		} else if (value.includes('"') && value.includes(`'`)) {
 			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
 		}
-		const {childNodes} = Parser.parse(
-			value,
-			this.getAttribute('include'),
-			stages[type] + 1,
-			this.getAttribute('config'),
-			pageName,
-		);
+		const {childNodes} = Parser.parseWithRef(value, this, stages[type] + 1);
 		lastChild.safeReplaceChildren(childNodes);
 		if (value.includes('"')) {
 			this.#quotes = [`'`, `'`] as const;
@@ -567,17 +568,11 @@ export abstract class AttributeToken extends Token {
 	 * @throws `Error` title和alt属性不能更名
 	 */
 	rename(key: string): void {
-		const {type, name, tag, firstChild, pageName} = this;
+		const {type, name, tag, firstChild} = this;
 		if (name === 'title' || name === 'alt' && tag === 'img') {
 			throw new Error(`${name} attribute cannot be renamed!`);
 		}
-		const {childNodes} = Parser.parse(
-			key,
-			this.getAttribute('include'),
-			stages[type] + 1,
-			this.getAttribute('config'),
-			pageName,
-		);
+		const {childNodes} = Parser.parseWithRef(key, this, stages[type] + 1);
 		firstChild.safeReplaceChildren(childNodes);
 	}
 

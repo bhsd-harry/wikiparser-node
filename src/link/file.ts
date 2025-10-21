@@ -545,8 +545,7 @@ export abstract class FileToken extends LinkBaseToken {
 				),
 		);
 		if (free) {
-			const {childNodes} = Parser
-				.parse(value as string, this.getAttribute('include'), undefined, config, this.pageName);
+			const {childNodes} = Parser.parseWithRef(value as string, this);
 			parameter.safeReplaceChildren(childNodes);
 		}
 		this.insertAt(parameter);

@@ -225,14 +225,17 @@ export abstract class ExtToken extends TagPairToken {
 
 	override cloneNode(): this {
 		const inner = this.lastChild.cloneNode(),
-			tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			closed = this.selfClosing ? undefined : tags[1],
-			attr = this.firstChild.toString();
+			tags = this.getAttribute('tags');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new ExtToken(tags[0], attr, '', closed, config, include);
+			const token: this = new ExtToken(
+				tags[0],
+				this.firstChild.toString(),
+				'',
+				this.selfClosing ? undefined : tags[1],
+				this.getAttribute('config'),
+				this.getAttribute('include'),
+			);
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});

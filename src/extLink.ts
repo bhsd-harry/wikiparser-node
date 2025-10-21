@@ -207,9 +207,8 @@ export abstract class ExtLinkToken extends Token {
 	 * @param str text of the link / 链接显示文字
 	 */
 	setLinkText(str: string): void {
-		const {length, lastChild, pageName} = this,
-			root = Parser
-				.parse(str, this.getAttribute('include'), 7, this.getAttribute('config'), pageName);
+		const {length, lastChild} = this,
+			root = Parser.parseWithRef(str, this, 7);
 		if (length === 1) {
 			root.type = 'ext-link-text';
 			root.setAttribute('acceptable', {

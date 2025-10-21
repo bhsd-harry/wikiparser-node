@@ -689,14 +689,13 @@ export abstract class TranscludeToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const [first, ...cloned] = this.cloneChildNodes(),
-			config = this.getAttribute('config');
+		const [first, ...cloned] = this.cloneChildNodes();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token: this = new TranscludeToken(
 				this.type === 'template' ? 'T' : first!.text() + (cloned.length === 0 ? '' : this.#colon),
 				[],
-				config,
+				this.getAttribute('config'),
 			);
 			if (this.#raw) {
 				token.setModifier(this.modifier);

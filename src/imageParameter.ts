@@ -188,7 +188,7 @@ export abstract class ImageParameterToken extends Token {
 				const [width, height = ''] = size.split('x') as [string, string?];
 				return {width, height};
 			}
-			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
+			const token = Parser.parseWithRef(size, this, 2, false),
 				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x'));
 			if (i === -1) {
 				return {width: size, height: ''};
@@ -399,14 +399,13 @@ export abstract class ImageParameterToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
+		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token: this = new ImageParameterToken(
 				this.#syntax.replace('$1', '1'),
 				this.#extension,
-				config,
+				this.getAttribute('config'),
 			);
 			token.safeReplaceChildren(cloned);
 			return token;
@@ -432,7 +431,7 @@ export abstract class ImageParameterToken extends Token {
 	 * @throws `Error` 无效参数
 	 */
 	setValue(value: string | boolean = false): void {
-		const {name, pageName} = this;
+		const {name} = this;
 		if (value === false) {
 			this.remove();
 			return;
@@ -443,13 +442,7 @@ export abstract class ImageParameterToken extends Token {
 		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof
 			this.typeError('setValue', type);
 		} else if (value !== true) {
-			const {childNodes} = Parser.parse(
-				value,
-				this.getAttribute('include'),
-				name === 'caption' ? undefined : 5,
-				this.getAttribute('config'),
-				pageName,
-			);
+			const {childNodes} = Parser.parseWithRef(value, this, name === 'caption' ? undefined : 5);
 			this.safeReplaceChildren(childNodes);
 		}
 	}

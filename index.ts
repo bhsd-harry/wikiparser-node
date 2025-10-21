@@ -147,6 +147,9 @@ declare interface Parser extends ParserBase {
 	): Token;
 
 	/** @private */
+	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
+
+	/** @private */
 	partialParse(wikitext: string, watch: () => string, include?: boolean, config?: Config): Promise<Token>;
 
 	/**
@@ -559,6 +562,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* NOT FOR BROWSER END */
 
 		return root;
+	},
+
+	/** @implements */
+	parseWithRef(wikitext, ref, maxStage, include = ref.getAttribute('include')) {
+		return this.parse(wikitext, include, maxStage, ref.getAttribute('config'), ref.pageName);
 	},
 
 	/** @implements */
