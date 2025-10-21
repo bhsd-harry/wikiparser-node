@@ -69,7 +69,13 @@ declare interface Parser extends ParserBase {
 		opt?: TitleOptions, // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
+	parse(
+		wikitext: string,
+		include?: boolean,
+		maxStage?: number | Stage | Stage[],
+		config?: Config,
+		page?: string,
+	): Token;
 
 	/** @private */
 	partialParse(wikitext: string, watch: () => string, include?: boolean, config?: Config): Promise<Token>;
@@ -260,6 +266,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config);
 				root.type = 'root';
+				root.pageName = opt?.page ?? '';
 				root.parseOnce(0, include).parseOnce();
 				const t = new Title(root.toString(), defaultNs, config, opt);
 				root.build();
@@ -281,7 +288,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig(), page = '') {
 		wikitext = tidy(wikitext);
 		let types: Stage[] | undefined;
 		LINT: { // eslint-disable-line no-unused-labels
@@ -294,6 +301,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';
+			token.pageName = page;
 			try {
 				return token.parse(maxStage, include);
 
@@ -311,7 +319,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					fs.writeFileSync(`${file}.err`, e.stack!);
 					fs.writeFileSync(
 						`${file}.json`,
-						JSON.stringify({stage, include, config}, null, '\t'),
+						JSON.stringify({stage, include, config, page}, null, '\t'),
 					);
 				}
 				throw e;
