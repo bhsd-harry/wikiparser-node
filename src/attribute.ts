@@ -536,14 +536,19 @@ export abstract class AttributeToken extends Token {
 			this.#equal = '';
 			return;
 		}
-		const {type, lastChild} = this;
+		const {type, lastChild, pageName} = this;
 		if (type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		} else if (value.includes('"') && value.includes(`'`)) {
 			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
 		}
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[type] + 1, config);
+		const {childNodes} = Parser.parse(
+			value,
+			this.getAttribute('include'),
+			stages[type] + 1,
+			this.getAttribute('config'),
+			pageName,
+		);
 		lastChild.safeReplaceChildren(childNodes);
 		if (value.includes('"')) {
 			this.#quotes = [`'`, `'`] as const;
@@ -562,12 +567,18 @@ export abstract class AttributeToken extends Token {
 	 * @throws `Error` title和alt属性不能更名
 	 */
 	rename(key: string): void {
-		if (this.name === 'title' || this.name === 'alt' && this.tag === 'img') {
-			throw new Error(`${this.name} attribute cannot be renamed!`);
+		const {type, name, tag, firstChild, pageName} = this;
+		if (name === 'title' || name === 'alt' && tag === 'img') {
+			throw new Error(`${name} attribute cannot be renamed!`);
 		}
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(key, this.getAttribute('include'), stages[this.type] + 1, config);
-		this.firstChild.safeReplaceChildren(childNodes);
+		const {childNodes} = Parser.parse(
+			key,
+			this.getAttribute('include'),
+			stages[type] + 1,
+			this.getAttribute('config'),
+			pageName,
+		);
+		firstChild.safeReplaceChildren(childNodes);
 	}
 
 	/** @private */

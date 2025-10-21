@@ -576,8 +576,15 @@ export interface Parser {
 	 * 解析wikitext
 	 * @param include whether to be transcluded / 是否嵌入
 	 * @param maxStage max stage for parsing / 最大解析层级
+	 * @param page page name / 页面名称
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
+	parse(
+		wikitext: string,
+		include?: boolean,
+		maxStage?: number | Stage | Stage[],
+		config?: Config,
+		page?: string,
+	): Token;
 
 	/**
 	 * Create a language server

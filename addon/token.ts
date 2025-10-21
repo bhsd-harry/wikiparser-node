@@ -70,6 +70,7 @@ const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): stri
 /**
  * 展开模板
  * @param wikitext
+ * @param page 页面名称
  * @param config
  * @param include
  * @param context 模板调用环境
@@ -79,6 +80,7 @@ const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): stri
  */
 const expand = (
 	wikitext: string,
+	page: string,
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
@@ -89,6 +91,7 @@ const expand = (
 	const n = accum.length,
 		token = new Token(wikitext, {...config, inExt: true}, accum);
 	token.type = 'root';
+	token.pageName = page;
 	token.parseOnce(0, include);
 	if (context !== false) {
 		token.setText(removeCommentLine(token.firstChild!.toString(), true));
@@ -128,7 +131,7 @@ const expand = (
 						10,
 						include,
 						c,
-						{halfParsed: true, temporary: true},
+						{halfParsed: true, temporary: true, page},
 					);
 				if (!valid) {
 					// @ts-expect-error sparse array
@@ -166,6 +169,7 @@ const expand = (
 				return implicitNewLine(
 					expand(
 						Parser.templates.get(title)!,
+						title,
 						config,
 						true,
 						target,
@@ -253,21 +257,25 @@ const expand = (
 	return token;
 };
 
+/**
+ * 展开指定节点的模板
+ * @param token 目标节点
+ * @param context 模板调用环境
+ */
+const expandToken = (token: Token, context?: false): Token => expand(
+	token.toString(),
+	token.pageName,
+	token.getAttribute('config'),
+	token.getAttribute('include'),
+	context,
+);
+
 Token.prototype.expand = /** @implements */ function(): Token {
-	return Shadow.run(
-		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include')).parse(),
-	);
+	return Shadow.run(() => expandToken(this).parse());
 };
 
 Token.prototype.solveConst = /** @implements */ function(): Token {
-	return Shadow.run(
-		() => expand(
-			this.toString(),
-			this.getAttribute('config'),
-			this.getAttribute('include'),
-			false,
-		).parse(),
-	);
+	return Shadow.run(() => expandToken(this, false).parse());
 };
 
 Token.prototype.toHtml = /** @implements */ function(): string {
@@ -275,10 +283,7 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 	let html: string;
 	if (this.type === 'root') {
 		Parser.viewOnly = true;
-		const expanded = Shadow.run(
-			() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'))
-				.parse(undefined, false, true),
-		);
+		const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
 		Parser.viewOnly = false;
 		states.set(expanded, {headings: new Set()});
 		const lines = expanded.toHtmlInternal().split('\n');

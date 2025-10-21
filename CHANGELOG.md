@@ -1,6 +1,10 @@
 ## v1.29.0
 
-*2025-10-18*
+*2025-10-21*
+
+**Added**
+
+- [`Token.pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property that gets or sets the page name
 
 **Changed**
 

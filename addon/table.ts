@@ -182,11 +182,8 @@ TableToken.prototype.formatTableCol =
 TableToken.prototype.fillTableRow =
 	/** @implements */
 	function(y, inner, subtype, attr): void {
-		const rowToken = this.getNthRow(y)!,
-			layout = this.getLayout({y}),
-			maxCol = getMaxCol(layout),
-			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		fill(y, rowToken, layout, maxCol, token);
+		const layout = this.getLayout({y});
+		fill(y, this.getNthRow(y)!, layout, getMaxCol(layout), createTd(inner, this, subtype, attr));
 	};
 
 TableToken.prototype.fillTable =
@@ -195,7 +192,7 @@ TableToken.prototype.fillTable =
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
 			maxCol = getMaxCol(layout),
-			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+			token = createTd(inner, this, subtype, attr);
 		for (let y = 0; y < rowTokens.length; y++) {
 			fill(y, rowTokens[y]!, layout, maxCol, token);
 		}
@@ -291,13 +288,7 @@ TableToken.prototype.insertTableCol =
 		if (x > minCol) {
 			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} column(s)!`);
 		}
-		const token = createTd(
-			inner,
-			subtype,
-			attr,
-			this.getAttribute('include'),
-			this.getAttribute('config'),
-		);
+		const token = createTd(inner, this, subtype, attr);
 		for (let i = 0; i < layout.length; i++) {
 			const rowLayout = layout[i]!,
 				coords = rowLayout[x],

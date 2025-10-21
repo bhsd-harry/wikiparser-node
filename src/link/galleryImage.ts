@@ -85,7 +85,7 @@ export abstract class GalleryImageToken extends FileToken {
 		return this.normalizeTitle(
 			this.firstChild.toString(),
 			imagemap ? 0 : 6,
-			{halfParsed: true, temporary, decode: !imagemap},
+			{halfParsed: true, temporary, decode: !imagemap, page: ''},
 		);
 	}
 

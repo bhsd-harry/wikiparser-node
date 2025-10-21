@@ -432,7 +432,7 @@ export abstract class ImageParameterToken extends Token {
 	 * @throws `Error` 无效参数
 	 */
 	setValue(value: string | boolean = false): void {
-		const {name} = this;
+		const {name, pageName} = this;
 		if (value === false) {
 			this.remove();
 			return;
@@ -443,9 +443,13 @@ export abstract class ImageParameterToken extends Token {
 		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof
 			this.typeError('setValue', type);
 		} else if (value !== true) {
-			const include = this.getAttribute('include'),
-				config = this.getAttribute('config'),
-				{childNodes} = Parser.parse(value, include, name === 'caption' ? undefined : 5, config);
+			const {childNodes} = Parser.parse(
+				value,
+				this.getAttribute('include'),
+				name === 'caption' ? undefined : 5,
+				this.getAttribute('config'),
+				pageName,
+			);
 			this.safeReplaceChildren(childNodes);
 		}
 	}

@@ -298,8 +298,13 @@ export abstract class MagicLinkToken extends Token {
 	 * @param url URL containing the protocol / 含协议的网址
 	 */
 	setTarget(url: string): void {
-		const {childNodes} = Parser
-			.parse(url, this.getAttribute('include'), 2, this.getAttribute('config'));
+		const {childNodes} = Parser.parse(
+			url,
+			this.getAttribute('include'),
+			2,
+			this.getAttribute('config'),
+			this.pageName,
+		);
 		this.safeReplaceChildren(childNodes);
 	}
 

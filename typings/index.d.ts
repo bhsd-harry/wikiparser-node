@@ -57,6 +57,7 @@ declare global {
 		readonly stage: number;
 		readonly include: boolean;
 		readonly config: Config;
+		readonly page?: string;
 	}
 
 	interface State {

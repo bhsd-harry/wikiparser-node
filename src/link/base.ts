@@ -322,7 +322,7 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	setTarget(link: string): void {
 		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(link, this.getAttribute('include'), 2, config),
+			{childNodes} = Parser.parse(link, this.getAttribute('include'), 2, config, this.pageName),
 			token = Shadow.run(() => new AtomToken(undefined, 'link-target', config, [], {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			}));
@@ -351,20 +351,26 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkStr link text / 链接显示文字
 	 */
 	setLinkText(linkStr?: string): void {
+		const {childNodes, lastChild, length, pageName} = this;
 		if (linkStr === undefined) {
-			this.childNodes[1]?.remove();
+			childNodes[1]?.remove();
 			return;
 		}
-		const root = Parser
-			.parse(linkStr, this.getAttribute('include'), undefined, this.getAttribute('config'));
-		if (this.length === 1) {
+		const root = Parser.parse(
+			linkStr,
+			this.getAttribute('include'),
+			undefined,
+			this.getAttribute('config'),
+			pageName,
+		);
+		if (length === 1) {
 			root.type = 'link-text';
 			root.setAttribute('acceptable', {
 				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
 			});
 			this.insertAt(root);
 		} else {
-			this.lastChild.safeReplaceChildren(root.childNodes);
+			lastChild.safeReplaceChildren(root.childNodes);
 		}
 	}
 

@@ -442,7 +442,7 @@ export abstract class FileToken extends LinkBaseToken {
 	getFrame(): string | Title | undefined {
 		const [arg] = this.getFrameArgs(),
 			val = arg?.name;
-		return val === 'manualthumb' ? this.normalizeTitle(arg!.getValue() as string, 6) : val;
+		return val === 'manualthumb' ? this.normalizeTitle(arg!.getValue() as string, 6, {page: ''}) : val;
 	}
 
 	/**
@@ -546,7 +546,7 @@ export abstract class FileToken extends LinkBaseToken {
 		);
 		if (free) {
 			const {childNodes} = Parser
-				.parse(value as string, this.getAttribute('include'), undefined, config);
+				.parse(value as string, this.getAttribute('include'), undefined, config, this.pageName);
 			parameter.safeReplaceChildren(childNodes);
 		}
 		this.insertAt(parameter);

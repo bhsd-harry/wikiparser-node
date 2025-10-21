@@ -317,7 +317,7 @@ export abstract class TranscludeToken extends Token {
 			title = this.normalizeTitle(
 				this.childNodes[isTemplate ? 0 : 1].text(),
 				isTemplate ? 10 : 828,
-				{temporary: true},
+				{temporary: true, ...!isTemplate && {page: ''}},
 			);
 
 		/* NOT FOR BROWSER */

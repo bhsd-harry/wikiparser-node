@@ -245,8 +245,13 @@ export abstract class ConverterRuleToken extends Token {
 	 * @param to target of language conversion / 转换目标
 	 */
 	setTo(to: string): void {
-		const {childNodes} = Parser
-			.parse(to, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		const {childNodes} = Parser.parse(
+			to,
+			this.getAttribute('include'),
+			undefined,
+			this.getAttribute('config'),
+			this.pageName,
+		);
 		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
@@ -273,12 +278,12 @@ export abstract class ConverterRuleToken extends Token {
 	 * @throws `Error` 尚未指定语言变体
 	 */
 	setFrom(from: string): void {
-		const {variant, unidirectional} = this;
+		const {variant, unidirectional, pageName} = this;
 		if (!variant) {
 			throw new Error('Please specify the language variant first!');
 		}
 		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config);
+			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config, pageName);
 		if (!unidirectional) {
 			super.insertAt(
 				Shadow.run(() => new AtomToken(undefined, 'converter-rule-from', config)),

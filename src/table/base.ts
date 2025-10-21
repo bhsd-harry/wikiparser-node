@@ -29,8 +29,13 @@ const escapeTable = (syntax: SyntaxToken): void => {
 					.replace(/\|/gu, '{{!}}')
 				: child.toString(),
 		).join(''),
-		{childNodes} = Parser
-			.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
+		{childNodes} = Parser.parse(
+			wikitext,
+			syntax.getAttribute('include'),
+			2,
+			syntax.getAttribute('config'),
+			syntax.pageName,
+		);
 	syntax.safeReplaceChildren(childNodes);
 };
 

@@ -267,8 +267,13 @@ export abstract class ParameterToken extends Token {
 	 * @param value parameter value / 参数值
 	 */
 	setValue(value: string): void {
-		const {childNodes} = Parser
-			.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		const {childNodes} = Parser.parse(
+			value,
+			this.getAttribute('include'),
+			undefined,
+			this.getAttribute('config'),
+			this.pageName,
+		);
 		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
@@ -282,15 +287,20 @@ export abstract class ParameterToken extends Token {
 	 * @throws `RangeError` 更名造成重复参数
 	 */
 	rename(key: string, force?: boolean): void {
-		const {parentNode, anon} = this;
+		const {parentNode, anon, pageName} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {
 			throw new Error('ParameterToken.rename method is only for template parameters!');
 		} else if (anon) {
 			parentNode?.anonToNamed();
 		}
-		const root = Parser
-				.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
+		const root = Parser.parse(
+				key,
+				this.getAttribute('include'),
+				undefined,
+				this.getAttribute('config'),
+				pageName,
+			),
 			name = this.trimName(root, false);
 		if (this.name === name) {
 			Parser.warn('The actual parameter name is not changed', name);

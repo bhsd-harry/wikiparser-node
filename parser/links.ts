@@ -21,9 +21,10 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
  * @param wikitext
  * @param config
  * @param accum
+ * @param page 页面名称
  * @param tidy 是否整理链接
  */
-export const parseLinks = (wikitext: string, config: Config, accum: Token[], tidy?: boolean): string => {
+export const parseLinks = (wikitext: string, config: Config, accum: Token[], page: string, tidy?: boolean): string => {
 	/^\s*(?:ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = config.inExt
@@ -75,7 +76,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 			0,
 			false,
 			config,
-			{halfParsed: true, temporary: true, decode: true, selfLink: true},
+			{halfParsed: true, temporary: true, decode: true, selfLink: true, page},
 		);
 		if (!valid) {
 			s += `[[${x}`;
@@ -104,7 +105,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 					break;
 				}
 			}
-			text = parseLinks(text!, config, accum, tidy);
+			text = parseLinks(text!, config, accum, page, tidy);
 			if (!found) {
 				s += `[[${link}${delimiter!}${text}`;
 				continue;

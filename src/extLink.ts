@@ -207,16 +207,17 @@ export abstract class ExtLinkToken extends Token {
 	 * @param str text of the link / 链接显示文字
 	 */
 	setLinkText(str: string): void {
-		const root = Parser
-			.parse(str, this.getAttribute('include'), 7, this.getAttribute('config'));
-		if (this.length === 1) {
+		const {length, lastChild, pageName} = this,
+			root = Parser
+				.parse(str, this.getAttribute('include'), 7, this.getAttribute('config'), pageName);
+		if (length === 1) {
 			root.type = 'ext-link-text';
 			root.setAttribute('acceptable', {
 				'Stage-7': ':', ConverterToken: ':',
 			});
 			this.insertAt(root);
 		} else {
-			this.lastChild.safeReplaceChildren(root.childNodes);
+			lastChild.safeReplaceChildren(root.childNodes);
 		}
 		this.#space ||= ' ';
 	}

@@ -36,7 +36,8 @@ export class OnlyincludeToken extends Token {
 			throw new RangeError('"</onlyinclude>" is not allowed in the text!');
 		}
 		this.replaceChildren(
-			...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes,
+			...Parser.parse(text, true, undefined, this.getAttribute('config'), this.pageName)
+				.childNodes,
 		);
 	}
 

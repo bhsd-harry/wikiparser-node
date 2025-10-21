@@ -105,7 +105,11 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * @param file 文件名
 	 */
 	#checkFile(file: string): boolean {
-		return this.normalizeTitle(file, 6, {halfParsed: true, temporary: true, decode: true}).valid;
+		return this.normalizeTitle(
+			file,
+			6,
+			{halfParsed: true, temporary: true, decode: true, page: ''},
+		).valid;
 	}
 
 	/** @private */

@@ -111,7 +111,8 @@ export abstract class TdToken extends TableBaseToken {
 
 	set innerText(text) {
 		this.lastChild.replaceChildren(
-			...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes,
+			...Parser.parse(text, true, undefined, this.getAttribute('config'), this.pageName)
+				.childNodes,
 		);
 	}
 
@@ -453,19 +454,20 @@ export abstract class TdToken extends TableBaseToken {
 /**
  * 创建新的单元格
  * @param inner 内部wikitext
+ * @param ref 参考节点
  * @param subtype 单元格类型
  * @param attr 单元格属性
- * @param include 是否嵌入
- * @param config
  */
 export const createTd = (
 	inner: string | Token,
+	ref: Token,
 	subtype: TdSubtypes = 'td',
 	attr: TdAttrs = {},
-	include?: boolean,
-	config?: Config,
 ): TdToken => {
-	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
+	const config = ref.getAttribute('config'),
+		innerToken = typeof inner === 'string'
+			? Parser.parse(inner, ref.getAttribute('include'), undefined, config, ref.pageName)
+			: inner,
 		// @ts-expect-error abstract class
 		token = Shadow.run((): TdToken => new TdToken('\n|', undefined, config));
 	token.setSyntax(subtype);

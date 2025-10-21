@@ -218,7 +218,7 @@ export abstract class TableToken extends TrBaseToken {
 
 		if (!halfParsed) {
 			(this.lastChild as SyntaxToken).safeReplaceChildren(
-				Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes,
+				Parser.parse(syntax, this.getAttribute('include'), 2, config, this.pageName).childNodes,
 			);
 		}
 	}
