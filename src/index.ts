@@ -105,6 +105,7 @@ export class Token extends AstElement {
 	#include?: boolean;
 	#built = false;
 	#string: Cached<string> | undefined;
+	#pageName = '';
 
 	override get type(): TokenTypes {
 		return this.#type;
@@ -112,6 +113,25 @@ export class Token extends AstElement {
 
 	override set type(value) {
 		this.#type = value;
+	}
+
+	/**
+	 * page name
+	 *
+	 * 页面名称
+	 * @since v1.29.0
+	 */
+	get pageName(): string {
+		return this.getRootNode().#pageName;
+	}
+
+	set pageName(value: string) {
+		if (value) {
+			const title = this.normalizeTitle(value, 0, {temporary: true, page: ''});
+			this.#pageName = title.valid ? title.title : '';
+		} else {
+			this.#pageName = '';
+		}
 	}
 
 	/** @class */
@@ -310,7 +330,7 @@ export class Token extends AstElement {
 	 */
 	#parseLinks(tidy?: boolean): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, tidy));
+		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, this.#pageName, tidy));
 	}
 
 	/**
@@ -437,7 +457,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, opt);
+		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, {page: this.#pageName, ...opt});
 	}
 
 	/** @private */
