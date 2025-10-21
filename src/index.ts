@@ -326,7 +326,7 @@ export class Token extends AstElement {
 	 */
 	#parseLinks(tidy?: boolean): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, this.#pageName, tidy));
+		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, this.pageName, tidy));
 	}
 
 	/**
@@ -445,7 +445,13 @@ export class Token extends AstElement {
 
 	/** @private */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, {page: this.#pageName, ...opt});
+		return Parser.normalizeTitle(
+			title,
+			defaultNs,
+			this.getAttribute('include'),
+			this.#config,
+			{page: this.pageName, ...opt},
+		);
 	}
 
 	/** @private */
