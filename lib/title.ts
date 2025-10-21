@@ -33,7 +33,8 @@ export class Title {
 	#path: string;
 	#ns;
 	#fragment;
-	#page;
+	/** @private */
+	page;
 	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
@@ -99,7 +100,7 @@ export class Title {
 		config: Config,
 		{temporary, decode, selfLink, page = ''}: TitleOptions = {},
 	) {
-		this.#page = page;
+		this.page = page;
 		const trimmed = title.trim(),
 			subpage = trimmed.startsWith('../');
 		if (decode && title.includes('%')) {
@@ -165,27 +166,37 @@ export class Title {
 	}
 
 	/**
+	 * 生成标题
+	 * @param prefix 前缀
+	 */
+	#getTitle(prefix: string): [boolean, string] {
+		let title = (prefix + this.main).replace(/ /gu, '_');
+		if (title.startsWith('/')) {
+			title = this.page + title.replace(/\/$/u, '');
+		} else if (title.startsWith('../') && this.page.includes('/')) {
+			const [level, sub] = resolve(title),
+				dirs = this.page.split('/');
+			if (dirs.length > level) {
+				title = dirs.slice(0, -level).join('/') + (sub && '/') + sub;
+			}
+		}
+		return [false, title];
+	}
+
+	/**
 	 * Check if the title is a redirect
 	 *
 	 * 检测是否是重定向
 	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
-		// eslint-disable-next-line @typescript-eslint/prefer-destructuring
-		const prefix =
-			this.prefix;
-		// eslint-disable-next-line prefer-const
-		let title = (prefix + this.main).replace(/ /gu, '_');
-		if (title.startsWith('/')) {
-			title = this.#page + title;
-		} else if (title.startsWith('../') && this.#page.includes('/')) {
-			const [level, sub] = resolve(title),
-				dirs = this.#page.split('/');
-			if (dirs.length > level) {
-				title = dirs.slice(0, -level).join('/') + (sub && '/') + sub;
-			}
-		}
-		return [false, title];
+		const {
+				prefix,
+			} = this,
+			pre =
+				prefix,
+			result = this.#getTitle(pre);
+		return result;
 	}
 
 	/** @private */
