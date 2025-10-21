@@ -21,7 +21,7 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 			0,
 			false,
 			config,
-			{halfParsed: true, temporary: true, decode: true},
+			{halfParsed: true, temporary: true, decode: true, page: ''},
 		).valid
 	) {
 		text = `\0${accum.length}o\x7F${text.slice(mt[0].length)}`;
