@@ -73,9 +73,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	const lsp = new wikiparse.LanguageService!();
 
-	if (summary) {
-		console.time('LSP');
-	}
+	console.time(`LSP: ${title}`);
 	await wrap('provideInlayHints', title, () => {
 		void lsp.provideInlayHints(
 			`${content} `,
@@ -139,7 +137,5 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 		}
 	}
 	lsp.destroy();
-	if (summary) {
-		console.timeEnd('LSP');
-	}
+	console.timeEnd(`LSP: ${title}`);
 };
