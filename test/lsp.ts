@@ -116,9 +116,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 
 	/* NOT FOR BROWSER ONLY END */
 
-	if (summary) {
-		console.time('LSP');
-	}
+	console.time(`LSP: ${title}`);
 	await wrap('provideInlayHints', title, () => {
 		void lsp.provideInlayHints(
 			`${content} `,
@@ -260,7 +258,5 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 		}
 	}
 	lsp.destroy();
-	if (summary) {
-		console.timeEnd('LSP');
-	}
+	console.timeEnd(`LSP: ${title}`);
 };
