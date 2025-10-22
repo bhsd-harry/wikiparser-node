@@ -190,30 +190,28 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param j rank of the child node / 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
-		LINT: { // eslint-disable-line no-unused-labels
-			if (j === undefined) {
-				const {parentNode} = this;
-				return parentNode
-					? parentNode.getRelativeIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes))
-					: 0;
-			}
-			return cache<number>(
-				this.#rIndex[j],
-				() => {
-					const {childNodes} = this,
-						n = j + (j < 0 ? childNodes.length : 0);
-					let acc = this.getAttribute('padding');
-					for (let i = 0; i < n; i++) {
-						this.#rIndex[i] = [Shadow.rev, acc];
-						acc += childNodes[i]!.toString().length + this.getGaps(i);
-					}
-					return acc;
-				},
-				value => {
-					this.#rIndex[j] = value;
-				},
-			);
+		if (j === undefined) {
+			const {parentNode} = this;
+			return parentNode
+				? parentNode.getRelativeIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes))
+				: 0;
 		}
+		return cache<number>(
+			this.#rIndex[j],
+			() => {
+				const {childNodes} = this,
+					n = j + (j < 0 ? childNodes.length : 0);
+				let acc = this.getAttribute('padding');
+				for (let i = 0; i < n; i++) {
+					this.#rIndex[i] = [Shadow.rev, acc];
+					acc += childNodes[i]!.toString().length + this.getGaps(i);
+				}
+				return acc;
+			},
+			value => {
+				this.#rIndex[j] = value;
+			},
+		);
 	}
 
 	/**
@@ -222,7 +220,8 @@ export abstract class AstNode implements AstNodeBase {
 	 * 获取当前节点的绝对位置
 	 */
 	getAbsoluteIndex(): number {
-		LINT: return cache<number>( // eslint-disable-line no-unused-labels
+		// 也用于Prism-Wiki
+		return cache<number>( // eslint-disable-line no-unused-labels
 			this.#aIndex,
 			() => {
 				const {parentNode} = this;
