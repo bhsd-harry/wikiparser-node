@@ -183,7 +183,7 @@ const expand = (
 			} else if (Parser.functionHooks.has(name)) {
 				return context === false ? m : Parser.functionHooks.get(name)!(target, context || undefined);
 			} else if (expandedMagicWords.has(name)) {
-				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now)}`;
+				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now, config)}`;
 			} else if (!solvedMagicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {

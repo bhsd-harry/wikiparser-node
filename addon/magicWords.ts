@@ -1,3 +1,6 @@
+import type {Config} from '../base';
+import type {ParameterToken} from '../internal';
+
 const magicWords = [
 	'currentmonth',
 	'currentmonth1',
@@ -27,6 +30,15 @@ const magicWords = [
 	'localweek',
 	'localdow',
 	'localtimestamp',
+	'articlepath',
+	'revisionsize',
+	'numberofarticles',
+	'numberoffiles',
+	'numberofusers',
+	'numberofactiveusers',
+	'numberofpages',
+	'numberofadmins',
+	'numberofedits',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -35,9 +47,16 @@ export const expandedMagicWords = new Set<string>(magicWords);
  * 展开魔术字
  * @param name 魔术字名称
  * @param now 当前时间
+ * @param config
+ * @param args 参数
  * @throws `RangeError` 不支持的魔术字名称
  */
-export const expandMagicWord = (name: MagicWord, now: Date): string | number => {
+export const expandMagicWord = (
+	name: MagicWord,
+	now: Date,
+	config: Config,
+	args: ParameterToken[], // eslint-disable-line @typescript-eslint/no-unused-vars
+): string | number => {
 	switch (name) {
 		case 'currentyear':
 			return now.getUTCFullYear();
@@ -106,6 +125,17 @@ export const expandMagicWord = (name: MagicWord, now: Date): string | number => 
 				+ String(now.getHours()).padStart(2, '0')
 				+ String(now.getMinutes()).padStart(2, '0')
 				+ String(now.getSeconds()).padStart(2, '0');
+		case 'articlepath':
+			return config.articlePath ?? '';
+		case 'revisionsize':
+		case 'numberofarticles':
+		case 'numberoffiles':
+		case 'numberofusers':
+		case 'numberofactiveusers':
+		case 'numberofpages':
+		case 'numberofadmins':
+		case 'numberofedits':
+			return 0;
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}
