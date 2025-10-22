@@ -9,6 +9,7 @@ import type {
 
 // @ts-expect-error unconstrained predicate
 export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
+declare type BasicCondition = (type: string, name?: string) => boolean;
 
 /* NOT FOR BROWSER */
 
@@ -23,15 +24,15 @@ import type {AttributesParentBase} from '../mixin/attributesParent';
 /**
  * type和name选择器
  * @param selector
- * @param type
- * @param name
  */
-const basic = (selector: string, type: string, name?: string): boolean => {
+const basic = (selector: string): BasicCondition => {
 	if (selector.includes('#')) {
-		const i = selector.indexOf('#');
-		return (i === 0 || selector.slice(0, i) === type) && selector.slice(i + 1) === name;
+		const i = selector.indexOf('#'),
+			targetType = selector.slice(0, i),
+			targetName = selector.slice(i + 1);
+		return (type, name) => (i === 0 || type === targetType) && name === targetName;
 	}
-	return !selector || selector === type;
+	return selector ? (type): boolean => type === selector : (): true => true;
 };
 
 /* NOT FOR BROWSER */
@@ -208,7 +209,7 @@ const matches = (
 					}
 					return token === scope;
 				default:
-					return basic(selector, type, name);
+					return basic(selector)(type, name);
 			}
 		} else if (selector.length === 4) { // 情形2：属性选择器
 			const [key, equal, val = '', i] = selector,
@@ -511,8 +512,8 @@ export const getCondition = <T>(selector: string, scope?: AstElement, has?: Toke
 
 	/* NOT FOR BROWSER END */
 
-	const parts = selector.split(',');
-	return (({type, name}): boolean => parts.some(str => basic(str.trim(), type, name))) as TokenPredicate<T>;
+	const parts = selector.split(',').map(str => basic(str.trim()));
+	return (({type, name}): boolean => parts.some(condition => condition(type, name))) as TokenPredicate<T>;
 };
 
 parsers['parseSelector'] = __filename;
