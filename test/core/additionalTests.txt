@@ -433,3 +433,10 @@ title=[[Root/image]]
 <p><span class="mw-default-size" typeof="mw:File"><a href="/wiki/File:Foobar.jpg" class="mw-file-description" title="link=../test"><img alt="link=../test" src="//upload.wikimedia.org/wikipedia/commons/3/3a/Foobar.jpg" decoding="async" width="240" height="28" class="mw-file-element" data-file-width="240" data-file-height="28"></a></span>
 </p>
 !! end
+
+!! test
+Japanese behavior switches
+!! wikitext
+＿＿目次非表示＿＿
+!! html
+!! end

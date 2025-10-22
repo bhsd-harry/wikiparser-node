@@ -1275,7 +1275,7 @@ a
 <p data-parsoid='{"fostered":true,"autoInsertedEnd":true,"autoInsertedStart":true}'>
 a</p>
 <table>
-<tbody><tr class="mw-empty-elt" data-parsoid='{"startTagSrc":"|-"}'></tr></tbody></table>
+<tbody class="mw-empty-elt"><tr class="mw-empty-elt" data-parsoid='{"startTagSrc":"|-"}'></tr></tbody></table>
 !! end
 
 # selser tests are needed below as a regression test for T233815
@@ -1298,7 +1298,7 @@ parsoid={ "modes": ["wt2html","selser"], "suppressErrors": true }
 </table>
 !! html/parsoid
 <ul data-parsoid='{"fostered":true,"autoInsertedEnd":true}'><li>a</li><li>b</li></ul><table>
-<tbody><tr class="mw-empty-elt" data-parsoid='{"startTagSrc":"|-"}'>
+<tbody class="mw-empty-elt"><tr class="mw-empty-elt" data-parsoid='{"startTagSrc":"|-"}'>
 
 </tr></tbody></table>
 !! end
@@ -1622,7 +1622,7 @@ parsoid=wt2html
 </table>
 !! html/parsoid
 <table>
-<tbody>
+<tbody class="mw-empty-elt">
 <tr class='mw-empty-elt'></tr>
 <tr class='mw-empty-elt'></tr>
 </tbody></table>
@@ -2026,4 +2026,70 @@ First line attributes should be handled by html2wt even without data-parsoid
 <tbody><tr valign="top">
 <td>Bar
 </td></tr></tbody></table>
+!! end
+
+!! test
+Don't apply complex line-splitting heuristics in AttributeExpander for non-<table> tokens
+!! options
+parsoid=wt2html
+!! wikitext
+{{1x<invalid>
+|{{2x<invalid>y}}|
+}}
+
+{{1x<invalid>
+|{{2x<invalid>
+y}}|
+}}
+!! html/php
+<p>{{1x&lt;invalid&gt;
+|{{2x&lt;invalid&gt;y}}|
+}}
+</p><p>{{1x&lt;invalid&gt;
+|{{2x&lt;invalid&gt;
+y}}|
+}}
+</p>
+!! html/parsoid
+<p>{{1x&lt;invalid>
+|{{2x&lt;invalid>y}}|
+}}</p>
+
+<p>{{1x&lt;invalid>
+|{{2x&lt;invalid>
+y}}|
+}}</p>
+!! end
+
+!! test
+Autoinserted tr in html table
+!! wikitext
+<table>
+<td>a</td>
+</table>
+!! html/php
+<table>
+<tbody><tr><td>a</td>
+</tr></tbody></table>
+!! html/parsoid
+<table data-parsoid='{"stx":"html"}'>
+<tbody><tr data-parsoid='{"autoInsertedStart":true,"autoInsertedEnd":true}'><td data-parsoid='{"stx":"html"}'>a</td></tr>
+</tbody></table>
+!! end
+
+!! test
+AttributeExpander regression test: Class attributes should be properly applied
+!! wikitext
+{| {{1x|1=class="foo {{{class}}} <!--x--> bar" style="font-size: 95%;"}}
+|foo
+|}
+!! html/php
+<table class="foo &#123;&#123;&#123;class&#125;&#125;&#125; bar" style="font-size: 95%;">
+<tbody><tr>
+<td>foo
+</td></tr></tbody></table>
+!! html/parsoid+standalone
+<table class="foo {{{class}}}  bar" style="font-size: 95%;" about="#mwt2" typeof="mw:ExpandedAttrs" data-mw='{"attribs":[[{"txt":"class","html":"&lt;span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid=&apos;{\"pi\":[[{\"k\":\"1\",\"named\":true}]]}&apos; data-mw=&apos;{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"class=\\\"foo {{{class}}} &amp;lt;!--x--> bar\\\" style=\\\"font-size: 95%;\\\"\"}},\"i\":0}}]}&apos;>class=\"foo {{{class}}} &lt;/span>&lt;span about=\"#mwt1\">&lt;!--x-->&lt;/span>&lt;span about=\"#mwt1\"> bar\" style=\"font-size: 95%;\"&lt;/span>"},{"html":""}]]}'>
+<tbody><tr><td>foo</td></tr>
+</tbody></table>
 !! end
