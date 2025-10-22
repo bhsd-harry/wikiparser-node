@@ -1,4 +1,4 @@
-import {getObjRegex} from '@bhsd/common';
+import {getRegex} from '@bhsd/common';
 import {restore} from '../util/string';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
@@ -13,20 +13,20 @@ import type {Token} from '../internal';
 const onlyincludeLeft = '<onlyinclude>',
 	onlyincludeRight = '</onlyinclude>',
 	{length} = onlyincludeLeft,
-	getRegex = [false, true].map(includeOnly => {
+	getExtRegex = [false, true].map(includeOnly => {
 		const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 			includeRegex = includeOnly ? 'noinclude' : 'includeonly';
-		return getObjRegex<string[]>(ext => new RegExp(
+		return getRegex(exts => new RegExp(
 			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				ext.join('|') // eslint-disable-next-line unicorn/prefer-string-raw
+				exts // eslint-disable-next-line unicorn/prefer-string-raw
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
 			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
 			'giu',
 		));
-	}) as [RegexGetter<string[]>, RegexGetter<string[]>];
+	}) as [RegexGetter, RegexGetter];
 
 /**
  * 更新`<onlyinclude>`和`</onlyinclude>`的位置
@@ -96,7 +96,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		);
 		wikitext = restore(wikitext, stack);
 	}
-	const re = getRegex[includeOnly ? 1 : 0](newExt);
+	const re = getExtRegex[includeOnly ? 1 : 0](newExt.join('|'));
 	re.lastIndex = 0;
 	return re.test(wikitext)
 		? wikitext.replace(
