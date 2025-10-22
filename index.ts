@@ -549,8 +549,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				proc = 'printing';
 			}
 			if (restored !== wikitext) {
-				const {0: cur, length} = promises;
-				promises.unshift((async (): Promise<void> => {
+				const {length} = promises,
+					cur = promises[length - 1];
+				promises.push((async (): Promise<void> => {
 					await cur;
 					this.error(`Original wikitext is altered when ${proc}!`);
 					return diff(wikitext, restored, length);

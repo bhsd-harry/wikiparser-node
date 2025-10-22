@@ -27,17 +27,19 @@ declare interface State {
  * get next list item
  * @param char list syntax
  * @param state
+ * @param state.dt
  */
-const nextItem = (char: Prefix, state: State): string => {
+const nextItem = (char: Prefix, {dt}: State): string => {
 	if (char === '*' || char === '#') {
 		return '</li>\n<li>';
 	}
-	const close = state.dt[0] ? '</dt>\n' : '</dd>\n';
+	const {length} = dt,
+		close = dt[length - 1] ? '</dt>\n' : '</dd>\n';
 	if (char === ';') {
-		state.dt[0] = true;
+		dt[length - 1] = true;
 		return `${close}<dt>`;
 	}
-	state.dt[0] = false;
+	dt[length - 1] = false;
 	return `${close}<dd>`;
 };
 
@@ -45,8 +47,9 @@ const nextItem = (char: Prefix, state: State): string => {
  * close list item
  * @param chars list syntax
  * @param state
+ * @param state.dt
  */
-const closeList = (chars: string, state: State): string => {
+const closeList = (chars: string, {dt}: State): string => {
 	let result = '';
 	for (let i = chars.length - 1; i >= 0; i--) {
 		const char = chars[i] as Prefix;
@@ -56,7 +59,7 @@ const closeList = (chars: string, state: State): string => {
 				result += `</li></${char === '*' ? 'ul' : 'ol'}>`;
 				break;
 			case ':':
-				result += `</${state.dt.shift() ? 'dt' : 'dd'}></dl>`;
+				result += `</${dt.pop() ? 'dt' : 'dd'}></dl>`;
 				break;
 			default:
 				//
@@ -69,8 +72,9 @@ const closeList = (chars: string, state: State): string => {
  * open list item
  * @param chars list syntax
  * @param state
+ * @param state.dt
  */
-const openList = (chars: string, state: State): string => {
+const openList = (chars: string, {dt}: State): string => {
 	let result = '';
 	for (const char of chars) {
 		switch (char as Prefix) {
@@ -79,11 +83,11 @@ const openList = (chars: string, state: State): string => {
 				result += `<${char === '*' ? 'ul' : 'ol'}><li>`;
 				break;
 			case ':':
-				state.dt.unshift(false);
+				dt.push(false);
 				result += '<dl><dd>';
 				break;
 			default:
-				state.dt.unshift(true);
+				dt.push(true);
 				result += '<dl><dt>';
 		}
 	}
@@ -125,7 +129,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 				if (prefix.length === commonPrefixLength) {
 					pre += nextItem(prefix.slice(-1) as Prefix, state);
 				} else {
-					if (state.dt[0] && prefix[commonPrefixLength - 1] === ':') {
+					if (state.dt.at(-1) && prefix[commonPrefixLength - 1] === ':') {
 						pre += nextItem(':', state);
 					}
 					if (lastPrefix) {
