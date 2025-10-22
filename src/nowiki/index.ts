@@ -15,18 +15,17 @@ import type {TexvcLocation} from '../../lib/document';
 
 /** @ignore */
 const updateLocation = (
-	{startIndex, startLine, startCol, endIndex, endCol}: LintError,
+	{startIndex, startLine, startCol, endIndex, endLine, endCol}: LintError,
 	{offset, line, column}: TexvcLocation,
-	isChem: boolean,
+	n: number,
 ): [number, number, number] => {
-	const n = isChem ? 4 : 0,
-		index = startIndex + offset - n,
-		beyond = index > endIndex;
-	return [
-		beyond ? endIndex : index,
-		startLine + line - 1,
-		beyond ? endCol : (line === 1 ? startCol - n : 0) + column - 1,
-	];
+	const index = startIndex + offset - n;
+	if (index < startIndex) {
+		return [startIndex, startLine, startCol];
+	} else if (index > endIndex) {
+		return [endIndex, endLine, endCol];
+	}
+	return [index, startLine + line - 1, (line === 1 ? startCol - n : 0) + column - 1];
 };
 
 /* NOT FOR BROWSER ONLY END */
@@ -87,17 +86,37 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			s = lintConfig.getSeverity(rule);
 			if (s && texvcjs && mathTags.has(name)) {
 				const isChem = name !== 'math',
-					result = texvcjs.check(
-						isChem ? String.raw`\ce{${innerText}}` : innerText,
-						{usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem'))},
-					);
+					display = previousSibling?.getAttr('display') ?? 'block';
+				let tex = innerText,
+					n = 0;
+				if (isChem) {
+					tex = String.raw`\ce{${tex}}`;
+					n = 4;
+				}
+				switch (display) {
+					case 'block':
+						tex = String.raw`{\displaystyle ${tex}}`;
+						n += 15;
+						break;
+					case 'inline':
+						tex = String.raw`{\textstyle ${tex}}`;
+						n += 12;
+						break;
+					case 'linebreak':
+						tex = String.raw`\[ ${tex} \]`;
+						n += 3;
+						// no default
+				}
+				const result = texvcjs.check(tex, {
+					usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem')),
+				});
 				if (result.status !== '+') {
 					const e = generateForSelf(this, {start}, rule, 'chem-required', s);
 					if (result.status !== 'C') {
-						const {error: {message, location}} = result;
-						e.message = message;
-						[e.endIndex, e.endLine, e.endCol] = updateLocation(e, location.end, isChem);
-						[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, isChem);
+						const {error: {message, location}} = result,
+							[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
+						[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
+						Object.assign(e, {endIndex, endLine, endCol, message});
 					}
 					errors.push(e);
 				}
