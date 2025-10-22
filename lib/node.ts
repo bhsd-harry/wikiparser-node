@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
+import findIndex from '../util/search';
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {cached} from '../mixin/cached';
@@ -172,7 +173,7 @@ export abstract class AstNode implements AstNodeBase {
 			index += index < 0 ? length : 0;
 			if (index >= 0 && index <= length) {
 				const lines = this.getLines(),
-					top = lines.findIndex(([,, end]) => index <= end);
+					top = findIndex(lines, index, ([,, end], needle) => end - needle);
 				return {top, left: index - lines[top]![1]};
 			}
 			return undefined;
