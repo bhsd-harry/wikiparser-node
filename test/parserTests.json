@@ -1863,14 +1863,14 @@
 		"desc": "int keyword",
 		"wikitext": "{{int:new-messages|lots of money|not!}}",
 		"html": "<p>You have lots of money (not!).\n</p>",
-		"render": "",
+		"render": "<p>You have lots of money (not!).\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">int</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">new-messages</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">lots of money</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">not!</span></span>}}</span></span>"
 	},
 	{
 		"desc": "int keyword - non-existing message",
 		"wikitext": "{{int:var}}",
 		"html": "<p>⧼var⧽\n</p>",
-		"render": "",
+		"render": "<p>⧼var⧽\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">int</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">var</span></span>}}</span></span>"
 	},
 	{
@@ -4879,7 +4879,7 @@
 		"desc": "T33098 Template which includes system messages which includes the template",
 		"wikitext": "{{Identical}}",
 		"html": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n<span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n</p>",
-		"render": "<p><br>\n</p>",
+		"render": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template%3AIdentical\" title=\"Template:Identical\">Template:Identical</a></span>\n<span class=\"error\">Template loop detected: <a href=\"/wiki/Template%3AIdentical\" title=\"Template:Identical\">Template:Identical</a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Identical</span>}}</span></span>"
 	},
 	{
@@ -4894,7 +4894,7 @@
 		"wikitext": "{{int:T34057}}",
 		"title": "Main Page",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"OK\">OK</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Main_Page&amp;action=edit&amp;section=1\" title=\"Edit section: OK\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
-		"render": "",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"OK\">OK</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">int</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">T34057</span></span>}}</span></span>"
 	},
 	{
@@ -11624,7 +11624,7 @@
 		"desc": "Magic Word: {{NUMBEROFFILES}}",
 		"wikitext": "{{NUMBEROFFILES}}",
 		"html": "<p>8\n</p>",
-		"render": "",
+		"render": "<p>0\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFFILES</span>}}</span></span>"
 	},
 	{
