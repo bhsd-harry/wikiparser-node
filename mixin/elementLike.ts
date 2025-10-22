@@ -52,15 +52,17 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			}
 
 			getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-				for (const child of this.childNodes) {
-					if (child.type === 'text') {
+				const stack = [...this.childNodes].reverse();
+				while (stack.length > 0) {
+					const child = stack.pop()!,
+						{type, childNodes} = child;
+					if (type === 'text') {
 						continue;
 					} else if (condition(child)) {
 						return child;
 					}
-					const descendant = child.getElementBy(condition);
-					if (descendant) {
-						return descendant;
+					for (let i = childNodes.length - 1; i >= 0; i--) {
+						stack.push(childNodes[i]!);
 					}
 				}
 				return undefined;
@@ -70,14 +72,20 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				return this.getElementBy(this.#getCondition<T>(selector));
 			}
 
-			getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
-				for (const child of this.childNodes) {
-					if (child.type === 'text') {
+			getElementsBy<T>(condition: TokenPredicate<T>): T[] {
+				const stack = [...this.childNodes].reverse(),
+					descendants: T[] = [];
+				while (stack.length > 0) {
+					const child = stack.pop()!,
+						{type, childNodes} = child;
+					if (type === 'text') {
 						continue;
 					} else if (condition(child)) {
 						descendants.push(child);
 					}
-					child.getElementsBy(condition, descendants);
+					for (let i = childNodes.length - 1; i >= 0; i--) {
+						stack.push(childNodes[i]!);
+					}
 				}
 				return descendants;
 			}
