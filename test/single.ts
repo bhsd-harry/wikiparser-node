@@ -39,7 +39,7 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 	/* NOT FOR BROWSER ONLY */
 
 	console.time(`parse: ${title}`);
-	const token = Parser.parse(content, include);
+	const token = Parser.parse(content, title, include);
 	console.timeEnd(`parse: ${title}`);
 	const parsed = token.toString();
 	if (parsed !== content) {

@@ -94,15 +94,15 @@ const indexToPos = (
  */
 export default async ({title, content}: SimplePage, summary?: boolean): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
-	const lsp = Parser.createLanguageService();
 
 	/* NOT FOR BROWSER ONLY */
 
+	const lsp = Parser.createLanguageService();
 	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
 	Parser.getConfig();
 	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	const rgba = (await import('color-rgba')).default;
-	const root = Parser.parse(content, true),
+	const root = Parser.parse(content, title, true),
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
 		ext = root.querySelector<ExtToken>('ext'),

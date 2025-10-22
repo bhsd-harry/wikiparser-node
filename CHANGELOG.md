@@ -5,6 +5,7 @@
 **Added**
 
 - [`Token.pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property that gets or sets the page name
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports the `{{int:}}` parser function
 
 **Fixed**
 

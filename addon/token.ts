@@ -14,7 +14,7 @@ import {expandedMagicWords, expandMagicWord} from './magicWords';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
 import type {MagicWord} from './magicWords';
-import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
+import type {HeadingToken, ArgToken, TranscludeToken, ParameterToken} from '../internal';
 
 const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 	antiBlockElems = 'td|th',
@@ -107,7 +107,9 @@ const expand = (
 		}
 		const expanded = data.replace(/([^\x7F]?)\0(\d+)t\x7F/gu, (m, prev: string, i: number) => {
 			const target = accum[i] as ArgToken | TranscludeToken,
-				{type, name, length, firstChild: f} = target;
+				{type, name, length, firstChild: f, childNodes} = target,
+				isTemplate = type === 'template',
+				args = childNodes.slice(1) as ParameterToken[];
 			if (type === 'arg') {
 				const arg = removeCommentLine(f.toString()).trim();
 				if (/\0\d+t\x7F/u.test(arg)) {
@@ -121,26 +123,29 @@ const expand = (
 				// @ts-expect-error sparse array
 				accum[accum.indexOf(context.getArg(arg)!.lastChild)] = undefined;
 				return prev + context.getValue(arg)!;
-			} else if (type === 'template') {
+			} else if (isTemplate || name === 'int') {
 				if (context === false) {
 					return m;
 				}
-				const {title, valid} = Parser.normalizeTitle(
-					removeComment(f.toString()),
-					10,
-					include,
-					target.getAttribute('config'),
-					{halfParsed: true, temporary: true, page},
-				);
+				const nameToken = isTemplate ? f : args[0]!,
+					key = removeComment(nameToken.toString()),
+					fallback = isTemplate ? m : `${prev}⧼${key}⧽`,
+					{title, valid} = Parser.normalizeTitle(
+						(isTemplate ? '' : 'MediaWiki:') + key,
+						10,
+						include,
+						config,
+						{halfParsed: true, temporary: true, page},
+					);
 				if (!valid) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(target)] = undefined;
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(f)] = undefined;
-					return prev + target.toString();
+					return isTemplate ? prev + target.toString() : fallback;
 				} else if (!Parser.templates.has(title)) {
 					if (Parser.templateDir === undefined) {
-						return m;
+						return fallback;
 					} else if (!path.isAbsolute(Parser.templateDir)) {
 						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 					}
@@ -158,7 +163,7 @@ const expand = (
 							}
 						});
 					if (!file) {
-						return m;
+						return fallback;
 					}
 					Parser.templates.set(
 						title,
@@ -167,31 +172,27 @@ const expand = (
 				} else if (stack.includes(title)) {
 					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
+				let template = Parser.templates.get(title)!;
+				if (!isTemplate) {
+					for (let j = 1; j < args.length; j++) {
+						template = template.replaceAll(`$${j}`, removeComment(args[j]!.toString()));
+					}
+				}
 				return implicitNewLine(
-					expand(
-						Parser.templates.get(title)!,
-						title,
-						config,
-						true,
-						target,
-						now,
-						accum,
-						[...stack, title],
-					).toString(),
+					expand(template, title, config, true, target, now, accum, [...stack, title]).toString(),
 					prev,
 				);
 			} else if (Parser.functionHooks.has(name)) {
 				return context === false ? m : Parser.functionHooks.get(name)!(target, context || undefined);
 			} else if (expandedMagicWords.has(name)) {
-				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now, config)}`;
+				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now, config, args)}`;
 			} else if (!solvedMagicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {
 				return prev;
 			}
-			const c = target.childNodes as [SyntaxToken, ParameterToken, ParameterToken, ...ParameterToken[]],
-				var1 = decodeHtml(c[1].value),
-				var2 = decodeHtml(c[2].value),
+			const var1 = decodeHtml(args[0]!.value),
+				var2 = decodeHtml(args[1]!.value),
 				known = !/\0\d+t\x7F/u.test(var1);
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
@@ -205,9 +206,9 @@ const expand = (
 					);
 					bool = valid && !interwiki;
 				}
-				return parseIf(accum, prev, c[bool ? 2 : 3]);
+				return parseIf(accum, prev, args[bool ? 1 : 2]);
 			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {
-				return parseIf(accum, prev, c[cmp(var1, var2) ? 3 : 4]);
+				return parseIf(accum, prev, args[cmp(var1, var2) ? 2 : 3]);
 			} else if (known && name === 'switch') {
 				let defaultVal = '',
 					j = 2,
@@ -220,7 +221,7 @@ const expand = (
 					transclusion = false,
 					defaultParam: Token | undefined;
 				for (; j < length; j++) {
-					const {anon, value, lastChild, name: option} = c[j] as ParameterToken;
+					const {anon, value, lastChild, name: option} = args[j - 1]!;
 					transclusion = /\0\d+t\x7F/u.test(anon ? value : option);
 					if (anon) {
 						if (j === length - 1) { // 位于最后的匿名参数是默认值
