@@ -78,6 +78,7 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
+import findIndex from '../util/search';
 import {
 	mathTags,
 } from '../util/constants';
@@ -1140,7 +1141,7 @@ export class LanguageService implements LanguageServiceBase {
 							endColumn = column,
 							fix,
 						}): DiagnosticBase => {
-							const i = bottoms.findIndex(bottom => bottom >= line);
+							const i = findIndex(bottoms, line, (bottom, needle) => bottom - needle);
 							return {
 								range: {
 									start: getStylelintPos(rects[i]!, bottoms[i]!, line, column - 1),
