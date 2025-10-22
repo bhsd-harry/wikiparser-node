@@ -5,19 +5,20 @@ import type {
 
 // @ts-expect-error unconstrained predicate
 export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
+declare type BasicCondition = (type: string, name?: string) => boolean;
 
 /**
  * type和name选择器
  * @param selector
- * @param type
- * @param name
  */
-const basic = (selector: string, type: string, name?: string): boolean => {
+const basic = (selector: string): BasicCondition => {
 	if (selector.includes('#')) {
-		const i = selector.indexOf('#');
-		return (i === 0 || selector.slice(0, i) === type) && selector.slice(i + 1) === name;
+		const i = selector.indexOf('#'),
+			targetType = selector.slice(0, i),
+			targetName = selector.slice(i + 1);
+		return (type, name) => (i === 0 || type === targetType) && name === targetName;
 	}
-	return !selector || selector === type;
+	return selector ? (type): boolean => type === selector : (): true => true;
 };
 
 /**
@@ -27,6 +28,6 @@ const basic = (selector: string, type: string, name?: string): boolean => {
  * @param has `:has()`伪选择器
  */
 export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
-	const parts = selector.split(',');
-	return (({type, name}): boolean => parts.some(str => basic(str.trim(), type, name))) as TokenPredicate<T>;
+	const parts = selector.split(',').map(str => basic(str.trim()));
+	return (({type, name}): boolean => parts.some(condition => condition(type, name))) as TokenPredicate<T>;
 };
