@@ -52,7 +52,7 @@ export const setChildNodes = (
 		removed = nodes;
 		nodes = inserted as AstNodes[];
 	} else {
-		removed = nodes.splice(position, deleteCount, ...inserted);
+		removed = Array.prototype.splice.apply(nodes, [position, deleteCount, ...inserted]);
 	}
 	for (let i = 0; i < inserted.length; i++) {
 		const node = inserted[i]!;
