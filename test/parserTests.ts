@@ -1,6 +1,13 @@
 import assert from 'assert';
 import Parser from '../index';
-import type {Test} from '@bhsd/test-util';
+import lsp from './lsp';
+import type {
+	Test,
+
+	/* NOT FOR BROWSER ONLY */
+
+	SimplePage,
+} from '@bhsd/test-util';
 
 /* NOT FOR BROWSER */
 
@@ -45,6 +52,12 @@ describe('Parser tests', () => {
 	for (const {desc, title, wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
+				/* NOT FOR BROWSER */
+
+				Parser.viewOnly = false;
+
+				/* NOT FOR BROWSER END */
+
 				const root = Parser.parse(wikitext, title!),
 					tidied = wikitext.replaceAll('\0', '');
 
@@ -83,6 +96,18 @@ describe('Parser tests', () => {
 					}
 					throw e;
 				}
+			});
+
+			/* NOT FOR BROWSER ONLY */
+
+			it(`LSP: ${desc}`, async () => {
+				/* NOT FOR BROWSER */
+
+				Parser.viewOnly = true;
+
+				/* NOT FOR BROWSER END */
+
+				await lsp({title: title!, content: wikitext} as SimplePage, true, true);
 			});
 		}
 	}

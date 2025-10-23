@@ -64,10 +64,11 @@ const wrap = async (method: string, title: string, fn: () => Promise<unknown>, s
  * @param value 返回值
  * @param title 页面名
  * @param pos 位置
+ * @param silent 是否静默
  * @throws `Error` 无返回值
  */
-const check = (value: unknown, title: string, pos: Position): void => {
-	if (!value) {
+const check = (value: unknown, title: string, pos: Position, silent?: boolean): void => {
+	if (!value && !silent) {
 		throw new Error(`${title} 的第 ${pos.line + 1} 行 ${pos.character} 列未返回结果！`);
 	}
 };
@@ -91,16 +92,16 @@ const indexToPos = (
  * @param page.title 页面标题
  * @param page.content 页面源代码
  * @param summary 是否汇总
+ * @param silent 是否静默
  */
-export default async ({title, content}: SimplePage, summary?: boolean): Promise<void> => {
+export default async ({title, content}: SimplePage, summary?: boolean, silent?: boolean): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 
 	/* NOT FOR BROWSER ONLY */
 
 	const lsp = Parser.createLanguageService();
 	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
-	Parser.getConfig();
-	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
+	lsp.config = {...Parser.getConfig(), articlePath: 'https://mediawiki.org/wiki/$1'};
 	const rgba = (await import('color-rgba')).default;
 	const root = Parser.parse(content, title, true),
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
@@ -132,7 +133,9 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 
 	/* NOT FOR BROWSER ONLY END */
 
-	console.time(`LSP: ${title}`);
+	if (!silent) {
+		console.time(`LSP: ${title}`);
+	}
 	await wrap('provideInlayHints', title, () => {
 		void lsp.provideInlayHints(
 			`${content} `,
@@ -189,7 +192,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
-							check(await lsp.provideCompletionItems(content, pos), title, pos);
+							check(await lsp.provideCompletionItems(content, pos), title, pos, silent);
 						}
 					}, summary);
 				}
@@ -224,7 +227,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
-							check(await lsp.provideReferences(content, pos), title, pos);
+							check(await lsp.provideReferences(content, pos), title, pos, silent);
 						}
 					}, summary);
 				}
@@ -235,7 +238,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 				if (renamePositions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of renamePositions) {
-							check(await lsp[method](content, pos, 'x'), title, pos);
+							check(await lsp[method](content, pos, 'x'), title, pos, silent);
 						}
 					}, summary);
 				}
@@ -287,5 +290,7 @@ export default async ({title, content}: SimplePage, summary?: boolean): Promise<
 		}
 	}
 	lsp.destroy();
-	console.timeEnd(`LSP: ${title}`);
+	if (!silent) {
+		console.timeEnd(`LSP: ${title}`);
+	}
 };
