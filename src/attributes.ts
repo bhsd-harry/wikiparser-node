@@ -322,24 +322,27 @@ export abstract class AttributesToken extends Token {
 						const value = attr.getValue();
 						return [attr, value === true ? '' : value] as const;
 					});
-					errors.push(...pairs.map(([attr, value], i) => {
-						const e = generateForChild(
-							attr,
-							rect,
-							rules[1],
-							Parser.msg('duplicate-attribute', key),
-							severity,
-						);
-						if (computeEditInfo || fix) {
-							const remove = fixByRemove(e);
-							if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
-								e.fix = remove;
-							} else if (computeEditInfo) {
-								e.suggestions = [remove];
+					Array.prototype.push.apply(
+						errors,
+						pairs.map(([attr, value], i) => {
+							const e = generateForChild(
+								attr,
+								rect,
+								rules[1],
+								Parser.msg('duplicate-attribute', key),
+								severity,
+							);
+							if (computeEditInfo || fix) {
+								const remove = fixByRemove(e);
+								if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
+									e.fix = remove;
+								} else if (computeEditInfo) {
+									e.suggestions = [remove];
+								}
 							}
-						}
-						return e;
-					}));
+							return e;
+						}),
+					);
 				}
 			}
 			return errors;

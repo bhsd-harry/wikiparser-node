@@ -155,8 +155,9 @@ export abstract class ImagemapToken extends MultiLineToken {
 				s = lintConfig.getSeverity(rule, image ? 'link' : 'image');
 			if (s) {
 				if (image) {
-					errors.push(
-						...childNodes.filter(child => {
+					Array.prototype.push.apply(
+						errors,
+						childNodes.filter(child => {
 							const str = child.toString().trim();
 							return child.is<CommentLineToken>('noinclude')
 								&& str && !str.startsWith('#');

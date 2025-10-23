@@ -111,7 +111,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	set innerText(text) {
 		const {childNodes} = Parser.parseWithRef(text, this, undefined, true);
-		this.lastChild.replaceChildren(...childNodes);
+		this.lastChild.safeReplaceChildren(childNodes);
 	}
 
 	/* NOT FOR BROWSER END */

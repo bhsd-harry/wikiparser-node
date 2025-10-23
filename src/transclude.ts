@@ -482,13 +482,16 @@ export abstract class TranscludeToken extends Token {
 						.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
 					msg = 'duplicate-parameter';
 				for (const [, args] of duplicatedArgs) {
-					errors.push(...args.map(arg => {
-						const e = generateForChild(arg, rect, rule, msg, s);
-						if (computeEditInfo) {
-							e.suggestions = [fixByRemove(e, -1)];
-						}
-						return e;
-					}));
+					Array.prototype.push.apply(
+						errors,
+						args.map(arg => {
+							const e = generateForChild(arg, rect, rule, msg, s);
+							if (computeEditInfo) {
+								e.suggestions = [fixByRemove(e, -1)];
+							}
+							return e;
+						}),
+					);
 				}
 			}
 			return errors;
@@ -660,7 +663,7 @@ export abstract class TranscludeToken extends Token {
 			} else {
 				try {
 					const possibleValues = (first as this).getPossibleValues();
-					queue.splice(i, 1, ...possibleValues);
+					Array.prototype.splice.apply(queue, [i, 1, ...possibleValues]);
 					i += possibleValues.length;
 				} catch {
 					i++;

@@ -620,7 +620,7 @@ export class AstRange {
 	 * @param elements nodes to be inserted / 插入节点
 	 */
 	append(...elements: (AstNodes | string)[]): void {
-		this.after(...elements);
+		this.#after(elements);
 		const {endContainer} = this;
 		if (endContainer.type === 'text') {
 			this.#endContainer = endContainer.parentNode!;
@@ -636,7 +636,7 @@ export class AstRange {
 	 * @param elements nodes to be inserted / 插入节点
 	 */
 	prepend(...elements: (AstNodes | string)[]): void {
-		this.before(...elements);
+		AstRange.prototype.before.apply(this, elements);
 		const {startContainer} = this;
 		if (startContainer.type === 'text') {
 			this.#startContainer = startContainer.parentNode!;

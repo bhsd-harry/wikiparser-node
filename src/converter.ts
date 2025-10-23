@@ -82,12 +82,12 @@ export abstract class ConverterToken extends Token {
 				new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken,
 			);
 		} else {
-			this.append(
+			this.safeAppend([
 				firstRuleToken,
 				...rules.slice(1)
 					// @ts-expect-error abstract class
 					.map((rule): ConverterRuleToken => new ConverterRuleToken(rule, true, config, accum)),
-			);
+			]);
 		}
 
 		/* NOT FOR BROWSER */
