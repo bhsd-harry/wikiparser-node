@@ -1,6 +1,13 @@
 import assert from 'assert';
 import Parser from '../index';
-import type {Test} from '@bhsd/test-util';
+import lsp from './lsp';
+import type {
+	Test,
+
+	/* NOT FOR BROWSER ONLY */
+
+	SimplePage,
+} from '@bhsd/test-util';
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
@@ -21,6 +28,12 @@ describe('Parser tests', () => {
 					}
 					throw e;
 				}
+			});
+
+			/* NOT FOR BROWSER ONLY */
+
+			it(`LSP: ${desc}`, async () => {
+				await lsp({title: title!, content: wikitext} as SimplePage, true, true);
 			});
 		}
 	}
