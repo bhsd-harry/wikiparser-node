@@ -15,12 +15,13 @@ import type {
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 	anySp = /* #__PURE__ */ (() => String.raw`[^\S\n]*`)(),
-	source =/* #__PURE__ */ (() => String.raw`<${anySp}(?:/${
-		anySp
-	})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
-		sp
-	}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`)();
-const errorSyntax = /* #__PURE__ */ (() => new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'))();
+	source =/* #__PURE__ */ (
+		() => String.raw`<${anySp}(?:/${anySp})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
+	)();
+const errorSyntax = /* #__PURE__ */ (() => new RegExp(
+	String.raw`${source}|https?[:/]/+|(?:rfc|pmid)(?=[-:：]?${sp}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
+	'giu',
+))();
 const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
