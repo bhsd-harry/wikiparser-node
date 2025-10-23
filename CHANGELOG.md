@@ -6,6 +6,8 @@
 
 - [`Token.pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property that gets or sets the page name
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports the `{{int:}}` parser function
+- [`ImageParameterToken.thumb`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#thumb) property that gets the thumbnail filename from the `manualthumb` image parameter
+- New category of linting errors: invalid thumbnail filenames in image parameters
 
 **Fixed**
 

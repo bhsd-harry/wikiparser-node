@@ -51,7 +51,8 @@ const getSyntaxRegex = getRegex(syntax => new RegExp(
 	'u',
 ));
 
-export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
+export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']),
+	extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
 
 /**
  * 获取网址
@@ -146,6 +147,13 @@ export abstract class ImageParameterToken extends Token {
 		return 'image-parameter';
 	}
 
+	/** thumbnail / 缩略图 */
+	get thumb(): Title | undefined {
+		LINT: return this.name === 'manualthumb' // eslint-disable-line no-unused-labels
+			? this.normalizeTitle(`File:${super.text().trim()}`, 6, {page: ''})
+			: undefined;
+	}
+
 	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
 		LINT: { // eslint-disable-line no-unused-labels
@@ -167,6 +175,12 @@ export abstract class ImageParameterToken extends Token {
 
 	set link(value: string) {
 		if (this.name === 'link') {
+			this.setValue(value);
+		}
+	}
+
+	set thumb(value: string) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
+		if (this.name === 'manualthumb') {
 			this.setValue(value);
 		}
 	}
@@ -361,6 +375,26 @@ export abstract class ImageParameterToken extends Token {
 							e.fix = fixByDecode(e, this);
 						}
 						errors.push(e);
+					}
+				}
+			} else if (name === 'manualthumb') {
+				const rule = 'invalid-gallery',
+					s = lintConfig.getSeverity(rule, 'thumb');
+				if (s && !this.querySelector('arg,magic-word,template')) {
+					const {
+						valid,
+						ns,
+						extension,
+
+						/* NOT FOR BROWSER */
+
+						interwiki,
+					} = this.thumb!;
+					if (
+						!valid || ns !== 6 || !extensions.has(extension!)
+						|| interwiki
+					) {
+						errors.push(generateForSelf(this, {start}, rule, 'invalid-thumb', s));
 					}
 				}
 			}
