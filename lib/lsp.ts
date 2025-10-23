@@ -1336,7 +1336,7 @@ export class LanguageService implements LanguageServiceBase {
 				if (!selfClosing) {
 					const foldingRanges = jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, lastChild));
 					if (foldingRanges.length > 0) {
-						ranges.push(...foldingRanges);
+						Array.prototype.push.apply(ranges, foldingRanges);
 					}
 				}
 			}

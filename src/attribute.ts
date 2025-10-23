@@ -338,8 +338,9 @@ export abstract class AttributeToken extends Token {
 			) {
 				const root = this.getRootNode(),
 					textDoc = new EmbeddedCSSDocument(root, lastChild);
-				errors.push(
-					...cssLSP.doValidation(textDoc, textDoc.styleSheet)
+				Array.prototype.push.apply(
+					errors,
+					cssLSP.doValidation(textDoc, textDoc.styleSheet)
 						.filter(
 							({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
 								&& (severity === 1 ? sError : sWarn),

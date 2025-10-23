@@ -247,7 +247,7 @@ export abstract class AstElement extends AstNode {
 				child.setAttribute('aIndex', cur);
 				const childErrors = child.lint(cur, re);
 				if (childErrors.length > 0) {
-					errors.push(...childErrors);
+					Array.prototype.push.apply(errors, childErrors);
 				}
 				cur += child.toString().length + this.getGaps(i);
 			}

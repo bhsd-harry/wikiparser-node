@@ -27,8 +27,8 @@ export abstract class ParamTagToken extends MultiLineToken {
 		super(undefined, config, accum, {
 		});
 		if (wikitext) {
-			this.append(
-				...wikitext.split('\n')
+			this.safeAppend(
+				wikitext.split('\n')
 					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))
 					// @ts-expect-error abstract class
 					.map((line): ParamLineToken => new ParamLineToken(line, config, accum, {
@@ -69,7 +69,7 @@ export abstract class ParamTagToken extends MultiLineToken {
 					} else {
 						const childErrors = child.lint(start, false);
 						if (childErrors.length > 0) {
-							errors.push(...childErrors);
+							Array.prototype.push.apply(errors, childErrors);
 						}
 					}
 				}

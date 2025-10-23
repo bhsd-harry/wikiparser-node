@@ -96,7 +96,7 @@ export abstract class ArgToken extends Token {
 				argDefault.setAttribute('aIndex', index);
 				const childErrors = argDefault.lint(index, re);
 				if (childErrors.length > 0) {
-					errors.push(...childErrors);
+					Array.prototype.push.apply(errors, childErrors);
 				}
 			}
 			const rules = ['no-ignored', 'no-arg'] as const,
@@ -105,18 +105,21 @@ export abstract class ArgToken extends Token {
 				rect = new BoundingRect(this, start),
 				s = rules.map(rule => lintConfig.getSeverity(rule, 'arg') as LintError.Severity);
 			if (s[0] && rest.length > 0) {
-				errors.push(...rest.map(child => {
-					const e = generateForChild(child, rect, rules[0], 'invisible-triple-braces', s[0]);
-					e.startIndex--;
-					e.startCol--;
-					if (computeEditInfo) {
-						e.suggestions = [
-							fixByRemove(e),
-							fixByEscape(e.startIndex, '{{!}}'),
-						];
-					}
-					return e;
-				}));
+				Array.prototype.push.apply(
+					errors,
+					rest.map(child => {
+						const e = generateForChild(child, rect, rules[0], 'invisible-triple-braces', s[0]);
+						e.startIndex--;
+						e.startCol--;
+						if (computeEditInfo) {
+							e.suggestions = [
+								fixByRemove(e),
+								fixByEscape(e.startIndex, '{{!}}'),
+							];
+						}
+						return e;
+					}),
+				);
 			}
 			if (s[1] && !this.getAttribute('include')) {
 				const e = generateForSelf(this, rect, rules[1], 'unexpected-argument', s[1]);
