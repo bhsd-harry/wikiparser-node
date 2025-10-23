@@ -1359,15 +1359,17 @@ export class LanguageService implements LanguageServiceBase {
 			absolute = articlePath?.includes('//'),
 			protocolRegex = getLinkRegex(protocol);
 		return (await this.#queue(text))
-			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
+			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value${
 				absolute ? ',link-target,template-name,invoke-module,magic-word#filepath,magic-word#widget' : ''
-			}`)
+			},image-parameter#link,image-parameter#manualthumb`)
 			.reverse()
 			.map((token): DocumentLink | false => {
 				let name: string | undefined;
 				if (token.is<TranscludeToken>('magic-word')) {
 					({name} = token);
 					token = (token.childNodes[1] as ParameterToken).lastChild; // eslint-disable-line no-param-reassign
+				} else if (token.is<ImageParameterToken>('image-parameter')) {
+					({name} = token);
 				}
 				const {type, parentNode, firstChild, lastChild, childNodes, length} = token,
 					{tag} = parentNode as AttributeToken;
@@ -1375,8 +1377,8 @@ export class LanguageService implements LanguageServiceBase {
 				if (
 					!(
 						type !== 'attr-value'
-						|| name === 'src' && ['templatestyles', 'img'].includes(tag)
 						|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
+						|| name === 'src' && ['templatestyles', 'img'].includes(tag)
 						|| name === 'templatename' && tag === 'rss'
 						|| name === 'file' && tag === 'phonos'
 					)
@@ -1418,26 +1420,28 @@ export class LanguageService implements LanguageServiceBase {
 							|| name === 'templatename' && tag === 'rss'
 							|| name === 'file' && tag === 'phonos'
 						)
-						|| type === 'image-parameter' && !protocolRegex.test(target)
+						|| type === 'image-parameter' && (name === 'manualthumb' || !protocolRegex.test(target))
 					) {
 						if (!absolute || target.startsWith('/')) {
 							return false;
-						} else if (type === 'attr-value' && tag === 'phonos') {
+						} else if (
+							type === 'image-parameter' && name === 'manualthumb'
+							|| type === 'parameter-value' && name === 'filepath'
+							|| type === 'attr-value' && tag === 'phonos'
+						) {
 							target = `File:${target}`;
+						} else if (type === 'parameter-value') {
+							target = `Widget:${target}`;
+						} else if (type === 'invoke-module') {
+							target = `Module:${target}`;
 						}
-						let ns = 0;
-						switch (type) {
-							case 'attr-value':
-								ns = 10;
-								break;
-							case 'invoke-module':
-								ns = 828;
-								break;
-							case 'parameter-value':
-								ns = name === 'filepath' ? 6 : 274;
-							// no default
-						}
-						const title = Parser.normalizeTitle(target, ns, false, this.config, {temporary: true});
+						const title = Parser.normalizeTitle(
+							target,
+							type === 'attr-value' ? 10 : 0,
+							false,
+							this.config,
+							{temporary: true},
+						);
 						if (!title.valid) {
 							return false;
 						}
