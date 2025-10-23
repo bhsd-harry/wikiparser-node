@@ -1384,6 +1384,8 @@ export class LanguageService implements LanguageServiceBase {
 						type !== 'attr-value'
 						|| name === 'src' && ['templatestyles', 'img'].includes(tag)
 						|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
+						|| name === 'templatename' && tag === 'rss'
+						|| name === 'file' && tag === 'phonos'
 					)
 					|| !isPlain(token)
 				) {
@@ -1414,15 +1416,21 @@ export class LanguageService implements LanguageServiceBase {
 							return false;
 						}
 						target = parentNode.link.getUrl(articlePath);
-					} else if (type === 'template-name') {
+					} else if (type === 'link-target' || type === 'template-name') {
 						target = parentNode!.getAttribute('title').getUrl(articlePath);
 					} else if (
-						['link-target', 'invoke-module', 'parameter-value'].includes(type)
-						|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
+						['invoke-module', 'parameter-value'].includes(type)
+						|| type === 'attr-value' && (
+							name === 'src' && tag === 'templatestyles'
+							|| name === 'templatename' && tag === 'rss'
+							|| name === 'file' && tag === 'phonos'
+						)
 						|| type === 'image-parameter' && !protocolRegex.test(target)
 					) {
 						if (!absolute || target.startsWith('/')) {
 							return false;
+						} else if (type === 'attr-value' && tag === 'phonos') {
+							target = `File:${target}`;
 						}
 						let ns = 0;
 						switch (type) {
