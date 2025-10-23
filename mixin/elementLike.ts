@@ -66,7 +66,7 @@ export interface ElementLike {
 	/* NOT FOR BROWSER */
 
 	/**
-	 * Get all descendants of the types
+	 * Get the first descendant of the types
 	 *
 	 * 类型选择器
 	 * @param types token types / 节点类型

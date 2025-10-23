@@ -1,3 +1,11 @@
+## v1.29.1
+
+*2025-10-25*
+
+**Fixed**
+
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) now ignores magic link-like texts in tokens where magic links are not parsed
+
 ## v1.29.0
 
 *2025-10-23*

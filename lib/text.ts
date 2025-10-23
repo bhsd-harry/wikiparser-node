@@ -36,16 +36,17 @@ import {cached} from '../mixin/cached';
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 	anySp = /* #__PURE__ */ (() => String.raw`[^\S\n]*`)(),
-	source =/* #__PURE__ */ (() => String.raw`<${anySp}(?:/${
-		anySp
-	})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
-		sp
-	}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`)();
+	source =/* #__PURE__ */ (
+		() => String.raw`<${anySp}(?:/${anySp})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
+	)();
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/https?[:/]\/+|(?:rfc|pmid)(?=[-:：]?\s*\d)|isbn(?=[-:：]?\s*(?:\d(?:\s*|-)){6})/giu;
+const errorSyntax = /* #__PURE__ */ (() => new RegExp(
+	String.raw`${source}|https?[:/]/+|(?:rfc|pmid)(?=[-:：]?${sp}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
+	'giu',
+))();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<[^\S\n]*(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
-const errorSyntax = /* #__PURE__ */ (() => new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'))();
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
 const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
