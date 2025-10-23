@@ -1,10 +1,17 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"id": "http://json-schema.org/geojson/geojson.json#",
-	"type": "array",
-	"items": {
-		"$ref": "#/definitions/root"
-	},
+	"oneOf": [
+		{
+			"$ref": "#/definitions/root"
+		},
+		{
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/root"
+			}
+		}
+	],
 	"definitions": {
 		"root": {
 			"title": "Geo JSON object",
