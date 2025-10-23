@@ -14,6 +14,7 @@
 **Changed**
 
 - [Extension:Math](https://www.mediawiki.org/wiki/Extension:Math) is now linted via [texvcjs](https://www.npmjs.com/package/mathoid-texvcjs) instead of [MathJax](https://www.mathjax.org/)
+- A copy of the [MediaWiki-flavored GeoJSON](https://www.mediawiki.org/wiki/Help:Extension:Kartographer#GeoJSON) schema is now included in the package
 
 ## v1.28.1
 

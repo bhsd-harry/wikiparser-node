@@ -48,17 +48,18 @@ export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 export const jsonLSP = (() => {
 	try {
 		const lsp = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
-			.getLanguageService({
-				/** @implements */
-				async schemaRequestService(uri) {
-					return (await fetch(uri)).text();
-				},
-			});
+				.getLanguageService({
+					/** @implements */
+					async schemaRequestService(uri) {
+						return (await fetch(uri)).text();
+					},
+				}),
+			dir = path.join('..', '..', 'data', 'ext');
 		lsp.configure({
 			schemas: jsonTags.map((tag): SchemaConfiguration | false => {
-				const uri = path.join('..', '..', 'data', 'ext', tag);
+				const uri = path.join(dir, tag);
 				try {
-					const schema = require(uri);
+					const schema = require(tag === 'maplink' ? path.join(dir, 'mapframe') : uri);
 					return {
 						uri,
 						fileMatch: [tag],
