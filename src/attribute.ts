@@ -183,6 +183,7 @@ export abstract class AttributeToken extends Token {
 		} else if (
 			tag === 'gallery' && key === 'caption'
 			|| tag === 'ref' && key === 'details'
+			|| (tag === 'mapframe' || tag === 'maplink') && key === 'text'
 			|| tag === 'choose' && (key === 'before' || key === 'after')
 		) {
 			const newConfig: Config = {
