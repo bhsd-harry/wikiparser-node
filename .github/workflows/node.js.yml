@@ -38,4 +38,4 @@ jobs:
     - run: npm run build:core
     - run: npm prune --omit=dev
     - run: npm i --save-prod --omit=dev @bhsd/test-util mocha color-rgba
-    - run: npm test
+    - run: npm run test:ci

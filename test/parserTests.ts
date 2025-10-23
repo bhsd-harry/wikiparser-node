@@ -32,9 +32,11 @@ describe('Parser tests', () => {
 
 			/* NOT FOR BROWSER ONLY */
 
-			it(`LSP: ${desc}`, async () => {
-				await lsp({title: title!, content: wikitext} as SimplePage, true, true);
-			});
+			if (process.env['LSP'] !== '0') {
+				it(`LSP: ${desc}`, async () => {
+					await lsp({title: title!, content: wikitext} as SimplePage, true, true);
+				});
+			}
 		}
 	}
 });
