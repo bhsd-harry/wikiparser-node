@@ -100,15 +100,17 @@ describe('Parser tests', () => {
 
 			/* NOT FOR BROWSER ONLY */
 
-			it(`LSP: ${desc}`, async () => {
-				/* NOT FOR BROWSER */
+			if (process.env['LSP'] !== '0') {
+				it(`LSP: ${desc}`, async () => {
+					/* NOT FOR BROWSER */
 
-				Parser.viewOnly = true;
+					Parser.viewOnly = true;
 
-				/* NOT FOR BROWSER END */
+					/* NOT FOR BROWSER END */
 
-				await lsp({title: title!, content: wikitext} as SimplePage, true, true);
-			});
+					await lsp({title: title!, content: wikitext} as SimplePage, true, true);
+				});
+			}
 		}
 	}
 });
