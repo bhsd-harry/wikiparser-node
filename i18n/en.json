@@ -40,6 +40,7 @@
 	"invalid-isbn": "invalid ISBN",
 	"invalid-parameter": "invalid parameter of <$1>",
 	"invalid-self-closing": "invalid self-closing tag",
+	"invalid-thumb": "invalid thumbnail filename",
 	"invalid-url": "invalid URL",
 	"invisible-triple-braces": "invisible content inside triple braces",
 	"italic-apostrophes": "italic apostrophes",

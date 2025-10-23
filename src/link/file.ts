@@ -2,7 +2,7 @@ import {generateForChild, generateForSelf, fixByRemove, fixByInsert} from '../..
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
-import {ImageParameterToken} from '../imageParameter';
+import {ImageParameterToken, extensions} from '../imageParameter';
 import type {
 	TokenTypes,
 	Config,
@@ -24,8 +24,7 @@ const frame = new Map([
 	argTypes = new Set<TokenTypes>(['arg']),
 	transclusion = new Set<TokenTypes>(['template', 'magic-word']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
-	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']),
-	extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
+	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
 
 /**
  * a more sophisticated string-explode function
