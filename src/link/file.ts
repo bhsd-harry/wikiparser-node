@@ -214,15 +214,19 @@ export abstract class FileToken extends LinkBaseToken {
 						const plainArgs = filterArgs(relevantArgs, transclusion);
 						severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
 					}
-					errors.push(...generate(relevantArgs, 'duplicate', key, severity));
+					Array.prototype.push.apply(errors, generate(relevantArgs, 'duplicate', key, severity));
 				}
 			}
 			if (frameKeys.length > 1) {
-				errors.push(...generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'));
+				Array.prototype.push.apply(
+					errors,
+					generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'),
+				);
 			}
 			if (horizAlignKeys.length > 1) {
-				errors.push(
-					...generate(
+				Array.prototype.push.apply(
+					errors,
+					generate(
 						args.filter(({name}) => horizAlign.has(name)),
 						'conflicting',
 						'horizontal-alignment',
@@ -230,8 +234,9 @@ export abstract class FileToken extends LinkBaseToken {
 				);
 			}
 			if (vertAlignKeys.length > 1) {
-				errors.push(
-					...generate(
+				Array.prototype.push.apply(
+					errors,
+					generate(
 						args.filter(({name}) => vertAlign.has(name)),
 						'conflicting',
 						'vertical-alignment',

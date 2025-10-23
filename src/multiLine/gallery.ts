@@ -107,7 +107,7 @@ export abstract class GalleryToken extends MultiLineToken {
 				} else if (type !== 'noinclude' && type !== 'text') {
 					const childErrors = child.lint(start, re);
 					if (childErrors.length > 0) {
-						errors.push(...childErrors);
+						Array.prototype.push.apply(errors, childErrors);
 					}
 				}
 				start += length + 1;
