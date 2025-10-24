@@ -56,6 +56,7 @@ import type {
 	ImageParameterToken,
 	TranscludeToken,
 	MagicLinkToken,
+	AtomToken,
 } from '../internal';
 
 declare interface CompletionConfig {
@@ -1052,7 +1053,8 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, this.#text, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
-			node = offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
+			node = offset === 0
+				&& (element.is<AtomToken>('ext-attr-dirty') || element.is<AtomToken>('html-attr-dirty'))
 				? element.parentNode!.parentNode!
 				: element,
 			{type} = node,
