@@ -154,7 +154,7 @@ export abstract class LinkBaseToken extends Token {
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e,
 				{type} = this;
-			if (prevTarget?.type === 'link-target') {
+			if (prevTarget?.is<AtomToken>('link-target')) {
 				const name = prevTarget.text(),
 					titleObj = this.getTitle(),
 					{title, interwiki, ns, valid} = titleObj;

@@ -68,6 +68,7 @@ import type {
 	ImageParameterToken,
 	TranscludeToken,
 	MagicLinkToken,
+	AtomToken,
 } from '../internal';
 
 /* NOT FOR BROWSER ONLY */
@@ -98,6 +99,12 @@ import {
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
 
+declare interface LilyPondError {
+	line: number;
+	col: number;
+	message: string;
+}
+
 /* NOT FOR BROWSER ONLY END */
 
 declare interface CompletionConfig {
@@ -123,23 +130,6 @@ export interface QuickFixData extends TextEdit {
 declare interface FixAllData {
 	rule?: LintError.Rule;
 }
-
-/* NOT FOR BROWSER ONLY */
-
-declare interface LilyPondError {
-	line: number;
-	col: number;
-	message: string;
-}
-
-/** @see https://www.npmjs.com/package/stylelint-config-recommended */
-const cssRules = {'block-no-empty': null},
-	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
-	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
-	scores = new Map<string, LilyPondError[]>();
-let colors: Promise<RegExp | false> | undefined;
-
-/* NOT FOR BROWSER ONLY END */
 
 export const tasks = new WeakMap<object, LanguageService>();
 
@@ -385,6 +375,13 @@ const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 };
 
 /* NOT FOR BROWSER ONLY */
+
+/** @see https://www.npmjs.com/package/stylelint-config-recommended */
+const cssRules = {'block-no-empty': null},
+	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
+	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
+	scores = new Map<string, LilyPondError[]>();
+let colors: Promise<RegExp | false> | undefined;
 
 /**
  * Correct the position of an error.
@@ -1503,7 +1500,8 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, this.#text, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
-			node = offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
+			node = offset === 0
+				&& (element.is<AtomToken>('ext-attr-dirty') || element.is<AtomToken>('html-attr-dirty'))
 				? element.parentNode!.parentNode!
 				: element,
 			{type} = node,
