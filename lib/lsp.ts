@@ -1149,59 +1149,61 @@ export class LanguageService implements LanguageServiceBase {
 			cssDiagnostics =
 				await stylelint ?
 					await (async () => {
-						const tokens = this.findStyleTokens();
-						if (tokens.length === 0) {
-							return [];
+						NPM: { // eslint-disable-line no-unused-labels
+							const tokens = this.findStyleTokens();
+							if (tokens.length === 0) {
+								return [];
+							}
+							const code = tokens.map(
+									({type, tag, lastChild}, i) => `${type === 'ext-attr' ? 'div' : tag}#${i}{\n${
+										sanitizeInlineStyle(lastChild.toString())
+									}\n}`,
+								).join('\n'),
+								cssErrors = await styleLint((await stylelint)!, code, cssRules);
+							if (cssErrors.length === 0) {
+								return [];
+							}
+							const rects = tokens.map(({lastChild}) => lastChild.getBoundingClientRect());
+							let acc = 0;
+							const bottoms = rects.map(({height}) => {
+								acc += height + 2;
+								return acc;
+							});
+							return cssErrors.map(({
+								rule,
+								text: msg,
+								severity,
+								line,
+								column,
+								endLine = line,
+								endColumn = column,
+								fix,
+							}): DiagnosticBase => {
+								const i = findIndex(bottoms, line, (bottom, needle) => bottom - needle);
+								return {
+									range: {
+										start: getStylelintPos(rects[i]!, bottoms[i]!, line, column - 1),
+										end: getStylelintPos(rects[i]!, bottoms[i]!, endLine, endColumn - 1),
+									},
+									severity: severity === 'error' ? 1 : 2,
+									source: 'Stylelint',
+									code: rule,
+									message: msg.slice(0, msg.lastIndexOf('(') - 1),
+									...fix
+										? {
+											data: [
+												{
+													range: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range),
+													newText: fix.text,
+													title: `Fix: ${rule}`,
+													fix: true,
+												} satisfies QuickFixData,
+											],
+										}
+										: {},
+								};
+							});
 						}
-						const code = tokens.map(
-								({type, tag, lastChild}, i) => `${type === 'ext-attr' ? 'div' : tag}#${i}{\n${
-									sanitizeInlineStyle(lastChild.toString())
-								}\n}`,
-							).join('\n'),
-							cssErrors = await styleLint((await stylelint)!, code, cssRules);
-						if (cssErrors.length === 0) {
-							return [];
-						}
-						const rects = tokens.map(({lastChild}) => lastChild.getBoundingClientRect());
-						let acc = 0;
-						const bottoms = rects.map(({height}) => {
-							acc += height + 2;
-							return acc;
-						});
-						return cssErrors.map(({
-							rule,
-							text: msg,
-							severity,
-							line,
-							column,
-							endLine = line,
-							endColumn = column,
-							fix,
-						}): DiagnosticBase => {
-							const i = findIndex(bottoms, line, (bottom, needle) => bottom - needle);
-							return {
-								range: {
-									start: getStylelintPos(rects[i]!, bottoms[i]!, line, column - 1),
-									end: getStylelintPos(rects[i]!, bottoms[i]!, endLine, endColumn - 1),
-								},
-								severity: severity === 'error' ? 1 : 2,
-								source: 'Stylelint',
-								code: rule,
-								message: msg.slice(0, msg.lastIndexOf('(') - 1),
-								...fix
-									? {
-										data: [
-											{
-												range: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range),
-												newText: fix.text,
-												title: `Fix: ${rule}`,
-												fix: true,
-											} satisfies QuickFixData,
-										],
-									}
-									: {},
-							};
-						});
 					})() :
 					[] as const,
 			jsonDiagnostics =
