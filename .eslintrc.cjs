@@ -117,6 +117,18 @@ module.exports = {
 			],
 		},
 		{
+			files: [
+				'errors/*.json',
+			],
+			rules: {
+				'@stylistic/eol-last': [
+					2,
+					'never',
+				],
+				'@stylistic/indent': 0,
+			},
+		},
+		{
 			...ts,
 			rules: {
 				...ts.rules,
