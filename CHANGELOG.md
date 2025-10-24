@@ -2,9 +2,17 @@
 
 *2025-10-25*
 
+**Added**
+
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests behavior switches with full-width underscores (`＿`)
+
 **Fixed**
 
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) now ignores magic link-like texts in tokens where magic links are not parsed
+
+**Changed**
+
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests behavior switches when typing the first underscore (`_` or `＿`)
 
 ## v1.29.0
 

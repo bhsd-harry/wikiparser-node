@@ -107,6 +107,7 @@ declare interface CompletionConfig {
 	allTags: string[];
 	functions: string[];
 	switches: string[];
+	jaSwitches: string[];
 	protocols: string[];
 	params: string[];
 }
@@ -746,26 +747,29 @@ export class LanguageService implements LanguageServiceBase {
 				} = this.config,
 				tags = new Set([ext, html].flat(2));
 			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\p{N}_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
+			/(?:<(\/?\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(_(?:_(?:(?!__|＿{2})[\p{L}\p{N}_])*)?)|(＿(?:＿(?:(?!__|＿{2})[\p{L}\p{N}＿])*)?)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\9))?(?=\s))*)?\s(\w*))$/iu;
 			const re = new RegExp(
-				'(?:' // eslint-disable-line prefer-template
-				+ String.raw`<(\/?\w*)` // tag
-				+ '|'
-				+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets
-				+ '|'
-				+ String.raw`(__(?:(?!__)[\p{L}\p{N}_])*)` // behavior switch
-				+ '|'
-				+ String.raw`(?<!\[)\[([a-z:/]*)` // protocol
-				+ '|'
-				+ String.raw`\[\[\s*(?:${
-					Object.entries(nsid).filter(([, v]) => v === 6).map(([k]) => k).join('|')
-				})\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)` // image parameter
-				+ '|'
-				// attribute key
-				+ String.raw`<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*)`
-				+ ')$',
-				'iu',
-			);
+					'(?:' // eslint-disable-line prefer-template
+					+ String.raw`<(\/?\w*)` // tag ($1)
+					+ '|'
+					+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets ($2, $3)
+					+ '|'
+					+ String.raw`(_(?:_(?:(?!__|＿{2})[\p{L}\p{N}_])*)?)` // behavior switch ($4)
+					+ '|'
+					+ String.raw`(＿(?:＿(?:(?!__|＿{2})[\p{L}\p{N}＿])*)?)` // Japanese behavior switch ($5)
+					+ '|'
+					+ String.raw`(?<!\[)\[([a-z:/]*)` // protocol ($6)
+					+ '|'
+					+ String.raw`\[\[\s*(?:${
+						Object.entries(nsid).filter(([, v]) => v === 6).map(([k]) => k).join('|')
+					})\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)` // image parameter ($7)
+					+ '|'
+					// attribute key ($8, $10)
+					+ String.raw`<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\9))?(?=\s))*)?\s(\w*)`
+					+ ')$',
+					'iu',
+				),
+				allSwitches = (doubleUnderscore.slice(0, 2) as string[][]).flat();
 			this.#completionConfig = [
 				{
 					re,
@@ -777,9 +781,8 @@ export class LanguageService implements LanguageServiceBase {
 						Array.isArray(sensitive) ? /* istanbul ignore next */ sensitive : Object.keys(sensitive),
 						other,
 					].flat(2),
-					switches: (doubleUnderscore.slice(0, 2) as string[][]).flat()
-						.filter(isUnderscore)
-						.map(w => `__${w}__`),
+					switches: allSwitches.filter(isUnderscore).map(w => `__${w}__`),
+					jaSwitches: allSwitches.filter(w => !isUnderscore(w)),
 					protocols: protocol.split('|'),
 					params: Object.keys(img)
 						.filter(k => k.endsWith('$1') || !k.includes('$1'))
@@ -799,7 +802,17 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position position / 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
-		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
+		const {
+				re,
+				allTags,
+				functions,
+				switches,
+				jaSwitches,
+				protocols,
+				params,
+				tags,
+				ext,
+			} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line],
 			mt = re.exec(curLine?.slice(0, character) ?? ''),
@@ -813,18 +826,20 @@ export class LanguageService implements LanguageServiceBase {
 				position,
 				closing && !curLine?.slice(character).trim().startsWith('>') ? '>' : '',
 			);
-		} else if (mt?.[4]) { // behavior switch
+		} else if (mt?.[4] || mt?.[5] && jaSwitches.length > 0) { // behavior switch
+			const isJa = mt[5] !== undefined;
 			return getCompletion(
-				switches,
+				isJa ? jaSwitches : switches,
 				'Constant',
-				mt[4],
+				mt[isJa ? 5 : 4]!,
 				position,
 				'',
 				name => {
 					if (!this.data) {
 						return undefined;
+					} else if (!isJa) {
+						name = name.slice(2, -2);
 					}
-					name = name.slice(2, -2);
 					if (name in iAlias) {
 						name = iAlias[name]!;
 					} else if (name in sAlias) {
@@ -833,8 +848,8 @@ export class LanguageService implements LanguageServiceBase {
 					return this.#getBehaviorSwitch(name.toLowerCase());
 				},
 			);
-		} else if (mt?.[5] !== undefined) { // protocol
-			return getCompletion(protocols, 'Reference', mt[5], position);
+		} else if (mt?.[6] !== undefined) { // protocol
+			return getCompletion(protocols, 'Reference', mt[6], position);
 		}
 		const root = await this.#queue(text);
 		let cur: Token | undefined;
@@ -913,13 +928,13 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		let type: TokenTypes | undefined,
 			parentNode: Token | undefined;
-		if (mt?.[7] === undefined) {
+		if (mt?.[8] === undefined) {
 			cur = root.elementFromPoint(character, line)!;
 			({type, parentNode} = cur);
 		}
-		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
+		if (mt?.[7] !== undefined || type === 'image-parameter') { // image parameter
 			const index = root.indexFromPos(line, character)!,
-				match = mt?.[6]?.trimStart()
+				match = mt?.[7]?.trimStart()
 					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
 				equal = this.#text[index] === '=';
 			return [
@@ -934,9 +949,9 @@ export class LanguageService implements LanguageServiceBase {
 					position,
 				),
 			];
-		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
-			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[9]
+		} else if (mt?.[8] !== undefined || type === 'attr-key') { // attribute key
+			const tag = mt?.[8]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
+				key = mt?.[10]
 					?? cur!.toString().slice(0, character - root.posFromIndex(cur!.getAbsoluteIndex())!.left);
 			if (!tags.has(tag)) {
 				return undefined;
