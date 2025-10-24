@@ -183,20 +183,22 @@ export class Token extends AstElement {
 		/* NOT FOR BROWSER */
 
 		const plainTypes: TokenTypes[] = [
-			'plain',
 			'root',
-			'table-inter',
-			'arg-default',
+			'plain',
+			'translate-inner',
 			'attr-value',
-			'ext-link-text',
-			'heading-title',
+			'ext-inner',
+			'arg-default',
 			'parameter-key',
 			'parameter-value',
-			'link-text',
+			'heading-title',
+			'table-inter',
 			'td-inner',
-			'ext-inner',
+			'link-text',
+			'ext-link-text',
 			'list-range',
-			'translate-inner',
+			'converter-rule-to',
+			'converter-rule-from',
 		];
 		if (!plainTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);

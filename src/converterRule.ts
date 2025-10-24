@@ -1,39 +1,60 @@
+import {
+	MAX_STAGE,
+
+	/* NOT FOR BROWSER */
+
+	classes,
+} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {AST} from '../base';
+import type {
+	Config,
+	AST,
+} from '../base';
 import type {ConverterToken, ConverterFlagsToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {html} from '../util/html';
 import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
 /**
+ * 生成转换原文或目标的节点
+ * @param text 文本
+ * @param type 节点类型
+ * @param config
+ * @param accum
+ */
+const getRuleFromTo = (text: string | undefined, type: 'from' | 'to', config: Config, accum?: Token[]): Token => {
+	const token = new Token(text, config, accum);
+	token.type = `converter-rule-${type}`;
+	token.setAttribute('stage', MAX_STAGE);
+	return token;
+};
+
+/**
  * language conversion rule
  *
  * 转换规则
- * @classdesc `{childNodes: AtomToken[]}`
+ * @classdesc `{childNodes: [Token?, AtomToken?, Token]}`
  */
 export abstract class ConverterRuleToken extends Token {
-	declare readonly childNodes: readonly [AtomToken]
-		| readonly [AtomToken, AtomToken]
-		| readonly [AtomToken, AtomToken, AtomToken];
-	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): AtomToken;
+	declare readonly childNodes: readonly [Token] | readonly [AtomToken, Token] | readonly [Token, AtomToken, Token];
+	abstract override get firstChild(): Token;
+	abstract override get lastChild(): Token;
 	abstract override get parentNode(): ConverterToken | undefined;
 	abstract override get previousSibling(): ConverterFlagsToken | this | undefined;
 	abstract override get nextSibling(): this | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
-	abstract override get firstElementChild(): AtomToken;
-	abstract override get lastElementChild(): AtomToken;
+	abstract override get children(): [Token] | [AtomToken, Token] | [Token, AtomToken, Token];
+	abstract override get firstElementChild(): Token;
+	abstract override get lastElementChild(): Token;
 	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousElementSibling(): ConverterFlagsToken | this | undefined;
 	abstract override get nextElementSibling(): this | undefined;
@@ -113,21 +134,20 @@ export abstract class ConverterRuleToken extends Token {
 	 * @param hasColon 是否带有":"
 	 */
 	constructor(rule: string, hasColon = true, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, accum);
+		super(undefined, config, accum, {
+			Token: '0:3', AtomToken: '0:2',
+		});
 		const i = rule.indexOf(':'),
 			j = rule.slice(0, i).indexOf('=>'),
 			v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
 		if (hasColon && config.variants.includes(v.trim().toLowerCase())) {
 			super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
-			super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
+			super.insertAt(getRuleFromTo(rule.slice(i + 1), 'to', config, accum));
 			if (j !== -1) {
-				super.insertAt(
-					new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum),
-					0,
-				);
+				super.insertAt(getRuleFromTo(rule.slice(0, j), 'from', config, accum), 0);
 			}
 		} else {
-			super.insertAt(new AtomToken(rule, 'converter-rule-to', config, accum));
+			super.insertAt(getRuleFromTo(rule, 'to', config, accum));
 		}
 
 		/* NOT FOR BROWSER */
@@ -215,11 +235,11 @@ export abstract class ConverterRuleToken extends Token {
 	 * @override
 	 * @param i position of the child node / 移除位置
 	 */
-	override removeAt(i: number): AtomToken {
+	override removeAt(i: number): Token {
 		if (this.length === 1) {
 			this.constructorError('needs at least 1 child node');
 		}
-		return super.removeAt(i) as AtomToken;
+		return super.removeAt(i) as Token;
 	}
 
 	override insertAt(): never {
@@ -283,11 +303,7 @@ export abstract class ConverterRuleToken extends Token {
 		const {childNodes} = Parser.parseWithRef(from, this);
 		if (!unidirectional) {
 			super.insertAt(
-				Shadow.run(() => new AtomToken(
-					undefined,
-					'converter-rule-from',
-					this.getAttribute('config'),
-				)),
+				Shadow.run(() => getRuleFromTo(undefined, 'from', this.getAttribute('config'))),
 				0,
 			);
 		}
