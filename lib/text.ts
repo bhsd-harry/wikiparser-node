@@ -106,7 +106,7 @@ export class AstText extends AstNode {
 			if (!parentNode) {
 				throw new Error('An isolated text node cannot be linted!');
 			}
-			const {type, name, parentNode: grandparent} = parentNode;
+			const {type, parentNode: grandparent} = parentNode;
 			if (type === 'attr-value') {
 				const {name: grandName, tag} = grandparent as AttributeToken;
 				if (
@@ -117,13 +117,7 @@ export class AstText extends AstNode {
 					return [];
 				}
 			}
-			errorRegex ??= type === 'free-ext-link'
-				|| type === 'ext-link-url'
-				|| type === 'ext-link-text'
-				|| type === 'image-parameter' && name === 'link'
-				|| type === 'attr-value'
-				? errorSyntaxUrl
-				: errorSyntax;
+			errorRegex ??= parentNode.isPlain() && !noLinkTypes.has(type) ? errorSyntax : errorSyntaxUrl;
 			if (data.search(errorRegex) === -1) {
 				return [];
 			}
@@ -175,7 +169,6 @@ export class AstText extends AstNode {
 						|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
 						&& nextSibling.innerText?.includes(']')
 					)
-					|| magicLink && (!parentNode.isPlain() || noLinkTypes.has(type))
 				) {
 					continue;
 				} else if (rbrack && (index || length > 1)) {
