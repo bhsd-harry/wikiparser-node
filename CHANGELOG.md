@@ -10,6 +10,7 @@
 
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) now ignores magic link-like texts in tokens where magic links are not parsed
 - [`AttributeToken.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#escape) should ignore extension tag attributes
+- Disable `AstElement.prototype.escape` for some token types
 
 **Changed**
 

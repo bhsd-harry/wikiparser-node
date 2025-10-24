@@ -1,6 +1,7 @@
 import {generateForChild, fixByRemove, fixByUpper} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -23,7 +24,7 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: AtomToken[]}`
  */
-@gapped()
+@gapped() @noEscape
 export abstract class ConverterFlagsToken extends Token {
 	#flags?: string[];
 

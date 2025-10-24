@@ -358,6 +358,14 @@ export abstract class AttributesToken extends Token {
 		}
 	}
 
+	override escape(): void {
+		LSP: { // eslint-disable-line no-unused-labels
+			if (this.type !== 'ext-attrs') {
+				super.escape();
+			}
+		}
+	}
+
 	/* PRINT ONLY */
 
 	/** @private */

@@ -5,6 +5,7 @@ import {
 
 	classes,
 } from '../util/constants';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -42,6 +43,7 @@ const getRuleFromTo = (text: string | undefined, type: 'from' | 'to', config: Co
  * 转换规则
  * @classdesc `{childNodes: [Token?, AtomToken?, Token]}`
  */
+@noEscape
 export abstract class ConverterRuleToken extends Token {
 	declare readonly childNodes: readonly [Token] | readonly [AtomToken, Token] | readonly [Token, AtomToken, Token];
 	abstract override get firstChild(): Token;

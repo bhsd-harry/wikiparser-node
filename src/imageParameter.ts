@@ -18,6 +18,7 @@ import {
 	classes,
 } from '../util/constants';
 import {Shadow} from '../util/debug';
+import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../base';
@@ -126,6 +127,7 @@ function validate(
  *
  * 图片参数
  */
+@noEscape
 export abstract class ImageParameterToken extends Token {
 	declare readonly name: string;
 	readonly #syntax: string = '';

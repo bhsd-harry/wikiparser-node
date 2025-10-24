@@ -408,12 +408,30 @@ const adjustPos = (height: number, width: number, line: number, column: number):
  * @param lineOrCode line number or code string
  * @param columnOrOffset column number or offset in the code string
  */
-const getStylelintPos = (
+function getStylelintPos(
+	rect: Dimension & NodePosition,
+	bottom: number,
+	lineOrCode: string,
+	columnOrOffset: [number, number],
+): Range;
+function getStylelintPos(
 	rect: Dimension & NodePosition,
 	bottom: number,
 	lineOrCode: number | string,
 	columnOrOffset: number,
-): Position => {
+): Position;
+function getStylelintPos(
+	rect: Dimension & NodePosition,
+	bottom: number,
+	lineOrCode: number | string,
+	columnOrOffset: number | [number, number],
+): Position | Range {
+	if (Array.isArray(columnOrOffset)) {
+		return {
+			start: getStylelintPos(rect, bottom, lineOrCode, columnOrOffset[0]),
+			end: getStylelintPos(rect, bottom, lineOrCode, columnOrOffset[1]),
+		};
+	}
 	const {top, left, height, width} = rect,
 		start = bottom - height - 1;
 	if (typeof lineOrCode === 'number') {
@@ -421,7 +439,7 @@ const getStylelintPos = (
 	}
 	const lines = lineOrCode.slice(0, columnOrOffset).split(/\r?\n/u);
 	return getStylelintPos(rect, bottom, lines.length, lines.at(-1)!.length);
-};
+}
 
 /**
  * Convert LilyPond errors to VSCode diagnostics.
@@ -1174,10 +1192,7 @@ export class LanguageService implements LanguageServiceBase {
 									? {
 										data: [
 											{
-												range: {
-													start: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range[0]),
-													end: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range[1]),
-												},
+												range: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range),
 												newText: fix.text,
 												title: `Fix: ${rule}`,
 												fix: true,
