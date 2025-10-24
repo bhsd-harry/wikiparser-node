@@ -9,7 +9,12 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {Config, LintError} from '../base';
-import type {ExtToken, HtmlToken, SyntaxToken, TdToken} from '../internal';
+import type {
+	ExtToken,
+	HtmlToken,
+	SyntaxToken,
+	TdToken,
+} from '../internal';
 import type {AttributeTypes} from './attribute';
 import type {TableTokens} from './table/index';
 
