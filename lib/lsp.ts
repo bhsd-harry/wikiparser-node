@@ -963,7 +963,7 @@ export class LanguageService implements LanguageServiceBase {
 							|| parentNode!.is<CategoryToken>('category')
 						)
 					) {
-						if (target.startsWith('/')) {
+						if (/^(?:\.\.)?\//u.test(target)) {
 							return false;
 						}
 						target = parentNode.link.getUrl(articlePath);
