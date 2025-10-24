@@ -11,8 +11,6 @@ const atomTypes = [
 	'table-attr-dirty',
 	'converter-flag',
 	'converter-rule-variant',
-	'converter-rule-to',
-	'converter-rule-from',
 	'invoke-function',
 	'invoke-module',
 	'template-name',
