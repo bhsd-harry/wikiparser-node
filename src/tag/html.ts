@@ -191,7 +191,7 @@ export abstract class HtmlToken extends TagToken {
 					if (formattingTags.has(name)) {
 						if (
 							childNodes?.slice(0, childNodes.indexOf(this)).some(
-								tag => tag.type === 'html' && tag.name === name && !(tag as this).findMatchingTag(),
+								tag => tag.is<this>('html') && tag.name === name && !tag.findMatchingTag(),
 							)
 						) {
 							error.suggestions = [fixByClose(start + 1, '/')];

@@ -118,7 +118,12 @@ export abstract class ImageParameterToken extends Token {
 		return 'image-parameter';
 	}
 
-	/** thumbnail / 缩略图 */
+	/**
+	 * thumbnail
+	 *
+	 * 缩略图
+	 * @since v1.29.0
+	 */
 	get thumb(): Title | undefined {
 		LINT: return this.name === 'manualthumb' // eslint-disable-line no-unused-labels
 			? this.normalizeTitle(`File:${super.text().trim()}`, 6, {page: ''})
