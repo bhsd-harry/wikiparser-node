@@ -29,11 +29,13 @@ declare interface Texvcjs {
 }
 
 export const texvcjs = (() => {
-	try {
-		return require('mathoid-texvcjs') as Texvcjs;
-	} catch {
-		/* istanbul ignore next */
-		return undefined;
+	NPM: { // eslint-disable-line no-unused-labels
+		try {
+			return require('mathoid-texvcjs') as Texvcjs;
+		} catch {
+			/* istanbul ignore next */
+			return undefined;
+		}
 	}
 })();
 
@@ -93,11 +95,13 @@ export const htmlData = (() => {
 })();
 
 export const stylelint = (async () => {
-	try {
-		return (await import('stylelint')).default;
-	} catch {
-		/* istanbul ignore next */
-		return undefined;
+	NPM: { // eslint-disable-line no-unused-labels
+		try {
+			return (await import('stylelint')).default;
+		} catch {
+			/* istanbul ignore next */
+			return undefined;
+		}
 	}
 })();
 
