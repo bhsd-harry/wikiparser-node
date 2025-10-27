@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.29.0",
+	"version": "1.29.1",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -46,7 +46,7 @@
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && mocha dist/test/json.js",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"prof": "node dist/test/prof.js",
-		"coverage": "nyc --cache-dir=./.cache/nyc npm test && node dist/script/coverage.js && open coverage/index.html",
+		"coverage": "nyc --cache-dir=./.cache/nyc npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
 		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
