@@ -60,9 +60,7 @@ const closeList = (chars: string, {dt}: State): string => {
 				break;
 			case ':':
 				result += `</${dt.pop() ? 'dt' : 'dd'}></dl>`;
-				break;
-			default:
-				//
+			// no default
 		}
 	}
 	return result;
@@ -100,7 +98,7 @@ const openList = (chars: string, {dt}: State): string => {
  * @param separator delimiter between nodes
  * @param opt options
  */
-export const html = (childNodes: readonly AstNodes[], separator = '', opt?: HtmlOpt): string => {
+export const html = (childNodes: readonly AstNodes[], separator: string, opt?: HtmlOpt): string => {
 	let lastPrefix = '';
 	const results: string[] = [],
 		state: State = {dt: []};
