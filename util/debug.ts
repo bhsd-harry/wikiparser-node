@@ -1,7 +1,4 @@
-import type {
-	AstNodes,
-	Token,
-} from '../internal';
+import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
 	running: false,
