@@ -1,11 +1,4 @@
-import type {
-	AstNodes,
-	Token,
-
-	/* NOT FOR BROWSER */
-
-	AstText,
-} from '../internal';
+import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
 	running: false,
@@ -113,7 +106,7 @@ export const undo: AstListener = (e, data): void => {
 			setChildNodes(target.parentNode!, data.position, 1, [data.oldToken]);
 			break;
 		case 'text':
-			(target as AstText).setAttribute('data', data.oldText);
+			target.setAttribute('data', data.oldText);
 			break;
 		/* istanbul ignore next */
 		default:

@@ -16,10 +16,9 @@ import type {TableToken} from '../internal';
  */
 const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
-		isTemplate = type === 'template',
 		isParameter = lastChild.type === 'parameter';
 	if (
-		(!isTemplate && lastChild.type !== 'magic-word-name' || isTemplate && !(isParameter && lastChild.anon))
+		!(type === 'template' ? isParameter && lastChild.anon : lastChild.type === 'magic-word-name')
 		&& !lastChild.toString().endsWith('\n')
 	) {
 		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');
@@ -76,7 +75,7 @@ TranscludeToken.prototype.replaceTemplate =
 			throw new Error('TranscludeToken.replaceTemplate method is only for templates!');
 		}
 		const {childNodes} = Parser.parseWithRef(title, this, 2);
-		(firstChild as AtomToken).safeReplaceChildren(childNodes);
+		firstChild.safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.replaceModule =
@@ -100,7 +99,7 @@ TranscludeToken.prototype.replaceModule =
 			return;
 		}
 		const {childNodes} = Parser.parseWithRef(title, this, 2);
-		(mod as AtomToken).safeReplaceChildren(childNodes);
+		mod.safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.replaceFunction =
@@ -126,7 +125,7 @@ TranscludeToken.prototype.replaceFunction =
 			return;
 		}
 		const {childNodes} = Parser.parseWithRef(func, this, 2);
-		(fun as AtomToken).safeReplaceChildren(childNodes);
+		fun.safeReplaceChildren(childNodes);
 	};
 
 TranscludeToken.prototype.fixDuplication =
