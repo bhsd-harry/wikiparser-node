@@ -10,21 +10,40 @@ import {ParameterToken} from '../src/parameter';
 import {AtomToken} from '../src/atom';
 import type {TableToken} from '../internal';
 
+/**
+ * 调整最后一个子节点的换行符
+ * @param token 魔术字或模板节点
+ */
+const format = (token: TranscludeToken): void => {
+	const {lastChild, type} = token,
+		isTemplate = type === 'template',
+		isParameter = lastChild.type === 'parameter';
+	if (
+		(!isTemplate && lastChild.type !== 'magic-word-name' || isTemplate && !(isParameter && lastChild.anon))
+		&& !lastChild.toString().endsWith('\n')
+	) {
+		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');
+	}
+};
+
 TranscludeToken.prototype.newAnonArg =
 	/** @implements */
-	function(val): ParameterToken {
+	function(val, newline): ParameterToken {
 		const {childNodes} = Parser.parseWithRef(val, this),
 			token = Shadow.run(
 				// @ts-expect-error abstract class
 				(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
 			);
 		token.lastChild.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
+		if (newline) {
+			format(this);
+		}
 		return this.insertAt(token);
 	};
 
 TranscludeToken.prototype.setValue =
 	/** @implements */
-	function(key, value): void {
+	function(key, value, newline): void {
 		/* istanbul ignore if */
 		if (!this.isTemplate()) {
 			throw new Error('TranscludeToken.setValue method is only for templates!');
@@ -42,6 +61,9 @@ TranscludeToken.prototype.setValue =
 			);
 		token.firstChild.safeAppend(k.childNodes);
 		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
+		if (newline) {
+			format(this);
+		}
 		this.insertAt(token);
 	};
 

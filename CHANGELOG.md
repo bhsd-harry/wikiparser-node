@@ -1,3 +1,11 @@
+## v1.29.2
+
+*2025-11-01*
+
+**Added**
+
+- [`TranscludeToken.prototype.newAnonArg`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#newanonarg) and [`TranscludeToken.prototype.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#setvalue) now support an optional parameter to append the new parameter on a new line
+
 ## v1.29.1
 
 *2025-10-28*

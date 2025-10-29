@@ -831,10 +831,11 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 插入匿名参数
 	 * @param val parameter value / 参数值
+	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
 	 */
-	newAnonArg(val: string): ParameterToken {
+	newAnonArg(val: string, newline?: boolean): ParameterToken {
 		require('../addon/transclude');
-		return this.newAnonArg(val);
+		return this.newAnonArg(val, newline);
 	}
 
 	/**
@@ -843,11 +844,12 @@ export abstract class TranscludeToken extends Token {
 	 * 设置参数值
 	 * @param key parameter name / 参数名
 	 * @param value parameter value / 参数值
+	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
 	 * @throws `Error` 仅用于模板
 	 */
-	setValue(key: string, value: string): void {
+	setValue(key: string, value: string, newline?: boolean): void {
 		require('../addon/transclude');
-		this.setValue(key, value);
+		this.setValue(key, value, newline);
 	}
 
 	/**

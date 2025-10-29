@@ -329,7 +329,7 @@ export abstract class LinkBaseToken extends Token {
 				[],
 				{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 			));
-		token.safeAppend(childNodes);
+		token.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
 		this.firstChild.safeReplaceWith(token);
 	}
 

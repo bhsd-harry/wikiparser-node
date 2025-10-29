@@ -226,9 +226,8 @@ export abstract class TableToken extends TrBaseToken {
 		/* NOT FOR BROWSER */
 
 		if (!halfParsed) {
-			(this.lastChild as SyntaxToken).safeReplaceChildren(
-				Parser.parseWithRef(syntax, this, 2).childNodes,
-			);
+			const {childNodes} = Parser.parseWithRef(syntax, this, 2);
+			(this.lastChild as SyntaxToken).safeReplaceChildren(childNodes);
 		}
 	}
 
