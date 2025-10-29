@@ -213,8 +213,7 @@ export abstract class TranscludeToken extends Token {
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
 		if (
-			this.#raw && isRaw
-			|| !this.#raw && (isSubst || !modifier)
+			(this.#raw ? isRaw : isSubst || !modifier)
 			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || !modifier)
 		) {
 			this.setAttribute('modifier', modifier);

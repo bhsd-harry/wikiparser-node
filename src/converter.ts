@@ -38,10 +38,7 @@ export abstract class ConverterToken extends Token {
 			hasColon = firstRule.includes(':'),
 			// @ts-expect-error abstract class
 			firstRuleToken: ConverterRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
-		if (
-			hasColon && firstRuleToken.length === 1
-			|| !hasColon && rules.length === 2 && !removeComment(rules[1]!).trim()
-		) {
+		if (hasColon ? firstRuleToken.length === 1 : rules.length === 2 && !removeComment(rules[1]!).trim()) {
 			this.insertAt(
 				// @ts-expect-error abstract class
 				new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken,
