@@ -36,7 +36,7 @@ const codejar = (async (): Promise<f> => {
 		const id = wikiparse.id++;
 		/** @implements */
 		const highlight = async (e: HTMLElement): Promise<string> =>
-			(await wikiparse.print(e.textContent!, jar.include, undefined, id)).map(([,, printed]) => printed)
+			(await wikiparse.print(e.textContent, jar.include, undefined, id)).map(([,, printed]) => printed)
 				.join('');
 		const jar = {
 			...CodeJar(root, highlight, { // eslint-disable-line new-cap

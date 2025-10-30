@@ -396,7 +396,7 @@ const splitNewLine = (html: HTMLElement): HTMLElement[] => {
 	const result = [cur];
 	for (const child of html.childNodes as unknown as Iterable<HTMLElement | Text>) {
 		const {textContent} = child;
-		if (!textContent?.includes('\n')) {
+		if (!textContent.includes('\n')) {
 			cur.append(child.cloneNode(true));
 			continue;
 		}

@@ -118,7 +118,7 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 				removeClass(ele, ...classes);
 			}
 			for (const ele of empty) {
-				if (ele.childElementCount === 0 && !ele.textContent!.trim()) {
+				if (ele.childElementCount === 0 && !ele.textContent.trim()) {
 					removeClass(ele, 'mw-empty-elt');
 				}
 			}

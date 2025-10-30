@@ -265,7 +265,7 @@ const splitNewLine = (html) => {
     const result = [cur];
     for (const child of html.childNodes) {
         const { textContent } = child;
-        if (!(textContent === null || textContent === void 0 ? void 0 : textContent.includes('\n'))) {
+        if (!textContent.includes('\n')) {
             cur.append(child.cloneNode(true));
             continue;
         }
