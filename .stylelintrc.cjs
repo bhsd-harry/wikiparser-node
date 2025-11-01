@@ -4,5 +4,7 @@ const config = require('@bhsd/code-standard/stylelintrc.cjs');
 
 module.exports = {
 	...config,
-	ignoreFiles: ['extensions/ui.css'],
+	ignoreFiles: [
+		'extensions/ui.css',
+	],
 };
