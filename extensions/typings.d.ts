@@ -148,7 +148,7 @@ export interface wikiparse {
 	id: number;
 	config: ConfigData;
 	provide: (
-		...args: Exclude<Command, ['setI18N' | 'setLintConfig' | 'setConfig' | 'getConfig', ...unknown[]]>,
+		...args: Exclude<Command, ['setI18N' | 'setLintConfig' | 'setConfig' | 'getConfig', ...unknown[]]>
 	) => Promise<unknown>;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */

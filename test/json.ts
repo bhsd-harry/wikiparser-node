@@ -24,7 +24,7 @@ for (const file of fs.readdirSync('config')) {
 					assert.strictEqual(v.length, new Set(v).size, `${key} not unique`);
 					if (key === 'variable' || key === 'functionHook') {
 						for (const word of v) {
-							assert(magicWordValues.includes(word), `'${word}' not in parserFunction`);
+							assert.ok(magicWordValues.includes(word), `'${word}' not in parserFunction`);
 						}
 					}
 				});
@@ -42,7 +42,7 @@ for (const file of fs.readdirSync('config')) {
 			});
 			it('namespaces', () => {
 				for (const ns of new Set(Object.values(nsid))) {
-					assert(ns in namespaces, `'${ns}' not in namespaces`);
+					assert.ok(ns in namespaces, `'${ns}' not in namespaces`);
 				}
 			});
 
@@ -66,7 +66,7 @@ for (const file of fs.readdirSync('config')) {
 						);
 					}
 					for (const alias of [...variable, ...functionHook]) {
-						assert(magicWordValues.includes(alias), `'${alias}' not in parserFunction`);
+						assert.ok(magicWordValues.includes(alias), `'${alias}' not in parserFunction`);
 					}
 				});
 
@@ -74,8 +74,8 @@ for (const file of fs.readdirSync('config')) {
 					const entries = Object.entries(img),
 						constants = new Set(entries.filter(([k]) => !k.includes('$1')).map(([, v]) => v)),
 						variables = new Set(entries.filter(([k]) => k.includes('$1')).map(([, v]) => v));
-					assert(constants.has('upright'), `'upright' not in img`);
-					assert(variables.has('upright'), `'manual-upright' not in img`);
+					assert.ok(constants.has('upright'), `'upright' not in img`);
+					assert.ok(variables.has('upright'), `'manual-upright' not in img`);
 					assert.strictEqual(
 						constants.size + variables.size - 1,
 						new Set([...constants, ...variables]).size,
@@ -100,7 +100,7 @@ for (const [file, config] of Object.entries(configs)) {
 			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
 				it(key, () => {
 					for (const ele of config[key]) {
-						assert(defaultConfig[key].includes(ele), `'${ele}' not in defaultConfig.${key}`);
+						assert.ok(defaultConfig[key].includes(ele), `'${ele}' not in defaultConfig.${key}`);
 					}
 				});
 			}
@@ -112,7 +112,7 @@ for (const [file, config] of Object.entries(configs)) {
 						const arr = config[key][i]!;
 						if (Array.isArray(arr)) {
 							for (const ele of arr) {
-								assert(
+								assert.ok(
 									(defaultConfig[key][i] as string[]).includes(ele),
 									`'${ele}' not in defaultConfig.${key}[${i}]`,
 								);
@@ -127,7 +127,7 @@ for (const [file, config] of Object.entries(configs)) {
 				it(key, () => {
 					for (const [k, v] of Object.entries(config[key])) {
 						if (file === 'jawiki.json' || file === 'mediawikiwiki.json') {
-							assert(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
+							assert.ok(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
 						} else {
 							assert.strictEqual(defaultConfig[key][k], v, `'${k}' not in defaultConfig.${key}`);
 						}
@@ -155,7 +155,7 @@ for (const [file, config] of Object.entries(configs)) {
 
 			it('protocol', () => {
 				for (const protocol of config.protocol.split('|')) {
-					assert(
+					assert.ok(
 						new RegExp(String.raw`(?:^|\|)${protocol}(?:$|\|)`, 'u').test(defaultConfig.protocol),
 						`'${protocol}' not in defaultConfig.protocol`,
 					);
@@ -197,10 +197,10 @@ describe('i18n', () => {
 			const i18n = getI18nKeys(file);
 			it(`${file} vs. en.json`, () => {
 				for (const key of i18n) {
-					assert(keys.has(key), `'${key}' not in en.json`);
+					assert.ok(keys.has(key), `'${key}' not in en.json`);
 				}
 				for (const key of keys) {
-					assert(i18n.has(key), `'${key}' not in ${file}`);
+					assert.ok(i18n.has(key), `'${key}' not in ${file}`);
 				}
 			});
 		}
