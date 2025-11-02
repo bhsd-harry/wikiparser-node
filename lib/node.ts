@@ -222,7 +222,7 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	getAbsoluteIndex(): number {
 		// 也用于Prism-Wiki
-		return cache<number>( // eslint-disable-line no-unused-labels
+		return cache<number>(
 			this.#aIndex,
 			() => {
 				const {parentNode} = this;

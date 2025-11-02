@@ -18,7 +18,7 @@ export const trimLc = (s: string): string => s.trim().toLowerCase();
  * @param translate 是否恢复`<translate>`或`<tvar>`标签
  */
 export function restore(s: string, stack: Token[], translate: 1 | 2): string;
-export function restore(s: string, stack: string[]): string; // eslint-disable-line jsdoc/require-jsdoc
+export function restore(s: string, stack: string[]): string;
 export function restore(s: string, stack: string[] | Token[], translate?: 1 | 2): string {
 	if (translate === 1) {
 		return s.replace(

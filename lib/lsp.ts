@@ -1396,7 +1396,7 @@ export class LanguageService implements LanguageServiceBase {
 				let name: string | undefined;
 				if (token.is<TranscludeToken>('magic-word')) {
 					({name} = token);
-					token = (token.childNodes[1] as ParameterToken).lastChild; // eslint-disable-line no-param-reassign
+					token = (token.childNodes[1] as ParameterToken).lastChild;
 				} else if (token.is<ImageParameterToken>('image-parameter')) {
 					({name} = token);
 				}

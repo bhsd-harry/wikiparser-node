@@ -162,7 +162,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	set i18n(data: Record<string, string> | string | undefined) {
 		/* NOT FOR BROWSER ONLY */
 
-		if (typeof data === 'string') { // eslint-disable-line unicorn/prefer-ternary
+		if (typeof data === 'string') {
 			i18n = rootRequire(data, 'i18n') as Record<string, string>;
 		} else {
 			/* NOT FOR BROWSER ONLY END */
