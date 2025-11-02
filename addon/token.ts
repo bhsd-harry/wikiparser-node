@@ -218,7 +218,7 @@ const expand = (
 					 * - `2` 表示匹配值
 					 */
 					found = 0,
-					transclusion = false,
+					transclusion = false, // eslint-disable-line no-useless-assignment
 					defaultParam: Token | undefined;
 				for (; j < length; j++) {
 					const {anon, value, lastChild, name: option} = args[j - 1]!;

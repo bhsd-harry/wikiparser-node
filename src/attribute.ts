@@ -67,7 +67,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle =
-	/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
+		/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
 	evil = /(?:^|\s|\*\/)(?:javascript|vbscript)(?:\W|$)/iu,
 	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']),
 	urlAttrs = new Set([
