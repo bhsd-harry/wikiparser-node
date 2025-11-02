@@ -203,7 +203,7 @@ describe('i18n', () => {
 			});
 		} else {
 			const i18n = getI18nKeys(file);
-			it(`${file} vs. en.json`, () => { // eslint-disable-line @typescript-eslint/no-loop-func
+			it(`${file} vs. en.json`, () => {
 				for (const key of i18n) {
 					assert(keys.has(key), `'${key}' not in en.json`);
 				}

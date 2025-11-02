@@ -57,16 +57,13 @@ export interface AttributesParentBase {
 	 */
 	getAttrs(): Record<string, string | true>;
 
-	/* eslint-disable jsdoc/check-param-names */
 	/**
 	 * Set the attribute
 	 *
 	 * 设置指定属性
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
-	 * @param prop attribute object / 属性对象
 	 */
-	/* eslint-enable jsdoc/check-param-names */
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
 
