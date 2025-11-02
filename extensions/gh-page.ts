@@ -62,7 +62,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		mwConfig = CodeMirror6.getMwConfig(config);
 
 	// Monaco初始化
-	// eslint-disable-next-line @typescript-eslint/await-thenable
 	const model = (await monaco).editor.createModel(textbox2.value, 'wikitext');
 	(await monaco).editor.create(monacoContainer, {
 		model,

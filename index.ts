@@ -305,7 +305,7 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-// eslint-disable-next-line no-restricted-globals, es-x/no-global-this
+// eslint-disable-next-line no-restricted-globals
 Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
 
 export default Parser;
