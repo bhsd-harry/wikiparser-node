@@ -330,7 +330,7 @@ if (caching) {
 		try {
 			cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
 			/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-			assert(
+			assert.ok(
 				typeof cache === 'object' && cache !== null
 				&& typeof cache.include === 'object' && cache.include !== null
 				&& typeof cache.noinclude === 'object' && cache.noinclude !== null,
