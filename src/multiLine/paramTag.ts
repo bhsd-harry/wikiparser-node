@@ -41,7 +41,7 @@ export abstract class ParamTagToken extends MultiLineToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const rule = 'no-ignored',
 				{lintConfig} = Parser,
 				s = lintConfig.getSeverity(rule, this.name);

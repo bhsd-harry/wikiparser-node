@@ -25,8 +25,7 @@ export interface AttributesParentBase {
  * @param i AttributesToken子节点的位置
  */
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T): T => {
-	LINT: { // eslint-disable-line no-unused-labels
-		/* eslint-disable jsdoc/require-jsdoc */
+	LINT: {
 		abstract class AttributesParent extends constructor implements AttributesParentBase {
 			/** AttributesToken子节点 */
 			#getAttributesChild(): AttributesToken {
@@ -34,14 +33,13 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			}
 
 			hasAttr(key: string): boolean {
-				LSP: return this.#getAttributesChild().hasAttr(key); // eslint-disable-line no-unused-labels
+				LSP: return this.#getAttributesChild().hasAttr(key);
 			}
 
 			getAttr(key: string): string | true | undefined {
 				return this.#getAttributesChild().getAttr(key);
 			}
 		}
-		/* eslint-enable jsdoc/require-jsdoc */
 		mixin(AttributesParent, constructor);
 		return AttributesParent;
 	}

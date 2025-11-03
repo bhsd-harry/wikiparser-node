@@ -11,7 +11,7 @@ import type {SimplePage} from '@bhsd/test-util';
 /* NOT FOR BROWSER ONLY */
 
 import inspector from 'inspector';
-import {register} from 'module'; // eslint-disable-line n/no-unsupported-features/node-builtins
+import {register} from 'module';
 import {pathToFileURL} from 'url';
 import path from 'path';
 import lsp from './lsp';

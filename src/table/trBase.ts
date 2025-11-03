@@ -24,7 +24,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				inter = this.childNodes.find(({type}) => type === 'table-inter');
 			if (!inter) {
@@ -50,7 +50,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * 获取行数
 	 */
 	getRowCount(): number {
-		LINT: return Number(this.childNodes.some( // eslint-disable-line no-unused-labels
+		LINT: return Number(this.childNodes.some(
 			child => child instanceof TdToken
 				&& child.isIndependent()
 				&& !child.firstChild.text().endsWith('+'),

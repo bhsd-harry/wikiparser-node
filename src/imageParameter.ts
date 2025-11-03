@@ -46,7 +46,6 @@ const getUrl = (link: string): string => {
 	return new URL(link).href;
 };
 
-/* eslint-disable jsdoc/check-param-names */
 /**
  * 检查图片参数是否合法
  * @param key 参数名
@@ -55,8 +54,8 @@ const getUrl = (link: string): string => {
  * @param halfParsed
  * @param ext 文件扩展名
  */
-function validate(key: 'link', val: string, config: Config, halfParsed?: boolean): string | Title;
 function validate(key: string, val: string, config: Config, halfParsed: boolean, ext: string | undefined): boolean;
+function validate(key: 'link', val: string, config: Config, halfParsed?: boolean): string | Title;
 function validate(
 	key: string,
 	val: string,
@@ -98,7 +97,6 @@ function validate(
 			return Boolean(value) && !isNaN(value as unknown as number);
 	}
 }
-/* eslint-enable jsdoc/check-param-names */
 
 /**
  * image parameter
@@ -124,14 +122,14 @@ export abstract class ImageParameterToken extends Token {
 	 * @since v1.29.0
 	 */
 	get thumb(): Title | undefined {
-		LINT: return this.name === 'manualthumb' // eslint-disable-line no-unused-labels
+		LINT: return this.name === 'manualthumb'
 			? this.normalizeTitle(`File:${super.text().trim()}`, 6, {page: ''})
 			: undefined;
 	}
 
 	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			if (this.name !== 'link') {
 				return undefined;
 			}
@@ -227,7 +225,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
@@ -287,7 +285,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** 是否是不可变参数 */
 	#isVoid(): string | boolean {
-		LINT: return this.#syntax && !this.#syntax.includes('$1'); // eslint-disable-line no-unused-labels
+		LINT: return this.#syntax && !this.#syntax.includes('$1');
 	}
 
 	/**
@@ -296,7 +294,6 @@ export abstract class ImageParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string | true {
-		// eslint-disable-next-line no-unused-labels
 		LINT: return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
 }

@@ -67,7 +67,7 @@ export abstract class TableBaseToken extends Token {
 	}
 
 	override escape(): void {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			for (const child of this.childNodes) {
 				if (child instanceof SyntaxToken) {
 					escapeTable(child);

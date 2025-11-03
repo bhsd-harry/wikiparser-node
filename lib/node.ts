@@ -102,7 +102,7 @@ export abstract class AstNode implements AstNodeBase {
 				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
 				break;
 			case 'aIndex':
-				LINT: { // eslint-disable-line no-unused-labels
+				LINT: {
 					this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
 				}
 				break;
@@ -137,7 +137,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param left column number / 列号
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			if (top < 0 || left < 0) {
 				return undefined;
 			}
@@ -158,7 +158,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param index character index / 字符位置
 	 */
 	posFromIndex(index: number): Position | undefined {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {length} = String(this);
 			index += index < 0 ? length : 0;
 			if (index >= 0 && index <= length) {
@@ -172,7 +172,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	getDimension(): Dimension {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const lines = this.getLines(),
 				last = lines[lines.length - 1]!;
 			return {height: lines.length, width: last[2] - last[1]};
@@ -240,7 +240,6 @@ export abstract class AstNode implements AstNodeBase {
 	 * 获取当前节点的行列位置和大小
 	 */
 	getBoundingClientRect(): Dimension & Position {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return {
 			...this.getDimension(),
 			...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!,
@@ -266,7 +265,7 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	@cached(false)
 	getLines(): [string, number, number][] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const results: [string, number, number][] = [];
 			let start = 0;
 			for (const line of String(this).split('\n')) {

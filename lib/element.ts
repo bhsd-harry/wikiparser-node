@@ -77,7 +77,6 @@ export abstract class AstElement extends AstNode {
 	 * @param i position of the child node / 移除位置
 	 */
 	removeAt(i: number): AstNodes {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return setChildNodes(this as AstElement as Token, i, 1)[0]!;
 	}
 
@@ -130,7 +129,7 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			for (let i = this.length - 1; i >= 0; i--) {
 				this.removeAt(i);
 			}
@@ -165,7 +164,7 @@ export abstract class AstElement extends AstNode {
 	 * @param index character index / 位置
 	 */
 	caretPositionFromIndex(index?: number): CaretPosition | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			if (index === undefined) {
 				return undefined;
 			}
@@ -218,7 +217,7 @@ export abstract class AstElement extends AstNode {
 	 * @param index character index / 位置
 	 */
 	elementFromIndex(index?: number): Token | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const node = this.caretPositionFromIndex(index)?.offsetNode;
 			return node?.type === 'text' ? node.parentNode : node;
 		}
@@ -232,13 +231,12 @@ export abstract class AstElement extends AstNode {
 	 * @param y line number / 行数
 	 */
 	elementFromPoint(x: number, y: number): Token | undefined {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
 	}
 
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors: LintError[] = [];
 			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 				const child = this.childNodes[i]!;

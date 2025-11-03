@@ -44,7 +44,6 @@ export abstract class LinkBaseToken extends Token {
 
 	/** full link / 完整链接 */
 	get link(): string | Title {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return this.#title;
 	}
 
@@ -113,7 +112,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				{childNodes: [target, linkText], type} = this,
 				{encoded, fragment} = this.#title,

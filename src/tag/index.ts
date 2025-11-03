@@ -66,7 +66,7 @@ export abstract class TagToken extends Token {
 	 * 搜索匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		LINT: return cache<this | undefined>( // eslint-disable-line no-unused-labels
+		LINT: return cache<this | undefined>(
 			this.#match,
 			() => {
 				const {

@@ -38,7 +38,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 * @since v1.16.5
 	 */
 	get closing(): Partial<Font> {
-		LINT: return { // eslint-disable-line no-unused-labels
+		LINT: return {
 			...this.bold ? {bold: this.#closing.bold} : undefined,
 			...this.italic ? {italic: this.#closing.italic} : undefined,
 		};
@@ -60,7 +60,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {previousSibling, bold, closing} = this,
 				previousData = previousSibling?.type === 'text' ? previousSibling.data : undefined,
 				errors: LintError[] = [],

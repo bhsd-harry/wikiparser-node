@@ -204,7 +204,7 @@ export class Title {
 	 * @since v1.10.0
 	 */
 	getUrl(articlePath?: string): string {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			if (typeof articlePath === 'string') {
 				this.#path = articlePath;
 				/* istanbul ignore if */

@@ -6,15 +6,11 @@ import {mixin} from '../util/debug';
  * @param padding.length
  */
 export const padded = ({length}: string) => <S extends AstConstructor>(constructor: S): S => {
-	LINT: { // eslint-disable-line no-unused-labels
-		/* eslint-disable jsdoc/require-jsdoc */
-		abstract class PaddedToken extends constructor {
-			override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-				return key === 'padding' ? length as TokenAttribute<T> : super.getAttribute(key);
-			}
+	abstract class PaddedToken extends constructor {
+		override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+			return key === 'padding' ? length as TokenAttribute<T> : super.getAttribute(key);
 		}
-		/* eslint-enable jsdoc/require-jsdoc */
-		mixin(PaddedToken, constructor);
-		return PaddedToken;
 	}
+	mixin(PaddedToken, constructor);
+	return PaddedToken;
 };

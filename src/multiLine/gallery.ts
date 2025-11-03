@@ -61,7 +61,7 @@ export abstract class GalleryToken extends MultiLineToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {top, left} = this.getRootNode().posFromIndex(start)!,
 				errors: LintError[] = [],
 				rule = 'no-ignored',
