@@ -35,8 +35,7 @@ export interface ElementLike {
 
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
-	LINT: { // eslint-disable-line no-unused-labels
-		/* eslint-disable jsdoc/require-jsdoc */
+	LINT: {
 		abstract class ElementLike extends constructor implements ElementLike {
 			#getCondition<T>(selector: string): TokenPredicate<T> {
 				return getCondition<T>(
@@ -90,14 +89,13 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			}
 
 			escape(): void {
-				LSP: { // eslint-disable-line no-unused-labels
+				LSP: {
 					for (const child of this.childNodes) {
 						child.escape();
 					}
 				}
 			}
 		}
-		/* eslint-enable jsdoc/require-jsdoc */
 		return ElementLike;
 	}
 };

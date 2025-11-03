@@ -484,7 +484,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): ExtendedLintError {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {lintConfig} = Parser,
 				{computeEditInfo, fix: needFix, ignoreDisables, configurationComment} = lintConfig;
 			let errors = super.lint(start, re);

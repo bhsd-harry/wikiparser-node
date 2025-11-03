@@ -27,7 +27,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			if (this.closed) {
 				return [];
 			}

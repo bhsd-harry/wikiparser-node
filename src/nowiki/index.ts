@@ -34,7 +34,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {
 					name,
 				} = this,

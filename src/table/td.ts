@@ -44,12 +44,12 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** rowspan */
 	get rowspan(): number {
-		LINT: return this.getAttr('rowspan'); // eslint-disable-line no-unused-labels
+		LINT: return this.getAttr('rowspan');
 	}
 
 	/** colspan */
 	get colspan(): number {
-		LINT: return this.getAttr('colspan'); // eslint-disable-line no-unused-labels
+		LINT: return this.getAttr('colspan');
 	}
 
 	/** cell type / 单元格类型 */
@@ -140,7 +140,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1)),
 				rule = 'pipe-like',
@@ -186,7 +186,7 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const value = super.getAttr(key);
 			return (
 				key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value
@@ -195,7 +195,7 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	override escape(): void {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			super.escape();
 			if (this.childNodes[1].toString()) {
 				this.#innerSyntax ||= '{{!}}';
@@ -214,7 +214,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start),
 				{rowspan, colspan} = this;
 			Object.assign(json, {subtype: this.subtype}, rowspan !== 1 && {rowspan}, colspan !== 1 && {colspan});

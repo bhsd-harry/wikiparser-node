@@ -45,7 +45,6 @@ export abstract class LinkBaseToken extends Token {
 
 	/** full link / 完整链接 */
 	get link(): string | Title {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return this.#title;
 	}
 
@@ -53,7 +52,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** 片段标识符 */
 	get fragment(): string | undefined {
-		LSP: return this.#title.fragment; // eslint-disable-line no-unused-labels
+		LSP: return this.#title.fragment;
 	}
 
 	/* PRINT ONLY END */
@@ -123,7 +122,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				{childNodes: [target, linkText], type} = this,
 				{encoded, fragment} = this.#title,
@@ -191,7 +190,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start),
 				{type, fragment} = this;
 			if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {

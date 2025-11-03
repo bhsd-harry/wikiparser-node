@@ -44,7 +44,7 @@ export abstract class ParameterToken extends Token {
 
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			try {
 				return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
 			} catch {
@@ -108,7 +108,7 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rule = 'unescaped',
 				{lintConfig} = Parser,
@@ -142,7 +142,7 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
 			return json;

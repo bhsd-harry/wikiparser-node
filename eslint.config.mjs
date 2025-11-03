@@ -5,7 +5,11 @@ import {
 	extend,
 } from '@bhsd/code-standard';
 
-jsDoc.rules['jsdoc/require-jsdoc'][1].require = {
+const [
+	,
+	options,
+] = jsDoc.rules['jsdoc/require-jsdoc'];
+options.require = {
 	ArrowFunctionExpression: true,
 	ClassDeclaration: true,
 	FunctionDeclaration: false,
@@ -67,6 +71,7 @@ export default extend(
 					builtinGlobals: false,
 				},
 			],
+			'no-unused-labels': 0,
 			'prefer-object-has-own': 0,
 			'@stylistic/max-len': [
 				2,
@@ -119,7 +124,10 @@ export default extend(
 				{
 					ignoreOverrideMethods: true,
 					exceptMethods: [
+						'escape',
 						'getGaps',
+						'provideColorPresentations',
+						'provideCodeAction',
 					],
 				},
 			],
@@ -145,10 +153,25 @@ export default extend(
 	},
 	{
 		files: [
+			'mixin/*.ts',
+		],
+		rules: {
+			'jsdoc/require-jsdoc': 0,
+		},
+	},
+	{
+		files: [
 			'test/*.ts',
 		],
 		rules: {
 			'n/no-missing-require': 0,
+			'n/no-unsupported-features/node-builtins': [
+				2,
+				{
+					allowExperimental: true,
+					version: '>=24.0.0',
+				},
+			],
 		},
 	},
 	{

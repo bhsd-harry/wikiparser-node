@@ -3,14 +3,12 @@
  * @ignore
  */
 export const noEscape = <T extends AstConstructor>(constructor: T): T => {
-	LSP: { // eslint-disable-line no-unused-labels
-		/* eslint-disable jsdoc/require-jsdoc */
+	LSP: {
 		abstract class NoEscapeToken extends constructor {
-			escape(): void { // eslint-disable-line @typescript-eslint/class-methods-use-this
+			escape(): void {
 				//
 			}
 		}
-		/* eslint-enable jsdoc/require-jsdoc */
 		return NoEscapeToken;
 	}
 };

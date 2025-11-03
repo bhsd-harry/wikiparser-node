@@ -121,7 +121,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rect = new BoundingRect(this, start),
 				{childNodes, image} = this,

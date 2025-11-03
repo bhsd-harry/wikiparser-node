@@ -496,7 +496,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * 颜色选择器
 	 * @param color color information / 颜色信息
 	 */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideColorPresentations(color: ColorInformation): ColorPresentation[] {
 		const {color: {red, green, blue, alpha}, range} = color,
 			rgb = [red, green, blue],

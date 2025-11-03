@@ -44,7 +44,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, false),
 				rule = 'no-ignored',
 				{lintConfig} = Parser,

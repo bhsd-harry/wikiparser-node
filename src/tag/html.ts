@@ -98,7 +98,7 @@ export abstract class HtmlToken extends TagToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				{name, parentNode, closing, selfClosing} = this,
 				rect = new BoundingRect(this, start),
@@ -220,7 +220,7 @@ export abstract class HtmlToken extends TagToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['selfClosing'] = this.#selfClosing;
 			return json;
