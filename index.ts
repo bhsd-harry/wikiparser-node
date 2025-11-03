@@ -337,7 +337,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
-					for (const k in config) {
+					for (const k of Object.keys(config)) {
 						if (k.startsWith('regex') || config[k as keyof Config] instanceof Set) {
 							delete config[k as keyof Config];
 						}
@@ -444,7 +444,7 @@ const def: PropertyDescriptorMap = {
 
 		'fetchConfig',
 	]);
-for (const key in Parser) {
+for (const key of Object.keys(Parser)) {
 	if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};
 	}

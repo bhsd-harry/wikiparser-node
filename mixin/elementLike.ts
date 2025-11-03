@@ -8,8 +8,6 @@ declare type ElementConstructor = abstract new (...args: any[]) => {
 };
 
 export interface ElementLike {
-	/** @private */
-	getElementBy<T>(condition: TokenPredicate<T>): T | undefined;
 
 	/**
 	 * Get the first descendant that matches the selector
@@ -18,9 +16,6 @@ export interface ElementLike {
 	 * @param selector selector / 选择器
 	 */
 	querySelector<T = Token>(selector: string): T | undefined;
-
-	/** @private */
-	getElementsBy<T>(condition: TokenPredicate<T>, descendants?: T[]): T[];
 
 	/**
 	 * Get all descendants that match the selector
