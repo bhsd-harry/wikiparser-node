@@ -105,8 +105,8 @@ const expand = (
 		if (!/\0\d+t\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = data.replace(/([^\x7F]?)\0(\d+)t\x7F/gu, (m, prev: string, i: number) => {
-			const target = accum[i] as ArgToken | TranscludeToken,
+		const expanded = data.replace(/([^\x7F]?)\0(\d+)t\x7F/gu, (m, prev: string, i: string) => {
+			const target = accum[i as unknown as number] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f, childNodes} = target,
 				isTemplate = type === 'template',
 				args = childNodes.slice(1) as ParameterToken[];
@@ -183,7 +183,7 @@ const expand = (
 					prev,
 				);
 			} else if (Parser.functionHooks.has(name)) {
-				return context === false ? m : Parser.functionHooks.get(name)!(target, context || undefined);
+				return context === false ? m : prev + Parser.functionHooks.get(name)!(target, context || undefined);
 			} else if (expandedMagicWords.has(name)) {
 				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now, config, args)}`;
 			} else if (!solvedMagicWords.has(name)) {

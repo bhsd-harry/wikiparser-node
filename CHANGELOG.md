@@ -1,3 +1,11 @@
+## v1.29.3
+
+*2025-11-04*
+
+**Fixed**
+
+- Expanding custom parser functions defined via [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook)
+
 ## v1.29.2
 
 *2025-10-30*
@@ -5,6 +13,10 @@
 **Added**
 
 - [`TranscludeToken.prototype.newAnonArg`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#newanonarg) and [`TranscludeToken.prototype.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#setvalue) now support an optional parameter to append the new parameter on a new line
+
+**Fixed**
+
+- Parsing empty `<translate></translate>` tag pairs
 
 ## v1.29.1
 
