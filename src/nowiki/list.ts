@@ -5,6 +5,9 @@ import {ListBaseToken} from './listBase';
 import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {syntax} from '../../mixin/syntax';
+import type {SyntaxBase} from '../../mixin/syntax';
+
+export interface ListToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 

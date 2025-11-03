@@ -9,6 +9,9 @@ import type {Token} from '../../internal';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
+import type {SyntaxBase} from '../../mixin/syntax';
+
+export interface DoubleUnderscoreToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 

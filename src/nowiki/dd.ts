@@ -4,6 +4,9 @@ import {ListBaseToken} from './listBase';
 
 import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
+import type {SyntaxBase} from '../../mixin/syntax';
+
+export interface DdToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 
