@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import {pathToFileURL} from 'url';
 import path from 'path';
 

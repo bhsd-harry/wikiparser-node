@@ -35,7 +35,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * @since v1.12.5
 	 */
 	get widths(): number {
-		LSP: return this.#getSize('widths'); // eslint-disable-line no-unused-labels
+		LSP: return this.#getSize('widths');
 	}
 
 	/**
@@ -45,7 +45,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * @since v1.12.5
 	 */
 	get heights(): number {
-		LSP: return this.#getSize('heights'); // eslint-disable-line no-unused-labels
+		LSP: return this.#getSize('heights');
 	}
 
 	/* PRINT ONLY END */
@@ -86,7 +86,7 @@ export abstract class GalleryToken extends MultiLineToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {top, left} = this.getRootNode().posFromIndex(start)!,
 				errors: LintError[] = [],
 				rule = 'no-ignored',
@@ -148,7 +148,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * @param key `widths` 或 `heights`
 	 */
 	#getSize(key: 'widths' | 'heights'): number {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const widths = this.parentNode?.getAttr(key),
 				mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
 			return mt && Number(mt) || 120;
@@ -157,7 +157,7 @@ export abstract class GalleryToken extends MultiLineToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			Object.assign(json, {widths: this.widths, heights: this.heights});
 			return json;

@@ -94,7 +94,7 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				{firstChild, level} = this,
 				innerStr = firstChild.toString(),
@@ -212,7 +212,7 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['level'] = this.level;
 			return json;

@@ -46,7 +46,6 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** language variant / 语言变体 */
 	get variant(): string {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return this.childNodes[this.length - 2]?.text().trim().toLowerCase() ?? '';
 	}
 
@@ -106,7 +105,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['variant'] = this.variant;
 			return json;

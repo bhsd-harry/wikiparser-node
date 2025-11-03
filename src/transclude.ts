@@ -54,7 +54,6 @@ export abstract class TranscludeToken extends Token {
 	 * @since v1.21.0
 	 */
 	get module(): string | undefined {
-		// eslint-disable-next-line no-unused-labels
 		LSP: return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
 	}
 
@@ -65,7 +64,7 @@ export abstract class TranscludeToken extends Token {
 	 * @since v1.21.2
 	 */
 	get function(): string | undefined {
-		LSP: return this.type === 'magic-word' && this.name === 'invoke' // eslint-disable-line no-unused-labels
+		LSP: return this.type === 'magic-word' && this.name === 'invoke'
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			? this.childNodes[2]?.text().trim()
 			: undefined;
@@ -311,7 +310,7 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re);
 			if (!this.isTemplate()) {
 				return errors;
@@ -453,7 +452,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取重名参数
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
 	}

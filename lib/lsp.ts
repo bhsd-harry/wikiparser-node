@@ -727,7 +727,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * 颜色选择器
 	 * @param color color information / 颜色信息
 	 */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideColorPresentations(color: ColorInformation): ColorPresentation[] {
 		const {color: {red, green, blue, alpha}, range} = color,
 			rgb = [red, green, blue],
@@ -1142,7 +1141,7 @@ export class LanguageService implements LanguageServiceBase {
 			cssDiagnostics =
 				await stylelint ?
 					await (async () => {
-						NPM: { // eslint-disable-line no-unused-labels
+						NPM: {
 							const tokens = this.findStyleTokens();
 							if (tokens.length === 0) {
 								return [];
@@ -1894,7 +1893,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * 提供快速修复建议
 	 * @param diagnostics grammar diagnostics / 语法诊断信息
 	 */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideCodeAction(diagnostics: DiagnosticBase[]): CodeAction[] {
 		const actionable = diagnostics.filter((diagnostic): diagnostic is Diagnostic => diagnostic.data),
 			fixable = actionable.filter(({source, data}) => source === 'WikiLint' && data.some(({fix}) => fix)),

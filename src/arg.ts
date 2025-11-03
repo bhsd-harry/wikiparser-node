@@ -35,7 +35,7 @@ export abstract class ArgToken extends Token {
 
 	/** default value / 预设值 */
 	get default(): string | false {
-		LSP: return this.childNodes[1]?.text() ?? false; // eslint-disable-line no-unused-labels
+		LSP: return this.childNodes[1]?.text() ?? false;
 	}
 
 	/* PRINT ONLY END */
@@ -74,20 +74,18 @@ export abstract class ArgToken extends Token {
 
 	/** 更新name */
 	#setName(): void {
-		// eslint-disable-next-line no-unused-labels
 		LSP: this.setAttribute('name', this.firstChild.text().trim());
 	}
 
 	/** @private */
 	override afterBuild(): void {
-		// eslint-disable-next-line no-unused-labels
 		LSP: this.#setName();
 		super.afterBuild();
 	}
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {childNodes: [argName, argDefault, ...rest]} = this;
 			argName.setAttribute('aIndex', start + 3);
 			const errors = argName.lint(start + 3, re);
@@ -139,7 +137,7 @@ export abstract class ArgToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['default'] = this.default;
 			return json;

@@ -59,7 +59,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** whether the table is closed / 表格是否闭合 */
 	get closed(): boolean {
-		LINT: return this.lastChild.is<SyntaxToken>('table-syntax'); // eslint-disable-line no-unused-labels
+		LINT: return this.lastChild.is<SyntaxToken>('table-syntax');
 	}
 
 	/**
@@ -73,7 +73,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rect = new BoundingRect(this, start),
 				rules = ['unclosed-table', 'table-layout'] as const,
@@ -144,7 +144,7 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	@cached(false)
 	getLayout(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const rows = this.getAllRows(),
 				{length} = rows,
 				layout = Layout.from(emptyArray(length, () => []));
@@ -187,7 +187,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取所有行
 	 */
 	getAllRows(): (TrToken | this)[] {
-		LINT: return [ // eslint-disable-line no-unused-labels
+		LINT: return [
 			...super.getRowCount() ? [this] : [],
 			...this.childNodes.slice(1)
 				.filter((child): child is TrToken => child.is<TrToken>('tr') && child.getRowCount() > 0),
@@ -202,7 +202,7 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const isRow = super.getRowCount();
 			if (
 				n === 0
@@ -230,7 +230,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['closed'] = this.closed;
 			return json;

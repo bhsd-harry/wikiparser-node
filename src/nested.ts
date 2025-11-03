@@ -87,7 +87,7 @@ export abstract class NestedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rule = 'no-ignored',
 				{lintConfig} = Parser,

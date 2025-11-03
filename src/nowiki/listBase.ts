@@ -14,12 +14,12 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	 * @since v1.16.5
 	 */
 	get indent(): number {
-		LSP: return this.innerText.split(':').length - 1; // eslint-disable-line no-unused-labels
+		LSP: return this.innerText.split(':').length - 1;
 	}
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start),
 				{indent} = this;
 			if (indent) {

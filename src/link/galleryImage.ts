@@ -70,7 +70,7 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rule = 'invalid-gallery',
 				{lintConfig} = Parser,

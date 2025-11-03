@@ -143,7 +143,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 let viewOnly = true;
 
 let lintConfig = (() => {
-		LINT: return new LintConfiguration(); // eslint-disable-line no-unused-labels
+		LINT: return new LintConfiguration();
 	})(),
 	i18n: Record<string, string> | undefined;
 
@@ -152,12 +152,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	get rules() {
-		LINT: return rules; // eslint-disable-line no-unused-labels
+		LINT: return rules;
 	},
 
 	/** @implements */
 	get i18n() {
-		LINT: return {...enMsg, ...i18n}; // eslint-disable-line no-unused-labels
+		LINT: return {...enMsg, ...i18n};
 	},
 
 	set i18n(data: Record<string, string> | string | undefined) {
@@ -168,17 +168,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else {
 			/* NOT FOR BROWSER ONLY END */
 
-			LINT: i18n = data; // eslint-disable-line no-unused-labels
+			LINT: i18n = data;
 		}
 	},
 
 	/** @implements */
 	get lintConfig(): LintConfiguration {
-		LINT: return lintConfig; // eslint-disable-line no-unused-labels
+		LINT: return lintConfig;
 	},
 
 	set lintConfig(config: LintConfig) {
-		LINT: lintConfig = new LintConfiguration(config); // eslint-disable-line no-unused-labels
+		LINT: lintConfig = new LintConfiguration(config);
 	},
 
 	/** @implements */
@@ -262,7 +262,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		LINT: return msg // eslint-disable-line no-unused-labels
+		LINT: return msg
 		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
@@ -319,7 +319,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		maxStage ??= MAX_STAGE;
 		config ??= this.getConfig();
 		let types: Stage[] | undefined;
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			if (typeof maxStage !== 'number') {
 				types = Array.isArray(maxStage) ? maxStage : [maxStage];
 				maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
@@ -365,7 +365,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	async partialParse(wikitext, watch, include, config = Parser.getConfig()) {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const {Token}: typeof import('./src/index') = require('./src/index');
 			const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
 				{running} = Shadow;
@@ -405,7 +405,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	createLanguageService(uri = {}) {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const mod: typeof import('./lib/lsp') = require('./lib/lsp');
 			const {LanguageService, tasks} = mod;
 			return tasks.get(uri) ?? new LanguageService(uri);
