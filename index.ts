@@ -299,7 +299,7 @@ const def: PropertyDescriptorMap = {
 		'parse',
 		'createLanguageService',
 	]);
-for (const key in Parser) {
+for (const key of Object.keys(Parser)) {
 	if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};
 	}
