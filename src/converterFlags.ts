@@ -140,7 +140,7 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const variantFlags = this.getVariantFlags(),
 				unknownFlags = this.getUnknownFlags(),
 				validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),

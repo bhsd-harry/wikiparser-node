@@ -72,7 +72,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {
 					name,
 
@@ -95,7 +95,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 			/* NOT FOR BROWSER ONLY */
 
-			NPM: { // eslint-disable-line no-unused-labels
+			NPM: {
 				rule = 'invalid-math';
 				s = lintConfig.getSeverity(rule);
 				if (s && texvcjs && mathTags.has(name)) {

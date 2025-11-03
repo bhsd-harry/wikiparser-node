@@ -94,7 +94,7 @@ export abstract class RedirectToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const index = start + this.#pre.length + this.firstChild.toString().length;
 			this.lastChild.setAttribute('aIndex', index);
 			return this.lastChild.lint(index);

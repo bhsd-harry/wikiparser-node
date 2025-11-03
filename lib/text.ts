@@ -169,7 +169,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp | false): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			if (errorRegex === false) {
 				return [];
 			}
@@ -414,7 +414,7 @@ export class AstText extends AstNode {
 	 * @throws `Error` 没有父节点
 	 */
 	splitText(offset: number): AstText {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			/* istanbul ignore if */
 			if (offset > this.length || offset < -this.length) {
 				throw new RangeError(`Wrong offset to split: ${offset}`);
@@ -439,7 +439,7 @@ export class AstText extends AstNode {
 	 * @throws `Error` 没有父节点
 	 */
 	escape(): void {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const {parentNode} = this;
 			/* istanbul ignore if */
 			if (!parentNode) {

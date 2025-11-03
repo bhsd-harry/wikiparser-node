@@ -71,7 +71,7 @@ export abstract class IncludeToken extends TagPairToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors: LintError[] = [],
 				{firstChild, closed, name} = this,
 				rect = new BoundingRect(this, start),

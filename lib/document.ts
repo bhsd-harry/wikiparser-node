@@ -35,7 +35,7 @@ declare interface Texvcjs {
 }
 
 export const texvcjs = (() => {
-	NPM: { // eslint-disable-line no-unused-labels
+	NPM: {
 		try {
 			return require('mathoid-texvcjs') as Texvcjs;
 		} catch {
@@ -101,7 +101,7 @@ export const htmlData = (() => {
 })();
 
 export const stylelint = (async () => {
-	NPM: { // eslint-disable-line no-unused-labels
+	NPM: {
 		try {
 			return (await import('stylelint')).default;
 		} catch {

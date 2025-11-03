@@ -161,7 +161,7 @@ export abstract class MagicLinkToken extends Token {
 		if (this.type === 'magic-link') {
 			const {link} = this;
 			if (link.startsWith('ISBN')) {
-				// eslint-disable-next-line unicorn/no-useless-spread, @typescript-eslint/no-misused-spread
+				// eslint-disable-next-line unicorn/no-useless-spread
 				const digits = [...link.slice(5)].map(s => s === 'X' ? 10 : Number(s));
 				return digits.length === 10
 					? digits.reduce((sum, d, i) => sum + d * (10 - i), 0) % 11 !== 0
@@ -176,7 +176,7 @@ export abstract class MagicLinkToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
@@ -237,7 +237,7 @@ export abstract class MagicLinkToken extends Token {
 	 * @param articlePath article path / 条目路径
 	 */
 	getUrl(articlePath?: string): URL | string {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const {type} = this;
 			let {link} = this;
 			if (type === 'magic-link') {

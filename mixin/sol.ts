@@ -7,7 +7,6 @@ import type {Token, ListRangeToken} from '../internal';
  * @param self 是否允许同类节点相邻
  */
 export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T): T => {
-	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class SolToken extends constructor {
 		#prependNewLine(): string {
 			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
@@ -38,7 +37,6 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 			return this.#prependNewLine() + super.text();
 		}
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(SolToken, constructor);
 	return SolToken;
 };

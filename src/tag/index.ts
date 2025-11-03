@@ -103,7 +103,7 @@ export abstract class TagToken extends Token {
 	 * 搜索匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		LINT: return cache<this | undefined>( // eslint-disable-line no-unused-labels
+		LINT: return cache<this | undefined>(
 			this.#match,
 			() => {
 				const {
@@ -184,7 +184,7 @@ export abstract class TagToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['closing'] = this.#closing;
 			return json;

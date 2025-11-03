@@ -7,7 +7,6 @@ import type {AstNodes, AstText} from '../internal';
  * @ignore
  */
 export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
-	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class FixedToken extends constructor {
 		get fixed(): true {
 			return true;
@@ -25,7 +24,6 @@ export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
 				: this.constructorError('cannot insert child nodes');
 		}
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(FixedToken, constructor);
 	return FixedToken;
 };

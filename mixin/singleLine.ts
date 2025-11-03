@@ -6,7 +6,6 @@ import {mixins} from '../util/constants';
  * @ignore
  */
 export const singleLine = <T extends AstConstructor>(constructor: T): T => {
-	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class SingleLineToken extends constructor {
 		override toString(skip?: boolean): string {
 			if (this.parentNode?.name === 'inputbox') {
@@ -25,7 +24,6 @@ export const singleLine = <T extends AstConstructor>(constructor: T): T => {
 			return super.text().replaceAll('\n', ' ');
 		}
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
 	mixin(SingleLineToken, constructor);
 	return SingleLineToken;
 };

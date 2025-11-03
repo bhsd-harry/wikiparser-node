@@ -5,13 +5,27 @@ import {
 } from '@bhsd/code-standard';
 import markdown from 'eslint-plugin-markdown';
 
-jsDoc.rules['jsdoc/require-jsdoc'][1].require = {
+const [
+	,
+	options,
+] = jsDoc.rules['jsdoc/require-jsdoc'];
+options.require = {
 	ArrowFunctionExpression: true,
 	ClassDeclaration: true,
 	FunctionDeclaration: false,
 	FunctionExpression: true,
 	MethodDefinition: false,
 };
+options.contexts = [
+	'FunctionDeclaration:not(TSDeclareFunction + FunctionDeclaration)',
+	'TSDeclareFunction:not(TSDeclareFunction + TSDeclareFunction)',
+	'MethodDefinition:not('
+	+ 'MethodDefinition:has(TSEmptyBodyFunctionExpression) + MethodDefinition,'
+	+ "[kind='set'],"
+	+ '[override=true]'
+	+ ')',
+];
+options.checkSetters = false;
 node.at(-1).settings.n.allowModules = [
 	'chalk',
 	'monaco-editor',
@@ -35,15 +49,8 @@ export default extend(
 	},
 	{
 		rules: {
+			'grouped-accessor-pairs': 0,
 			'no-control-regex': 0,
-			'no-bitwise': [
-				2,
-				{
-					allow: [
-						'<<',
-					],
-				},
-			],
 			'no-new': 0,
 			'no-restricted-globals': [
 				2,
@@ -69,6 +76,7 @@ export default extend(
 					builtinGlobals: false,
 				},
 			],
+			'no-unused-labels': 0,
 			'prefer-object-has-own': 0,
 			'@stylistic/max-len': [
 				2,
@@ -163,7 +171,10 @@ export default extend(
 						'createTextNode',
 						'createRange',
 						'fixed',
+						'escape',
 						'getGaps',
+						'provideColorPresentations',
+						'provideCodeAction',
 					],
 				},
 			],
@@ -193,10 +204,27 @@ export default extend(
 	},
 	{
 		files: [
+			'mixin/*.ts',
+			'test/hooks.ts',
+			'lib/attributes.ts',
+		],
+		rules: {
+			'jsdoc/require-jsdoc': 0,
+		},
+	},
+	{
+		files: [
 			'test/*.ts',
 		],
 		rules: {
 			'n/no-missing-require': 0,
+			'n/no-unsupported-features/node-builtins': [
+				2,
+				{
+					allowExperimental: true,
+					version: '>=24.0.0',
+				},
+			],
 		},
 	},
 	{

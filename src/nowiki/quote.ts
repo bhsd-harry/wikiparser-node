@@ -50,7 +50,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 * @since v1.16.5
 	 */
 	get closing(): Partial<Font> {
-		LINT: return { // eslint-disable-line no-unused-labels
+		LINT: return {
 			...this.bold ? {bold: this.#closing.bold} : undefined,
 			...this.italic ? {italic: this.#closing.italic} : undefined,
 		};
@@ -80,7 +80,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const {previousSibling, bold, closing} = this,
 				previousData = previousSibling?.type === 'text' ? previousSibling.data : undefined,
 				errors: LintError[] = [],
@@ -127,7 +127,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			Object.assign(json, {bold: this.bold, italic: this.italic});
 			return json;

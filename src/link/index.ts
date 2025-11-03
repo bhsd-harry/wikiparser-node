@@ -36,7 +36,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** link text / 链接显示文字 */
 	get innerText(): string {
-		LINT: return this.length > 1 // eslint-disable-line no-unused-labels
+		LINT: return this.length > 1
 			? this.lastChild.text()
 			: rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
 	}
@@ -63,7 +63,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				rule = 'nested-link',
 				{lintConfig} = Parser,

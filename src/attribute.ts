@@ -126,7 +126,7 @@ export abstract class AttributeToken extends Token {
 
 	/** whether the quotes are balanced / 引号是否匹配 */
 	get balanced(): boolean {
-		LINT: return !this.#equal || this.#quotes[0] === this.#quotes[1]; // eslint-disable-line no-unused-labels
+		LINT: return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
 
 	/* NOT FOR BROWSER */
@@ -275,7 +275,7 @@ export abstract class AttributeToken extends Token {
 		let rule: LintError.Rule = 'illegal-attr',
 			lintConfig: LintConfiguration,
 			computeEditInfo: boolean | undefined;
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			({lintConfig} = Parser);
 			({computeEditInfo} = lintConfig);
 		}
@@ -300,7 +300,7 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			LINT: { // eslint-disable-line no-unused-labels
+			LINT: {
 				const s = lintConfig.getSeverity(rule, 'unknown');
 				if (s) {
 					const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
@@ -319,7 +319,7 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			LINT: { // eslint-disable-line no-unused-labels
+			LINT: {
 				rule = 'insecure-style';
 				const s = lintConfig.getSeverity(rule);
 				return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
@@ -333,7 +333,7 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			LINT: { // eslint-disable-line no-unused-labels
+			LINT: {
 				const s = lintConfig.getSeverity(rule, 'tabindex');
 				if (s) {
 					const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
@@ -363,7 +363,7 @@ export abstract class AttributeToken extends Token {
 
 			/* PRINT ONLY END */
 
-			LINT: { // eslint-disable-line no-unused-labels
+			LINT: {
 				const s = lintConfig.getSeverity(rule, 'value');
 				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
 			}
@@ -379,7 +379,7 @@ export abstract class AttributeToken extends Token {
 
 				/* PRINT ONLY END */
 
-				LINT: { // eslint-disable-line no-unused-labels
+				LINT: {
 					const s = lintConfig.getSeverity(rule, 'value');
 					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
 				}
@@ -390,7 +390,7 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: { // eslint-disable-line no-unused-labels
+		LINT: {
 			const errors = super.lint(start, re),
 				{balanced, firstChild, lastChild, name, tag} = this,
 				rect = new BoundingRect(this, start),
@@ -465,7 +465,7 @@ export abstract class AttributeToken extends Token {
 	}
 
 	override escape(): void {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			if (this.type !== 'ext-attr') {
 				this.#equal = '{{=}}';
 				this.lastChild.escape();
@@ -488,7 +488,7 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			const json = super.json(undefined, start);
 			json['tag'] = this.tag;
 			return json;

@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import {classes} from '../util/constants';
 import type {TokenTypes} from '../base';
 import type {Title} from '../lib/title';

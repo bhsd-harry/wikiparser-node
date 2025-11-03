@@ -114,7 +114,7 @@ export class Title {
 	}
 
 	/** @throws `RangeError` undefined namespace */
-	set ns(ns) { // eslint-disable-line grouped-accessor-pairs
+	set ns(ns) {
 		/* istanbul ignore if */
 		if (!(this.ns in this.#namespaces)) {
 			throw new RangeError('Undefined namespace!');
@@ -122,7 +122,7 @@ export class Title {
 		this.#ns = Number(ns);
 	}
 
-	set fragment(fragment) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
+	set fragment(fragment) {
 		if (fragment === undefined) {
 			this.#fragment = undefined;
 		} else {
@@ -329,7 +329,7 @@ export class Title {
 	 * @since v1.10.0
 	 */
 	getUrl(articlePath?: string): string {
-		LSP: { // eslint-disable-line no-unused-labels
+		LSP: {
 			if (typeof articlePath === 'string') {
 				this.#path = articlePath;
 				/* istanbul ignore if */
