@@ -26,6 +26,7 @@ import {getId} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import {cached} from '../mixin/cached';
+import type {AstRange} from '../lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -337,6 +338,31 @@ export abstract class HeadingToken extends Token {
 		return `<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${
 			firstChild.toHtmlInternal().trim()
 		}</h${level}></div>`;
+	}
+
+	/**
+	 * Get the section led by this heading
+	 *
+	 * 获取由此标题引导的章节
+	 * @since v1.29.3
+	 */
+	override section(): AstRange | undefined {
+		const {parentNode, level} = this;
+		if (!parentNode) {
+			return undefined;
+		}
+		const range = this.createRange(),
+			{childNodes, length} = parentNode;
+		let i = childNodes.indexOf(this);
+		range.setStart(parentNode, i);
+		for (i++; i < length; i++) {
+			const sibling = childNodes[i]!;
+			if (sibling.is<this>('heading') && sibling.level <= level) {
+				break;
+			}
+		}
+		range.setEnd(parentNode, i);
+		return range;
 	}
 }
 

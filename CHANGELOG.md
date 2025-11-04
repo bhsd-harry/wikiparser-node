@@ -1,6 +1,10 @@
 ## v1.29.3
 
-*2025-11-04*
+*2025-11-05*
+
+**Added**
+
+- [`HeadingToken.prototype.section`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#section)
 
 **Fixed**
 
