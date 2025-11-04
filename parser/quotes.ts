@@ -58,25 +58,25 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 			arr[i - 1] += `'`;
 		}
 	}
-	let bold = true,
-		italic = true;
+	let bold: QuoteToken | false = false,
+		italic: QuoteToken | false = false;
 	for (let i = 1; i < length; i += 2) {
 		const n = arr[i]!.length,
 			isBold = n !== 2,
-			isItalic = n !== 3;
+			isItalic = n !== 3,
+			// @ts-expect-error abstract class
+			token: QuoteToken = new QuoteToken(
+				arr[i],
+				{bold: isBold && Boolean(bold), italic: isItalic && Boolean(italic)},
+				config,
+				accum,
+			);
 		if (isBold) {
-			bold = !bold;
+			bold = !bold && token;
 		}
 		if (isItalic) {
-			italic = !italic;
+			italic = !italic && token;
 		}
-		// @ts-expect-error abstract class
-		new QuoteToken(
-			arr[i],
-			{bold: isBold && bold, italic: isItalic && italic},
-			config,
-			accum,
-		);
 		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
 	return arr.join('');

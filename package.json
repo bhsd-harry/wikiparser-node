@@ -5,7 +5,8 @@
 	"keywords": [
 		"mediawiki",
 		"wikitext",
-		"parser"
+		"parser",
+		"browser"
 	],
 	"homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
 	"bugs": {
