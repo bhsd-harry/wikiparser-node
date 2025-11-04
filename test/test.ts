@@ -48,7 +48,10 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (/^\/\/ (?:config|i18n)(?!\S)| \(main\)| \(Node\.js\)/u.test(first)) {
+					if (
+						/ \((?:main|Node\.js)\)/u.test(first)
+						|| / \(self\)/u.test(first)
+					) {
 						it.skip(first.slice(3));
 					} else {
 						it(first.slice(3), async () => {
