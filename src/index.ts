@@ -902,7 +902,6 @@ export class Token extends AstElement {
 	 * @param options options / 选项
 	 * @param options.selfClosing whether to be a self-closing tag / 是否自封闭
 	 * @param options.closing whether to be a closing tag / 是否是闭合标签
-	 * @throws `RangeError` 非法的标签名
 	 */
 	createElement(
 		tagName: string,
@@ -993,7 +992,6 @@ export class Token extends AstElement {
 	 *
 	 * 获取指定的外层HTML标签
 	 * @param tag HTML tag name / HTML标签名
-	 * @throws `RangeError` 非法的标签或空标签
 	 */
 	findEnclosingHtml(tag?: string): AstRange | undefined {
 		require('../addon/token');

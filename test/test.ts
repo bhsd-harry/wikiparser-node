@@ -12,7 +12,8 @@ import type {LintConfiguration} from '../lib/lintConfig';
 
 import type {Token} from '../internal';
 
-if (process.env['CLONENODE']) {
+const clone = process.env['CLONENODE'];
+if (clone) {
 	const parse = Parser.parse.bind(Parser);
 	Parser.parse = /** @implements */ (...args: [string]): Token => parse(...args).cloneNode();
 }
@@ -66,7 +67,11 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (/ \(browser\)/u.test(first)) {
+					if (
+						/ \(browser\)/u.test(first)
+						|| / \(self\)/u.test(first)
+						&& clone
+					) {
 						it.skip(first.slice(3));
 					} else {
 						it(first.slice(3), async () => {

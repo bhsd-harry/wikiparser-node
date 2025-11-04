@@ -591,7 +591,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param inner inner wikitext / 内部wikitext
 	 * @param subtype type of the cell / 单元格类型
 	 * @param attr cell attribute / 单元格属性
-	 * @throws `RangeError` 列号过大
 	 */
 	insertTableCol(x: number, inner: string | Token, subtype?: TdSubtypes, attr?: TdAttrs): void {
 		require('../../addon/table');
@@ -626,7 +625,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * 合并单元格
 	 * @param xlim column range / 列范围
 	 * @param ylim row range / 行范围
-	 * @throws `RangeError` 待合并区域与外侧区域有重叠
 	 */
 	mergeCells(xlim: readonly [number, number], ylim: readonly [number, number]): TdToken {
 		require('../../addon/table');
@@ -706,7 +704,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * 移动表格行
 	 * @param y row number / 行号
 	 * @param before new position / 新位置
-	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowBefore(y: number, before: number): TrToken {
 		require('../../addon/table');
@@ -719,7 +716,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * 移动表格行
 	 * @param y row number / 行号
 	 * @param after new position / 新位置
-	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowAfter(y: number, after: number): TrToken {
 		require('../../addon/table');

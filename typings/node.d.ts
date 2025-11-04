@@ -4,6 +4,10 @@ import type {Title} from '../lib/title';
 import type {
 	AstNodes,
 	Token,
+
+	/* NOT FOR BROWSER */
+
+	QuoteToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -30,6 +34,7 @@ declare global {
 		T extends 'keys' ? Set<string> :
 		T extends 'protectedChildren' ? Ranges :
 		T extends 'acceptable' ? WikiParserAcceptable | undefined :
+		T extends 'bold' | 'italic' ? QuoteToken :
 
 		/* NOT FOR BROWSER END */
 

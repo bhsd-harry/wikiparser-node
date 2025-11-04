@@ -16,6 +16,7 @@ import {classes} from '../../util/constants';
 import {Shadow} from '../../util/debug';
 import {syntax} from '../../mixin/syntax';
 import {cached} from '../../mixin/cached';
+import type {AstRange} from '../../lib/range';
 import type {SyntaxBase} from '../../mixin/syntax';
 
 export interface QuoteToken extends SyntaxBase {}
@@ -30,6 +31,12 @@ export interface QuoteToken extends SyntaxBase {}
 @syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
 	#closing: Font;
+
+	/* NOT FOR BROWSER */
+
+	#match: {bold?: QuoteToken, italic?: QuoteToken} = {};
+
+	/* NOT FOR BROWSER END */
 
 	override get type(): 'quote' {
 		return 'quote';
@@ -143,12 +150,69 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		);
 	}
 
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
+		if (key === 'bold') {
+			this.#match.bold = value as QuoteToken;
+		} else if (key === 'italic') {
+			this.#match.italic = value as QuoteToken;
+		} else {
+			super.setAttribute(key, value);
+		}
+	}
+
 	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
 		const {closing: {bold, italic}} = this;
 		return (bold ? '</b>' : '') + (italic ? '</i>' : '')
 			+ (italic === false ? '<i>' : '') + (bold === false ? '<b>' : '');
+	}
+
+	/**
+	 * Find the matching apostrophes
+	 *
+	 * 搜索匹配的直引号
+	 * @since v1.29.3
+	 * @param type type of apostrophes to match / 匹配的直引号类型
+	 * @throws `RangeError` ambiguous or wrong apostrophe type
+	 */
+	findMatchingQuote(type?: 'bold' | 'italic'): this | undefined {
+		if (type) {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (type !== 'bold' && type !== 'italic') {
+				this.typeError('findMatchingQuote', "'bold'", "'italic'");
+			} else if (!this[type]) {
+				throw new RangeError(`Not ${type} apostrophes!`);
+			}
+		} else {
+			const {bold, italic} = this;
+			if (bold && italic) {
+				throw new RangeError('Ambiguous apostrophe type to match!');
+			}
+			type = bold ? 'bold' : 'italic';
+		}
+		return this.#match[type] as this | undefined;
+	}
+
+	/**
+	 * Try to get the range of bold/italic text
+	 *
+	 * 尝试获取粗体/斜体文本范围
+	 * @param type type of apostrophes / 直引号类型
+	 */
+	getRange(type?: 'bold' | 'italic'): AstRange | undefined {
+		const matched = this.findMatchingQuote(type),
+			{parentNode} = this;
+		if (matched && parentNode && matched.parentNode === parentNode) {
+			const range = this.createRange(),
+				{childNodes} = parentNode,
+				i = childNodes.indexOf(this),
+				j = childNodes.indexOf(matched);
+			range.setStart(parentNode, Math.min(i, j) + 1);
+			range.setEnd(parentNode, Math.max(i, j));
+			return range;
+		}
+		return undefined;
 	}
 }
 

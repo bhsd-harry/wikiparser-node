@@ -135,8 +135,6 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @override
 	 * @param child node to be inserted / 待插入的子节点
 	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 不可插入多余子节点
-	 * @throws `TypeError` 不可插入文本节点
 	 */
 	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
 		if (

@@ -5,6 +5,7 @@
 **Added**
 
 - [`HeadingToken.prototype.section`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#section)
+- [`QuoteToken.prototype.findMatchingQuote`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#findmatchingquote) and [`QuoteToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#getrange)
 
 **Fixed**
 

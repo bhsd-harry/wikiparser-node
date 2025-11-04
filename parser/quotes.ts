@@ -64,35 +64,53 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 			arr[i - 1] += `'`;
 		}
 	}
-	let bold = true,
-		italic = true;
+	let bold: QuoteToken | false = false,
+		italic: QuoteToken | false = false;
 	for (let i = 1; i < length; i += 2) {
 		const n = arr[i]!.length,
 			isBold = n !== 2,
-			isItalic = n !== 3;
+			isItalic = n !== 3,
+			// @ts-expect-error abstract class
+			token: QuoteToken = new QuoteToken(
+				arr[i],
+				{bold: isBold && Boolean(bold), italic: isItalic && Boolean(italic)},
+				config,
+				accum,
+			);
 		if (isBold) {
-			bold = !bold;
+			/* NOT FOR BROWSER */
+
+			if (!tidy && bold) {
+				bold.setAttribute('bold', token);
+				token.setAttribute('bold', bold);
+			}
+
+			/* NOT FOR BROWSER END */
+
+			bold = !bold && token;
 		}
 		if (isItalic) {
-			italic = !italic;
+			/* NOT FOR BROWSER */
+
+			if (!tidy && italic) {
+				italic.setAttribute('italic', token);
+				token.setAttribute('italic', italic);
+			}
+
+			/* NOT FOR BROWSER END */
+
+			italic = !italic && token;
 		}
-		// @ts-expect-error abstract class
-		new QuoteToken(
-			arr[i],
-			{bold: isBold && bold, italic: isItalic && italic},
-			config,
-			accum,
-		);
 		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
 
 	/* NOT FOR BROWSER */
 
-	if (tidy && (!bold || !italic)) {
+	if (tidy && (bold || italic)) {
 		// @ts-expect-error abstract class
 		new QuoteToken(
-			(bold ? '' : `'''`) + (italic ? '' : `''`),
-			{bold: !bold, italic: !italic},
+			(bold ? `'''` : '') + (italic ? `''` : ''),
+			{bold, italic},
 			config,
 			accum,
 		);

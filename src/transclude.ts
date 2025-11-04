@@ -843,7 +843,6 @@ export abstract class TranscludeToken extends Token {
 	 * @param key parameter name / 参数名
 	 * @param value parameter value / 参数值
 	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
-	 * @throws `Error` 仅用于模板
 	 */
 	setValue(key: string, value: string, newline?: boolean): void {
 		require('../addon/transclude');
@@ -870,7 +869,6 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 替换模板名
 	 * @param title template name / 模板名
-	 * @throws `Error` 仅用于模板
 	 */
 	replaceTemplate(title: string): void {
 		require('../addon/transclude');
@@ -882,7 +880,6 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 替换模块名
 	 * @param title module name / 模块名
-	 * @throws `Error` 仅用于模块
 	 */
 	replaceModule(title: string): void {
 		require('../addon/transclude');
@@ -894,8 +891,6 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 替换模块函数
 	 * @param func module function name / 模块函数名
-	 * @throws `Error` 仅用于模块
-	 * @throws `Error` 尚未指定模块名称
 	 */
 	replaceFunction(func: string): void {
 		require('../addon/transclude');
@@ -937,7 +932,6 @@ export abstract class TranscludeToken extends Token {
 	 * Escape tables inside the template
 	 *
 	 * 转义模板内的表格
-	 * @throws `Error` 转义失败
 	 */
 	escapeTables(): this {
 		require('../addon/transclude');
