@@ -33,9 +33,8 @@ import {cached} from '../mixin/cached';
 /* NOT FOR BROWSER END */
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
-	anySp = /* #__PURE__ */ (() => String.raw`[^\S\n]*`)(),
 	source =/* #__PURE__ */ (
-		() => String.raw`<${anySp}(?:/${anySp})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
+		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
 	)();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /https?[:/]\/+|(?:rfc|pmid)(?=[-:：]?\s*\d)|isbn(?=[-:：]?\s*(?:\d(?:\s*|-)){6})/giu;
@@ -44,7 +43,7 @@ const errorSyntax = /* #__PURE__ */ (() => new RegExp(
 	'giu',
 ))();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<[^\S\n]*(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
+/<(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
