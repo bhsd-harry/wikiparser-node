@@ -1,11 +1,19 @@
+import {generateForSelf, fixByRemove} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
+import type {
+	LintError,
+
+	/* NOT FOR BROWSER */
+
+	Config,
+} from '../../base';
 
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
 import {Shadow} from '../../util/debug';
-import type {Config} from '../../base';
 import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER END */
@@ -15,7 +23,7 @@ import type {Token} from '../../internal';
  *
  * `<noinclude>`或`</noinclude>`，不可进行任何更改
  */
-@hiddenToken()
+@hiddenToken(false)
 export abstract class NoincludeToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
 
@@ -40,6 +48,33 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 	/** @private */
 	override toString(skip?: boolean): string {
 		return skip ? '' : super.toString();
+	}
+
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		LINT: {
+			const {lintConfig} = Parser,
+				rule = 'no-ignored',
+				s = lintConfig.getSeverity(rule, 'include');
+			if (s) {
+				const {innerText} = this,
+					mt = /^<(noinclude|includeonly|onlyinclude)\s+(?:[^\s>/]|\/(?!>))[^>]*>$/iu.exec(innerText);
+				if (mt) {
+					const e = generateForSelf(this, {start}, rule, 'useless-attribute', s),
+						{computeEditInfo} = lintConfig,
+						before = mt[1]!.length + 1,
+						after = innerText.endsWith('/>') ? 2 : 1;
+					e.startIndex += before;
+					e.startCol += before;
+					e.endIndex -= after;
+					e.endCol -= after;
+					if (computeEditInfo) {
+						e.suggestions = [fixByRemove(e)];
+					}
+					return [e];
+				}
+			}
+			return [];
+		}
 	}
 
 	/* NOT FOR BROWSER */
