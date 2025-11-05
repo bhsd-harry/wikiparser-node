@@ -15,9 +15,8 @@ import type {
 } from '../internal';
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
-	anySp = /* #__PURE__ */ (() => String.raw`[^\S\n]*`)(),
 	source =/* #__PURE__ */ (
-		() => String.raw`<${anySp}(?:/${anySp})?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
+		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
 	)();
 const errorSyntax = /* #__PURE__ */ (() => new RegExp(
 	String.raw`${source}|https?[:/]/+|(?:rfc|pmid)(?=[-:：]?${sp}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
