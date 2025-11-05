@@ -60,7 +60,7 @@ export type ConfigData = Omit<Config, 'excludes'>;
 export type TokenTypes = 'root'
 	| 'plain'
 	| 'redirect'
-	| 'redirect-syntax'
+	| 'redirect-syntax' /** @todo syntax-like#redirect `/^#redirect\s*(?:\S\s*)?\[\[/imu` */
 	| 'redirect-target'
 	| 'translate'
 	| 'translate-attr'
@@ -91,7 +91,7 @@ export type TokenTypes = 'root'
 	| 'parameter'
 	| 'parameter-key'
 	| 'parameter-value'
-	| 'heading'
+	| 'heading' /** @todo syntax-like#heading `/^==.+==\s*\S\s*$/mu` */
 	| 'heading-title'
 	| 'heading-trail'
 	| 'html'
