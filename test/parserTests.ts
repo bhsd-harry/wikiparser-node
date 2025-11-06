@@ -33,10 +33,10 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title, wikitext, print, render} of tests) {
+	for (const {desc, title = 'Parser test', wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext, title!),
+				const root = Parser.parse(wikitext, title),
 					tidied = wikitext.replaceAll('\0', '');
 				try {
 					assert.strictEqual(
@@ -65,7 +65,7 @@ describe('Parser tests', () => {
 
 			if (process.env['LSP'] !== '0') {
 				it(`LSP: ${desc}`, async () => {
-					await lsp({title: title!, content: wikitext} as SimplePage, true, true);
+					await lsp({title, content: wikitext} as SimplePage, true, true);
 				});
 			}
 		}
