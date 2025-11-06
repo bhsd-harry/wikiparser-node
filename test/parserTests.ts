@@ -31,13 +31,13 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title, wikitext, print, render} of tests) {
+	for (const {desc, title = 'Parser test', wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			if (wikitext.includes('[[|')) {
 				it.skip(desc);
 			} else {
 				it(desc, () => {
-					const root = Parser.parse(wikitext, title!),
+					const root = Parser.parse(wikitext, title),
 						tidied = wikitext.replaceAll('\0', '');
 					try {
 						assert.strictEqual(
