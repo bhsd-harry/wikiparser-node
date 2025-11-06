@@ -91,7 +91,7 @@ export type TokenTypes = 'root'
 	| 'parameter'
 	| 'parameter-key'
 	| 'parameter-value'
-	| 'heading' /** @todo syntax-like#heading `/^==.+==\s*\S\s*$/mu` */
+	| 'heading'
 	| 'heading-title'
 	| 'heading-trail'
 	| 'html'

@@ -21,6 +21,7 @@
 	"frame": null,
 	"full-width-punctuation": "full-width punctuation",
 	"header-in-html": "section header in HTML tag attributes",
+	"header-like": "header-like syntax in plain text",
 	"horizontal-alignment": null,
 	"html-in-table": "HTML tag in table attributes",
 	"illegal-attribute-name": "invalid attribute name",
