@@ -49,7 +49,7 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title, wikitext, print, render} of tests) {
+	for (const {desc, title = 'Parser test', wikitext, print, render} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
 				/* NOT FOR BROWSER */
@@ -58,7 +58,7 @@ describe('Parser tests', () => {
 
 				/* NOT FOR BROWSER END */
 
-				const root = Parser.parse(wikitext, title!),
+				const root = Parser.parse(wikitext, title),
 					tidied = wikitext.replaceAll('\0', '');
 
 				/* NOT FOR BROWSER */
@@ -108,7 +108,7 @@ describe('Parser tests', () => {
 
 					/* NOT FOR BROWSER END */
 
-					await lsp({title: title!, content: wikitext} as SimplePage, true, true);
+					await lsp({title, content: wikitext} as SimplePage, true, true);
 				});
 			}
 		}

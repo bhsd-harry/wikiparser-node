@@ -108,7 +108,7 @@ for (const file of ['parserTests.txt', ...files]) {
 		}
 		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,
 			title = /\btitle=\s*\[\[([^\]]+)/u.exec(option)?.[1],
-			root = Parser.parse(wikitext, title!),
+			root = Parser.parse(wikitext, title ?? 'Parser test'),
 			t: Test = {desc, wikitext, title};
 		if (/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test) && (!test.includes('options') || re.test(test))) {
 			t.html = html!;

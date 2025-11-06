@@ -17,4 +17,6 @@ export const prepare = (Parser: ParserBase): void => {
 	Parser.now = new Date(Date.UTC(1970, 0, 1, 0, 2, 3));
 	Parser.templateDir = './test/templates';
 	Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
+	Parser.getConfig();
+	Object.assign(Parser.config, {testArticlePath: '//example.org/wiki/'});
 };

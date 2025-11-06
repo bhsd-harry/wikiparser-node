@@ -440,3 +440,46 @@ Japanese behavior switches
 ＿＿目次非表示＿＿
 !! html
 !! end
+
+!! test
+Basic {{localurl:}} test
+!! wikitext
+{{localurl: media:top%20level#fragment }}
+
+{{localurle: file:top%20level#fragment | action=edit&preload=
+
+" }}
+!! html
+<p>/wiki/File:Top_level
+</p><p>/index.php?title=File:Top_level&amp;action=edit&amp;preload=
+</p><p>&quot;
+</p>
+!! end
+
+!! test
+Basic {{fullurl:}} test
+!! wikitext
+{{fullurl: media:top%20level#fragment }}
+
+{{fullurle: file:top%20level#fragment | action=edit&preload=
+
+" }}
+!! html
+<p>//example.org/wiki/File:Top_level
+</p><p>//example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment
+</p>
+!! end
+
+!! test
+Basic {{canonicalurl:}} test
+!! wikitext
+{{canonicalurl: media:top%20level#fragment }}
+
+{{canonicalurle: file:top%20level#fragment | action=edit&preload=
+
+" }}
+!! html
+<p><a rel="nofollow" class="external free" href="https://example.org/wiki/File:Top_level">https://example.org/wiki/File:Top_level</a>
+</p><p><a rel="nofollow" class="external free" href="https://example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment">https://example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment</a>
+</p>
+!! end

@@ -102,17 +102,17 @@ const expand = (
 			continue;
 		}
 		const {data} = plain.firstChild!;
-		if (!/\0\d+t\x7F/u.test(data)) {
+		if (!/\0\d+[tm]\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = data.replace(/([^\x7F]?)\0(\d+)t\x7F/gu, (m, prev: string, i: string) => {
+		const expanded = data.replace(/([^\x7F]?)\0(\d+)[tm]\x7F/gu, (m, prev: string, i: string) => {
 			const target = accum[i as unknown as number] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f, childNodes} = target,
 				isTemplate = type === 'template',
 				args = childNodes.slice(1) as ParameterToken[];
 			if (type === 'arg') {
 				const arg = removeCommentLine(f.toString()).trim();
-				if (/\0\d+t\x7F/u.test(arg)) {
+				if (/\0\d+[tm]\x7F/u.test(arg)) {
 					return m;
 				} else if (!context || !context.hasArg(arg)) {
 					const effective = target.childNodes[1] ?? target;
@@ -183,9 +183,13 @@ const expand = (
 					prev,
 				);
 			} else if (Parser.functionHooks.has(name)) {
-				return context === false ? m : prev + Parser.functionHooks.get(name)!(target, context || undefined);
+				return context === false
+					? m
+					: implicitNewLine(Parser.functionHooks.get(name)!(target, context || undefined), prev);
 			} else if (expandedMagicWords.has(name)) {
-				return context === false ? m : `${prev}${expandMagicWord(name as MagicWord, now, config, args)}`;
+				return context === false
+					? m
+					: implicitNewLine(expandMagicWord(name as MagicWord, now, config, args), prev);
 			} else if (!solvedMagicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {
@@ -193,7 +197,7 @@ const expand = (
 			}
 			const var1 = decodeHtml(args[0]!.value),
 				var2 = decodeHtml(args[1]!.value),
-				known = !/\0\d+t\x7F/u.test(var1);
+				known = !/\0\d+[tm]\x7F/u.test(var1);
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
@@ -207,7 +211,7 @@ const expand = (
 					bool = valid && !interwiki;
 				}
 				return parseIf(accum, prev, args[bool ? 1 : 2]);
-			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {
+			} else if (known && name === 'ifeq' && !/\0\d+[tm]\x7F/u.test(var2)) {
 				return parseIf(accum, prev, args[cmp(var1, var2) ? 2 : 3]);
 			} else if (known && name === 'switch') {
 				let defaultVal = '',
@@ -222,7 +226,7 @@ const expand = (
 					defaultParam: Token | undefined;
 				for (; j < length; j++) {
 					const {anon, value, lastChild, name: option} = args[j - 1]!;
-					transclusion = /\0\d+t\x7F/u.test(anon ? value : option);
+					transclusion = /\0\d+[tm]\x7F/u.test(anon ? value : option);
 					if (anon) {
 						if (j === length - 1) { // 位于最后的匿名参数是默认值
 							defaultParam = lastChild;

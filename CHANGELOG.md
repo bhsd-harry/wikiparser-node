@@ -1,3 +1,11 @@
+## v1.30.1
+
+*2025-11-08*
+
+**Added**
+
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports more parser functions
+
 ## v1.30.0
 
 *2025-11-06*

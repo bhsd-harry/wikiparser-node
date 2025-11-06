@@ -1,3 +1,6 @@
+/* eslint-disable jsdoc/require-jsdoc */
+import {escape} from '../util/string';
+import Parser from '../index';
 import type {Config} from '../base';
 import type {ParameterToken} from '../internal';
 
@@ -31,6 +34,8 @@ const magicWords = [
 	'localdow',
 	'localtimestamp',
 	'articlepath',
+	'server',
+	'servername',
 	'revisionsize',
 	'numberofarticles',
 	'numberoffiles',
@@ -39,9 +44,109 @@ const magicWords = [
 	'numberofpages',
 	'numberofadmins',
 	'numberofedits',
+	'ns',
+	'nse',
+	'urlencode',
+	'lcfirst',
+	'ucfirst',
+	'lc',
+	'uc',
+	'localurl',
+	'localurle',
+	'fullurl',
+	'fullurle',
+	'canonicalurl',
+	'canonicalurle',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
+
+const parseUrl = ({articlePath = ''}: Config): [URL | null, number] => {
+		let offset = 0;
+		if (articlePath.startsWith('//')) {
+			offset = 6;
+			articlePath = `https:${articlePath}`;
+		}
+		return [URL.parse(articlePath), offset];
+	},
+	currentMonth1 = (now: Date): string => String(now.getUTCMonth() + 1),
+	currentDay = (now: Date): string => String(now.getUTCDate()),
+	currentHour = (now: Date): string => String(now.getUTCHours()).padStart(2, '0'),
+	currentWeek = (now: Date, firstDay: Date): string =>
+		String(Math.ceil((now.getTime() - firstDay.getTime()) / 1e3 / 60 / 60 / 24 / 7)),
+	localYear = (now: Date): string => String(now.getFullYear()),
+	localMonth1 = (now: Date): string => String(now.getMonth() + 1),
+	localMonth = (now: Date): string => localMonth1(now).padStart(2, '0'),
+	localDay = (now: Date): string => String(now.getDate()),
+	localDay2 = (now: Date): string => localDay(now).padStart(2, '0'),
+	localHour = (now: Date): string => String(now.getHours()).padStart(2, '0'),
+	localMinute = (now: Date): string => String(now.getMinutes()).padStart(2, '0'),
+	ns = ({nsid, namespaces}: Config, args: ParameterToken[]): string => {
+		let val: string | number | undefined = args[0]!.value;
+		if (Number.isNaN(Number(val))) {
+			val = nsid[val.toLowerCase().replaceAll('_', ' ')];
+		}
+		return val === undefined ? '' : namespaces[val] ?? '';
+	},
+	dict = {
+		20: '+',
+		21: '!',
+		24: '$',
+		28: '(',
+		29: ')',
+		'2A': '*',
+		'2C': ',',
+		'2F': '/',
+		'3B': ';',
+		40: '@',
+		'7E': '~',
+	},
+	wfUrlencode = (s: string): string => encodeURIComponent(s).replace(
+		/%(2[01489ACF]|3B|40|7E)/gu,
+		(_, p) => dict[p as keyof typeof dict],
+	),
+	urlFunction = (
+		config: Config & {testArticlePath?: string},
+		args: ParameterToken[],
+	): [string, string?, (URL | null)?] => {
+		const {value} = args[0]!,
+			query = args[1]?.value;
+		if (value.includes('\0')) {
+			return [''];
+		}
+		const title = Parser.normalizeTitle(
+			value,
+			0,
+			false,
+			config,
+			{halfParsed: true, decode: true, temporary: true},
+		);
+		if (!title.valid) {
+			return [''];
+		} else if (title.ns === -2) {
+			title.ns = 6;
+			title.fragment = undefined;
+		}
+		const s = title.getUrl(config.testArticlePath),
+			protocol = s.startsWith('//') ? 'https:' : '',
+			url = URL.parse(protocol + s);
+		if (url) {
+			url.search = query ? `?${query.replace(/\s/gu, '_')}` : '';
+		}
+		return [s, protocol, url];
+	},
+	localurl = (config: Config, args: ParameterToken[]): string => {
+		const [s,, url] = urlFunction(config, args);
+		return url ? url.pathname + url.search : s;
+	},
+	fullurl = (config: Config, args: ParameterToken[]): string => {
+		const [, protocol, url] = urlFunction(config, args);
+		return url?.href.slice(protocol!.length) ?? '';
+	},
+	canonicalurl = (config: Config, args: ParameterToken[]): string => {
+		const [,, url] = urlFunction(config, args);
+		return url?.href ?? '';
+	};
 
 /**
  * 展开魔术字
@@ -55,78 +160,74 @@ export const expandMagicWord = (
 	name: MagicWord,
 	now: Date,
 	config: Config,
-	args: ParameterToken[], // eslint-disable-line @typescript-eslint/no-unused-vars
-): string | number => {
+	args: ParameterToken[],
+): string => {
 	switch (name) {
 		case 'currentyear':
-			return now.getUTCFullYear();
+			return String(now.getUTCFullYear());
 		case 'currentmonth':
-			return String(now.getUTCMonth() + 1).padStart(2, '0');
+			return currentMonth1(now).padStart(2, '0');
 		case 'currentmonth1':
-			return now.getUTCMonth() + 1;
+			return currentMonth1(now);
 		case 'currentmonthname':
 		case 'currentmonthnamegen':
 			return now.toLocaleString('default', {month: 'long', timeZone: 'UTC'});
 		case 'currentmonthabbrev':
 			return now.toLocaleString('default', {month: 'short', timeZone: 'UTC'});
 		case 'currentday':
-			return now.getUTCDate();
+			return currentDay(now);
 		case 'currentday2':
-			return String(now.getUTCDate()).padStart(2, '0');
+			return currentDay(now).padStart(2, '0');
 		case 'currentdow':
-			return now.getUTCDay();
+			return String(now.getUTCDay());
 		case 'currentdayname':
 			return now.toLocaleString('default', {weekday: 'long', timeZone: 'UTC'});
 		case 'currenttime':
-			return `${String(now.getUTCHours()).padStart(2, '0')}:${
-				String(now.getUTCMinutes()).padStart(2, '0')
-			}`;
+			return `${currentHour(now)}:${String(now.getUTCMinutes()).padStart(2, '0')}`;
 		case 'currenthour':
-			return String(now.getUTCHours()).padStart(2, '0');
-		case 'currentweek': {
-			const firstDay = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
-			return Math.ceil((now.getTime() - firstDay.getTime()) / 1e3 / 60 / 60 / 24 / 7);
-		}
+			return currentHour(now);
+		case 'currentweek':
+			return currentWeek(now, new Date(Date.UTC(now.getUTCFullYear(), 0, 1)));
 		case 'currenttimestamp':
 			return now.toISOString().slice(0, 19).replace(/[-:T]/gu, '');
 		case 'localyear':
-			return now.getFullYear();
+			return localYear(now);
 		case 'localmonth':
-			return String(now.getMonth() + 1).padStart(2, '0');
+			return localMonth(now);
 		case 'localmonth1':
-			return now.getMonth() + 1;
+			return localMonth1(now);
 		case 'localmonthname':
 		case 'localmonthnamegen':
 			return now.toLocaleString('default', {month: 'long'});
 		case 'localmonthabbrev':
 			return now.toLocaleString('default', {month: 'short'});
 		case 'localday':
-			return now.getDate();
+			return localDay(now);
 		case 'localday2':
-			return String(now.getDate()).padStart(2, '0');
+			return localDay2(now);
 		case 'localdow':
-			return now.getDay();
+			return String(now.getDay());
 		case 'localdayname':
 			return now.toLocaleString('default', {weekday: 'long'});
 		case 'localtime':
-			return `${String(now.getHours()).padStart(2, '0')}:${
-				String(now.getMinutes()).padStart(2, '0')
-			}`;
+			return `${localHour(now)}:${localMinute(now)}`;
 		case 'localhour':
-			return String(now.getHours()).padStart(2, '0');
-		case 'localweek': {
-			const firstDay = new Date(now.getFullYear(), 0, 1);
-			return Math.ceil((now.getTime() - firstDay.getTime()) / 1e3 / 60 / 60 / 24 / 7);
-		}
+			return localHour(now);
+		case 'localweek':
+			return currentWeek(now, new Date(now.getFullYear(), 0, 1));
 		case 'localtimestamp':
-			return String(now.getFullYear())
-				+ String(now.getMonth() + 1).padStart(2, '0')
-				+ String(now.getDate()).padStart(2, '0')
-				+ String(now.getHours()).padStart(2, '0')
-				+ String(now.getMinutes()).padStart(2, '0')
+			return localYear(now) + localMonth(now) + localDay2(now) + localHour(now) + localMinute(now)
 				+ String(now.getSeconds()).padStart(2, '0');
 		case 'articlepath':
 			return config.articlePath ?? '';
+		case 'server': {
+			const [url, offset] = parseUrl(config);
+			return url?.origin.slice(offset) ?? '';
+		}
+		case 'servername': {
+			const [url, offset] = parseUrl(config);
+			return url?.hostname.slice(offset) ?? '';
+		}
 		case 'revisionsize':
 		case 'numberofarticles':
 		case 'numberoffiles':
@@ -135,7 +236,48 @@ export const expandMagicWord = (
 		case 'numberofpages':
 		case 'numberofadmins':
 		case 'numberofedits':
-			return 0;
+			return '0';
+		case 'ns':
+			return ns(config, args);
+		case 'nse':
+			return wfUrlencode(ns(config, args).replaceAll(' ', '_'));
+		case 'urlencode': {
+			const s = args[0]!.value.replace(/\0\d+.\x7F/gu, '');
+			switch (args[1]?.value) {
+				case 'WIKI':
+					return wfUrlencode(s.replaceAll(' ', '_'));
+				case 'PATH':
+					return encodeURIComponent(s);
+				default:
+					return encodeURIComponent(s).replaceAll('%20', '+');
+			}
+		}
+		case 'lcfirst': {
+			const {value} = args[0]!,
+				[first] = value;
+			return value && first!.toLowerCase() + value.slice(first!.length);
+		}
+		case 'ucfirst': {
+			const {value} = args[0]!,
+				[first] = value;
+			return value && first!.toUpperCase() + value.slice(first!.length);
+		}
+		case 'lc':
+			return args[0]!.value.toLowerCase();
+		case 'uc':
+			return args[0]!.value.toUpperCase();
+		case 'localurl':
+			return localurl(config, args);
+		case 'localurle':
+			return escape(localurl(config, args));
+		case 'fullurl':
+			return fullurl(config, args);
+		case 'fullurle':
+			return escape(fullurl(config, args));
+		case 'canonicalurl':
+			return canonicalurl(config, args);
+		case 'canonicalurle':
+			return escape(canonicalurl(config, args));
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}
