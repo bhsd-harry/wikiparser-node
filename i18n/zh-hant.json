@@ -22,6 +22,7 @@
 	"frame": "框架",
 	"full-width-punctuation": "全形標點",
 	"header-in-html": "HTML標籤屬性中的章節標題",
+	"header-like": "純文字中的疑似章節標題語法",
 	"horizontal-alignment": "水平對齊",
 	"html-in-table": "表格屬性裡的HTML標籤",
 	"illegal-attribute-name": "無效的屬性名稱",
