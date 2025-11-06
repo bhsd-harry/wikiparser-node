@@ -59,6 +59,7 @@
 	"prefix": "前缀",
 	"pipe-in-link": "链接文本中多余的\"|\"",
 	"pipe-in-table": "表格单元格中多余的\"|\"",
+	"redirect-like": "列表项中的疑似重定向语法",
 	"ref-in-link": "内链或外链中的<ref>",
 	"remove": "移除",
 	"template-in-link": "内链目标包含模板",
