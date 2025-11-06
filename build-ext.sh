@@ -12,4 +12,4 @@ do
 		printf '%s\n%s\n%s\n' '(() => {' "$(cat "$x")" '})();' > "$x"
 	fi
 done
-eslint --no-eslintrc -c .eslintrc.browser.cjs extensions/dist/
+eslint --no-config-lookup -c eslint.browser.mjs extensions/dist/
