@@ -3,7 +3,6 @@ import {
 	node,
 	extend,
 } from '@bhsd/code-standard';
-import markdown from 'eslint-plugin-markdown';
 
 const [
 	,
@@ -34,7 +33,6 @@ node.at(-1).settings.n.allowModules = [
 export default extend(
 	jsDoc,
 	...node,
-	...markdown.configs.recommended,
 	{
 		ignores: [
 			'.cache/',
@@ -44,7 +42,6 @@ export default extend(
 			'errors/',
 			'printed/',
 			'test/parserTests.json',
-			'**/*.md/*.ts',
 		],
 	},
 	{
@@ -113,47 +110,6 @@ export default extend(
 				2,
 				{
 					minItems: 1,
-				},
-			],
-		},
-	},
-	{
-		files: [
-			'**/*.md/*.js',
-		],
-		languageOptions: {
-			globals: {
-				assert: 'readonly',
-				Parser: 'readonly',
-				wikiparse: 'readonly',
-			},
-		},
-		rules: {
-			'class-methods-use-this': 0,
-			'no-undef': 2,
-			'no-unused-expressions': 2,
-			'no-unused-vars': [
-				2,
-				{
-					varsIgnorePattern: '^Parser$',
-				},
-			],
-			'no-var': 0,
-			'jsdoc/require-jsdoc': 0,
-			'n/no-missing-require': 0,
-			'@stylistic/max-len': [
-				2,
-				{
-					ignoreTemplateLiterals: true,
-					code: 80,
-				},
-			],
-			'@stylistic/quotes': [
-				2,
-				'single',
-				{
-					allowTemplateLiterals: 'always',
-					avoidEscape: true,
 				},
 			],
 		},
