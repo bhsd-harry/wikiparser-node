@@ -169,6 +169,13 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// td: 1,
 		},
 	],
+	'syntax-like': [
+		2,
+		{
+			// heading: 2,
+			// redirect: 2,
+		},
+	],
 	'table-layout': 1,
 	'tag-like': [
 		2,

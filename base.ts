@@ -69,7 +69,7 @@ export type ConfigData = Omit<Config, 'excludes'>;
 export type TokenTypes = 'root'
 	| 'plain'
 	| 'redirect'
-	| 'redirect-syntax' /** @todo syntax-like#redirect `/^#redirect\s*(?:\S\s*)?\[\[/imu` */
+	| 'redirect-syntax'
 	| 'redirect-target'
 	| 'translate'
 	| 'translate-attr'
@@ -203,6 +203,7 @@ export const rules = /* #__PURE__ */ (() => {
 		'obsolete-tag',
 		'parsing-order',
 		'pipe-like',
+		'syntax-like',
 		'table-layout',
 		'tag-like',
 		'unbalanced-header',
