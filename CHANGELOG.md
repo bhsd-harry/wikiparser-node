@@ -1,4 +1,4 @@
-## v1.29.3
+## v1.30.0
 
 *2025-11-06*
 
@@ -7,7 +7,7 @@
 - [`HeadingToken.prototype.section`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#section)
 - [`QuoteToken.prototype.findMatchingQuote`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#findmatchingquote) and [`QuoteToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#getrange)
 - [`NoincludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken-%28EN%29#lint) now reports useless attributes like [`IncludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken-%28EN%29#lint)
-- New category of linting errors: redirect-like text in list items
+- New category of linting errors: redirect-like text in list items and header-like text in plain text
 
 **Fixed**
 

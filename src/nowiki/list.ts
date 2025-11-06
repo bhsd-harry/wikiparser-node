@@ -40,7 +40,9 @@ export abstract class ListToken extends ListBaseToken {
 				if (nextSibling?.type === 'text' && linkTypes.has(nextSibling.nextSibling?.type)) {
 					/^redirect\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 					const re = new RegExp(
-						String.raw`^(?:${this.getAttribute('config').redirection.join('|')})\s*(?::\s*)?$`,
+						String.raw`^(?:${
+							this.getAttribute('config').redirection.join('|')
+						})\s*(?::\s*)?$`,
 						'iu',
 					);
 					if (re.test(`#${nextSibling.data}`)) {

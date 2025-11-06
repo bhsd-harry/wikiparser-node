@@ -34,7 +34,7 @@ import {cached} from '../mixin/cached';
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 	source =/* #__PURE__ */ (
-		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`
+		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:^|\n)={2,}`
 	)();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /https?[:/]\/+|(?:rfc|pmid)(?=[-:：]?\s*\d)|isbn(?=[-:：]?\s*(?:\d(?:\s*|-)){6})/giu;
@@ -43,7 +43,7 @@ const errorSyntax = /* #__PURE__ */ (() => new RegExp(
 	'giu',
 ))();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+/giu;
+/<(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:^|\n)={2,}/giu;
 const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
@@ -224,6 +224,9 @@ export class AstText extends AstNode {
 					const {length} = prefix;
 					index += length;
 					error = error.slice(length);
+				} else if (error.startsWith('\n==')) {
+					index++;
+					error = error.slice(1);
 				}
 				error = error.toLowerCase();
 				const [char] = error,
@@ -250,7 +253,9 @@ export class AstText extends AstNode {
 				let startIndex = start + index,
 					endIndex = startIndex + length,
 					rule: LintError.Rule | undefined,
-					severity: LintError.Severity | false;
+					severity: LintError.Severity | false,
+					endLine: number | undefined,
+					endCol: number | undefined;
 				const nextChar = rootStr[endIndex],
 					previousChar = rootStr[startIndex - 1],
 					leftBracket = lbrace || lbrack,
@@ -274,6 +279,9 @@ export class AstText extends AstNode {
 						key = 'disallowed';
 					}
 					severity = lintConfig.getSeverity(rule, key);
+				} else if (char === '=') {
+					rule = 'syntax-like';
+					severity = lintConfig.getSeverity(rule, 'heading');
 				} else if (lConverter || rConverter) {
 					rule = 'lonely-bracket';
 					severity = lintConfig.getSeverity(rule, 'converter');
@@ -326,21 +334,54 @@ export class AstText extends AstNode {
 
 				// LintError
 				const pos = this.posFromIndex(index)!,
-					{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left),
-					e: LintError = {
-						rule,
-						message: Parser.msg(
-							'lonely',
-							magicLink || char === 'h' || lConverter || rConverter ? error : char,
-						),
-						severity,
-						startIndex,
-						endIndex,
-						startLine,
-						endLine: startLine,
-						startCol,
-						endCol: startCol + length,
-					};
+					{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left);
+				if (char === '=') {
+					const lineEnd = data.indexOf('\n', index);
+					let sibling = nextSibling,
+						line: string;
+					if (lineEnd === -1) {
+						let end = 0;
+						while (sibling) {
+							if (sibling.type === 'text') {
+								end = sibling.data.indexOf('\n');
+								if (end !== -1) {
+									break;
+								}
+							}
+							sibling = sibling.nextSibling;
+						}
+						if (!sibling) {
+							continue;
+						}
+						line = sibling.data.slice(0, end);
+					} else {
+						line = data.slice(index + length, lineEnd);
+					}
+					if (!/(?:^|[^=])=+\s*(?:\S\s*)?$/u.test(line)) {
+						continue;
+					}
+					if (lineEnd === -1) {
+						endIndex = sibling!.getAbsoluteIndex() + line.length;
+						({top: endLine, left: endCol} = root.posFromIndex(endIndex)!);
+					} else {
+						endIndex += line.length;
+						length += line.length;
+					}
+				}
+				const e: LintError = {
+					rule,
+					message: Parser.msg(
+						char === '=' ? 'header-like' : 'lonely',
+						magicLink || char === 'h' || lConverter || rConverter ? error : char,
+					),
+					severity,
+					startIndex,
+					endIndex,
+					startLine,
+					endLine: endLine ?? startLine,
+					startCol,
+					endCol: endCol ?? startCol + length,
+				};
 
 				// Suggestions
 				if (lintConfig.computeEditInfo) {

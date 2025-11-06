@@ -22,6 +22,7 @@
 	"frame": "框架",
 	"full-width-punctuation": "全角标点",
 	"header-in-html": "HTML标签属性中的章节标题",
+	"header-like": "纯文本中的疑似章节标题语法",
 	"horizontal-alignment": "水平对齐",
 	"html-in-table": "表格属性中的HTML标签",
 	"illegal-attribute-name": "无效的属性名",
