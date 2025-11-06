@@ -59,6 +59,7 @@
 	"prefix": null,
 	"pipe-in-link": "additional \"|\" in the link text",
 	"pipe-in-table": "additional \"|\" in a table cell",
+	"redirect-like": "redirect-like syntax in a list item",
 	"ref-in-link": "<ref> in an internal or external link",
 	"remove": null,
 	"template-in-link": "template in an internal link target",
