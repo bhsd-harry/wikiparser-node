@@ -17,11 +17,11 @@ WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/)
 
 ## Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)和 [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code 扩展。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 
 ## Browser-compatible
 
-兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为语法分析插件。（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）
+兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为语法分析插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
 
 # 安装方法
 

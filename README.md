@@ -17,11 +17,11 @@ WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext
 
 ## Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used for the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension.
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 
 ## Browser-compatible
 
-A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki). ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
+A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)). It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror) since Release 1.45.
 
 # Installation
 
