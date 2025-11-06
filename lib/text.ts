@@ -16,7 +16,7 @@ import type {
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 	source =/* #__PURE__ */ (
-		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:^|\n)={2,}`
+		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|\n={2,}`
 	)();
 const errorSyntax = /* #__PURE__ */ (() => new RegExp(
 	String.raw`${source}|https?[:/]/+|(?:rfc|pmid)(?=[-:：]?${sp}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
