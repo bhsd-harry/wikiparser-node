@@ -3,6 +3,7 @@ import type {ParamTagToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
+import {classes} from '../util/constants';
 import {singleLine} from '../mixin/singleLine';
 import {clone} from '../mixin/clone';
 
@@ -44,3 +45,5 @@ export abstract class ParamLineToken extends Token {
 		) as this;
 	}
 }
+
+classes['ParamLineToken'] = __filename;

@@ -44,10 +44,15 @@ export class AtomToken extends Token {
 	}
 
 	override set type(value) {
+		/* NOT FOR BROWSER */
+
 		/* istanbul ignore if */
 		if (!atomTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for AtomToken!`);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		this.#type = value;
 	}
 

@@ -44,7 +44,13 @@ describe('API tests', () => {
 							.replace('\n', ' (CRLF)\n'),
 					])
 					: codes;
+
+			/* NOT FOR BROWSER */
+
 			allCodes.set(file.slice(0, -3), codes);
+
+			/* NOT FOR BROWSER END */
+
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = 'en';
@@ -59,8 +65,11 @@ describe('API tests', () => {
 					/* NOT FOR BROWSER END */
 
 					if (typeof Parser.config === 'object') {
-						Parser.config.interwiki.length = 0;
 						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
+
+						/* NOT FOR BROWSER */
+
+						Parser.config.interwiki.length = 0;
 					}
 				});
 				for (const code of testCodes) {

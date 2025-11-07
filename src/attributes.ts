@@ -72,7 +72,12 @@ const wordRegex = /* #__PURE__ */ ((): RegExp => {
 export abstract class AttributesToken extends Token {
 	declare readonly name: string;
 	readonly #type;
+
+	/* NOT FOR BROWSER */
+
 	#classList: Set<string> | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;

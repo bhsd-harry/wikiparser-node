@@ -307,8 +307,13 @@ export abstract class TdToken extends TableBaseToken {
 
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		LINT: {
-			const value = super.getAttr(key);
+			/* NOT FOR BROWSER */
+
 			key = trimLc(key) as T;
+
+			/* NOT FOR BROWSER END */
+
+			const value = super.getAttr(key);
 			return (
 				key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value
 			) as TdAttrGetter<T>;

@@ -79,10 +79,10 @@ export const decodeHtml = (str: string): string => {
 			return decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
 		} catch {}
 	}
-	/* istanbul ignore next */
 
 	/* NOT FOR BROWSER ONLY END */
 
+	/* istanbul ignore next */
 	return decodeHtmlBasic(str);
 };
 

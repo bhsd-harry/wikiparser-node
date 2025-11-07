@@ -612,6 +612,9 @@ export abstract class TranscludeToken extends Token {
 			if (this.isTemplate()) {
 				return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 			}
+
+			/* NOT FOR BROWSER */
+
 			throw new Error('TranscludeToken.getDuplicatedArgs method is only for template!');
 		}
 	}

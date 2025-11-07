@@ -295,12 +295,10 @@ interface LintRuleConfiguration extends LintRuleConfigurationBase {}
 class LintRuleConfiguration implements LintRuleConfigurationBase {
 	/** @param config 语法规则设置 */
 	constructor(config?: LintRuleConfig) {
-		Object.assign(
-			this,
-			structuredClone(
-				defaultLintRuleConfig,
-			),
-		);
+		const clone = typeof structuredClone === 'function'
+			? structuredClone
+			: <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+		Object.assign(this, clone(defaultLintRuleConfig));
 		if (!config) {
 			return;
 		}

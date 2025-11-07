@@ -129,7 +129,12 @@ function validate(
 export abstract class ImageParameterToken extends Token {
 	declare readonly name: string;
 	readonly #syntax: string = '';
+
+	/* NOT FOR BROWSER */
+
 	readonly #extension;
+
+	/* NOT FOR BROWSER END */
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;

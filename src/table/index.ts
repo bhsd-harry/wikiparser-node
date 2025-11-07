@@ -329,8 +329,8 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param insert whether to be used to insert a new row / 是否用于判断插入新行的位置
 	 * @throws `RangeError` 不存在该行
 	 */
-	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
+	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
 		LINT: {
 			const isRow = super.getRowCount();

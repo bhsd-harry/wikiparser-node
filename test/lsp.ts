@@ -127,6 +127,9 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 		renamePositions = ([
 			argName,
 			templateName,
+
+			/* NOT FOR BROWSER */
+
 			linkTarget,
 		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
@@ -169,6 +172,9 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 					...([
 						imageParameter,
 						attrKey,
+
+						/* NOT FOR BROWSER */
+
 						parameterKey,
 					].filter(Boolean) as Token[])
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
@@ -219,6 +225,9 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 					argName,
 					templateName,
 					magicWordName,
+
+					/* NOT FOR BROWSER */
+
 					linkTarget,
 					parameterKey,
 				];

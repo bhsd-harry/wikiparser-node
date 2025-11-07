@@ -12,6 +12,9 @@ import {AstElement} from '../lib/element';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly childNodes: readonly AstNodes[];
+
+	/* NOT FOR BROWSER */
+
 	detach?: () => void; // eslint-disable-line @typescript-eslint/method-signature-style
 };
 
