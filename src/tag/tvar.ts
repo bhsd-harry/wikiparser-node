@@ -1,4 +1,5 @@
 import {hiddenToken} from '../../mixin/hidden';
+import {noEscape} from '../../mixin/noEscape';
 import {TagToken} from './index';
 import {SyntaxToken} from '../syntax';
 import type {Config} from '../../base';
@@ -8,7 +9,7 @@ import type {Token} from '../../internal';
  * `<tvar>`
  * @classdesc `{childNodes: [SyntaxToken]}`
  */
-@hiddenToken()
+@hiddenToken() @noEscape
 export abstract class TvarToken extends TagToken {
 	declare readonly childNodes: readonly [SyntaxToken];
 	abstract override get firstChild(): SyntaxToken;

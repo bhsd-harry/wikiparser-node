@@ -57,15 +57,9 @@ session.post('Profiler.enable', () => {
 				) {
 					await single(page, method);
 				}
-
-				/* NOT FOR BROWSER ONLY */
-
 				if (!method || method === 'lsp') {
 					await lsp(page);
 				}
-
-				/* NOT FOR BROWSER ONLY END */
-
 				console.log();
 			}
 

@@ -1,6 +1,4 @@
 import assert from 'assert';
-import Parser from '../index';
-import lsp from './lsp';
 import type {
 	Test,
 
@@ -8,6 +6,13 @@ import type {
 
 	SimplePage,
 } from '@bhsd/test-util';
+
+/* NOT FOR BROWSER ONLY */
+
+import Parser from '../index';
+import lsp from './lsp';
+
+/* NOT FOR BROWSER ONLY END */
 
 /* PRINT ONLY */
 
@@ -44,6 +49,9 @@ describe('Parser tests', () => {
 						tidied,
 						'解析过程中不可逆地修改了原始文本！',
 					);
+
+					/* PRINT ONLY */
+
 					if (print) {
 						const printed = root.print();
 						assert.strictEqual(
