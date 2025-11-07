@@ -45,6 +45,9 @@ describe('Parser tests', () => {
 							tidied,
 							'解析过程中不可逆地修改了原始文本！',
 						);
+
+						/* PRINT ONLY */
+
 						if (print) {
 							const printed = root.print();
 							assert.strictEqual(

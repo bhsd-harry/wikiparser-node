@@ -1,6 +1,5 @@
 import {cache} from '../../util/lint';
 import {Shadow} from '../../util/debug';
-import Parser from '../../index';
 import {Token} from '../index';
 import type {Cached} from '../../util/lint';
 import type {
@@ -8,6 +7,12 @@ import type {
 	AST,
 } from '../../base';
 import type {AttributesToken, SyntaxToken} from '../../internal';
+
+/* PRINT ONLY */
+
+import Parser from '../../index';
+
+/* PRINT ONLY END */
 
 /**
  * HTML tag

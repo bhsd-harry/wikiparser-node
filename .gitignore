@@ -18,3 +18,4 @@
 /build
 !README
 /config/testwiki.json
+/diff.html

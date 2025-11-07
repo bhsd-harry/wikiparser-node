@@ -273,20 +273,17 @@ const set = (obj: LintRuleConfig, key: LintError.Rule, value?: LintConfigValue):
 	throw new RangeError(`Invalid lint config for ${key}: ${JSON.stringify(value)}`);
 };
 
+const clone = typeof structuredClone === 'function'
+	? structuredClone
+	: <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+
 interface LintRuleConfiguration extends LintRuleConfigurationBase {}
 
 /** 语法规则设置 */
 class LintRuleConfiguration implements LintRuleConfigurationBase {
 	/** @param config 语法规则设置 */
 	constructor(config?: LintRuleConfig) {
-		Object.assign(
-			this,
-			JSON.parse(
-				JSON.stringify(
-					defaultLintRuleConfig,
-				),
-			),
-		);
+		Object.assign(this, clone(defaultLintRuleConfig));
 		if (!config) {
 			return;
 		}

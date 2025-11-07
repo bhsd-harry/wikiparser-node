@@ -1,8 +1,13 @@
-import {decodeHtml} from '../../util/string';
 import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
-import type {AST} from '../../base';
 import type {Token, AtomToken} from '../../internal';
+
+/* PRINT ONLY */
+
+import {decodeHtml} from '../../util/string';
+import type {AST} from '../../base';
+
+/* PRINT ONLY END */
 
 /**
  * category

@@ -497,7 +497,8 @@ export interface LintConfiguration extends FullLintConfig {
 }
 
 export interface Parser {
-	config: ConfigData;
+	config:
+	ConfigData;
 	i18n: Record<string, string>
 		| undefined;
 
