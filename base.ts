@@ -511,7 +511,9 @@ export interface LintConfiguration extends FullLintConfig {
 }
 
 export interface Parser {
-	config: ConfigData | string;
+	config:
+		string | // eslint-disable-line @stylistic/operator-linebreak
+		ConfigData;
 	i18n: Record<string, string>
 		| string
 		| undefined;

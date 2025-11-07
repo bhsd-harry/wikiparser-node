@@ -1,6 +1,4 @@
 import assert from 'assert';
-import Parser from '../index';
-import lsp from './lsp';
 import type {
 	Test,
 
@@ -8,6 +6,13 @@ import type {
 
 	SimplePage,
 } from '@bhsd/test-util';
+
+/* NOT FOR BROWSER ONLY */
+
+import Parser from '../index';
+import lsp from './lsp';
+
+/* NOT FOR BROWSER ONLY END */
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {

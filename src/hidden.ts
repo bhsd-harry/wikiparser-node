@@ -1,4 +1,5 @@
 import {hiddenToken} from '../mixin/hidden';
+import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 
 /**
@@ -6,7 +7,7 @@ import {Token} from './index';
  *
  * 不可见的节点
  */
-@hiddenToken()
+@hiddenToken() @noEscape
 export class HiddenToken extends Token {
 	override get type(): 'hidden' {
 		return 'hidden';

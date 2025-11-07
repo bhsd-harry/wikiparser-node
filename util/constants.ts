@@ -5,8 +5,10 @@ export enum BuildMethod {
 	Text,
 }
 
-// eslint-disable-next-line n/no-missing-require
-export const enMsg = /* #__PURE__ */ (() => require('../../i18n/en.json'))();
+export const enMsg = /* #__PURE__ */ (() => {
+	// eslint-disable-next-line n/no-missing-require
+	LSP: return require('../../i18n/en.json');
+})();
 
 /* NOT FOR BROWSER ONLY */
 

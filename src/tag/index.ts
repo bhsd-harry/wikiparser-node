@@ -1,6 +1,5 @@
 import {cache} from '../../util/lint';
 import {Shadow} from '../../util/debug';
-import Parser from '../../index';
 import {Token} from '../index';
 import type {Cached} from '../../util/lint';
 import type {
@@ -110,16 +109,12 @@ export abstract class TagToken extends Token {
 						if (top === this) {
 							return token;
 						}
-						if (Parser.viewOnly) {
-							top.#match = [rev, token];
-							token.#match = [rev, top];
-						}
+						top.#match = [rev, token];
+						token.#match = [rev, top];
 					}
 				}
-				if (Parser.viewOnly) {
-					for (const token of stack) {
-						token.#match = [rev, undefined];
-					}
+				for (const token of stack) {
+					token.#match = [rev, undefined];
 				}
 				return undefined;
 			},

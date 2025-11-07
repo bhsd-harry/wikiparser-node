@@ -21,12 +21,12 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return 'quote';
 	}
 
-	/** 是否粗体 */
+	/** whether to be bold / 是否粗体 */
 	get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
-	/** 是否斜体 */
+	/** whether to be italic / 是否斜体 */
 	get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
