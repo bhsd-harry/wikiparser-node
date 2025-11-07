@@ -189,7 +189,10 @@ const expand = (
 			} else if (expandedMagicWords.has(name)) {
 				return context === false
 					? m
-					: implicitNewLine(expandMagicWord(name as MagicWord, now, config, args), prev);
+					: implicitNewLine(
+						expandMagicWord(name as MagicWord, now, config, args.map(({value}) => value)),
+						prev,
+					);
 			} else if (!solvedMagicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {

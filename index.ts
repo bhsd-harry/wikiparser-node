@@ -40,6 +40,7 @@ import {RedirectMap} from './lib/redirectMap';
 import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
 import type {AstRange} from './lib/range';
+import type {MagicWord} from './addon/magicWords';
 
 /* NOT FOR BROWSER END */
 
@@ -206,6 +207,17 @@ declare interface Parser extends ParserBase {
 	 * @since v1.22.0
 	 */
 	setHook(name: string, hook: TagHook): void;
+
+	/**
+	 * Call a parser function
+	 *
+	 * 调用一个解析器函数
+	 * @param name parser function name / 解析器函数名
+	 * @param args arguments / 参数
+	 * @since v1.30.1
+	 */
+	callParserFunction(name: MagicWord, ...args: string[]): string;
+	callParserFunction(name: MagicWord, args: string[] | Record<string, string>): string;
 
 	/** @private */
 	warn: log;
@@ -650,6 +662,25 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	setHook(name, hook) {
 		this.tagHooks.set(name, hook);
+	},
+
+	/** @implements */
+	callParserFunction(name: MagicWord, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
+		const {expandMagicWord}: typeof import('./addon/magicWords') = require('./addon/magicWords');
+		if (typeof arg === 'string') {
+			args.unshift(arg);
+		} else if (Array.isArray(arg)) {
+			args = arg;
+		} else if (arg) {
+			for (let i = 1; i in arg; i++) {
+				args.push(arg[i]!);
+				delete arg[i];
+			}
+			for (const [key, value] of Object.entries(arg)) {
+				args.push(`${key}=${value}`);
+			}
+		}
+		return expandMagicWord(name, this.now ?? new Date(), this.getConfig(), args);
 	},
 
 	/** @implements */

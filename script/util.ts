@@ -18,5 +18,8 @@ export const prepare = (Parser: ParserBase): void => {
 	Parser.templateDir = './test/templates';
 	Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 	Parser.getConfig();
-	Object.assign(Parser.config, {testArticlePath: '//example.org/wiki/'});
+	Object.assign(Parser.config, {
+		testArticlePath: '//example.org/wiki/$1',
+		testServer: 'http://example.org/wiki/$1',
+	});
 };

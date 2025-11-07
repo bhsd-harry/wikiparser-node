@@ -31,7 +31,6 @@ export type {GalleryImageToken} from './src/link/galleryImage';
 export type {QuoteToken} from './src/nowiki/quote';
 export type {MagicLinkToken} from './src/magicLink';
 export type {ExtLinkToken} from './src/extLink';
-export type {ListRangeToken} from './src/nowiki/listBase';
 export type {DdToken} from './src/nowiki/dd';
 export type {ListToken} from './src/nowiki/list';
 export type {ConverterFlagsToken} from './src/converterFlags';
@@ -47,3 +46,7 @@ export type {ImagemapLinkToken} from './src/imagemapLink';
 export type {ImagemapToken} from './src/multiLine/imagemap';
 export type {CommentedToken} from './src/commented';
 export type {TranslateToken} from './src/tagPair/translate';
+
+/* NOT FOR BROWSER */
+
+export type {ListRangeToken} from './src/nowiki/listBase';

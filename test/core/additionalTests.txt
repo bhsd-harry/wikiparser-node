@@ -442,9 +442,45 @@ Japanese behavior switches
 !! end
 
 !! test
-Basic {{localurl:}} test
+Basic {{nse:}} test
 !! wikitext
-{{localurl: media:top%20level#fragment }}
+{{nse:1}}
+
+{{nse:01}}
+
+{{nse:0}}
+
+{{nse:00}}
+
+{{nse:-1}}
+
+{{nse:User}}
+
+{{nse:User_talk}}
+
+{{nse:uSeR tAlK}}
+
+{{nse:File}}
+
+{{nse:Image}}
+!! html
+<p>Talk
+</p><p>Talk
+</p><p><br />
+</p><p><br />
+</p><p>Special
+</p><p>User
+</p><p>User_talk
+</p><p>User_talk
+</p><p>File
+</p><p>File
+</p>
+!! end
+
+!! test
+Basic {{localurle:}} test
+!! wikitext
+{{localurle: media:top%20level#fragment }}
 
 {{localurle: file:top%20level#fragment | action=edit&preload=
 
@@ -481,5 +517,23 @@ Basic {{canonicalurl:}} test
 !! html
 <p><a rel="nofollow" class="external free" href="https://example.org/wiki/File:Top_level">https://example.org/wiki/File:Top_level</a>
 </p><p><a rel="nofollow" class="external free" href="https://example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment">https://example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment</a>
+</p>
+!! end
+
+!! test
+Basic {{GENDER:}} test
+!! wikitext
+{{GENDER:username|gender-neutral text applicable to all genders}}
+
+{{GENDER:username|text if user is male|text if user is female|text for unspecified gender}}
+
+{{GENDER:|text if user is male|text if user is female|text for unspecified gender}}
+
+{{GENDER:.|text if user is male|text if user is female|text for unspecified gender}}
+!! html
+<p>gender-neutral text applicable to all genders
+</p><p>text for unspecified gender
+</p><p>text for unspecified gender
+</p><p>text for unspecified gender
 </p>
 !! end

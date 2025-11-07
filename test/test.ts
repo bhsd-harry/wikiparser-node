@@ -60,8 +60,7 @@ describe('API tests', () => {
 
 					if (typeof Parser.config === 'object') {
 						Parser.config.interwiki.length = 0;
-						// @ts-expect-error delete readonly property
-						delete Parser.config.articlePath;
+						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
 					}
 				});
 				for (const code of testCodes) {

@@ -54,24 +54,17 @@ const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 	},
 	disallowedTags = new Set([
 		'html',
-		'base',
 		'head',
 		'style',
 		'title',
 		'body',
-		'menu',
 		'a',
-		'area',
 		'audio',
 		'img',
-		'map',
-		'track',
 		'video',
 		'embed',
 		'iframe',
 		'object',
-		'picture',
-		'source',
 		'canvas',
 		'script',
 		'col',
@@ -80,19 +73,29 @@ const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 		'tfoot',
 		'thead',
 		'button',
+		'input',
+		'label',
+		'option',
+		'select',
+		'textarea',
+
+		/* NOT FOR BROWSER */
+
+		'base',
+		'menu',
+		'area',
+		'map',
+		'track',
+		'picture',
+		'source',
 		'datalist',
 		'fieldset',
 		'form',
-		'input',
-		'label',
 		'legend',
 		'meter',
 		'optgroup',
-		'option',
 		'output',
 		'progress',
-		'select',
-		'textarea',
 		'details',
 		'dialog',
 		'slot',
@@ -455,10 +458,15 @@ export class AstText extends AstNode {
 	 */
 	splitText(offset: number): AstText {
 		LSP: {
+			/* NOT FOR BROWSER */
+
 			/* istanbul ignore if */
 			if (offset > this.length || offset < -this.length) {
 				throw new RangeError(`Wrong offset to split: ${offset}`);
 			}
+
+			/* NOT FOR BROWSER END */
+
 			const {parentNode, data} = this;
 			/* istanbul ignore if */
 			if (!parentNode) {

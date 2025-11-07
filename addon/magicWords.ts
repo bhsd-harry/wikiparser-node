@@ -2,7 +2,11 @@
 import {escape} from '../util/string';
 import Parser from '../index';
 import type {Config} from '../base';
-import type {ParameterToken} from '../internal';
+
+declare interface TestConfig extends Config {
+	testArticlePath?: string;
+	testServer?: string;
+}
 
 const magicWords = [
 	'currentmonth',
@@ -57,11 +61,12 @@ const magicWords = [
 	'fullurle',
 	'canonicalurl',
 	'canonicalurle',
+	'gender',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
 
-const parseUrl = ({articlePath = ''}: Config): [URL | null, number] => {
+const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL | null, number] => {
 		let offset = 0;
 		if (articlePath.startsWith('//')) {
 			offset = 6;
@@ -81,12 +86,16 @@ const parseUrl = ({articlePath = ''}: Config): [URL | null, number] => {
 	localDay2 = (now: Date): string => localDay(now).padStart(2, '0'),
 	localHour = (now: Date): string => String(now.getHours()).padStart(2, '0'),
 	localMinute = (now: Date): string => String(now.getMinutes()).padStart(2, '0'),
-	ns = ({nsid, namespaces}: Config, args: ParameterToken[]): string => {
-		let val: string | number | undefined = args[0]!.value;
-		if (Number.isNaN(Number(val))) {
-			val = nsid[val.toLowerCase().replaceAll('_', ' ')];
+	ns = ({nsid, namespaces}: Config, args: string[]): string => {
+		const [val] = args;
+		if (val === undefined) {
+			return '';
 		}
-		return val === undefined ? '' : namespaces[val] ?? '';
+		let nsVal: number | undefined = Number(val);
+		if (Number.isNaN(nsVal)) {
+			nsVal = nsid[val.toLowerCase().replaceAll('_', ' ')];
+		}
+		return namespaces[nsVal!] ?? '';
 	},
 	dict = {
 		20: '+',
@@ -105,12 +114,8 @@ const parseUrl = ({articlePath = ''}: Config): [URL | null, number] => {
 		/%(2[01489ACF]|3B|40|7E)/gu,
 		(_, p) => dict[p as keyof typeof dict],
 	),
-	urlFunction = (
-		config: Config & {testArticlePath?: string},
-		args: ParameterToken[],
-	): [string, string?, (URL | null)?] => {
-		const {value} = args[0]!,
-			query = args[1]?.value;
+	urlFunction = (config: TestConfig, args: string[]): [string, string?, (URL | null)?] => {
+		const [value, query] = args as [string, ...string[]];
 		if (value.includes('\0')) {
 			return [''];
 		}
@@ -135,15 +140,15 @@ const parseUrl = ({articlePath = ''}: Config): [URL | null, number] => {
 		}
 		return [s, protocol, url];
 	},
-	localurl = (config: Config, args: ParameterToken[]): string => {
+	localurl = (config: Config, args: string[]): string => {
 		const [s,, url] = urlFunction(config, args);
 		return url ? url.pathname + url.search : s;
 	},
-	fullurl = (config: Config, args: ParameterToken[]): string => {
+	fullurl = (config: Config, args: string[]): string => {
 		const [, protocol, url] = urlFunction(config, args);
 		return url?.href.slice(protocol!.length) ?? '';
 	},
-	canonicalurl = (config: Config, args: ParameterToken[]): string => {
+	canonicalurl = (config: Config, args: string[]): string => {
 		const [,, url] = urlFunction(config, args);
 		return url?.href ?? '';
 	};
@@ -156,12 +161,7 @@ const parseUrl = ({articlePath = ''}: Config): [URL | null, number] => {
  * @param args 参数
  * @throws `RangeError` 不支持的魔术字名称
  */
-export const expandMagicWord = (
-	name: MagicWord,
-	now: Date,
-	config: Config,
-	args: ParameterToken[],
-): string => {
+export const expandMagicWord = (name: MagicWord, now: Date, config: Config, args: string[]): string => {
 	switch (name) {
 		case 'currentyear':
 			return String(now.getUTCFullYear());
@@ -225,8 +225,8 @@ export const expandMagicWord = (
 			return url?.origin.slice(offset) ?? '';
 		}
 		case 'servername': {
-			const [url, offset] = parseUrl(config);
-			return url?.hostname.slice(offset) ?? '';
+			const [url] = parseUrl(config);
+			return url?.hostname ?? '';
 		}
 		case 'revisionsize':
 		case 'numberofarticles':
@@ -242,8 +242,8 @@ export const expandMagicWord = (
 		case 'nse':
 			return wfUrlencode(ns(config, args).replaceAll(' ', '_'));
 		case 'urlencode': {
-			const s = args[0]!.value.replace(/\0\d+.\x7F/gu, '');
-			switch (args[1]?.value) {
+			const s = args[0]!.replace(/\0\d+.\x7F/gu, '');
+			switch (args[1]) {
 				case 'WIKI':
 					return wfUrlencode(s.replaceAll(' ', '_'));
 				case 'PATH':
@@ -253,19 +253,19 @@ export const expandMagicWord = (
 			}
 		}
 		case 'lcfirst': {
-			const {value} = args[0]!,
+			const value = args[0]!,
 				[first] = value;
 			return value && first!.toLowerCase() + value.slice(first!.length);
 		}
 		case 'ucfirst': {
-			const {value} = args[0]!,
+			const value = args[0]!,
 				[first] = value;
 			return value && first!.toUpperCase() + value.slice(first!.length);
 		}
 		case 'lc':
-			return args[0]!.value.toLowerCase();
+			return args[0]!.toLowerCase();
 		case 'uc':
-			return args[0]!.value.toUpperCase();
+			return args[0]!.toUpperCase();
 		case 'localurl':
 			return localurl(config, args);
 		case 'localurle':
@@ -278,6 +278,8 @@ export const expandMagicWord = (
 			return canonicalurl(config, args);
 		case 'canonicalurle':
 			return escape(canonicalurl(config, args));
+		case 'gender':
+			return args[3] ?? args[1] ?? '';
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}

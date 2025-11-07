@@ -115,7 +115,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			try {
 				t.render = root.toHtml();
 			} catch {
-				console.error(test);
+				console.error(`${test}\n`);
 			}
 		}
 		t.print = root.print();

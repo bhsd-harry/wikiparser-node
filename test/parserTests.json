@@ -1501,7 +1501,7 @@
 		"desc": "Namespace 1 {{ns:01}}",
 		"wikitext": "{{ns:01}}",
 		"html": "<p>Talk\n</p>",
-		"render": "",
+		"render": "<p>Talk\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">01</span></span>}}</span></span>"
 	},
 	{
@@ -3656,7 +3656,7 @@
 		"desc": "Sanitizer: Validating that <meta> and <link> work, but only for Microdata",
 		"wikitext": "<div itemscope>\n\t<meta itemprop=\"hello\" content=\"world\">\n\t<meta http-equiv=\"refresh\" content=\"5\">\n\t<meta itemprop=\"hello\" http-equiv=\"refresh\" content=\"5\">\n\t<link itemprop=\"hello\" href=\"{{SERVER}}\">\n\t<link rel=\"stylesheet\" href=\"{{SERVER}}\">\n\t<link rel=\"stylesheet\" itemprop=\"hello\" href=\"{{SERVER}}\">\n</div>",
 		"html": "<div itemscope=\"\">\n<p>\t<meta itemprop=\"hello\" content=\"world\" />\n\t&lt;meta http-equiv=\"refresh\" content=\"5\"&gt;\n\t<meta itemprop=\"hello\" content=\"5\" />\n\t<link itemprop=\"hello\" href=\"http&#58;//example.org\" />\n\t&lt;link rel=\"stylesheet\" href=\"<a rel=\"nofollow\" class=\"external free\" href=\"http://example.org\">http://example.org</a>\"&gt;\n\t<link itemprop=\"hello\" href=\"http&#58;//example.org\" />\n</p>\n</div>",
-		"render": "<div itemscope=\"\">\n<p>\t<meta itemprop=\"hello\" content=\"world\">\n\t&lt;meta http-equiv=\"refresh\" content=\"5\"&gt;\n\t<meta itemprop=\"hello\"  content=\"5\">\n\t<link itemprop=\"hello\" >\n\t&lt;link rel=\"stylesheet\" href=\"\"&gt;\n\t<link  itemprop=\"hello\" >\n</p>\n</div>",
+		"render": "<div itemscope=\"\">\n<p>\t<meta itemprop=\"hello\" content=\"world\">\n\t&lt;meta http-equiv=\"refresh\" content=\"5\"&gt;\n\t<meta itemprop=\"hello\"  content=\"5\">\n\t<link itemprop=\"hello\" href=\"http://example.org\">\n\t&lt;link rel=\"stylesheet\" href=\"<a rel=\"nofollow\" class=\"external free\" href=\"http://example.org/\">http://example.org</a>\"&gt;\n\t<link  itemprop=\"hello\" href=\"http://example.org\">\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">itemscope</span></span></span>&gt;</span>\n\t<span class=\"wpb-html\">&lt;meta<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">itemprop</span>=\"<span class=\"wpb-attr-value\">hello</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">content</span>=\"<span class=\"wpb-attr-value\">world</span>\"</span></span>&gt;</span>\n\t&lt;meta http-equiv=\"refresh\" content=\"5\"&gt;\n\t<span class=\"wpb-html\">&lt;meta<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">itemprop</span>=\"<span class=\"wpb-attr-value\">hello</span>\"</span> <span class=\"wpb-html-attr wpb-invalid\"><span class=\"wpb-attr-key\">http-equiv</span>=\"<span class=\"wpb-attr-value\">refresh</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">content</span>=\"<span class=\"wpb-attr-value\">5</span>\"</span></span>&gt;</span>\n\t<span class=\"wpb-html\">&lt;link<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">itemprop</span>=\"<span class=\"wpb-attr-value\">hello</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">href</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SERVER</span>}}</span></span>\"</span></span>&gt;</span>\n\t&lt;link rel=\"stylesheet\" href=\"<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SERVER</span>}}</span>\"&gt;\n\t<span class=\"wpb-html\">&lt;link<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr wpb-invalid\"><span class=\"wpb-attr-key\">rel</span>=\"<span class=\"wpb-attr-value\">stylesheet</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">itemprop</span>=\"<span class=\"wpb-attr-value\">hello</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">href</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SERVER</span>}}</span></span>\"</span></span>&gt;</span>\n<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -6611,11 +6611,18 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">＿＿目次非表示＿＿</span></span>"
 	},
 	{
-		"desc": "Basic {{localurl:}} test",
-		"wikitext": "{{localurl: media:top%20level#fragment }}\n\n{{localurle: file:top%20level#fragment | action=edit&preload=\n\n\" }}",
+		"desc": "Basic {{nse:}} test",
+		"wikitext": "{{nse:1}}\n\n{{nse:01}}\n\n{{nse:0}}\n\n{{nse:00}}\n\n{{nse:-1}}\n\n{{nse:User}}\n\n{{nse:User_talk}}\n\n{{nse:uSeR tAlK}}\n\n{{nse:File}}\n\n{{nse:Image}}",
+		"html": "<p>Talk\n</p><p>Talk\n</p><p><br />\n</p><p><br />\n</p><p>Special\n</p><p>User\n</p><p>User_talk\n</p><p>User_talk\n</p><p>File\n</p><p>File\n</p>",
+		"render": "<p>Talk\n</p><p>Talk\n</p><p><br>\n</p><p><br>\n</p><p>Special\n</p><p>User\n</p><p>User_talk\n</p><p>User_talk\n</p><p>File\n</p><p>File\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">01</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">0</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">00</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-1</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">User</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">User_talk</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">uSeR tAlK</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">File</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">nse</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Image</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Basic {{localurle:}} test",
+		"wikitext": "{{localurle: media:top%20level#fragment }}\n\n{{localurle: file:top%20level#fragment | action=edit&preload=\n\n\" }}",
 		"html": "<p>/wiki/File:Top_level\n</p><p>/index.php?title=File:Top_level&amp;action=edit&amp;preload=\n</p><p>&quot;\n</p>",
 		"render": "<p>/wiki/File%3ATop_level\n</p><p>/wiki/File%3ATop_level?action=edit&amp;preload=__%22\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">localurl</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> media:top%20level#fragment </span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">localurle</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> file:top%20level#fragment </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> action=edit&amp;preload=\n\n\" </span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">localurle</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> media:top%20level#fragment </span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">localurle</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> file:top%20level#fragment </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> action=edit&amp;preload=\n\n\" </span></span>}}</span></span>"
 	},
 	{
 		"desc": "Basic {{fullurl:}} test",
@@ -6630,6 +6637,13 @@
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"https://example.org/wiki/File:Top_level\">https://example.org/wiki/File:Top_level</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"https://example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment\">https://example.org/index.php?title=File:Top_level&amp;action=edit&amp;preload=__&quot;#fragment</a>\n</p>",
 		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"https://example.org/wiki/File%3ATop_level\">https://example.org/wiki/File%3ATop_level</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"https://example.org/wiki/File%3ATop_level?action=edit&amp;preload=__%22#fragment\">https://example.org/wiki/File%3ATop_level?action=edit&amp;preload=__%22#fragment</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">canonicalurl</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> media:top%20level#fragment </span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">canonicalurle</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> file:top%20level#fragment </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> action=edit&amp;preload=\n\n\" </span></span>}}</span></span>"
+	},
+	{
+		"desc": "Basic {{GENDER:}} test",
+		"wikitext": "{{GENDER:username|gender-neutral text applicable to all genders}}\n\n{{GENDER:username|text if user is male|text if user is female|text for unspecified gender}}\n\n{{GENDER:|text if user is male|text if user is female|text for unspecified gender}}\n\n{{GENDER:.|text if user is male|text if user is female|text for unspecified gender}}",
+		"html": "<p>gender-neutral text applicable to all genders\n</p><p>text for unspecified gender\n</p><p>text for unspecified gender\n</p><p>text for unspecified gender\n</p>",
+		"render": "<p>gender-neutral text applicable to all genders\n</p><p>text for unspecified gender\n</p><p>text for unspecified gender\n</p><p>text for unspecified gender\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">GENDER</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">username</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">gender-neutral text applicable to all genders</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">GENDER</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">username</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text if user is male</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text if user is female</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text for unspecified gender</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">GENDER</span>:|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text if user is male</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text if user is female</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text for unspecified gender</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">GENDER</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">.</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text if user is male</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text if user is female</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">text for unspecified gender</span></span>}}</span></span>"
 	},
 	{
 		"desc": "badCharacters"
@@ -11973,14 +11987,14 @@
 		"desc": "Magic Word: {{SERVER}}",
 		"wikitext": "{{SERVER}}",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.org\">http://example.org</a>\n</p>",
-		"render": "",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.org/\">http://example.org</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SERVER</span>}}</span></span>"
 	},
 	{
 		"desc": "Magic Word: {{SERVERNAME}}",
 		"wikitext": "{{SERVERNAME}}",
 		"html": "<p>example.org\n</p>",
-		"render": "",
+		"render": "<p>example.org\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SERVERNAME</span>}}</span></span>"
 	},
 	{
@@ -12018,7 +12032,7 @@
 		"desc": "Case-insensitive magic words should still work with weird casing.",
 		"wikitext": "{{sErVeRNaMe}}\n{{LCFirst:AOEU}}\n{{ucFIRST:aoeu}}\n{{SERver}}",
 		"html": "<p>example.org\naOEU\nAoeu\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.org\">http://example.org</a>\n</p>",
-		"render": "<p>aOEU\nAoeu\n</p>",
+		"render": "<p>example.org\naOEU\nAoeu\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.org/\">http://example.org</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">sErVeRNaMe</span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LCFirst</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">AOEU</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ucFIRST</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">aoeu</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SERver</span>}}</span></span>"
 	},
 	{

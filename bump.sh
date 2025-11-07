@@ -19,6 +19,11 @@ then
 		echo "Tag v$1-b not found"
 		exit 1
 	fi
+elif [[ $2 == 'gh' ]]
+then
+	gsed -n "/## v$1/,/##/{/^## .*/d;/./,\$!d;p}" CHANGELOG.md > release-notes.md
+	gh release create "v$1" --notes-file release-notes.md -t "v$1" --verify-tag --latest="${3-true}"
+	rm release-notes.md
 else
 	npm run build && npm run lint && npm test && npm run test:real
 	if [[ $? -eq 0 ]]
