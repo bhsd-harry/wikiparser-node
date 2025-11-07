@@ -34,8 +34,7 @@ describe('API tests', () => {
 					Parser.i18n = 'en';
 					Parser.lintConfig = undefined as unknown as LintConfiguration;
 					if (typeof Parser.config === 'object') {
-						// @ts-expect-error delete readonly property
-						delete Parser.config.articlePath;
+						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
 					}
 				});
 				for (const code of testCodes) {
