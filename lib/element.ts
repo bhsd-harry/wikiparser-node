@@ -6,6 +6,7 @@ import {getCondition} from '../parser/selector';
 import {AstNode} from './node';
 import {elementLike} from '../mixin/elementLike';
 import type {
+	TokenTypes,
 	LintError,
 } from '../base';
 import type {ElementLike} from '../mixin/elementLike';
@@ -108,6 +109,11 @@ export abstract class AstElement extends AstNode {
 			({parentNode} = parentNode);
 		}
 		return undefined;
+	}
+
+	/** @private */
+	isInside(type: TokenTypes): boolean {
+		return this.closest(`${type},ext`)?.type === type;
 	}
 
 	/**

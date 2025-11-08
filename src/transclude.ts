@@ -480,11 +480,11 @@ export abstract class TranscludeToken extends Token {
 			const {length, 0: first} = queue[i]!.childNodes.filter(child => child.text().trim());
 			if (length === 0) {
 				queue.splice(i, 1);
-			} else if (length > 1 || first!.type !== 'magic-word') {
+			} else if (length > 1 || !first!.is<this>('magic-word')) {
 				i++;
 			} else {
 				try {
-					const possibleValues = (first as this).getPossibleValues();
+					const possibleValues = first.getPossibleValues();
 					Array.prototype.splice.apply(queue, [i, 1, ...possibleValues]);
 					i += possibleValues.length;
 				} catch {

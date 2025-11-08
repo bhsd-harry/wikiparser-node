@@ -192,7 +192,7 @@ export abstract class ExtToken extends TagPairToken {
 				}
 				rule = 'nested-link';
 				s = lintConfig.getSeverity(rule, 'ref');
-				if (s && this.closest('link,ext-link-text')) {
+				if (s && this.closest('link-text,ext-link-text')) {
 					errors.push(generateForSelf(this, rect, rule, 'ref-in-link', s));
 				}
 			}

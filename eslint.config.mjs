@@ -171,4 +171,12 @@ export default extend(
 			],
 		},
 	},
+	{
+		files: [
+			'bin/cli.js',
+		],
+		rules: {
+			'n/no-missing-require': 0,
+		},
+	},
 );

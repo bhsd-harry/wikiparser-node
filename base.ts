@@ -129,7 +129,6 @@ export type TokenTypes = 'root'
 	| 'magic-link'
 	| 'list'
 	| 'dd'
-	| 'list-range'
 	| 'converter'
 	| 'converter-flags'
 	| 'converter-flag'
@@ -138,7 +137,8 @@ export type TokenTypes = 'root'
 	| 'converter-rule-to'
 	| 'converter-rule-from'
 	| 'param-line'
-	| 'imagemap-link';
+	// eslint-disable-next-line @stylistic/semi
+	| 'imagemap-link'
 
 export const stages = /* #__PURE__ */ (() => {
 	const obj = {
@@ -166,7 +166,6 @@ export const stages = /* #__PURE__ */ (() => {
 		list: 10,
 		dd: 10,
 		converter: 11,
-		'list-range': 11,
 	} satisfies Partial<Record<TokenTypes, number>>;
 	Object.setPrototypeOf(obj, null);
 	return obj;
