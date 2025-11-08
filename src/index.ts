@@ -468,8 +468,8 @@ export class Token extends AstElement {
 
 	/** @private */
 	inTableAttrs(): 1 | 2 | false {
-		return this.closest('table-attrs,ext')?.type === 'table-attrs' && (
-			this.closest('table-attrs,arg,magic-word,template')?.is<AttributesToken>('table-attrs')
+		return this.isInside('table-attrs') && (
+			this.closest('table-attrs,arg,parameter')?.is<AttributesToken>('table-attrs')
 				? 2
 				: 1
 		);
@@ -477,9 +477,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	inHtmlAttrs(): 1 | 2 | false {
-		return this.closest('html-attrs,ext')?.is<AttributesToken>('html-attrs')
-			? 2
-			: this.inTableAttrs();
+		return this.isInside('html-attrs') ? 2 : this.inTableAttrs();
 	}
 
 	/** @private */

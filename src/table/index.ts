@@ -12,12 +12,7 @@ import type {
 	LintError,
 	AST,
 } from '../../base';
-import type {
-	AttributesToken,
-	TdToken,
-	TrToken,
-	Token,
-} from '../../internal';
+import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 
 export type TableTokens = TableToken | TrToken | TdToken;
