@@ -1,11 +1,12 @@
-## v1.30.1
+## v1.31.0
 
-*2025-11-08*
+*2025-11-09*
 
 **Added**
 
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports more parser functions
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction)
+- New category of linting errors: template arguments inside an extension tag
 
 **Fixed**
 

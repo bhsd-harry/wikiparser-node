@@ -187,6 +187,7 @@ export type Stage = keyof typeof stages;
 
 export const rules = /* #__PURE__ */ (() => {
 	const arr = [
+		'arg-in-ext',
 		'bold-header',
 		'format-leakage',
 		'fostered-content',
