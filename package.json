@@ -79,7 +79,7 @@
 		"chalk": "^4.1.2",
 		"color-name": "^2.0.0",
 		"entities": "^7.0.0",
-		"mathoid-texvcjs": "^0.5.4",
+		"mathoid-texvcjs": "^0.6.0",
 		"minimatch": "^10.1.1",
 		"stylelint": "^16.25.0",
 		"vscode-css-languageservice": "^6.3.8",

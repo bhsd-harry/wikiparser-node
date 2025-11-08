@@ -87,7 +87,7 @@ export abstract class ArgToken extends Token {
 					Array.prototype.push.apply(errors, childErrors);
 				}
 			}
-			const rules = ['no-ignored', 'no-arg'] as const,
+			const rules = ['no-ignored', 'no-arg', 'arg-in-ext'] as const,
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
 				rect = new BoundingRect(this, start),
@@ -115,6 +115,9 @@ export abstract class ArgToken extends Token {
 					e.suggestions = [fixBy(e, 'expand', argDefault.text())];
 				}
 				errors.push(e);
+			}
+			if (s[2] && this.closest('ext')) {
+				errors.push(generateForSelf(this, rect, rules[2], 'argument-in-ext', s[2]));
 			}
 			return errors;
 		}
