@@ -21,10 +21,8 @@ export abstract class ListToken extends ListBaseToken {
 				s = Parser.lintConfig.getSeverity(rule, 'redirect'),
 				{innerText} = this;
 			if (s && innerText === '#') {
+				// eslint-disable-next-line prefer-const
 				let {nextSibling} = this;
-				if (nextSibling?.type === 'list-range') {
-					nextSibling = nextSibling.firstChild;
-				}
 				if (nextSibling?.type === 'text' && linkTypes.has(nextSibling.nextSibling?.type)) {
 					/^redirect\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 					const re = new RegExp(
