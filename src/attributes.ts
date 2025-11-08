@@ -14,16 +14,7 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {Config, LintError} from '../base';
-import type {
-	ExtToken,
-	HtmlToken,
-	SyntaxToken,
-	TdToken,
-
-	/* NOT FOR BROWSER */
-
-	ParameterToken,
-} from '../internal';
+import type {ExtToken, HtmlToken, SyntaxToken, TdToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 import type {TableTokens} from './table/index';
 
@@ -450,7 +441,7 @@ export abstract class AttributesToken extends Token {
 		} else {
 			token.close();
 		}
-		if (this.closest('parameter,ext')?.is<ParameterToken>('parameter')) {
+		if (this.isInside('parameter')) {
 			token.escape();
 		}
 		super.insertAt(token, i);

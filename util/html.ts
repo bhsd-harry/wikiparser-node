@@ -1,7 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {decodeHtml, sanitizeAlt} from './string';
-import type {AstNodes, ListRangeToken, Token, DdToken, ListToken, ExtToken} from '../internal';
+import type {AstNodes, ListRangeToken, Token, DdToken, ListToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -111,7 +111,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt?: H
 				(child.length > 0 || /\s$/u.test(innerText))
 				&& previousSibling.is<ListToken>('list')
 				&& !/[;#*]/u.test(innerText)
-				&& child.closest('ext#poem,list-range')?.is<ExtToken>('ext')
+				&& child.closest('ext-inner#poem,list-range')?.type === 'ext-inner'
 			) {
 				lastPrefix = '';
 				result = `<span style="display: inline-block; margin-inline-start: ${

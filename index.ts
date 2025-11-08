@@ -95,7 +95,7 @@ declare interface Parser extends ParserBase {
 	 * 指定解析器的当前时间
 	 * @since v1.21.2
 	 */
-	now?: Date;
+	now: Date;
 
 	/** @private */
 	functionHooks: Map<string, FunctionHook>;
@@ -275,7 +275,8 @@ const promises = [Promise.resolve()];
 const getInterwikiRegex = getRegex<string[]>(
 	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
 );
-let redirectMap = new RedirectMap();
+let redirectMap = new RedirectMap(),
+	now: Date | undefined;
 
 /* NOT FOR BROWSER END */
 
@@ -342,6 +343,15 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	functionHooks: new Map(),
 
 	tagHooks: new Map(),
+
+	/** @implements */
+	get now() {
+		return now ?? new Date();
+	},
+
+	set now(value: Date) {
+		now = value;
+	},
 
 	/** @implements */
 	get redirects() {
@@ -680,7 +690,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				args.push(`${key}=${value}`);
 			}
 		}
-		return expandMagicWord(name, this.now ?? new Date(), this.getConfig(), args);
+		return expandMagicWord(name, args);
 	},
 
 	/** @implements */

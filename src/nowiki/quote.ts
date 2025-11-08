@@ -121,7 +121,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 					errors.push(eNew);
 				}
 			}
-			if (s && bold && this.closest('heading-title,ext')?.type === 'heading-title') {
+			if (s && bold && this.isInside('heading-title')) {
 				const e = generateForSelf(this, rect, rules[1], 'bold-in-header', s);
 				if (computeEditInfo) {
 					e.suggestions = [fixByRemove(e)];

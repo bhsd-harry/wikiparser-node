@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {escape} from '../util/string';
+import {parsers} from '../util/constants';
 import Parser from '../index';
 import type {Config} from '../base';
 
@@ -66,6 +67,39 @@ const magicWords = [
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
 
+function urlFunction(config: TestConfig, args: string[], local: true): URL | string;
+function urlFunction(config: TestConfig, args: string[]): [(URL | null)?, string?];
+function urlFunction(config: TestConfig, args: string[], local?: true): URL | string | [(URL | null)?, string?] {
+	const [value, query] = args as [string, string?],
+		fallback = (local ? '' : []) as [];
+	if (value.includes('\0')) {
+		return fallback;
+	}
+	const title = Parser.normalizeTitle(
+		value,
+		0,
+		false,
+		config,
+		{halfParsed: true, decode: true, temporary: true},
+	);
+	if (!title.valid) {
+		return fallback;
+	} else if (title.ns === -2) {
+		title.ns = 6;
+		title.fragment = undefined;
+	}
+	const link = title.getUrl(config.testArticlePath),
+		protocol = link.startsWith('//') ? 'https:' : '',
+		url = URL.parse(protocol + link);
+	if (url) {
+		url.search = query ? `?${query.replace(/\s/gu, '_')}` : '';
+	} else if (local) {
+		title.fragment = undefined;
+		return title.getUrl(config.testArticlePath) + (query ? `?${query}` : '');
+	}
+	return local ? url! : [url, protocol];
+}
+
 const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL | null, number] => {
 		let offset = 0;
 		if (articlePath.startsWith('//')) {
@@ -114,54 +148,33 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		/%(2[01489ACF]|3B|40|7E)/gu,
 		(_, p) => dict[p as keyof typeof dict],
 	),
-	urlFunction = (config: TestConfig, args: string[]): [string, string?, (URL | null)?] => {
-		const [value, query] = args as [string, ...string[]];
-		if (value.includes('\0')) {
-			return [''];
-		}
-		const title = Parser.normalizeTitle(
-			value,
-			0,
-			false,
-			config,
-			{halfParsed: true, decode: true, temporary: true},
-		);
-		if (!title.valid) {
-			return [''];
-		} else if (title.ns === -2) {
-			title.ns = 6;
-			title.fragment = undefined;
-		}
-		const s = title.getUrl(config.testArticlePath),
-			protocol = s.startsWith('//') ? 'https:' : '',
-			url = URL.parse(protocol + s);
-		if (url) {
-			url.search = query ? `?${query.replace(/\s/gu, '_')}` : '';
-		}
-		return [s, protocol, url];
-	},
 	localurl = (config: Config, args: string[]): string => {
-		const [s,, url] = urlFunction(config, args);
-		return url ? url.pathname + url.search : s;
+		const url = urlFunction(config, args, true);
+		return typeof url === 'string' ? url : url.pathname + url.search;
 	},
 	fullurl = (config: Config, args: string[]): string => {
-		const [, protocol, url] = urlFunction(config, args);
+		const [url, protocol] = urlFunction(config, args);
 		return url?.href.slice(protocol!.length) ?? '';
 	},
 	canonicalurl = (config: Config, args: string[]): string => {
-		const [,, url] = urlFunction(config, args);
+		const [url] = urlFunction(config, args);
 		return url?.href ?? '';
 	};
 
 /**
  * 展开魔术字
  * @param name 魔术字名称
- * @param now 当前时间
- * @param config
  * @param args 参数
+ * @param config
+ * @param now 当前时间
  * @throws `RangeError` 不支持的魔术字名称
  */
-export const expandMagicWord = (name: MagicWord, now: Date, config: Config, args: string[]): string => {
+export const expandMagicWord = (
+	name: MagicWord,
+	args: string[],
+	config = Parser.getConfig(),
+	now = Parser.now,
+): string => {
 	switch (name) {
 		case 'currentyear':
 			return String(now.getUTCFullYear());
@@ -284,3 +297,5 @@ export const expandMagicWord = (name: MagicWord, now: Date, config: Config, args
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}
 };
+
+parsers['expandMagicWord'] = __filename;

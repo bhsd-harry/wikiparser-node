@@ -68,7 +68,7 @@ export abstract class LinkToken extends LinkBaseToken {
 				rule = 'nested-link',
 				{lintConfig} = Parser,
 				s = lintConfig.getSeverity(rule);
-			if (s && this.closest('ext-link-text')) {
+			if (s && this.isInside('ext-link-text')) {
 				const e = generateForSelf(this, {start}, rule, 'link-in-extlink', s);
 				if (lintConfig.computeEditInfo || lintConfig.fix) {
 					e.fix = fixBy(e, 'delink', this.innerText);

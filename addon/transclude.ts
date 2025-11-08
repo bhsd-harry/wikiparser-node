@@ -8,7 +8,7 @@ import {Token} from '../src/index';
 import {TranscludeToken} from '../src/transclude';
 import {ParameterToken} from '../src/parameter';
 import {AtomToken} from '../src/atom';
-import type {TableToken} from '../internal';
+import type {TableToken, SyntaxToken} from '../internal';
 
 /**
  * 调整最后一个子节点的换行符
@@ -16,9 +16,9 @@ import type {TableToken} from '../internal';
  */
 const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
-		isParameter = lastChild.type === 'parameter';
+		isParameter = lastChild.is<ParameterToken>('parameter');
 	if (
-		!(type === 'template' ? isParameter && lastChild.anon : lastChild.type === 'magic-word-name')
+		!(type === 'template' ? isParameter && lastChild.anon : lastChild.is<SyntaxToken>('magic-word-name'))
 		&& !lastChild.toString().endsWith('\n')
 	) {
 		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');

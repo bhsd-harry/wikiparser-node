@@ -186,10 +186,7 @@ export abstract class HtmlToken extends TagToken {
 			}
 			rule = 'bold-header';
 			s = lintConfig.getSeverity(rule, name);
-			if (
-				s && (name === 'b' || name === 'strong')
-				&& this.closest('heading-title,ext')?.type === 'heading-title'
-			) {
+			if (s && (name === 'b' || name === 'strong') && this.isInside('heading-title')) {
 				const e = generateForSelf(this, rect, rule, 'bold-in-header', s);
 				if (computeEditInfo) {
 					e.suggestions = [fixByRemove(e)];
@@ -252,7 +249,7 @@ export abstract class HtmlToken extends TagToken {
 						) {
 							error.suggestions = [fixByClose(start + 1, '/')];
 						}
-						if (this.closest('heading-title')) {
+						if (this.isInside('heading-title')) {
 							error.rule = 'format-leakage';
 							s = lintConfig.getSeverity('format-leakage', name);
 						}

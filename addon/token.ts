@@ -84,7 +84,7 @@ const expand = (
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
-	now = Parser.now ?? new Date(),
+	now = Parser.now,
 	accum: Token[] = [],
 	stack: string[] = [],
 ): Token => {
@@ -190,7 +190,7 @@ const expand = (
 				return context === false
 					? m
 					: implicitNewLine(
-						expandMagicWord(name as MagicWord, now, config, args.map(({value}) => value)),
+						expandMagicWord(name as MagicWord, args.map(({value}) => value), config, now),
 						prev,
 					);
 			} else if (!solvedMagicWords.has(name)) {

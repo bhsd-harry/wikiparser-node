@@ -134,7 +134,6 @@ export type TokenTypes = 'root'
 	| 'magic-link'
 	| 'list'
 	| 'dd'
-	| 'list-range'
 	| 'converter'
 	| 'converter-flags'
 	| 'converter-flag'
@@ -143,7 +142,11 @@ export type TokenTypes = 'root'
 	| 'converter-rule-to'
 	| 'converter-rule-from'
 	| 'param-line'
-	| 'imagemap-link';
+	| 'imagemap-link'
+
+	/* NOT FOR BROWSER */
+
+	| 'list-range';
 
 export const stages = /* #__PURE__ */ (() => {
 	const obj = {
@@ -171,6 +174,9 @@ export const stages = /* #__PURE__ */ (() => {
 		list: 10,
 		dd: 10,
 		converter: 11,
+
+		/* NOT FOR BROWSER */
+
 		'list-range': 11,
 	} satisfies Partial<Record<TokenTypes, number>>;
 	Object.setPrototypeOf(obj, null);

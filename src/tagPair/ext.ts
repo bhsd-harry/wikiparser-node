@@ -213,7 +213,7 @@ export abstract class ExtToken extends TagPairToken {
 				}
 				rule = 'nested-link';
 				s = lintConfig.getSeverity(rule, 'ref');
-				if (s && this.closest('link,ext-link-text')) {
+				if (s && this.closest('link-text,ext-link-text')) {
 					errors.push(generateForSelf(this, rect, rule, 'ref-in-link', s));
 				}
 			}
@@ -251,7 +251,7 @@ export abstract class ExtToken extends TagPairToken {
 		switch (name) {
 			case 'nowiki': {
 				const html = lastChild.toHtmlInternal();
-				return this.closest('ext#poem') ? html : newline(html);
+				return this.closest('ext-inner')?.name === 'poem' ? html : newline(html);
 			}
 			case 'pre': {
 				const html = lastChild.toHtmlInternal({
@@ -259,7 +259,7 @@ export abstract class ExtToken extends TagPairToken {
 					nowrap: false,
 				});
 				return `<pre${firstChild.toHtmlInternal()}>${
-					this.closest('ext#poem') ? html : newline(html)
+					this.closest('ext-inner')?.name === 'poem' ? html : newline(html)
 				}</pre>`;
 			}
 			case 'poem': {

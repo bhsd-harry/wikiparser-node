@@ -7,6 +7,10 @@
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports more parser functions
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction)
 
+**Fixed**
+
+- Duplicate linting errors reported by `<ref>` tags
+
 ## v1.30.0
 
 *2025-11-06*

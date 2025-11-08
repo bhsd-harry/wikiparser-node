@@ -9,6 +9,7 @@ import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {syntax} from '../../mixin/syntax';
 import type {SyntaxBase} from '../../mixin/syntax';
+import type {ListRangeToken} from './listBase';
 
 export interface ListToken extends SyntaxBase {}
 
@@ -34,9 +35,15 @@ export abstract class ListToken extends ListBaseToken {
 				{innerText} = this;
 			if (s && innerText === '#') {
 				let {nextSibling} = this;
-				if (nextSibling?.type === 'list-range') {
+
+				/* NOT FOR BROWSER */
+
+				if (nextSibling?.is<ListRangeToken>('list-range')) {
 					nextSibling = nextSibling.firstChild;
 				}
+
+				/* NOT FOR BROWSER END */
+
 				if (nextSibling?.type === 'text' && linkTypes.has(nextSibling.nextSibling?.type)) {
 					/^redirect\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 					const re = new RegExp(

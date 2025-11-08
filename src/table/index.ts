@@ -16,16 +16,7 @@ import type {
 	LintError,
 	AST,
 } from '../../base';
-import type {
-	AttributesToken,
-	TdToken,
-	TrToken,
-	Token,
-
-	/* NOT FOR BROWSER */
-
-	ParameterToken,
-} from '../../internal';
+import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 
 /* NOT FOR BROWSER */
@@ -133,9 +124,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	set closed(closed) {
 		if (closed && !this.closed) {
-			this.close(
-				this.closest('parameter,ext')?.is<ParameterToken>('parameter') ? '\n{{!}}}' : '\n|}',
-			);
+			this.close(this.isInside('parameter') ? '\n{{!}}}' : '\n|}');
 		}
 	}
 
