@@ -42,7 +42,7 @@
 		"prof": "node dist/test/prof.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
 		"test:unit": "mocha --require bundle/bundle-lsp.min.js dist/test/test.js",
-		"test:parser": "mocha --require bundle/bundle.min.js dist/test/parserTests.js",
+		"test:parser": "LC_ALL=en.UTF-8 mocha --require bundle/bundle.min.js dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"

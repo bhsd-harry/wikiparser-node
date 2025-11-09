@@ -92,6 +92,7 @@ describe('API tests', () => {
 										state === 'incorrect',
 										Parser.parse(block).lint()
 											.some(({rule, severity}) => rule === cur && severity === 'error'),
+										`${state === 'incorrect' ? 'No' : 'An'} error found!`,
 									);
 								} catch (e) {
 									if (e instanceof assert.AssertionError) {

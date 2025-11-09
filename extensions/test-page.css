@@ -108,7 +108,7 @@ pre {
 	display: none;
 }
 .frame p {
-	margin: .5em 0;
+	margin: .5em 0 1em;
 }
 .frame hr {
 	height: 1px;
