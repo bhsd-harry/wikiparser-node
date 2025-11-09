@@ -51,7 +51,7 @@
 		"prof": "node dist/test/prof.js",
 		"coverage": "nyc --cache-dir=./.cache/nyc npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
-		"test:parser": "mocha dist/test/parserTests.js",
+		"test:parser": "LC_ALL=en.UTF-8 mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:ci": "LSP=0 npm test",
 		"test:end": "pkill -x http-server",

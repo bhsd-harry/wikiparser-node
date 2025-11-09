@@ -12,6 +12,7 @@ import type {
 	Config,
 	LintError,
 } from '../base';
+import type {ExtToken} from '../internal';
 
 /**
  * argument wrapped in `{{{}}}`
@@ -87,7 +88,7 @@ export abstract class ArgToken extends Token {
 					Array.prototype.push.apply(errors, childErrors);
 				}
 			}
-			const rules = ['no-ignored', 'no-arg', 'arg-in-ext'] as const,
+			const rules = ['no-ignored', 'no-arg'] as const,
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
 				rect = new BoundingRect(this, start),
@@ -116,8 +117,13 @@ export abstract class ArgToken extends Token {
 				}
 				errors.push(e);
 			}
-			if (s[2] && this.closest('ext')) {
-				errors.push(generateForSelf(this, rect, rules[2], 'argument-in-ext', s[2]));
+			const ext = this.closest<ExtToken>('ext');
+			if (ext) {
+				const rule = 'arg-in-ext',
+					severity = lintConfig.getSeverity(rule, ext.name);
+				if (severity) {
+					errors.push(generateForSelf(this, rect, rule, 'argument-in-ext', severity));
+				}
 			}
 			return errors;
 		}

@@ -139,7 +139,7 @@ export abstract class ImageParameterToken extends Token {
 			return Shadow.run((): string | Title => {
 				const token = new Token(value, this.getAttribute('config'));
 				token.parseOnce(0, this.getAttribute('include')).parseOnce();
-				return /^\0\d+m\x7F/u.test(token.toString())
+				return /^\0\d+m\x7F/u.test(token.firstChild!.toString())
 					? value
 					: validate('link', value, this.getAttribute('config'));
 			});
