@@ -94,13 +94,27 @@ export const decodeNumber = factory(
 
 /* PRINT ONLY */
 
-const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
+const entities = {
+	'&': 'amp',
+	'<': 'lt',
+	'>': 'gt',
+	'"': 'quot',
+	'\n': '#10',
+
+	/* NOT FOR BROWSER */
+
+	'{': '#123',
+	'}': '#125',
+	'[': '#91',
+	']': '#93',
+	'|': '#124',
+};
 
 /**
  * replace by HTML entities
  * @param re regex
  */
-const replaceEntities = (re: RegExp): (str: string) => string =>
+export const replaceEntities = (re = /[&<>"{}[\]|]/gu): (str: string) => string =>
 	factory(re, p => `&${entities[p as keyof typeof entities]};`);
 
 /** escape HTML entities */
@@ -157,7 +171,7 @@ export const sanitizeAttr = (attr: string, id?: boolean): string =>
 	replaceAttrEntities(attr.replace(/\s+|&#10;/gu, id ? '_' : ' '));
 
 /** escape HTML entities in heading id */
-export const sanitizeId = replaceEntities(/["&]/gu);
+export const sanitizeId = replaceEntities(/["<>&]/gu);
 
 /**
  * sanitize selected HTML attributes

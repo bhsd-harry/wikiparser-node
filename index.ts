@@ -216,8 +216,8 @@ declare interface Parser extends ParserBase {
 	 * @param args arguments / 参数
 	 * @since v1.30.1
 	 */
-	callParserFunction(name: MagicWord, ...args: string[]): string;
-	callParserFunction(name: MagicWord, args: string[] | Record<string, string>): string;
+	callParserFunction(name: string, ...args: string[]): string;
+	callParserFunction(name: string, args: string[] | Record<string, string>): string;
 
 	/** @private */
 	warn: log;
@@ -467,7 +467,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.type = 'root';
 				root.pageName = opt?.page;
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.toString(), defaultNs, config, opt);
+				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt);
 				root.build();
 				for (const key of ['main', 'fragment'] as const) {
 					const str = t[key];
@@ -675,8 +675,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	callParserFunction(name: MagicWord, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
-		const {expandMagicWord}: typeof import('./addon/magicWords') = require('./addon/magicWords');
+	callParserFunction(name: string, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
+		const {expandMagicWord}: typeof import('./addon/magicWords') = require('./addon/magicWords'),
+			{getCanonicalName}: typeof import('./src/transclude') = require('./src/transclude');
 		if (typeof arg === 'string') {
 			args.unshift(arg);
 		} else if (Array.isArray(arg)) {
@@ -690,7 +691,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				args.push(`${key}=${value}`);
 			}
 		}
-		return expandMagicWord(name, args);
+		const [,,, canonicalName] = getCanonicalName(name, this.getConfig().parserFunction);
+		return expandMagicWord((canonicalName || name.toLowerCase()) as MagicWord, args);
 	},
 
 	/** @implements */

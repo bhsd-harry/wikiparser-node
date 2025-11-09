@@ -196,11 +196,8 @@ export abstract class TdToken extends TableBaseToken {
 		result.escape ||= esc;
 		result.correction = str.includes('\n') && Shadow.run(
 			() => new Token(str, this.getAttribute('config'))
-				.parseOnce(0, this.getAttribute('include'))
-				.parseOnce()
-				.parseOnce()
-				.toString()
-				.includes('\n'),
+				.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce()
+				.firstChild!.toString().includes('\n'),
 		);
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';

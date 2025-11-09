@@ -1,9 +1,16 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import {escape} from '../util/string';
+import {posix} from 'path';
+import {escape, replaceEntities, sanitizeId} from '../util/string';
 import {parsers} from '../util/constants';
+import {getId} from '../util/html';
 import Parser from '../index';
+import {Token} from '../src/index';
 import type {Config} from '../base';
+import type {Title} from '../lib/title';
 
+declare interface Locale extends Intl.Locale {
+	getTextInfo(): {direction: 'ltr' | 'rtl'};
+}
 declare interface TestConfig extends Config {
 	testArticlePath?: string;
 	testServer?: string;
@@ -41,6 +48,10 @@ const magicWords = [
 	'articlepath',
 	'server',
 	'servername',
+	'directionmark',
+	'contentlanguage',
+	'pagelanguage',
+	'userlanguage',
 	'revisionsize',
 	'numberofarticles',
 	'numberoffiles',
@@ -49,6 +60,9 @@ const magicWords = [
 	'numberofpages',
 	'numberofadmins',
 	'numberofedits',
+	'numberingroup',
+	'pagesincategory',
+	'pagesize',
 	'ns',
 	'nse',
 	'urlencode',
@@ -64,6 +78,61 @@ const magicWords = [
 	'canonicalurle',
 	'gender',
 	'formal',
+	'displaytitle',
+	'protectionlevel',
+	'protectionexpiry',
+	'defaultsort',
+	'revisionuser',
+	'cascadingsources',
+	'revisionid',
+	'revisionday',
+	'revisionday2',
+	'revisionmonth',
+	'revisionmonth1',
+	'revisionyear',
+	'revisiontimestamp',
+	'filepath',
+	'namespace',
+	'namespacee',
+	'namespacenumber',
+	'talkspace',
+	'talkspacee',
+	'subjectspace',
+	'subjectspacee',
+	'pagename',
+	'pagenamee',
+	'fullpagename',
+	'fullpagenamee',
+	'subpagename',
+	'subpagenamee',
+	'rootpagename',
+	'rootpagenamee',
+	'basepagename',
+	'basepagenamee',
+	'talkpagename',
+	'talkpagenamee',
+	'subjectpagename',
+	'subjectpagenamee',
+	'language',
+	'dir',
+	'padleft',
+	'padright',
+	'anchorencode',
+	'special',
+	'speciale',
+	'pageid',
+	'contentmodel',
+	'tag',
+	'rel2abs',
+	'titleparts',
+	'len',
+	'pos',
+	'rpos',
+	'sub',
+	'count',
+	'replace',
+	'explode',
+	'urldecode',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -132,7 +201,7 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		}
 		return namespaces[nsVal!] ?? '';
 	},
-	dict = {
+	dictUrl = {
 		20: '+',
 		21: '!',
 		24: '$',
@@ -145,10 +214,9 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		40: '@',
 		'7E': '~',
 	},
-	wfUrlencode = (s: string): string => encodeURIComponent(s).replace(
-		/%(2[01489ACF]|3B|40|7E)/gu,
-		(_, p) => dict[p as keyof typeof dict],
-	),
+	strip = (s: string): string => s.replace(/\0\d+.\x7F/gu, ''),
+	wfUrlencode = (s: string): string => encodeURIComponent(s.replaceAll(' ', '_'))
+		.replace(/%(2[01489ACF]|3B|40|7E)/gu, (_, p) => dictUrl[p as keyof typeof dictUrl]),
 	localurl = (config: Config, args: string[]): string => {
 		const url = urlFunction(config, args, true);
 		return typeof url === 'string' ? url : url.pathname + url.search;
@@ -160,23 +228,116 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 	canonicalurl = (config: Config, args: string[]): string => {
 		const [url] = urlFunction(config, args);
 		return url?.href ?? '';
-	};
+	},
+	makeTitle = (page: string, config: Config, nsid = 0): Title | '' => {
+		if (page.includes('\0')) {
+			return '';
+		}
+		const title = Parser.normalizeTitle(page, nsid, false, config, {halfParsed: true, temporary: true});
+		return title.valid ? title : '';
+	},
+	namespace = (title: Title, config: Config): string => config.namespaces[title.ns]!,
+	namespacee = (title: Title, config: Config): string => wfUrlencode(namespace(title, config)),
+	dictHtml1 = {
+		'"': '&#34;',
+		'&': '&#38;',
+		"'": '&#39;',
+		'=': '&#61;',
+		';': '&#59;',
+		'!!': '&#33;!',
+		__: '_#95;',
+		'://': '&#58;//',
+		'＿': '&#xFF3F;',
+		'~~~': '~~&#126;',
+		'\n!': '\n&#33;',
+		'\n#': '\n&#35;',
+		'\n*': '\n&#42;',
+		'\n:': '\n&#58;',
+		'\n----': '\n&#45;---',
+		'ISBN ': 'ISBN&#32;',
+		'PMID ': 'PMID&#32;',
+		'RFC ': 'RFC&#32;',
+	},
+	dictHtml2 = {'+': '&#43;', '-': '&#45;', _: '&#95;', '~': '&#126;'},
+	dictHtml3 = {_: '&#95;', '~': '&#126;'},
+	wfEscapeWikiText = (text: string, config: Config): string => {
+		if (!text) {
+			return '';
+		}
+		let output = `\n${text}`.replace(
+			/["&'=;＿]|!!|__|:\/\/|~{3}|\n(?:[!#*:]|-{4})|(?:ISBN|PMID|RFC) /gu,
+			m => dictHtml1[m as keyof typeof dictHtml1],
+		).slice(1);
+		output = output.charAt(0).replace(/[+_~-]/u, m => dictHtml2[m as keyof typeof dictHtml2])
+			+ output.slice(1);
+		output = output.slice(0, -1)
+			+ output.at(-1)!.replace(/[_~]/u, m => dictHtml3[m as keyof typeof dictHtml3]);
+		const re = new RegExp(
+			String.raw`\b(${
+				config.protocol.split('|')
+					.filter(p => p.endsWith(':'))
+					.map(p => p.slice(0, -1))
+					.join('|')
+			}):`,
+			'giu',
+		);
+		return output.replace(re, '$1&#58;');
+	},
+	pagenamee = (page: string): string => encodeURI(page.replaceAll(' ', '_')),
+	fullpagename = (title: Title, config: Config): string => wfEscapeWikiText(title.prefix + title.main, config),
+	fullpagenamee = (title: Title, config: Config): string =>
+		wfEscapeWikiText(pagenamee(title.prefix + title.main), config),
+	subpagename = (target: string, config: Config): string => {
+		const title = makeTitle(target, config);
+		if (!title) {
+			return '';
+		}
+		const {main} = title;
+		return main.slice(main.lastIndexOf('/') + 1);
+	},
+	language = (() => {
+		try {
+			return navigator.language; // eslint-disable-line n/no-unsupported-features/node-builtins
+		} catch {
+			return new Intl.DateTimeFormat().resolvedOptions().locale;
+		}
+	})(),
+	dir = (lang = language): 'ltr' | 'rtl' => {
+		try {
+			return (new Intl.Locale(lang) as Locale).getTextInfo().direction;
+		} catch {
+			return 'ltr';
+		}
+	},
+	pad = ([arg0, arg1, arg2 = '0']: [string, ...string[]], method: 'padStart' | 'padEnd'): string =>
+		arg0.includes('\0') ? arg0 : arg0[method](Number(arg1), strip(arg2)),
+	anchorencode = replaceEntities(),
+	special = (target: string, config: Config): string => {
+		const title = makeTitle(target, config, -1);
+		return title && title.ns === -1 ? title.prefix + title.main : 'Special:Badtitle';
+	},
+	contentmodels: Record<string, string> = {js: 'JavaScript', css: 'CSS', json: 'JSON', vue: 'Vue'};
 
 /**
  * 展开魔术字
  * @param name 魔术字名称
  * @param args 参数
+ * @param page 当前页面标题
  * @param config
  * @param now 当前时间
+ * @param accum
  * @throws `RangeError` 不支持的魔术字名称
  */
 export const expandMagicWord = (
 	name: MagicWord,
 	args: string[],
+	page = '',
 	config = Parser.getConfig(),
 	now = Parser.now,
+	accum?: Token[],
 ): string => {
-	const arg0 = args[0]!;
+	const arg0 = args[0]!,
+		target = args[0] ?? page;
 	switch (name) {
 		case 'currentyear':
 			return String(now.getUTCFullYear());
@@ -186,9 +347,9 @@ export const expandMagicWord = (
 			return currentMonth1(now);
 		case 'currentmonthname':
 		case 'currentmonthnamegen':
-			return now.toLocaleString('default', {month: 'long', timeZone: 'UTC'});
+			return now.toLocaleString(undefined, {month: 'long', timeZone: 'UTC'});
 		case 'currentmonthabbrev':
-			return now.toLocaleString('default', {month: 'short', timeZone: 'UTC'});
+			return now.toLocaleString(undefined, {month: 'short', timeZone: 'UTC'});
 		case 'currentday':
 			return currentDay(now);
 		case 'currentday2':
@@ -196,7 +357,7 @@ export const expandMagicWord = (
 		case 'currentdow':
 			return String(now.getUTCDay());
 		case 'currentdayname':
-			return now.toLocaleString('default', {weekday: 'long', timeZone: 'UTC'});
+			return now.toLocaleString(undefined, {weekday: 'long', timeZone: 'UTC'});
 		case 'currenttime':
 			return `${currentHour(now)}:${String(now.getUTCMinutes()).padStart(2, '0')}`;
 		case 'currenthour':
@@ -213,9 +374,9 @@ export const expandMagicWord = (
 			return localMonth1(now);
 		case 'localmonthname':
 		case 'localmonthnamegen':
-			return now.toLocaleString('default', {month: 'long'});
+			return now.toLocaleString(undefined, {month: 'long'});
 		case 'localmonthabbrev':
-			return now.toLocaleString('default', {month: 'short'});
+			return now.toLocaleString(undefined, {month: 'short'});
 		case 'localday':
 			return localDay(now);
 		case 'localday2':
@@ -223,7 +384,7 @@ export const expandMagicWord = (
 		case 'localdow':
 			return String(now.getDay());
 		case 'localdayname':
-			return now.toLocaleString('default', {weekday: 'long'});
+			return now.toLocaleString(undefined, {weekday: 'long'});
 		case 'localtime':
 			return `${localHour(now)}:${localMinute(now)}`;
 		case 'localhour':
@@ -243,6 +404,12 @@ export const expandMagicWord = (
 			const [url] = parseUrl(config);
 			return url?.hostname ?? '';
 		}
+		case 'directionmark':
+			return dir() === 'ltr' ? '\u200E' : '\u200F';
+		case 'contentlanguage':
+		case 'pagelanguage':
+		case 'userlanguage':
+			return language;
 		case 'revisionsize':
 		case 'numberofarticles':
 		case 'numberoffiles':
@@ -251,16 +418,21 @@ export const expandMagicWord = (
 		case 'numberofpages':
 		case 'numberofadmins':
 		case 'numberofedits':
+		case 'numberingroup':
+		case 'pagesincategory':
+		case 'pagesize':
+		case 'pageid':
+		case 'filepath':
 			return '0';
 		case 'ns':
 			return ns(config, args);
 		case 'nse':
-			return wfUrlencode(ns(config, args).replaceAll(' ', '_'));
+			return wfUrlencode(ns(config, args));
 		case 'urlencode': {
-			const s = arg0.replace(/\0\d+.\x7F/gu, '');
+			const s = strip(arg0);
 			switch (args[1]) {
 				case 'WIKI':
-					return wfUrlencode(s.replaceAll(' ', '_'));
+					return wfUrlencode(s);
 				case 'PATH':
 					return encodeURIComponent(s);
 				default:
@@ -297,6 +469,243 @@ export const expandMagicWord = (
 			return args[3] ?? args[1] ?? '';
 		case 'formal':
 			return arg0;
+		case 'displaytitle':
+		case 'protectionlevel':
+		case 'protectionexpiry':
+		case 'defaultsort':
+		case 'revisionid':
+		case 'revisionday':
+		case 'revisionday2':
+		case 'revisionmonth':
+		case 'revisionmonth1':
+		case 'revisionyear':
+		case 'revisiontimestamp':
+		case 'revisionuser':
+		case 'cascadingsources':
+			return '';
+		case 'namespace': {
+			const title = makeTitle(target, config);
+			return title && namespace(title, config);
+		}
+		case 'namespacee': {
+			const title = makeTitle(target, config);
+			return title && namespacee(title, config);
+		}
+		case 'namespacenumber': {
+			const title = makeTitle(target, config);
+			return title && String(title.ns);
+		}
+		case 'talkspace': {
+			const title = makeTitle(target, config);
+			return title && namespace(title.toTalkPage(), config);
+		}
+		case 'talkspacee': {
+			const title = makeTitle(target, config);
+			return title && namespacee(title.toTalkPage(), config);
+		}
+		case 'subjectspace': {
+			const title = makeTitle(target, config);
+			return title && namespace(title.toSubjectPage(), config);
+		}
+		case 'subjectspacee': {
+			const title = makeTitle(target, config);
+			return title && namespacee(title.toSubjectPage(), config);
+		}
+		case 'pagename': {
+			const title = makeTitle(target, config);
+			return title && wfEscapeWikiText(title.main, config);
+		}
+		case 'pagenamee': {
+			const title = makeTitle(target, config);
+			return title && wfEscapeWikiText(pagenamee(title.main), config);
+		}
+		case 'fullpagename': {
+			const title = makeTitle(target, config);
+			return title && fullpagename(title, config);
+		}
+		case 'fullpagenamee': {
+			const title = makeTitle(target, config);
+			return title && fullpagenamee(title, config);
+		}
+		case 'subpagename':
+			return wfEscapeWikiText(subpagename(target, config), config);
+		case 'subpagenamee':
+			return wfEscapeWikiText(pagenamee(subpagename(target, config)), config);
+		case 'rootpagename': {
+			const title = makeTitle(target, config);
+			return title && wfEscapeWikiText(title.toRootPage().main, config);
+		}
+		case 'rootpagenamee': {
+			const title = makeTitle(target, config);
+			return title && wfEscapeWikiText(pagenamee(title.toRootPage().main), config);
+		}
+		case 'basepagename': {
+			const title = makeTitle(target, config);
+			return title && wfEscapeWikiText(title.toBasePage().main, config);
+		}
+		case 'basepagenamee': {
+			const title = makeTitle(target, config);
+			return title && wfEscapeWikiText(pagenamee(title.toBasePage().main), config);
+		}
+		case 'talkpagename': {
+			const title = makeTitle(target, config);
+			return title && fullpagename(title.toTalkPage(), config);
+		}
+		case 'talkpagenamee': {
+			const title = makeTitle(target, config);
+			return title && fullpagenamee(title.toTalkPage(), config);
+		}
+		case 'subjectpagename': {
+			const title = makeTitle(target, config);
+			return title && fullpagename(title.toSubjectPage(), config);
+		}
+		case 'subjectpagenamee': {
+			const title = makeTitle(target, config);
+			return title && fullpagenamee(title.toSubjectPage(), config);
+		}
+		case 'language':
+			try {
+				return new Intl.DisplayNames(args[1] || args[0], {type: 'language'}).of(args[0] || language) ?? '';
+			} catch {
+				return '';
+			}
+		case 'dir':
+			return dir(args[0]);
+		case 'padleft':
+			return pad(args as [string, ...string[]], 'padStart');
+		case 'padright':
+			return pad(args as [string, ...string[]], 'padEnd');
+		case 'anchorencode':
+			return anchorencode(getId(
+				strip(arg0).replace(
+					/\[\[([^[]+?)\]\]/gu,
+					(_, p: string) => {
+						const i = p.indexOf('|');
+						return i <= 0 || i === p.length - 1 ? p : p.slice(i + 1);
+					},
+				),
+			)).replace(/%(?=[\da-f]{2})/giu, '%25');
+		case 'special':
+			return special(target, config);
+		case 'speciale':
+			return wfUrlencode(special(target, config));
+		case 'contentmodel': {
+			if (args.length === 0) {
+				return 'wikitext';
+			} else if (arg0 !== 'local' && arg0 !== 'canonical') {
+				return '';
+			}
+			const title = makeTitle(args[1] ?? page, config);
+			if (!title) {
+				return '';
+			}
+			const {ns: n, main, extension} = title,
+				isSubpage = main.includes('/');
+			if (isSubpage && (n === 10 || n === 828) && extension === 'css') {
+				return 'sanitized-css';
+			} else if (n === 828) {
+				if (extension === 'json') {
+					return 'JSON';
+				}
+				return main.endsWith('/doc') ? 'wikitext' : 'Scribunto';
+			}
+			return (n === 8 || n === 2 && isSubpage) && extension && extension in contentmodels
+				? contentmodels[extension]!
+				: 'wikitext';
+		}
+		case 'tag': {
+			const tagName = strip(arg0).toLowerCase(),
+				[, inner, ...attrs] = args,
+				attributes = new Map<string, string>();
+			for (const arg of attrs) {
+				const i = arg.indexOf('=');
+				if (i === -1) {
+					continue;
+				}
+				const key = arg.slice(0, i).trim();
+				if (key.includes('\0')) {
+					continue;
+				}
+				let value = strip(arg.slice(i + 1)).trim();
+				const mt = /^(?:["'](.+)["']|""|'')$/su.exec(value);
+				if (mt) {
+					value = mt[1] ?? '';
+				}
+				attributes.set(key, value);
+			}
+			const tag = `<${tagName} ${
+				[...attributes].map(([key, value]) => `${sanitizeId(key)}="${sanitizeId(value)}"`).join(' ')
+			}${inner === undefined ? '/>' : `>${inner}</${tagName}>`}`;
+			return accum ? new Token(tag, config, accum).parseOnce(0).firstChild!.toString() : tag;
+		}
+		case 'rel2abs': {
+			const to = !arg0 || arg0.startsWith('/') ? `.${arg0}` : arg0,
+				from = /^\.{1,2}(?:$|\/)/u.test(to) ? args[1] || page : '',
+				abs = posix.join(from, to);
+			return abs === '.' || /^\.\.(?:$|\/)/u.test(abs)
+				? '<strong class="error">'
+				+ 'Error: Invalid depth in path (tried to access a node above the root node).'
+				+ '</strong>'
+				: abs.replace(/\/$/u, '');
+		}
+		case 'titleparts': {
+			const title = makeTitle(arg0, config);
+			if (!title) {
+				return arg0;
+			}
+			const parts = Number(args[1]) || NaN;
+			let offset = Number(args[2]) || 0;
+			if (offset > 0) {
+				offset--;
+			}
+			const end = parts < 0 ? parts : offset + parts || undefined,
+				bits = (title.prefix + title.main).split('/');
+			if (bits.length > 25) {
+				bits[24] = bits.slice(24).join('/');
+				bits.length = 25;
+			}
+			return bits.slice(offset, end).join('/');
+		}
+		case 'len':
+			return String([...strip(arg0)].length);
+		case 'pos': {
+			const i = strip(arg0).indexOf(strip(args[1] ?? '') || ' ', Number(args[2]));
+			return i === -1 ? '' : String(i);
+		}
+		case 'rpos':
+			return String(strip(arg0).lastIndexOf(strip(args[1] ?? '') || ' '));
+		case 'sub': {
+			const inLength = Number(args[2]);
+			return strip(arg0)[inLength < 0 ? 'slice' : 'substr'](Number(args[1]) || 0, inLength || undefined);
+		}
+		case 'count':
+			return String(strip(arg0).split(strip(args[1] ?? '') || ' ').length - 1);
+		case 'replace': {
+			const from = strip(args[1] ?? '') || ' ',
+				to = strip(args[2] ?? ''),
+				bits = strip(arg0).split(from),
+				limit = Number(args[3]);
+			return Number.isNaN(limit) || limit < 0 || limit >= bits.length - 1
+				? bits.join(to)
+				: bits.slice(0, limit + 1).join(to) + from + bits.slice(limit + 1).join(from);
+		}
+		case 'explode': {
+			const [, arg1 = '', arg2 = 0] = args,
+				inPos = Number(arg2);
+			if (arg2 === '' || Number.isNaN(inPos)) {
+				return '';
+			}
+			const inDiv = strip(arg1) || ' ',
+				bits = strip(arg0).split(inDiv),
+				inLim = Number(args[3]);
+			if (inLim > 0 && bits.length > inLim) {
+				bits[inLim - 1] = bits.slice(inLim - 1).join(inDiv);
+				bits.length = inLim;
+			}
+			return bits.at(inPos) ?? '';
+		}
+		case 'urldecode':
+			return decodeURIComponent(strip(arg0).replaceAll('+', ' '));
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}

@@ -22,6 +22,7 @@ const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 		'if',
 		'ifeq',
 		'ifexist',
+		'iferror',
 		'switch',
 	]);
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -71,6 +72,7 @@ const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): stri
  * 展开模板
  * @param wikitext
  * @param page 页面名称
+ * @param callPage 调用页面名称
  * @param config
  * @param include
  * @param context 模板调用环境
@@ -81,6 +83,7 @@ const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): stri
 const expand = (
 	wikitext: string,
 	page: string | undefined,
+	callPage: string | undefined,
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
@@ -179,7 +182,8 @@ const expand = (
 					}
 				}
 				return implicitNewLine(
-					expand(template, title, config, true, target, now, accum, [...stack, title]).toString(),
+					expand(template, title, callPage, config, true, target, now, accum, [...stack, title])
+						.toString(),
 					prev,
 				);
 			} else if (Parser.functionHooks.has(name)) {
@@ -190,7 +194,14 @@ const expand = (
 				return context === false
 					? m
 					: implicitNewLine(
-						expandMagicWord(name as MagicWord, args.map(({value}) => value), config, now),
+						expandMagicWord(
+							name as MagicWord,
+							args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
+							callPage,
+							config,
+							now,
+							accum,
+						),
 						prev,
 					);
 			} else if (!solvedMagicWords.has(name)) {
@@ -201,7 +212,7 @@ const expand = (
 			const var1 = decodeHtml(args[0]!.value),
 				var2 = decodeHtml(args[1]!.value),
 				known = !/\0\d+[tm]\x7F/u.test(var1);
-			if (known && (name === 'if' || name === 'ifexist')) {
+			if (known && (name === 'if' || name === 'ifexist' || name === 'iferror')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
 					const {valid, interwiki} = Parser.normalizeTitle(
@@ -212,6 +223,9 @@ const expand = (
 						{halfParsed: true, temporary: true, page: ''},
 					);
 					bool = valid && !interwiki;
+				} else if (name === 'iferror') {
+					bool = /<(?:strong|span|p|div)\s+(?:[^\s>]+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u
+						.test(var1);
 				}
 				return parseIf(accum, prev, args[bool ? 1 : 2]);
 			} else if (known && name === 'ifeq' && !/\0\d+[tm]\x7F/u.test(var2)) {
@@ -276,13 +290,17 @@ const expand = (
  * @param token 目标节点
  * @param context 模板调用环境
  */
-const expandToken = (token: Token, context?: false): Token => expand(
-	token.toString(),
-	token.pageName,
-	token.getAttribute('config'),
-	token.getAttribute('include'),
-	context,
-);
+const expandToken = (token: Token, context?: false): Token => {
+	const {pageName} = token;
+	return expand(
+		token.toString(),
+		pageName,
+		pageName,
+		token.getAttribute('config'),
+		token.getAttribute('include'),
+		context,
+	);
+};
 
 Token.prototype.expand = /** @implements */ function(): Token {
 	return Shadow.run(() => expandToken(this).parse());

@@ -537,3 +537,168 @@ Basic {{GENDER:}} test
 </p><p>text for unspecified gender
 </p>
 !! end
+
+!! test
+Basic {{NAMESPACE}} test
+!! wikitext
+{{NAMESPACE:Template talk:Main Page}}
+
+{{NAMESPACEE:Template talk:Main Page}}
+
+{{NAMESPACENUMBER:Template talk:Main Page}}
+
+{{TALKSPACE:Template:Main Page}}
+
+{{TALKSPACEE:Template:Main Page}}
+
+{{SUBJECTSPACE:Template talk:Main Page}}
+
+{{SUBJECTSPACEE:Template talk:Main Page}}
+!! html
+<p>Template talk
+</p><p>Template_talk
+</p><p>11
+</p><p>Template talk
+</p><p>Template_talk
+</p><p>Template
+</p><p>Template
+</p>
+!! end
+
+!! test
+Basic {{DIRMARK}} test
+!! wikitext
+{{DIRMARK}}
+!! html
+<p>‎
+</p>
+!! end
+
+!! test
+T401099
+!! wikitext
+{{#tag:pre|CLICK|data-/onclick=alert("CLICKED")}}
+!! html
+<pre data-="">CLICK</pre>
+!! end
+
+!! test
+Basic {{#iferror:}} test
+!! wikitext
+{{#iferror:<strong class="error">Expression error.</strong>|yes|no}}
+!! html
+<p>yes
+</p>
+!! end
+
+!! test
+Basic {{#rel2abs:}} test
+!! wikitext
+{{#rel2abs: /quok | Help:Foo/bar/baz }}
+
+{{#rel2abs: ./quok | Help:Foo/bar/baz }}
+
+{{#rel2abs: ../quok | Help:Foo/bar/baz }}
+
+{{#rel2abs: ../. | Help:Foo/bar/baz }}
+
+{{#rel2abs: ../quok/. | Help:Foo/bar/baz }}
+
+{{#rel2abs: ../../quok | Help:Foo/bar/baz }}
+
+{{#rel2abs: ../../../quok | Help:Foo/bar/baz }}
+
+{{#rel2abs: ../../../../quok | Help:Foo/bar/baz }}
+!! html
+<p>Help:Foo/bar/baz/quok
+</p><p>Help:Foo/bar/baz/quok
+</p><p>Help:Foo/bar/quok
+</p><p>Help:Foo/bar
+</p><p>Help:Foo/bar/quok
+</p><p>Help:Foo/quok
+</p><p>quok
+</p><p><strong class="error">Error: Invalid depth in path: "Help:Foo/bar/baz/../../../../quok" (tried to access a node above the root node)</strong>
+</p>
+!! end
+
+!! test
+Basic {{#rpos:}} test
+!! wikitext
+{{#rpos:Žmržlina|lina}}
+
+{{#rpos:<nowiki>This is a </nowiki>test|test}}
+
+{{#rpos:Žmržlina}}
+!! html
+<p>4
+</p><p>0
+</p><p>-1
+</p>
+!! end
+
+!! test
+Basic {{#sub:}} test
+!! wikitext
+{{#sub:Icecream|3}}
+{{#sub:Icecream|0|3}}
+{{#sub:Icecream|-3}}
+{{#sub:Icecream|3|3}}
+{{#sub:Icecream|3|-3}}
+{{#sub:Icecream|-3|2}}
+{{#sub:Icecream|3|0}}
+{{#sub:Icecream|0|3}}
+{{#sub:Icecream|3|-6}}
+{{#sub:Žmržlina|3}}
+{{#sub:<nowiki>This is a </nowiki>test|1}}
+!! html
+<p>cream
+Ice
+eam
+cre
+cr
+ea
+cream
+Ice
+</p><p>žlina
+est
+</p>
+!! end
+
+!! test
+Basic {{#count:}} test
+!! wikitext
+{{#count:ababa|aba}}
+!! html
+<p>1
+</p>
+!! end
+
+!! test
+Basic {{#replace:}} test
+!! wikitext
+{{#replace:My_little_home_page|_|<nowiki/> <nowiki/>}}
+{{#replace:Žmržlina|ž|z}}
+{{#replace:Žmržlina|ž|z|0}}
+!! html
+<p>My little home page
+Žmrzlina
+Žmržlina
+</p>
+!! end
+
+!! test
+Basic {{#explode:}} test
+!! wikitext
+{{#explode:And if you tolerate this| |2}}
+{{#explode:String/Functions/Code|/|-1}}
+{{#explode:Split%By%Percentage%Signs|%|2}}
+{{#explode:And if you tolerate this thing and expect no more| |2|3}}
+{{#explode:Žmržlina|ž|1}}
+!! html
+<p>you
+Code
+Percentage
+you tolerate this thing and expect no more
+lina
+</p>
+!! end

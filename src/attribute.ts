@@ -509,7 +509,7 @@ export abstract class AttributeToken extends Token {
 				this.tag,
 				k,
 				this.#equal,
-				'',
+				undefined,
 				this.#quotes,
 				this.getAttribute('config'),
 			);

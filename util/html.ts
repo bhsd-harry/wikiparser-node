@@ -164,10 +164,15 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt?: H
  * get the id of a section heading
  * @param tokens inner tokens of a section heading
  */
-export const getId = (tokens: Token | AstNodes[]): string => {
-	const opt: HtmlOpt = {nocc: true},
-		content = Array.isArray(tokens) ? html(tokens, '', opt) : tokens.toHtmlInternal(opt),
-		id = decodeHtml(sanitizeAlt(content.replaceAll('_', ' '))!)
-			.replace(/[\s_]+/gu, '_');
+export const getId = (tokens: Token | AstNodes[] | string): string => {
+	let content: string;
+	if (typeof tokens === 'string') {
+		content = tokens;
+	} else {
+		const opt: HtmlOpt = {nocc: true};
+		content = Array.isArray(tokens) ? html(tokens, '', opt) : tokens.toHtmlInternal(opt);
+	}
+	const id = decodeHtml(sanitizeAlt(content.replaceAll('_', ' '))!)
+		.replace(/[\s_]+/gu, '_');
 	return id.endsWith('_') ? id.slice(0, -1) : id;
 };

@@ -45,6 +45,29 @@ const basicMagicWords = new Map([['=', '='], ['!', '|']]);
 /* NOT FOR BROWSER END */
 
 /**
+ * 获取魔术字的规范名称
+ * @param name 魔术字
+ * @param parserFunction 解析设置中的parserFunction属性
+ */
+export const getCanonicalName = (
+	name: string,
+	parserFunction: Config['parserFunction'],
+): [string, boolean, boolean, string | false] => {
+	const lcName = name.toLowerCase(),
+		[insensitive, sensitive] = parserFunction,
+		isOldSchema = Array.isArray(sensitive),
+		isSensitive = isOldSchema ? sensitive.includes(name) : Object.prototype.hasOwnProperty.call(sensitive, name);
+	return [
+		lcName,
+		isOldSchema,
+		isSensitive,
+		!isOldSchema && isSensitive
+			? sensitive[name]!
+			: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+	];
+};
+
+/**
  * template or magic word
  *
  * 模板或魔术字
@@ -145,7 +168,7 @@ export abstract class TranscludeToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
-		const {parserFunction: [insensitive, sensitive], variable, functionHook} = config,
+		const {parserFunction, variable, functionHook} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
@@ -167,14 +190,7 @@ export abstract class TranscludeToken extends Token {
 				name = isFunction
 					? cleaned.slice(cleaned.search(/\S/u)) + (fullWidth ? '：' : '')
 					: cleaned.trim(),
-				lcName = name.toLowerCase(),
-				isOldSchema = Array.isArray(sensitive),
-				isSensitive = isOldSchema
-					? sensitive.includes(name)
-					: Object.prototype.hasOwnProperty.call(sensitive, name),
-				canonicalName = !isOldSchema && isSensitive
-					? sensitive[name]!
-					: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+				[lcName, isOldSchema, isSensitive, canonicalName] = getCanonicalName(name, parserFunction),
 				isFunc = isOldSchema && isSensitive
 					|| !('functionHook' in config) || functionHook.includes(canonicalName as string),
 				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);

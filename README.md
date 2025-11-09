@@ -104,7 +104,7 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 
 ### Transclusion
 
-1. Most parser functions are not supported.
+1. Some parser functions are not supported.
 
 ### Heading
 
