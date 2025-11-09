@@ -94,13 +94,19 @@ export const decodeNumber = factory(
 
 /* PRINT ONLY */
 
-const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
+const entities = {
+	'&': 'amp',
+	'<': 'lt',
+	'>': 'gt',
+	'"': 'quot',
+	'\n': '#10',
+};
 
 /**
  * replace by HTML entities
  * @param re regex
  */
-const replaceEntities = (re: RegExp): (str: string) => string =>
+export const replaceEntities = (re = /[&<>"{}[\]|]/gu): (str: string) => string =>
 	factory(re, p => `&${entities[p as keyof typeof entities]};`);
 
 /** escape HTML entities */

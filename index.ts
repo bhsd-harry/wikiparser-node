@@ -279,7 +279,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.type = 'root';
 				root.pageName = opt?.page;
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.toString(), defaultNs, config, opt);
+				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt);
 				root.build();
 				for (const key of ['main', 'fragment'] as const) {
 					const str = t[key];
