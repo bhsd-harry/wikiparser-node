@@ -63,6 +63,7 @@ const magicWords = [
 	'canonicalurl',
 	'canonicalurle',
 	'gender',
+	'formal',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -175,6 +176,7 @@ export const expandMagicWord = (
 	config = Parser.getConfig(),
 	now = Parser.now,
 ): string => {
+	const arg0 = args[0]!;
 	switch (name) {
 		case 'currentyear':
 			return String(now.getUTCFullYear());
@@ -255,7 +257,7 @@ export const expandMagicWord = (
 		case 'nse':
 			return wfUrlencode(ns(config, args).replaceAll(' ', '_'));
 		case 'urlencode': {
-			const s = args[0]!.replace(/\0\d+.\x7F/gu, '');
+			const s = arg0.replace(/\0\d+.\x7F/gu, '');
 			switch (args[1]) {
 				case 'WIKI':
 					return wfUrlencode(s.replaceAll(' ', '_'));
@@ -266,19 +268,19 @@ export const expandMagicWord = (
 			}
 		}
 		case 'lcfirst': {
-			const value = args[0]!,
+			const value = arg0,
 				[first] = value;
 			return value && first!.toLowerCase() + value.slice(first!.length);
 		}
 		case 'ucfirst': {
-			const value = args[0]!,
+			const value = arg0,
 				[first] = value;
 			return value && first!.toUpperCase() + value.slice(first!.length);
 		}
 		case 'lc':
-			return args[0]!.toLowerCase();
+			return arg0.toLowerCase();
 		case 'uc':
-			return args[0]!.toUpperCase();
+			return arg0.toUpperCase();
 		case 'localurl':
 			return localurl(config, args);
 		case 'localurle':
@@ -293,6 +295,8 @@ export const expandMagicWord = (
 			return escape(canonicalurl(config, args));
 		case 'gender':
 			return args[3] ?? args[1] ?? '';
+		case 'formal':
+			return arg0;
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}

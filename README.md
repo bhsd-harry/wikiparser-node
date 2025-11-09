@@ -96,7 +96,7 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 ## HTML conversion
 
 <details>
-	<summary>Expand</summary>
+    <summary>Expand</summary>
 
 ### Extension
 
