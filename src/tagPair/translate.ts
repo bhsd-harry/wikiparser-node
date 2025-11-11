@@ -16,6 +16,7 @@ export abstract class TranslateToken extends TagPairToken {
 	declare readonly childNodes: readonly [SyntaxToken, Token];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): Token;
+	abstract override get innerText(): string;
 
 	override get type(): 'translate' {
 		return 'translate';
