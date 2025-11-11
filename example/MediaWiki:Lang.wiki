@@ -1,6 +1,0 @@
-{{#ifeq:
-  {{lc:{{#titleparts:{{FULLPAGENAME}}|1|-1}}}}<!-- broken test; we should restrict to accept only subpages that could match a lowercase language code; keep any uppercase letter meaning not a language code -->
-| {{lc:{{#language:{{#titleparts:{{FULLPAGENAME}}|1|-1}}}}}}<!-- broken test; fails on some languages whose  autonym is identical to their lowercase code -->
-| en
-| {{#titleparts:{{FULLPAGENAME}}|1|-1}}
-}}<!---->

@@ -30,6 +30,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	declare readonly childNodes: readonly [SyntaxToken, Token];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): Token;
+	abstract override get innerText(): string;
 
 	/* NOT FOR BROWSER */
 
@@ -38,8 +39,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
-
-	abstract override get innerText(): string;
 
 	override get type(): 'translate' {
 		return 'translate';
@@ -177,8 +176,10 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	}
 
 	/** @private */
-	cleanup(): void {
-		const {firstChild, lastChild} = this.lastChild;
+	@cached()
+	override toHtmlInternal(opt?: HtmlOpt): string {
+		const inner = this.lastChild,
+			{firstChild, lastChild} = inner;
 		if (firstChild?.type === 'text' && firstChild.data.startsWith('\n')) {
 			firstChild.deleteData(0, 1);
 		}
@@ -192,13 +193,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 				nextSibling.deleteData(0, 1);
 			}
 		}
-	}
-
-	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: HtmlOpt): string {
-		this.cleanup();
-		return this.lastChild.toHtmlInternal(opt);
+		return inner.toHtmlInternal(opt);
 	}
 }
 

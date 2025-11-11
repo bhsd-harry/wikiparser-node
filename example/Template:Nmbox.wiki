@@ -1,8 +1,0 @@
-<templatestyles src="Template:Nmbox/styles.css" />
-<div class="nmbox noprint {{dir|{{PAGELANGUAGE}}|mw-content-rtl|mw-content-ltr}}">{{#if: {{{image|}}}{{{header|}}}
-|<div class="nmbox-header">{{#if: {{{image|}}}|<div class="nmbox-image mbox-image">{{{image|}}}</div>}}{{{header|}}}
-</div>}}
-{{#if:{{{text|}}}|<div class="nmbox-text mbox-text">{{{text|}}}</div>}}
-</div><noinclude>
-{{documentation}}
-</noinclude>
