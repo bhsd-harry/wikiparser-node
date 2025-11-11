@@ -7,6 +7,7 @@ on:
     branches: ["browser"]
     paths:
       - '*.html'
+      - 'example/*.html'
       - 'extensions/dist/*.js'
       - 'extensions/*.css'
       - 'bundle/*.js'
