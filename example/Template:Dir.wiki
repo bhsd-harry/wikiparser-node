@@ -1,0 +1,5 @@
+{{#ifeq:{{#dir:{{{lang|{{{1|{{int:lang}}}}}}}}}}|rtl|{{{2|{{{rtl|rtl}}}}}}|{{{3|{{{ltr|ltr}}}}}}}}<noinclude>
+
+{{Documentation}}
+
+</noinclude>

@@ -1,0 +1,30 @@
+<noinclude><languages/>
+</noinclude>{{#switch:
+| =
+<templatestyles src="Template:PD Help Page/styles.css"/><table class="template-pd-help-page"><tr>
+<td class="icon-cell">[[File:PD-icon.svg|30px|link=|alt=PD]]</td>
+<td><translate><!--T:3--> '''Note:''' When you edit this page, you agree to release your contribution under the [<tvar name=cc0>https://creativecommons.org/publicdomain/zero/1.0/{{cclang}}</tvar> CC0]. See [[<tvar name=pd-help>Project:PD help</tvar>|Public Domain Help Pages]] for more info.</translate> {{#if:{{{imported|}}}|<br />'''<translate><!--T:6--> Some old revisions for this page were imported under CC BY-SA license.</translate> <translate><!--T:7--> Only new contributions are PD.</translate>'''|}}
+</td>
+<td class="icon-cell">[[File:PD-icon.svg|30px|link=|alt=PD]]</td>
+</tr></table>
+| #default=
+  {{#invoke:Template translation|renderTranslatedTemplate|template=Template:PD Help Page|noshift=1|uselang={{int:lang}}}}
+}}<noinclude>
+{{Documentation|content=
+{{Uses TemplateStyles|Template:PD Help Page/styles.css}}
+<translate>
+<!--T:8-->
+<tvar name=1>{{ll|Project:PD help}}</tvar> notice.
+
+== Examples == <!--T:9-->
+</translate>
+* <code><nowiki>{{PD Help Page}}</nowiki></code>
+{{PD Help Page}}
+
+* <code><nowiki>{{PD Help Page|imported=1}}</nowiki></code>
+{{PD Help Page|imported=1}}
+== TemplateData ==
+{{PD Help Page/doc}}
+
+}}
+[[Category:Templates{{#translation:}}]]</noinclude>

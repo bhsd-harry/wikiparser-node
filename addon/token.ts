@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {classes, states} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {removeComment, removeCommentLine, decodeHtml} from '../util/string';
+import {removeComment, removeCommentLine, decodeHtml, tidy} from '../util/string';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -170,12 +170,12 @@ const expand = (
 					}
 					Parser.templates.set(
 						title,
-						fs.readFileSync(path.join(file.parentPath, file.name), 'utf8'),
+						tidy(fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')),
 					);
 				} else if (stack.includes(title)) {
 					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
-				let template = Parser.templates.get(title)!;
+				let template = Parser.templates.get(title)!.replace(/\n$/u, '');
 				if (!isTemplate) {
 					for (let j = 1; j < args.length; j++) {
 						template = template.replaceAll(`$${j}`, removeComment(args[j]!.toString()));
@@ -210,9 +210,10 @@ const expand = (
 				return prev;
 			}
 			const var1 = decodeHtml(args[0]!.value),
+				knownVar1 = Boolean(var1.replace(/\0\d+[tm]\x7F/gu, '').trim()),
 				var2 = decodeHtml(args[1]!.value),
 				known = !/\0\d+[tm]\x7F/u.test(var1);
-			if (known && (name === 'if' || name === 'ifexist' || name === 'iferror')) {
+			if (name === 'if' && (known || knownVar1) || known && (name === 'ifexist' || name === 'iferror')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
 					const {valid, interwiki} = Parser.normalizeTitle(

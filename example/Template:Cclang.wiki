@@ -1,0 +1,17 @@
+{{#switch:{{int:lang}}
+|ar|be|bg|bn|ca|cs|da|de|el|eo
+|es|et|eu|fa|fi|fr|ga|gl|hr|hu
+|id|is|it|ja|ko|lt|lv|ms|nl|no
+|pl|pt|ro|ru|sl|sv|tr|uk=deed.{{int:lang}}
+|es-es=deed.es
+|pt-br=deed.pt-br
+|sr|sr-ec|sr-el|sr-latn=deed.sr-latn
+|zh|zh-hans|zh-cn|zh-my|zh-sg=deed.zh-hans
+|zh-hant|zh-hk|zh-mo|zh-tw=deed.zh-hant
+|#default=<!--empty-->
+}}<noinclude>
+{{Documentation|content=
+This template is used to create a link to the correct translation of Creative Commons licenses, based on the user's interface language.
+}}
+[[Category:Templates{{#translation:}}]]
+</noinclude>

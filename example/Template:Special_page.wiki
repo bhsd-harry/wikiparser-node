@@ -1,0 +1,26 @@
+<noinclude>
+<languages />
+</noinclude>{{nmbox
+ | header = {{ll|Help:Special pages|2=<translate><!--T:1--> Special pages – Help</translate>}}
+ | image = [[File:Codex icon specialPages color-progressive.svg|20px|link=|alt=]]
+ | text = <div style="margin-bottom:4px;">{{flatlist|
+*{{ll|Help:All pages|nsp=0}}
+*{{ll|Help:ApiSandbox|nsp=0}}
+*{{ll|Help:Diff|nsp=0}}
+*{{ll|Help:ExpandTemplates|nsp=0}}
+*{{ll|Help:Merge history|nsp=0}}
+*{{ll|Help:New files|nsp=0}}
+*{{ll|Help:New pages|nsp=0}}
+*{{ll|Help:PermanentLink|nsp=0}}
+*{{ll|Help:Preferences|nsp=0}}
+*{{ll|Help:Random page|nsp=0}}
+*{{ll|Help:Random root page|nsp=0}}
+*{{ll|Help:Recent changes|nsp=0}}
+*{{ll|Help:Undelete|nsp=0}}
+*{{ll|Help:Watchlist|nsp=0}}
+*{{ll|Help:What links here|nsp=0}}
+}}</div>
+}}<includeonly>[[Category:Special Pages{{#translation:}}|{{PAGENAME}}]]</includeonly><noinclude>
+
+[[Category:Templates{{#translation:}}]]
+</noinclude>

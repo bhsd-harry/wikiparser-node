@@ -1,0 +1,4 @@
+<templatestyles src="Template:Flatlist/styles.css"/><div class="hlist {{{class|}}}" {{#if:{{{style|}}}{{{indent|}}}|style="{{#if:{{{indent|}}}|margin-left: {{#expr:{{{indent}}}*1.6}}em;}} {{{style|}}}"}}>{{#if:{{{1|}}}|
+{{{1}}}
+</div>}}<noinclude>
+{{Documentation}}</noinclude>
