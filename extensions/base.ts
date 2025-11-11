@@ -444,7 +444,7 @@ const size = (html: HTMLElement): void => {
 		gutter.style.minHeight = `${clientHeight + 1}px`;
 	}
 	const sizer = document.createElement('span'),
-		{style: {paddingLeft, paddingRight}} = html;
+		{paddingLeft, paddingRight} = html.style;
 	sizer.className = 'wikiparser-sizer';
 	sizer.style.paddingLeft = paddingLeft;
 	sizer.style.paddingRight = paddingRight;
