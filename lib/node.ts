@@ -598,7 +598,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	verifyChild(i: number, addition = 0): void {
-		const {childNodes: {length}} = this;
+		const {length} = this.childNodes;
 		/* istanbul ignore if */
 		if (i < -length || i >= length + addition) {
 			throw new RangeError(`The child node at position ${i} does not exist!`);

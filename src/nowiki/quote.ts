@@ -163,7 +163,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
-		const {closing: {bold, italic}} = this;
+		const {bold, italic} = this.closing;
 		return (bold ? '</b>' : '') + (italic ? '</i>' : '')
 			+ (italic === false ? '<i>' : '') + (bold === false ? '<b>' : '');
 	}

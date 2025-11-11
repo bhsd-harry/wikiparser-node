@@ -68,7 +68,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 				str += `\0${accum.length - 1}n\x7F`;
 			};
 			while (i !== -1 && j !== -1) {
-				const token = `\0${accum.length}e\x7F`;
+				const token = `\0${accum.length}g\x7F`;
 				new OnlyincludeToken(wikitext.slice(i + length, j), config, accum);
 				if (i > 0) {
 					noinclude(wikitext.slice(0, i));

@@ -49,7 +49,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** whether to be a self link / 是否链接到自身 */
 	get selfLink(): boolean {
-		const {link: {title, fragment}} = this;
+		const {title, fragment} = this.link;
 		return !title && Boolean(fragment);
 	}
 

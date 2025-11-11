@@ -649,7 +649,7 @@ export abstract class AttributeToken extends Token {
 				`Please consider replacing \`${quote}\` with \`${quote === '"' ? `'` : '"'}\`!`,
 			);
 		} else if (declaration.length > 0) {
-			const {value: {offset, length}} = declaration.at(-1)!;
+			const {offset, length} = declaration.at(-1)!.value;
 			this.setValue(style.slice(doc.pre.length, offset) + value + style.slice(offset + length));
 		} else {
 			this.setValue(`${style.slice(doc.pre.length)}${/;\s*$/u.test(style) ? '' : '; '}${key}: ${value}`);

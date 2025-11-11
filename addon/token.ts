@@ -14,7 +14,14 @@ import {expandedMagicWords, expandMagicWord} from './magicWords';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
 import type {MagicWord} from './magicWords';
-import type {HeadingToken, ArgToken, TranscludeToken, ParameterToken} from '../internal';
+import type {
+	HeadingToken,
+	ArgToken,
+	TranscludeToken,
+	ParameterToken,
+	OnlyincludeToken,
+	TranslateToken,
+} from '../internal';
 
 const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 	antiBlockElems = 'td|th',
@@ -24,7 +31,8 @@ const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 		'ifexist',
 		'iferror',
 		'switch',
-	]);
+	]),
+	errorRegex = /<(?:strong|span|p|div)\s+(?:[^\s>]+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:table|\/(?:td|th)|\/?(?:tr|caption|dt|dd|li))\b/iu;
 const openRegex = new RegExp(
@@ -105,10 +113,16 @@ const expand = (
 			continue;
 		}
 		const {data} = plain.firstChild!;
-		if (!/\0\d+[tm]\x7F/u.test(data)) {
+		if (!/\0\d+[tmg]\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = data.replace(/([^\x7F]?)\0(\d+)[tm]\x7F/gu, (m, prev: string, i: string) => {
+		const expanded = data.replace(/([^\x7F]?)\0(\d+)g\x7F/gu, (_, prev: string, i: string) => {
+			const target = accum[i as unknown as number] as OnlyincludeToken | TranslateToken;
+			if (target.type === 'translate') {
+				target.cleanup();
+			}
+			return prev + target.innerText;
+		}).replace(/([^\x7F]?)\0(\d+)[tm]\x7F/gu, (m, prev: string, i: string) => {
 			const target = accum[i as unknown as number] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f, childNodes} = target,
 				isTemplate = type === 'template',
@@ -225,8 +239,7 @@ const expand = (
 					);
 					bool = valid && !interwiki;
 				} else if (name === 'iferror') {
-					bool = /<(?:strong|span|p|div)\s+(?:[^\s>]+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u
-						.test(var1);
+					bool = errorRegex.test(var1);
 				}
 				return parseIf(accum, prev, args[bool ? 1 : 2]);
 			} else if (known && name === 'ifeq' && !/\0\d+[tm]\x7F/u.test(var2)) {
@@ -316,7 +329,9 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 	let html: string;
 	if (this.type === 'root') {
 		Parser.viewOnly = true;
-		const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
+		const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
+			e = new Event('expand');
+		this.dispatchEvent(e, {type: 'expand', token: expanded});
 		Parser.viewOnly = false;
 		states.set(expanded, {headings: new Set()});
 		const lines = expanded.toHtmlInternal().split('\n');

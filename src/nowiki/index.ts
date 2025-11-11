@@ -127,7 +127,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 					if (result.status !== '+') {
 						const e = generateForSelf(this, {start}, rule, 'chem-required', s);
 						if (result.status !== 'C') {
-							const {error: {message, location}} = result,
+							const {message, location} = result.error,
 								[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
 							[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
 							Object.assign(e, {endIndex, endLine, endCol, message});

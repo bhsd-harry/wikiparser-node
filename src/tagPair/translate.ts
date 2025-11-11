@@ -39,6 +39,8 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 
 	/* NOT FOR BROWSER END */
 
+	abstract override get innerText(): string;
+
 	override get type(): 'translate' {
 		return 'translate';
 	}
@@ -175,12 +177,13 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	}
 
 	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: HtmlOpt): string {
-		const {lastChild} = this,
-			{firstChild} = lastChild;
+	cleanup(): void {
+		const {firstChild, lastChild} = this.lastChild;
 		if (firstChild?.type === 'text' && firstChild.data.startsWith('\n')) {
 			firstChild.deleteData(0, 1);
+		}
+		if (lastChild?.type === 'text' && lastChild.data.endsWith('\n')) {
+			lastChild.deleteData(-1);
 		}
 		for (const {innerText, nextSibling} of this.querySelectorAll<CommentToken>('comment')) {
 			if (
@@ -189,7 +192,13 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 				nextSibling.deleteData(0, 1);
 			}
 		}
-		return lastChild.toHtmlInternal(opt);
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(opt?: HtmlOpt): string {
+		this.cleanup();
+		return this.lastChild.toHtmlInternal(opt);
 	}
 }
 
