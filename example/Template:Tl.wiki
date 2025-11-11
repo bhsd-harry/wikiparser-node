@@ -1,0 +1,4 @@
+{{((}}{{ll|Template:{{{1}}}|nsp=0}}{{))}}<noinclude>
+{{documentation}}
+<!-- Categories go on the /doc subpage and interwikis go on Wikidata. -->
+</noinclude>

@@ -15,7 +15,7 @@
 	margin: 0;
 	display: inline;
 }
-.frame li::after {
+.frame .hlist li::after {
 	content: " · ";
 	font-weight: bold;
 }

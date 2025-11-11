@@ -1,0 +1,24 @@
+{{#if:{{yesno|{{{plain|}}}}}||
+{{#if:{{yesno|{{{wrap|}}}}}||
+<templatestyles src="Template:Nowrap/styles.css" />
+}}<code class="mw-highlight {{#if:{{yesno|{{{wrap|}}}}}||nowrap}}">
+}}{{#switch:{{{2|pair}}}
+ |c|close  = <!--nothing-->
+ |s|single
+ |o|open
+ |p|pair   = {{#tag:span|&lrm;&lt;|class="p"}}{{#tag:span|{{{1|tag}}}|class="nt"}}{{#if:{{{params|}}}|&#32;{{{params}}}}}
+}}{{#switch:{{{2|pair}}}
+ |c|close  = {{{content|}}}
+ |s|single = &#32;{{#tag:span|&#47;&gt;|class="p"}}
+ |o|open   = {{#tag:span|&gt;|class="p"}}{{{content|}}}
+ |p|pair   = {{#tag:span|&gt;|class="p"}}{{{content|...}}}
+}}{{#switch:{{{2|pair}}}
+ |s|single
+ |o|open   = <!--nothing-->
+ |c|close
+ |p|pair   = {{#tag:span|&lrm;&lt;&#47;|class="p"}}{{#tag:span|{{{1|tag}}}|class="nt"}}{{#tag:span|&gt;|class="p"}}
+}}{{#if:{{yesno|{{{plain|}}}}}||
+</code>
+}}<noinclude>
+{{Documentation}}
+<!-- Add categories to the /doc subpage and interwikis in Wikidata, not here! --></noinclude>

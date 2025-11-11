@@ -20,7 +20,7 @@ for (const file of fs.readdirSync(Parser.templateDir)) {
 		} ${title}] article at [https://www.mediawiki.org/ MediaWiki.org] ${
 			title.startsWith('Help:')
 				? 'as Public Domain ([https://creativecommons.org/publicdomain/zero/1.0/ CC0])'
-				: 'under the [https://creativecommons.org/licenses/by-sa/4.0/" Creative Commons Attribution/Share-Alike License] (CC BY-SA)'
+				: 'under the [https://creativecommons.org/licenses/by-sa/4.0/ Creative Commons Attribution/Share-Alike License (CC BY-SA)]'
 		}.</div>
 ${fs.readFileSync(p, 'utf8')}`,
 		root = Parser.parse(wiki);
