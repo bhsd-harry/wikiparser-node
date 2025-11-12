@@ -13,7 +13,7 @@
 
 WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
 
-尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/Help:All_pages)是一个使用这个库渲染的 HTML 页面示例。
+尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表。
 
 # 其他版本
 

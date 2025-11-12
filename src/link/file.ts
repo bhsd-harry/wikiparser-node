@@ -618,7 +618,7 @@ export abstract class FileToken extends LinkBaseToken {
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
 		if (type !== 'gallery-image') {
-			return horiz || vert || visibleCaption
+			return horiz || visibleCaption
 				? `<figure${classAttr} typeof="mw:File${
 					fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
 				}">${a}<figcaption>${caption}</figcaption></figure>`

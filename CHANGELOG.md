@@ -12,6 +12,7 @@
 **Fixed**
 
 - Duplicate linting errors reported by `<ref>` tags
+- [`FileToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#tohtml) for inline images with vertical alignment parameters
 
 ## v1.30.0
 

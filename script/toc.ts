@@ -19,7 +19,7 @@ if (/^- \[[^\]]+\]\(#[^)]+\)$/mu.test(content)) {
 const toc = content.split('\n').filter(line => line.startsWith('#')).map(line => line.replace(
 	/^(#+)\s+(\S.*)$/u,
 	(_, {length}: string, title: string) => `${'\t'.repeat(length - 1)}- [${title}](#${
-		title.toLowerCase().replaceAll(' ', '-').replaceAll('.', '')
+		title.toLowerCase().replace(/[ .]/gu, m => m === ' ' ? '-' : '')
 	})`,
 )).join('\n');
 

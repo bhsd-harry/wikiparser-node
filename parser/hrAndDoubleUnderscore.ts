@@ -26,30 +26,32 @@ export const parseHrAndDoubleUnderscore = (
 		all = [...insensitive, ...sensitive];
 	config.insensitiveDoubleUnderscore ??= new Set(insensitive.filter(isUnderscore));
 	config.sensitiveDoubleUnderscore ??= new Set(sensitive.filter(isUnderscore));
-	/__(toc|notoc)__|＿{2}(目次)＿{2}/giu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	/^((?:\0\d+[cno]\x7F)*)(-{4,})|__(toc|notoc)__|＿{2}(目次)＿{2}/gimu;
 	config.regexHrAndDoubleUnderscore ??= new RegExp(
-		`__(${
+		String.raw`^((?:\0\d+[cno]\x7F)*)(-{4,})|__(${
 			all.filter(isUnderscore).join('|')
 		})__|＿{2}(${
 			all.filter(s => !isUnderscore(s)).map(s => s.slice(2, -2)).join('|')
 		})＿{2}`,
-		'giu',
+		'gimu',
 	);
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
-	data = data.replace(/^((?:\0\d+[cno]\x7F)*)(-{4,})/gmu, (_, lead: string, m: string) => {
-		// @ts-expect-error abstract class
-		new HrToken(m, config, accum);
-		return `${lead}\0${accum.length - 1}r\x7F`;
-	}).replace(config.regexHrAndDoubleUnderscore, (m, p1?: string, p2?: string) => {
-		const key = p1 ?? p2!,
+	data = data.replace(config.regexHrAndDoubleUnderscore, (m, p1?: string, p2?: string, p3?: string, p4?: string) => {
+		if (p2) {
+			// @ts-expect-error abstract class
+			new HrToken(p2, config, accum);
+			return `${p1}\0${accum.length - 1}r\x7F`;
+		}
+		const key = p3 ?? p4!,
 			caseSensitive = config.sensitiveDoubleUnderscore!.has(key),
 			lc = key.toLowerCase(),
 			caseInsensitive = config.insensitiveDoubleUnderscore!.has(lc);
 		if (caseSensitive || caseInsensitive) {
 			// @ts-expect-error abstract class
-			new DoubleUnderscoreToken(key, caseSensitive, Boolean(p2), config, accum);
+			new DoubleUnderscoreToken(key, caseSensitive, Boolean(p4), config, accum);
 			return `\0${accum.length - 1}${
 				caseInsensitive && (aliases?.[lc] ?? /* istanbul ignore next */ lc) === 'toc' ? 'u' : 'n'
 			}\x7F`;

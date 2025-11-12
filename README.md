@@ -13,7 +13,7 @@
 
 WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext) parser developed by Bhsd for the [Node.js](https://nodejs.org/) environment. It can parse almost all wiki syntax and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) ([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also allows for easy querying and modification of the AST, and returns the modified wikitext.
 
-Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/Help:All_pages) is an example HTML page rendered using this package.
+Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages rendered using this package.
 
 # Other Versions
 
