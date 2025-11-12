@@ -87,7 +87,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			return `\0${stack.length - 1}\x7F`;
 		}).replace(
 			/<translate( nowrap)?>([\s\S]*?)<\/translate>/gu,
-			(_, p1: string | undefined, p2: string | undefined) => {
+			(_, p1: string | undefined, p2: string) => {
 				const l = accum.length;
 				// @ts-expect-error abstract class
 				new TranslateToken(p1, p2 && restore(p2, stack), newConfig, accum);
