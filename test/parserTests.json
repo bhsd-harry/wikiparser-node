@@ -880,7 +880,7 @@
 		"wikitext": "[[Bu&#103;462]] [[Bug462]]",
 		"title": "Bug462",
 		"html": "<p><a class=\"mw-selflink selflink\">Bu&#103;462</a> <a class=\"mw-selflink selflink\">Bug462</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Bug462\" title=\"Bug462\">Bu&#103;462</a> <a href=\"/wiki/Bug462\" title=\"Bug462\">Bug462</a>\n</p>",
+		"render": "<p><a  class=\"mw-selflink\">Bu&#103;462</a> <a  class=\"mw-selflink\">Bug462</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bu&amp;#103;462</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Bug462</span>]]</span></span>"
 	},
 	{
@@ -904,7 +904,7 @@
 		"wikitext": "[[0]]",
 		"title": "0",
 		"html": "<p><a class=\"mw-selflink selflink\">0</a>\n</p>",
-		"render": "<p><a href=\"/wiki/0\" title=\"0\">0</a>\n</p>",
+		"render": "<p><a  class=\"mw-selflink\">0</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">0</span>]]</span></span>"
 	},
 	{
