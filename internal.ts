@@ -46,3 +46,4 @@ export type {ImagemapLinkToken} from './src/imagemapLink';
 export type {ImagemapToken} from './src/multiLine/imagemap';
 export type {CommentedToken} from './src/commented';
 export type {TranslateToken} from './src/tagPair/translate';
+export type {TvarToken} from './src/tag/tvar';
