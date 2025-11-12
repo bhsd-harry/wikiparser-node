@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {classes, states} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {removeComment, removeCommentLine, decodeHtml, tidy} from '../util/string';
+import {removeComment, removeCommentLine, tidy} from '../util/string';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -33,8 +33,7 @@ const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 		'ifexist',
 		'iferror',
 		'switch',
-	]),
-	errorRegex = /<(?:strong|span|p|div)\s+(?:[^\s>]+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u;
+	]);
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:table|\/(?:td|th)|\/?(?:tr|caption|dt|dd|li))\b/iu;
 const openRegex = new RegExp(
@@ -55,28 +54,6 @@ const closeRegex = new RegExp(
  */
 const implicitNewLine = (str: string, prev: string): string =>
 	prev + (prev !== '\n' && /^(?:\{\||[:;#*])/u.test(str) ? `\n${str}` : str);
-
-/**
- * 比较两个字符串是否相等
- * @param a
- * @param b
- */
-const cmp = (a: string, b: string): boolean => a === b || Boolean(a && b) && Number(a) === Number(b);
-
-/**
- * 解析 if/ifexist/ifeq 解析器函数
- * @param accum
- * @param prev 解析器函数前的字符串
- * @param effective 生效的参数
- */
-const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): string => {
-	if (effective) {
-		// @ts-expect-error sparse array
-		accum[accum.indexOf(effective.lastChild)] = undefined;
-		return implicitNewLine(effective.value, prev);
-	}
-	return prev;
-};
 
 /**
  * 展开模板
@@ -238,89 +215,25 @@ const expand = (
 					? m
 					: implicitNewLine(Parser.functionHooks.get(name)!(target, context || undefined), prev);
 			} else if (expandedMagicWords.has(name)) {
-				return context === false
-					? m
-					: implicitNewLine(
-						expandMagicWord(
-							name as MagicWord,
-							args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
-							callPage,
-							config,
-							now,
-							accum,
-						),
-						prev,
-					);
-			} else if (!solvedMagicWords.has(name)) {
-				return m;
-			} else if (length < 3 || name === 'ifeq' && length === 3) {
-				return prev;
-			}
-			const var1 = decodeHtml(args[0]!.value),
-				knownVar1 = Boolean(var1.replace(/\0\d+[tm]\x7F/gu, '').trim()),
-				var2 = decodeHtml(args[1]!.value),
-				known = !/\0\d+[tm]\x7F/u.test(var1);
-			if (name === 'if' && (known || knownVar1) || known && (name === 'ifexist' || name === 'iferror')) {
-				let bool = Boolean(var1);
-				if (name === 'ifexist') {
-					const {valid, interwiki} = Parser.normalizeTitle(
-						var1,
-						0,
-						include,
-						config,
-						{halfParsed: true, temporary: true, page: ''},
-					);
-					bool = valid && !interwiki;
-				} else if (name === 'iferror') {
-					bool = errorRegex.test(var1);
+				const solved = solvedMagicWords.has(name);
+				if (context === false && !solved) {
+					return m;
 				}
-				return parseIf(accum, prev, args[bool ? 1 : 2]);
-			} else if (known && name === 'ifeq' && !/\0\d+[tm]\x7F/u.test(var2)) {
-				return parseIf(accum, prev, args[cmp(var1, var2) ? 2 : 3]);
-			} else if (known && name === 'switch') {
-				let defaultVal = '',
-					j = 2,
-
-					/**
-					 * - `1` 表示默认值
-					 * - `2` 表示匹配值
-					 */
-					found = 0,
-					transclusion = false, // eslint-disable-line no-useless-assignment
-					defaultParam: Token | undefined;
-				for (; j < length; j++) {
-					const {anon, value, lastChild, name: option} = args[j - 1]!;
-					transclusion = /\0\d+[tm]\x7F/u.test(anon ? value : option);
-					if (anon) {
-						if (j === length - 1) { // 位于最后的匿名参数是默认值
-							defaultParam = lastChild;
-							defaultVal = value;
-						} else if (transclusion) { // 不支持复杂参数
-							break;
-						} else if (cmp(var1, decodeHtml(value))) { // 下一个命名参数视为匹配值
-							found = 2;
-						} else if (value === '#default' && found !== 2) { // 下一个命名参数视为默认值
-							found = 1;
-						}
-					} else if (transclusion) { // 不支持复杂参数
-						break;
-					} else if (found === 2 || cmp(var1, decodeHtml(option))) { // 第一个匹配值
+				const result = expandMagicWord(
+					name as MagicWord,
+					args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
+					callPage,
+					config,
+					now,
+					accum,
+				);
+				if (solved && result !== false) {
+					for (const {lastChild} of args) {
 						// @ts-expect-error sparse array
 						accum[accum.indexOf(lastChild)] = undefined;
-						return implicitNewLine(value, prev);
-					} else if (found === 1 || option.toLowerCase() === '#default') { // 更新默认值
-						defaultParam = lastChild;
-						defaultVal = value;
-						found = 0;
 					}
 				}
-				if (j === length) { // 不含复杂参数
-					if (defaultParam) {
-						// @ts-expect-error sparse array
-						accum[accum.indexOf(defaultParam)] = undefined;
-					}
-					return implicitNewLine(defaultVal, prev);
-				}
+				return result === false ? m : implicitNewLine(result, prev);
 			}
 			return m;
 		});

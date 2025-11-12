@@ -6,7 +6,13 @@ import {classes} from '../util/constants';
  */
 const normalizeTitle = (title: string): string => {
 	const Parser: typeof import('../index') = require('../index');
-	return String(Parser.normalizeTitle(title, 0, false, undefined, {temporary: true}));
+	return String(Parser.normalizeTitle(
+		title,
+		0,
+		false,
+		undefined,
+		{temporary: true, page: ''},
+	));
 };
 
 /** 重定向列表 */

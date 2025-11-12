@@ -692,7 +692,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			}
 		}
 		const [,,, canonicalName] = getCanonicalName(name, this.getConfig().parserFunction);
-		return expandMagicWord((canonicalName || name.toLowerCase()) as MagicWord, args);
+		return expandMagicWord((canonicalName || name.toLowerCase()) as MagicWord, args) as string;
 	},
 
 	/** @implements */

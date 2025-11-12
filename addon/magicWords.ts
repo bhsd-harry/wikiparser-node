@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {posix} from 'path';
-import {escape, replaceEntities, sanitizeId} from '../util/string';
+import {escape, replaceEntities, sanitizeId, decodeHtml} from '../util/string';
 import {parsers} from '../util/constants';
 import {getId} from '../util/html';
 import Parser from '../index';
@@ -84,6 +84,7 @@ const magicWords = [
 	'defaultsort',
 	'revisionuser',
 	'cascadingsources',
+	'translation',
 	'revisionid',
 	'revisionday',
 	'revisionday2',
@@ -133,6 +134,11 @@ const magicWords = [
 	'replace',
 	'explode',
 	'urldecode',
+	'if',
+	'ifeq',
+	'ifexist',
+	'iferror',
+	'switch',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -150,7 +156,7 @@ function urlFunction(config: TestConfig, args: string[], local?: true): URL | st
 		0,
 		false,
 		config,
-		{halfParsed: true, decode: true, temporary: true},
+		{halfParsed: true, decode: true, temporary: true, page: ''},
 	);
 	if (!title.valid) {
 		return fallback;
@@ -229,11 +235,17 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		const [url] = urlFunction(config, args);
 		return url?.href ?? '';
 	},
-	makeTitle = (page: string, config: Config, nsid = 0): Title | '' => {
+	makeTitle = (page: string, config: Config, nsid = 0, subpage?: boolean): Title | '' => {
 		if (page.includes('\0')) {
 			return '';
 		}
-		const title = Parser.normalizeTitle(page, nsid, false, config, {halfParsed: true, temporary: true});
+		const title = Parser.normalizeTitle(
+			page,
+			nsid,
+			false,
+			config,
+			{halfParsed: true, temporary: true, page: subpage ? undefined : ''},
+		);
 		return title.valid ? title : '';
 	},
 	namespace = (title: Title, config: Config): string => config.namespaces[title.ns]!,
@@ -316,7 +328,19 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		const title = makeTitle(target, config, -1);
 		return title && title.ns === -1 ? title.prefix + title.main : 'Special:Badtitle';
 	},
-	contentmodels: Record<string, string> = {js: 'JavaScript', css: 'CSS', json: 'JSON', vue: 'Vue'};
+	contentmodels: Record<string, string> = {js: 'JavaScript', css: 'CSS', json: 'JSON', vue: 'Vue'},
+	cmp = (x: string, y: string, decode?: boolean): boolean => {
+		const a = decode ? decodeHtml(x) : x,
+			b = decodeHtml(y);
+		return a === b || Boolean(a && b) && Number(a) === Number(b);
+	},
+	isError = (s: string): boolean =>
+		/<(?:strong|span|p|div)\s+(?:[^\s>]+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u.test(s),
+	splitArg = (arg: string): [string, string] | false => {
+		const i = arg.indexOf('=');
+		return i !== -1 && [arg.slice(0, i).trim(), arg.slice(i + 1).trim()];
+	},
+	isKnown = (s: string): boolean => !/\0\d+[tm]\x7F/u.test(s);
 
 /**
  * 展开魔术字
@@ -335,7 +359,7 @@ export const expandMagicWord = (
 	config = Parser.getConfig(),
 	now = Parser.now,
 	accum?: Token[],
-): string => {
+): string | false => {
 	const arg0 = args[0]!,
 		target = args[0] ?? page;
 	switch (name) {
@@ -482,6 +506,7 @@ export const expandMagicWord = (
 		case 'revisiontimestamp':
 		case 'revisionuser':
 		case 'cascadingsources':
+		case 'translation':
 			return '';
 		case 'namespace': {
 			const title = makeTitle(target, config);
@@ -618,15 +643,15 @@ export const expandMagicWord = (
 				[, inner, ...attrs] = args,
 				attributes = new Map<string, string>();
 			for (const arg of attrs) {
-				const i = arg.indexOf('=');
-				if (i === -1) {
+				const splitted = splitArg(arg);
+				if (!splitted) {
 					continue;
 				}
-				const key = arg.slice(0, i).trim();
+				const [key] = splitted;
 				if (key.includes('\0')) {
 					continue;
 				}
-				let value = strip(arg.slice(i + 1)).trim();
+				let value = strip(splitted[1]).trim();
 				const mt = /^(?:["'](.+)["']|""|'')$/su.exec(value);
 				if (mt) {
 					value = mt[1] ?? '';
@@ -649,7 +674,7 @@ export const expandMagicWord = (
 				: abs.replace(/\/$/u, '');
 		}
 		case 'titleparts': {
-			const title = makeTitle(arg0, config);
+			const title = makeTitle(arg0, config, 0, true);
 			if (!title) {
 				return arg0;
 			}
@@ -706,6 +731,74 @@ export const expandMagicWord = (
 		}
 		case 'urldecode':
 			return decodeURIComponent(strip(arg0).replaceAll('+', ' '));
+		case 'ifeq':
+			return args.length < 3
+				? ''
+				: isKnown(arg0) && isKnown(args[1]!) && (args[cmp(arg0, args[1]!, true) ? 2 : 3] ?? '');
+		case 'if':
+		case 'iferror':
+			if (args.length === 1) {
+				return '';
+			}
+			return (name === 'if' ? strip : isError)(decodeHtml(arg0)) ? args[1]! : isKnown(arg0) && (args[2] ?? '');
+		case 'ifexist': {
+			if (args.length === 1) {
+				return '';
+			} else if (!isKnown(arg0)) {
+				return false;
+			}
+			const {valid, interwiki} = Parser.normalizeTitle(
+				decodeHtml(arg0),
+				0,
+				false,
+				config,
+				{halfParsed: true, temporary: true, page: ''},
+			);
+			return args[valid && !interwiki ? 1 : 2] ?? '';
+		}
+		case 'switch': {
+			const {length} = args;
+			if (length === 1) {
+				return '';
+			} else if (!isKnown(arg0)) {
+				return false;
+			}
+			const v = decodeHtml(arg0);
+			let defaultVal = '',
+				j = 1,
+
+				/**
+				 * - `1` 表示默认值
+				 * - `2` 表示匹配值
+				 * - `3` 表示未知值
+				 */
+				found = 0;
+			for (; j < length; j++) {
+				const arg = args[j]!,
+					splitted = splitArg(arg);
+				if (splitted) {
+					const [key, value] = splitted,
+						known = isKnown(key);
+					if (found === 2 || known && cmp(v, key)) { // 第一个匹配值
+						return value;
+					} else if (!known || found === 3) { // 不支持复杂参数
+						return false;
+					} else if (found === 1 || key.toLowerCase() === '#default') { // 更新默认值
+						defaultVal = value;
+						found = 0;
+					}
+				} else if (j === length - 1) { // 位于最后的匿名参数是默认值
+					return arg;
+				} else if (!isKnown(arg)) { // 不支持复杂参数
+					found = 3;
+				} else if (cmp(v, arg)) { // 下一个命名参数视为匹配值
+					found = 2;
+				} else if (arg === '#default' && found < 2) { // 下一个命名参数视为默认值
+					found = 1;
+				}
+			}
+			return defaultVal;
+		}
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}
