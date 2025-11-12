@@ -374,9 +374,15 @@ export abstract class LinkBaseToken extends Token {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
-			const {link, length, lastChild, type} = this,
-				title = link.getTitleAttr();
-			return `<a${link.interwiki && ' class="extiw"'} href="${link.getUrl()}"${title && ` title="${title}"`}>${
+			const {link, length, lastChild, type, pageName} = this;
+			let attr;
+			if (type === 'link' && link.title === pageName && !link.fragment) {
+				attr = ' class="mw-selflink"';
+			} else {
+				const title = link.getTitleAttr();
+				attr = `${link.interwiki && 'class="extiw" '}href="${link.getUrl()}"${title && ` title="${title}"`}`;
+			}
+			return `<a ${attr}>${
 				type === 'link' && length > 1
 					? lastChild.toHtmlInternal({
 						...opt,
