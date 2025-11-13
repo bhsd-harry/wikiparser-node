@@ -52,7 +52,7 @@ const insecureStyle =
  */
 export abstract class AttributeToken extends Token {
 	declare readonly name: string;
-	readonly #type;
+	#type;
 	#tag;
 	#equal;
 	#quotes: [string?, string?];
