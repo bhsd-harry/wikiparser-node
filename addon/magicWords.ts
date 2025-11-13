@@ -142,8 +142,8 @@ export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
 
 function urlFunction(config: TestConfig, args: string[], local: true): URL | string;
-function urlFunction(config: TestConfig, args: string[]): [(URL | null)?, string?];
-function urlFunction(config: TestConfig, args: string[], local?: true): URL | string | [(URL | null)?, string?] {
+function urlFunction(config: TestConfig, args: string[]): [URL?, string?];
+function urlFunction(config: TestConfig, args: string[], local?: true): URL | string | [URL?, string?] {
 	const [value, query] = args as [string, string?],
 		fallback = (local ? '' : []) as [];
 	if (value.includes('\0')) {
@@ -163,24 +163,27 @@ function urlFunction(config: TestConfig, args: string[], local?: true): URL | st
 		title.fragment = undefined;
 	}
 	const link = title.getUrl(config.testArticlePath),
-		protocol = link.startsWith('//') ? 'https:' : '',
-		url = URL.parse(protocol + link);
-	if (url) {
+		protocol = link.startsWith('//') ? 'https:' : '';
+	try {
+		const url = new URL(protocol + link);
 		url.search = query ? `?${query.replace(/\s/gu, '_')}` : '';
-	} else if (local) {
-		title.fragment = undefined;
-		return title.getUrl(config.testArticlePath) + (query ? `?${query}` : '');
+		return local ? url : [url, protocol];
+	} catch (e) {
+		if (local) {
+			title.fragment = undefined;
+			return title.getUrl(config.testArticlePath) + (query ? `?${query}` : '');
+		}
+		throw e;
 	}
-	return local ? url! : [url, protocol];
 }
 
-const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL | null, number] => {
+const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL, number] => {
 		let offset = 0;
 		if (articlePath.startsWith('//')) {
 			offset = 6;
 			articlePath = `https:${articlePath}`;
 		}
-		return [URL.parse(articlePath), offset];
+		return [new URL(articlePath), offset];
 	},
 	currentMonth1 = (now: Date): string => String(now.getUTCMonth() + 1),
 	currentDay = (now: Date): string => String(now.getUTCDate()),
@@ -226,12 +229,20 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		return typeof url === 'string' ? url : url.pathname + url.search;
 	},
 	fullurl = (config: Config, args: string[]): string | false => {
-		const [url, protocol] = urlFunction(config, args);
-		return url?.href.slice(protocol!.length) ?? false;
+		try {
+			const [url, protocol] = urlFunction(config, args);
+			return url?.href.slice(protocol!.length) ?? '';
+		} catch {
+			return false;
+		}
 	},
 	canonicalurl = (config: Config, args: string[]): string | false => {
-		const [url] = urlFunction(config, args);
-		return url?.href ?? false;
+		try {
+			const [url] = urlFunction(config, args);
+			return url?.href ?? '';
+		} catch {
+			return false;
+		}
 	},
 	makeTitle = (page: string, config: Config, nsid = 0, subpage?: boolean): Title | '' => {
 		if (page.includes('\0')) {
@@ -418,14 +429,19 @@ export const expandMagicWord = (
 				+ String(now.getSeconds()).padStart(2, '0');
 		case 'articlepath':
 			return config.articlePath ?? false;
-		case 'server': {
-			const [url, offset] = parseUrl(config);
-			return url?.origin.slice(offset) ?? false;
-		}
-		case 'servername': {
-			const [url] = parseUrl(config);
-			return url?.hostname ?? false;
-		}
+		case 'server':
+			try {
+				const [url, offset] = parseUrl(config);
+				return url.origin.slice(offset);
+			} catch {
+				return false;
+			}
+		case 'servername':
+			try {
+				return parseUrl(config)[0].hostname;
+			} catch {
+				return false;
+			}
 		case 'directionmark':
 			return dir() === 'ltr' ? '\u200E' : '\u200F';
 		case 'contentlanguage':
