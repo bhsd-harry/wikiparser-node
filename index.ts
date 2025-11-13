@@ -691,8 +691,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				args.push(`${key}=${value}`);
 			}
 		}
-		const [,,, canonicalName] = getCanonicalName(name, this.getConfig().parserFunction);
-		return expandMagicWord((canonicalName || name.toLowerCase()) as MagicWord, args) as string;
+		const [,,, canonicalName] = getCanonicalName(name, this.getConfig().parserFunction),
+			result = expandMagicWord((canonicalName || name.toLowerCase()) as MagicWord, args);
+		/* istanbul ignore if */
+		if (result === false) {
+			throw new RangeError(`Unable to resolve parser function: ${name}`);
+		}
+		return result;
 	},
 
 	/** @implements */

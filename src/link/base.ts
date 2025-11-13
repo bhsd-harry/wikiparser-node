@@ -377,7 +377,7 @@ export abstract class LinkBaseToken extends Token {
 			const {link, length, lastChild, type, pageName} = this;
 			let attr;
 			if (type === 'link' && link.title === pageName && !link.fragment) {
-				attr = ' class="mw-selflink"';
+				attr = 'class="mw-selflink"';
 			} else {
 				const title = link.getTitleAttr();
 				attr = `${link.interwiki && 'class="extiw" '}href="${link.getUrl()}"${title && ` title="${title}"`}`;

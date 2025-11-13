@@ -702,3 +702,36 @@ you tolerate this thing and expect no more
 lina
 </p>
 !! end
+
+!! test
+Basic {{PLURAL:}} test
+!! wikitext
+{{PLURAL:2|is}} → is
+{{PLURAL:0|is|are}} → are
+{{PLURAL:1*1|is|are}} → is
+{{PLURAL:21 mod 10|is|are}} → are
+{{PLURAL:{{#expr:21 mod 10}}|is|are}} → is
+{{PLURAL:1|is|are}} → is
+{{PLURAL:2|is|are}} → are
+{{PLURAL:-1|is|are}} → is
+{{PLURAL:-2|is|are}} → are
+{{PLURAL:0.5|is|are}} → are
+{{PLURAL:1.5|is|are}} → are
+{{PLURAL:-0.5|is|are}} → are
+{{PLURAL:-1.5|is|are}} → are
+!! html
+<p>is → is
+are → are
+is → is
+are → are
+is → is
+is → is
+are → are
+is → is
+are → are
+are → are
+are → are
+are → are
+are → are
+</p>
+!! end

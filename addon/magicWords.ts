@@ -79,11 +79,8 @@ const magicWords = [
 	'gender',
 	'formal',
 	'displaytitle',
-	'protectionlevel',
-	'protectionexpiry',
 	'defaultsort',
 	'revisionuser',
-	'cascadingsources',
 	'translation',
 	'revisionid',
 	'revisionday',
@@ -92,7 +89,6 @@ const magicWords = [
 	'revisionmonth1',
 	'revisionyear',
 	'revisiontimestamp',
-	'filepath',
 	'namespace',
 	'namespacee',
 	'namespacenumber',
@@ -139,6 +135,8 @@ const magicWords = [
 	'ifexist',
 	'iferror',
 	'switch',
+	'plural',
+	'expr',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -227,13 +225,13 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		const url = urlFunction(config, args, true);
 		return typeof url === 'string' ? url : url.pathname + url.search;
 	},
-	fullurl = (config: Config, args: string[]): string => {
+	fullurl = (config: Config, args: string[]): string | false => {
 		const [url, protocol] = urlFunction(config, args);
-		return url?.href.slice(protocol!.length) ?? '';
+		return url?.href.slice(protocol!.length) ?? false;
 	},
-	canonicalurl = (config: Config, args: string[]): string => {
+	canonicalurl = (config: Config, args: string[]): string | false => {
 		const [url] = urlFunction(config, args);
-		return url?.href ?? '';
+		return url?.href ?? false;
 	},
 	makeTitle = (page: string, config: Config, nsid = 0, subpage?: boolean): Title | '' => {
 		if (page.includes('\0')) {
@@ -419,14 +417,14 @@ export const expandMagicWord = (
 			return localYear(now) + localMonth(now) + localDay2(now) + localHour(now) + localMinute(now)
 				+ String(now.getSeconds()).padStart(2, '0');
 		case 'articlepath':
-			return config.articlePath ?? '';
+			return config.articlePath ?? false;
 		case 'server': {
 			const [url, offset] = parseUrl(config);
-			return url?.origin.slice(offset) ?? '';
+			return url?.origin.slice(offset) ?? false;
 		}
 		case 'servername': {
 			const [url] = parseUrl(config);
-			return url?.hostname ?? '';
+			return url?.hostname ?? false;
 		}
 		case 'directionmark':
 			return dir() === 'ltr' ? '\u200E' : '\u200F';
@@ -446,7 +444,6 @@ export const expandMagicWord = (
 		case 'pagesincategory':
 		case 'pagesize':
 		case 'pageid':
-		case 'filepath':
 			return '0';
 		case 'ns':
 			return ns(config, args);
@@ -483,19 +480,21 @@ export const expandMagicWord = (
 			return escape(localurl(config, args));
 		case 'fullurl':
 			return fullurl(config, args);
-		case 'fullurle':
-			return escape(fullurl(config, args));
+		case 'fullurle': {
+			const url = fullurl(config, args);
+			return url && escape(url);
+		}
 		case 'canonicalurl':
 			return canonicalurl(config, args);
-		case 'canonicalurle':
-			return escape(canonicalurl(config, args));
+		case 'canonicalurle': {
+			const url = canonicalurl(config, args);
+			return url && escape(url);
+		}
 		case 'gender':
 			return args[3] ?? args[1] ?? '';
 		case 'formal':
 			return arg0;
 		case 'displaytitle':
-		case 'protectionlevel':
-		case 'protectionexpiry':
 		case 'defaultsort':
 		case 'revisionid':
 		case 'revisionday':
@@ -505,7 +504,6 @@ export const expandMagicWord = (
 		case 'revisionyear':
 		case 'revisiontimestamp':
 		case 'revisionuser':
-		case 'cascadingsources':
 		case 'translation':
 			return '';
 		case 'namespace': {
@@ -799,6 +797,15 @@ export const expandMagicWord = (
 			}
 			return defaultVal;
 		}
+		case 'plural': {
+			if (args.length < 3) {
+				return args[1] ?? '';
+			}
+			const n = Number(arg0);
+			return args[n === 1 || n === -1 ? 1 : 2] ?? '';
+		}
+		case 'expr':
+			return !Number.isNaN(Number(arg0)) && arg0;
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}
