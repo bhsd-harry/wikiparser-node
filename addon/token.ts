@@ -3,6 +3,7 @@ import path from 'path';
 import {classes, states} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {removeComment, removeCommentLine, tidy} from '../util/string';
+import {parseRedirect} from '../parser/redirect';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -23,6 +24,7 @@ import type {
 	TranslateToken,
 	NoincludeToken,
 	TvarToken,
+	RedirectToken,
 } from '../internal';
 
 const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
@@ -54,6 +56,45 @@ const closeRegex = new RegExp(
  */
 const implicitNewLine = (str: string, prev: string): string =>
 	prev + (prev !== '\n' && /^(?:\{\||[:;#*])/u.test(str) ? `\n${str}` : str);
+
+/**
+ * 加载模板
+ * @param title 模板名
+ * @param config
+ */
+const loadTemplate = (title: string, config: Config): string | false => {
+	if (Parser.templates.has(title)) {
+		return title;
+	} else if (Parser.templateDir === undefined) {
+		return false;
+	} else if (!path.isAbsolute(Parser.templateDir)) {
+		Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
+	}
+	const file = fs.readdirSync(Parser.templateDir, {withFileTypes: true, recursive: true})
+		.filter(dirent => dirent.isFile())
+		.find(({name, parentPath}) => {
+			const t = path.relative(
+				Parser.templateDir!,
+				path.join(parentPath, name.replace(/\.(?:wiki|txt)$/iu, '')),
+			).replaceAll('꞉', ':');
+			try {
+				return decodeURIComponent(t) === title;
+			} catch {
+				return t === title;
+			}
+		});
+	if (!file) {
+		return false;
+	}
+	const content = tidy(fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')),
+		accum: Token[] = [],
+		parsed = Shadow.run(() => parseRedirect(content, config, accum));
+	if (parsed) {
+		return loadTemplate((accum[0] as RedirectToken).lastChild.getTitle().title, config);
+	}
+	Parser.templates.set(title, content);
+	return title;
+};
 
 /**
  * 展开模板
@@ -170,43 +211,21 @@ const expand = (
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(f)] = undefined;
 					return isTemplate ? prev + target.toString() : fallback;
-				} else if (!Parser.templates.has(title)) {
-					if (Parser.templateDir === undefined) {
-						return fallback;
-					} else if (!path.isAbsolute(Parser.templateDir)) {
-						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
-					}
-					const file = fs.readdirSync(Parser.templateDir, {withFileTypes: true, recursive: true})
-						.filter(dirent => dirent.isFile())
-						.find(({name: fl, parentPath}) => {
-							const t = path.relative(
-								Parser.templateDir!,
-								path.join(parentPath, fl.replace(/\.(?:wiki|txt)$/iu, '')),
-							).replaceAll('꞉', ':');
-							try {
-								return decodeURIComponent(t) === title;
-							} catch {
-								return t === title;
-							}
-						});
-					if (!file) {
-						return fallback;
-					}
-					Parser.templates.set(
-						title,
-						tidy(fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')),
-					);
-				} else if (stack.includes(title)) {
-					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
-				let template = Parser.templates.get(title)!.replace(/\n$/u, '');
+				const dest = loadTemplate(title, config);
+				if (dest === false) {
+					return fallback;
+				} else if (stack.includes(dest)) {
+					return `${prev}<span class="error">Template loop detected: [[${dest}]]</span>`;
+				}
+				let template = Parser.templates.get(dest)!.replace(/\n$/u, '');
 				if (!isTemplate) {
 					for (let j = 1; j < args.length; j++) {
 						template = template.replaceAll(`$${j}`, removeComment(args[j]!.toString()));
 					}
 				}
 				return implicitNewLine(
-					expand(template, title, callPage, config, true, target, now, accum, [...stack, title])
+					expand(template, dest, callPage, config, true, target, now, accum, [...stack, dest])
 						.toString(),
 					prev,
 				);

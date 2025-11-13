@@ -1,13 +1,14 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.31.0
 
-*2025-11-11*
+*2025-11-13*
 
 **Added**
 
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports more parser functions
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction)
 - New category of linting errors: template arguments inside an extension tag
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports transclusion of redirect pages
 
 **Fixed**
 
