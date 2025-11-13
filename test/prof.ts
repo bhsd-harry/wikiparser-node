@@ -1,9 +1,8 @@
-import {
-	readFileSync,
-} from 'fs';
+import {readFileSync} from 'fs';
 import single from './single';
-import {mock} from './wikiparse';
 import type {SimplePage} from '@bhsd/test-util';
+
+import {mock} from './wikiparse';
 import type {Config} from '../base';
 
 const config: Config = require('../../config/default');

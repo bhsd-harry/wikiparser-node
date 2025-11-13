@@ -276,7 +276,7 @@ const set = (obj: LintRuleConfig, key: LintError.Rule, value?: LintConfigValue):
 
 const clone = typeof structuredClone === 'function'
 	? structuredClone
-	: <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+	: /* istanbul ignore next */ <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 interface LintRuleConfiguration extends LintRuleConfigurationBase {}
 
