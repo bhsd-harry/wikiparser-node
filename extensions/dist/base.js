@@ -1,6 +1,6 @@
 (() => {
 var _a;
-const version = '1.30.0', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+const version = '1.31.0', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
@@ -296,7 +296,7 @@ const size = (html) => {
     if (isContentEditable) {
         gutter.style.minHeight = `${clientHeight + 1}px`;
     }
-    const sizer = document.createElement('span'), { style: { paddingLeft, paddingRight } } = html;
+    const sizer = document.createElement('span'), { paddingLeft, paddingRight } = html.style;
     sizer.className = 'wikiparser-sizer';
     sizer.style.paddingLeft = paddingLeft;
     sizer.style.paddingRight = paddingRight;
