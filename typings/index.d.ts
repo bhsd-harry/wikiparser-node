@@ -68,6 +68,7 @@ declare global {
 	interface HtmlOpt {
 		readonly nowrap?: boolean | undefined;
 		readonly nocc?: boolean | undefined;
+		removeBlank?: boolean | undefined;
 	}
 }
 

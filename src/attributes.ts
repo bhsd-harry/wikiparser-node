@@ -583,9 +583,10 @@ export abstract class AttributesToken extends Token {
 	@cached()
 	override toHtmlInternal(): string {
 		const map = new Map(
-			this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
-		);
-		return map.size === 0 ? '' : ` ${html([...map.values()], ' ')}`;
+				this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
+			),
+			output = map.size === 0 ? '' : html([...map.values()], ' ', {removeBlank: true});
+		return output && ` ${output}`;
 	}
 
 	/**

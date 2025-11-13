@@ -97,10 +97,12 @@ const openList = (chars: string, {dt}: State): string => {
  * @param separator delimiter between nodes
  * @param opt options
  */
-export const html = (childNodes: readonly AstNodes[], separator: string, opt?: HtmlOpt): string => {
+export const html = (childNodes: readonly AstNodes[], separator: string, opt: HtmlOpt = {}): string => {
 	let lastPrefix = '';
 	const results: string[] = [],
+		{removeBlank} = opt,
 		state: State = {dt: []};
+	delete opt.removeBlank;
 	for (let j = 0; j < childNodes.length; j++) {
 		const child = childNodes[j]!;
 		let result = child.toHtmlInternal(opt);
@@ -157,7 +159,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt?: H
 		}
 		results.push(result);
 	}
-	return results.join(separator);
+	return (removeBlank ? results.filter(Boolean) : results).join(separator);
 };
 
 /**

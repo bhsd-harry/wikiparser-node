@@ -278,11 +278,12 @@ export abstract class ExtToken extends TagPairToken {
 				const caption = firstChild.getAttrToken('caption'),
 					perrow = parseInt(String(firstChild.getAttr('perrow'))),
 					mode = firstChild.getAttr('mode'),
+					{classList} = firstChild,
 					nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
 					padding = nolines ? 9 : 43;
-				firstChild.classList.add('gallery');
+				classList.add('gallery');
 				if (nolines) {
-					firstChild.classList.add('mw-gallery-nolines');
+					classList.add('mw-gallery-nolines');
 				}
 				if (perrow > 0) {
 					const style = firstChild.getAttr('style');
@@ -298,6 +299,51 @@ export abstract class ExtToken extends TagPairToken {
 						? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal({nowrap: true})}</li>\n`
 						: ''
 				}${lastChild.toHtmlInternal()}\n</ul>`;
+			}
+			case 'syntaxhighlight':
+			case 'source': {
+				let html = lastChild.toHtmlInternal().trimEnd().replace(/^\n+/u, '');
+				const lexer = firstChild.getAttr('lang'),
+					dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
+					isInline = firstChild.hasAttr('enclose') || firstChild.hasAttr('inline'),
+					showLines = firstChild.hasAttr('line'),
+					{classList} = firstChild;
+				classList.add('mw-highlight');
+				if (lexer && lexer !== true) {
+					classList.add(`mw-highlight-lang-${lexer.toLowerCase()}`);
+					if (showLines && !isInline) {
+						const linelinks = firstChild.getAttr('linelinks'),
+							startAttr = firstChild.getAttr('start');
+						let start = 1,
+							lineReplace = '<span class="linenos" data-line="$1"></span>';
+						if (startAttr && startAttr !== true) {
+							start = Number(startAttr);
+							if (!Number.isInteger(start) || start < 0) {
+								start = 1;
+							}
+						}
+						if (linelinks && linelinks !== true) {
+							lineReplace = `<a href="#${linelinks}-$1">${lineReplace}</a>`;
+						}
+						html = html.split('\n').map(
+							(line, i) => lineReplace.replaceAll('$1', String(i + start))
+								+ line,
+						).join('\n');
+					}
+				}
+				classList.add(`mw-content-${dir}`);
+				if (showLines) {
+					classList.add('mw-highlight-lines');
+				}
+				if (!isInline && firstChild.hasAttr('copy')) {
+					classList.add('mw-highlight-copy');
+				}
+				firstChild.setAttr('dir', dir);
+				return isInline
+					? `<code${firstChild.toHtmlInternal()}>${
+						html.trim().replaceAll('\n', ' ')
+					}</code>`
+					: `<div${firstChild.toHtmlInternal()}>${html && `<pre>${newline(html)}</pre>`}</div>`;
 			}
 			default:
 				return '';
