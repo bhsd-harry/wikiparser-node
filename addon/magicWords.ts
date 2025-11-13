@@ -9,7 +9,8 @@ import type {Config} from '../base';
 import type {Title} from '../lib/title';
 
 declare interface Locale extends Intl.Locale {
-	getTextInfo(): {direction: 'ltr' | 'rtl'};
+	getTextInfo?: () => {direction: 'ltr' | 'rtl'}; // eslint-disable-line @typescript-eslint/method-signature-style
+	textInfo: {direction: 'ltr' | 'rtl'};
 }
 declare interface TestConfig extends Config {
 	testArticlePath?: string;
@@ -325,7 +326,8 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 	})(),
 	dir = (lang = language): 'ltr' | 'rtl' => {
 		try {
-			return (new Intl.Locale(lang) as Locale).getTextInfo().direction;
+			const locale = new Intl.Locale(lang) as Locale;
+			return locale.getTextInfo?.().direction ?? locale.textInfo.direction;
 		} catch {
 			return 'ltr';
 		}
