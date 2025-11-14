@@ -15437,7 +15437,7 @@
 		"desc": "Non-existent language",
 		"wikitext": "<source lang=\"doesnotexist\">\nfoobar\n</source>",
 		"html": "<div class=\"mw-highlight mw-content-ltr\" dir=\"ltr\"><pre>foobar</pre></div>",
-		"render": "<div class=\"mw-highlight mw-highlight-lang-doesnotexist mw-content-ltr\" dir=\"ltr\"><pre>foobar</pre></div>",
+		"render": "<div class=\"mw-highlight mw-content-ltr\" dir=\"ltr\"><pre>foobar</pre></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">doesnotexist</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nfoobar\n</span>&lt;/source&gt;</span></span>"
 	},
 	{
@@ -15458,21 +15458,21 @@
 		"desc": "XSS is escaped",
 		"wikitext": "<source lang=\"doesnotexist\">\n<script>alert(\"pwnd\")</script>\n<IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`>\n<IMG\nSRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;\n&#39;&#88;&#83;&#83;&#39;&#41;\n\\\";alert('XSS');//\n</script><script>alert('XSS');</script>\n%253cscript%253ealert(document.cookie)%253c/script%253e\n</source>",
 		"html": "<div class=\"mw-highlight mw-content-ltr\" dir=\"ltr\"><pre>&lt;script&gt;alert(\"pwnd\")&lt;/script&gt;\n&lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt;\n&lt;IMG\nSRC=&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;\n&amp;#39;&amp;#88;&amp;#83;&amp;#83;&amp;#39;&amp;#41;\n\\\";alert('XSS');//\n&lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;\n%253cscript%253ealert(document.cookie)%253c/script%253e</pre></div>",
-		"render": "<div class=\"mw-highlight mw-highlight-lang-doesnotexist mw-content-ltr\" dir=\"ltr\"><pre>&lt;script&gt;alert(\"pwnd\")&lt;/script&gt;&#10;&lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt;&#10;&lt;IMG&#10;SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#10;&#39;&#88;&#83;&#83;&#39;&#41;&#10;\\\";alert('XSS');//&#10;&lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;&#10;%253cscript%253ealert(document.cookie)%253c/script%253e</pre></div>",
+		"render": "<div class=\"mw-highlight mw-content-ltr\" dir=\"ltr\"><pre>&lt;script&gt;alert(\"pwnd\")&lt;/script&gt;&#10;&lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt;&#10;&lt;IMG&#10;SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#10;&#39;&#88;&#83;&#83;&#39;&#41;&#10;\\\";alert('XSS');//&#10;&lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;&#10;%253cscript%253ealert(document.cookie)%253c/script%253e</pre></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">doesnotexist</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\n&lt;script&gt;alert(\"pwnd\")&lt;/script&gt;\n&lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt;\n&lt;IMG\nSRC=&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;\n&amp;#39;&amp;#88;&amp;#83;&amp;#83;&amp;#39;&amp;#41;\n\\\";alert('XSS');//\n&lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;\n%253cscript%253ealert(document.cookie)%253c/script%253e\n</span>&lt;/source&gt;</span></span>"
 	},
 	{
 		"desc": "XSS is escaped (inline)",
 		"wikitext": "<source lang=\"doesnotexist\" inline=\"\">\n<script>alert(\"pwnd\")</script>\n<IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`>\n<IMG\nSRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;\n&#39;&#88;&#83;&#83;&#39;&#41;\n\\\";alert('XSS');//\n</script><script>alert('XSS');</script>\n%253cscript%253ealert(document.cookie)%253c/script%253e\n</source>",
 		"html": "<p><code class=\"mw-highlight mw-content-ltr\" dir=\"ltr\">&lt;script&gt;alert(\"pwnd\")&lt;/script&gt; &lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt; &lt;IMG SRC=&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40; &amp;#39;&amp;#88;&amp;#83;&amp;#83;&amp;#39;&amp;#41; \\\";alert('XSS');// &lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt; %253cscript%253ealert(document.cookie)%253c/script%253e</code>\n</p>",
-		"render": "<p><code class=\"mw-highlight mw-highlight-lang-doesnotexist mw-content-ltr\" dir=\"ltr\">&lt;script&gt;alert(\"pwnd\")&lt;/script&gt; &lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt; &lt;IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40; &#39;&#88;&#83;&#83;&#39;&#41; \\\";alert('XSS');// &lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt; %253cscript%253ealert(document.cookie)%253c/script%253e</code>\n</p>",
+		"render": "<p><code class=\"mw-highlight mw-content-ltr\" dir=\"ltr\">&lt;script&gt;alert(\"pwnd\")&lt;/script&gt; &lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt; &lt;IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40; &#39;&#88;&#83;&#83;&#39;&#41; \\\";alert('XSS');// &lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt; %253cscript%253ealert(document.cookie)%253c/script%253e</code>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">doesnotexist</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">inline</span>=\"\"</span></span>&gt;<span class=\"wpb-ext-inner\">\n&lt;script&gt;alert(\"pwnd\")&lt;/script&gt;\n&lt;IMG SRC=`javascript:alert(\"RSnake says, 'XSS'\")`&gt;\n&lt;IMG\nSRC=&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;\n&amp;#39;&amp;#88;&amp;#83;&amp;#83;&amp;#39;&amp;#41;\n\\\";alert('XSS');//\n&lt;/script&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;\n%253cscript%253ealert(document.cookie)%253c/script%253e\n</span>&lt;/source&gt;</span></span>"
 	},
 	{
 		"desc": "Default behaviour (inner is pre)",
 		"wikitext": "<source lang=\"javascript\">\nvar a;\n</source>",
 		"html": "<div class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><pre><span></span><span class=\"kd\">var</span><span class=\"w\"> </span><span class=\"nx\">a</span><span class=\"p\">;</span>\n</pre></div>",
-		"render": "<div class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><pre>var a;</pre></div>",
+		"render": "<div class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><pre><span class=\"token keyword\">var</span> a<span class=\"token punctuation\">;</span></pre></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nvar a;\n</span>&lt;/source&gt;</span></span>"
 	},
 	{
@@ -15486,21 +15486,21 @@
 		"desc": "Custom attributes",
 		"wikitext": "<source lang=\"javascript\" id=\"foo\" class=\"bar\" dir=\"rtl\" style=\"font-size: larger;\">var a;</source>",
 		"html": "<div id=\"foo\" class=\"bar mw-highlight mw-highlight-lang-javascript mw-content-rtl\" style=\"font-size: larger;\" dir=\"rtl\"><pre><span></span><span class=\"kd\">var</span><span class=\"w\"> </span><span class=\"nx\">a</span><span class=\"p\">;</span>\n</pre></div>",
-		"render": "<div id=\"foo\" class=\"bar mw-highlight mw-highlight-lang-javascript mw-content- rtl\" dir=\"rtl\" style=\"font-size: larger;\"><pre>var a;</pre></div>",
+		"render": "<div id=\"foo\" class=\"bar mw-highlight mw-highlight-lang-javascript mw-content- rtl\" dir=\"rtl\" style=\"font-size: larger;\"><pre><span class=\"token keyword\">var</span> a<span class=\"token punctuation\">;</span></pre></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">dir</span>=\"<span class=\"wpb-attr-value\">rtl</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">font-size: larger;</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">var a;</span>&lt;/source&gt;</span></span>"
 	},
 	{
 		"desc": "Inline attribute (inline code)",
 		"wikitext": "Text <source lang=\"javascript\" inline>var a;</source>.",
 		"html": "<p>Text <code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><span class=\"kd\">var</span><span class=\"w\"> </span><span class=\"nx\">a</span><span class=\"p\">;</span></code>.\n</p>",
-		"render": "<p>Text <code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\">var a;</code>.\n</p>",
+		"render": "<p>Text <code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><span class=\"token keyword\">var</span> a<span class=\"token punctuation\">;</span></code>.\n</p>",
 		"print": "<span class=\"wpb-root\">Text <span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">inline</span></span></span>&gt;<span class=\"wpb-ext-inner\">var a;</span>&lt;/source&gt;</span>.</span>"
 	},
 	{
 		"desc": "Enclose none (inline code)",
 		"wikitext": "Text <source lang=\"javascript\" enclose=\"none\">var a;</source>.",
 		"html": "<p>Text <code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><span class=\"kd\">var</span><span class=\"w\"> </span><span class=\"nx\">a</span><span class=\"p\">;</span></code>.\n</p>",
-		"render": "<p>Text <code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\">var a;</code>.\n</p>",
+		"render": "<p>Text <code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><span class=\"token keyword\">var</span> a<span class=\"token punctuation\">;</span></code>.\n</p>",
 		"print": "<span class=\"wpb-root\">Text <span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">enclose</span>=\"<span class=\"wpb-attr-value\">none</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">var a;</span>&lt;/source&gt;</span>.</span>"
 	},
 	{
@@ -15535,14 +15535,14 @@
 		"desc": "tabs plus tidy (T32930, T59826)",
 		"wikitext": "<syntaxhighlight lang=\"javascript\" enclose=\"pre\" highlight=\"2-3\">\nfunction doSomething() {\n\tvar\tfoo,\n\t\tbar;\n\tif (baz) {\n</syntaxhighlight>",
 		"html": "<div class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><pre><span></span><span class=\"kd\">function</span><span class=\"w\"> </span><span class=\"nx\">doSomething</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span>\n<span class=\"hll\"><span class=\"w\">\t</span><span class=\"kd\">var</span><span class=\"w\">\t</span><span class=\"nx\">foo</span><span class=\"p\">,</span>\n</span><span class=\"hll\"><span class=\"w\">\t\t</span><span class=\"nx\">bar</span><span class=\"p\">;</span>\n</span><span class=\"w\">\t</span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"nx\">baz</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span>\n</pre></div>",
-		"render": "<p><code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\">function doSomething() { \tvar\tfoo, \t\tbar; \tif (baz) {</code>\n</p>",
+		"render": "<p><code class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><span class=\"token keyword\">function</span> <span class=\"token function\">doSomething</span><span class=\"token punctuation\">(</span><span class=\"token punctuation\">)</span> <span class=\"token punctuation\">{</span> \t<span class=\"token keyword\">var</span>\tfoo<span class=\"token punctuation\">,</span> \t\tbar<span class=\"token punctuation\">;</span> \t<span class=\"token keyword\">if</span> <span class=\"token punctuation\">(</span>baz<span class=\"token punctuation\">)</span> <span class=\"token punctuation\">{</span></code>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;syntaxhighlight<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">enclose</span>=\"<span class=\"wpb-attr-value\">pre</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">highlight</span>=\"<span class=\"wpb-attr-value\">2-3</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nfunction doSomething() {\n\tvar\tfoo,\n\t\tbar;\n\tif (baz) {\n</span>&lt;/syntaxhighlight&gt;</span></span>"
 	},
 	{
 		"desc": "deprecated source tag adds tracking category",
 		"wikitext": "<source lang=\"python\">print('Hi')</source>",
 		"html": "cat=Pages_using_deprecated_source_tags sort=",
-		"render": "<div class=\"mw-highlight mw-highlight-lang-python mw-content-ltr\" dir=\"ltr\"><pre>print('Hi')</pre></div>",
+		"render": "<div class=\"mw-highlight mw-highlight-lang-python mw-content-ltr\" dir=\"ltr\"><pre><span class=\"token keyword\">print</span><span class=\"token punctuation\">(</span><span class=\"token string\">'Hi'</span><span class=\"token punctuation\">)</span></pre></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">python</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">print('Hi')</span>&lt;/source&gt;</span></span>"
 	},
 	{

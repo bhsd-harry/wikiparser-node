@@ -214,7 +214,7 @@ declare interface Parser extends ParserBase {
 	 * 调用一个解析器函数
 	 * @param name parser function name / 解析器函数名
 	 * @param args arguments / 参数
-	 * @since v1.30.1
+	 * @since v1.31.0
 	 */
 	callParserFunction(name: string, ...args: string[]): string;
 	callParserFunction(name: string, args: string[] | Record<string, string>): string;

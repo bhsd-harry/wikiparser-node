@@ -302,15 +302,34 @@ export abstract class ExtToken extends TagPairToken {
 			}
 			case 'syntaxhighlight':
 			case 'source': {
-				let html = lastChild.toHtmlInternal().trimEnd().replace(/^\n+/u, '');
-				const lexer = firstChild.getAttr('lang'),
-					dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
+				let html = lastChild.toHtmlInternal().trimEnd().replace(/^\n+/u, ''),
+					lexer = firstChild.getAttr('lang');
+				const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
 					isInline = firstChild.hasAttr('enclose') || firstChild.hasAttr('inline'),
 					showLines = firstChild.hasAttr('line'),
 					{classList} = firstChild;
 				classList.add('mw-highlight');
 				if (lexer && lexer !== true) {
-					classList.add(`mw-highlight-lang-${lexer.toLowerCase()}`);
+					const {
+						Prism,
+						loadLanguage,
+					}: typeof import('../../addon/syntaxhighlight') = require('../../addon/syntaxhighlight');
+					lexer = lexer.toLowerCase();
+					if (Prism) {
+						try {
+							loadLanguage(lexer);
+							html = Prism.highlight(
+								lastChild.childNodes.map(
+									child => child.is<this>('ext') && child.name === 'nowiki'
+										? child.innerText ?? ''
+										: child.toString(),
+								).join().trimEnd().replace(/^\n+/u, ''),
+								Prism.languages[lexer]!,
+								lexer,
+							);
+							classList.add(`mw-highlight-lang-${lexer.toLowerCase()}`);
+						} catch {}
+					}
 					if (showLines && !isInline) {
 						const linelinks = firstChild.getAttr('linelinks'),
 							startAttr = firstChild.getAttr('start');

@@ -172,7 +172,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 * Find the matching apostrophes
 	 *
 	 * 搜索匹配的直引号
-	 * @since v1.29.3
+	 * @since v1.30.0
 	 * @param type type of apostrophes to match / 匹配的直引号类型
 	 * @throws `RangeError` ambiguous or wrong apostrophe type
 	 */

@@ -344,7 +344,7 @@ export abstract class HeadingToken extends Token {
 	 * Get the section led by this heading
 	 *
 	 * 获取由此标题引导的章节
-	 * @since v1.29.3
+	 * @since v1.30.0
 	 */
 	override section(): AstRange | undefined {
 		const {parentNode, level} = this;
