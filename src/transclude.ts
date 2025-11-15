@@ -245,7 +245,7 @@ export abstract class TranscludeToken extends Token {
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
 			title = this.normalizeTitle(
-				(isTemplate ? '' : 'Module:') + this.childNodes[isTemplate ? 0 : 1].text(),
+				(isTemplate ? '' : 'Module:') + removeComment(this.childNodes[isTemplate ? 0 : 1].text()),
 				10,
 				{temporary: true, ...!isTemplate && {page: ''}},
 			);
