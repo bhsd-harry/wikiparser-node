@@ -11,7 +11,7 @@ const blockAttrs = new Set(['align']),
 	),
 	brAttrs = new Set(['clear']),
 	trAttrs = new Set(['bgcolor', 'align', 'valign']),
-	chemAttrs = new Set(['qid', 'forcemathmode', 'type', 'display']),
+	chemAttrs = new Set(['id', 'qid', 'forcemathmode', 'type', 'display']),
 	syntaxHighlightAttrs = new Set([
 		'enclose',
 		'inline',
@@ -101,9 +101,6 @@ export const commonHtmlAttrs = new Set([
 		poem: blockAttrs,
 		categorytree: blockAttrs,
 		combooption: blockAttrs,
-		math: empty,
-		chem: empty,
-		ce: empty,
 		img: new Set(['alt', 'src', 'width', 'height', 'loading', 'srcset']),
 	}))(),
 	extAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
