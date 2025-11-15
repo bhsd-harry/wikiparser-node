@@ -40,7 +40,16 @@ declare interface Frame {
 	title: string;
 }
 
-const basicMagicWords = new Map([['=', '='], ['!', '|']]);
+const basicMagicWordsOrTemplates = new Map([
+	['=', '='],
+	['Template:=', '='],
+	['!', '|'],
+	['Template:!', '|'],
+	['Template:(!', '{|'],
+	['Template:!)', '|}'],
+	['Template:!-', '|-'],
+	['Template:!!', '||'],
+]);
 
 /* NOT FOR BROWSER END */
 
@@ -996,7 +1005,9 @@ export abstract class TranscludeToken extends Token {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {type, name} = this;
-		if (type === 'template' && !name.startsWith('Special:')) {
+		if (basicMagicWordsOrTemplates.has(name)) {
+			return basicMagicWordsOrTemplates.get(name)!;
+		} else if (type === 'template' && !name.startsWith('Special:')) {
 			if (this.normalizeTitle(name, 0, {halfParsed: true, temporary: true}).valid) {
 				const title = name.replaceAll('_', ' ');
 				return `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
@@ -1006,7 +1017,7 @@ export abstract class TranscludeToken extends Token {
 			const str = this.text();
 			return opt?.nowrap ? str.replaceAll('\n', ' ') : str;
 		}
-		return basicMagicWords.has(name) ? basicMagicWords.get(name)! : '';
+		return '';
 	}
 }
 

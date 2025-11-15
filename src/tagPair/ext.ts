@@ -317,7 +317,7 @@ export abstract class ExtToken extends TagPairToken {
 					lexer = lexer.toLowerCase();
 					if (Prism) {
 						try {
-							loadLanguage(lexer);
+							lexer = loadLanguage(lexer);
 							html = Prism.highlight(
 								lastChild.childNodes.map(
 									child => child.is<this>('ext') && child.name === 'nowiki'
@@ -344,10 +344,27 @@ export abstract class ExtToken extends TagPairToken {
 						if (linelinks && linelinks !== true) {
 							lineReplace = `<a href="#${linelinks}-$1">${lineReplace}</a>`;
 						}
-						html = html.split('\n').map(
-							(line, i) => lineReplace.replaceAll('$1', String(i + start))
-								+ line,
-						).join('\n');
+						const re = /<\/?span\b[^>]*>|\n/gu,
+							stack: string[] = [];
+						let mt = re.exec(html),
+							i = 1,
+							lastIndex = 0,
+							output = lineReplace.replaceAll('$1', String(start));
+						while (mt) {
+							if (mt[0] === '\n') {
+								output += `${html.slice(lastIndex, mt.index)}${'</span>'.repeat(stack.length)}\n${
+									lineReplace.replaceAll('$1', String(i + start))
+								}${stack.join('')}`;
+								i++;
+								({lastIndex} = re);
+							} else if (mt[0].startsWith('</')) {
+								stack.pop();
+							} else {
+								stack.push(mt[0]);
+							}
+							mt = re.exec(html);
+						}
+						html = output + html.slice(lastIndex);
 					}
 				}
 				classList.add(`mw-content-${dir}`);

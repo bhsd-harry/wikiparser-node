@@ -277,17 +277,123 @@ const dependencies: Record<string, string | string[]> = {
 		wl: 'wolfram',
 		xeoracube: 'xeora',
 		yml: 'yaml',
+
+		/** @see https://pygments.org/docs/lexers/ */
+		ada96: 'ada',
+		ada2005: 'ada',
+		aconf: 'apacheconf',
+		apache: 'apacheconf',
+		ahk: 'autohotkey',
+		mawk: 'awk',
+		nawk: 'awk',
+		ksh: 'bash',
+		zsh: 'bash',
+		openrc: 'bash',
+		qbasic: 'basic',
+		bat: 'batch',
+		dosbatch: 'batch',
+		winbatch: 'batch',
+		bf: 'brainfuck',
+		zeek: 'bro',
+		chai: 'chaiscript',
+		clj: 'clojure',
+		'coffee-script': 'coffeescript',
+		rocq: 'coq',
+		'rocq-prover': 'coq',
+		'c++': 'cpp',
+		cr: 'crystal',
+		'c#': 'csharp',
+		jinja: 'django',
+		udiff: 'diff',
+		graphviz: 'dot',
+		ex: 'elixir',
+		exs: 'elixir',
+		f90: 'fortran',
+		'f#': 'fsharp',
+		gd: 'gdscript',
+		cucumber: 'gherkin',
+		golang: 'go',
+		hxsl: 'haxe',
+		hx: 'haxe',
+		terraform: 'hcl',
+		tf: 'hcl',
+		i7: 'inform7',
+		cfg: 'ini',
+		dosini: 'ini',
+		'json-object': 'json',
+		react: 'jsx',
+		jl: 'julia',
+		kql: 'kusto',
+		'common-lisp': 'lisp',
+		'live-script': 'livescript',
+		make: 'makefile',
+		mf: 'makefile',
+		bsdmake: 'makefile',
+		nimrod: 'nim',
+		nixos: 'nix',
+		nsi: 'nsis',
+		nsh: 'nsis',
+		'objective-c': 'objectivec',
+		'obj-c': 'objectivec',
+		pl: 'perl',
+		php3: 'php',
+		php4: 'php',
+		php5: 'php',
+		pwsh: 'powershell',
+		posh: 'powershell',
+		ps1: 'powershell',
+		psm1: 'powershell',
+		jproperties: 'properties',
+		proto: 'protobuf',
+		jade: 'pug',
+		sage: 'python',
+		python3: 'python',
+		py3: 'python',
+		bazel: 'python',
+		starlark: 'python',
+		pyi: 'python',
+		qbs: 'qml',
+		splus: 'r',
+		s: 'r',
+		reasonml: 'reason',
+		restructuredtext: 'rest',
+		rst: 'rest',
+		duby: 'ruby',
+		rs: 'rust',
+		scm: 'scheme',
+		console: 'shell-session',
+		squeak: 'smalltalk',
+		st: 'smalltalk',
+		do: 'stata',
+		sc: 'supercollider',
+		vapi: 'vala',
+		'vb.net': 'vbnet',
+		v: 'verilog',
+		visualbasic: 'visual-basic',
+		mediawiki: 'wiki',
+		wikitext: 'wiki',
+		xqy: 'xquery',
+		xq: 'xquery',
+		xql: 'xquery',
+		xqm: 'xquery',
 	};
 
 /**
  * 加载Prism语言
  * @param lang 语言名称
  */
-export const loadLanguage = (lang: string): void => {
+export const loadLanguage = (lang: string): string => {
 	if (lang in Prism!.languages) {
-		return;
+		return lang;
 	}
 	lang = aliases[lang] ?? lang;
+	if (lang === 'wiki') {
+		try {
+			const {default: registerWiki}: typeof import('prism-wiki') = require('prism-wiki');
+			registerWiki('');
+			return lang;
+		} catch {}
+	}
 	const dep = dependencies[lang];
 	if (typeof dep === 'string') {
 		loadLanguage(dep);
@@ -297,4 +403,5 @@ export const loadLanguage = (lang: string): void => {
 		}
 	}
 	require(`prismjs/components/prism-${lang}.js`);
+	return lang;
 };

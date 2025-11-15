@@ -5,7 +5,7 @@
 
 **Added**
 
-- HTML conversion of `<syntaxhighlight>` without actual syntax highlighting
+- HTML conversion of `<syntaxhighlight>` with [Prism](https://prismjs.com/) highlighting
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
 
 ## v1.31.0
