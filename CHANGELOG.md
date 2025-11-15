@@ -1,11 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.31.1
+## v1.32.0
 
 *2025-11-15*
 
 **Added**
 
 - HTML conversion of `<syntaxhighlight>` without actual syntax highlighting
+- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
 
 ## v1.31.0
 

@@ -1079,7 +1079,7 @@
 		"desc": "Category in wikilink",
 		"wikitext": "[[Hi|Ho[[Category:Hiho]]]]",
 		"html": "<p>[[Hi|Ho]]\n</p>",
-		"render": "<p>[[Hi|Ho]]\n</p>",
+		"render": "<p>[[Hi|Ho]]\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AHiho\" title=\"Category:Hiho\">Hiho</a></li></div></div>",
 		"print": "<span class=\"wpb-root\">[[Hi|Ho<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Hiho</span>]]</span>]]</span>"
 	},
 	{
@@ -1470,7 +1470,7 @@
 		"desc": "4. Category at the end of a bare <li> list item",
 		"wikitext": "<li>Broken list\n== Section ==\n* Proper list\n\n[[Category:Foo]]",
 		"html": "<li>Broken list\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Section\">Section</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Section\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<ul><li>Proper list</li></ul></li>",
-		"render": "<li>Broken list\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Section\">Section</h2></div>\n<ul><li>Proper list</li></ul>",
+		"render": "<li>Broken list\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Section\">Section</h2></div>\n<ul><li>Proper list</li></ul>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;li&gt;</span>Broken list\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> Section </span>==</span>\n<span class=\"wpb-list\">* </span>Proper list\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span></span>"
 	},
 	{
@@ -2129,7 +2129,7 @@
 		"desc": "5. Non-token gluing scenario across multiple lines and templates",
 		"wikitext": "{|\n{{1x|1=\n{{!}}-\n}}{{1x|{{!}}} }}\n[[Category:Foo]]",
 		"html": "<table>\n</table>",
-		"render": "<table>\n<tbody></tbody></table>",
+		"render": "<table>\n<tbody></tbody></table>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>-\n</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>} </span></span>}}</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span></span></span></span>"
 	},
 	{
@@ -2372,7 +2372,7 @@
 		"desc": "Templates: Support for templates generating table attributes and content (with fostered categories)",
 		"wikitext": "{| {{mixed_attr_content_template_2}}\n|-\n|bar\n|}",
 		"html": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>",
-		"render": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>",
+		"render": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFostered_Content\" title=\"Category:Fostered Content\">Fostered Content</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">mixed_attr_content_template_2</span>}}</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -2489,7 +2489,7 @@
 		"desc": "Templates: HTML Tables: 5. Proper fostering of categories from inside",
 		"wikitext": "<table>[[Category:foo1]]<tr><td>foo</td></tr></table>\n<!--Two categories (T52330)-->\n<table>[[Category:bar1]][[Category:bar2]]<tr><td>foo</td></tr></table>",
 		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>\n<table><tbody><tr><td>foo</td></tr></tbody></table>",
-		"render": "<table><tr><td>foo</td></tr></table>\n<table><tr><td>foo</td></tr></table>",
+		"render": "<table><tr><td>foo</td></tr></table>\n<table><tr><td>foo</td></tr></table>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo1\" title=\"Category:Foo1\">Foo1</a></li><li><a href=\"/wiki/Category%3ABar1\" title=\"Category:Bar1\">Bar1</a></li><li><a href=\"/wiki/Category%3ABar2\" title=\"Category:Bar2\">Bar2</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo1</span>]]</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\n<span class=\"wpb-comment\">&lt;!--Two categories (T52330)--&gt;</span>\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:bar1</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:bar2</span>]]</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
 	},
 	{
@@ -2797,14 +2797,14 @@
 		"desc": "Simple category",
 		"wikitext": "[[Category:MediaWiki User's Guide]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki User's Guide\">MediaWiki User's Guide</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:MediaWiki User's Guide</span>]]</span></span>"
 	},
 	{
 		"desc": "Simple category with whitespace as sort key",
 		"wikitext": "[[Category:Foo| ]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>|<span class=\"wpb-link-text\"> </span>]]</span></span>"
 	},
 	{
@@ -2818,49 +2818,49 @@
 		"desc": "Category with different sort key",
 		"wikitext": "[[Category:MediaWiki User's Guide|Foo]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki User's Guide\">MediaWiki User's Guide</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:MediaWiki User's Guide</span>|<span class=\"wpb-link-text\">Foo</span>]]</span></span>"
 	},
 	{
 		"desc": "Category with identical sort key",
 		"wikitext": "[[Category:MediaWiki User's Guide|MediaWiki User's Guide]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki User's Guide\">MediaWiki User's Guide</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:MediaWiki User's Guide</span>|<span class=\"wpb-link-text\">MediaWiki User's Guide</span>]]</span></span>"
 	},
 	{
 		"desc": "Category with identical sort key, except underscores",
 		"wikitext": "[[Category:MediaWiki User's Guide|MediaWiki_User's_Guide]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki User's Guide\">MediaWiki User's Guide</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:MediaWiki User's Guide</span>|<span class=\"wpb-link-text\">MediaWiki_User's_Guide</span>]]</span></span>"
 	},
 	{
 		"desc": "Category with newline in sort key",
 		"wikitext": "[[Category:Wikidata:Tools|\n*]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AWikidata%3ATools\" title=\"Category:Wikidata:Tools\">Wikidata:Tools</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Wikidata:Tools</span>|<span class=\"wpb-link-text\">\n*</span>]]</span></span>"
 	},
 	{
 		"desc": "Category with template-generated sort key",
 		"wikitext": "[[Category:MediaWiki User's Guide|MediaWiki {{1x|Foo}} Guide]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki User's Guide\">MediaWiki User's Guide</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:MediaWiki User's Guide</span>|<span class=\"wpb-link-text\">MediaWiki <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span> Guide</span>]]</span></span>"
 	},
 	{
 		"desc": "Category / paragraph interactions",
 		"wikitext": "Foo [[Category:Baz]] Bar\n\nFoo [[Category:Baz]]\nBar\n\nFoo\n[[Category:Baz]]\nBar\n\nFoo\n[[Category:Baz]] Bar\n\nFoo\n[[Category:Baz]]\n [[Category:Baz]]\n[[Category:Baz]]\nBar\n\n[[Category:Baz]]\n [[Category:Baz]]\n[[Category:Baz]]\n\n[[Category:Baz]]\n {{1x|[[Category:Baz]]}}\n[[Category:Baz]]",
 		"html": "<p>Foo  Bar\n</p><p>Foo \nBar\n</p><p>Foo\nBar\n</p><p>Foo Bar\n</p><p>Foo\nBar\n</p>",
-		"render": "<p>Foo  Bar\n</p><p>Foo \nBar\n</p><p>Foo\nBar\n</p><p>Foo Bar\n</p><p>Foo\nBar\n</p>",
+		"render": "<p>Foo  Bar\n</p><p>Foo \nBar\n</p><p>Foo\nBar\n</p><p>Foo Bar\n</p><p>Foo\nBar\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3ABaz\" title=\"Category:Baz\">Baz</a></li></div></div>",
 		"print": "<span class=\"wpb-root\">Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span> Bar\n\nFoo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\nBar\n\nFoo\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\nBar\n\nFoo\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span> Bar\n\nFoo\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\nBar\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span></span></span>}}</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span></span>"
 	},
 	{
 		"desc": "Category / non-newline whitespace interactions (T359886)",
 		"wikitext": "* Foo[[Category:Foo]]Bar\n* Foo[[Category:Foo]] Bar\n* Foo [[Category:Foo]]Bar\n* Foo [[Category:Foo]] Bar\n\n* Foo[[Category:Foo]][[Category:Bar]]Bar\n* Foo[[Category:Foo]][[Category:Bar]] Bar\n* Foo[[Category:Foo]] [[Category:Bar]]Bar\n* Foo[[Category:Foo]] [[Category:Bar]] Bar\n* Foo [[Category:Foo]][[Category:Bar]]Bar\n* Foo [[Category:Foo]][[Category:Bar]] Bar\n* Foo [[Category:Foo]] [[Category:Bar]]Bar\n* Foo [[Category:Foo]] [[Category:Bar]] Bar",
 		"html": "<ul><li>FooBar</li>\n<li>Foo Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li></ul>\n<ul><li>FooBar</li>\n<li>Foo Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li>\n<li>Foo  Bar</li>\n<li>Foo   Bar</li></ul>",
-		"render": "<ul><li>FooBar</li>\n<li>Foo Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li></ul>\n<ul><li>FooBar</li>\n<li>Foo Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li>\n<li>Foo  Bar</li>\n<li>Foo   Bar</li></ul>",
+		"render": "<ul><li>FooBar</li>\n<li>Foo Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li></ul>\n<ul><li>FooBar</li>\n<li>Foo Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li>\n<li>Foo Bar</li>\n<li>Foo  Bar</li>\n<li>Foo  Bar</li>\n<li>Foo   Bar</li></ul>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li><li><a href=\"/wiki/Category%3ABar\" title=\"Category:Bar\">Bar</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span>Foo<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>Bar\n<span class=\"wpb-list\">* </span>Foo<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> Bar\n<span class=\"wpb-list\">* </span>Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>Bar\n<span class=\"wpb-list\">* </span>Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> Bar\n\n<span class=\"wpb-list\">* </span>Foo<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span>Bar\n<span class=\"wpb-list\">* </span>Foo<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span> Bar\n<span class=\"wpb-list\">* </span>Foo<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span>Bar\n<span class=\"wpb-list\">* </span>Foo<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span> Bar\n<span class=\"wpb-list\">* </span>Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span>Bar\n<span class=\"wpb-list\">* </span>Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span> Bar\n<span class=\"wpb-list\">* </span>Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span>Bar\n<span class=\"wpb-list\">* </span>Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span> Bar</span>"
 	},
 	{
@@ -2874,14 +2874,14 @@
 		"desc": "1. cats/langlinks and newlines: All preceding newlines should be suppressed (courtesy T2087)",
 		"wikitext": "This\n   \n[[Category:Foo]] and this\n[[es:Foo]] and this should be part of same paragraph (not an indent-pre)\n   \n{{1x|[[Category:Foo]] and so should this!}}\n{{1x|[[es:Foo]] and this!}}",
 		"html": "<p>This and this and this should be part of same paragraph (not an indent-pre) and so should this! and this!\n</p>",
-		"render": "<p>This and this\n<a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this should be part of same paragraph (not an indent-pre) and so should this!\n<a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this!\n</p>",
+		"render": "<p>This and this\n<a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this should be part of same paragraph (not an indent-pre) and so should this!\n<a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this!\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\">This\n   \n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Foo</span>]]</span> and this should be part of same paragraph (not an indent-pre)\n   \n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and so should this!</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Foo</span>]]</span> and this!</span></span>}}</span></span>"
 	},
 	{
 		"desc": "2. cats/langlinks and newlines: All preceding newlines should be suppressed (courtesy T2087)",
 		"wikitext": "* This\n   \n[[Category:Foo]] and this\n[[es:Foo]] and this should be part of the same list item\n* So should this\n\n{{1x|[[Category:Foo]] and this}}\n{{1x|[[es:Foo]] and this should be part of the same list item}}",
 		"html": "<ul><li>This and this and this should be part of the same list item</li>\n<li>So should this and this and this should be part of the same list item</li></ul>",
-		"render": "<ul><li>This and this</li></ul>\n<p><a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this should be part of the same list item\n</p>\n<ul><li>So should this and this</li></ul>\n<p><a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this should be part of the same list item\n</p>",
+		"render": "<ul><li>This and this</li></ul>\n<p><a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this should be part of the same list item\n</p>\n<ul><li>So should this and this</li></ul>\n<p><a href=\"/wiki/Es%3AFoo\" title=\"Es:Foo\">es:Foo</a> and this should be part of the same list item\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span>This\n   \n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Foo</span>]]</span> and this should be part of the same list item\n<span class=\"wpb-list\">* </span>So should this\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Foo</span>]]</span> and this should be part of the same list item</span></span>}}</span></span>"
 	},
 	{
@@ -2923,14 +2923,14 @@
 		"desc": "No regressions on internal links following category (T174639)",
 		"wikitext": "[[Category:Foo]]<div>a\n\n[[Foo]]</div>",
 		"html": "<div>a\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a></div>",
-		"render": "<div>a\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a></div>",
+		"render": "<div>a\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a></div>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span><span class=\"wpb-html\">&lt;div&gt;</span>a\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>]]</span><span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "11. Special case where only newlines separate links (T175416)",
 		"wikitext": "[[Category:Foo]]\n\n[[Foo]][[es:Alimento]]\n\n[[Foo]]",
 		"html": "<p><br />\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a>\n</p><p><a href=\"/wiki/Foo\" title=\"Foo\">Foo</a>\n</p>",
-		"render": "<p><br>\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a><a href=\"/wiki/Es%3AAlimento\" title=\"Es:Alimento\">es:Alimento</a>\n</p><p><a href=\"/wiki/Foo\" title=\"Foo\">Foo</a>\n</p>",
+		"render": "<p><br>\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a><a href=\"/wiki/Es%3AAlimento\" title=\"Es:Alimento\">es:Alimento</a>\n</p><p><a href=\"/wiki/Foo\" title=\"Foo\">Foo</a>\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>]]</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Alimento</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>]]</span></span>"
 	},
 	{
@@ -2956,7 +2956,7 @@
 		"desc": "Parsoid: Serialize a genuine category link without colon escape",
 		"wikitext": "[[Category:Foo]]\n[[Category:Foo|Bar]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>|<span class=\"wpb-link-text\">Bar</span>]]</span></span>"
 	},
 	{
@@ -6106,7 +6106,7 @@
 		"desc": "Empty list item with rendering transparent tag",
 		"wikitext": "{{1x|*hmm\n*[[category:123]]}}",
 		"html": "<ul><li>hmm</li>\n<li class=\"mw-empty-elt\"></li></ul>",
-		"render": "<ul><li>hmm</li>\n<li></li></ul>",
+		"render": "<ul><li>hmm</li>\n<li></li></ul>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3A123\" title=\"Category:123\">123</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">*hmm\n<span class=\"wpb-list\">*</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">category:123</span>]]</span></span></span>}}</span></span>"
 	},
 	{
@@ -6376,7 +6376,7 @@
 		"desc": "Category / whitespace (newline and non-newline) interactions",
 		"wikitext": "x\n[[Category:A]] [[Category:B]]\ny",
 		"html": "<p>x\ny\n</p>",
-		"render": "<p>x\ny\n</p>",
+		"render": "<p>x\ny\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AA\" title=\"Category:A\">A</a></li><li><a href=\"/wiki/Category%3AB\" title=\"Category:B\">B</a></li></div></div>",
 		"print": "<span class=\"wpb-root\">x\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:A</span>]]</span> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:B</span>]]</span>\ny</span>"
 	},
 	{
@@ -10290,7 +10290,7 @@
 		"desc": "7a. Indent-pre and category links",
 		"wikitext": " [[Category:foo]] <!-- No pre-wrapping -->\n{{1x| [[Category:foo]]}} <!-- No pre-wrapping -->",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo</span>]]</span> <span class=\"wpb-comment\">&lt;!-- No pre-wrapping --&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo</span>]]</span></span></span>}}</span> <span class=\"wpb-comment\">&lt;!-- No pre-wrapping --&gt;</span></span>"
 	},
 	{
@@ -10316,7 +10316,7 @@
 		"desc": "Indent-Pre regression test: Trailing whitespace after sol-transparent content",
 		"wikitext": "[[Category:Foo]]   \n[[Category:Bar]]",
 		"html": "",
-		"render": "",
+		"render": "\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li><li><a href=\"/wiki/Category%3ABar\" title=\"Category:Bar\">Bar</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>   \n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span></span>"
 	},
 	{
@@ -10668,7 +10668,7 @@
 		"desc": "Don't convert blue categorylinks to another variant (T35210)",
 		"wikitext": "[[A]][[Category:分类]]",
 		"html": "<p><a href=\"/wiki/A\" title=\"A\">A</a>\n</p>",
-		"render": "<p><a href=\"/wiki/A\" title=\"A\">A</a>\n</p>",
+		"render": "<p><a href=\"/wiki/A\" title=\"A\">A</a>\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3A%E5%88%86%E7%B1%BB\" title=\"Category:分类\">分类</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">A</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:分类</span>]]</span></span>"
 	},
 	{
@@ -13854,14 +13854,14 @@
 		"desc": "No paragraph necessary for SOL transparent template",
 		"wikitext": "<span><div>foo</div></span>\n[[Category:Foo]]\n\n<span><div>foo</div></span>\n{{1x|[[Category:Foo]]}}",
 		"html": "<span><div>foo</div></span>\n<span><div>foo</div></span>",
-		"render": "<span><div>foo</div></span>\n<span><div>foo</div></span>",
+		"render": "<span><div>foo</div></span>\n<span><div>foo</div></span>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Foo</a></li></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>\n\n<span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span></span></span>}}</span></span>"
 	},
 	{
 		"desc": "Avoid expanding multiline sol transparent template ranges unnecessarily",
 		"wikitext": "hi\n\n\n{{1x|<br/>\n}}\n\n[[Category:Ho]]",
 		"html": "<p>hi\n</p><p><br />\n<br />\n</p>",
-		"render": "<p>hi\n</p><p><br>\n<br>\n</p>",
+		"render": "<p>hi\n</p><p><br>\n<br>\n</p>\n<div id=\"catlinks\" class=\"catlinks\"><div><a href=\"/wiki/Special%3ACategories\" title=\"Special:Categories\">Categories</a>: <ul><li><a href=\"/wiki/Category%3AHo\" title=\"Category:Ho\">Ho</a></li></div></div>",
 		"print": "<span class=\"wpb-root\">hi\n\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;br/&gt;</span>\n</span></span>}}</span>\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Ho</span>]]</span></span>"
 	},
 	{

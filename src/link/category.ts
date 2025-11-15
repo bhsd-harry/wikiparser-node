@@ -11,7 +11,8 @@ import type {AST} from '../../base';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
+import {classes, states} from '../../util/constants';
+import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -54,6 +55,16 @@ export abstract class CategoryToken extends LinkBaseToken {
 		this.setSortkey(text);
 	}
 
+	/**
+	 * link text
+	 *
+	 * 链接显示文字
+	 * @since v1.32.0
+	 */
+	get innerText(): string {
+		return this.link.main;
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/** @private */
@@ -78,6 +89,13 @@ export abstract class CategoryToken extends LinkBaseToken {
 	 */
 	setSortkey(text?: string): void {
 		this.setLinkText(text);
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(): '' {
+		states.get(this.getRootNode())?.categories.add(super.toHtmlInternal());
+		return '';
 	}
 }
 

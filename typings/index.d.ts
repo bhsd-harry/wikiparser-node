@@ -62,6 +62,7 @@ declare global {
 
 	interface State {
 		headings: Set<string>;
+		categories: Set<string>;
 	}
 
 	/** 注意`nocc`只用于`HeadingToken.id` */

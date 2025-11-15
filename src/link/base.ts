@@ -26,6 +26,7 @@ import type {
 
 	LinkToken,
 	RedirectTargetToken,
+	CategoryToken,
 } from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -373,7 +374,11 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
+		if (
+			this.is<LinkToken>('link')
+			|| this.is<RedirectTargetToken>('redirect-target')
+			|| this.is<CategoryToken>('category')
+		) {
 			const {link, length, lastChild, type, pageName} = this;
 			let attr;
 			if (type === 'link' && link.title === pageName && !link.fragment) {

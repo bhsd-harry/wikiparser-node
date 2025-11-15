@@ -298,7 +298,7 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 			e = new Event('expand');
 		this.dispatchEvent(e, {type: 'expand', token: expanded});
 		Parser.viewOnly = false;
-		states.set(expanded, {headings: new Set()});
+		states.set(expanded, {headings: new Set(), categories: new Set()});
 		const lines = expanded.toHtmlInternal().split('\n');
 		let output = '',
 			inBlockElem = false,
@@ -360,8 +360,17 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 			}
 		}
 		output += closeParagraph();
+		const {categories} = states.get(expanded)!;
 		states.delete(expanded);
 		html = output.trimEnd();
+		if (categories.size > 0) {
+			html += `
+<div id="catlinks" class="catlinks"><div><a href="${
+	this.normalizeTitle('Special:Categories', -1, {temporary: true}).getUrl()
+}" title="Special:Categories">Categories</a>: <ul>${
+	[...categories].map(catlink => `<li>${catlink}</li>`).join('')
+}</div></div>`;
+		}
 	} else {
 		Parser.viewOnly = false;
 		html = this.cloneNode().toHtmlInternal();
