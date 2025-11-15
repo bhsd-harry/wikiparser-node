@@ -305,7 +305,7 @@ export abstract class ExtToken extends TagPairToken {
 				let html = lastChild.toHtmlInternal().trimEnd().replace(/^\n+/u, ''),
 					lexer = firstChild.getAttr('lang');
 				const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
-					isInline = firstChild.hasAttr('enclose') || firstChild.hasAttr('inline'),
+					isInline = firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline'),
 					showLines = firstChild.hasAttr('line'),
 					{classList} = firstChild;
 				classList.add('mw-highlight');
