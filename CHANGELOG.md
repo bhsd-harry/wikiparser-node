@@ -8,6 +8,10 @@
 - HTML conversion of `<syntaxhighlight>` with [Prism](https://prismjs.com/) highlighting
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
 
+**Fixed**
+
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should report invalid HTML attributes except for `id` for `<math>` and `<chem>` tags
+
 ## v1.31.0
 
 *2025-11-13*
