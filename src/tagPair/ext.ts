@@ -375,6 +375,9 @@ export abstract class ExtToken extends TagPairToken {
 					classList.add('mw-highlight-copy');
 				}
 				firstChild.setAttr('dir', dir);
+				for (const attr of ['style', 'class', 'id', 'dir']) {
+					firstChild.getAttrToken(attr)?.asHtmlAttr();
+				}
 				return isInline
 					? `<code${firstChild.toHtmlInternal()}>${
 						html.trim().replaceAll('\n', ' ')

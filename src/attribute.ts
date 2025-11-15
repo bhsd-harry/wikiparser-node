@@ -92,7 +92,7 @@ const insecureStyle =
 @fixedToken
 export abstract class AttributeToken extends Token {
 	declare readonly name: string;
-	readonly #type;
+	#type;
 	#tag;
 	#equal;
 	#quotes: [string?, string?];
@@ -578,6 +578,11 @@ export abstract class AttributeToken extends Token {
 		}
 		const {childNodes} = Parser.parseWithRef(key, this, stages[type] + 1);
 		firstChild.safeReplaceChildren(childNodes);
+	}
+
+	/** @private */
+	asHtmlAttr(): void {
+		this.#type = 'html-attr';
 	}
 
 	/** @private */
