@@ -138,6 +138,8 @@ const magicWords = [
 	'switch',
 	'plural',
 	'expr',
+	'!',
+	'=',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -824,6 +826,10 @@ export const expandMagicWord = (
 		}
 		case 'expr':
 			return !Number.isNaN(Number(arg0)) && arg0;
+		case '!':
+			return '|';
+		case '=':
+			return '=';
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}

@@ -170,92 +170,95 @@ const expand = (
 			continue;
 		}
 		const {data} = plain.firstChild!;
-		if (!/\0\d+[tm]\x7F/u.test(data)) {
+		if (!/\0\d+[tm!{}+~-]\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = data.replace(/([^\x7F]?)\0(\d+)[tm]\x7F/gu, (m, prev: string, i: number) => {
-			const target = accum[i] as ArgToken | TranscludeToken,
-				{type, name, length, firstChild: f, childNodes} = target,
-				isTemplate = type === 'template',
-				args = childNodes.slice(1) as ParameterToken[];
-			if (type === 'arg') {
-				const arg = removeCommentLine(f.toString()).trim();
-				if (/\0\d+[tm]\x7F/u.test(arg)) {
-					return m;
-				} else if (!context || !context.hasArg(arg)) {
-					const effective = target.childNodes[1] ?? target;
-					// @ts-expect-error sparse array
-					accum[accum.indexOf(length === 1 ? f : effective)] = undefined;
-					return prev + effective.toString();
-				}
-				// @ts-expect-error sparse array
-				accum[accum.indexOf(context.getArg(arg)!.lastChild)] = undefined;
-				return prev + context.getValue(arg)!;
-			} else if (isTemplate || name === 'int') {
-				if (context === false) {
-					return m;
-				}
-				const nameToken = isTemplate ? f : args[0]!,
-					key = removeComment(nameToken.toString()),
-					fallback = isTemplate ? m : `${prev}⧼${key}⧽`,
-					{title, valid} = Parser.normalizeTitle(
-						(isTemplate ? '' : 'MediaWiki:') + key,
-						10,
-						include,
-						config,
-						{halfParsed: true, temporary: true, page},
-					);
-				if (!valid) {
-					// @ts-expect-error sparse array
-					accum[accum.indexOf(target)] = undefined;
-					// @ts-expect-error sparse array
-					accum[accum.indexOf(f)] = undefined;
-					return isTemplate ? prev + target.toString() : fallback;
-				}
-				const dest = loadTemplate(title, config);
-				if (dest === false) {
-					return fallback;
-				} else if (stack.includes(dest)) {
-					return `${prev}<span class="error">Template loop detected: [[${dest}]]</span>`;
-				}
-				let template = Parser.templates.get(dest)!.replace(/\n$/u, '');
-				if (!isTemplate) {
-					for (let j = 1; j < args.length; j++) {
-						template = template.replaceAll(`$${j}`, removeComment(args[j]!.toString()));
-					}
-				}
-				return implicitNewLine(
-					expand(template, dest, callPage, config, true, target, now, accum, [...stack, dest])
-						.toString(),
-					prev,
-				);
-			} else if (Parser.functionHooks.has(name)) {
-				return context === false
-					? m
-					: implicitNewLine(Parser.functionHooks.get(name)!(target, context || undefined), prev);
-			} else if (expandedMagicWords.has(name)) {
-				const solved = solvedMagicWords.has(name);
-				if (context === false && !solved) {
-					return m;
-				}
-				const result = expandMagicWord(
-					name as MagicWord,
-					args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
-					callPage,
-					config,
-					now,
-					accum,
-				);
-				if (solved && result !== false) {
-					for (const {lastChild} of args) {
+		const expanded = data.replace(
+			/([^\x7F]?)\0(\d+)[tm!{}+~-]\x7F/gu,
+			(m, prev: string, i: number) => {
+				const target = accum[i] as ArgToken | TranscludeToken,
+					{type, name, length, firstChild: f, childNodes} = target,
+					isTemplate = type === 'template',
+					args = childNodes.slice(1) as ParameterToken[];
+				if (type === 'arg') {
+					const arg = removeCommentLine(f.toString()).trim();
+					if (/\0\d+[tm!{}+~-]\x7F/u.test(arg)) {
+						return m;
+					} else if (!context || !context.hasArg(arg)) {
+						const effective = target.childNodes[1] ?? target;
 						// @ts-expect-error sparse array
-						accum[accum.indexOf(lastChild)] = undefined;
+						accum[accum.indexOf(length === 1 ? f : effective)] = undefined;
+						return prev + effective.toString();
 					}
+					// @ts-expect-error sparse array
+					accum[accum.indexOf(context.getArg(arg)!.lastChild)] = undefined;
+					return prev + context.getValue(arg)!;
+				} else if (isTemplate || name === 'int') {
+					if (context === false) {
+						return m;
+					}
+					const nameToken = isTemplate ? f : args[0]!,
+						key = removeComment(nameToken.toString()),
+						fallback = isTemplate ? m : `${prev}⧼${key}⧽`,
+						{title, valid} = Parser.normalizeTitle(
+							(isTemplate ? '' : 'MediaWiki:') + key,
+							10,
+							include,
+							config,
+							{halfParsed: true, temporary: true, page},
+						);
+					if (!valid) {
+						// @ts-expect-error sparse array
+						accum[accum.indexOf(target)] = undefined;
+						// @ts-expect-error sparse array
+						accum[accum.indexOf(f)] = undefined;
+						return isTemplate ? prev + target.toString() : fallback;
+					}
+					const dest = loadTemplate(title, config);
+					if (dest === false) {
+						return fallback;
+					} else if (stack.includes(dest)) {
+						return `${prev}<span class="error">Template loop detected: [[${dest}]]</span>`;
+					}
+					let template = Parser.templates.get(dest)!.replace(/\n$/u, '');
+					if (!isTemplate) {
+						for (let j = 1; j < args.length; j++) {
+							template = template.replaceAll(`$${j}`, removeComment(args[j]!.toString()));
+						}
+					}
+					return implicitNewLine(
+						expand(template, dest, callPage, config, true, target, now, accum, [...stack, dest])
+							.toString(),
+						prev,
+					);
+				} else if (Parser.functionHooks.has(name)) {
+					return context === false
+						? m
+						: implicitNewLine(Parser.functionHooks.get(name)!(target, context || undefined), prev);
+				} else if (expandedMagicWords.has(name)) {
+					const solved = solvedMagicWords.has(name);
+					if (context === false && !solved) {
+						return m;
+					}
+					const result = expandMagicWord(
+						name as MagicWord,
+						args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
+						callPage,
+						config,
+						now,
+						accum,
+					);
+					if (solved && result !== false) {
+						for (const {lastChild} of args) {
+							// @ts-expect-error sparse array
+							accum[accum.indexOf(lastChild)] = undefined;
+						}
+					}
+					return result === false ? m : implicitNewLine(result, prev);
 				}
-				return result === false ? m : implicitNewLine(result, prev);
-			}
-			return m;
-		});
+				return m;
+			},
+		);
 		plain.setText(expanded);
 		if (plain.type === 'parameter-key') {
 			(plain.parentNode as ParameterToken).trimName(removeCommentLine(expanded));

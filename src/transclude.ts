@@ -40,17 +40,6 @@ declare interface Frame {
 	title: string;
 }
 
-const basicMagicWordsOrTemplates = new Map([
-	['=', '='],
-	['Template:=', '='],
-	['!', '|'],
-	['Template:!', '|'],
-	['Template:(!', '{|'],
-	['Template:!)', '|}'],
-	['Template:!-', '|-'],
-	['Template:!!', '||'],
-]);
-
 /* NOT FOR BROWSER END */
 
 /**
@@ -1005,9 +994,7 @@ export abstract class TranscludeToken extends Token {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {type, name} = this;
-		if (basicMagicWordsOrTemplates.has(name)) {
-			return basicMagicWordsOrTemplates.get(name)!;
-		} else if (type === 'template' && !name.startsWith('Special:')) {
+		if (type === 'template' && !name.startsWith('Special:')) {
 			if (this.normalizeTitle(name, 0, {halfParsed: true, temporary: true}).valid) {
 				const title = name.replaceAll('_', ' ');
 				return `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
