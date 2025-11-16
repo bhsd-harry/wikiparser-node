@@ -1,3 +1,4 @@
+import Parser from '../index';
 import type * as PrismJS from 'prismjs';
 
 export const Prism = (() => {
@@ -390,7 +391,8 @@ export const loadLanguage = (lang: string): string => {
 	if (lang === 'wiki') {
 		try {
 			const {default: registerWiki}: typeof import('prism-wiki') = require('prism-wiki');
-			registerWiki('');
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+			registerWiki(Prism!, Parser as any);
 			return lang;
 		} catch {}
 	}

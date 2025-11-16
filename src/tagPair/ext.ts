@@ -14,6 +14,7 @@ import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
 import {cached} from '../../mixin/cached';
+import {Prism, loadLanguage} from '../../addon/syntaxhighlight';
 import type {GalleryToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
@@ -310,10 +311,6 @@ export abstract class ExtToken extends TagPairToken {
 					{classList} = firstChild;
 				classList.add('mw-highlight');
 				if (lexer && lexer !== true) {
-					const {
-						Prism,
-						loadLanguage,
-					}: typeof import('../../addon/syntaxhighlight') = require('../../addon/syntaxhighlight');
 					lexer = lexer.toLowerCase();
 					if (Prism) {
 						try {
@@ -330,30 +327,74 @@ export abstract class ExtToken extends TagPairToken {
 							classList.add(`mw-highlight-lang-${lexer.toLowerCase()}`);
 						} catch {}
 					}
-					if (showLines && !isInline) {
-						const linelinks = firstChild.getAttr('linelinks'),
-							startAttr = firstChild.getAttr('start');
-						let start = 1,
+					const highlight = firstChild.getAttr('highlight'),
+						lines = typeof highlight === 'string' && new Set(
+							highlight.split(',').flatMap((str): number | number[] => {
+								const num = Number(str);
+								if (Number.isInteger(num) && num > 0) {
+									return num;
+								} else if (!str.includes('-')) {
+									return [];
+								}
+								const [start, end] = str.split('-')
+									.map(s => parseInt(s)) as [number, number];
+								return start > 0 && start < end
+									? Array.from({length: end - start + 1}, (_, i) => i + start)
+									: [];
+							}),
+						),
+						linenos = showLines && !isInline;
+					if (linenos || lines && lines.size > 0) {
+						let lineReplace: string | undefined,
+							begin = '',
+							end = '',
+							start = 1;
+						if (linenos) {
+							const linelinks = firstChild.getAttr('linelinks'),
+								startAttr = firstChild.getAttr('start');
 							lineReplace = '<span class="linenos" data-line="$1"></span>';
-						if (startAttr && startAttr !== true) {
-							start = Number(startAttr);
-							if (!Number.isInteger(start) || start < 0) {
-								start = 1;
+							if (startAttr && startAttr !== true) {
+								start = Number(startAttr);
+								if (!Number.isInteger(start) || start < 0) {
+									start = 1;
+								}
+							}
+							if (linelinks && linelinks !== true) {
+								lineReplace = `<a href="#${linelinks}-$1">${lineReplace}</a>`;
+								begin = `${linelinks}-`;
+								end = '</span>';
 							}
 						}
-						if (linelinks && linelinks !== true) {
-							lineReplace = `<a href="#${linelinks}-$1">${lineReplace}</a>`;
-						}
 						const re = /<\/?span\b[^>]*>|\n/gu,
-							stack: string[] = [];
+							stack: string[] = [],
+
+							/**
+							 * 是否高亮
+							 * @param i 行号
+							 * @param close 闭合标签
+							 */
+							f = (i: number, close?: boolean): string => {
+								if (!lines || !lines.has(i)) {
+									return '';
+								}
+								return close ? '</span>' : '<span class="hll">';
+							},
+
+							/**
+							 * 是否添加id属性
+							 * @param i 行号
+							 */
+							g = (i: number): string => begin && `<span id="${begin}${i}">`;
 						let mt = re.exec(html),
 							i = 1,
 							lastIndex = 0,
-							output = lineReplace.replaceAll('$1', String(start));
+							output = g(i) + f(1) + (lineReplace?.replaceAll('$1', String(start)) ?? '');
 						while (mt) {
 							if (mt[0] === '\n') {
 								output += `${html.slice(lastIndex, mt.index)}${'</span>'.repeat(stack.length)}\n${
-									lineReplace.replaceAll('$1', String(i + start))
+									f(i, true)
+								}${end}${g(i + 1)}${f(i + 1)}${
+									lineReplace?.replaceAll('$1', String(i + start)) ?? ''
 								}${stack.join('')}`;
 								i++;
 								({lastIndex} = re);
@@ -364,7 +405,7 @@ export abstract class ExtToken extends TagPairToken {
 							}
 							mt = re.exec(html);
 						}
-						html = output + html.slice(lastIndex);
+						html = output + html.slice(lastIndex) + f(i, true) + end;
 					}
 				}
 				classList.add(`mw-content-${dir}`);
