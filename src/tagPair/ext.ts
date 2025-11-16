@@ -14,7 +14,6 @@ import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
 import {cached} from '../../mixin/cached';
-import {Prism, loadLanguage} from '../../addon/syntaxhighlight';
 import type {GalleryToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
@@ -311,6 +310,10 @@ export abstract class ExtToken extends TagPairToken {
 					{classList} = firstChild;
 				classList.add('mw-highlight');
 				if (lexer && lexer !== true) {
+					const {
+						Prism,
+						loadLanguage,
+					}: typeof import('../../addon/syntaxhighlight') = require('../../addon/syntaxhighlight');
 					lexer = lexer.toLowerCase();
 					if (Prism) {
 						try {

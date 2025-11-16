@@ -1,41 +1,11 @@
-import type {AstElement} from '../lib/element';
-import type {
-	Token,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
-} from '../internal';
-
-// @ts-expect-error unconstrained predicate
-export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
-declare type BasicCondition = (type: string, name?: string) => boolean;
-
-/* NOT FOR BROWSER */
-
 import {parsers} from '../util/constants';
+import {basic, getCondition} from '../util/selector';
 import {Ranges} from '../lib/ranges';
 import {Title} from '../lib/title';
 import {Attributes} from '../lib/attributes';
+import type {AstElement} from '../lib/element';
 import type {AttributesParentBase} from '../mixin/attributesParent';
-
-/* NOT FOR BROWSER END */
-
-/**
- * type和name选择器
- * @param selector
- */
-const basic = (selector: string): BasicCondition => {
-	if (selector.includes('#')) {
-		const i = selector.indexOf('#'),
-			targetType = selector.slice(0, i),
-			targetName = selector.slice(i + 1);
-		return (type, name) => (i === 0 || type === targetType) && name === targetName;
-	}
-	return selector ? (type): boolean => type === selector : (): true => true;
-};
-
-/* NOT FOR BROWSER */
+import type {Token, AstNodes} from '../internal';
 
 const simplePseudos = new Set([
 		'root',
@@ -369,7 +339,7 @@ const deQuote = (val: string): string => /^(["']).*\1$/u.test(val) ? val.slice(1
  * @param scope 作用对象
  * @param has `:has()`伪选择器
  */
-const checkToken = (
+export const checkToken = (
 	selector: string,
 	scope?: AstElement,
 	has?: Token,
@@ -493,27 +463,6 @@ const checkToken = (
 	throw new SyntaxError(
 		`Unclosed '${regex === attributeRegex ? '[' : '('}' in the selector!\n${desanitize(sanitized)}`,
 	);
-};
-
-/* NOT FOR BROWSER END */
-
-/**
- * 将选择器转化为类型谓词
- * @param selector 选择器
- * @param scope 作用对象
- * @param has `:has()`伪选择器
- */
-export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
-	/* NOT FOR BROWSER */
-
-	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector.trim())) {
-		return checkToken(selector, scope, has) as TokenPredicate<T>;
-	}
-
-	/* NOT FOR BROWSER END */
-
-	const parts = selector.split(',').map(str => basic(str.trim()));
-	return (({type, name}): boolean => parts.some(condition => condition(type, name))) as TokenPredicate<T>;
 };
 
 parsers['parseSelector'] = __filename;

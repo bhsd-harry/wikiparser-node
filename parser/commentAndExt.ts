@@ -2,7 +2,6 @@ import {getRegex} from '@bhsd/common';
 import {restore} from '../util/string';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
-import {TranslateToken} from '../src/tagPair/translate';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
@@ -87,9 +86,10 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	let newExt = ext,
 		newConfig = config;
 	if (ext.includes('translate')) {
+		const {TranslateToken}: typeof import('../src/tagPair/translate') = require('../src/tagPair/translate');
+		const stack: string[] = [];
 		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar');
 		newConfig = {...config, ext: newExt};
-		const stack: string[] = [];
 		wikitext = wikitext.replace(/<nowiki>[\s\S]*?<\/nowiki>/giu, m => {
 			stack.push(m);
 			return `\0${stack.length - 1}\x7F`;

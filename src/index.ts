@@ -103,10 +103,10 @@ import type {
 import assert from 'assert/strict';
 import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
-import {AstRange} from '../lib/range';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
 import type {Range} from '../lib/ranges';
+import type {AstRange as AstRangeBase} from '../lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -924,7 +924,8 @@ export class Token extends AstElement {
 	 *
 	 * 创建AstRange对象
 	 */
-	createRange(): AstRange {
+	createRange(): AstRangeBase {
+		const {AstRange}: typeof import('../lib/range') = require('../lib/range');
 		return new AstRange();
 	}
 
@@ -970,7 +971,7 @@ export class Token extends AstElement {
 	 *
 	 * 获取全部章节
 	 */
-	sections(): AstRange[] | undefined {
+	sections(): AstRangeBase[] | undefined {
 		require('../addon/token');
 		return this.sections();
 	}
@@ -981,7 +982,7 @@ export class Token extends AstElement {
 	 * 获取指定章节
 	 * @param n rank of the section / 章节序号
 	 */
-	section(n: number): AstRange | undefined {
+	section(n: number): AstRangeBase | undefined {
 		return this.sections()?.[n];
 	}
 
@@ -991,7 +992,7 @@ export class Token extends AstElement {
 	 * 获取指定的外层HTML标签
 	 * @param tag HTML tag name / HTML标签名
 	 */
-	findEnclosingHtml(tag?: string): AstRange | undefined {
+	findEnclosingHtml(tag?: string): AstRangeBase | undefined {
 		require('../addon/token');
 		return this.findEnclosingHtml(tag);
 	}
