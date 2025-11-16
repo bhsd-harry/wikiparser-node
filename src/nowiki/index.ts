@@ -10,7 +10,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
 import {
 	mathTags,
 } from '../../util/constants';
-import {texvcjs} from '../../lib/document';
+import {loadTexvcjs} from '../../lib/document';
 import type {TexvcLocation} from '../../lib/document';
 
 /** @ignore */
@@ -85,41 +85,44 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			NPM: {
 				rule = 'invalid-math';
 				s = lintConfig.getSeverity(rule);
-				if (s && texvcjs && mathTags.has(name)) {
-					const isChem = name !== 'math',
-						display = previousSibling?.getAttr('display') ?? 'block';
-					let tex = innerText,
-						n = 0;
-					if (isChem) {
-						tex = String.raw`\ce{${tex}}`;
-						n = 4;
-					}
-					switch (display) {
-						case 'block':
-							tex = String.raw`{\displaystyle ${tex}}`;
-							n += 15;
-							break;
-						case 'inline':
-							tex = String.raw`{\textstyle ${tex}}`;
-							n += 12;
-							break;
-						case 'linebreak':
-							tex = String.raw`\[ ${tex} \]`;
-							n += 3;
-							// no default
-					}
-					const result = texvcjs.check(tex, {
-						usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem')),
-					});
-					if (result.status !== '+') {
-						const e = generateForSelf(this, {start}, rule, 'chem-required', s);
-						if (result.status !== 'C') {
-							const {message, location} = result.error,
-								[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
-							[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
-							Object.assign(e, {endIndex, endLine, endCol, message});
+				if (s && mathTags.has(name)) {
+					const texvcjs = loadTexvcjs();
+					if (texvcjs) {
+						const isChem = name !== 'math',
+							display = previousSibling?.getAttr('display') ?? 'block';
+						let tex = innerText,
+							n = 0;
+						if (isChem) {
+							tex = String.raw`\ce{${tex}}`;
+							n = 4;
 						}
-						errors.push(e);
+						switch (display) {
+							case 'block':
+								tex = String.raw`{\displaystyle ${tex}}`;
+								n += 15;
+								break;
+							case 'inline':
+								tex = String.raw`{\textstyle ${tex}}`;
+								n += 12;
+								break;
+							case 'linebreak':
+								tex = String.raw`\[ ${tex} \]`;
+								n += 3;
+								// no default
+						}
+						const result = texvcjs.check(tex, {
+							usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem')),
+						});
+						if (result.status !== '+') {
+							const e = generateForSelf(this, {start}, rule, 'chem-required', s);
+							if (result.status !== 'C') {
+								const {message, location} = result.error,
+									[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
+								[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
+								Object.assign(e, {endIndex, endLine, endCol, message});
+							}
+							errors.push(e);
+						}
 					}
 				}
 			}
