@@ -1,7 +1,5 @@
 import type {AstElement} from '../lib/element';
-import type {
-	Token,
-} from '../internal';
+import type {Token} from '../internal';
 
 // @ts-expect-error unconstrained predicate
 export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
@@ -11,7 +9,7 @@ declare type BasicCondition = (type: string, name?: string) => boolean;
  * type和name选择器
  * @param selector
  */
-const basic = (selector: string): BasicCondition => {
+export const basic = (selector: string): BasicCondition => {
 	if (selector.includes('#')) {
 		const i = selector.indexOf('#'),
 			targetType = selector.slice(0, i),

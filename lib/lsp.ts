@@ -86,11 +86,11 @@ import {
 import {
 	EmbeddedJSONDocument,
 	EmbeddedCSSDocument,
-	jsonLSP,
-	cssLSP,
+	loadJsonLSP,
+	loadCssLSP,
 	jsonTags,
-	htmlData,
-	stylelint,
+	loadHtmlData,
+	loadStylelint,
 } from './document';
 import type {ExecException} from 'child_process';
 import type {Dimension, Position as NodePosition} from './node';
@@ -162,12 +162,12 @@ const getLinkRegex = getRegex(protocol => new RegExp(`^(?:${protocol}|//)`, 'iu'
  * @param token.firstChild
  * @param style whether it is a style attribute
  */
-const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean): boolean | undefined =>
+const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean): boolean =>
 	type === 'attr-value' && length === 1 && firstChild!.type === 'text'
 	&& (
 		!style
 		|| parentNode!.name === 'style'
-		&& Boolean(cssLSP)
+		&& Boolean(loadCssLSP())
 	);
 
 /**
@@ -673,7 +673,7 @@ export class LanguageService implements LanguageServiceBase {
 				/* NOT FOR BROWSER ONLY */
 			} else if (isAttr(token, true)) {
 				const textDoc = new EmbeddedCSSDocument(root, token);
-				return cssLSP!.findDocumentColors(textDoc, textDoc.styleSheet);
+				return loadCssLSP()!.findDocumentColors(textDoc, textDoc.styleSheet);
 
 				/* NOT FOR BROWSER ONLY END */
 			}
@@ -1013,14 +1013,19 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY */
 		} else if (isAttr(cur!, true)) {
 			const textDoc = new EmbeddedCSSDocument(root, cur!);
-			return cssLSP!.doComplete(textDoc, position, textDoc.styleSheet).items.map((item): CompletionItem => ({
-				...item,
-				textEdit: {
-					range: (item.textEdit as TextEdit).range,
-					newText: item.textEdit!.newText.replace(/\s/gu, ''),
-				},
-			}));
-		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(cur!.name!)) {
+			return loadCssLSP()!.doComplete(textDoc, position, textDoc.styleSheet).items
+				.map((item): CompletionItem => ({
+					...item,
+					textEdit: {
+						range: (item.textEdit as TextEdit).range,
+						newText: item.textEdit!.newText.replace(/\s/gu, ''),
+					},
+				}));
+		} else if (type === 'ext-inner' && jsonTags.includes(cur!.name!)) {
+			const jsonLSP = loadJsonLSP();
+			if (!jsonLSP) {
+				return undefined;
+			}
 			const textDoc = new EmbeddedJSONDocument(root, cur!);
 			return (await jsonLSP.doComplete(textDoc, position, textDoc.jsonDoc))?.items;
 		} else if (type === 'ext-inner' && cur!.name === 'score') {
@@ -1137,9 +1142,17 @@ export class LanguageService implements LanguageServiceBase {
 					],
 				}),
 			),
+
+			/* NOT FOR BROWSER ONLY */
+
+			stylelint = await loadStylelint(),
+			jsonLSP = loadJsonLSP(),
+
+			/* NOT FOR BROWSER ONLY END */
+
 			/* eslint-disable @stylistic/operator-linebreak */
 			cssDiagnostics =
-				await stylelint ?
+				stylelint ?
 					await (async () => {
 						NPM: {
 							const tokens = this.findStyleTokens();
@@ -1151,7 +1164,7 @@ export class LanguageService implements LanguageServiceBase {
 										sanitizeInlineStyle(lastChild.toString())
 									}\n}`,
 								).join('\n'),
-								cssErrors = await styleLint((await stylelint)!, code, cssRules);
+								cssErrors = await styleLint(stylelint, code, cssRules);
 							if (cssErrors.length === 0) {
 								return [];
 							}
@@ -1207,7 +1220,7 @@ export class LanguageService implements LanguageServiceBase {
 							}
 							const textDoc = new EmbeddedJSONDocument(root, lastChild),
 								severityLevel = name === 'templatedata' ? 'error' : 'ignore',
-								e = (await jsonLSP!.doValidation(textDoc, textDoc.jsonDoc, {
+								e = (await jsonLSP.doValidation(textDoc, textDoc.jsonDoc, {
 									comments: severityLevel,
 									trailingCommas: severityLevel,
 								})).map((error): DiagnosticBase => ({
@@ -1359,6 +1372,7 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY */
 
+		const jsonLSP = loadJsonLSP();
 		if (jsonLSP) {
 			for (const {selfClosing, lastChild} of root.querySelectorAll<ExtToken>(jsonSelector)) {
 				if (!selfClosing) {
@@ -1690,42 +1704,45 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY */
 		} else if (isAttr(offsetNode, true)) {
 			const textDoc = new EmbeddedCSSDocument(root, offsetNode);
-			return cssLSP!.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
-		} else if (jsonLSP && type === 'ext-inner' && jsonTags.includes(name!)) {
+			return loadCssLSP()!.doHover(textDoc, position, textDoc.styleSheet) ?? undefined;
+		} else if (type === 'ext-inner' && jsonTags.includes(name!)) {
+			const jsonLSP = loadJsonLSP();
+			if (!jsonLSP) {
+				return undefined;
+			}
 			const textDoc = new EmbeddedJSONDocument(root, offsetNode);
 			return await jsonLSP.doHover(textDoc, position, textDoc.jsonDoc) ?? undefined;
-		} else if (htmlData) {
-			if (
-				type === 'html' && offset <= offsetNode.getRelativeIndex(0)
-				|| type === 'html-attr-dirty' && offset === 0 && parentNode!.firstChild === offsetNode
-			) {
-				const token = type === 'html' ? offsetNode : parentNode!.parentNode!,
-					data = htmlData.provideTags().find(({name: n}) => n === token.name);
-				if (data?.description) {
-					const start = positionAt(root, token.getAbsoluteIndex());
-					return {
-						contents: data.description,
-						range: {
-							start,
-							end: {
-								line: start.line,
-								character: start.character + token.getRelativeIndex(0),
-							},
+		} else if (
+			type === 'html' && offset <= offsetNode.getRelativeIndex(0)
+			|| type === 'html-attr-dirty' && offset === 0 && parentNode!.firstChild === offsetNode
+		) {
+			const token = type === 'html' ? offsetNode : parentNode!.parentNode!,
+				data = loadHtmlData()?.provideTags().find(({name: n}) => n === token.name);
+			if (data?.description) {
+				const start = positionAt(root, token.getAbsoluteIndex());
+				return {
+					contents: data.description,
+					range: {
+						start,
+						end: {
+							line: start.line,
+							character: start.character + token.getRelativeIndex(0),
 						},
-					};
-				}
-			} else if (type === 'attr-key' && isHtmlAttr(parentNode!)) {
-				const data = htmlData.provideAttributes(parentNode.tag).find(({name: n}) => n === parentNode.name);
-				if (data?.description) {
-					return {
-						contents: data.description,
-						range: createNodeRange(offsetNode),
-					};
-				}
+					},
+				};
 			}
-
-			/* NOT FOR BROWSER ONLY END */
+		} else if (type === 'attr-key' && isHtmlAttr(parentNode!)) {
+			const data = loadHtmlData()?.provideAttributes(parentNode.tag).find(({name: n}) => n === parentNode.name);
+			if (data?.description) {
+				return {
+					contents: data.description,
+					range: createNodeRange(offsetNode),
+				};
+			}
 		}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return info && {
 			contents: {
 				kind: 'markdown',

@@ -2,7 +2,7 @@ import {
 	text,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
-import {getCondition} from '../parser/selector';
+import {getCondition} from '../util/selector';
 import {AstNode} from './node';
 import {elementLike} from '../mixin/elementLike';
 import type {

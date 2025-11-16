@@ -2,8 +2,14 @@ import path from 'path';
 import {sanitizeInlineStyle} from '@bhsd/common';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
-import type {JSONDocument, SchemaConfiguration} from 'vscode-json-languageservice';
-import type {Stylesheet} from 'vscode-css-languageservice';
+import type {
+	JSONDocument,
+	SchemaConfiguration,
+	LanguageService as JSONLanguageService,
+} from 'vscode-json-languageservice';
+import type {Stylesheet, LanguageService as CSSLanguageService} from 'vscode-css-languageservice';
+import type {IHTMLDataProvider} from 'vscode-html-languageservice';
+import type {PublicApi} from 'stylelint';
 import type {Token, AttributeToken} from '../internal';
 
 export interface TexvcLocation {
@@ -28,7 +34,7 @@ declare interface Texvcjs {
 	};
 }
 
-export const texvcjs = (() => {
+export const loadTexvcjs = /** @ignore */ (): Texvcjs | undefined => {
 	NPM: {
 		try {
 			return require('mathoid-texvcjs') as Texvcjs;
@@ -37,64 +43,75 @@ export const texvcjs = (() => {
 			return undefined;
 		}
 	}
-})();
+};
 
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
-export const jsonLSP = (() => {
-	try {
-		const lsp = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
+let jsonLSP: JSONLanguageService | undefined | null = null;
+export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | undefined => {
+	if (jsonLSP === null) {
+		try {
+			jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
 				.getLanguageService({
 					/** @implements */
 					async schemaRequestService(uri) {
 						return (await fetch(uri)).text();
 					},
-				}),
-			dir = path.join('..', '..', 'data', 'ext');
-		lsp.configure({
-			schemas: jsonTags.map((tag): SchemaConfiguration | false => {
-				const uri = path.join(dir, tag);
-				try {
-					const schema = require(tag === 'maplink' ? path.join(dir, 'mapframe') : uri);
-					return {
-						uri,
-						fileMatch: [tag],
-						schema,
-					};
-				} catch {
-					/* istanbul ignore next */
-					return false;
-				}
-			}).filter(Boolean) as SchemaConfiguration[],
-		});
-		return lsp;
-	} catch {
-		/* istanbul ignore next */
-		return undefined;
+				});
+			const dir = path.join('..', '..', 'data', 'ext');
+			jsonLSP.configure({
+				schemas: jsonTags.map((tag): SchemaConfiguration | false => {
+					const uri = path.join(dir, tag);
+					try {
+						const schema = require(tag === 'maplink' ? path.join(dir, 'mapframe') : uri);
+						return {
+							uri,
+							fileMatch: [tag],
+							schema,
+						};
+					} catch {
+						/* istanbul ignore next */
+						return false;
+					}
+				}).filter(Boolean) as SchemaConfiguration[],
+			});
+		} catch {
+			/* istanbul ignore next */
+			jsonLSP = undefined;
+		}
 	}
-})();
+	return jsonLSP;
+};
 
-export const cssLSP = (() => {
-	try {
-		return (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
-			.getCSSLanguageService();
-	} catch {
-		/* istanbul ignore next */
-		return undefined;
+let cssLSP: CSSLanguageService | undefined | null = null;
+export const loadCssLSP = /** @ignore */ (): CSSLanguageService | undefined => {
+	if (cssLSP === null) {
+		try {
+			cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
+				.getCSSLanguageService();
+		} catch {
+			/* istanbul ignore next */
+			cssLSP = undefined;
+		}
 	}
-})();
+	return cssLSP;
+};
 
-export const htmlData = (() => {
-	try {
-		return (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
-			.getDefaultHTMLDataProvider();
-	} catch {
-		/* istanbul ignore next */
-		return undefined;
+let htmlData: IHTMLDataProvider | undefined | null = null;
+export const loadHtmlData = /** @ignore */ (): IHTMLDataProvider | undefined => {
+	if (htmlData === null) {
+		try {
+			htmlData = (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
+				.getDefaultHTMLDataProvider();
+		} catch {
+			/* istanbul ignore next */
+			htmlData = undefined;
+		}
 	}
-})();
+	return htmlData;
+};
 
-export const stylelint = (async () => {
+export const loadStylelint = /** @ignore */ async (): Promise<PublicApi | undefined> => {
 	NPM: {
 		try {
 			return (await import('stylelint')).default;
@@ -103,7 +120,7 @@ export const stylelint = (async () => {
 			return undefined;
 		}
 	}
-})();
+};
 
 /** embedded document */
 class EmbeddedDocument implements TextDocument {
@@ -170,7 +187,7 @@ export class EmbeddedJSONDocument extends EmbeddedDocument {
 	constructor(root: Token, token: Token) {
 		super('json', root, token);
 		this.uri = token.name!;
-		this.jsonDoc = jsonLSP!.parseJSONDocument(this);
+		this.jsonDoc = loadJsonLSP()!.parseJSONDocument(this);
 	}
 }
 
@@ -185,7 +202,7 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 	constructor(root: Token, token: Token) {
 		const {type, tag} = token.parentNode as AttributeToken;
 		super('css', root, token, `${type === 'ext-attr' ? 'div' : tag}{`, '}');
-		this.styleSheet = cssLSP!.parseStylesheet(this);
+		this.styleSheet = loadCssLSP()!.parseStylesheet(this);
 	}
 
 	override getContent(): string {
