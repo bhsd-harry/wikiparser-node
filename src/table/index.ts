@@ -18,11 +18,11 @@ export type TableTokens = TableToken | TrToken | TdToken;
 
 /**
  * 生成一个指定长度的空数组
- * @param n 数组长度
+ * @param length 数组长度
  * @param callback 回调函数
  */
-const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
-	new Array(n).fill(undefined).map((_, i) => callback(i));
+const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =>
+	Array.from({length}, (_, i) => callback(i));
 
 /**
  * 是否是行尾
