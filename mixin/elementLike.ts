@@ -1,5 +1,5 @@
-import {getCondition} from '../parser/selector';
-import type {TokenPredicate} from '../parser/selector';
+import {getCondition} from '../util/selector';
+import type {TokenPredicate} from '../util/selector';
 import type {AstNodes, Token} from '../internal';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
