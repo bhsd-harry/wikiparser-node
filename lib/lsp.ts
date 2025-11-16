@@ -1953,7 +1953,7 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			const section = token.text().trim() || ' ',
 				name = names.has(section)
-					? new Array(names.size).fill('').map((_, i) => `${section.trim()}_${i + 2}`)
+					? Array.from({length: names.size}, (_, i) => `${section.trim()}_${i + 2}`)
 						.find(s => !names.has(s))!
 					: section,
 				container = sections.slice(0, level - 1).reverse().find(Boolean),
