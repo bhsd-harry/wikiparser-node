@@ -22,7 +22,7 @@ import type {
  * 是否为普通内链
  * @param type 节点类型
  */
-const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
+export const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
 
 /**
  * internal link

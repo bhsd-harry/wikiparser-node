@@ -20,7 +20,8 @@ declare type AttributeDirty = `${AttributeTypes}-dirty`;
  * 将属性类型转换为单属性类型
  * @param type 属性类型
  */
-const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
+export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
+	type.slice(0, -1) as AttributeTypes;
 
 /**
  * 将属性类型转换为无效属性类型

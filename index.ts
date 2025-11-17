@@ -8,6 +8,9 @@ import {
 } from './util/constants';
 import {tidy} from './util/string';
 import {LintConfiguration} from './lib/lintConfig';
+import {
+	Title,
+} from './lib/title';
 import type {
 	Config,
 	ConfigData,
@@ -17,7 +20,7 @@ import type {
 	Parser as ParserBase,
 	Stage,
 } from './base';
-import type {Title, TitleOptions} from './lib/title';
+import type {TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {
 	Token,
@@ -31,7 +34,6 @@ import {wmf} from '@bhsd/common';
 import {
 	error,
 } from './util/diff';
-import fetchConfig from './bin/config';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -267,7 +269,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	normalizeTitle(title, defaultNs = 0, include?: boolean, config = Parser.getConfig(), opt?: TitleOptions) {
-		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		let titleObj: Title;
 		if (opt?.halfParsed) {
 			titleObj = new Title(title, defaultNs, config, opt);
@@ -427,6 +428,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* istanbul ignore next */
 	/** @implements */
 	async fetchConfig(site, url, user) {
+		const {default: fetchConfig}: typeof import('./bin/config') = require('./bin/config');
 		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},
 } as Omit<Parser, 'default'> as Parser;

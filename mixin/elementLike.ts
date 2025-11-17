@@ -1,6 +1,7 @@
 import {mixin} from '../util/debug';
 import {getCondition} from '../util/selector';
 import type {TokenPredicate} from '../util/selector';
+import type {AstElement} from '../lib/element';
 import type {AstNodes, Token} from '../internal';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
@@ -41,8 +42,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			#getCondition<T>(selector: string): TokenPredicate<T> {
 				return getCondition<T>(
 					selector,
-					// @ts-expect-error only AstElement
-					this,
+					this as unknown as AstElement,
 				);
 			}
 
