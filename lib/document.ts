@@ -40,22 +40,26 @@ declare interface Texvcjs {
 	};
 }
 
-export const loadTexvcjs = /** @ignore */ (): Texvcjs | undefined => {
+let texcvjs: Texvcjs | undefined | null;
+export const loadTexvcjs = /** @ignore */ (): Texvcjs | null => {
 	NPM: {
-		try {
-			return require('mathoid-texvcjs') as Texvcjs;
-		} catch {
-			/* istanbul ignore next */
-			return undefined;
+		if (texcvjs === undefined) {
+			try {
+				texcvjs = require('mathoid-texvcjs') as Texvcjs;
+			} catch {
+				/* istanbul ignore next */
+				texcvjs = null;
+			}
 		}
+		return texcvjs;
 	}
 };
 
 export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
-let jsonLSP: JSONLanguageService | undefined | null = null;
-export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | undefined => {
-	if (jsonLSP === null) {
+let jsonLSP: JSONLanguageService | undefined | null;
+export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | null => {
+	if (jsonLSP === undefined) {
 		try {
 			jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
 				.getLanguageService({
@@ -83,48 +87,52 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | undefined =>
 			});
 		} catch {
 			/* istanbul ignore next */
-			jsonLSP = undefined;
+			jsonLSP = null;
 		}
 	}
 	return jsonLSP;
 };
 
-let cssLSP: CSSLanguageService | undefined | null = null;
-export const loadCssLSP = /** @ignore */ (): CSSLanguageService | undefined => {
-	if (cssLSP === null) {
+let cssLSP: CSSLanguageService | undefined | null;
+export const loadCssLSP = /** @ignore */ (): CSSLanguageService | null => {
+	if (cssLSP === undefined) {
 		try {
 			cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 				.getCSSLanguageService();
 		} catch {
 			/* istanbul ignore next */
-			cssLSP = undefined;
+			cssLSP = null;
 		}
 	}
 	return cssLSP;
 };
 
-let htmlData: IHTMLDataProvider | undefined | null = null;
-export const loadHtmlData = /** @ignore */ (): IHTMLDataProvider | undefined => {
-	if (htmlData === null) {
+let htmlData: IHTMLDataProvider | undefined | null;
+export const loadHtmlData = /** @ignore */ (): IHTMLDataProvider | null => {
+	if (htmlData === undefined) {
 		try {
 			htmlData = (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
 				.getDefaultHTMLDataProvider();
 		} catch {
 			/* istanbul ignore next */
-			htmlData = undefined;
+			htmlData = null;
 		}
 	}
 	return htmlData;
 };
 
-export const loadStylelint = /** @ignore */ async (): Promise<PublicApi | undefined> => {
+let stylelint: Promise<PublicApi | null> | undefined;
+export const loadStylelint = /** @ignore */ (): Promise<PublicApi | null> => {
 	NPM: {
-		try {
-			return (await import('stylelint')).default;
-		} catch {
-			/* istanbul ignore next */
-			return undefined;
-		}
+		stylelint ??= (async () => {
+			try {
+				return (await import('stylelint')).default;
+			} catch {
+				/* istanbul ignore next */
+				return null;
+			}
+		})();
+		return stylelint;
 	}
 };
 

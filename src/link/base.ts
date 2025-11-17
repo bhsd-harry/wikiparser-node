@@ -32,7 +32,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../../util/debug';
-import {encode, sanitize} from '../../util/string';
+import {sanitize} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -41,7 +41,7 @@ import {cached} from '../../mixin/cached';
  * 是否为普通内链
  * @param type 节点类型
  */
-const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
+export const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
 
 /**
  * internal link
@@ -321,16 +321,8 @@ export abstract class LinkBaseToken extends Token {
 	 * @param link link target / 链接目标
 	 */
 	setTarget(link: string): void {
-		const {childNodes} = Parser.parseWithRef(link, this, 2),
-			token = Shadow.run(() => new AtomToken(
-				undefined,
-				'link-target',
-				this.getAttribute('config'),
-				[],
-				{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
-			));
-		token.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
-		this.firstChild.safeReplaceWith(token);
+		require('../../addon/link');
+		this.setTarget(link);
 	}
 
 	/**
@@ -340,11 +332,8 @@ export abstract class LinkBaseToken extends Token {
 	 * @param fragment URI fragment / 片段标识符
 	 */
 	setFragment(fragment?: string): void {
-		const {type, name} = this;
-		if (fragment === undefined || isLink(type)) {
-			fragment &&= encode(fragment);
-			this.setTarget(name + (fragment === undefined ? '' : `#${fragment}`));
-		}
+		require('../../addon/link');
+		this.setFragment(fragment);
 	}
 
 	/**
@@ -354,21 +343,8 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkStr link text / 链接显示文字
 	 */
 	setLinkText(linkStr?: string): void {
-		const {childNodes, lastChild, length} = this;
-		if (linkStr === undefined) {
-			childNodes[1]?.remove();
-			return;
-		}
-		const root = Parser.parseWithRef(linkStr, this);
-		if (length === 1) {
-			root.type = 'link-text';
-			root.setAttribute('acceptable', {
-				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
-			});
-			this.insertAt(root);
-		} else {
-			lastChild.safeReplaceChildren(root.childNodes);
-		}
+		require('../../addon/link');
+		this.setLinkText(linkStr);
 	}
 
 	/** @private */

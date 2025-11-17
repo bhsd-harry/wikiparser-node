@@ -37,7 +37,8 @@ declare type AttributeDirty = `${AttributeTypes}-dirty`;
  * 将属性类型转换为单属性类型
  * @param type 属性类型
  */
-const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
+export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
+	type.slice(0, -1) as AttributeTypes;
 
 /**
  * 将属性类型转换为无效属性类型
@@ -398,17 +399,8 @@ export abstract class AttributesToken extends Token {
 	 * 清理无效属性
 	 */
 	sanitize(): void {
-		let dirty = false;
-		for (let i = this.length - 1; i >= 0; i--) {
-			const child = this.childNodes[i]!;
-			if (child instanceof AtomToken && child.text().trim()) {
-				dirty = true;
-				this.removeAt(i);
-			}
-		}
-		if (!Shadow.running && dirty) {
-			Parser.warn('AttributesToken.sanitize will remove invalid attributes!');
-		}
+		require('../addon/attribute');
+		this.sanitize();
 	}
 
 	@clone
@@ -470,35 +462,8 @@ export abstract class AttributesToken extends Token {
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
 	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
-		if (typeof keyOrProp === 'object') {
-			for (const [key, val] of Object.entries(keyOrProp)) {
-				this.setAttr(key, val);
-			}
-			return;
-		}
-		const {type, name} = this;
-		if (type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
-			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
-		}
-		const key = trimLc(keyOrProp),
-			attr = this.getAttrToken(key);
-		if (attr) {
-			attr.setValue(value!);
-			return;
-		} else if (value === false) {
-			return;
-		}
-		// @ts-expect-error abstract class
-		const token = Shadow.run((): AttributeToken => new AttributeToken(
-			toAttributeType(type),
-			name,
-			key,
-			value === true ? '' : '=',
-			value === true ? '' : value,
-			['"', '"'],
-			this.getAttribute('config'),
-		));
-		this.insertAt(token);
+		require('../addon/attribute');
+		this.setAttr(keyOrProp as string, value!);
 	}
 
 	/**
@@ -540,15 +505,8 @@ export abstract class AttributesToken extends Token {
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key: string, force?: boolean): void {
-		key = trimLc(key);
-		const attr = this.getAttrToken(key);
-		if (attr && attr.getValue() !== true) {
-			throw new RangeError(`${key} attribute is not Boolean!`);
-		} else if (attr) {
-			attr.setValue(force === true);
-		} else if (force !== false) {
-			this.setAttr(key, true);
-		}
+		require('../addon/attribute');
+		this.toggleAttr(key, force);
 	}
 
 	/**

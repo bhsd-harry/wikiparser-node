@@ -65,25 +65,30 @@ export const decodeHtmlBasic = factory(
 		: names[name.toLowerCase() as keyof typeof names],
 );
 
+let decodeHtmlResolved: ((str: string) => string) | undefined;
+
 /**
  * decode HTML entities
  * @param str
  */
 export const decodeHtml = (str: string): string => {
-	/* NOT FOR BROWSER ONLY */
+	decodeHtmlResolved ??= (() => {
+		/* NOT FOR BROWSER ONLY */
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (typeof process === 'object' && typeof process.versions?.node === 'string') {
-		try {
-			const {decodeHTMLStrict}: typeof import('entities') = require('entities');
-			return decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
-		} catch {}
-	}
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (typeof process === 'object' && typeof process.versions?.node === 'string') {
+			try {
+				const {decodeHTMLStrict}: typeof import('entities') = require('entities');
+				return (s): string => decodeHTMLStrict(s).replace(/\xA0/gu, ' ');
+			} catch {}
+		}
 
-	/* NOT FOR BROWSER ONLY END */
+		/* NOT FOR BROWSER ONLY END */
 
-	/* istanbul ignore next */
-	return decodeHtmlBasic(str);
+		/* istanbul ignore next */
+		return decodeHtmlBasic;
+	})();
+	return decodeHtmlResolved(str);
 };
 
 /** decode numbered HTML entities */

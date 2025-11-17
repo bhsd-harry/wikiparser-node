@@ -41,26 +41,8 @@ import {Shadow} from '../util/debug';
 import {fixedToken} from '../mixin/fixed';
 import {cached} from '../mixin/cached';
 
-declare interface CSSNode {
-	offset: number;
-	length: number;
-	getText(): string;
-}
-declare interface Declaration extends CSSNode {
-	property: CSSNode;
-	value: CSSNode;
-}
-declare interface RuleSet {
-	declarations: {
-		children?: Declaration[];
-	};
-}
-declare interface StyleSheet extends CSSNode {
-	children: [RuleSet];
-}
-
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
-	ariaAttrs = new Set(['aria-describedby', 'aria-flowto', 'aria-labelledby', 'aria-owns']);
+export const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
+const ariaAttrs = new Set(['aria-describedby', 'aria-flowto', 'aria-labelledby', 'aria-owns']);
 
 /* NOT FOR BROWSER END */
 
@@ -479,7 +461,16 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+		if (key === 'invalid') {
+			return this.#lint() as TokenAttribute<T>;
+
+			/* NOT FOR BROWSER */
+		} else if (key === 'quotes') {
+			return this.#quotes as TokenAttribute<T>;
+
+			/* NOT FOR BROWSER END */
+		}
+		return super.getAttribute(key);
 	}
 
 	/** @private */
@@ -500,6 +491,17 @@ export abstract class AttributeToken extends Token {
 	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
+
+	/** @private */
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
+		if (key === 'equal') {
+			this.#equal = value as TokenAttribute<'equal'>;
+		} else if (key === 'quotes') {
+			this.#quotes = value as TokenAttribute<'quotes'>;
+		} else {
+			super.setAttribute(key, value);
+		}
+	}
 
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
@@ -542,28 +544,8 @@ export abstract class AttributeToken extends Token {
 	 * @throws `RangeError` 同时包含单引号和双引号
 	 */
 	setValue(value: string | boolean): void {
-		if (value === false) {
-			this.remove();
-			return;
-		} else if (value === true) {
-			this.#equal = '';
-			return;
-		}
-		const {type, lastChild} = this;
-		if (type === 'ext-attr' && value.includes('>')) {
-			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
-		} else if (value.includes('"') && value.includes(`'`)) {
-			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
-		}
-		const {childNodes} = Parser.parseWithRef(value, this, stages[type] + 1);
-		lastChild.safeReplaceChildren(childNodes);
-		if (value.includes('"')) {
-			this.#quotes = [`'`, `'`] as const;
-		} else if (value.includes(`'`) || !this.#quotes[0]) {
-			this.#quotes = ['"', '"'] as const;
-		} else {
-			this.close();
-		}
+		require('../addon/attribute');
+		this.setValue(value);
 	}
 
 	/**
@@ -574,12 +556,8 @@ export abstract class AttributeToken extends Token {
 	 * @throws `Error` title和alt属性不能更名
 	 */
 	rename(key: string): void {
-		const {type, name, tag, firstChild} = this;
-		if (name === 'title' || name === 'alt' && tag === 'img') {
-			throw new Error(`${name} attribute cannot be renamed!`);
-		}
-		const {childNodes} = Parser.parseWithRef(key, this, stages[type] + 1);
-		firstChild.safeReplaceChildren(childNodes);
+		require('../addon/attribute');
+		this.rename(key);
 	}
 
 	/** @private */
@@ -616,54 +594,8 @@ export abstract class AttributeToken extends Token {
 	 * @throws `Error` 无CSS语言服务
 	 */
 	css(key: string, value?: string): string | undefined {
-		const {name, lastChild} = this;
-		if (name !== 'style') {
-			throw new Error('Not a style attribute!');
-		} else if (lastChild.length !== 1 || lastChild.firstChild!.type !== 'text') {
-			throw new Error('Complex style attribute!');
-		}
-		const cssLSP = loadCssLSP();
-		if (!cssLSP) {
-			throw new Error('CSS language service is not available!');
-		}
-		const doc = new EmbeddedCSSDocument(this.getRootNode(), lastChild),
-			styleSheet = doc.styleSheet as StyleSheet,
-			{children: [{declarations}]} = styleSheet,
-			declaration = declarations.children?.filter(({property}) => property.getText() === key) ?? [];
-		if (value === undefined) {
-			return declaration.at(-1)?.value.getText();
-		} else if (typeof value === 'number') {
-			value = String(value);
-		}
-		const style = styleSheet.getText().slice(0, -1);
-		if (!value) {
-			if (declaration.length === declarations.children?.length) {
-				this.setValue('');
-			} else if (declaration.length > 0) {
-				let output = '',
-					start = doc.pre.length;
-				for (const {offset, length} of declaration) {
-					output += style.slice(start, offset);
-					start = offset + length;
-				}
-				output += style.slice(start);
-				this.setValue(output.replace(/^\s*;\s*|;\s*(?=;)/gu, ''));
-			}
-			return undefined;
-		}
-		const hasQuote = value.includes('"');
-		if (this.#quotes[0] && value.includes(this.#quotes[0]) || hasQuote && value.includes(`'`)) {
-			const quote = this.#quotes[0] || '"';
-			throw new RangeError(
-				`Please consider replacing \`${quote}\` with \`${quote === '"' ? `'` : '"'}\`!`,
-			);
-		} else if (declaration.length > 0) {
-			const {offset, length} = declaration.at(-1)!.value;
-			this.setValue(style.slice(doc.pre.length, offset) + value + style.slice(offset + length));
-		} else {
-			this.setValue(`${style.slice(doc.pre.length)}${/;\s*$/u.test(style) ? '' : '; '}${key}: ${value}`);
-		}
-		return undefined;
+		require('../addon/attribute');
+		return this.css(key, value);
 	}
 }
 

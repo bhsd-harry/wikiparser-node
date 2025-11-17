@@ -30,7 +30,7 @@ declare global {
 		/* NOT FOR BROWSER */
 
 		T extends 'pattern' ? RegExp :
-		T extends 'tags' ? [string, string] :
+		T extends 'tags' | 'quotes' ? [string, string] :
 		T extends 'keys' ? Set<string> :
 		T extends 'protectedChildren' ? Ranges :
 		T extends 'acceptable' ? WikiParserAcceptable | undefined :

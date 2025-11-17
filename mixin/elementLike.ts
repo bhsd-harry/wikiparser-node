@@ -1,6 +1,7 @@
 import {mixin} from '../util/debug';
 import {getCondition} from '../util/selector';
 import type {TokenPredicate} from '../util/selector';
+import type {AstElement} from '../lib/element';
 import type {AstNodes, Token} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -119,13 +120,12 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			/* NOT FOR BROWSER END */
 
 			#getCondition<T>(selector: string): TokenPredicate<T> {
-				const {AstElement}: typeof import('../lib/element') = require('../lib/element');
 				return getCondition<T>(
 					selector,
 					// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
-					!(this instanceof AstElement) ?
+					!('type' in this) ?
 						undefined : // eslint-disable-line @stylistic/operator-linebreak
-						this,
+						this as unknown as AstElement,
 				);
 			}
 

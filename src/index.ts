@@ -103,6 +103,7 @@ import type {
 import assert from 'assert/strict';
 import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
+import {isInterwiki} from '../lib/title';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
 import type {Range} from '../lib/ranges';
@@ -936,7 +937,7 @@ export class Token extends AstElement {
 	 * @param title title / 标题
 	 */
 	isInterwiki(title: string): RegExpExecArray | null {
-		return Parser.isInterwiki(title, this.#config);
+		return isInterwiki(title, this.#config);
 	}
 
 	/** @private */

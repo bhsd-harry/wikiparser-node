@@ -12,6 +12,13 @@ import {
 } from './util/constants';
 import {tidy} from './util/string';
 import {LintConfiguration} from './lib/lintConfig';
+import {
+	Title,
+
+	/* NOT FOR BROWSER */
+
+	isInterwiki,
+} from './lib/title';
 import type {
 	Config,
 	ConfigData,
@@ -22,7 +29,7 @@ import type {
 	Stage,
 	AST,
 } from './base';
-import type {Title, TitleOptions} from './lib/title';
+import type {TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {
 	Token,
@@ -35,9 +42,7 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {getRegex} from '@bhsd/common';
 import {RedirectMap} from './lib/redirectMap';
-import type {Chalk} from 'chalk';
 import type {log} from './util/diff';
 import type {AstRange} from './lib/range';
 import type {MagicWord} from './addon/magicWords';
@@ -57,8 +62,8 @@ import {
 	cmd,
 	info,
 	diff,
+	loadChalk,
 } from './util/diff';
-import fetchConfig from './bin/config';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -271,10 +276,6 @@ let viewOnly = false;
 /* NOT FOR BROWSER */
 
 const promises = [Promise.resolve()];
-/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const getInterwikiRegex = getRegex<string[]>(
-	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
-);
 let redirectMap = new RedirectMap(),
 	now: Date | undefined;
 
@@ -456,7 +457,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	normalizeTitle(title, defaultNs = 0, include?: boolean, config = Parser.getConfig(), opt?: TitleOptions) {
-		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		let titleObj: Title;
 		if (opt?.halfParsed) {
 			titleObj = new Title(title, defaultNs, config, opt);
@@ -657,6 +657,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* istanbul ignore next */
 	/** @implements */
 	async fetchConfig(site, url, user) {
+		const {default: fetchConfig}: typeof import('./bin/config') = require('./bin/config');
 		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},
 
@@ -704,24 +705,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	warn(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.warning) {
-			try {
-				const chalk: Chalk = require('chalk');
-				console.warn(chalk.yellow(msg), ...args);
-			} catch {
-				console.warn(msg, ...args);
-			}
+			console.warn(loadChalk()?.yellow(msg) ?? msg, ...args);
 		}
 	},
 	/** @implements */
 	debug(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.debugging) {
-			try {
-				const chalk: Chalk = require('chalk');
-				console.debug(chalk.blue(msg), ...args);
-			} catch {
-				console.debug(msg, ...args);
-			}
+			console.debug(loadChalk()?.blue(msg) ?? msg, ...args);
 		}
 	},
 	error,
@@ -761,12 +752,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		return interwiki.length > 0
-			? getInterwikiRegex(interwiki).exec(
-				title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
-			)
-			: null;
+	isInterwiki(title, config = Parser.getConfig()) {
+		return isInterwiki(title, config);
 	},
 
 	/* istanbul ignore next */
