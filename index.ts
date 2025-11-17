@@ -8,6 +8,9 @@ import {
 } from './util/constants';
 import {tidy} from './util/string';
 import {LintConfiguration} from './lib/lintConfig';
+import {
+	Title,
+} from './lib/title';
 import type {
 	Config,
 	ConfigData,
@@ -18,7 +21,7 @@ import type {
 	Stage,
 	AST,
 } from './base';
-import type {Title, TitleOptions} from './lib/title';
+import type {TitleOptions} from './lib/title';
 import type {LanguageService, QuickFixData} from './lib/lsp';
 import type {
 	Token,
@@ -168,7 +171,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	normalizeTitle(title, defaultNs = 0, include?: boolean, config = Parser.getConfig(), opt?: TitleOptions) {
-		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		let titleObj: Title;
 		if (opt?.halfParsed) {
 			titleObj = new Title(title, defaultNs, config, opt);

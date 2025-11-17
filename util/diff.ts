@@ -78,24 +78,26 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 	await Promise.allSettled([fs.unlink(oldFile), fs.unlink(newFile)]);
 };
 
+let chalk: Chalk | null | undefined;
+export const loadChalk = /** @ignore */ (): Chalk | null => {
+	if (chalk === undefined) {
+		try {
+			chalk = require('chalk') as Chalk;
+		} catch {
+			chalk = null;
+		}
+	}
+	return chalk;
+};
+
 /* istanbul ignore next */
 /** @implements */
 export const error: log = (msg, ...args) => {
-	try {
-		const chalk: Chalk = require('chalk');
-		console.error(chalk.red(msg), ...args);
-	} catch {
-		console.error(msg, ...args);
-	}
+	console.error(loadChalk()?.red(msg) ?? msg, ...args);
 };
 
 /* istanbul ignore next */
 /** @implements */
 export const info: log = (msg, ...args) => {
-	try {
-		const chalk: Chalk = require('chalk');
-		console.info(chalk.green(msg), ...args);
-	} catch {
-		console.info(msg, ...args);
-	}
+	console.info(loadChalk()?.green(msg) ?? msg, ...args);
 };
