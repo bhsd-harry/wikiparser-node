@@ -6,7 +6,7 @@ esbuild ./base.ts ./util/sharable.ts --charset=utf8 --target=es2023 --format=esm
 if [[ $? -eq 0 ]]
 then
 	mv dist/util/sharable.d.ts dist/util/sharable.d.mts
-	rm dist/internal.js dist/[abptu]*/*.d.ts dist/script/*.d.ts
+	rm dist/internal.js dist/[abprtu]*/*.d.ts dist/script/*.d.ts
 	grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\s+\/\*\* @private/,+1d'
 	grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\/util\//d'
 	grep -rl --include='*.d.ts' '/parser/' dist/ | xargs bash sed.sh -i -E '/^import .+\/parser\//d'
