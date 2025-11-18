@@ -118,6 +118,16 @@ const getMaxCol = (layout: Layout): number => {
 	return maxCol;
 };
 
+TableToken.prototype.getNthCell =
+	/** @implements */
+	function(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
+		let rawCoords: TableCoords | undefined = coords as TableCoords;
+		if (coords.row === undefined) {
+			rawCoords = this.toRawCoords(coords);
+		}
+		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
+	};
+
 TableToken.prototype.printLayout =
 	/** @implements */
 	function(): void {

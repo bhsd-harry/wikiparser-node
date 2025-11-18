@@ -417,15 +417,9 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取指定坐标的单元格
 	 * @param coords table coordinates / 表格坐标
 	 */
-	getNthCell(
-		coords: TableCoords
-			| TableRenderedCoords,
-	): TdToken | undefined {
-		let rawCoords: TableCoords | undefined = coords as TableCoords;
-		if (coords.row === undefined) {
-			rawCoords = this.toRawCoords(coords);
-		}
-		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
+	getNthCell(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
+		require('../../addon/table');
+		return this.getNthCell(coords);
 	}
 
 	/**

@@ -12,6 +12,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import {newline} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -244,8 +245,23 @@ export abstract class ExtToken extends TagPairToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		require('../../addon/ext');
-		return this.toHtmlInternal(opt);
+		const {name, firstChild, lastChild} = this;
+		if (Parser.tagHooks.has(name)) {
+			return Parser.tagHooks.get(name)!(this);
+		} else if (name === 'nowiki') {
+			const html = lastChild.toHtmlInternal();
+			return this.closest('ext-inner')?.name === 'poem' ? html : newline(html);
+		} else if (name === 'pre') {
+			const html = lastChild.toHtmlInternal({
+				...opt,
+				nowrap: false,
+			});
+			return `<pre${firstChild.toHtmlInternal()}>${
+				this.closest('ext-inner')?.name === 'poem' ? html : newline(html)
+			}</pre>`;
+		}
+		const {renderExt}: typeof import('../../render/extension') = require('../../render/extension');
+		return renderExt(this, opt);
 	}
 }
 

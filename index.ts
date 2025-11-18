@@ -44,8 +44,8 @@ import type {
 
 import {RedirectMap} from './lib/redirectMap';
 import type {log} from './util/diff';
+import type {MagicWord} from './render/magicWords';
 import type {AstRange} from './lib/range';
-import type {MagicWord} from './addon/magicWords';
 
 /* NOT FOR BROWSER END */
 
@@ -677,7 +677,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	callParserFunction(name: string, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
-		const {expandMagicWord}: typeof import('./addon/magicWords') = require('./addon/magicWords'),
+		const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords'),
 			{getCanonicalName}: typeof import('./src/transclude') = require('./src/transclude');
 		if (typeof arg === 'string') {
 			args.unshift(arg);

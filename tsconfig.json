@@ -1,6 +1,7 @@
 {
 	"include": [
 		"addon/**/*",
+		"render/**/*",
 		"bin/**/*",
 		"script/**/*",
 		"lib/**/*",

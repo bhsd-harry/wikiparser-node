@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.32.0
 
-*2025-11-15*
+*2025-11-19*
 
 **Added**
 
@@ -11,6 +11,8 @@
 **Fixed**
 
 - [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should report invalid HTML attributes except for `id` for `<math>` and `<chem>` tags
+- Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding `#tag`
+- Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding parser functions with template arguments
 
 ## v1.31.0
 
@@ -81,7 +83,7 @@
 **Added**
 
 - [`Token.pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property that gets or sets the page name
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports the `{{int:}}` parser function
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports the `int` parser function
 - [`ImageParameterToken.thumb`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#thumb) property that gets the thumbnail filename from the `manualthumb` image parameter
 - New category of linting errors: invalid thumbnail filenames in image parameters
 
@@ -281,7 +283,7 @@
 **Added**
 
 - [`TranscludeToken.function`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#function)
-- Some time-related variables are now expanded, e.g., `{{CURRENTMONTH}}` and `{{LOCALMONTH}}`
+- Some time-related variables are now expanded, e.g., `CURRENTMONTH` and `LOCALMONTH`
 - `Parser.now` property that specifies the current time for parsing
 
 **Fixed**
@@ -411,7 +413,7 @@
 
 **Changed**
 
-- Lowered severity of fostered content of `{{#invoke:}}` in [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#lint)
+- Lowered severity of fostered content of `#invoke` in [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#lint)
 
 ## v1.18.3
 
@@ -624,7 +626,7 @@
 
 **Fixed**
 
-- Case-insensitive variables without a parameter, e.g., `{{#language}}`, and case-sensitive parser functions requiring a parameter, e.g., `{{DEFAULTSORT:}}`
+- Case-insensitive variables without a parameter, e.g., `#language`, and case-sensitive parser functions requiring a parameter, e.g., `DEFAULTSORT`
 
 **Changed**
 

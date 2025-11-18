@@ -183,4 +183,10 @@ AttributesToken.prototype.toggleAttr =
 		}
 	};
 
+AttributesToken.prototype.css =
+	/** @implements */
+	function(key, value): string | undefined {
+		return this.getAttrToken('style')?.css(key, value);
+	};
+
 classes['ExtendedAttributeToken'] = __filename;

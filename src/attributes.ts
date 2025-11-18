@@ -555,7 +555,8 @@ export abstract class AttributesToken extends Token {
 	 * @param value style property value / 样式属性值
 	 */
 	css(key: string, value?: string): string | undefined {
-		return this.getAttrToken('style')?.css(key, value);
+		require('../addon/attribute');
+		return this.css(key, value);
 	}
 }
 

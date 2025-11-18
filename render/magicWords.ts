@@ -679,7 +679,13 @@ export const expandMagicWord = (
 			const tag = `<${tagName} ${
 				[...attributes].map(([key, value]) => `${sanitizeId(key)}="${sanitizeId(value)}"`).join(' ')
 			}${inner === undefined ? '/>' : `>${inner}</${tagName}>`}`;
-			return accum ? new Token(tag, config, accum).parseOnce(0).firstChild!.toString() : tag;
+			if (!accum) {
+				return tag;
+			}
+			const token = new Token(tag, config, accum).parseOnce(0);
+			// @ts-expect-error sparse array
+			accum[accum.indexOf(token)] = undefined;
+			return token.firstChild!.toString();
 		}
 		case 'rel2abs': {
 			const to = !arg0 || arg0.startsWith('/') ? `.${arg0}` : arg0,

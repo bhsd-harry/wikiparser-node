@@ -1014,8 +1014,8 @@ export class Token extends AstElement {
 	 * @since v1.10.0
 	 */
 	expand(): Token {
-		require('../addon/token');
-		return this.expand();
+		const {expandToken}: typeof import('../render/expand') = require('../render/expand');
+		return Shadow.run(() => expandToken(this).parse());
 	}
 
 	/**
@@ -1024,8 +1024,8 @@ export class Token extends AstElement {
 	 * 解析部分魔术字
 	 */
 	solveConst(): Token {
-		require('../addon/token');
-		return this.solveConst();
+		const {expandToken}: typeof import('../render/expand') = require('../render/expand');
+		return Shadow.run(() => expandToken(this, false).parse());
 	}
 
 	/**
@@ -1051,8 +1051,22 @@ export class Token extends AstElement {
 	 * @since v1.10.0
 	 */
 	toHtml(): string {
-		require('../addon/token');
-		return this.toHtml();
+		const {viewOnly} = Parser;
+		let output: string;
+		if (this.type === 'root') {
+			const {expandToken, toHtml}: typeof import('../render/expand') = require('../render/expand');
+			Parser.viewOnly = true;
+			const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
+				e = new Event('expand');
+			this.dispatchEvent(e, {type: 'expand', token: expanded});
+			Parser.viewOnly = false;
+			output = toHtml(expanded);
+		} else {
+			Parser.viewOnly = false;
+			output = this.cloneNode().toHtmlInternal();
+		}
+		Parser.viewOnly = viewOnly;
+		return output;
 	}
 
 	/**

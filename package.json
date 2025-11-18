@@ -90,7 +90,7 @@
 		"color-name": "^2.0.0",
 		"entities": "^7.0.0",
 		"mathoid-texvcjs": "^0.6.0",
-		"prism-wiki": "^1.0.0",
+		"prism-wiki": "^1.0.1",
 		"prismjs": "^1.30.0",
 		"stylelint": "^16.25.0",
 		"vscode-css-languageservice": "^6.3.8",
