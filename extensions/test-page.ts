@@ -170,7 +170,7 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 		select.selectedOptions[0]!.disabled = true;
 		btn.disabled = false;
 		history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
-		dispatchEvent(new Event('casechange'));
+		dispatchEvent(new CustomEvent('casechange'));
 	});
 	btn.addEventListener('click', () => {
 		dones.add(tests[Number(select.value)]!.desc);
@@ -192,5 +192,5 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 			select.dispatchEvent(new Event('change'));
 		}
 	});
-	dispatchEvent(new Event('hashchange'));
+	dispatchEvent(new HashChangeEvent('hashchange'));
 })();

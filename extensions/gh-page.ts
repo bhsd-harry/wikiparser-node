@@ -225,7 +225,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	 * 切换tab
 	 * @param e 事件
 	 */
-	const switchTab = function(this: HTMLButtonElement, e: MouseEvent): void {
+	const switchTab = function(this: HTMLButtonElement, e: PointerEvent): void {
 		e.preventDefault();
 		const active = document.querySelector<HTMLButtonElement>('.active')!,
 			{value} = this;

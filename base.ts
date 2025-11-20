@@ -23,7 +23,7 @@ export interface Config {
 	readonly nsid: Record<string, number>;
 	readonly variable: string[];
 	readonly functionHook: string[];
-	readonly parserFunction: [Record<string, string>, Record<string, string> | string[], string[], string[]];
+	readonly parserFunction: [Record<string, string>, Record<string, string>, string[], string[]];
 	readonly doubleUnderscore: [string[], string[], Record<string, string>?, Record<string, string>?];
 	readonly protocol: string;
 	readonly interwiki: string[];

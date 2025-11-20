@@ -35,6 +35,6 @@
 		addEventListener('hashchange', () => {
 			contentWindow!.location.hash = location.hash;
 		});
-		dispatchEvent(new Event('hashchange'));
+		dispatchEvent(new HashChangeEvent('hashchange'));
 	});
 })();
