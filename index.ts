@@ -376,11 +376,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				this.config = rootRequire(this.config, 'config') as ConfigData;
 			}
 			/* istanbul ignore if */
-			if (
-				this.config.doubleUnderscore.length < 3
-				|| Array.isArray(this.config.parserFunction[1])
-				|| !('functionHook' in this.config)
-			) {
+			if (this.config.doubleUnderscore.length < 3 || !('functionHook' in this.config)) {
 				error(
 					`The schema (${
 						path.join(__dirname, '..', 'config', '.schema.json')
@@ -412,12 +408,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		if (ext.includes('translate') && !variable.includes('translationlanguage')) {
 			variable.push('translationlanguage');
-			/* istanbul ignore if */
-			if (Array.isArray(parserFunction[1])) {
-				parserFunction[1].push('TRANSLATIONLANGUAGE');
-			} else {
-				parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
-			}
+			parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
 		}
 
 		/* NOT FOR BROWSER */
@@ -614,7 +605,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	setFunctionHook(name, hook) {
-		functionHooks.set(getCanonicalName(name, this.getConfig().parserFunction)[3] || name.toLowerCase(), hook);
+		functionHooks.set(getCanonicalName(name, this.getConfig().parserFunction)[0], hook);
 	},
 
 	/** @implements */
@@ -638,19 +629,29 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				args.push(`${key}=${value}`);
 			}
 		}
-		const config = this.getConfig(),
-			canonicalName = getCanonicalName(name, config.parserFunction)[3] || name.toLowerCase();
+		const {parserFunction} = this.getConfig(),
+			[lcName, canonicalName] = getCanonicalName(name, parserFunction);
 		let result: string | false;
-		if (functionHooks.has(canonicalName)) {
+		if (functionHooks.has(lcName)) {
+			if (!canonicalName) {
+				const [insensitive, sensitive] = parserFunction,
+					entry = Object.entries(sensitive).find(([, v]) => v === lcName)
+						|| Object.entries(insensitive).find(([, v]) => v === lcName);
+				/* istanbul ignore if */
+				if (!entry) {
+					throw new RangeError(`Unable to resolve parser function: ${name}`);
+				}
+				[name] = entry;
+			}
 			const {firstChild, length} = this.parse(
 				`{{${name}:${args.join('|')}}}`,
 				false,
 				2,
 			);
 			result = length === 1 && firstChild!.is<TranscludeToken>('magic-word')
-				&& functionHooks.get(canonicalName)!(firstChild);
+				&& functionHooks.get(lcName)!(firstChild);
 		} else {
-			result = expandMagicWord(canonicalName as MagicWord, args);
+			result = expandMagicWord(lcName as MagicWord, args);
 		}
 		/* istanbul ignore if */
 		if (result === false) {

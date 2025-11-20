@@ -87,23 +87,21 @@ export const setChildNodes = (
 };
 
 /**
- * 获取魔术字的规范名称
+ * 获取魔术字的信息
  * @param name 魔术字
  * @param parserFunction 解析设置中的parserFunction属性
  */
-export const getCanonicalName = (
+export const getMagicWordInfo = (
 	name: string,
 	parserFunction: Config['parserFunction'],
-): [string, boolean, boolean, string | false] => {
+): [string, boolean, string | false] => {
 	const lcName = name.toLowerCase(),
 		[insensitive, sensitive] = parserFunction,
-		isOldSchema = Array.isArray(sensitive),
-		isSensitive = isOldSchema ? sensitive.includes(name) : Object.prototype.hasOwnProperty.call(sensitive, name);
+		isSensitive = Object.prototype.hasOwnProperty.call(sensitive, name);
 	return [
 		lcName,
-		isOldSchema,
 		isSensitive,
-		!isOldSchema && isSensitive
+		isSensitive
 			? sensitive[name]!
 			: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
 	];
@@ -149,4 +147,14 @@ export const undo: AstListener = (e, data): void => {
 		default:
 			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
 	}
+};
+
+/**
+ * 获取魔术字的规范名称
+ * @param name 魔术字
+ * @param parserFunction 解析设置中的parserFunction属性
+ */
+export const getCanonicalName = (name: string, parserFunction: Config['parserFunction']): [string, string | false] => {
+	const [lcName,, canonicalName] = getMagicWordInfo(name, parserFunction);
+	return [canonicalName || lcName, canonicalName];
 };

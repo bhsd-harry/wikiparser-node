@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.32.0
 
-*2025-11-19*
+*2025-11-21*
 
 **Added**
 
@@ -14,6 +14,10 @@
 - [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should report invalid HTML attributes except for `id` for `<math>` and `<chem>` tags
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding `#tag`
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding parser functions with template arguments
+
+**Removed**
+
+- The old schema of [`Config.parserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) is no longer supported
 
 ## v1.31.0
 

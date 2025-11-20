@@ -10,7 +10,7 @@ import {
 	noWrap,
 } from '../util/string';
 import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
-import {isToken, Shadow, getCanonicalName} from '../util/debug';
+import {isToken, Shadow, getMagicWordInfo} from '../util/debug';
 import {
 	BuildMethod,
 
@@ -165,15 +165,11 @@ export abstract class TranscludeToken extends Token {
 				name = isFunction
 					? cleaned.slice(cleaned.search(/\S/u)) + (fullWidth ? '：' : '')
 					: cleaned.trim(),
-				[lcName, isOldSchema, isSensitive, canonicalName] = getCanonicalName(name, parserFunction),
-				isFunc = isOldSchema && isSensitive
-					|| !('functionHook' in config) || functionHook.includes(canonicalName as string),
-				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
+				[, isSensitive, canonicalName] = getMagicWordInfo(name, parserFunction),
+				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
+				isVar = variable.includes(canonicalName as string);
 			if (isFunction ? canonicalName && isFunc : isVar) {
-				this.setAttribute(
-					'name',
-					canonicalName || lcName.replace(/^#|：$/u, ''),
-				);
+				this.setAttribute('name', canonicalName as string);
 				this.#type = 'magic-word';
 				if (fullWidth) {
 					this.#colon = '：';
