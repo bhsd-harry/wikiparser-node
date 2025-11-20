@@ -1,8 +1,11 @@
 import {generateForChild, generateForSelf, fixByRemove, fixByInsert} from '../../util/lint';
+import {
+	extensions,
+} from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
-import {ImageParameterToken, extensions} from '../imageParameter';
+import {ImageParameterToken} from '../imageParameter';
 import type {
 	TokenTypes,
 	Config,

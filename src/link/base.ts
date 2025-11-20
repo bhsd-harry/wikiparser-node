@@ -3,6 +3,9 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../../util/constants';
+import {
+	isLink,
+} from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
 import {noEscape} from '../../mixin/noEscape';
@@ -17,12 +20,6 @@ import type {Title} from '../../lib/title';
 import type {
 	AstText,
 } from '../../internal';
-
-/**
- * 是否为普通内链
- * @param type 节点类型
- */
-export const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
 
 /**
  * internal link

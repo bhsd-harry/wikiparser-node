@@ -1,16 +1,18 @@
 /* eslint n/exports-style: 0 */
 import {rules, stages} from './base';
-import {Shadow} from './util/debug';
+import {
+	Shadow,
+} from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
 	enMsg,
 } from './util/constants';
-import {tidy} from './util/string';
-import {LintConfiguration} from './lib/lintConfig';
 import {
-	Title,
-} from './lib/title';
+	tidy,
+} from './util/string';
+import {LintConfiguration} from './lib/lintConfig';
+import {Title} from './lib/title';
 import type {
 	Config,
 	ConfigData,
