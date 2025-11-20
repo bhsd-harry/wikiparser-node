@@ -1,11 +1,11 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import assert from 'assert/strict';
-import {Shadow} from '../util/debug';
+import {Shadow, isRowEnd} from '../util/debug';
 import {classes} from '../util/constants';
 import {Token} from '../src/index';
 import {TrToken} from '../src/table/tr';
-import {TableToken, isRowEnd} from '../src/table/index';
+import {TableToken} from '../src/table/index';
 import {TdToken, createTd} from '../src/table/td';
 import {TrBaseToken} from '../src/table/trBase';
 import type {SyntaxToken} from '../internal';

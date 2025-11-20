@@ -1,3 +1,4 @@
+import {parsers} from '../util/constants';
 import Parser from '../index';
 import type * as PrismJS from 'prismjs';
 
@@ -407,3 +408,5 @@ export const loadLanguage = (lang: string): string => {
 	require(`prismjs/components/prism-${lang}.js`);
 	return lang;
 };
+
+parsers['loadLanguage'] = __filename;

@@ -1,10 +1,10 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import {classes} from '../util/constants';
-import {Shadow} from '../util/debug';
+import {Shadow, isLink} from '../util/debug';
 import {encode} from '../util/string';
 import Parser from '../index';
-import {LinkBaseToken, isLink} from '../src/link/base';
+import {LinkBaseToken} from '../src/link/base';
 import {LinkToken} from '../src/link/index';
 import {AtomToken} from '../src/atom';
 

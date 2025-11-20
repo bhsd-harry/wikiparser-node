@@ -49,6 +49,7 @@ import {
 	/* NOT FOR BROWSER */
 
 	print,
+	isInterwiki,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -103,7 +104,6 @@ import type {
 import assert from 'assert/strict';
 import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
-import {isInterwiki} from '../lib/title';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
 import type {Range} from '../lib/ranges';
@@ -1054,7 +1054,8 @@ export class Token extends AstElement {
 		const {viewOnly} = Parser;
 		let output: string;
 		if (this.type === 'root') {
-			const {expandToken, toHtml}: typeof import('../render/expand') = require('../render/expand');
+			const {expandToken}: typeof import('../render/expand') = require('../render/expand'),
+				{toHtml}: typeof import('../render/html') = require('../render/html');
 			Parser.viewOnly = true;
 			const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
 				e = new Event('expand');

@@ -1,6 +1,12 @@
 /* eslint n/exports-style: 0 */
 import {rules, stages} from './base';
-import {Shadow} from './util/debug';
+import {
+	Shadow,
+
+	/* NOT FOR BROWSER */
+
+	getCanonicalName,
+} from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -12,15 +18,15 @@ import {
 	functionHooks,
 	tagHooks,
 } from './util/constants';
-import {tidy} from './util/string';
-import {LintConfiguration} from './lib/lintConfig';
 import {
-	Title,
+	tidy,
 
 	/* NOT FOR BROWSER */
 
 	isInterwiki,
-} from './lib/title';
+} from './util/string';
+import {LintConfiguration} from './lib/lintConfig';
+import {Title} from './lib/title';
 import type {
 	Config,
 	ConfigData,
@@ -608,7 +614,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	setFunctionHook(name, hook) {
-		const {getCanonicalName}: typeof import('./src/transclude') = require('./src/transclude');
 		functionHooks.set(getCanonicalName(name, this.getConfig().parserFunction)[3] || name.toLowerCase(), hook);
 	},
 
@@ -619,8 +624,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	callParserFunction(name: string, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
-		const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords'),
-			{getCanonicalName}: typeof import('./src/transclude') = require('./src/transclude');
+		const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords');
 		if (typeof arg === 'string') {
 			args.unshift(arg);
 		} else if (Array.isArray(arg)) {

@@ -7,6 +7,14 @@ import {
 
 	classes,
 } from '../../util/constants';
+import {
+	isLink,
+
+	/* NOT FOR BROWSER */
+
+	undo,
+	Shadow,
+} from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
 import {noEscape} from '../../mixin/noEscape';
@@ -31,17 +39,10 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {undo, Shadow} from '../../util/debug';
 import {sanitize} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
-
-/**
- * 是否为普通内链
- * @param type 节点类型
- */
-export const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
 
 /**
  * internal link

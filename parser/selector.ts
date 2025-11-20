@@ -465,4 +465,4 @@ export const checkToken = (
 	);
 };
 
-parsers['parseSelector'] = __filename;
+parsers['checkToken'] = __filename;

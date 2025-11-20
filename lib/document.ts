@@ -224,4 +224,4 @@ export class EmbeddedCSSDocument extends EmbeddedDocument {
 	}
 }
 
-classes['EmbeddedCSSDocument'] = __filename;
+classes['EmbeddedDocument'] = __filename;

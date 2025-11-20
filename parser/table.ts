@@ -141,4 +141,5 @@ export const parseTable = (
 	}
 	return out.slice(1);
 };
+
 parsers['parseTable'] = __filename;

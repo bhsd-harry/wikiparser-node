@@ -6,12 +6,12 @@ import {
 	/* NOT FOR BROWSER */
 
 	escapeRegExp,
+	isInterwiki,
 } from '../util/string';
 import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {getRegex} from '@bhsd/common';
 import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
@@ -32,28 +32,6 @@ const resolve = (title: string): [number, string] => {
 	const [, {length}, sub] = /^((?:\.\.\/)*)([\s\S]*)/u.exec(title) as unknown as [string, string, string];
 	return [length / 3, sub];
 };
-
-/* NOT FOR BROWSER */
-
-/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const getInterwikiRegex = getRegex<string[]>(
-	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
-);
-
-/**
- * 是否是跨维基链接
- * @param title 链接标题
- * @param config
- * @param config.interwiki 跨维基前缀列表
- */
-export const isInterwiki = (title: string, {interwiki}: Config): RegExpExecArray | null =>
-	interwiki.length > 0
-		? getInterwikiRegex(interwiki).exec(
-			title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
-		)
-		: null;
-
-/* NOT FOR BROWSER END */
 
 /**
  * title object of a MediaWiki page

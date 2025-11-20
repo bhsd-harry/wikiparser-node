@@ -1,8 +1,15 @@
 import {generateForChild, generateForSelf, fixByRemove, fixByInsert} from '../../util/lint';
+import {
+	extensions,
+
+	/* NOT FOR BROWSER */
+
+	classes,
+} from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
-import {ImageParameterToken, extensions} from '../imageParameter';
+import {ImageParameterToken} from '../imageParameter';
 import type {
 	TokenTypes,
 	Config,
@@ -23,7 +30,6 @@ import type {
 
 import {sanitizeAlt} from '../../util/string';
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import {Title} from '../../lib/title';
 import {cached} from '../../mixin/cached';
 

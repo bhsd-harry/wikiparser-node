@@ -5,6 +5,7 @@ import {
 	/* NOT FOR BROWSER */
 
 	classes,
+	galleryParams,
 } from '../../util/constants';
 import {padded} from '../../mixin/padded';
 import Parser from '../../index';
@@ -17,7 +18,6 @@ import type {Config, LintError} from '../../base';
 
 import {Shadow} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
-import {galleryParams} from '../imageParameter';
 import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /* NOT FOR BROWSER END */

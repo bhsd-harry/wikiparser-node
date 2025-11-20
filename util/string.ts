@@ -1,5 +1,12 @@
 import type {AstNodes, Token} from '../internal';
 
+/* NOT FOR BROWSER */
+
+import {getRegex} from '@bhsd/common';
+import type {Config} from '../base';
+
+/* NOT FOR BROWSER END */
+
 export const zs = String.raw` \xA0\u1680\u2000-\u200A\u202F\u205F\u3000`;
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F${zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
@@ -210,3 +217,21 @@ export const removeCommentLine = (str: string, standalone?: boolean): string => 
 		].join('\n'),
 	);
 };
+
+/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const getInterwikiRegex = getRegex<string[]>(
+	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
+);
+
+/**
+ * 是否是跨维基链接
+ * @param title 链接标题
+ * @param config
+ * @param config.interwiki 跨维基前缀列表
+ */
+export const isInterwiki = (title: string, {interwiki}: Config): RegExpExecArray | null =>
+	interwiki.length > 0
+		? getInterwikiRegex(interwiki).exec(
+			title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
+		)
+		: null;
