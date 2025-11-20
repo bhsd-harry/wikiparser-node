@@ -9,6 +9,8 @@ import {
 	/* NOT FOR BROWSER */
 
 	classes,
+	functionHooks,
+	tagHooks,
 } from './util/constants';
 import {tidy} from './util/string';
 import {LintConfiguration} from './lib/lintConfig';
@@ -37,12 +39,12 @@ import type {
 	/* NOT FOR BROWSER */
 
 	TranscludeToken,
-	ExtToken,
 } from './internal';
 
 /* NOT FOR BROWSER */
 
 import {RedirectMap} from './lib/redirectMap';
+import type {FunctionHook, TagHook} from './util/constants';
 import type {log} from './util/diff';
 import type {MagicWord} from './render/magicWords';
 import type {AstRange} from './lib/range';
@@ -66,13 +68,6 @@ import {
 } from './util/diff';
 
 /* NOT FOR BROWSER ONLY END */
-
-/* NOT FOR BROWSER */
-
-declare type FunctionHook = (token: TranscludeToken, context?: TranscludeToken) => string;
-declare type TagHook = (token: ExtToken) => string;
-
-/* NOT FOR BROWSER END */
 
 declare interface Parser extends ParserBase {
 	default: Parser;
@@ -101,12 +96,6 @@ declare interface Parser extends ParserBase {
 	 * @since v1.21.2
 	 */
 	now: Date;
-
-	/** @private */
-	functionHooks: Map<string, FunctionHook>;
-
-	/** @private */
-	tagHooks: Map<string, TagHook>;
 
 	/* NOT FOR BROWSER END */
 
@@ -340,10 +329,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	warning: true,
 	debugging: false,
-
-	functionHooks: new Map(),
-
-	tagHooks: new Map(),
 
 	/** @implements */
 	get now() {
@@ -667,12 +652,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	setFunctionHook(name, hook) {
-		this.functionHooks.set(name, hook);
+		const {getCanonicalName}: typeof import('./src/transclude') = require('./src/transclude');
+		functionHooks.set(getCanonicalName(name, this.getConfig().parserFunction)[3] || name.toLowerCase(), hook);
 	},
 
 	/** @implements */
 	setHook(name, hook) {
-		this.tagHooks.set(name, hook);
+		tagHooks.set(name.toLowerCase(), hook);
 	},
 
 	/** @implements */
@@ -692,8 +678,20 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				args.push(`${key}=${value}`);
 			}
 		}
-		const [,,, canonicalName] = getCanonicalName(name, this.getConfig().parserFunction),
-			result = expandMagicWord((canonicalName || name.toLowerCase()) as MagicWord, args);
+		const config = this.getConfig(),
+			canonicalName = getCanonicalName(name, config.parserFunction)[3] || name.toLowerCase();
+		let result: string | false;
+		if (functionHooks.has(canonicalName)) {
+			const {firstChild, length} = this.parse(
+				`{{${name}:${args.join('|')}}}`,
+				false,
+				2,
+			);
+			result = length === 1 && firstChild!.is<TranscludeToken>('magic-word')
+				&& functionHooks.get(canonicalName)!(firstChild);
+		} else {
+			result = expandMagicWord(canonicalName as MagicWord, args);
+		}
 		/* istanbul ignore if */
 		if (result === false) {
 			throw new RangeError(`Unable to resolve parser function: ${name}`);

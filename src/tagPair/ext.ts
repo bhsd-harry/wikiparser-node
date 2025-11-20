@@ -11,7 +11,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
+import {classes, tagHooks} from '../../util/constants';
 import {newline} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
@@ -246,8 +246,8 @@ export abstract class ExtToken extends TagPairToken {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		const {name, firstChild, lastChild} = this;
-		if (Parser.tagHooks.has(name)) {
-			return Parser.tagHooks.get(name)!(this);
+		if (tagHooks.has(name)) {
+			return tagHooks.get(name)!(this);
 		} else if (name === 'nowiki') {
 			const html = lastChild.toHtmlInternal();
 			return this.closest('ext-inner')?.name === 'poem' ? html : newline(html);

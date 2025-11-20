@@ -7,6 +7,7 @@
 
 - HTML conversion of `<syntaxhighlight>` with [Prism](https://prismjs.com/) highlighting
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
+- [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction) now supports custom parser functions defined via [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook)
 
 **Fixed**
 

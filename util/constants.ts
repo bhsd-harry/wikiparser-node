@@ -1,6 +1,9 @@
 /* NOT FOR BROWSER */
 
-import type {Token} from '../internal';
+import type {Token, TranscludeToken, ExtToken} from '../internal';
+
+export type FunctionHook = (token: TranscludeToken, context?: TranscludeToken) => string;
+export type TagHook = (token: ExtToken) => string;
 
 /* NOT FOR BROWSER END */
 
@@ -44,3 +47,7 @@ export const aliases = [
 ];
 
 export const states = new WeakMap<Token, State>();
+
+export const functionHooks = new Map<string, FunctionHook>();
+
+export const tagHooks = new Map<string, TagHook>();

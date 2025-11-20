@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {parsers, states} from '../util/constants';
+import {parsers, states, functionHooks} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {removeComment, removeCommentLine, tidy} from '../util/string';
 import {expandedMagicWords, expandMagicWord} from './magicWords';
@@ -237,9 +237,9 @@ const expand = (
 					);
 				} else if (context === false && !solvedMagicWords.has(name)) {
 					return m;
-				} else if (Parser.functionHooks.has(name)) {
+				} else if (functionHooks.has(name)) {
 					clean(accum, args);
-					return implicitNewLine(Parser.functionHooks.get(name)!(target, context || undefined), prev);
+					return implicitNewLine(functionHooks.get(name)!(target, context || undefined), prev);
 				} else if (expandedMagicWords.has(name)) {
 					const result = expandMagicWord(
 						name as MagicWord,
