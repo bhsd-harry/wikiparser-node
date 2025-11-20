@@ -217,11 +217,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				this.config = rootRequire(this.config, 'config') as ConfigData;
 			}
 			/* istanbul ignore if */
-			if (
-				this.config.doubleUnderscore.length < 3
-				|| Array.isArray(this.config.parserFunction[1])
-				|| !('functionHook' in this.config)
-			) {
+			if (this.config.doubleUnderscore.length < 3 || !('functionHook' in this.config)) {
 				error(
 					`The schema (${
 						path.join(__dirname, '..', 'config', '.schema.json')
@@ -248,12 +244,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		if (ext.includes('translate') && !variable.includes('translationlanguage')) {
 			variable.push('translationlanguage');
-			/* istanbul ignore if */
-			if (Array.isArray(parserFunction[1])) {
-				parserFunction[1].push('TRANSLATIONLANGUAGE');
-			} else {
-				parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
-			}
+			parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
 		}
 		return {
 			...parserConfig,

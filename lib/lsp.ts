@@ -836,11 +836,7 @@ export class LanguageService implements LanguageServiceBase {
 					ext,
 					tags,
 					allTags: [...tags, 'onlyinclude', 'includeonly', 'noinclude'],
-					functions: [
-						Object.keys(insensitive),
-						Array.isArray(sensitive) ? /* istanbul ignore next */ sensitive : Object.keys(sensitive),
-						other,
-					].flat(2),
+					functions: [Object.keys(insensitive), Object.keys(sensitive), other].flat(2),
 					switches: allSwitches.filter(isUnderscore).map(w => `__${w}__`),
 					jaSwitches: allSwitches.filter(w => !isUnderscore(w)),
 					protocols: protocol.split('|'),
@@ -926,7 +922,6 @@ export class LanguageService implements LanguageServiceBase {
 				);
 			}
 			const [insensitive, sensitive] = this.config!.parserFunction,
-				isOld = Array.isArray(sensitive),
 				next = curLine!.charAt(character),
 				colon = match.startsWith(':'),
 				str = colon ? match.slice(1).trimStart() : match;
@@ -959,7 +954,7 @@ export class LanguageService implements LanguageServiceBase {
 							return undefined;
 						} else if (name in insensitive) {
 							name = insensitive[name]!;
-						} else if (!isOld && name in sensitive) {
+						} else if (name in sensitive) {
 							name = sensitive[name]!;
 						}
 						return this.#getParserFunction(name.toLowerCase());
