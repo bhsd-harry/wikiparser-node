@@ -89,9 +89,6 @@ declare interface Parser extends ParserBase {
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
 
-	/** @private */
-	partialParse(wikitext: string, watch: () => string, include?: boolean, config?: Config): Promise<Token>;
-
 	/**
 	 * Create a language server
 	 *
@@ -364,50 +361,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	async partialParse(wikitext, watch, include, config = Parser.getConfig()) {
-		LSP: {
-			const {Token}: typeof import('./src/index') = require('./src/index');
-			const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
-				{running} = Shadow;
-			Shadow.running = true;
-			const token = new Token(tidy(wikitext), config);
-			token.type = 'root';
-			let i = 0;
-			try {
-				await new Promise<void>(resolve => {
-					const /** @ignore */ check = (): void => {
-							if (watch() === wikitext) {
-								i++;
-								set(parseOnce, 0);
-							} else {
-								resolve();
-							}
-						},
-						/** @ignore */ parseOnce = (): void => {
-							if (i === MAX_STAGE + 1) {
-								token.afterBuild();
-								resolve();
-							} else {
-								token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
-								check();
-							}
-						};
-					set(parseOnce, 0);
-				});
-			} catch (e) /* istanbul ignore next */ {
-				Shadow.running = running;
-				throw e;
-			}
-			Shadow.running = running;
-			return token;
-		}
-	},
-
-	/** @implements */
 	createLanguageService(uri = {}) {
 		LSP: {
-			const mod: typeof import('./lib/lsp') = require('./lib/lsp');
-			const {LanguageService, tasks} = mod;
+			const {LanguageService, tasks}: typeof import('./lib/lsp') = require('./lib/lsp');
 			return tasks.get(uri) ?? new LanguageService(uri);
 		}
 	},
