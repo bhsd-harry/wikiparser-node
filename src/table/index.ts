@@ -1,6 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {
 	Shadow,
+	isRowEnd,
 } from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import {cached} from '../../mixin/cached';
@@ -24,12 +25,6 @@ export type TableTokens = TableToken | TrToken | TdToken;
  */
 const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =>
 	Array.from({length}, (_, i) => callback(i));
-
-/**
- * 是否是行尾
- * @param {Token} cell 表格单元格
- */
-export const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 'table-syntax';
 
 /** @extends {Array<TableCoords[]>} */
 export class Layout extends Array<TableCoords[]> {

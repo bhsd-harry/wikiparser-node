@@ -8,6 +8,8 @@ import {
 import {generateForSelf, fixByRemove, fixByDecode} from '../util/lint';
 import {
 	MAX_STAGE,
+	galleryParams,
+	extensions,
 } from '../util/constants';
 import {Shadow} from '../util/debug';
 import {noEscape} from '../mixin/noEscape';
@@ -31,9 +33,6 @@ const getSyntaxRegex = getRegex(syntax => new RegExp(
 	}(\s*)$`,
 	'u',
 ));
-
-export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']),
-	extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
 
 /**
  * 获取网址
