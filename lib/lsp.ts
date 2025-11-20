@@ -8,7 +8,12 @@ import {rules} from '../base';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos, provideValues} from '../util/lint';
 import {tidy} from '../util/string';
+import {Shadow} from '../util/debug';
+import {
+	MAX_STAGE,
+} from '../util/constants';
 import Parser from '../index';
+import {Token} from '../src/index';
 import type {
 	Range,
 	Position,
@@ -40,7 +45,6 @@ import type {
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
-	Token,
 	AstText,
 	AttributeToken,
 	ParameterToken,
@@ -324,6 +328,54 @@ const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 		];
 };
 
+/**
+ * Partially parse wikitext.
+ * @param wikitext
+ * @param watch function to watch for changes
+ * @param include
+ * @param config
+ */
+const partialParse = async (
+	wikitext: string,
+	watch: () => string,
+	include: boolean,
+	config = Parser.getConfig(),
+): Promise<Token> => {
+	const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
+		{running} = Shadow;
+	Shadow.running = true;
+	const token = new Token(tidy(wikitext), config);
+	token.type = 'root';
+	let i = 0;
+	try {
+		await new Promise<void>(resolve => {
+			const /** @ignore */ check = (): void => {
+					if (watch() === wikitext) {
+						i++;
+						set(parseOnce, 0);
+					} else {
+						resolve();
+					}
+				},
+				/** @ignore */ parseOnce = (): void => {
+					if (i === MAX_STAGE + 1) {
+						token.afterBuild();
+						resolve();
+					} else {
+						token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
+						check();
+					}
+				};
+			set(parseOnce, 0);
+		});
+	} catch (e) /* istanbul ignore next */ {
+		Shadow.running = running;
+		throw e;
+	}
+	Shadow.running = running;
+	return token;
+};
+
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
 	#text: string;
@@ -392,7 +444,7 @@ export class LanguageService implements LanguageServiceBase {
 		this.#config = this.config;
 		this.#include = this.include;
 		const text = this.#text,
-			root = await Parser.partialParse(text, () => this.#text, this.include, this.config);
+			root = await partialParse(text, () => this.#text, this.include, this.config);
 		if (this.#checkConfig() && this.#text === text) {
 			this.#done = root;
 			this.#running = undefined;
@@ -433,7 +485,7 @@ export class LanguageService implements LanguageServiceBase {
 		this.#config = this.config;
 		this.#include = this.include;
 		const text = this.#text2,
-			root = await Parser.partialParse(text, () => this.#text2, this.include, this.config);
+			root = await partialParse(text, () => this.#text2, this.include, this.config);
 		if (this.#checkConfig() && this.#text2 === text) {
 			this.#done2 = root;
 			this.#running2 = undefined;
