@@ -6,7 +6,7 @@ import {
 	escape,
 } from '../util/string';
 import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
-import {isToken, Shadow} from '../util/debug';
+import {isToken, Shadow, getCanonicalName} from '../util/debug';
 import {
 	BuildMethod,
 } from '../util/constants';
@@ -21,29 +21,6 @@ import {SyntaxToken} from './syntax';
 import type {Config, LintError} from '../base';
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
-
-/**
- * 获取魔术字的规范名称
- * @param name 魔术字
- * @param parserFunction 解析设置中的parserFunction属性
- */
-export const getCanonicalName = (
-	name: string,
-	parserFunction: Config['parserFunction'],
-): [string, boolean, boolean, string | false] => {
-	const lcName = name.toLowerCase(),
-		[insensitive, sensitive] = parserFunction,
-		isOldSchema = Array.isArray(sensitive),
-		isSensitive = isOldSchema ? sensitive.includes(name) : Object.prototype.hasOwnProperty.call(sensitive, name);
-	return [
-		lcName,
-		isOldSchema,
-		isSensitive,
-		!isOldSchema && isSensitive
-			? sensitive[name]!
-			: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
-	];
-};
 
 /**
  * template or magic word

@@ -1,3 +1,4 @@
+import type {TokenTypes, Config} from '../base';
 import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
@@ -28,7 +29,20 @@ export const Shadow = {
  * 是否是某一特定类型的节点
  * @param type 节点类型
  */
-export const isToken = <T extends Token>(type: string) => (node: AstNodes): node is T => node.type === type;
+export const isToken = <T extends Token>(type: TokenTypes) => (node: AstNodes): node is T => node.type === type;
+
+/**
+ * 是否是行尾
+ * @param token 节点
+ * @param token.type 节点类型
+ */
+export const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 'table-syntax';
+
+/**
+ * 是否为普通内链
+ * @param type 节点类型
+ */
+export const isLink = (type: TokenTypes): boolean => type === 'redirect-target' || type === 'link';
 
 /**
  * 更新chldNodes
@@ -63,4 +77,27 @@ export const setChildNodes = (
 		parent.setAttribute('childNodes', nodes);
 	}
 	return removed;
+};
+
+/**
+ * 获取魔术字的规范名称
+ * @param name 魔术字
+ * @param parserFunction 解析设置中的parserFunction属性
+ */
+export const getCanonicalName = (
+	name: string,
+	parserFunction: Config['parserFunction'],
+): [string, boolean, boolean, string | false] => {
+	const lcName = name.toLowerCase(),
+		[insensitive, sensitive] = parserFunction,
+		isOldSchema = Array.isArray(sensitive),
+		isSensitive = isOldSchema ? sensitive.includes(name) : Object.prototype.hasOwnProperty.call(sensitive, name);
+	return [
+		lcName,
+		isOldSchema,
+		isSensitive,
+		!isOldSchema && isSensitive
+			? sensitive[name]!
+			: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+	];
 };
