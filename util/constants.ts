@@ -1,9 +1,6 @@
 /* NOT FOR BROWSER */
 
-import type {Token, TranscludeToken, ExtToken} from '../internal';
-
-export type FunctionHook = (token: TranscludeToken, context?: TranscludeToken) => string;
-export type TagHook = (token: ExtToken) => string;
+import type {Token, FunctionHook, TagHook} from '../internal';
 
 /* NOT FOR BROWSER END */
 

@@ -140,6 +140,7 @@ const magicWords = [
 	'expr',
 	'!',
 	'=',
+	'filepath',
 ] as const;
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
@@ -836,6 +837,28 @@ export const expandMagicWord = (
 			return '|';
 		case '=':
 			return '=';
+		case 'filepath': {
+			const title = makeTitle(`File:${arg0}`, config);
+			if (!title) {
+				return '';
+			}
+			const redirect = `Special:Redirect/file/${title.main}`,
+				[, arg1, arg2] = args,
+				param = arg1 === 'nowiki' ? arg2 : arg1,
+				mt = param && /^(\d+(?:x\d+)?)(?:\s*px){0,2}$/u.exec(param);
+			if (!mt) {
+				return localurl(config, [redirect]);
+			}
+			const [width, height] = mt[1]!.split('x'),
+				query = new URLSearchParams();
+			if (width) {
+				query.set('width', width);
+			}
+			if (height) {
+				query.set('height', height);
+			}
+			return localurl(config, [redirect, query.toString()]);
+		}
 		default:
 			throw new RangeError(`Unsupported magic word: ${name as string}`);
 	}

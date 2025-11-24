@@ -83,6 +83,16 @@ const explode = (str?: string): string[] => {
 const filterArgs = (args: ImageParameterToken[], types: Set<TokenTypes | 'text'>): ImageParameterToken[] =>
 	args.filter(({childNodes}) => !childNodes.some(node => node.text().trim() && types.has(node.type)));
 
+/* NOT FOR BROWSER */
+
+/**
+ * check if a string is an integer
+ * @param n string to be checked
+ */
+const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n));
+
+/* NOT FOR BROWSER END */
+
 /**
  * image
  *
@@ -573,8 +583,6 @@ export abstract class FileToken extends LinkBaseToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		/** @ignore */
-		const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n));
 		const {link, width, height, type} = this,
 			file = this.getAttribute('title'),
 			fr = this.getFrame(),
@@ -598,11 +606,17 @@ export abstract class FileToken extends LinkBaseToken {
 				this.getValue('border') ? ' mw-image-border' : ''
 			} ${sanitizeAlt(this.getValue('class') as string | undefined) ?? ''}`.trim(),
 			classAttr = className && ` class="${className}"`,
-			img = `<img${alt && ` alt="${alt}"`} src="${
-				(manual ? fr : file).getUrl()
-			}" decoding="async" class="mw-file-element"${
-				isInteger(width) ? ` width="${width}"` : ''
-			}${isInteger(height) ? ` height="${height}"` : ''}>`;
+			hasWidth = isInteger(width),
+			hasHeight = isInteger(height);
+		let src: string;
+		try {
+			src = manual ? fr.getFileUrl() : file.getFileUrl(hasWidth && Number(width), hasHeight && Number(height));
+		} catch {
+			return '';
+		}
+		const img = `<img${alt && ` alt="${alt}"`} src="${src}" decoding="async" class="mw-file-element"${
+			hasWidth ? ` width="${width}"` : ''
+		}${hasHeight ? ` height="${height}"` : ''}>`;
 		let href = '';
 		if (link) {
 			try {

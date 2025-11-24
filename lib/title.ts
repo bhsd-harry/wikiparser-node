@@ -359,6 +359,34 @@ export class Title {
 
 	/* NOT FOR BROWSER */
 
+	/**
+	 * Get the URL of the file
+	 *
+	 * 生成文件URL
+	 * @param width width / 宽度
+	 * @param height height / 高度
+	 * @since v1.32.0
+	 * @throws `RangeError` invalid width or height
+	 * @throws `Error` not a file
+	 */
+	getFileUrl(width?: number | false, height?: number | false): string {
+		if (
+			typeof width === 'number' && (width <= 0 || !Number.isInteger(width))
+			|| typeof height === 'number' && (height <= 0 || !Number.isInteger(height))
+		) {
+			throw new RangeError('Width and height must be positive integers or omitted!');
+		}
+		const {main, valid, ns, interwiki} = this;
+		if (!valid || ns !== 6 || interwiki) {
+			throw new Error('Title.getFileUrl method is only for files!');
+		}
+		const {expandMagicWord}: typeof import('../render/magicWords') = require('../render/magicWords');
+		if (height) {
+			width ||= 1e4;
+		}
+		return expandMagicWord('filepath', [main, `${width || ''}${height ? `x${height}` : ''}`]) as string;
+	}
+
 	/** @private */
 	toString(display?: boolean): string {
 		return (display ? this.displayTitle : this.title) + (

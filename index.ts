@@ -45,12 +45,13 @@ import type {
 	/* NOT FOR BROWSER */
 
 	TranscludeToken,
+	FunctionHook,
+	TagHook,
 } from './internal';
 
 /* NOT FOR BROWSER */
 
 import {RedirectMap} from './lib/redirectMap';
-import type {FunctionHook, TagHook} from './util/constants';
 import type {log} from './util/diff';
 import type {MagicWord} from './render/magicWords';
 import type {AstRange} from './lib/range';

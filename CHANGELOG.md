@@ -1,19 +1,24 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.32.0
 
-*2025-11-21*
+*2025-12-02*
 
 **Added**
 
 - HTML conversion of `<syntaxhighlight>` with [Prism](https://prismjs.com/) highlighting
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction) now supports custom parser functions defined via [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook)
+- [`Title.prototype.getFileUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getfileurl) that internally calls the `filepath` parser function to generate a `Special:Redirect/file/` URL
 
 **Fixed**
 
 - [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should report invalid HTML attributes except for `id` for `<math>` and `<chem>` tags
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding `#tag`
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding parser functions with template arguments
+
+**Changed**
+
+- [`FileToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#tohtml) now calls [`Title.prototype.getFileUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getfileurl) to generate the `src` attribute
 
 **Removed**
 
@@ -239,12 +244,12 @@
 **Added**
 
 - Now the rule configuration for `Token.prototype.lint` can be set via [`Parser.lintConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lintconfig)
-- [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getwmfsite) method that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
-- [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) method now supports other WMF-hosted sites
+- [`Parser.getWMFSite`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#getwmfsite) that returns the name and host name of a MediaWiki sites [hosted by Wikimedia](https://meta.wikimedia.org/wiki/Special:SiteMatrix)
+- [`LanguageService.prototype.setTargetWikipedia`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#settargetwikipedia) now supports other WMF-hosted sites
 - [`Title.prototype.toSubjectPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#tosubjectpage), [`Title.prototype.toTalkPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#totalkpage), [`Title.prototype.toBasePage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#tobasepage) and [`Title.prototype.toRootPage`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#torootpage) now return the `Title` object itself for chaining
-- [`TranscludeToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getframe) method that returns a basic JSON [frame object](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object) for the `#invoke` parser function
-- [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook) method that defines a custom parser function hook for the [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) method
-- [`Parser.setHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#sethook) method that defines a custom extension tag hook for the [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) method
+- [`TranscludeToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getframe) that returns a basic JSON [frame object](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object) for the `#invoke` parser function
+- [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook) that defines a custom parser function hook for the [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) method
+- [`Parser.setHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#sethook) that defines a custom extension tag hook for the [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) method
 - [`Title.displayTitle`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#displaytitle)
 
 **Fixed**
@@ -405,8 +410,8 @@
 
 **Added**
 
-- [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#fetchconfig) method that executes the [`getParserConfig`](./README#cli-usage) executable
-- [`TranscludeToken.prototype.getPossibleValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getpossiblevalues) method now supports the `#switch` parser function
+- [`Parser.fetchConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#fetchconfig) that executes the [`getParserConfig`](./README#cli-usage) executable
+- [`TranscludeToken.prototype.getPossibleValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getpossiblevalues) now supports the `#switch` parser function
 
 **Fixed**
 
@@ -500,7 +505,7 @@
 - [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics), [`LanguageService.prototype.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now work for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`) and inline CSS
 - [`LanguageService.prototype.provideFoldingRanges`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providefoldingranges) now works for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`)
 - `Token.prototype.lint` now reports errors and warnings for inline CSS
-- [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#css) method that gets or sets the value of a CSS property
+- [`AttributeToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#css) that gets or sets the value of a CSS property
 - [`AttributeToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#json) now includes the [`tag`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#tag) property
 - [`LanguageService.include`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#include) property that configures the transclusion option for parsing
 
@@ -601,7 +606,7 @@
 
 **Added**
 
-- [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#createlanguageservice) method will create a [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) instance that provides various functions
+- [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#createlanguageservice) will create a [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) instance that provides various functions
 - [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) does not have to include `'$1'` now
 
 **Fixed**
@@ -806,7 +811,7 @@
 
 **Added**
 
-- [`Title.prototype.getRedirection`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getredirection) method
+- [`Title.prototype.getRedirection`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getredirection)
 - [`TranscludeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#tohtml) for nonexistent transcluded pages and transclusion loops
 
 **Fixed**
@@ -889,11 +894,11 @@
 
 **Added**
 
-- [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#is) method
-- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) method
+- [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#is)
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand)
 - [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#templatedir) and [`Parser.templates`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#templates) properties
 - [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) property
-- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#geturl) method
+- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#geturl)
 - [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#innertext) properties
 - `AstNode.prototype.toHtml` method, which is an incomplete implementation of Wikitext-to-HTML conversion
 

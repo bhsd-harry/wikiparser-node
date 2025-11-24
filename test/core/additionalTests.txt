@@ -735,3 +735,21 @@ are → are
 are → are
 </p>
 !! end
+
+!! test
+Basic {{filepath:}} test
+!! wikitext
+{{filepath:Wiki.png}}
+
+{{filepath:Wiki.png|nowiki}}
+
+{{filepath:Example.svg|300}}
+
+{{filepath:Example.svg|nowiki|300}}
+!! html
+<p>//upload.wikimedia.org/wikipedia/mediawiki/b/bc/Wiki.png
+</p><p>//upload.wikimedia.org/wikipedia/mediawiki/b/bc/Wiki.png
+</p><p>//upload.wikimedia.org/wikipedia/commons/thumb/8/84/Example.svg/330px-Example.svg.png
+</p><p>//upload.wikimedia.org/wikipedia/commons/thumb/8/84/Example.svg/330px-Example.svg.png
+</p>
+!! end
