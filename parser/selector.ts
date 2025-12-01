@@ -321,8 +321,10 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstE
  * @param selector
  */
 const desanitize = (selector: string): string => {
-	for (const [c, entity] of specialChars) {
-		selector = selector.replaceAll(entity, c);
+	if (selector.includes('&') && selector.includes(';')) {
+		for (const [c, entity] of specialChars) {
+			selector = selector.replaceAll(entity, c);
+		}
 	}
 	return selector.trim();
 };
@@ -345,8 +347,10 @@ export const checkToken = (
 	has?: Token,
 ) => <T extends Token>(token: Token): token is T => {
 	let sanitized = selector.trim();
-	for (const [c, entity] of specialChars) {
-		sanitized = sanitized.replaceAll(`\\${c}`, entity);
+	if (sanitized.includes('\\')) {
+		for (const [c, entity] of specialChars) {
+			sanitized = sanitized.replaceAll(`\\${c}`, entity);
+		}
 	}
 	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let regex = regularRegex,

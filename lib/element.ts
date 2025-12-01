@@ -129,50 +129,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Merge adjacent text child nodes
-	 *
-	 * 合并相邻的文本子节点
-	 */
-	normalize(): void {
-		const childNodes = this.getChildNodes();
-
-		/**
-		 * 移除子节点
-		 * @param i 移除位置
-		 */
-		const remove = (i: number): void => {
-			/* NOT FOR BROWSER */
-
-			childNodes[i]!.setAttribute('parentNode', undefined);
-
-			/* NOT FOR BROWSER END */
-
-			childNodes.splice(i, 1);
-			childNodes[i - 1]?.setAttribute('nextSibling', childNodes[i]);
-			childNodes[i]?.setAttribute('previousSibling', childNodes[i - 1]);
-		};
-		for (let i = childNodes.length - 1; i >= 0; i--) {
-			const {type, data} = childNodes[i]!;
-			if (type !== 'text' || childNodes.length === 1 || this.getGaps(i - (i && 1))) {
-				//
-			} else if (data === '') {
-				remove(i);
-
-				/* NOT FOR BROWSER */
-			} else {
-				const prev = childNodes[i - 1];
-				if (prev?.type === 'text') {
-					prev.setAttribute('data', prev.data + data);
-					remove(i);
-				}
-
-				/* NOT FOR BROWSER END */
-			}
-		}
-		this.setAttribute('childNodes', childNodes);
-	}
-
-	/**
 	 * Remove a child node
 	 *
 	 * 移除子节点
@@ -462,6 +418,41 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/**
+	 * Merge adjacent text child nodes
+	 *
+	 * 合并相邻的文本子节点
+	 */
+	normalize(): void {
+		const childNodes = this.getChildNodes();
+
+		/**
+		 * 移除子节点
+		 * @param i 移除位置
+		 */
+		const remove = (i: number): void => {
+			childNodes[i]!.setAttribute('parentNode', undefined);
+			childNodes.splice(i, 1);
+			childNodes[i - 1]?.setAttribute('nextSibling', childNodes[i]);
+			childNodes[i]?.setAttribute('previousSibling', childNodes[i - 1]);
+		};
+		for (let i = childNodes.length - 1; i >= 0; i--) {
+			const {type, data} = childNodes[i]!;
+			if (type !== 'text' || childNodes.length === 1 || this.getGaps(i - (i && 1))) {
+				//
+			} else if (data === '') {
+				remove(i);
+			} else {
+				const prev = childNodes[i - 1];
+				if (prev?.type === 'text') {
+					prev.setAttribute('data', prev.data + data);
+					remove(i);
+				}
+			}
+		}
+		this.setAttribute('childNodes', childNodes);
+	}
 
 	/**
 	 * Check if the current element matches the selector

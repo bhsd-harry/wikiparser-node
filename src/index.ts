@@ -322,12 +322,12 @@ export class Token extends AstElement {
 	buildFromStr(str: string, type?: BuildMethod): string | readonly AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
-				return new AstText(s);
+				return s && new AstText(s);
 			} else if (isNaN(s.slice(-1) as unknown as number)) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`Failed to build! Unrecognized token: ${s}`);
-		});
+		}).filter(Boolean) as AstNodes[];
 		if (type === BuildMethod.String) {
 			return nodes.map(String).join('');
 		} else if (type === BuildMethod.Text) {
@@ -343,7 +343,6 @@ export class Token extends AstElement {
 			str = firstChild?.toString();
 		if (length === 1 && firstChild!.type === 'text' && str!.includes('\0')) {
 			setChildNodes(this, 0, 1, this.buildFromStr(str!));
-			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
 					token?.build(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
