@@ -537,7 +537,7 @@ export class LanguageService implements LanguageServiceBase {
 						},
 						range: createRange(root, start + from, start + to),
 					};
-				}).filter(Boolean) as ColorInformation[];
+				}).filter(info => info !== false);
 			});
 		});
 	}
@@ -1085,7 +1085,7 @@ export class LanguageService implements LanguageServiceBase {
 					return false;
 				}
 			})
-			.filter(Boolean) as DocumentLink[];
+			.filter(link => link !== false);
 	}
 
 	/**
