@@ -327,7 +327,7 @@ export class Token extends AstElement {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`Failed to build! Unrecognized token: ${s}`);
-		}).filter(Boolean) as AstNodes[];
+		}).filter(node => node !== '');
 		if (type === BuildMethod.String) {
 			return nodes.map(String).join('');
 		} else if (type === BuildMethod.Text) {
@@ -734,7 +734,7 @@ export class Token extends AstElement {
 				}
 				if (needFix && errors.some(({fix}) => fix)) {
 					// 倒序修复，跳过嵌套的修复
-					const fixable = (errors.map(({fix}) => fix).filter(Boolean) as LintError.Fix[]).sort(
+					const fixable = errors.map(({fix}) => fix).filter(fix => fix !== undefined).sort(
 						({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo,
 					);
 					let i = Infinity,

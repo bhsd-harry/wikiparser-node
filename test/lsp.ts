@@ -124,14 +124,14 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 
 		/* NOT FOR BROWSER END */
 
-		renamePositions = ([
+		renamePositions = [
 			argName,
 			templateName,
 
 			/* NOT FOR BROWSER */
 
 			linkTarget,
-		].filter(Boolean) as Token[])
+		].filter(token => token !== undefined)
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
 	/* NOT FOR BROWSER ONLY END */
@@ -169,14 +169,14 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 
 					/* NOT FOR BROWSER ONLY */
 
-					...([
+					...[
 						imageParameter,
 						attrKey,
 
 						/* NOT FOR BROWSER */
 
 						parameterKey,
-					].filter(Boolean) as Token[])
+					].filter(token => token !== undefined)
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
 
 					/* NOT FOR BROWSER ONLY END */
@@ -253,7 +253,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				}
 				break;
 			case 'provideHover': {
-				const positions = ([doubleUnderscore, magicWordName].filter(Boolean) as Token[])
+				const positions = [doubleUnderscore, magicWordName].filter(token => token !== undefined)
 					.map(token => indexToPos(root, token.getAbsoluteIndex()));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {

@@ -776,7 +776,7 @@ export class LanguageService implements LanguageServiceBase {
 						},
 						range: createRange(root, start + from, start + to),
 					};
-				}).filter(Boolean) as ColorInformation[];
+				}).filter(info => info !== false);
 			});
 		});
 	}
@@ -1566,7 +1566,7 @@ export class LanguageService implements LanguageServiceBase {
 					return false;
 				}
 			})
-			.filter(Boolean) as DocumentLink[];
+			.filter(link => link !== false);
 	}
 
 	/**
@@ -2030,7 +2030,7 @@ export class LanguageService implements LanguageServiceBase {
 					? Array.from({length: names.size}, (_, i) => `${section.trim()}_${i + 2}`)
 						.find(s => !names.has(s))!
 					: section,
-				container = sections.slice(0, level - 1).reverse().find(Boolean),
+				container = sections.slice(0, level - 1).reverse().find(symbol => symbol !== undefined),
 				selectionRange = {
 					start: {line: top, character: left - level},
 					end: getEndPos(top, left, height, width + level),

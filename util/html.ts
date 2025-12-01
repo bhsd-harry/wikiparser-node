@@ -159,7 +159,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 		}
 		results.push(result);
 	}
-	return (removeBlank ? results.filter(Boolean) : results).join(separator);
+	return (removeBlank ? results.filter(result => result !== '') : results).join(separator);
 };
 
 /**

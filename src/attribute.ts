@@ -577,7 +577,8 @@ export abstract class AttributeToken extends Token {
 			return '';
 		}
 		const sanitized = ariaAttrs.has(name)
-			? value.split(/\s+/u).filter(Boolean).map(v => sanitizeAttr(v, true)).join(' ')
+			? value.split(/\s+/u).filter(v => v !== '').map(v => sanitizeAttr(v, true))
+				.join(' ')
 			: sanitizeAttr(value, name === 'id');
 		return `${name}="${sanitized}"`;
 	}

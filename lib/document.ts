@@ -83,7 +83,7 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | null => {
 						/* istanbul ignore next */
 						return false;
 					}
-				}).filter(Boolean) as SchemaConfiguration[],
+				}).filter(schema => schema !== false),
 			});
 		} catch {
 			/* istanbul ignore next */
