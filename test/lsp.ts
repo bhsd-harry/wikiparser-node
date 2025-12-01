@@ -109,10 +109,10 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke' as TokenTypes),
 		doubleUnderscore = root.querySelector('double-underscore'),
 		table = root.querySelector('table'),
-		renamePositions = ([
+		renamePositions = [
 			argName,
 			templateName,
-		].filter(Boolean) as Token[])
+		].filter(token => token !== undefined)
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
 	/* NOT FOR BROWSER ONLY END */
@@ -151,10 +151,11 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 
 					/* NOT FOR BROWSER ONLY */
 
-					...([
+					...[
 						imageParameter,
 						attrKey,
-					].filter(Boolean) as Token[])
+
+					].filter(token => token !== undefined)
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
 
 					/* NOT FOR BROWSER ONLY END */
@@ -226,7 +227,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				}
 				break;
 			case 'provideHover': {
-				const positions = ([doubleUnderscore, magicWordName].filter(Boolean) as Token[])
+				const positions = [doubleUnderscore, magicWordName].filter(token => token !== undefined)
 					.map(token => indexToPos(root, token.getAbsoluteIndex()));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
