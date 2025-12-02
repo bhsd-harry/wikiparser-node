@@ -114,7 +114,7 @@ export abstract class AstElement extends AstNode {
 			for (let i = this.length - 1; i >= 0; i--) {
 				this.removeAt(i);
 			}
-			this.safeAppend(elements);
+			this.safeAppend([...elements]);
 		}
 	}
 
