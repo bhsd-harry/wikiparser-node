@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -21,7 +22,9 @@ const escapeTable = (syntax: SyntaxToken): void => {
 				: child.toString(),
 		).join(''),
 		{childNodes} = Parser.parseWithRef(wikitext, syntax, 2);
-	syntax.safeReplaceChildren(childNodes);
+	Shadow.run(() => {
+		syntax.safeReplaceChildren(childNodes);
+	});
 };
 
 /**
