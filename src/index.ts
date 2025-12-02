@@ -148,7 +148,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
-		if (n < this.#stage || this.length === 0 || !this.isPlain()) {
+		if (n < this.#stage || this.length !== 1 || !this.isPlain()) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
 			return this;
