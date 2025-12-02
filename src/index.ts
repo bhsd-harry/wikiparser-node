@@ -1030,7 +1030,7 @@ export class Token extends AstElement {
 		if (this.isPlain()) {
 			for (const child of this.childNodes) {
 				if (child.type !== 'text' && child.isPlain()) {
-					child.insertAdjacent(child.childNodes, 1);
+					child.insertAdjacent([...child.childNodes], 1);
 					child.remove();
 				}
 			}
@@ -1044,8 +1044,10 @@ export class Token extends AstElement {
 	 * @since v1.10.0
 	 */
 	toHtml(): string {
-		const {viewOnly} = Parser;
+		const {viewOnly} = Parser,
+			{internal} = Shadow;
 		let output: string;
+		Shadow.internal = true;
 		if (this.type === 'root') {
 			const {expandToken}: typeof import('../render/expand') = require('../render/expand'),
 				{toHtml}: typeof import('../render/html') = require('../render/html');
@@ -1060,6 +1062,7 @@ export class Token extends AstElement {
 			output = this.cloneNode().toHtmlInternal();
 		}
 		Parser.viewOnly = viewOnly;
+		Shadow.internal = internal;
 		return output;
 	}
 

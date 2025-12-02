@@ -1944,8 +1944,23 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queueSignature(selected);
 		const {viewOnly} = Parser;
 		Parser.viewOnly = false;
+
+		/* NOT FOR BROWSER */
+
+		const {internal} = Shadow;
+		Shadow.internal = true;
+
+		/* NOT FOR BROWSER END */
+
 		root.escape();
 		Parser.viewOnly = viewOnly;
+
+		/* NOT FOR BROWSER */
+
+		Shadow.internal = internal;
+
+		/* NOT FOR BROWSER END */
+
 		return [
 			{
 				title: 'Escape with magic words',

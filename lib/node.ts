@@ -210,7 +210,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	constructor() {
-		if (!Parser.viewOnly) {
+		if (!Parser.viewOnly && !Shadow.internal) {
 			Object.defineProperty(this, 'childNodes', {writable: false});
 			Object.freeze(this.childNodes);
 		}
@@ -460,14 +460,19 @@ export abstract class AstNode implements AstNodeBase {
 	seal(key: string, permanent?: boolean): void {
 		/* NOT FOR BROWSER */
 
-		if (!permanent) {
+		if (Shadow.internal) {
+			return;
+		} else if (!permanent) {
 			this.#optional.add(key);
 		}
 
 		/* NOT FOR BROWSER END */
 
 		const enumerable = !permanent && Boolean(this[key as keyof this]);
-		if (!enumerable || !Parser.viewOnly) {
+		if (
+			!enumerable
+			|| !Parser.viewOnly
+		) {
 			Object.defineProperty(this, key, {
 				enumerable,
 				configurable: true,

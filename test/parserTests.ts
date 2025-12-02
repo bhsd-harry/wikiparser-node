@@ -16,9 +16,11 @@ import lsp from './lsp';
 
 /* NOT FOR BROWSER */
 
+import {Shadow} from '../util/debug';
 import {prepare} from '../script/util';
 
 prepare(Parser);
+Shadow.internal = true;
 
 /**
  * 合并`wpb-list`元素

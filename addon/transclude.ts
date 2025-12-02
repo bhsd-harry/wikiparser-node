@@ -58,7 +58,7 @@ TranscludeToken.prototype.setValue =
 				// @ts-expect-error abstract class
 				(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
 			);
-		token.firstChild.safeAppend(k.childNodes);
+		token.firstChild.safeAppend([...k.childNodes]);
 		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
 		if (newline) {
 			format(this);
