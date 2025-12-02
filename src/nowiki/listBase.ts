@@ -5,8 +5,9 @@ import type {AST} from '../../base';
 
 import {classes} from '../../util/constants';
 import {Shadow, setChildNodes} from '../../util/debug';
+import {AstText} from '../../lib/text';
 import {Token} from '../index';
-import type {DdToken, ListToken, AstText} from '../../internal';
+import type {DdToken, ListToken, AstNodes} from '../../internal';
 
 export interface ListRangeToken extends Token {
 	readonly type: 'list-range';
@@ -113,10 +114,14 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			}
 			({nextSibling} = nextSibling);
 		}
-		const range = this.createRange();
+		let start: number,
+			end: number,
+			contents: AstNodes[];
 		if (nextSibling && nextSibling.type !== 'text') {
-			range.setStartAfter(this);
-			range.setEndBefore(nextSibling);
+			const {childNodes} = parentNode;
+			start = childNodes.indexOf(this) + 1;
+			end = childNodes.indexOf(nextSibling);
+			contents = childNodes.slice(start, end);
 		} else {
 			if (type === 'list') {
 				while (this.previousSibling?.is<ListToken>('list')) {
@@ -134,11 +139,24 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 					return parentNode;
 				}
 			}
-			range.setStartAfter(this);
+			const {childNodes} = parentNode;
+			start = childNodes.indexOf(this) + 1;
 			if (nextSibling) {
-				range.setEnd(nextSibling, nextSibling.data.indexOf('\n'));
+				const {data} = nextSibling,
+					offset = data.indexOf('\n'),
+					text = new AstText(data.slice(0, offset));
+				end = childNodes.indexOf(nextSibling);
+				contents = childNodes.slice(start, end);
+				const last = contents.at(-1);
+				if (last) {
+					last.setAttribute('nextSibling', text);
+					text.setAttribute('previousSibling', last);
+				}
+				contents.push(text);
+				nextSibling.setAttribute('data', data.slice(offset));
 			} else {
-				range.setEnd(parentNode, parentNode.length);
+				end = childNodes.length;
+				contents = childNodes.slice(start);
 			}
 		}
 		const token = Shadow.run(() => {
@@ -146,8 +164,8 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			t.type = 'list-range';
 			return t;
 		});
-		token.concat(range.extractContents()); // eslint-disable-line unicorn/prefer-spread
-		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [token]);
+		token.concat(contents); // eslint-disable-line unicorn/prefer-spread
+		setChildNodes(parentNode, start, end - start, [token]);
 		return token as ListRangeToken;
 	}
 

@@ -78,7 +78,9 @@ export const setChildNodes = (
 	/* NOT FOR BROWSER */
 
 	for (const node of removed) {
-		node.setAttribute('parentNode', undefined);
+		if (node.parentNode === parent) {
+			node.setAttribute('parentNode', undefined);
+		}
 	}
 
 	/* NOT FOR BROWSER END */

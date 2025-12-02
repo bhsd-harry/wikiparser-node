@@ -808,13 +808,7 @@ export class Token extends AstElement {
 		}
 		const {childNodes, lastChild} = this,
 			first = elements[0]!,
-			last = elements.at(-1)!,
-			parent = first.parentNode!,
-			nodes = parent.getChildNodes();
-		nodes.splice(nodes.indexOf(first), elements.length);
-		parent.setAttribute('childNodes', nodes);
-		first.previousSibling?.setAttribute('nextSibling', last.nextSibling);
-		last.nextSibling?.setAttribute('previousSibling', first.previousSibling);
+			last = elements.at(-1)!;
 		for (const element of elements) {
 			element.setAttribute('parentNode', this);
 		}
