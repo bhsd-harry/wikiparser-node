@@ -141,7 +141,7 @@ export abstract class ImageParameterToken extends Token {
 				return /^\0\d+m\x7F/u.test(token.firstChild!.toString())
 					? value
 					: validate('link', value, this.getAttribute('config'));
-			});
+			}, Parser);
 		}
 	}
 

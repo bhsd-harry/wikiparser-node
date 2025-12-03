@@ -390,6 +390,11 @@ const partialParse = async (
 	const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
 		{running} = Shadow;
 	Shadow.running = true;
+
+	/** restore state before exit */
+	const finish = (): void => {
+		Shadow.running = running;
+	};
 	const token = new Token(tidy(wikitext), config);
 	token.type = 'root';
 	let i = 0;
@@ -415,10 +420,10 @@ const partialParse = async (
 			set(parseOnce, 0);
 		});
 	} catch (e) /* istanbul ignore next */ {
-		Shadow.running = running;
+		finish();
 		throw e;
 	}
-	Shadow.running = running;
+	finish();
 	return token;
 };
 
@@ -1933,7 +1938,9 @@ export class LanguageService implements LanguageServiceBase {
 			return [];
 		}
 		const root = await this.#queueSignature(selected);
-		const {viewOnly} = Parser;
+		const {
+			viewOnly,
+		} = Parser;
 		Parser.viewOnly = false;
 		root.escape();
 		Parser.viewOnly = viewOnly;
