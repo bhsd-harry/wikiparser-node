@@ -137,26 +137,12 @@ export abstract class ImageParameterToken extends Token {
 			}
 			const value = super.text().trim();
 			return Shadow.run((): string | Title => {
-				/* PRINT ONLY */
-
-				const {internal} = Parser;
-				Parser.internal = true;
-
-				/** PRINT ONLY END */
-
 				const token = new Token(value, this.getAttribute('config'));
 				token.parseOnce(0, this.getAttribute('include')).parseOnce();
-
-				/* PRINT ONLY */
-
-				Parser.internal = internal;
-
-				/** PRINT ONLY END */
-
 				return /^\0\d+m\x7F/u.test(token.firstChild!.toString())
 					? value
 					: validate('link', value, this.getAttribute('config'));
-			});
+			}, Parser);
 		}
 	}
 

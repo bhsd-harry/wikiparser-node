@@ -390,6 +390,22 @@ const partialParse = async (
 	const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
 		{running} = Shadow;
 	Shadow.running = true;
+
+	/* PRINT ONLY */
+
+	const {internal} = Parser;
+	Parser.internal = true;
+
+	/* PRINT ONLY END */
+
+	/** restore state before exit */
+	const finish = (): void => {
+		Shadow.running = running;
+
+		/* PRINT ONLY */
+
+		Parser.internal = internal;
+	};
 	const token = new Token(tidy(wikitext), config);
 	token.type = 'root';
 	let i = 0;
@@ -404,42 +420,21 @@ const partialParse = async (
 					}
 				},
 				/** @ignore */ parseOnce = (): void => {
-					/* PRINT ONLY */
-
-					const {internal} = Parser;
-					Parser.internal = true;
-
-					/* PRINT ONLY END */
-
 					if (i === MAX_STAGE + 1) {
 						token.afterBuild();
-
-						/* PRINT ONLY */
-
-						Parser.internal = internal;
-
-						/* PRINT ONLY END */
-
 						resolve();
 					} else {
 						token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
-
-						/* PRINT ONLY */
-
-						Parser.internal = internal;
-
-						/* PRINT ONLY END */
-
 						check();
 					}
 				};
 			set(parseOnce, 0);
 		});
 	} catch (e) /* istanbul ignore next */ {
-		Shadow.running = running;
+		finish();
 		throw e;
 	}
-	Shadow.running = running;
+	finish();
 	return token;
 };
 
@@ -1954,10 +1949,30 @@ export class LanguageService implements LanguageServiceBase {
 			return [];
 		}
 		const root = await this.#queueSignature(selected);
-		const {viewOnly} = Parser;
+		const {
+			viewOnly,
+
+			/* PRINT ONLY */
+
+			internal,
+		} = Parser;
 		Parser.viewOnly = false;
+
+		/* PRINT ONLY */
+
+		Parser.internal = true;
+
+		/* PRINT ONLY END */
+
 		root.escape();
 		Parser.viewOnly = viewOnly;
+
+		/* PRINT ONLY */
+
+		Parser.internal = internal;
+
+		/* PRINT ONLY END */
+
 		return [
 			{
 				title: 'Escape with magic words',
