@@ -554,4 +554,11 @@ export interface Parser {
 	 * @since v1.16.1
 	 */
 	createLanguageService(uri?: object): LanguageService;
+
+	/**
+	 * Linter
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @since v1.32.0
+	 */
+	lint(wikitext: string, include?: boolean, config?: Config): LintError[];
 }
