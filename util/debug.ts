@@ -1,23 +1,43 @@
-import type {TokenTypes, Config} from '../base';
+import type {TokenTypes, Config, Parser as ParserBase} from '../base';
 import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
 	running: false,
 
 	/** @private */
-	run<T>(callback: () => T): T {
+	run<T>(callback: () => T, Parser?: ParserBase): T {
 		const {running} = this;
 		this.running = true;
+
+		/* PRINT ONLY */
+
+		const internal = Parser?.internal;
+		if (Parser) {
+			Parser.internal = true;
+		}
+
+		/* PRINT ONLY END */
+
+		/** restore state before exit */
+		const finish = (): void => {
+			this.running = running;
+
+			/* PRINT ONLY */
+
+			if (Parser) {
+				Parser.internal = internal!;
+			}
+		};
 		try {
 			const {Token: AnyToken}: typeof import('../src/index') = require('../src/index');
 			const result = callback();
 			if (result instanceof AnyToken && !result.getAttribute('built')) {
 				result.afterBuild();
 			}
-			this.running = running;
+			finish();
 			return result;
 		} catch (e) /* istanbul ignore next */ {
-			this.running = running;
+			finish();
 			throw e;
 		}
 	},
