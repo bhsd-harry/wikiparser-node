@@ -1938,12 +1938,9 @@ export class LanguageService implements LanguageServiceBase {
 			return [];
 		}
 		const root = await this.#queueSignature(selected);
-		const {
-			viewOnly,
-		} = Parser;
-		Parser.viewOnly = false;
-		root.escape();
-		Parser.viewOnly = viewOnly;
+		Shadow.internal(() => {
+			root.escape();
+		}, Parser, false);
 		return [
 			{
 				title: 'Escape with magic words',

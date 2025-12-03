@@ -361,6 +361,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 	},
 
+	/** @implements */
+	lint(wikitext, include, config) {
+		LINT: return Shadow.internal(() => this.parse(wikitext, include, undefined, config).lint(), this);
+	},
+
 	/* NOT FOR BROWSER ONLY */
 
 	/** @implements */

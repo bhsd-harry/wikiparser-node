@@ -81,7 +81,7 @@ describe('API tests', () => {
 							try {
 								assert.strictEqual(
 									state === 'incorrect',
-									Parser.parse(block).lint()
+									Parser.lint(block)
 										.some(({rule, severity}) => rule === cur && severity === 'error'),
 									`${state === 'incorrect' ? 'No' : 'An'} error found!`,
 								);

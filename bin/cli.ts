@@ -404,13 +404,13 @@ try {
 		if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
 			[,,, problems] = fileCache;
 		} else {
-			problems = Parser.parse(wikitext, include).lint();
+			problems = Parser.lint(wikitext, include);
 			update = true;
 		}
 		if (fixing && problems.output !== undefined) {
 			wikitext = problems.output;
 			jobs.push(fs.promises.writeFile(file, wikitext));
-			problems = Parser.parse(wikitext, include).lint();
+			problems = Parser.lint(wikitext, include);
 			update = true;
 		}
 		if (caching && update) {
