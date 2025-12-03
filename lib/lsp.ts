@@ -411,11 +411,32 @@ const partialParse = async (
 					}
 				},
 				/** @ignore */ parseOnce = (): void => {
+					/* PRINT ONLY */
+
+					const {internal} = Parser;
+					Parser.internal = true;
+
+					/* PRINT ONLY END */
+
 					if (i === MAX_STAGE + 1) {
 						token.afterBuild();
+
+						/* PRINT ONLY */
+
+						Parser.internal = internal;
+
+						/* PRINT ONLY END */
+
 						resolve();
 					} else {
 						token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
+
+						/* PRINT ONLY */
+
+						Parser.internal = internal;
+
+						/* PRINT ONLY END */
+
 						check();
 					}
 				};
@@ -1944,23 +1965,8 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queueSignature(selected);
 		const {viewOnly} = Parser;
 		Parser.viewOnly = false;
-
-		/* NOT FOR BROWSER */
-
-		const {internal} = Shadow;
-		Shadow.internal = true;
-
-		/* NOT FOR BROWSER END */
-
 		root.escape();
 		Parser.viewOnly = viewOnly;
-
-		/* NOT FOR BROWSER */
-
-		Shadow.internal = internal;
-
-		/* NOT FOR BROWSER END */
-
 		return [
 			{
 				title: 'Escape with magic words',

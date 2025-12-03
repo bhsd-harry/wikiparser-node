@@ -16,11 +16,9 @@ import lsp from './lsp';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
 import {prepare} from '../script/util';
 
 prepare(Parser);
-Shadow.internal = true;
 
 /**
  * 合并`wpb-list`元素
@@ -32,6 +30,8 @@ const merge = (html: string): string =>
 /* NOT FOR BROWSER END */
 
 /* PRINT ONLY */
+
+Parser.internal = true;
 
 const entities = {lt: '<', gt: '>', amp: '&'};
 

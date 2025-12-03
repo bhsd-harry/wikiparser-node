@@ -32,6 +32,7 @@ import type {
 /* NOT FOR BROWSER */
 
 Parser.viewOnly = true;
+Parser.internal = true;
 
 /* NOT FOR BROWSER END */
 

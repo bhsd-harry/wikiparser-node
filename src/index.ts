@@ -1044,10 +1044,9 @@ export class Token extends AstElement {
 	 * @since v1.10.0
 	 */
 	toHtml(): string {
-		const {viewOnly} = Parser,
-			{internal} = Shadow;
+		const {viewOnly, internal} = Parser;
 		let output: string;
-		Shadow.internal = true;
+		Parser.internal = true;
 		if (this.type === 'root') {
 			const {expandToken}: typeof import('../render/expand') = require('../render/expand'),
 				{toHtml}: typeof import('../render/html') = require('../render/html');
@@ -1062,7 +1061,7 @@ export class Token extends AstElement {
 			output = this.cloneNode().toHtmlInternal();
 		}
 		Parser.viewOnly = viewOnly;
-		Shadow.internal = internal;
+		Parser.internal = internal;
 		return output;
 	}
 

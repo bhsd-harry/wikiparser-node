@@ -2,13 +2,6 @@ import type {TokenTypes, Config} from '../base';
 import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
-
-	/* NOT FOR BROWSER */
-
-	internal: false,
-
-	/* NOT FOR BROWSER END */
-
 	running: false,
 
 	/** @private */

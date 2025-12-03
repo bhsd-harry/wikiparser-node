@@ -194,11 +194,14 @@ export abstract class TdToken extends TableBaseToken {
 
 		const str = previousSibling.lastChild.toString();
 		result.escape ||= esc;
-		result.correction = str.includes('\n') && Shadow.run(
-			() => new Token(str, this.getAttribute('config'))
-				.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce()
-				.firstChild!.toString().includes('\n'),
-		);
+		result.correction = str.includes('\n') && Shadow.run(() => {
+			const {internal} = Parser;
+			Parser.internal = true;
+			const token = new Token(str, this.getAttribute('config'))
+				.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce();
+			Parser.internal = internal;
+			return token.firstChild!.toString().includes('\n');
+		});
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
 			result.correction = true;

@@ -147,7 +147,7 @@ export class AstText extends AstNode {
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
-		if (Parser.viewOnly || Shadow.internal) {
+		if (Parser.viewOnly || Parser.internal) {
 			this.data = text;
 
 			/* NOT FOR BROWSER */

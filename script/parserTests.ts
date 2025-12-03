@@ -1,13 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import {info} from '../util/diff';
-import {Shadow} from '../util/debug';
 import Parser from '../index';
 import {prepare} from './util';
 import type {Test} from '@bhsd/test-util';
 
 prepare(Parser);
-Shadow.internal = true;
+Parser.internal = true;
 
 const tests: Test[] = [],
 	regex = {

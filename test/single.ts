@@ -10,10 +10,8 @@ import Parser from '../index';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
-
 Parser.viewOnly = true;
-Shadow.internal = true;
+Parser.internal = true;
 
 /* NOT FOR BROWSER END */
 
