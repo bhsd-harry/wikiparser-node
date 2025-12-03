@@ -16,6 +16,8 @@ import lsp from './lsp';
 
 /* PRINT ONLY */
 
+Parser.internal = true;
+
 const entities = {lt: '<', gt: '>', amp: '&'};
 
 /**

@@ -33,6 +33,13 @@ describe('API tests', () => {
 				beforeEach(() => {
 					Parser.i18n = 'en';
 					Parser.lintConfig = undefined as unknown as LintConfiguration;
+
+					/* PRINT ONLY */
+
+					Parser.internal = false;
+
+					/* PRINT ONLY */
+
 					if (typeof Parser.config === 'object') {
 						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
 					}
@@ -66,6 +73,13 @@ describe('API tests', () => {
 						});
 					}
 				}
+
+				/* PRINT ONLY */
+
+				Parser.internal = true;
+
+				/* PRINT ONLY */
+
 				const cur = file.slice(0, -3) as LintError.Rule;
 				for (const code of md.matchAll(re)) {
 					const [, state, config, wikitext] = code as string[] as [string, string, string, string];
