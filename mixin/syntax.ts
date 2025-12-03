@@ -1,6 +1,7 @@
 import {undo, Shadow, mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import {text} from '../util/string';
+import Parser from '../index';
 import type {AstNodes} from '../internal';
 
 export interface SyntaxBase {
@@ -26,13 +27,15 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 
 		override afterBuild(): void {
 			super.afterBuild();
-			const /** @implements */ syntaxListener: AstListener = (e, data) => {
-				if (!Shadow.running && !this.pattern.test(text(this.childNodes))) {
-					undo(e, data);
-					this.constructorError('cannot modify the syntax pattern');
-				}
-			};
-			this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
+			if (!Parser.internal) {
+				const /** @implements */ syntaxListener: AstListener = (e, data) => {
+					if (!Shadow.running && !this.pattern.test(text(this.childNodes))) {
+						undo(e, data);
+						this.constructorError('cannot modify the syntax pattern');
+					}
+				};
+				this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
+			}
 		}
 
 		override safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {

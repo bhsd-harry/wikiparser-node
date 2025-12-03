@@ -449,13 +449,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else {
 			const {Token}: typeof import('./src/index') = require('./src/index');
 			titleObj = Shadow.run(() => {
-				/* PRINT ONLY */
-
-				const {internal} = Parser;
-				Parser.internal = true;
-
-				/* PRINT ONLY END */
-
 				const root = new Token(title, config);
 				root.type = 'root';
 				root.pageName = opt?.page;
@@ -473,15 +466,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 						}
 					}
 				}
-
-				/* PRINT ONLY */
-
-				Parser.internal = internal;
-
-				/* PRINT ONLY END */
-
 				return t;
-			});
+			}, Parser);
 		}
 
 		/* NOT FOR BROWSER */
@@ -762,7 +748,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			fs.unlinkSync(file);
 			fs.unlinkSync(`${file}.err`);
 			fs.unlinkSync(`${file}.json`);
-		});
+		}, Parser);
 	},
 } as Omit<Parser, 'default'> as Parser;
 

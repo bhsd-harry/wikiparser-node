@@ -219,17 +219,19 @@ export abstract class ConverterRuleToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		super.afterBuild();
-		const /** @implements */ converterRuleListener: AstListener = (e, data) => {
-			const {prevTarget} = e;
-			if (this.length > 1 && this.childNodes[this.length - 2] === prevTarget) {
-				const {variant} = this;
-				if (!this.getAttribute('config').variants.includes(variant)) {
-					undo(e, data);
-					throw new Error(`Invalid language variant: ${variant}`);
+		if (!Parser.internal) {
+			const /** @implements */ converterRuleListener: AstListener = (e, data) => {
+				const {prevTarget} = e;
+				if (this.length > 1 && this.childNodes[this.length - 2] === prevTarget) {
+					const {variant} = this;
+					if (!this.getAttribute('config').variants.includes(variant)) {
+						undo(e, data);
+						throw new Error(`Invalid language variant: ${variant}`);
+					}
 				}
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterRuleListener);
+			};
+			this.addEventListener(['remove', 'insert', 'text', 'replace'], converterRuleListener);
+		}
 	}
 
 	/**
