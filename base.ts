@@ -505,7 +505,7 @@ export interface Parser {
 	/** @since v1.22.0 */
 	lintConfig: LintConfig;
 
-	/** @since v1.9.0 */
+	/** @private */
 	viewOnly: boolean;
 
 	/* PRINT ONLY */
