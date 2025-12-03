@@ -38,6 +38,13 @@ describe('API tests', () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
 					Parser.lintConfig = undefined as unknown as LintConfiguration;
+
+					/* PRINT ONLY */
+
+					Parser.internal = false;
+
+					/* PRINT ONLY */
+
 					if (typeof Parser.config === 'object') {
 						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
 					}
@@ -73,6 +80,13 @@ describe('API tests', () => {
 						});
 					}
 				}
+
+				/* PRINT ONLY */
+
+				Parser.internal = true;
+
+				/* PRINT ONLY */
+
 				const cur = file.slice(0, -3) as LintError.Rule;
 				// @ts-expect-error Node.js-only rule
 				if (cur !== 'invalid-css' && cur !== 'invalid-math') {

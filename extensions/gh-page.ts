@@ -37,6 +37,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 
 	// Parser初始化
 	const config: ConfigData = await (await fetch('./config/default.json')).json();
+	Parser.internal = true;
 	Parser.config = config;
 	wikiparse.setConfig(config);
 

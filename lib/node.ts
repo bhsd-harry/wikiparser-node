@@ -294,14 +294,19 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	seal(key: string, permanent?: boolean): void {
-		const enumerable = !permanent && Boolean(this[key as keyof this]);
-		if (
-			!enumerable
-		) {
-			Object.defineProperty(this, key, {
-				enumerable,
-				configurable: true,
-			});
+		LSP: {
+			if (Parser.internal) {
+				return;
+			}
+			const enumerable = !permanent && Boolean(this[key as keyof this]);
+			if (
+				!enumerable
+			) {
+				Object.defineProperty(this, key, {
+					enumerable,
+					configurable: true,
+				});
+			}
 		}
 	}
 

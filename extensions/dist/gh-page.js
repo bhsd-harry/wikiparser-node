@@ -10,6 +10,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
             .getElementsByClassName('highlight'),
     ];
     const config = await (await fetch('./config/default.json')).json();
+    Parser.internal = true;
     Parser.config = config;
     wikiparse.setConfig(config);
     const immediatePrint = (wikitext, include, stage) => Promise.resolve(Parser.parse(wikitext, include, stage).childNodes

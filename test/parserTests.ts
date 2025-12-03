@@ -9,6 +9,8 @@ Parser.config = require('../../config/default');
 
 /* PRINT ONLY */
 
+Parser.internal = true;
+
 const entities = {lt: '<', gt: '>', amp: '&'};
 
 /**
