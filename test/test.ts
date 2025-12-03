@@ -64,12 +64,6 @@ describe('API tests', () => {
 
 					/* NOT FOR BROWSER END */
 
-					/* PRINT ONLY */
-
-					Parser.internal = false;
-
-					/* PRINT ONLY */
-
 					if (typeof Parser.config === 'object') {
 						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
 
@@ -108,13 +102,6 @@ describe('API tests', () => {
 						});
 					}
 				}
-
-				/* PRINT ONLY */
-
-				Parser.internal = true;
-
-				/* PRINT ONLY */
-
 				const cur = file.slice(0, -3) as LintError.Rule;
 				for (const code of md.matchAll(re)) {
 					const [, state, config, wikitext] = code as string[] as [string, string, string, string];
@@ -130,7 +117,7 @@ describe('API tests', () => {
 							try {
 								assert.strictEqual(
 									state === 'incorrect',
-									Parser.parse(block).lint()
+									Parser.lint(block)
 										.some(({rule, severity}) => rule === cur && severity === 'error'),
 									`${state === 'incorrect' ? 'No' : 'An'} error found!`,
 								);

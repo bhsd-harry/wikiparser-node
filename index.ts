@@ -160,6 +160,15 @@ declare interface Parser extends ParserBase {
 	 */
 	createLanguageService(uri?: object): LanguageService;
 
+	/**
+	 * print in HTML
+	 *
+	 * 以HTML格式打印
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @since v1.32.0
+	 */
+	print(wikitext: string, include?: boolean, config?: Config): string;
+
 	/* NOT FOR BROWSER ONLY */
 
 	/**
@@ -185,6 +194,17 @@ declare interface Parser extends ParserBase {
 	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
+
+	/**
+	 * Generate HTML
+	 *
+	 * 生成HTML
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @param page page name / 页面名称
+	 * @since v1.32.0
+	 */
+	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string): string;
+	toHtml(wikitext: string, page: string, include?: boolean, config?: Config): string;
 
 	/**
 	 * Define how to expand a parser function
@@ -586,6 +606,16 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 	},
 
+	/** @implements */
+	lint(wikitext, include, config) {
+		LINT: return Shadow.internal(() => this.parse(wikitext, include, undefined, config).lint(), this);
+	},
+
+	/** @implements */
+	print(wikitext, include, config) {
+		return Shadow.internal(() => this.parse(wikitext, include, undefined, config).print(), this);
+	},
+
 	/* NOT FOR BROWSER ONLY */
 
 	/** @implements */
@@ -609,6 +639,27 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
+
+	/** @implements */
+	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+		let include: boolean,
+			config: Config | undefined,
+			page: string | undefined;
+		if (typeof includeOrPage === 'string') {
+			include = Boolean(configOrInclude);
+			config = pageOrConfig as Config | undefined;
+			page = includeOrPage;
+		} else {
+			include = Boolean(includeOrPage);
+			config = configOrInclude as Config | undefined;
+			page = pageOrConfig as string | undefined;
+		}
+		return Shadow.internal(
+			() => this.parse(wikitext, include, undefined, config, page).toHtml(),
+			this,
+			false,
+		);
+	},
 
 	/** @implements */
 	setFunctionHook(name, hook) {
