@@ -101,6 +101,15 @@ declare interface Parser extends ParserBase {
 	 */
 	createLanguageService(uri?: object): LanguageService;
 
+	/**
+	 * print in HTML
+	 *
+	 * 以HTML格式打印
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @since v1.32.0
+	 */
+	print(wikitext: string, include?: boolean, config?: Config): string;
+
 	/* NOT FOR BROWSER ONLY */
 
 	/**
@@ -366,6 +375,16 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			const {LanguageService, tasks}: typeof import('./lib/lsp') = require('./lib/lsp');
 			return tasks.get(uri) ?? new LanguageService(uri);
 		}
+	},
+
+	/** @implements */
+	lint(wikitext, include, config) {
+		LINT: return Shadow.internal(() => this.parse(wikitext, include, undefined, config).lint(), this);
+	},
+
+	/** @implements */
+	print(wikitext, include, config) {
+		return Shadow.internal(() => this.parse(wikitext, include, undefined, config).print(), this);
 	},
 
 	/* NOT FOR BROWSER ONLY */
