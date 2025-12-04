@@ -147,6 +147,20 @@ let lintConfig = (() => {
 	})(),
 	i18n: Record<string, string> | undefined;
 
+/**
+ * 判断参数顺序
+ * @param includeOrPage include or page
+ * @param configOrInclude config or include
+ * @param pageOrConfig page or config
+ */
+const getParams = (
+	includeOrPage?: boolean | string,
+	configOrInclude?: Config | boolean,
+	pageOrConfig?: string | Config,
+): [boolean, Config | undefined, string | undefined] => typeof includeOrPage === 'string'
+	? [Boolean(configOrInclude), pageOrConfig as Config | undefined, includeOrPage]
+	: [Boolean(includeOrPage), configOrInclude as Config | undefined, pageOrConfig as string | undefined];
+
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 
@@ -283,7 +297,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}
 				}
 				return t;
-			}, Parser);
+			}, this);
 		}
 		return titleObj;
 	},
@@ -362,8 +376,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	lint(wikitext, include, config) {
-		LINT: return Shadow.internal(() => this.parse(wikitext, include, undefined, config).lint(), this);
+	lint(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+		LINT: {
+			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
+			return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).lint(), this);
+		}
 	},
 
 	/* NOT FOR BROWSER ONLY */
