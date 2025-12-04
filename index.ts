@@ -315,7 +315,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}
 				}
 				return t;
-			}, Parser);
+			}, this);
 		}
 		return titleObj;
 	},
@@ -403,8 +403,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	print(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
-		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-		return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).print(), this);
+		PRINT: {
+			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
+			return Shadow.internal(
+				() => this.parse(wikitext, include, undefined, config, page).print(),
+				this,
+			);
+		}
 	},
 
 	/* NOT FOR BROWSER ONLY */

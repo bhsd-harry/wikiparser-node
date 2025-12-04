@@ -82,7 +82,7 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print(
+		PRINT: return super.print(
 			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
 		);
 	}

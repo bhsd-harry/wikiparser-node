@@ -412,7 +412,7 @@ export class Token extends AstElement {
 				/* PRINT ONLY */
 
 			case 'invalid':
-				return (this.type === 'table-inter' && isFostered(this) === 2) as TokenAttribute<T>;
+				PRINT: return (this.type === 'table-inter' && isFostered(this) === 2) as TokenAttribute<T>;
 
 				/* PRINT ONLY END */
 

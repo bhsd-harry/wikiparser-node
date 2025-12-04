@@ -141,7 +141,7 @@ export abstract class ArgToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print({pre: '{{{', post: '}}}', sep: '|'});
+		PRINT: return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
 
 	/** @private */

@@ -76,12 +76,12 @@ export abstract class TranslateToken extends TagPairToken {
 
 	/** 是否有nowrap属性 */
 	#isNowrap(): boolean {
-		return this.firstChild.toString() === ' nowrap';
+		PRINT: return this.firstChild.toString() === ' nowrap';
 	}
 
 	/** @private */
 	override print(): string {
-		return `<span class="wpb-ext">&lt;translate${
+		PRINT: return `<span class="wpb-ext">&lt;translate${
 			this.#isNowrap()
 				? '<span class="wpb-ext-attrs"> <span class="wpb-ext-attr">'
 				+ '<span class="wpb-attr-key">nowrap</span>'
