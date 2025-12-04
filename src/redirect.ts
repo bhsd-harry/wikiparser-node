@@ -77,6 +77,6 @@ export abstract class RedirectToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print({pre: this.#pre, post: this.#post});
+		PRINT: return super.print({pre: this.#pre, post: this.#post});
 	}
 }

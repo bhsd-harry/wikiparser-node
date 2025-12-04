@@ -39,7 +39,9 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 
 	/** @private */
 	override print(): string {
-		const underscore = this.#fullWidth ? '＿＿' : '__';
-		return super.print({pre: underscore, post: underscore});
+		PRINT: {
+			const underscore = this.#fullWidth ? '＿＿' : '__';
+			return super.print({pre: underscore, post: underscore});
+		}
 	}
 }

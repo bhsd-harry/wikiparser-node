@@ -158,10 +158,12 @@ export class Title {
 
 		/* PRINT ONLY */
 
-		if (!temporary) {
-			Object.defineProperties(this, {
-				encoded: {enumerable: false, writable: false},
-			});
+		LSP: {
+			if (!temporary) {
+				Object.defineProperties(this, {
+					encoded: {enumerable: false, writable: false},
+				});
+			}
 		}
 	}
 

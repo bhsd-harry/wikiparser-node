@@ -208,8 +208,10 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override print(): string {
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
+		PRINT: {
+			const {childNodes: [syntax, attr, inner]} = this;
+			return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
+		}
 	}
 
 	/** @private */

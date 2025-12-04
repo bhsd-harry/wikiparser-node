@@ -24,7 +24,7 @@
 	},
 	"scripts": {
 		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP,LINT --outfile=build/bundle.js",
-		"bundle:es8": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP --outfile=build/bundle-es8.js",
+		"bundle:es8": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP,PRINT --outfile=build/bundle-es8.js",
 		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --outfile=build/bundle-lsp.js",
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
 		"build:core": "npm run bundle:core && esbuild build/bundle.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",

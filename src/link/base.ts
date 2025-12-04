@@ -182,7 +182,9 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
+		PRINT: return super.print(
+			this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter},
+		);
 	}
 
 	/** @private */
