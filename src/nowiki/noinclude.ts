@@ -6,7 +6,7 @@ import {NowikiBaseToken} from './base';
  *
  * `<noinclude>`或`</noinclude>`，不可进行任何更改
  */
-@hiddenToken()
+@hiddenToken(false)
 export abstract class NoincludeToken extends NowikiBaseToken {
 	override get type(): 'noinclude' {
 		return 'noinclude';

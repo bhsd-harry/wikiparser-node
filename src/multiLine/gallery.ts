@@ -1,16 +1,12 @@
-import {multiLine} from '../mixin/multiLine';
-import {Token} from './index';
-import {GalleryImageToken} from './link/galleryImage';
+import {MultiLineToken} from './index';
+import {GalleryImageToken} from '../link/galleryImage';
 import type {
 	Config,
-} from '../base';
+} from '../../base';
 import type {
 	AstText,
-	AttributesToken,
-	ExtToken,
-} from '../internal';
-
-declare type Child = GalleryImageToken;
+	Token,
+} from '../../internal';
 
 /**
  * gallery tag
@@ -18,18 +14,10 @@ declare type Child = GalleryImageToken;
  * gallery标签
  * @classdesc `{childNodes: (GalleryImageToken|AstText)[]}`
  */
-@multiLine
-export abstract class GalleryToken extends Token {
-	declare readonly childNodes: readonly (Child | AstText)[];
-	abstract override get firstChild(): Child | AstText | undefined;
-	abstract override get lastChild(): Child | AstText | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
+export abstract class GalleryToken extends MultiLineToken {
+	declare readonly childNodes: readonly (GalleryImageToken | AstText)[];
+	abstract override get firstChild(): GalleryImageToken | AstText | undefined;
+	abstract override get lastChild(): GalleryImageToken | AstText | undefined;
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
@@ -56,6 +44,10 @@ export abstract class GalleryToken extends Token {
 	 * @param file 文件名
 	 */
 	#checkFile(file: string): boolean {
-		return this.normalizeTitle(file, 6, {halfParsed: true, temporary: true, decode: true}).valid;
+		return this.normalizeTitle(
+			file,
+			6,
+			{halfParsed: true, temporary: true, decode: true, page: ''},
+		).valid;
 	}
 }

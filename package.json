@@ -5,7 +5,8 @@
 	"keywords": [
 		"mediawiki",
 		"wikitext",
-		"parser"
+		"parser",
+		"browser"
 	],
 	"homepage": "https://github.com/bhsd-harry/wikiparser-node/tree/template#readme",
 	"bugs": {
@@ -14,7 +15,7 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [
-		"bundle/bundle.min.js",
+		"/bundle/bundle.min.js",
 		"/dist/**/*.d.ts",
 		"!/dist/test/"
 	],
@@ -39,26 +40,28 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^1.1.0",
+		"@bhsd/code-standard": "^1.3.2",
 		"@bhsd/common": "^1.0.1",
-		"@bhsd/test-util": "^0.1.0",
-		"@stylistic/eslint-plugin": "^3.1.0",
+		"@bhsd/test-util": "^0.2.1",
+		"@stylistic/eslint-plugin": "^5.5.0",
 		"@types/mocha": "^10.0.10",
-		"@types/node": "^24.0.10",
-		"@typescript-eslint/eslint-plugin": "^8.35.1",
-		"@typescript-eslint/parser": "^8.35.1",
+		"@types/node": "^24.10.1",
+		"@typescript-eslint/eslint-plugin": "^8.46.4",
+		"@typescript-eslint/parser": "^8.46.4",
 		"chalk": "^4.1.2",
-		"esbuild": "^0.25.5",
-		"eslint": "^8.57.1",
+		"diff2html-cli": "^5.2.15",
+		"esbuild": "^0.25.12",
+		"eslint": "^9.39.1",
+		"eslint-plugin-es-x": "^9.1.2",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-jsdoc": "^52.0.2",
-		"eslint-plugin-json-es": "^1.6.0",
-		"eslint-plugin-n": "^17.20.0",
+		"eslint-plugin-jsdoc": "^61.2.1",
+		"eslint-plugin-jsonc": "^2.21.0",
+		"eslint-plugin-n": "^17.23.1",
 		"eslint-plugin-promise": "^7.2.1",
-		"eslint-plugin-regexp": "^2.9.0",
-		"eslint-plugin-unicorn": "^56.0.1",
-		"mocha": "^11.7.1",
-		"typescript": "^5.8.2"
+		"eslint-plugin-regexp": "^2.10.0",
+		"eslint-plugin-unicorn": "^62.0.0",
+		"mocha": "^11.7.5",
+		"typescript": "^5.9.3"
 	},
 	"engines": {
 		"node": ">=18.17.0"

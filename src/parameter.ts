@@ -1,4 +1,6 @@
-import {removeComment} from '../util/string';
+import {
+	removeComment as removeCommentLine,
+} from '../util/string';
 import {Token} from './index';
 import type {
 	Config,
@@ -81,7 +83,7 @@ export abstract class ParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string {
-		const value = removeComment(this.lastChild.text());
+		const value = removeCommentLine(this.lastChild.text());
 		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 

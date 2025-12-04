@@ -3,9 +3,9 @@ import {Token} from './index';
 import type {
 	Config,
 } from '../base';
-import type {AttributesToken, AstText} from '../internal';
+import type {AstText as AtomToken} from '../lib/text';
+import type {AttributesToken} from '../internal';
 
-declare type Child = AstText | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr';
 
 /**
@@ -15,16 +15,16 @@ export type AttributeTypes = 'ext-attr';
  * @classdesc `{childNodes: [AstText, Token|AstText]}`
  */
 export abstract class AttributeToken extends Token {
-	readonly #type;
+	#type;
 	#equal;
 	#quotes: [string?, string?];
 
-	declare readonly childNodes: readonly [AstText, Token | AstText];
-	abstract override get firstChild(): AstText;
-	abstract override get lastChild(): Token | AstText;
+	declare readonly childNodes: readonly [AtomToken, Token | AtomToken];
+	abstract override get firstChild(): AtomToken;
+	abstract override get lastChild(): Token | AtomToken;
 	abstract override get parentNode(): AttributesToken | undefined;
-	abstract override get nextSibling(): Child;
-	abstract override get previousSibling(): Child;
+	abstract override get nextSibling(): AtomToken | this | undefined;
+	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	override get type(): AttributeTypes {
 		return this.#type;
@@ -52,10 +52,11 @@ export abstract class AttributeToken extends Token {
 		let valueToken: Token | string;
 		if (
 			tag === 'gallery' && key === 'caption'
+			|| tag === 'ref' && key === 'details'
 		) {
 			const newConfig: Config = {
 				...config,
-				excludes: [...config.excludes, 'heading'],
+				excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
 			});

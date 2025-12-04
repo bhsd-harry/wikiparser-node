@@ -1,7 +1,6 @@
 import {Token} from './index';
 import type {Config} from '../base';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const atomTypes = [
 	'arg-name',
 	'template-name',

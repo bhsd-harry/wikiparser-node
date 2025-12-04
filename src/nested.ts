@@ -1,16 +1,12 @@
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
 import {Token} from './index';
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+import {ExtToken} from './tagPair/ext';
+import {NoincludeToken} from './nowiki/noinclude';
+/* eslint-enable @typescript-eslint/consistent-type-imports */
 import type {Config} from '../base';
-import type {
-	NoincludeToken,
-	CommentToken,
-	AttributesToken,
-	IncludeToken,
-	ArgToken,
-	TranscludeToken,
-	ExtToken,
-} from '../internal';
+import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 

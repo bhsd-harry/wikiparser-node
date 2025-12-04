@@ -38,7 +38,8 @@ export type TokenTypes = 'root'
 	| 'heading-trail'
 	| 'gallery-image'
 	| 'imagemap-image'
-	| 'image-parameter';
+	// eslint-disable-next-line @stylistic/semi
+	| 'image-parameter'
 
 /**
  * Node-like
@@ -94,6 +95,20 @@ export interface Parser {
 	 * 解析wikitext
 	 * @param include whether to be transcluded / 是否嵌入
 	 * @param maxStage max stage for parsing / 最大解析层级
+	 * @param page page name / 页面名称
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
+	parse(
+		wikitext: string,
+		include?: boolean,
+		maxStage?: number,
+		config?: Config,
+		page?: string,
+	): Token;
+	parse(
+		wikitext: string,
+		page: string,
+		include?: boolean,
+		maxStage?: number,
+		config?: Config,
+	): Token;
 }

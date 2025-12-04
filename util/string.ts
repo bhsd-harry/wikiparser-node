@@ -1,4 +1,4 @@
-import type {AstNodes} from '../lib/node';
+import type {AstNodes, Token} from '../internal';
 
 /**
  * trim and toLowerCase
@@ -50,11 +50,16 @@ export const decodeHtmlBasic = factory(
 		: names[name.toLowerCase() as keyof typeof names],
 );
 
+let decodeHtmlResolved: ((str: string) => string) | undefined;
+
 /**
  * decode HTML entities
  * @param str
  */
-// eslint-disable-next-line arrow-body-style
 export const decodeHtml = (str: string): string => {
-	return decodeHtmlBasic(str);
+	// eslint-disable-next-line arrow-body-style
+	decodeHtmlResolved ??= (() => {
+		return decodeHtmlBasic;
+	})();
+	return decodeHtmlResolved(str);
 };

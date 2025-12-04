@@ -15,7 +15,6 @@ export interface NodeLike {
 
 /** @ignore */
 export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
-	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class NodeLike extends constructor implements NodeLike {
 		get firstChild(): AstNodes | undefined {
 			return this.childNodes[0];
@@ -25,6 +24,5 @@ export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
 			return this.childNodes[this.childNodes.length - 1];
 		}
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
 	return NodeLike;
 };

@@ -1,4 +1,4 @@
-/dist/
+dist/
 /bundle/bundle-es*.min.js
 /bundle/*.map
 /coverage/*
@@ -18,3 +18,4 @@
 /build
 !README
 /config/testwiki.json
+/diff.html

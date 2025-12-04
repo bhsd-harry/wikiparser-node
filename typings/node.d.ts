@@ -1,4 +1,4 @@
-/* eslint-disable @stylistic/indent */
+/* eslint-disable @stylistic/indent, @stylistic/operator-linebreak */
 import type {Config} from '../base';
 import type {
 	AstNodes,
@@ -7,7 +7,7 @@ import type {
 
 declare global {
 	type TokenAttribute<T extends string> =
-		T extends 'stage' ? number :
+		T extends 'stage' | 'padding' | 'aIndex' ? number :
 		T extends 'config' ? Config :
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'nextSibling' | 'previousSibling' ? AstNodes | undefined :

@@ -1,31 +1,19 @@
-import {multiLine} from '../mixin/multiLine';
-import Parser from '../index';
-import {Token} from './index';
-import {GalleryImageToken} from './link/galleryImage';
+import Parser from '../../index';
+import {MultiLineToken} from './index';
+import {GalleryImageToken} from '../link/galleryImage';
 import type {
 	AstText,
-	AttributesToken,
-	ExtToken,
-} from '../internal';
-
-declare type Child = GalleryImageToken;
+	Token,
+} from '../../internal';
 
 /**
  * `<imagemap>`
  * @classdesc `{childNodes: [...AstText[], GalleryImageToken, ...AstText[]]}`
  */
-@multiLine
-export abstract class ImagemapToken extends Token {
-	declare readonly childNodes: readonly (Child | AstText)[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | AstText | undefined;
-	abstract override get nextSibling(): undefined;
-	abstract override get previousSibling(): AttributesToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
-
-	override get type(): 'ext-inner' {
-		return 'ext-inner';
-	}
+export abstract class ImagemapToken extends MultiLineToken {
+	declare readonly childNodes: readonly (GalleryImageToken | AstText)[];
+	abstract override get firstChild(): GalleryImageToken | undefined;
+	abstract override get lastChild(): GalleryImageToken | AstText | undefined;
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
@@ -47,7 +35,7 @@ export abstract class ImagemapToken extends Token {
 					{
 						valid,
 						ns,
-					} = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true});
+					} = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true, page: ''});
 				if (
 					valid
 					&& ns === 6

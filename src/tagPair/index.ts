@@ -1,6 +1,6 @@
 import {Token} from '../index';
 import type {Config} from '../../base';
-import type {AstNodes} from '../../lib/node';
+import type {AstNodes} from '../../internal';
 
 /**
  * Paired tags

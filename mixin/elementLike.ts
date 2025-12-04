@@ -1,5 +1,6 @@
-import {getCondition} from '../parser/selector';
-import type {TokenPredicate} from '../parser/selector';
+import {getCondition} from '../util/selector';
+import type {TokenPredicate} from '../util/selector';
+import type {AstElement} from '../lib/element';
 import type {AstNodes, Token} from '../internal';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
@@ -7,8 +8,6 @@ declare type ElementConstructor = abstract new (...args: any[]) => {
 };
 
 export interface ElementLike {
-	/** @private */
-	getElementBy<T>(condition: TokenPredicate<T>): T | undefined;
 
 	/**
 	 * Get the first descendant that matches the selector
@@ -17,9 +16,6 @@ export interface ElementLike {
 	 * @param selector selector / 选择器
 	 */
 	querySelector<T = Token>(selector: string): T | undefined;
-
-	/** @private */
-	getElementsBy<T>(condition: TokenPredicate<T>, descendants?: T[]): T[];
 
 	/**
 	 * Get all descendants that match the selector
@@ -32,26 +28,26 @@ export interface ElementLike {
 
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
-	/* eslint-disable jsdoc/require-jsdoc */
 	abstract class ElementLike extends constructor implements ElementLike {
 		#getCondition<T>(selector: string): TokenPredicate<T> {
 			return getCondition<T>(
 				selector,
-				// @ts-expect-error only AstElement
-				this,
+				this as unknown as AstElement,
 			);
 		}
 
 		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-			for (const child of this.childNodes) {
-				if (child.type === 'text') {
+			const stack = [...this.childNodes].reverse();
+			while (stack.length > 0) {
+				const child = stack.pop()!,
+					{type, childNodes} = child;
+				if (type === 'text') {
 					continue;
 				} else if (condition(child)) {
 					return child;
 				}
-				const descendant = child.getElementBy(condition);
-				if (descendant) {
-					return descendant;
+				for (let i = childNodes.length - 1; i >= 0; i--) {
+					stack.push(childNodes[i]!);
 				}
 			}
 			return undefined;
@@ -61,14 +57,20 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			return this.getElementBy(this.#getCondition<T>(selector));
 		}
 
-		getElementsBy<T>(condition: TokenPredicate<T>, descendants: T[] = []): T[] {
-			for (const child of this.childNodes) {
-				if (child.type === 'text') {
+		getElementsBy<T>(condition: TokenPredicate<T>): T[] {
+			const stack = [...this.childNodes].reverse(),
+				descendants: T[] = [];
+			while (stack.length > 0) {
+				const child = stack.pop()!,
+					{type, childNodes} = child;
+				if (type === 'text') {
 					continue;
 				} else if (condition(child)) {
 					descendants.push(child);
 				}
-				child.getElementsBy(condition, descendants);
+				for (let i = childNodes.length - 1; i >= 0; i--) {
+					stack.push(childNodes[i]!);
+				}
 			}
 			return descendants;
 		}
@@ -77,6 +79,5 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			return this.getElementsBy(this.#getCondition<T>(selector));
 		}
 	}
-	/* eslint-enable jsdoc/require-jsdoc */
 	return ElementLike;
 };

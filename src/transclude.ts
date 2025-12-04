@@ -2,6 +2,7 @@ import {
 	removeComment,
 	text,
 } from '../util/string';
+import {getMagicWordInfo} from '../util/debug';
 import {
 	BuildMethod,
 } from '../util/constants';
@@ -10,8 +11,6 @@ import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import type {Config} from '../base';
 import type {Title} from '../lib/title';
-
-declare type Child = AtomToken;
 
 /**
  * template or magic word
@@ -29,9 +28,9 @@ export abstract class TranscludeToken extends Token {
 
 	declare readonly name: string;
 	// eslint-disable-next-line @stylistic/semi
-	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
-	abstract override get firstChild(): Child;
-	abstract override get lastChild(): Child | ParameterToken;
+	declare readonly childNodes: readonly [AtomToken, ...ParameterToken[]]
+	abstract override get firstChild(): AtomToken;
+	abstract override get lastChild(): AtomToken | ParameterToken;
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
@@ -59,7 +58,7 @@ export abstract class TranscludeToken extends Token {
 		}
 		super(undefined, config, accum, {
 		});
-		const {parserFunction: [insensitive, sensitive], variable, functionHook} = config,
+		const {parserFunction, variable, functionHook} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
@@ -81,18 +80,11 @@ export abstract class TranscludeToken extends Token {
 				name = isFunction
 					? cleaned.slice(cleaned.search(/\S/u)) + (fullWidth ? '：' : '')
 					: cleaned.trim(),
-				lcName = name.toLowerCase(),
-				isSensitive = Object.prototype.hasOwnProperty.call(sensitive, name),
-				canonicalName = isSensitive
-					? sensitive[name]!
-					: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+				[, isSensitive, canonicalName] = getMagicWordInfo(name, parserFunction),
 				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
 				isVar = variable.includes(canonicalName as string);
 			if (isFunction ? canonicalName && isFunc : isVar) {
-				this.setAttribute(
-					'name',
-					canonicalName || lcName.replace(/^#|：$/u, ''),
-				);
+				this.setAttribute('name', canonicalName as string);
 				this.#type = 'magic-word';
 				if (fullWidth) {
 					this.#colon = '：';
@@ -174,11 +166,12 @@ export abstract class TranscludeToken extends Token {
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
-		const title = this.normalizeTitle(
-			this.childNodes[0].text(),
-			10,
-			{temporary: true},
-		);
+		const isTemplate = this.type === 'template',
+			title = this.normalizeTitle(
+				this.childNodes[0].text(),
+				10,
+				{temporary: true, ...!isTemplate && {page: ''}},
+			);
 		return title;
 	}
 
@@ -196,7 +189,7 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		const {childNodes, length, firstChild, modifier, type} = this;
+		const {childNodes, length, firstChild, modifier, type, name} = this;
 		return `{{${modifier}${
 			type === 'magic-word'
 				? firstChild.toString(skip)
@@ -223,7 +216,8 @@ export abstract class TranscludeToken extends Token {
 	 * @param addedToken 新增的参数
 	 */
 	#handleAnonArgChange(addedToken: ParameterToken): void {
-		const args = this.getAnonArgs();
+		const args = this.getAnonArgs(),
+			added = true;
 		const token = addedToken,
 			newName = String(args.length);
 		token.setAttribute('name', newName);

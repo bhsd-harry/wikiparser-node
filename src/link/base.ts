@@ -2,7 +2,9 @@ import {Token} from '../index';
 import type {
 	Config,
 } from '../../base';
-import type {AstText} from '../../internal';
+import type {
+	AstText as AtomToken,
+} from '../../internal';
 
 /**
  * internal link
@@ -14,7 +16,7 @@ export abstract class LinkBaseToken extends Token {
 	#delimiter;
 
 	abstract override get type(): 'gallery-image' | 'imagemap-image';
-	abstract override get firstChild(): AstText;
+	abstract override get firstChild(): AtomToken;
 
 	/**
 	 * @param link 链接标题

@@ -1,5 +1,6 @@
 {
 	"enable-source-maps": true,
+	"timeout": 5000,
 	"diff": false,
 	"reporter": "progress"
 }

@@ -4,7 +4,7 @@ rm -rf dist/
 tsc && \
 npm run bundle:core && \
 esbuild build/bundle-template.js --charset=utf8 --minify --target=es2017 --sourcemap --outfile=bundle/bundle.min.js && \
-eslint --no-eslintrc -c .eslintrc.es8.cjs bundle/bundle.min.js
+eslint --no-config-lookup -c eslint.es8.mjs bundle/bundle.min.js
 if [[ $? -eq 0 ]]
 then
 	rm dist/[ptu]*/*.d.ts

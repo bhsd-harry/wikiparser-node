@@ -4,8 +4,8 @@ import type {
 	Config,
 } from '../../base';
 import type {
+	AstText as AtomToken,
 	Token,
-	AstText,
 } from '../../internal';
 
 /**
@@ -15,8 +15,8 @@ import type {
  * @classdesc `{childNodes: [AstText, ...ImageParameterToken[]]}`
  */
 export abstract class FileToken extends LinkBaseToken {
-	declare readonly childNodes: readonly [AstText, ...ImageParameterToken[]];
-	abstract override get lastChild(): AstText | ImageParameterToken;
+	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
+	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
 	/**
 	 * @param link 文件名

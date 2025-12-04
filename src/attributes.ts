@@ -4,17 +4,17 @@ import {
 import {Token} from './index';
 import {AttributeToken} from './attribute';
 import type {Config} from '../base';
-import type {ExtToken, AstText} from '../internal';
+import type {ExtToken, AstText as AtomToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = `${AttributeTypes}s`;
-declare type Child = AstText | AttributeToken;
 
 /**
  * 将属性类型转换为单属性类型
  * @param type 属性类型
  */
-const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
+export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
+	type.slice(0, -1) as AttributeTypes;
 
 /**
  * attributes of extension and HTML tags
@@ -25,9 +25,9 @@ const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0,
 export abstract class AttributesToken extends Token {
 	readonly #type;
 
-	declare readonly childNodes: readonly Child[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | undefined;
+	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
+	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
+	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 	abstract override get previousSibling(): undefined;
 

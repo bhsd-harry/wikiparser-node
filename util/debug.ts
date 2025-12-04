@@ -1,7 +1,13 @@
-import type {
-	AstNodes,
-	Token,
-} from '../internal';
+import type {TokenTypes, Config, Parser as ParserBase} from '../base';
+import type {AstNodes, Token} from '../internal';
+
+export const Shadow = {
+	/** @private */
+	run<T>(callback: () => T, Parser?: ParserBase): T {
+		const result = callback();
+		return result;
+	},
+};
 
 /**
  * 更新chldNodes
@@ -22,7 +28,7 @@ export const setChildNodes = (
 		removed = nodes;
 		nodes = inserted as AstNodes[];
 	} else {
-		removed = nodes.splice(position, deleteCount, ...inserted);
+		removed = Array.prototype.splice.apply(nodes, [position, deleteCount, ...inserted]);
 	}
 	for (let i = 0; i < inserted.length; i++) {
 		const node = inserted[i]!;
@@ -36,4 +42,25 @@ export const setChildNodes = (
 		parent.setAttribute('childNodes', nodes);
 	}
 	return removed;
+};
+
+/**
+ * 获取魔术字的信息
+ * @param name 魔术字
+ * @param parserFunction 解析设置中的parserFunction属性
+ */
+export const getMagicWordInfo = (
+	name: string,
+	parserFunction: Config['parserFunction'],
+): [string, boolean, string | false] => {
+	const lcName = name.toLowerCase(),
+		[insensitive, sensitive] = parserFunction,
+		isSensitive = Object.prototype.hasOwnProperty.call(sensitive, name);
+	return [
+		lcName,
+		isSensitive,
+		isSensitive
+			? sensitive[name]!
+			: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
+	];
 };

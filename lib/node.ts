@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-base-to-string */
 import {nodeLike} from '../mixin/nodeLike';
 import type {AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {NodeLike} from '../mixin/nodeLike';
@@ -57,7 +56,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return this[key as keyof this] as TokenAttribute<T>;
+		return (key === 'padding' ? 0 : /* istanbul ignore next */ this[key as keyof this]) as TokenAttribute<T>;
 	}
 
 	/** @private */

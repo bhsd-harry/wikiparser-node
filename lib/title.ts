@@ -9,7 +9,17 @@ export interface TitleOptions {
 	temporary?: boolean | undefined;
 	decode?: boolean | undefined;
 	halfParsed?: boolean | undefined;
+	page?: string | undefined;
 }
+
+/**
+ * 解析标题的路径
+ * @param title 标题
+ */
+const resolve = (title: string): [number, string] => {
+	const [, {length}, sub] = /^((?:\.\.\/)*)([\s\S]*)/u.exec(title) as unknown as [string, string, string];
+	return [length / 3, sub];
+};
 
 /**
  * title object of a MediaWiki page
@@ -58,10 +68,17 @@ export class Title {
 	 * @param opt.temporary 是否是临时标题
 	 * @param opt.decode 是否需要解码
 	 * @param opt.selfLink 是否允许selfLink
+	 * @param opt.page 当前页面标题
 	 */
-	// @ts-expect-error unused property
-	constructor(title: string, defaultNs: number, config: Config, {temporary, decode, selfLink}: TitleOptions = {}) {
-		const subpage = title.trim().startsWith('../');
+	constructor(
+		title: string,
+		defaultNs: number,
+		config: Config,
+		// @ts-expect-error unused property
+		{temporary, decode, selfLink, page}: TitleOptions = {},
+	) {
+		const trimmed = title.trim(),
+			subpage = trimmed.startsWith('../');
 		if (decode && title.includes('%')) {
 			try {
 				title = rawurldecode(title);
@@ -91,16 +108,27 @@ export class Title {
 		if (i !== -1) {
 			title = title.slice(0, i).trim();
 		}
+		const [level, sub] = subpage ? resolve(title) : [0, title];
 		this.valid = Boolean(
 			// eslint-disable-next-line @stylistic/comma-dangle
 			title
 		)
 		&& decodeHtml(title) === title
-		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
-			subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
-		);
+		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(sub);
 		this.main = title;
 		this.#namespaces = config.namespaces;
+	}
+
+	/**
+	 * 生成标题
+	 * @param prefix 前缀
+	 */
+	#getTitle(prefix: string): [boolean, string] {
+		let title = (prefix + this.main).replace(/ /gu, '_');
+		if (title.startsWith('/')) {
+			title = title.replace(/(.)\/$/u, '$1');
+		}
+		return [false, title];
 	}
 
 	/**
@@ -110,11 +138,12 @@ export class Title {
 	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
-		// eslint-disable-next-line @typescript-eslint/prefer-destructuring
-		const prefix =
-			this.prefix;
-		// eslint-disable-next-line prefer-const
-		let title = (prefix + this.main).replace(/ /gu, '_');
-		return [false, title];
+		const {
+				prefix,
+			} = this,
+			pre =
+				prefix,
+			result = this.#getTitle(pre);
+		return result;
 	}
 }

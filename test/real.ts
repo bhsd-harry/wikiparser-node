@@ -12,12 +12,12 @@ const {argv: [,, site = '']} = process,
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 (async () => {
-	for (const [name, url] of apis) {
+	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：\n`);
 		reset();
 		try {
 			for (const page of await getPages(`${url}/api.php`, name, '10')) {
-				single(page);
+				await single(page);
 			}
 		} catch (e) {
 			error(`访问${name}的API端口时出错！`, e);

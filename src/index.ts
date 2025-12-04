@@ -25,14 +25,14 @@
 // b: TableToken
 // c: CommentToke
 // d: ListToken
-// e: ExtToken或OnlyincludeToken
+// e: ExtToken
 // f: ImageParameterToken内的MagicLinkToken
-// g: TranslateToken
+// g: TranslateToken或OnlyincludeToken
 // h: HeadingToken
 // i: RFC/PMID/ISBN
 // l: LinkToken
 // m: `{{server}}`、`{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// n: NoIncludeToken、IncludeToken、DoubleUnderscoreToken或`{{#vardefine:}}`
+// n: NoIncludeToken、IncludeToken、TvarToken、DoubleUnderscoreToken或`{{#vardefine:}}`
 // o: RedirectToken
 // q: QuoteToken
 // r: HrToken
@@ -105,7 +105,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
-		if (n < this.#stage || this.length === 0 || !this.isPlain()) {
+		if (n < this.#stage || this.length !== 1 || !this.isPlain()) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
 			return this;
@@ -139,12 +139,12 @@ export class Token extends AstElement {
 	buildFromStr(str: string, type?: BuildMethod): string | readonly AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
-				return new AstText(s);
+				return s && new AstText(s);
 			} else if (isNaN(s.slice(-1) as unknown as number)) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`Failed to build! Unrecognized token: ${s}`);
-		});
+		}).filter(node => node !== '');
 		if (type === BuildMethod.String) {
 			return nodes.map(String).join('');
 		} else if (type === BuildMethod.Text) {
@@ -257,6 +257,12 @@ export class Token extends AstElement {
 
 	/** @private */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, opt);
+		return Parser.normalizeTitle(
+			title,
+			defaultNs,
+			this.#include,
+			this.#config,
+			opt,
+		);
 	}
 }
