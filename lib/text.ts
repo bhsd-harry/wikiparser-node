@@ -519,7 +519,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	print(): string {
-		return escape(this.data);
+		PRINT: return escape(this.data);
 	}
 
 	/* NOT FOR BROWSER */

@@ -16,7 +16,7 @@ export const basic = (selector: string): BasicCondition => {
 			targetName = selector.slice(i + 1);
 		return (type, name) => (i === 0 || type === targetType) && name === targetName;
 	}
-	return (type): boolean => type === selector;
+	return type => type === selector;
 };
 
 /**

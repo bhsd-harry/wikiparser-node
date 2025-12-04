@@ -83,7 +83,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/** @private */
 	override print(): string {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
+		PRINT: return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 
 	/* NOT FOR BROWSER */

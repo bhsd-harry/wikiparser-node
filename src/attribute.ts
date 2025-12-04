@@ -461,22 +461,23 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
+		/* NOT FOR BROWSER */
 
-			/* NOT FOR BROWSER */
-		} else if (key === 'quotes') {
+		if (key === 'quotes') {
 			return this.#quotes as TokenAttribute<T>;
-
-			/* NOT FOR BROWSER END */
 		}
-		return super.getAttribute(key);
+
+		/* NOT FOR BROWSER END */
+
+		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
 	override print(): string {
-		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();
+		PRINT: {
+			const [quoteStart = '', quoteEnd = ''] = this.#quotes;
+			return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();
+		}
 	}
 
 	/** @private */

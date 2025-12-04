@@ -113,10 +113,12 @@ export abstract class ConverterToken extends Token {
 
 	/** @private */
 	override print(): string {
-		const {childNodes: [flags, ...rules]} = this;
-		return `<span class="wpb-converter">-{${flags.print()}${
-			flags.length > 0 ? '|' : ''
-		}${print(rules, {sep: ';'})}}-</span>`;
+		PRINT: {
+			const {childNodes: [flags, ...rules]} = this;
+			return `<span class="wpb-converter">-{${flags.print()}${
+				flags.length > 0 ? '|' : ''
+			}${print(rules, {sep: ';'})}}-</span>`;
+		}
 	}
 
 	/* NOT FOR BROWSER */

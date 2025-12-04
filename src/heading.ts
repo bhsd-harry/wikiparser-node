@@ -265,8 +265,10 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override print(): string {
-		const equals = this.#getEquals();
-		return super.print({pre: equals, sep: equals});
+		PRINT: {
+			const equals = this.#getEquals();
+			return super.print({pre: equals, sep: equals});
+		}
 	}
 
 	/** @private */

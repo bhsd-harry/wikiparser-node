@@ -216,7 +216,7 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print({sep: this.anon ? '' : '='});
+		PRINT: return super.print({sep: this.anon ? '' : '='});
 	}
 
 	/** @private */

@@ -397,7 +397,7 @@ export abstract class TranscludeToken extends Token {
 				/* PRINT ONLY */
 
 			case 'invalid':
-				return (
+				PRINT: return (
 					this.type === 'magic-word' && this.name === 'invoke'
 					&& (this.length === 2 || !this.#getTitle().valid)
 				) as TokenAttribute<T>;
@@ -663,18 +663,20 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override print(): string {
-		const {childNodes, length, firstChild, modifier, type} = this;
-		return `<span class="wpb-${type}${
-			this.getAttribute('invalid') ? ' wpb-invalid' : ''
-		}">{{${
-			type === 'magic-word'
-				? escape(modifier)
-				+ firstChild.print()
-				+ (length === 1 ? '' : this.#colon)
-				+ print(childNodes.slice(1), {sep: '|'})
-				: (modifier ? `<span class="wpb-magic-word">${escape(modifier)}</span>` : '')
-					+ print(childNodes, {sep: '|'})
-		}}}</span>`;
+		PRINT: {
+			const {childNodes, length, firstChild, modifier, type} = this;
+			return `<span class="wpb-${type}${
+				this.getAttribute('invalid') ? ' wpb-invalid' : ''
+			}">{{${
+				type === 'magic-word'
+					? escape(modifier)
+					+ firstChild.print()
+					+ (length === 1 ? '' : this.#colon)
+					+ print(childNodes.slice(1), {sep: '|'})
+					: (modifier ? `<span class="wpb-magic-word">${escape(modifier)}</span>` : '')
+						+ print(childNodes, {sep: '|'})
+			}}}</span>`;
+		}
 	}
 
 	/* NOT FOR BROWSER */

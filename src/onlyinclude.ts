@@ -53,7 +53,7 @@ export class OnlyincludeToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print({
+		PRINT: return super.print({
 			pre: '<span class="wpb-ext">&lt;onlyinclude&gt;</span>',
 			post: '<span class="wpb-ext">&lt;/onlyinclude&gt;</span>',
 		});

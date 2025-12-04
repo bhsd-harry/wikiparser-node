@@ -48,7 +48,7 @@ export abstract class MultiLineToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return super.print({sep: '\n'});
+		PRINT: return super.print({sep: '\n'});
 	}
 }
 

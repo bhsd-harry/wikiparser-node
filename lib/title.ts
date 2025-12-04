@@ -236,16 +236,18 @@ export class Title {
 
 		/* PRINT ONLY */
 
-		if (!temporary) {
-			Object.defineProperties(this, {
-				encoded: {enumerable: false, writable: false},
+		LSP: {
+			if (!temporary) {
+				Object.defineProperties(this, {
+					encoded: {enumerable: false, writable: false},
 
-				/* NOT FOR BROWSER */
+					/* NOT FOR BROWSER */
 
-				valid: {writable: false},
-				conversionTable: {enumerable: false},
-				redirects: {enumerable: false},
-			});
+					valid: {writable: false},
+					conversionTable: {enumerable: false},
+					redirects: {enumerable: false},
+				});
+			}
 		}
 	}
 
