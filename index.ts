@@ -106,9 +106,11 @@ declare interface Parser extends ParserBase {
 	 *
 	 * 以HTML格式打印
 	 * @param include whether to be transcluded / 是否嵌入
+	 * @param page page name / 页面名称
 	 * @since v1.32.0
 	 */
-	print(wikitext: string, include?: boolean, config?: Config): string;
+	print(wikitext: string, include?: boolean, config?: Config, page?: string): string;
+	print(wikitext: string, page: string, include?: boolean, config?: Config): string;
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -156,6 +158,20 @@ let lintConfig = (() => {
 		LINT: return new LintConfiguration();
 	})(),
 	i18n: Record<string, string> | undefined;
+
+/**
+ * 判断参数顺序
+ * @param includeOrPage include or page
+ * @param configOrInclude config or include
+ * @param pageOrConfig page or config
+ */
+const getParams = (
+	includeOrPage?: boolean | string,
+	configOrInclude?: Config | boolean,
+	pageOrConfig?: string | Config,
+): [boolean, Config | undefined, string | undefined] => typeof includeOrPage === 'string'
+	? [Boolean(configOrInclude), pageOrConfig as Config | undefined, includeOrPage]
+	: [Boolean(includeOrPage), configOrInclude as Config | undefined, pageOrConfig as string | undefined];
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
@@ -378,13 +394,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	lint(wikitext, include, config) {
-		LINT: return Shadow.internal(() => this.parse(wikitext, include, undefined, config).lint(), this);
+	lint(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+		LINT: {
+			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
+			return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).lint(), this);
+		}
 	},
 
 	/** @implements */
-	print(wikitext, include, config) {
-		return Shadow.internal(() => this.parse(wikitext, include, undefined, config).print(), this);
+	print(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
+		return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).print(), this);
 	},
 
 	/* NOT FOR BROWSER ONLY */
