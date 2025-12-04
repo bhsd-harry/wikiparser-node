@@ -13,6 +13,21 @@ import type {Config} from '../base';
 import type {Title} from '../lib/title';
 
 /**
+ * 调整最后一个子节点的换行符
+ * @param token 魔术字或模板节点
+ */
+const format = (token: TranscludeToken): void => {
+	const {lastChild, type} = token,
+		isParameter = lastChild.type === 'parameter';
+	if (
+		!(type === 'template' ? isParameter && lastChild.anon : lastChild.type === 'magic-word-name')
+		&& !lastChild.toString().endsWith('\n')
+	) {
+		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');
+	}
+};
+
+/**
  * template or magic word
  *
  * 模板或魔术字
@@ -304,14 +319,18 @@ export abstract class TranscludeToken extends Token {
 	 * 设置参数值
 	 * @param key parameter name / 参数名
 	 * @param value parameter value / 参数值
+	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
 	 */
-	setValue(key: string | number, value: string): void {
+	setValue(key: string | number, value: string, newline?: boolean): void {
 		const arg = this.getArg(key);
 		if (arg) {
 			arg.setValue(value);
-		} else {
-			// @ts-expect-error abstract class
-			this.insertAt(new ParameterToken(String(key), value, this.getAttribute('config')));
+			return;
 		}
+		if (newline) {
+			format(this);
+		}
+		// @ts-expect-error abstract class
+		this.insertAt(new ParameterToken(String(key), value, this.getAttribute('config')));
 	}
 }

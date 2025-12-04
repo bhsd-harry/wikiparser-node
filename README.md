@@ -47,6 +47,9 @@ const templates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('tem
 // Get the first template node by its name
 const myTemplate: TranscludeToken = root.querySelector<TranscludeToken>('template#Template:My_Template')!;
 
+// Template name
+const templateName = myTemplate.name; // 'Template:My_Template'
+
 // Get all template nodes by their name
 const myTemplates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('template#Template:My_Template_1, template#Template:My_Template_2');
 
@@ -54,7 +57,15 @@ const myTemplates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('t
 const param_1: ParameterToken = myTemplate.getArg(1)!;
 
 // Get the parameter `a` of the template
-const param_a: ParameterToken | undefined = myTemplate.getArg('a');
+const param_a: ParameterToken = myTemplate.getArg('a')!;
+
+// Parameter name
+const name_1 = param_1.name; // '1'
+const name_a = param_a.name; // 'a'
+
+// Whether the parameter is anonymous
+const isAnon_1 = param_1.anon; // true
+const isAnon_a = param_a.anon; // false
 
 // Get the value of the parameter `1`
 let value_1: string = param_1.getValue();
@@ -70,5 +81,14 @@ param_1.setValue('new value');
 
 // Set the value of the parameter `1` from the template node
 myTemplate.setValue(1, 'new value');
+
+// Insert new anonymous parameters after the parameter `1`
+param_1.after('anonymous parameter after 1');
+
+// Insert new named parameters before the parameter `a`
+param_a.before('another named parameter before a');
+
+// Remove the parameter `1`
+param_1.remove();
 ```
 
