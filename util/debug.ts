@@ -28,13 +28,8 @@ export const Shadow = {
 	},
 
 	/** @private */
-	internal<T>(callback: () => T, Parser: ParserBase, readOnly = true): T {
-		const {
-			viewOnly,
-		} = Parser;
-		Parser.viewOnly = readOnly;
+	internal<T>(callback: () => T, Parser: ParserBase): T {
 		const result = callback();
-		Parser.viewOnly = viewOnly;
 		return result;
 	},
 
