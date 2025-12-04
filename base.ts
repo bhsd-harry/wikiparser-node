@@ -558,7 +558,9 @@ export interface Parser {
 	/**
 	 * Linter
 	 * @param include whether to be transcluded / 是否嵌入
+	 * @param page page name / 页面名称
 	 * @since v1.32.0
 	 */
-	lint(wikitext: string, include?: boolean, config?: Config): LintError[];
+	lint(wikitext: string, include?: boolean, config?: Config, page?: string): LintError[];
+	lint(wikitext: string, page: string, include?: boolean, config?: Config): LintError[];
 }
