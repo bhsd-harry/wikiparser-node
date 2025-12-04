@@ -327,9 +327,9 @@ export class LintConfiguration implements LintConfigurationBase {
 	set rules(config: LintRuleConfig | undefined) {
 		this.#rules = new Proxy(new LintRuleConfiguration(config), {
 			set,
+			/* istanbul ignore next */
 			/** @ignore */
 			deleteProperty(): boolean {
-				/* istanbul ignore next */
 				return false;
 			},
 		}) as LintRuleConfiguration;
