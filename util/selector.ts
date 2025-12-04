@@ -16,7 +16,7 @@ export const basic = (selector: string): BasicCondition => {
 			targetName = selector.slice(i + 1);
 		return (type, name) => (i === 0 || type === targetType) && name === targetName;
 	}
-	return selector ? (type): boolean => type === selector : (): true => true;
+	return (type): boolean => type === selector;
 };
 
 /**
@@ -26,15 +26,21 @@ export const basic = (selector: string): BasicCondition => {
  * @param has `:has()`伪选择器
  */
 export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
+	selector = selector.trim();
+
 	/* NOT FOR BROWSER */
 
-	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector.trim())) {
+	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector)) {
 		const {checkToken}: typeof import('../parser/selector') = require('../parser/selector');
 		return checkToken(selector, scope, has) as TokenPredicate<T>;
 	}
 
 	/* NOT FOR BROWSER END */
 
-	const parts = selector.split(',').map(str => basic(str.trim()));
+	/* istanbul ignore if */
+	if (!selector) {
+		return (() => true) as unknown as TokenPredicate<T>;
+	}
+	const parts = selector.split(',').map(str => str.trim()).filter(str => str !== '').map(basic);
 	return (({type, name}): boolean => parts.some(condition => condition(type, name))) as TokenPredicate<T>;
 };

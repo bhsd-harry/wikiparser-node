@@ -370,6 +370,7 @@ export class Title {
 	 * @throws `Error` not a file
 	 */
 	getFileUrl(width?: number | false, height?: number | false): string {
+		/* istanbul ignore if */
 		if (
 			typeof width === 'number' && (width <= 0 || !Number.isInteger(width))
 			|| typeof height === 'number' && (height <= 0 || !Number.isInteger(height))

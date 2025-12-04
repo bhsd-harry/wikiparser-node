@@ -80,6 +80,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	/* istanbul ignore next */
 	/**
 	 * Set the interlanguage link
 	 *
@@ -93,6 +94,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		this.setLangLink(lang, link);
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Convert to a self link
 	 *
@@ -105,6 +107,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		this.asSelfLink(fragment);
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Automatically generate the link text after the pipe
 	 *

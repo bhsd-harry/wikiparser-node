@@ -315,6 +315,7 @@ export abstract class LinkBaseToken extends Token {
 		});
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Set the link target
 	 *
@@ -326,6 +327,7 @@ export abstract class LinkBaseToken extends Token {
 		this.setTarget(link);
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Set the fragment
 	 *
@@ -373,6 +375,7 @@ export abstract class LinkBaseToken extends Token {
 					: sanitize(this.innerText)
 			}</a>`;
 		}
+		/* istanbul ignore next */
 		return '';
 	}
 }

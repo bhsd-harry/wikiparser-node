@@ -460,8 +460,8 @@ export abstract class AstElement extends AstNode {
 	 * 检查是否符合选择器
 	 * @param selector selector / 选择器
 	 */
-	matches<T>(selector?: string): this is T {
-		return selector === undefined || getCondition<T>(selector, this)(this);
+	matches<T>(selector: string): this is T {
+		return getCondition<T>(selector, this)(this);
 	}
 
 	/**

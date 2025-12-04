@@ -79,6 +79,7 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 };
 
 let chalk: Chalk | null | undefined;
+/* istanbul ignore next */
 export const loadChalk = /** @ignore */ (): Chalk | null => {
 	if (chalk === undefined) {
 		try {

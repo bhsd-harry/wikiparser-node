@@ -17,6 +17,7 @@
 - [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) should report invalid HTML attributes except for `id` for `<math>` and `<chem>` tags
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding `#tag`
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding parser functions with template arguments
+- [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#clonenode) should copy the [`pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property
 
 **Changed**
 

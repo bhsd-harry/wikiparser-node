@@ -951,6 +951,7 @@ export class Token extends AstElement {
 		return Shadow.run(() => {
 			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
 			token.type = this.type;
+			token.pageName = this.pageName;
 			token.setAttribute('stage', this.#stage);
 			token.setAttribute('include', Boolean(this.#include));
 			token.setAttribute('name', this.name!);
