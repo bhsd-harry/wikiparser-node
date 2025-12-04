@@ -1957,10 +1957,13 @@ export class LanguageService implements LanguageServiceBase {
 		} else {
 			return [];
 		}
-		const root = await this.#queueSignature(selected);
+		const root = await this.#queueSignature(selected),
+			{viewOnly} = Parser;
+		Parser.viewOnly = false;
 		Shadow.internal(() => {
 			root.escape();
-		}, Parser, false);
+		}, Parser);
+		Parser.viewOnly = viewOnly;
 		return [
 			{
 				title: 'Escape with magic words',

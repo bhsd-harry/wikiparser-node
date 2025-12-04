@@ -223,12 +223,15 @@ TranscludeToken.prototype.escapeTables =
 			return this;
 		}
 		const stripped = this.toString().slice(2, -2),
-			parsed = Parser.parseWithRef(stripped, this, 4);
-		for (const table of parsed.childNodes) {
-			if (table.is<TableToken>('table')) {
-				table.escape();
-			}
-		}
+			parsed = Shadow.internal(() => {
+				const token = Parser.parseWithRef(stripped, this, 4);
+				for (const table of token.childNodes) {
+					if (table.is<TableToken>('table')) {
+						table.escape();
+					}
+				}
+				return token;
+			}, Parser);
 		const {firstChild, length} = Parser.parseWithRef(`{{${parsed.toString()}}}`, this);
 		/* istanbul ignore if */
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {

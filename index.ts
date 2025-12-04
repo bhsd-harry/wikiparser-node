@@ -654,11 +654,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			config = configOrInclude as Config | undefined;
 			page = pageOrConfig as string | undefined;
 		}
-		return Shadow.internal(
-			() => this.parse(wikitext, include, undefined, config, page).toHtml(),
-			this,
-			false,
-		);
+		return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).toHtml(), this);
 	},
 
 	/** @implements */
@@ -701,10 +697,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				}
 				[name] = entry;
 			}
-			const {firstChild, length} = this.parse(
-				`{{${name}:${args.join('|')}}}`,
-				false,
-				2,
+			const {firstChild, length} = Shadow.internal(
+				() => this.parse(
+					`{{${name}:${args.join('|')}}}`,
+					false,
+					2,
+				),
+				this,
 			);
 			result = length === 1 && firstChild!.is<TranscludeToken>('magic-word')
 				&& functionHooks.get(lcName)!(firstChild);
