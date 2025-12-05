@@ -36,6 +36,4 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build:core
-    - run: npm prune --omit=dev
-    - run: npm i --save-prod --omit=dev @bhsd/test-util mocha color-rgba prismjs
     - run: npm run test:ci
