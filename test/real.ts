@@ -16,7 +16,7 @@ const {argv: [,, site = '']} = process,
 		info(`开始检查${name}：\n`);
 		reset();
 		try {
-			for (const page of await getPages(`${url}/api.php`, name, '10')) {
+			for (const page of await getPages(`${url}/api.php`, name)) {
 				await single(page);
 			}
 		} catch (e) {
