@@ -72,17 +72,23 @@ const getUrl = (link: string): string => {
  * @param key 参数名
  * @param val 参数值
  * @param config
- * @param halfParsed
  * @param ext 文件扩展名
+ * @param halfParsed
  */
-function validate(key: string, val: string, config: Config, halfParsed: boolean, ext: string | undefined): boolean;
-function validate(key: 'link', val: string, config: Config, halfParsed?: boolean): string | Title;
+function validate(key: string, val: string, config: Config, ext: string | undefined, halfParsed: boolean): boolean;
+function validate(
+	key: 'link',
+	val: string,
+	config: Config,
+	type: string | undefined,
+	halfParsed?: boolean,
+): string | Title | boolean;
 function validate(
 	key: string,
 	val: string,
 	config: Config,
+	extOrType?: string,
 	halfParsed?: boolean,
-	ext?: string,
 ): string | Title | boolean {
 	val = removeComment(val).trim();
 	let value = val.replace(key === 'link' ? /\0\d+[tq]\x7F/gu : /\0\d+t\x7F/gu, '').trim();
@@ -90,10 +96,11 @@ function validate(
 		case 'width':
 			return !value && Boolean(val) || /^(?:\d+x?|\d*x\d+)(?:\s*px)?$/u.test(value);
 		case 'link': {
+			const isGalleryImage = extOrType === 'gallery-image';
 			if (!value) {
 				return val;
 			} else if (getUrlLikeRegex(config.protocol).test(value)) {
-				return getUrlRegex(config.protocol).test(value) && val;
+				return getUrlRegex(config.protocol).test(value) ? val : isGalleryImage;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
@@ -104,16 +111,16 @@ function validate(
 				config,
 				{halfParsed, decode: true, selfLink: true, page: ''},
 			);
-			return title.valid && title;
+			return title.valid ? title : isGalleryImage;
 		}
 		case 'lang':
-			return (ext === 'svg' || ext === 'svgz') && !/[^a-z\d-]/u.test(value);
+			return (extOrType === 'svg' || extOrType === 'svgz') && !/[^a-z\d-]/u.test(value);
 		case 'alt':
 		case 'class':
 		case 'manualthumb':
 			return true;
 		case 'page':
-			return (ext === 'djvu' || ext === 'djv' || ext === 'pdf') && Number(value) > 0;
+			return (extOrType === 'djvu' || extOrType === 'djv' || extOrType === 'pdf') && Number(value) > 0;
 		default:
 			return Boolean(value) && !isNaN(value as unknown as number);
 	}
@@ -170,12 +177,14 @@ export abstract class ImageParameterToken extends Token {
 				return undefined;
 			}
 			const value = super.text().trim();
-			return Shadow.run((): string | Title => {
+			return Shadow.run((): string | Title | undefined => {
 				const token = new Token(value, this.getAttribute('config'));
 				token.parseOnce(0, this.getAttribute('include')).parseOnce();
-				return /^\0\d+m\x7F/u.test(token.firstChild!.toString())
-					? value
-					: validate('link', value, this.getAttribute('config'));
+				if (/^\0\d+m\x7F/u.test(token.firstChild!.toString())) {
+					return value;
+				}
+				const link = validate('link', value, this.getAttribute('config'), this.parentNode?.type);
+				return link === true ? undefined : link as string | Title;
 			}, Parser);
 		}
 	}
@@ -275,8 +284,8 @@ export abstract class ImageParameterToken extends Token {
 							key,
 							mt[2],
 							config,
-							true,
 							extension,
+							true,
 						) as string | Title | boolean !== false
 					);
 			});

@@ -18,6 +18,7 @@
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding `#tag`
 - Issue with [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) when expanding parser functions with template arguments
 - [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#clonenode) should copy the [`pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property
+- [`ImageParameterToken.link`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#link) can now be `undefined` for invalid links in gallery images
 
 **Changed**
 
