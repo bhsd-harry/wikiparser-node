@@ -14,9 +14,9 @@ export const Shadow = {
 			this.running = running;
 		};
 		try {
-			const {Token: AnyToken}: typeof import('../src/index') = require('../src/index');
+			const {Token}: typeof import('../src/index') = require('../src/index');
 			const result = callback();
-			if (result instanceof AnyToken && !result.getAttribute('built')) {
+			if (result instanceof Token && !result.getAttribute('built')) {
 				result.afterBuild();
 			}
 			finish();

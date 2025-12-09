@@ -72,7 +72,7 @@ import type {
 } from '../internal';
 
 declare interface LintIgnore {
-	line: number;
+	line: number | undefined;
 	from: number | undefined;
 	to: number | undefined;
 	rules: Set<string> | undefined;
@@ -150,7 +150,7 @@ export class Token extends AstElement {
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
 		if (n < this.#stage || this.length !== 1 || !this.isPlain()) {
 			return this;
-		} else if (this.#stage >= MAX_STAGE) {
+		} else /* istanbul ignore if */ if (this.#stage >= MAX_STAGE) {
 			return this;
 		}
 		switch (n) {
@@ -212,10 +212,9 @@ export class Token extends AstElement {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return s && new AstText(s);
-			} else if (isNaN(s.slice(-1) as unknown as number)) {
-				return this.#accum[Number(s.slice(0, -1))]!;
 			}
-			throw new Error(`Failed to build! Unrecognized token: ${s}`);
+			const n = Number(s.slice(0, -1));
+			return this.#accum[n]!;
 		}).filter(node => node !== '');
 		if (type === BuildMethod.String) {
 			return nodes.map(String).join('');
@@ -268,7 +267,7 @@ export class Token extends AstElement {
 		const {parseRedirect}: typeof import('../parser/redirect') = require('../parser/redirect');
 		const wikitext = this.firstChild!.toString(),
 			parsed = parseRedirect(wikitext, this.#config, this.#accum);
-		if (parsed) {
+		if (parsed !== false) {
 			this.setText(parsed);
 		}
 		return Boolean(parsed);
@@ -333,9 +332,6 @@ export class Token extends AstElement {
 	 * @param tidy 是否整理
 	 */
 	#parseQuotes(tidy?: boolean): void {
-		if (this.#config.excludes.includes('quote')) {
-			return;
-		}
 		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
 		const lines = this.firstChild!.toString().split('\n');
 		for (let i = 0; i < lines.length; i++) {
@@ -346,18 +342,12 @@ export class Token extends AstElement {
 
 	/** 解析外部链接 */
 	#parseExternalLinks(): void {
-		if (this.#config.excludes.includes('extLink')) {
-			return;
-		}
 		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
 		this.setText(parseExternalLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
 	/** 解析自由外链 */
 	#parseMagicLinks(): void {
-		if (this.#config.excludes.includes('magicLink')) {
-			return;
-		}
 		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
@@ -402,6 +392,7 @@ export class Token extends AstElement {
 				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
+			/* istanbul ignore next */
 			case 'stage':
 				return this.#stage as TokenAttribute<T>;
 			default:
@@ -431,7 +422,9 @@ export class Token extends AstElement {
 	override insertAt(child: string, i?: number): AstText;
 	override insertAt<T extends AstNodes>(child: T, i?: number): T;
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
-		const token = typeof child === 'string' ? new AstText(child) : child;
+		const token = typeof child === 'string' ? new AstText(child) : child,
+			{length} = this;
+		i += i < 0 ? length : 0;
 		super.insertAt(token, i);
 		const {
 			type,
@@ -442,7 +435,14 @@ export class Token extends AstElement {
 		return token;
 	}
 
-	/** @private */
+	// eslint-disable-next-line jsdoc/require-param
+	/**
+	 * Normalize page title
+	 *
+	 * 规范化页面标题
+	 * @param title title (with or without the namespace prefix) / 标题（含或不含命名空间前缀）
+	 * @param defaultNs default namespace number / 命名空间
+	 */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
 		return Parser.normalizeTitle(
 			title,
@@ -526,8 +526,12 @@ export class Token extends AstElement {
 					while (mt) {
 						const {1: type, index} = mt,
 							detail = mt[2]?.trim();
+						let line: number | undefined;
+						if (type === 'disable-line' || type === 'disable-next-line') {
+							line = this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1);
+						}
 						ignores.push({
-							line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
+							line,
 							from: type === 'disable' ? regex.lastIndex : undefined,
 							to: type === 'enable' ? regex.lastIndex : undefined,
 							rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
@@ -537,11 +541,11 @@ export class Token extends AstElement {
 					errors = errors.filter(({rule, startLine, startIndex}) => {
 						const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
 						for (const {line, from, to, rules} of ignores) {
-							if (line > startLine + 1) {
+							if (line && line > startLine + 1) {
 								break;
 							} else if (rules && !rules.has(rule)) {
 								continue;
-							} else if (line === startLine && from === undefined && to === undefined) {
+							} else if (line === startLine) {
 								return false;
 							} else if (from! <= startIndex && from! > nearest.pos) {
 								nearest.pos = from!;

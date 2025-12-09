@@ -107,11 +107,11 @@ export class AstText extends AstNode {
 			}
 			const {type, parentNode: grandparent} = parentNode;
 			if (type === 'attr-value') {
-				const {name: grandName, tag} = grandparent as AttributeToken;
+				const {name, tag} = grandparent as AttributeToken;
 				if (
-					tag === 'ref' && (grandName === 'name' || grandName === 'follow')
-					|| grandName === 'group' && (tag === 'ref' || tag === 'references')
-					|| tag === 'choose' && (grandName === 'before' || grandName === 'after')
+					tag === 'ref' && (name === 'name' || name === 'follow')
+					|| name === 'group' && (tag === 'ref' || tag === 'references')
+					|| tag === 'choose' && (name === 'before' || name === 'after')
 				) {
 					return [];
 				}
