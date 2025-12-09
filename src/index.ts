@@ -107,7 +107,7 @@ export class Token extends AstElement {
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
 		if (n < this.#stage || this.length !== 1 || !this.isPlain()) {
 			return this;
-		} else if (this.#stage >= MAX_STAGE) {
+		} else /* istanbul ignore if */ if (this.#stage >= MAX_STAGE) {
 			return this;
 		}
 		switch (n) {
@@ -140,9 +140,15 @@ export class Token extends AstElement {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return s && new AstText(s);
-			} else if (isNaN(s.slice(-1) as unknown as number)) {
-				return this.#accum[Number(s.slice(0, -1))]!;
 			}
+			const n = Number(s.slice(0, -1));
+			if (
+				isNaN(s.slice(-1) as unknown as number)
+				&& Number.isInteger(n) && n >= 0 && n < this.#accum.length
+			) {
+				return this.#accum[n]!;
+			}
+			/* istanbul ignore next */
 			throw new Error(`Failed to build! Unrecognized token: ${s}`);
 		}).filter(node => node !== '');
 		if (type === BuildMethod.String) {
@@ -244,7 +250,9 @@ export class Token extends AstElement {
 	override insertAt(child: string, i?: number): AstText;
 	override insertAt<T extends AstNodes>(child: T, i?: number): T;
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
-		const token = typeof child === 'string' ? new AstText(child) : child;
+		const token = typeof child === 'string' ? new AstText(child) : child,
+			{length} = this;
+		i += i < 0 ? length : 0;
 		super.insertAt(token, i);
 		const {
 			type,
@@ -255,7 +263,14 @@ export class Token extends AstElement {
 		return token;
 	}
 
-	/** @private */
+	// eslint-disable-next-line jsdoc/require-param
+	/**
+	 * Normalize page title
+	 *
+	 * 规范化页面标题
+	 * @param title title (with or without the namespace prefix) / 标题（含或不含命名空间前缀）
+	 * @param defaultNs default namespace number / 命名空间
+	 */
 	normalizeTitle(title: string, defaultNs = 0, opt?: TitleOptions): Title {
 		return Parser.normalizeTitle(
 			title,
