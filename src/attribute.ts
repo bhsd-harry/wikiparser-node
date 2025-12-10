@@ -34,18 +34,18 @@ export abstract class AttributeToken extends Token {
 	 * @param type 标签类型
 	 * @param tag 标签名
 	 * @param key 属性名
+	 * @param quotes 引号
 	 * @param equal 等号
 	 * @param value 属性值
-	 * @param quotes 引号
 	 */
 	constructor(
 		type: AttributeTypes,
 		tag: string,
 		key: string,
+		quotes: readonly [string?, string?],
+		config: Config,
 		equal = '',
 		value?: string,
-		quotes: readonly [string?, string?] = [],
-		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
 		const keyToken = key;

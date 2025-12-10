@@ -36,7 +36,7 @@
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint": "npm run lint:ts",
 		"test:unit": "mocha dist/test/test.js",
-		"test:parser": "mocha dist/test/parserTests.js",
+		"test:parser": "mocha --reporter=progress dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
