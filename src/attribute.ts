@@ -78,18 +78,18 @@ export abstract class AttributeToken extends Token {
 	 * @param type 标签类型
 	 * @param tag 标签名
 	 * @param key 属性名
+	 * @param quotes 引号
 	 * @param equal 等号
 	 * @param value 属性值
-	 * @param quotes 引号
 	 */
 	constructor(
 		type: AttributeTypes,
 		tag: string,
 		key: string,
+		quotes: readonly [string?, string?],
+		config: Config,
 		equal = '',
 		value?: string,
-		quotes: readonly [string?, string?] = [],
-		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
 		const keyToken = new AtomToken(
@@ -188,10 +188,12 @@ export abstract class AttributeToken extends Token {
 		if (
 			!attrs?.has(name)
 			&& !attrs2?.has(name)
-			// 不是未定义的扩展标签或包含嵌入的HTML标签
+			// 已知定义的扩展标签或不包含嵌入的HTML标签
 			&& (type === 'ext-attr' ? attrs || attrs2 : !/\{\{[^{]+\}\}/u.test(name))
 			&& (
+				// 不支持通用HTML属性的扩展标签
 				type === 'ext-attr' && !attrs2
+				// 或非通用HTML属性
 				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
