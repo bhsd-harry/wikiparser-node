@@ -196,10 +196,10 @@ export abstract class AttributesToken extends Token {
 							toAttributeType(type),
 							name,
 							key,
-							equal,
-							value,
 							quotes,
 							config,
+							equal,
+							value,
 							accum,
 						);
 					insertDirty();

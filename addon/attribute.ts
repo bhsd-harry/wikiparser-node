@@ -161,10 +161,10 @@ AttributesToken.prototype.setAttr =
 			toAttributeType(type),
 			name,
 			key,
-			value === true ? '' : '=',
-			value === true ? '' : value,
 			['"', '"'],
 			this.getAttribute('config'),
+			value === true ? '' : '=',
+			value === true ? '' : value,
 		));
 		this.insertAt(token);
 	};
