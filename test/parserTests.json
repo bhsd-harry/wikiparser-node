@@ -6730,6 +6730,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">filepath</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Wiki.png</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">filepath</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Wiki.png</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">filepath</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Example.svg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">300</span></span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">filepath</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Example.svg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">nowiki</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">300</span></span>}}</span></span>"
 	},
 	{
+		"desc": "Attributes of a closing tag",
+		"wikitext": "<div>a</div id=a>",
+		"html": "<div>a</div>",
+		"render": "<div>a</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>a<span class=\"wpb-html\">&lt;/div<span class=\"wpb-html-attrs wpb-invalid\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=<span class=\"wpb-attr-value\">a</span></span></span>&gt;</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
