@@ -116,7 +116,7 @@ export abstract class AttributesToken extends Token {
 	/** class attribute in Set / 以Set表示的class属性 */
 	get classList(): Set<string> {
 		if (!this.#classList) {
-			this.#classList = new Set(this.className.split(/\s/u));
+			this.#classList = new Set(this.className.split(/\s+/u));
 
 			/**
 			 * 更新classList
@@ -393,6 +393,7 @@ export abstract class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	/* istanbul ignore next */
 	/**
 	 * Sanitize invalid attributes
 	 *
@@ -417,12 +418,14 @@ export abstract class AttributesToken extends Token {
 	 */
 	override insertAt<T extends AtomToken | AttributeToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
+			/* istanbul ignore if */
 			if (!Shadow.running && token.toString().trim()) {
 				this.constructorError('can only insert AttributeToken');
 			}
 			return super.insertAt(token, i);
 		}
 		const {type, name, length} = this;
+		/* istanbul ignore if */
 		if (token.type !== type.slice(0, -1) || token.tag !== name) {
 			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
 		} else if (i === length) {
@@ -496,6 +499,7 @@ export abstract class AttributesToken extends Token {
 		}
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Toggle the specified attribute
 	 *
@@ -547,14 +551,16 @@ export abstract class AttributesToken extends Token {
 		return output && ` ${output}`;
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Get the value of a style property
 	 *
 	 * 获取某一样式属性的值
 	 * @param key style property / 样式属性
 	 * @param value style property value / 样式属性值
+	 * @since v1.17.1
 	 */
-	css(key: string, value?: string): string | undefined {
+	css(key: string, value?: string | number): string | undefined {
 		require('../addon/attribute');
 		return this.css(key, value);
 	}

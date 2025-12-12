@@ -498,7 +498,7 @@ export abstract class AttributeToken extends Token {
 	/** @private */
 	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'equal') {
-			this.#equal = value as TokenAttribute<'equal'>;
+			this.#equal = value && (this.#equal || value) as TokenAttribute<'equal'>;
 		} else if (key === 'quotes') {
 			this.#quotes = value as TokenAttribute<'quotes'>;
 		} else {
@@ -599,7 +599,7 @@ export abstract class AttributeToken extends Token {
 	 * @throws `Error` 复杂的style属性
 	 * @throws `Error` 无CSS语言服务
 	 */
-	css(key: string, value?: string): string | undefined {
+	css(key: string, value?: string | number): string | undefined {
 		require('../addon/attribute');
 		return this.css(key, value);
 	}

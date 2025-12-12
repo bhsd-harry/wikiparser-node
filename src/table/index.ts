@@ -670,12 +670,6 @@ export abstract class TableToken extends TrBaseToken {
 		return this.replicateTableCol(x);
 	}
 
-	/** @private */
-	moveCol(x: number, reference: number, after?: boolean): void {
-		require('../../addon/table');
-		this.moveCol(x, reference, after);
-	}
-
 	/**
 	 * Move a table row
 	 *
@@ -698,6 +692,12 @@ export abstract class TableToken extends TrBaseToken {
 	moveTableRowAfter(y: number, after: number): TrToken {
 		require('../../addon/table');
 		return this.moveTableRowAfter(y, after);
+	}
+
+	/** @private */
+	moveCol(x: number, reference: number, after?: boolean): void {
+		require('../../addon/table');
+		this.moveCol(x, reference, after);
 	}
 
 	/**

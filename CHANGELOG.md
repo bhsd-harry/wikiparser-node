@@ -1,4 +1,19 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.32.1
+
+*2025-12-15*
+
+**Added**
+
+- [`AttributesToken.prototype.css`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#css) now inserts the `style` attribute if not present
+
+**Fixed**
+
+- [`AttributeToken.prototype.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#setvalue) for an attribute without a value
+- [`AttributesToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#classlist) when the `class` attribute contains multiple spaces between class names
+- [`AttributesToken.prototype.sanitize`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#sanitize) should leave spaces between attributes
+- [`Token.prototype.createElement`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#createelement) for extension tags
+
 ## v1.32.0
 
 *2025-12-05*

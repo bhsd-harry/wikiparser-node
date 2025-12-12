@@ -4,6 +4,7 @@ import {classes} from '../util/constants';
 import {Shadow, isLink} from '../util/debug';
 import {encode} from '../util/string';
 import Parser from '../index';
+import {Token} from '../src/index';
 import {LinkBaseToken} from '../src/link/base';
 import {LinkToken} from '../src/link/index';
 import {AtomToken} from '../src/atom';
@@ -36,21 +37,19 @@ LinkBaseToken.prototype.setFragment =
 LinkBaseToken.prototype.setLinkText =
 	/** @implements */
 	function(linkStr): void {
-		const {childNodes, lastChild, length} = this;
 		if (linkStr === undefined) {
-			childNodes[1]?.remove();
+			this.childNodes[1]?.remove();
 			return;
+		} else if (this.length === 1) {
+			this.insertAt(Shadow.run(() => {
+				const inner = new Token(undefined, this.getAttribute('config'), [], {
+					'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
+				});
+				inner.type = 'link-text';
+				return inner;
+			}));
 		}
-		const root = Parser.parseWithRef(linkStr, this);
-		if (length === 1) {
-			root.type = 'link-text';
-			root.setAttribute('acceptable', {
-				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
-			});
-			this.insertAt(root);
-		} else {
-			lastChild.safeReplaceChildren(root.childNodes);
-		}
+		this.lastChild.safeReplaceChildren(Parser.parseWithRef(linkStr, this).childNodes);
 	};
 
 LinkToken.prototype.setLangLink =

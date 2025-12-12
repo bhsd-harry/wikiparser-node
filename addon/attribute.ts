@@ -38,6 +38,7 @@ AttributeToken.prototype.setValue =
 			return;
 		}
 		const {type, lastChild} = this;
+		/* istanbul ignore next */
 		if (type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		} else if (value.includes('"') && value.includes(`'`)) {
@@ -45,6 +46,7 @@ AttributeToken.prototype.setValue =
 		}
 		const {childNodes} = Parser.parseWithRef(value, this, stages[type] + 1);
 		lastChild.safeReplaceChildren(childNodes);
+		this.setAttribute('equal', this.isInside('parameter') ? '{{=}}' : '=');
 		if (value.includes('"')) {
 			this.setAttribute('quotes', [`'`, `'`] as const);
 		} else if (value.includes(`'`) || !this.getAttribute('quotes')[0]) {
@@ -58,6 +60,7 @@ AttributeToken.prototype.rename =
 	/** @implements */
 	function(key): void {
 		const {type, name, tag, firstChild} = this;
+		/* istanbul ignore if */
 		if (name === 'title' || name === 'alt' && tag === 'img') {
 			throw new Error(`${name} attribute cannot be renamed!`);
 		}
@@ -69,19 +72,21 @@ AttributeToken.prototype.css =
 	/** @implements */
 	function(key, value): string | undefined {
 		const {name, lastChild} = this;
+		/* istanbul ignore next */
 		if (name !== 'style') {
 			throw new Error('Not a style attribute!');
-		} else if (lastChild.length !== 1 || lastChild.firstChild!.type !== 'text') {
+		} else if (lastChild.length > 1 || lastChild.length === 1 && lastChild.firstChild!.type !== 'text') {
 			throw new Error('Complex style attribute!');
 		}
 		const cssLSP = loadCssLSP();
+		/* istanbul ignore if */
 		if (!cssLSP) {
 			throw new Error('CSS language service is not available!');
 		}
 		const doc = new EmbeddedCSSDocument(this.getRootNode(), lastChild),
 			styleSheet = doc.styleSheet as StyleSheet,
-			{children: [{declarations}]} = styleSheet,
-			declaration = declarations.children?.filter(({property}) => property.getText() === key) ?? [];
+			{children: [{declarations: {children}}]} = styleSheet,
+			declaration = children?.filter(({property}) => property.getText() === key) ?? [];
 		if (value === undefined) {
 			return declaration.at(-1)?.value.getText();
 		} else if (typeof value === 'number') {
@@ -89,7 +94,7 @@ AttributeToken.prototype.css =
 		}
 		const style = styleSheet.getText().slice(0, -1);
 		if (!value) {
-			if (declaration.length === declarations.children?.length) {
+			if (declaration.length === children?.length) {
 				this.setValue('');
 			} else if (declaration.length > 0) {
 				let output = '',
@@ -105,6 +110,7 @@ AttributeToken.prototype.css =
 		}
 		const hasQuote = value.includes('"'),
 			[quot] = this.getAttribute('quotes');
+		/* istanbul ignore next */
 		if (quot && value.includes(quot) || hasQuote && value.includes(`'`)) {
 			const quote = quot || '"';
 			throw new RangeError(
@@ -114,7 +120,11 @@ AttributeToken.prototype.css =
 			const {offset, length} = declaration.at(-1)!.value;
 			this.setValue(style.slice(doc.pre.length, offset) + value + style.slice(offset + length));
 		} else {
-			this.setValue(`${style.slice(doc.pre.length)}${/;\s*$/u.test(style) ? '' : '; '}${key}: ${value}`);
+			this.setValue(
+				`${style.slice(doc.pre.length)}${
+					!children?.length || /;\s*$/u.test(style) ? '' : '; '
+				}${key}: ${value}`,
+			);
 		}
 		return undefined;
 	};
@@ -122,12 +132,17 @@ AttributeToken.prototype.css =
 AttributesToken.prototype.sanitize =
 	/** @implements */
 	function(): void {
+		const type = toAttributeType(this.type);
 		let dirty = false;
 		for (let i = this.length - 1; i >= 0; i--) {
 			const child = this.childNodes[i]!;
 			if (child instanceof AtomToken && child.text().trim()) {
 				dirty = true;
-				this.removeAt(i);
+				if (child.previousSibling?.is<AttributeToken>(type) && child.nextSibling?.is<AttributeToken>(type)) {
+					child.replaceChildren(' ');
+				} else {
+					this.removeAt(i);
+				}
 			}
 		}
 		if (!Shadow.running && dirty) {
@@ -145,6 +160,7 @@ AttributesToken.prototype.setAttr =
 			return;
 		}
 		const {type, name} = this;
+		/* istanbul ignore if */
 		if (type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		}
@@ -174,6 +190,7 @@ AttributesToken.prototype.toggleAttr =
 	function(key, force): void {
 		key = trimLc(key);
 		const attr = this.getAttrToken(key);
+		/* istanbul ignore if */
 		if (attr && attr.getValue() !== true) {
 			throw new RangeError(`${key} attribute is not Boolean!`);
 		} else if (attr) {
@@ -186,7 +203,19 @@ AttributesToken.prototype.toggleAttr =
 AttributesToken.prototype.css =
 	/** @implements */
 	function(key, value): string | undefined {
-		return this.getAttrToken('style')?.css(key, value);
+		let attr = this.getAttrToken('style');
+		if (!attr) {
+			// @ts-expect-error abstract class
+			const token = Shadow.run((): AttributeToken => new AttributeToken(
+				toAttributeType(this.type),
+				this.name,
+				'style',
+				[],
+				this.getAttribute('config'),
+			));
+			attr = this.insertAt(token);
+		}
+		return attr.css(key, value);
 	};
 
 classes['ExtendedAttributeToken'] = __filename;

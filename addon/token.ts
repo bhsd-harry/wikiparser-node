@@ -22,6 +22,7 @@ Token.prototype.createElement = /** @implements */ function(
 	tagName,
 	{selfClosing, closing} = {},
 ): IncludeToken | ExtToken | HtmlToken {
+	tagName = tagName.toLowerCase();
 	const config = this.getAttribute('config'),
 		include = this.getAttribute('include');
 	if (tagName === (include ? 'noinclude' : 'includeonly')) {
@@ -32,7 +33,7 @@ Token.prototype.createElement = /** @implements */ function(
 	} else if (config.ext.includes(tagName)) {
 		return Shadow.run(
 			// @ts-expect-error abstract class
-			(): ExtToken => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config, include),
+			(): ExtToken => new ExtToken(tagName, '', undefined, selfClosing ? undefined : tagName, config, include),
 		);
 	} else if (config.html.some(tags => tags.includes(tagName))) {
 		return Shadow.run((): HtmlToken => {
@@ -48,6 +49,7 @@ Token.prototype.createElement = /** @implements */ function(
 };
 
 Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined {
+	/* istanbul ignore if */
 	if (this.type !== 'root') {
 		return undefined;
 	}
