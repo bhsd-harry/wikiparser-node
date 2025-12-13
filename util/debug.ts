@@ -111,6 +111,14 @@ export const getMagicWordInfo = (
 	];
 };
 
+/**
+ * 生成一个指定长度的空数组
+ * @param length 数组长度
+ * @param callback 回调函数
+ */
+export const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =>
+	Array.from({length}, (_, i) => callback(i));
+
 /* NOT FOR BROWSER ONLY */
 
 /**

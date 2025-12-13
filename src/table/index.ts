@@ -2,6 +2,7 @@ import {generateForChild} from '../../util/lint';
 import {
 	Shadow,
 	isRowEnd,
+	emptyArray,
 } from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import {cached} from '../../mixin/cached';
@@ -16,14 +17,6 @@ import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 
 export type TableTokens = TableToken | TrToken | TdToken;
-
-/**
- * 生成一个指定长度的空数组
- * @param length 数组长度
- * @param callback 回调函数
- */
-const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =>
-	Array.from({length}, (_, i) => callback(i));
 
 /** @extends {Array<TableCoords[]>} */
 export class Layout extends Array<TableCoords[]> {
