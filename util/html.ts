@@ -3,6 +3,13 @@
 import {decodeHtml, sanitizeAlt} from './string';
 import type {AstNodes, ListRangeToken, Token, DdToken, ListToken} from '../internal';
 
+declare type Prefix = '#' | '*' | ';' | ':';
+declare interface State {
+
+	/** whether a `<dt>` tag is open */
+	dt: boolean[];
+}
+
 /* NOT FOR BROWSER END */
 
 /**
@@ -14,13 +21,6 @@ export const getCommon = (prefix: string, lastPrefix: string): number =>
 	prefix.startsWith(lastPrefix) ? lastPrefix.length : [...lastPrefix].findIndex((ch, i) => ch !== prefix[i]);
 
 /* NOT FOR BROWSER */
-
-declare type Prefix = '#' | '*' | ';' | ':';
-declare interface State {
-
-	/** whether a `<dt>` tag is open */
-	dt: boolean[];
-}
 
 /**
  * get next list item

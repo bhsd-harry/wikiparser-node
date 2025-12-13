@@ -2,6 +2,7 @@ import {generateForChild} from '../../util/lint';
 import {
 	Shadow,
 	isRowEnd,
+	emptyArray,
 
 	/* NOT FOR BROWSER */
 
@@ -25,7 +26,7 @@ import type {TableCoords} from './trBase';
 import {html} from '../../util/html';
 import {classes} from '../../util/constants';
 import {noWrap} from '../../util/string';
-import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
+import type {TdAttrs, TdSubtypes} from './td';
 
 export interface TableRenderedCoords {
 	readonly row?: undefined;
@@ -40,14 +41,6 @@ const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$
 
 export type TableTokens = TableToken | TrToken | TdToken;
 
-/**
- * 生成一个指定长度的空数组
- * @param length 数组长度
- * @param callback 回调函数
- */
-const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =>
-	Array.from({length}, (_, i) => callback(i));
-
 /** @extends {Array<TableCoords[]>} */
 export class Layout extends Array<TableCoords[]> {
 	// @ts-expect-error abstract override
@@ -61,29 +54,8 @@ export class Layout extends Array<TableCoords[]> {
 	 * 打印表格布局
 	 */
 	print(): void {
-		const hBorders = emptyArray(this.length + 1, i => {
-				const prev = this[i - 1] ?? [],
-					next = this[i] ?? [];
-				return emptyArray(Math.max(prev.length, next.length), j => prev[j] !== next[j]);
-			}),
-			vBorders = this.map(cur => emptyArray(cur.length + 1, j => cur[j - 1] !== cur[j]));
-		let out = '';
-		for (let i = 0; i <= this.length; i++) {
-			const hBorder = hBorders[i]!.map(Number),
-				vBorderTop = (vBorders[i - 1] ?? []).map(Number),
-				vBorderBottom = (vBorders[i] ?? []).map(Number),
-				// eslint-disable-next-line no-sparse-arrays
-				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
-			for (let j = 0; j <= hBorder.length; j++) {
-				/* eslint-disable no-bitwise */
-				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0)
-					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1);
-				/* eslint-enable no-bitwise */
-				out += border[bit]! + (hBorder[j] ? '─' : ' ');
-			}
-			out += '\n';
-		}
-		console.log(out.slice(0, -1));
+		require('../../addon/table');
+		this.print();
 	}
 }
 
@@ -534,12 +506,6 @@ export abstract class TableToken extends TrBaseToken {
 		return this.insertTableCell(inner, coords, subtype, attr);
 	}
 
-	/** @private */
-	prependTableRow(): TrToken {
-		require('../../addon/table');
-		return this.prependTableRow();
-	}
-
 	/**
 	 * Insert a table row
 	 *
@@ -607,12 +573,6 @@ export abstract class TableToken extends TrBaseToken {
 	mergeCells(xlim: readonly [number, number], ylim: readonly [number, number]): TdToken {
 		require('../../addon/table');
 		return this.mergeCells(xlim, ylim);
-	}
-
-	/** @private */
-	split(coords: TableCoords | TableRenderedCoords, dirs: Set<keyof TdSpanAttrs>): void {
-		require('../../addon/table');
-		this.split(coords, dirs);
 	}
 
 	/**
@@ -692,12 +652,6 @@ export abstract class TableToken extends TrBaseToken {
 	moveTableRowAfter(y: number, after: number): TrToken {
 		require('../../addon/table');
 		return this.moveTableRowAfter(y, after);
-	}
-
-	/** @private */
-	moveCol(x: number, reference: number, after?: boolean): void {
-		require('../../addon/table');
-		this.moveCol(x, reference, after);
 	}
 
 	/**

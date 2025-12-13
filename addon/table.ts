@@ -1,17 +1,17 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import assert from 'assert/strict';
-import {Shadow, isRowEnd} from '../util/debug';
+import {Shadow, isRowEnd, emptyArray} from '../util/debug';
 import {classes} from '../util/constants';
 import {Token} from '../src/index';
 import {TrToken} from '../src/table/tr';
-import {TableToken} from '../src/table/index';
+import {TableToken, Layout} from '../src/table/index';
 import {TdToken, createTd} from '../src/table/td';
 import {TrBaseToken} from '../src/table/trBase';
 import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
-import type {TableRenderedCoords, Layout} from '../src/table/index';
-import type {TdAttrs} from '../src/table/td';
+import type {TableRenderedCoords} from '../src/table/index';
+import type {TdAttrs, TdSpanAttrs} from '../src/table/td';
 
 /**
  * 比较两个数
@@ -117,6 +117,166 @@ const getMaxCol = (layout: Layout): number => {
 	}
 	return maxCol;
 };
+
+/**
+ * 在表格开头插入一行
+ * @param table 表格
+ */
+const prependTableRow = (table: TableToken): TrToken => {
+	// @ts-expect-error abstract class
+	const row = Shadow.run((): TrToken => new TrToken('\n|-', undefined, table.getAttribute('config'))),
+		{childNodes} = table,
+		[,, plain] = childNodes,
+		start = plain?.constructor === Token ? 3 : 2,
+		tdChildren = childNodes.slice(start) as [...TdToken[], SyntaxToken] | TdToken[],
+		index = tdChildren.findIndex(({type}) => type !== 'td');
+	table.insertAt(row, index === -1 ? -1 : index + start);
+	Shadow.run(() => {
+		for (const cell of tdChildren.slice(0, index === -1 ? undefined : index) as TdToken[]) {
+			if (cell.subtype !== 'caption') {
+				row.insertAt(cell);
+			}
+		}
+	});
+	return row;
+};
+
+/**
+ * 分裂单元格
+ * @param table 表格
+ * @param coords 单元格坐标
+ * @param dirs 分裂方向
+ * @throws `RangeError` 指定坐标不是某个单元格的起始点
+ */
+const split = (table: TableToken, coords: TableCoords | TableRenderedCoords, dirs: Set<keyof TdSpanAttrs>): void => {
+	const cell = table.getNthCell(coords)!,
+		attr = cell.getAttrs(),
+		{subtype} = cell;
+	attr.rowspan ||= 1;
+	attr.colspan ||= 1;
+	for (const dir of dirs) {
+		if (attr[dir] === 1) {
+			dirs.delete(dir);
+		}
+	}
+	if (dirs.size === 0) {
+		return;
+	}
+	let {x, y} = coords;
+	const rawCoords = isTableCoords(coords) ? coords : table.toRawCoords(coords)!;
+	if (rawCoords.start === false || x === undefined) {
+		({x, y} = table.toRenderedCoords(rawCoords)!);
+	}
+	const splitting = {rowspan: 1, colspan: 1};
+	for (const dir of dirs) {
+		cell.setAttr(dir, 1);
+		splitting[dir] = attr[dir]!;
+		delete attr[dir];
+	}
+	for (let j = y!; j < y! + splitting.rowspan; j++) {
+		for (let i = x; i < x + splitting.colspan; i++) {
+			if (i > x || j > y!) {
+				try {
+					table.insertTableCell('', {x: i, y: j}, subtype, attr);
+				} catch (e) {
+					if (
+						e instanceof RangeError
+						&& e.message.startsWith(
+							'The specified coordinates are not the starting point of a cell: ',
+						)
+					) {
+						break;
+					}
+					throw e;
+				}
+			}
+		}
+	}
+};
+
+/**
+ * 移动表格列
+ * @param table 表格
+ * @param x 列号
+ * @param reference 参考列号
+ * @param after 是否插入到参考列之后
+ * @throws `RangeError` 两列结构不一致，无法移动
+ */
+const moveCol = (table: TableToken, x: number, reference: number, after?: boolean): void => {
+	const layout = table.getLayout();
+	if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
+		throw new RangeError(
+			`The structure of column ${x} is different from that of column ${
+				reference
+			}, so it cannot be moved!`,
+		);
+	}
+	const setX = new WeakSet<TableCoords>(),
+		setRef = new WeakSet<TableCoords>(),
+		rows = table.getAllRows();
+	for (let i = 0; i < layout.length; i++) {
+		const rowLayout = layout[i]!,
+			coords = rowLayout[x],
+			refCoords = rowLayout[reference],
+			start = isStartCol(rowLayout, x);
+		if (refCoords && !start && !setRef.has(refCoords)) {
+			setRef.add(refCoords);
+			rows[refCoords.row]!.getNthCol(refCoords.column)!.colspan++;
+		}
+		if (coords && !setX.has(coords)) {
+			setX.add(coords);
+			const rowToken = rows[i]!;
+			let token = rowToken.getNthCol(coords.column)!;
+			const {colspan} = token;
+			if (colspan > 1) {
+				token.colspan = colspan - 1;
+				if (start) {
+					const original = token;
+					token = token.cloneNode();
+					original.lastChild.replaceChildren();
+					token.colspan = 1;
+				}
+			}
+			if (start) {
+				const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
+				rowToken.insertBefore(
+					token,
+					col === undefined
+						? rowToken.childNodes.slice(2).find(isRowEnd)
+						: rowToken.getNthCol(col),
+				);
+			}
+		}
+	}
+};
+
+Layout.prototype.print =
+	/** @implements */
+	function(): void {
+		const hBorders = emptyArray(this.length + 1, i => {
+				const prev = this[i - 1] ?? [],
+					next = this[i] ?? [];
+				return emptyArray(Math.max(prev.length, next.length), j => prev[j] !== next[j]);
+			}),
+			vBorders = this.map(cur => emptyArray(cur.length + 1, j => cur[j - 1] !== cur[j]));
+		let out = '';
+		for (let i = 0; i <= this.length; i++) {
+			const hBorder = hBorders[i]!.map(Number),
+				vBorderTop = (vBorders[i - 1] ?? []).map(Number),
+				vBorderBottom = (vBorders[i] ?? []).map(Number),
+				// eslint-disable-next-line no-sparse-arrays
+				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
+			for (let j = 0; j <= hBorder.length; j++) {
+				/* eslint-disable no-bitwise */
+				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0)
+					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1);
+				/* eslint-enable no-bitwise */
+				out += border[bit]! + (hBorder[j] ? '─' : ' ');
+			}
+			out += '\n';
+		}
+		console.log(out.slice(0, -1));
+	};
 
 TableToken.prototype.getNthCell =
 	/** @implements */
@@ -229,27 +389,6 @@ TableToken.prototype.insertTableCell =
 			: rowToken!.insertTableCell(inner, rawCoords, subtype, attr);
 	};
 
-TableToken.prototype.prependTableRow =
-	/** @implements */
-	function(): TrToken {
-		// @ts-expect-error abstract class
-		const row = Shadow.run((): TrToken => new TrToken('\n|-', undefined, this.getAttribute('config'))),
-			{childNodes} = this,
-			[,, plain] = childNodes,
-			start = plain?.constructor === Token ? 3 : 2,
-			tdChildren = childNodes.slice(start) as [...TdToken[], SyntaxToken] | TdToken[],
-			index = tdChildren.findIndex(({type}) => type !== 'td');
-		this.insertAt(row, index === -1 ? -1 : index + start);
-		Shadow.run(() => {
-			for (const cell of tdChildren.slice(0, index === -1 ? undefined : index) as TdToken[]) {
-				if (cell.subtype !== 'caption') {
-					row.insertAt(cell);
-				}
-			}
-		});
-		return row;
-	};
-
 TableToken.prototype.insertTableRow =
 	/** @implements */
 	function(y, attr = {}, inner?: string | Token, subtype = 'td', innerAttr = {}): TrToken {
@@ -258,7 +397,7 @@ TableToken.prototype.insertTableRow =
 		const token = Shadow.run((): TrToken => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		token.setAttr(attr);
 		if (reference?.is<TableToken>('table')) { // `row === 0`且表格自身是有效行
-			reference = this.prependTableRow();
+			reference = prependTableRow(this);
 		}
 		this.insertBefore(token, reference);
 		if (inner !== undefined) {
@@ -346,7 +485,7 @@ TableToken.prototype.removeTableRow =
 			}
 		}
 		const row = rows[y]!,
-			rowToken = row.is<TrToken>('tr') ? row : this.prependTableRow();
+			rowToken = row.is<TrToken>('tr') ? row : prependTableRow(this);
 		rowToken.remove();
 		return rowToken;
 	};
@@ -393,70 +532,22 @@ TableToken.prototype.mergeCells =
 		return cornerCell;
 	};
 
-TableToken.prototype.split =
-	/** @implements */
-	function(coords, dirs): void {
-		const cell = this.getNthCell(coords)!,
-			attr = cell.getAttrs(),
-			{subtype} = cell;
-		attr.rowspan ||= 1;
-		attr.colspan ||= 1;
-		for (const dir of dirs) {
-			if (attr[dir] === 1) {
-				dirs.delete(dir);
-			}
-		}
-		if (dirs.size === 0) {
-			return;
-		}
-		let {x, y} = coords;
-		const rawCoords = isTableCoords(coords) ? coords : this.toRawCoords(coords)!;
-		if (rawCoords.start === false || x === undefined) {
-			({x, y} = this.toRenderedCoords(rawCoords)!);
-		}
-		const splitting = {rowspan: 1, colspan: 1};
-		for (const dir of dirs) {
-			cell.setAttr(dir, 1);
-			splitting[dir] = attr[dir]!;
-			delete attr[dir];
-		}
-		for (let j = y!; j < y! + splitting.rowspan; j++) {
-			for (let i = x; i < x + splitting.colspan; i++) {
-				if (i > x || j > y!) {
-					try {
-						this.insertTableCell('', {x: i, y: j}, subtype, attr);
-					} catch (e) {
-						if (
-							e instanceof RangeError
-							&& e.message.startsWith(
-								'The specified coordinates are not the starting point of a cell: ',
-							)
-						) {
-							break;
-						}
-						throw e;
-					}
-				}
-			}
-		}
-	};
-
 TableToken.prototype.splitIntoRows =
 	/** @implements */
 	function(coords): void {
-		this.split(coords, new Set(['rowspan']));
+		split(this, coords, new Set(['rowspan']));
 	};
 
 TableToken.prototype.splitIntoCols =
 	/** @implements */
 	function(coords): void {
-		this.split(coords, new Set(['colspan']));
+		split(this, coords, new Set(['colspan']));
 	};
 
 TableToken.prototype.splitIntoCells =
 	/** @implements */
 	function(coords): void {
-		this.split(coords, new Set(['rowspan', 'colspan']));
+		split(this, coords, new Set(['rowspan', 'colspan']));
 	};
 
 TableToken.prototype.replicateTableRow =
@@ -464,7 +555,7 @@ TableToken.prototype.replicateTableRow =
 	function(row): TrToken {
 		let rowToken = this.getNthRow(row)!;
 		if (rowToken.is<TableToken>('table')) {
-			rowToken = this.prependTableRow();
+			rowToken = prependTableRow(this);
 		}
 		const replicated = this.insertBefore(rowToken.cloneNode(), rowToken);
 		for (const [token, start] of this.getFullRow(row)) {
@@ -518,7 +609,7 @@ TableToken.prototype.moveTableRowBefore =
 		}
 		let beforeToken = this.getNthRow(before)!;
 		if (beforeToken.is<TableToken>('table')) {
-			beforeToken = this.prependTableRow();
+			beforeToken = prependTableRow(this);
 		}
 		this.insertBefore(rowToken, beforeToken);
 		return rowToken;
@@ -565,66 +656,16 @@ TableToken.prototype.moveTableRowAfter =
 		return rowToken;
 	};
 
-TableToken.prototype.moveCol =
-	/** @implements */
-	function(x, reference, after): void {
-		const layout = this.getLayout();
-		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
-			throw new RangeError(
-				`The structure of column ${x} is different from that of column ${
-					reference
-				}, so it cannot be moved!`,
-			);
-		}
-		const setX = new WeakSet<TableCoords>(),
-			setRef = new WeakSet<TableCoords>(),
-			rows = this.getAllRows();
-		for (let i = 0; i < layout.length; i++) {
-			const rowLayout = layout[i]!,
-				coords = rowLayout[x],
-				refCoords = rowLayout[reference],
-				start = isStartCol(rowLayout, x);
-			if (refCoords && !start && !setRef.has(refCoords)) {
-				setRef.add(refCoords);
-				rows[refCoords.row]!.getNthCol(refCoords.column)!.colspan++;
-			}
-			if (coords && !setX.has(coords)) {
-				setX.add(coords);
-				const rowToken = rows[i]!;
-				let token = rowToken.getNthCol(coords.column)!;
-				const {colspan} = token;
-				if (colspan > 1) {
-					token.colspan = colspan - 1;
-					if (start) {
-						const original = token;
-						token = token.cloneNode();
-						original.lastChild.replaceChildren();
-						token.colspan = 1;
-					}
-				}
-				if (start) {
-					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
-					rowToken.insertBefore(
-						token,
-						col === undefined
-							? rowToken.childNodes.slice(2).find(isRowEnd)
-							: rowToken.getNthCol(col),
-					);
-				}
-			}
-		}
-	};
-
 TableToken.prototype.moveTableColBefore =
 	/** @implements */
 	function(x, before): void {
-		this.moveCol(x, before);
+		moveCol(this, x, before);
 	};
 
 TableToken.prototype.moveTableColAfter =
 	/** @implements */
 	function(x, after): void {
-		this.moveCol(x, after, true);
+		moveCol(this, x, after, true);
 	};
 
 classes['ExtendedTableToken'] = __filename;
