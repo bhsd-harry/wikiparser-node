@@ -5,7 +5,7 @@ import {
 } from '@bhsd/common';
 import {isUnderscore} from '@bhsd/cm-util';
 import {rules} from '../base';
-import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
+import {htmlAttrs, extAttrs, commonHtmlAttrs, extParams} from '../util/sharable';
 import {getEndPos, provideValues} from '../util/lint';
 import {tidy} from '../util/string';
 import {Shadow} from '../util/debug';
@@ -840,6 +840,12 @@ export class LanguageService implements LanguageServiceBase {
 					position,
 					type === 'parameter-value' ? '=' : '',
 				)
+				: undefined;
+		} else if (type === 'param-line') {
+			// parameter line of `<dynamicpagelist>` or `<inputbox>`
+			const key = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
+			return /^[a-z]+$/iu.test(key)
+				? getCompletion(extParams[cur!.name!]!, 'Property', key, position)
 				: undefined;
 		} else if (isAttr(cur!) && isHtmlAttr(parentNode!)) {
 			const data = provideValues(parentNode.tag, parentNode.name);
