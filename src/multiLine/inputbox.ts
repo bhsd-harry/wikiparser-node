@@ -6,8 +6,8 @@ import type {Token} from '../../internal';
 
 /** `<inputbox>` */
 export abstract class InputboxToken extends ParamTagToken {
-	/** @class */
-	constructor(include: boolean, wikitext: string | undefined, config: Config, accum: Token[] = []) {
+	/** @param name 扩展标签名 */
+	constructor(name: string, include: boolean, wikitext: string | undefined, config: Config, accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken'),
 			newConfig = config.excludes.includes('heading')
 				? config
@@ -20,7 +20,7 @@ export abstract class InputboxToken extends ParamTagToken {
 		wikitext &&= parseCommentAndExt(wikitext, newConfig, accum, include);
 		wikitext &&= parseBraces(wikitext, newConfig, accum);
 		accum.splice(length, 1);
-		super(include, wikitext, newConfig, accum, {
+		super(name, include, wikitext, newConfig, accum, {
 		});
 	}
 }
