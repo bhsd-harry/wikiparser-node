@@ -23,7 +23,7 @@ export abstract class TrToken extends TrBaseToken {
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
-	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
+	constructor(syntax?: string, attr?: string, config?: Config, accum?: Token[]) {
 		super(
 			/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u,
 			syntax,

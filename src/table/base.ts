@@ -48,7 +48,7 @@ export abstract class TableBaseToken extends Token {
 	 */
 	constructor(
 		pattern: RegExp,
-		syntax: string,
+		syntax: string | undefined,
 		type: TableTypes,
 		attr?: string,
 		config?: Config,
