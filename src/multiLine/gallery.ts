@@ -22,7 +22,6 @@ import type {
 import {Shadow, isToken} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {html} from '../../util/html';
-import {clone} from '../../mixin/clone';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -195,12 +194,6 @@ export abstract class GalleryToken extends MultiLineToken {
 	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
-
-	@clone
-	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return new GalleryToken(undefined, this.getAttribute('config'));
-	}
 
 	/**
 	 * Insert an image

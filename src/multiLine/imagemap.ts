@@ -19,7 +19,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import {clone} from '../../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
@@ -215,12 +214,6 @@ export abstract class ImagemapToken extends MultiLineToken {
 			throw new Error('Do not remove the image in <imagemap>!');
 		}
 		return super.removeAt(i);
-	}
-
-	@clone
-	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return new ImagemapToken(undefined, this.getAttribute('config'));
 	}
 }
 
