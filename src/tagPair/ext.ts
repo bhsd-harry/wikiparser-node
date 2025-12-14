@@ -88,13 +88,13 @@ export abstract class ExtToken extends TagPairToken {
 			case 'dynamicpagelist': {
 				const {ParamTagToken}: typeof import('../multiLine/paramTag') = require('../multiLine/paramTag');
 				// @ts-expect-error abstract class
-				innerToken = new ParamTagToken(include, inner, newConfig, accum);
+				innerToken = new ParamTagToken(lcName, include, inner, newConfig, accum);
 				break;
 			}
 			case 'inputbox': {
 				const {InputboxToken}: typeof import('../multiLine/inputbox') = require('../multiLine/inputbox');
 				// @ts-expect-error abstract class
-				innerToken = new InputboxToken(include, inner, newConfig, accum);
+				innerToken = new InputboxToken(lcName, include, inner, newConfig, accum);
 				break;
 			}
 			case 'references': {
