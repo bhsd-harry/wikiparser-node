@@ -4,7 +4,7 @@ import {parseCommentAndExt} from '../../parser/commentAndExt';
 import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {ParamLineToken} from '../paramLine';
-import type {LintError} from '../../base';
+import type {Config, LintError} from '../../base';
 import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -34,8 +34,8 @@ export abstract class ParamTagToken extends MultiLineToken {
 	/** @class */
 	constructor(
 		include: boolean,
-		wikitext?: string,
-		config = Parser.getConfig(),
+		wikitext: string | undefined,
+		config: Config,
 		accum: Token[] = [],
 		acceptable?: WikiParserAcceptable,
 	) {
@@ -84,10 +84,7 @@ export abstract class ParamTagToken extends MultiLineToken {
 						}
 						errors.push(e);
 					} else {
-						const childErrors = child.lint(start, false);
-						if (childErrors.length > 0) {
-							Array.prototype.push.apply(errors, childErrors);
-						}
+						Array.prototype.push.apply(errors, child.lint(start, false));
 					}
 				}
 				start += child.toString().length + 1;
