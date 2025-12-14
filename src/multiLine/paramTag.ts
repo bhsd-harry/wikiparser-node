@@ -76,8 +76,9 @@ export abstract class ParamTagToken extends MultiLineToken {
 					errors.push(generateForChild(child, rect, rule, msg, s));
 				} else {
 					const i = grandChildren.findIndex(({type}) => type !== 'text'),
-						str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
-					if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
+						str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('')
+							.trim();
+					if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?(?:\s*=|$)/iu).test(str)) {
 						const e = generateForChild(child, rect, rule, msg, s);
 						if (lintConfig.computeEditInfo) {
 							e.suggestions = [fixByRemove(e)];

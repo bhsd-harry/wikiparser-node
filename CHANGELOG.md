@@ -13,6 +13,7 @@
 - [`AttributesToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#classlist) when the `class` attribute contains multiple spaces between class names
 - [`AttributesToken.prototype.sanitize`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#sanitize) should leave spaces between attributes
 - [`Token.prototype.createElement`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#createelement) for extension tags
+- [`ParamTagToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#lint) should ignore spaces at SOL
 
 ## v1.32.0
 
