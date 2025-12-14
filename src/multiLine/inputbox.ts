@@ -1,13 +1,13 @@
 import {parseCommentAndExt} from '../../parser/commentAndExt';
 import {parseBraces} from '../../parser/braces';
-import Parser from '../../index';
 import {ParamTagToken} from './paramTag';
+import type {Config} from '../../base';
 import type {Token} from '../../internal';
 
 /** `<inputbox>` */
 export abstract class InputboxToken extends ParamTagToken {
 	/** @class */
-	constructor(include: boolean, wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(include: boolean, wikitext: string | undefined, config: Config, accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken'),
 			newConfig = config.excludes.includes('heading')
 				? config
