@@ -62,6 +62,7 @@
 		"test:clonenode": "CLONENODE=1 npm run test:unit",
 		"test:parser": "LC_ALL=en.UTF-8 mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:clonenode && npm run test:parser",
+		"test:parseronly": "LSP=0 npm run test:parser",
 		"test:ci": "LSP=0 npm test",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"

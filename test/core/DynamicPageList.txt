@@ -1,0 +1,685 @@
+!! Version 2
+
+######################################################
+#### Warning: run these tests via parserTests.php    #
+####                                                 #
+#### These tests tend to fail when run from phpunit. #
+######################################################
+
+
+
+
+
+# Not clear if this does anything, but other extension do it.
+# However, seems to make this not work, so commenting out for now.
+#!! hooks
+#DynamicPageList
+#!! endhooks
+
+# Some of these might fail if some other
+# extension adds articles to the tests, which is bad.
+
+# Things not tested:
+## *Flagged revs related props
+## *Actual intersection (multiple notcategory/category clauses)
+##   due to issue with mysql self-joins on temp tables.
+## *Date related things (Addcategorydate) since the output
+##  varries depending on today's date.
+## *gallery stuff (lack of images)
+## *some order methods, due to lack of flexibity in page creation
+## googlehack (dpl_id) stuff because page_id changes depending on other tests.
+
+!! article
+MediaWiki:Bad_image_list
+!! text
+* [[:File:Bad.jpg]] except [[Nasty page]]
+!! endarticle
+
+!! article
+DPLTest1
+!! text
+[[category:DPLtest]]
+!! endarticle
+
+!! article
+Talk:DPLTest2
+!! text
+[[category:DPLtest]]
+[[category:DPLtest3]]
+[[category:DPLtest2]]
+!! endarticle
+
+!! article
+Talk:no_Categories
+!! text
+no cats
+!! endarticle
+
+!! article
+Yet another DPL test page!
+!! text
+[[category:DPLtest]]
+[[category:DPLtest2]]
+!! endarticle
+
+!! article
+help:DPLTest3
+!! text
+Article.
+[[category:DPLtest2]]
+!! endarticle
+
+!! article
+DPLRedir
+!! text
+#Redirect[[DPLtest]]
+
+[[category:DPLtest]]
+!! endarticle
+
+# start actual tests.
+!! test
+basic, single category list, ordered by cat add, desc.
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+
+!! test
+basic, single category list, but ascending
+!! wikitext
+<DynamicPageList>
+order =   ascending
+category=DPLtest
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li></ul>
+!! end
+
+# Depnds on page id of other pages
+# so could break depending on other tests
+# if they get different page id
+#
+# Low and behold that actually does happen. Commenting out.
+#!!test
+#dpl_id 
+#!!input
+#<DynamicPageList>
+#category=DPLtest
+#googlehack=true
+#</DynamicPageList>
+#!!result
+#<ul>
+#<li><a href="/wiki/Yet_another_DPL_test_page!?dpl_id=53">Yet another DPL test page!</a></li> 
+#<li><a href="/wiki/Talk:DPLTest2?dpl_id=51">Talk:DPLTest2</a></li> 
+#<li><a href="/wiki/DPLTest1?dpl_id=50">DPLTest1</a></li></ul>
+#
+#!!end
+
+
+!! test
+nofollow
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+nofollow=true
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!" rel="nofollow">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2" rel="nofollow">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1" rel="nofollow">DPLTest1</a></li></ul>
+!! end
+
+!! test
+supresserrors
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+category=DPLtest1
+category=DPLtest2
+category=DPLtest3
+category=DPLtest4
+category=DPLtest5
+category=DPLtest7
+category=DPLtest6
+category=DPLtest8
+category=DPLtest9
+category=DPLtest10
+suppresserrors=true
+</DynamicPageList>
+!! html
+
+!! end
+
+## BROKEN!! mysql doesn't like using self-joins on temporary tables
+## which breaks this test.
+#!!test
+#Intersection.
+#!!input
+#<DynamicPageList>
+#category=DPLtest
+#category=DPLtest2
+#</DynamicPageList>
+#!!result
+#<ul>
+#<li><a href="/wiki/Yet_another_DPL_test_page!">Yet another DPL test page!</a></li> 
+# <li><a href="/wiki/Talk:DPLTest2">Talk:DPLTest2</a></li></ul> 
+#
+#!!end
+
+## BROKEN!! (same as above)
+#!!test
+#Intersection and negation.
+#!!input
+#<DynamicPageList>
+#category=DPLtest
+#category=DPLtest2
+#notcategory=DPLtest3
+#</DynamicPageList>
+#!!result
+#<ul>
+#<li><a href="/wiki/Talk:DPLTest2">Talk:DPLTest2</a></li></ul> 
+#
+#!!end
+
+!! test
+Negation with namespace.
+!! wikitext
+<DynamicPageList>
+namespace=talk
+notcategory=DPLtest3
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Talk:No_Categories" title="Talk:No Categories">Talk:No Categories</a></li></ul>
+!! end
+
+!! test
+Namespace limited to category.
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+namespace=talk
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li></ul>
+!! end
+
+!! test
+Namespace no category.
+!! wikitext
+<DynamicPageList>
+namespace=help
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Help:DPLTest3" title="Help:DPLTest3">Help:DPLTest3</a></li></ul>
+!! end
+
+!! test
+Don't show namespace name. (shownamespace=false)
+!! wikitext
+<DynamicPageList>
+namespace=help
+shownamespace=false
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Help:DPLTest3" title="Help:DPLTest3">DPLTest3</a></li></ul>
+!! end
+
+# This one has count=1 to avoid articles from other tests.
+!! test
+Invalid ns treated as main namespace
+!! wikitext
+<DynamicPageList>
+namespace=Look mummy, this totally isn't a namespace
+count=2
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+!! test
+count and offset combined.
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+count=1
+offset=1
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li></ul>
+!! end
+
+!! test
+include redirects
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+redirects=include
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/DPLRedir" class="mw-redirect" title="DPLRedir">DPLRedir</a></li> 
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+!! test
+only redirect
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+redirects=only
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/DPLRedir" class="mw-redirect" title="DPLRedir">DPLRedir</a></li></ul>
+!! end
+
+
+# Should behave like false.
+# Can't actually test true, since the date would vary.
+!! test
+addfirstcategorydate=INVALID
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+addfirstcategorydate=INVALID
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+!! test
+addfirstcategorydate=false
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+addfirstcategorydate=false
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+
+!! test
+mode=unordered (default)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=unordered
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+!! test
+mode=INVALID
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=INVALID
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+!! test
+mode=ordered
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=ordered
+</DynamicPageList>
+!! html
+<ol>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ol>
+!! end
+
+# This is broken 
+!! test
+mode=none (line breaks)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=none
+</DynamicPageList>
+!! html
+<p><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a><br /> 
+<a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a><br /> 
+<a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a><br />
+</p>
+!! end
+
+!! test
+mode=inline (comma list)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=inline
+</DynamicPageList>
+!! html
+<p><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a>, <a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a>, <a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a>
+</p>
+!! end
+
+# None of these are images, so crappy test.
+!! test
+mode=gallery (complex, no image)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+imagewidth=70
+galleryshowfilesize=yes
+galleryshowfilename=yes
+imagesperrow=7
+gallerycaption=Look at my pretty gallery. {{SERVER}}
+mode=gallery
+</DynamicPageList>
+!! html
+<ul class="gallery mw-gallery-traditional" style="max-width: 791px;">
+	<li class="gallerycaption">Look at my pretty gallery. http://example.org</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=Yet_another_DPL_test_page!" class="new" title="Yet another DPL test page!"><span class="mw-file-element mw-broken-media" data-width="70" data-height="120">Yet another DPL test page!</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/Yet_another_DPL_test_page!" class="galleryfilename galleryfilename-truncate" title="Yet another DPL test page!">Yet another DPL test page!</a>
+<p>File missing<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=DPLTest2" class="new" title="Talk:DPLTest2"><span class="mw-file-element mw-broken-media" data-width="70" data-height="120">DPLTest2</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/Talk:DPLTest2" class="galleryfilename galleryfilename-truncate" title="Talk:DPLTest2">Talk:DPLTest2</a>
+<p>File missing<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=DPLTest1" class="new" title="DPLTest1"><span class="mw-file-element mw-broken-media" data-width="70" data-height="120">DPLTest1</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/DPLTest1" class="galleryfilename galleryfilename-truncate" title="DPLTest1">DPLTest1</a>
+<p>File missing<br />
+</p>
+</div>
+		</li>
+</ul>
+!! end
+
+!! test
+mode=gallery (simple, no image)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=gallery
+</DynamicPageList>
+!! html
+<ul class="gallery mw-gallery-traditional">
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=Yet_another_DPL_test_page!" class="new" title="Yet another DPL test page!"><span class="mw-file-element mw-broken-media" data-width="120" data-height="120">Yet another DPL test page!</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/Yet_another_DPL_test_page!" class="galleryfilename galleryfilename-truncate" title="Yet another DPL test page!">Yet another DPL test page!</a>
+<p>File missing<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=DPLTest2" class="new" title="Talk:DPLTest2"><span class="mw-file-element mw-broken-media" data-width="120" data-height="120">DPLTest2</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/Talk:DPLTest2" class="galleryfilename galleryfilename-truncate" title="Talk:DPLTest2">Talk:DPLTest2</a>
+<p>File missing<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=DPLTest1" class="new" title="DPLTest1"><span class="mw-file-element mw-broken-media" data-width="120" data-height="120">DPLTest1</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/DPLTest1" class="galleryfilename galleryfilename-truncate" title="DPLTest1">DPLTest1</a>
+<p>File missing<br />
+</p>
+</div>
+		</li>
+</ul>
+!! end
+
+!! test
+mode=gallery (complex, with image + bad image)
+!! wikitext
+<DynamicPageList>
+mode=gallery
+namespace=file
+addfirstcategorydate=ymd
+imagewidth=70
+galleryshowfilesize=yes
+galleryshowfilename=yes
+imagesperrow=7
+gallerycaption=I love Captions
+ordermethod=sortkey
+order=descending
+</DynamicPageList>
+!! html
+<ul class="gallery mw-gallery-traditional" style="max-width: 791px;">
+	<li class="gallerycaption">I love Captions</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:LoremIpsum.djvu" class="mw-file-description"><img alt="LoremIpsum.djvu" src="http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-70px-LoremIpsum.djvu.jpg" decoding="async" width="70" height="99" srcset="http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-105px-LoremIpsum.djvu.jpg 1.5x, http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-140px-LoremIpsum.djvu.jpg 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:LoremIpsum.djvu" class="galleryfilename galleryfilename-truncate" title="File:LoremIpsum.djvu">File:LoremIpsum.djvu</a>
+<p>2,480 × 3,508, 5 pages; 3 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Audio.oga" class="mw-file-description"><img alt="Audio.oga" src="/resources/assets/file-type-icons/fileicon.png" decoding="async" width="120" height="120" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Audio.oga" class="galleryfilename galleryfilename-truncate" title="File:Audio.oga">File:Audio.oga</a>
+<dl><dt>12 KB<br /></dt></dl>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Video.ogv" class="mw-file-description"><img alt="Video.ogv" src="/resources/assets/file-type-icons/fileicon-ogg.png" decoding="async" width="120" height="120" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Video.ogv" class="galleryfilename galleryfilename-truncate" title="File:Video.ogv">File:Video.ogv</a>
+<dl><dt>12 KB<br /></dt></dl>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Tall.jpg" class="mw-file-description"><img alt="Tall.jpg" src="http://example.com/images/thumb/8/88/Tall.jpg/70px-Tall.jpg" decoding="async" width="70" height="105" srcset="http://example.com/images/thumb/8/88/Tall.jpg/105px-Tall.jpg 1.5x, http://example.com/images/thumb/8/88/Tall.jpg/140px-Tall.jpg 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Tall.jpg" class="galleryfilename galleryfilename-truncate" title="File:Tall.jpg">File:Tall.jpg</a>
+<p>400 × 600; 9 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Hi-ho.jpg" class="mw-file-description"><img alt="Hi-ho.jpg" src="http://example.com/images/thumb/9/9d/Hi-ho.jpg/70px-Hi-ho.jpg" decoding="async" width="70" height="8" srcset="http://example.com/images/thumb/9/9d/Hi-ho.jpg/105px-Hi-ho.jpg 1.5x, http://example.com/images/thumb/9/9d/Hi-ho.jpg/140px-Hi-ho.jpg 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Hi-ho.jpg" class="galleryfilename galleryfilename-truncate" title="File:Hi-ho.jpg">File:Hi-ho.jpg</a>
+<p>1,941 × 220; 8 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/wiki/File:Bad.jpg" title="File:Bad.jpg"><span class="mw-file-element mw-broken-media" data-width="70" data-height="120">Bad.jpg</span></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Bad.jpg" class="galleryfilename galleryfilename-truncate" title="File:Bad.jpg">File:Bad.jpg</a>
+<p>320 × 240; 12 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Foobar.svg" class="mw-file-description"><img alt="Foobar.svg" src="http://example.com/images/thumb/f/ff/Foobar.svg/70px-Foobar.svg.png" decoding="async" width="70" height="53" srcset="http://example.com/images/thumb/f/ff/Foobar.svg/105px-Foobar.svg.png 1.5x, http://example.com/images/thumb/f/ff/Foobar.svg/140px-Foobar.svg.png 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Foobar.svg" class="galleryfilename galleryfilename-truncate" title="File:Foobar.svg">File:Foobar.svg</a>
+<p>240 × 180; 12 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Thumb.png" class="mw-file-description"><img alt="Thumb.png" src="http://example.com/images/thumb/e/ea/Thumb.png/70px-Thumb.png" decoding="async" width="70" height="70" srcset="http://example.com/images/thumb/e/ea/Thumb.png/105px-Thumb.png 1.5x, http://example.com/images/e/ea/Thumb.png 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Thumb.png" class="galleryfilename galleryfilename-truncate" title="File:Thumb.png">File:Thumb.png</a>
+<p>135 × 135; 22 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:File_%26_file.jpg" class="mw-file-description"><img alt="File &amp; file.jpg" src="http://example.com/images/thumb/1/1f/File_%26_file.jpg/70px-File_%26_file.jpg" decoding="async" width="70" height="8" srcset="http://example.com/images/thumb/1/1f/File_%26_file.jpg/105px-File_%26_file.jpg 1.5x, http://example.com/images/thumb/1/1f/File_%26_file.jpg/140px-File_%26_file.jpg 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:File_%26_file.jpg" class="galleryfilename galleryfilename-truncate" title="File:File &amp; file.jpg">File:File &amp; file.jpg</a>
+<p>1,941 × 220; 8 KB<br />
+</p>
+</div>
+		</li>
+		<li class="gallerybox" style="width: 105px">
+			<div class="thumb" style="width: 100px; height: 150px;"><span typeof="mw:File"><a href="/wiki/File:Foobar.jpg" class="mw-file-description"><img alt="Foobar.jpg" src="http://example.com/images/thumb/3/3a/Foobar.jpg/70px-Foobar.jpg" decoding="async" width="70" height="8" srcset="http://example.com/images/thumb/3/3a/Foobar.jpg/105px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/140px-Foobar.jpg 2x" /></a></span></div>
+			<div class="gallerytext"><a href="/wiki/File:Foobar.jpg" class="galleryfilename galleryfilename-truncate" title="File:Foobar.jpg">File:Foobar.jpg</a>
+<p>1,941 × 220; 8 KB<br />
+</p>
+</div>
+		</li>
+</ul>
+!! end
+
+!! test
+mode=gallery (simple showfilesize, no image)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+mode=gallery
+galleryshowfilesize=yes
+galleryshowfilename=no
+</DynamicPageList>
+!! html
+<ul class="gallery mw-gallery-traditional">
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=Yet_another_DPL_test_page!" class="new" title="Yet another DPL test page!"><span class="mw-file-element mw-broken-media" data-width="120" data-height="120">Yet another DPL test page!</span></a></span></div>
+			<div class="gallerytext">File missing<br />
+</div>
+		</li>
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=DPLTest2" class="new" title="Talk:DPLTest2"><span class="mw-file-element mw-broken-media" data-width="120" data-height="120">DPLTest2</span></a></span></div>
+			<div class="gallerytext">File missing<br />
+</div>
+		</li>
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="height: 150px;"><span typeof="mw:Error mw:File"><a href="/index.php?title=Special:Upload&amp;wpDestFile=DPLTest1" class="new" title="DPLTest1"><span class="mw-file-element mw-broken-media" data-width="120" data-height="120">DPLTest1</span></a></span></div>
+			<div class="gallerytext">File missing<br />
+</div>
+		</li>
+</ul>
+!! end
+
+
+# This is a crappy test since creation and categoryadd are the
+# same for parser tests.
+!! test
+ordermethod=created (by article id)
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+ordermethod=created
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+# This one is BROKEN! I'm not sure why.
+# Seems to order it in opposite order. Maybe timestamp isn't
+# fine grained enough or something given how parsertests creates them.
+#!!test
+#ordermethod=lastedit (by page_touched)
+#!!input
+#<DynamicPageList>
+#category=DPLtest
+#ordermethod=lastedit
+#</DynamicPageList>
+#!!result
+#<ul>
+#<li><a href="/wiki/Yet_another_DPL_test_page!">Yet another DPL test page!</a></li>
+# <li><a href="/wiki/Talk:DPLTest2">Talk:DPLTest2</a></li> 
+# <li><a href="/wiki/DPLTest1">DPLTest1</a></li></ul>
+#
+#!!end
+
+
+!! test
+ordermethod=length
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+ordermethod=length
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+!! test
+ordermethod=sortkey
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+ordermethod=sortkey
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end
+
+#check to make sure the alias works.
+!! test
+ordermethod=categorysortkey
+!! wikitext
+<DynamicPageList>
+category=DPLtest
+ordermethod=categorysortkey
+order=ascending
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li></ul>
+!! end
+
+# Check {{PAGENAME}} in category clause (dates variables are somewhat more common, but
+# this is easier to check.
+#
+# using {{PAGENAME:DPLtest}} because dpl uses a weird (and probably wrong way) of
+# expanding {{PAGENAME}} and friends, which doesn't work with parsertests and
+# the title= option.
+!! test
+Magic word in category clause
+!! wikitext
+<DynamicPageList>
+category={{PAGENAME:DPLtest}}
+</DynamicPageList>
+!! html
+<ul>
+<li><a href="/wiki/Yet_another_DPL_test_page!" title="Yet another DPL test page!">Yet another DPL test page!</a></li> 
+<li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
+<li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
+!! end

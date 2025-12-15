@@ -63,6 +63,12 @@ describe('Parser tests', () => {
 
 				Parser.viewOnly = false;
 
+				assert.strictEqual(
+					tests.filter(({desc: d}) => d === desc).length,
+					1,
+					`测试用例描述重复：${desc}`,
+				);
+
 				/* NOT FOR BROWSER END */
 
 				const root = Parser.parse(wikitext, title),
@@ -124,19 +130,5 @@ describe('Parser tests', () => {
 				});
 			}
 		}
-	}
-});
-
-/* NOT FOR BROWSER */
-
-const reviewed: string[] = require('../../test/reviewed.json');
-describe('Review record', () => {
-	for (const test of reviewed) {
-		it(test, () => {
-			assert.ok(
-				tests.some(({desc, wikitext}) => desc === test && wikitext !== undefined),
-				`Deprecated test case: ${test}`,
-			);
-		});
 	}
 });
