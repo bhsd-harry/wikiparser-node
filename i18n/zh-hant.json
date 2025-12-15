@@ -34,6 +34,7 @@
 	"inconsistent-table": "表格版面不一致",
 	"insecure-style": "不安全的樣式",
 	"invalid-attribute": "包含無效屬性名稱的元素",
+	"invalid-category": "無效的分類名",
 	"invalid-content": "<$1>有無效內容",
 	"invalid-conversion-flag": "無效的轉換旗標",
 	"invalid-gallery": "無效的圖庫圖片",

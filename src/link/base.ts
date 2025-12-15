@@ -57,7 +57,13 @@ export abstract class LinkBaseToken extends Token {
 	#delimiter;
 	#title: Title;
 
-	abstract override get type(): 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image' | 'redirect-target';
+	abstract override get type(): 'link'
+		| 'category'
+		| 'file'
+		| 'gallery-image'
+		| 'imagemap-image'
+		| 'redirect-target'
+		| 'ext-inner';
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -141,13 +147,20 @@ export abstract class LinkBaseToken extends Token {
 		this.protectChildren(0);
 	}
 
+	/** 更新name */
+	#setName(): void {
+		if (this.type !== 'ext-inner') {
+			this.setAttribute('name', this.#title.title);
+		}
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		this.#title = this.getTitle();
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
-		this.setAttribute('name', this.#title.title);
+		this.#setName();
 		super.afterBuild();
 
 		/* NOT FOR BROWSER */
@@ -158,12 +171,12 @@ export abstract class LinkBaseToken extends Token {
 			if (prevTarget?.is<AtomToken>('link-target')) {
 				const name = prevTarget.text(),
 					titleObj = this.getTitle(),
-					{title, interwiki, ns, valid} = titleObj;
+					{interwiki, ns, valid} = titleObj;
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`Invalid link target: ${name}`);
 				} else if (
-					type === 'category' && (interwiki || ns !== 14)
+					(type === 'category' || type === 'ext-inner') && (interwiki || ns !== 14)
 					|| (type === 'file' || type === 'gallery-image' || type === 'imagemap-image')
 					&& (interwiki || ns !== 6)
 				) {
@@ -183,7 +196,7 @@ export abstract class LinkBaseToken extends Token {
 					}
 				}
 				this.#title = titleObj;
-				this.setAttribute('name', title);
+				this.#setName();
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);

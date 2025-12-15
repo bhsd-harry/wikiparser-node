@@ -65,18 +65,10 @@ export abstract class ImagemapToken extends MultiLineToken {
 			} else if (first) {
 				const pipe = line.indexOf('|'),
 					file = pipe === -1 ? line : line.slice(0, pipe),
-					{
-						valid,
-						ns,
-
-						/* NOT FOR BROWSER */
-
-						interwiki,
-					} = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true, page: ''});
+					title = this.normalizeTitle(file, 0, {halfParsed: true, temporary: true, page: ''});
 				if (
-					valid
-					&& !interwiki
-					&& ns === 6
+					title.valid && title.ns === 6
+					&& !title.interwiki
 				) {
 					// @ts-expect-error abstract class
 					const token: GalleryImageToken = new GalleryImageToken(

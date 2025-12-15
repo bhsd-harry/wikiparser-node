@@ -144,6 +144,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			nonWordAttributes: 1,
 			redirect: 1,
 
+			// categorytree: 2,
 			// choose: 2,
 			// combobox: 2,
 			// dynamicpagelist: 2,

@@ -91,15 +91,9 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/** 判定无效的图片 */
 	#lint(): boolean {
-		const {
-			ns,
-
-			/* NOT FOR BROWSER */
-
-			interwiki,
-		} = this.getAttribute('title');
-		return ns !== 6
-			|| Boolean(interwiki);
+		const title = this.getAttribute('title');
+		return title.ns !== 6
+			|| Boolean(title.interwiki);
 	}
 
 	/** @private */

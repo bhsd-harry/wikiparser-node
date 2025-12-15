@@ -165,6 +165,12 @@ export abstract class ExtToken extends TagPairToken {
 				innerToken = new CommentedToken(inner, newConfig, accum);
 				break;
 			}
+			case 'categorytree': {
+				const {CategorytreeToken}: typeof import('../link/categorytree') = require('../link/categorytree');
+				// @ts-expect-error abstract class
+				innerToken = new CategorytreeToken(inner, undefined, newConfig, accum);
+				break;
+			}
 			// 更多定制扩展的代码示例：
 			// ```
 			// case 'extensionName': {
