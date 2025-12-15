@@ -57,11 +57,9 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/** 判定无效的图片 */
 	#lint(): boolean {
-		const {
-			ns,
-		} = this.getAttribute('title');
+		const title = this.getAttribute('title');
 		// eslint-disable-next-line @stylistic/semi
-		return ns !== 6
+		return title.ns !== 6
 	}
 
 	/** @private */

@@ -34,6 +34,7 @@
 	"inconsistent-table": "inconsistent table layout",
 	"insecure-style": "insecure style",
 	"invalid-attribute": "element containing an invalid attribute name",
+	"invalid-category": "invalid category name",
 	"invalid-content": "invalid content in <$1>",
 	"invalid-conversion-flag": "invalid conversion flag",
 	"invalid-gallery": "invalid gallery image",
