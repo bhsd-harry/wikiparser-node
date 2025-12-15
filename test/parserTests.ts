@@ -126,3 +126,17 @@ describe('Parser tests', () => {
 		}
 	}
 });
+
+/* NOT FOR BROWSER */
+
+const reviewed: string[] = require('../../test/reviewed.json');
+describe('Review record', () => {
+	for (const test of reviewed) {
+		it(test, () => {
+			assert.ok(
+				tests.some(({desc, wikitext}) => desc === test && wikitext !== undefined),
+				`Deprecated test case: ${test}`,
+			);
+		});
+	}
+});
