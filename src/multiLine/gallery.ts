@@ -14,9 +14,7 @@ import type {
 } from '../../internal';
 
 /**
- * gallery tag
- *
- * gallery标签
+ * `<gallery>`
  * @classdesc `{childNodes: (GalleryImageToken|CommentLineToken|AstText)[]}`
  */
 export abstract class GalleryToken extends MultiLineToken {
