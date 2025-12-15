@@ -78,12 +78,6 @@ export abstract class ExtToken extends TagPairToken {
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
-			case 'imagemap': {
-				const {ImagemapToken}: typeof import('../multiLine/imagemap') = require('../multiLine/imagemap');
-				// @ts-expect-error abstract class
-				innerToken = new ImagemapToken(inner, newConfig, accum);
-				break;
-			}
 			default: {
 				const {NowikiToken}: typeof import('../nowiki/index') = require('../nowiki/index');
 				// @ts-expect-error abstract class

@@ -20,4 +20,3 @@ export type {GalleryImageToken} from './src/link/galleryImage';
 export type {NowikiToken} from './src/nowiki/index';
 export type {NestedToken} from './src/nested';
 export type {GalleryToken} from './src/multiLine/gallery';
-export type {ImagemapToken} from './src/multiLine/imagemap';
