@@ -111,7 +111,10 @@ for (const file of ['parserTests.txt', ...files]) {
 			title = /\btitle=\s*\[\[([^\]]+)/u.exec(option)?.[1],
 			root = Parser.parse(wikitext, title ?? 'Parser test'),
 			t: Test = {desc, wikitext, title};
-		if (/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test) && (!test.includes('options') || re.test(test))) {
+		if (
+			/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test)
+			&& (!test.includes('!! options') || re.test(test))
+		) {
 			t.html = html!;
 			try {
 				t.render = root.toHtml();

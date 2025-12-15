@@ -52,7 +52,7 @@
 		"build": "npm run build:core && LC_ALL=en.UTF-8 node dist/script/parserTests.js",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . | grep '\\.ts'; }; f",
-		"lint:ts": "tsc --noEmit && eslint --cache . && eslint --no-config-lookup -c eslint.markdown.mjs wiki/*.md",
+		"lint:ts": "tsc --noEmit && eslint --cache . && eslint --no-config-lookup -c wiki/eslint.config.mjs wiki/*.md",
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && mocha dist/test/json.js",
 		"lint:md": "markdownlint-cli2 '**/*.md'",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:md",
