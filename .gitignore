@@ -14,7 +14,6 @@
 /wiki/
 /test/*.wiki
 /test/prof*.json
-/localStorage.json
 /build
 !README
 /config/testwiki.json
