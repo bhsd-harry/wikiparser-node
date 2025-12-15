@@ -35,7 +35,13 @@ export abstract class LinkBaseToken extends Token {
 	#delimiter;
 	#title: Title;
 
-	abstract override get type(): 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image' | 'redirect-target';
+	abstract override get type(): 'link'
+		| 'category'
+		| 'file'
+		| 'gallery-image'
+		| 'imagemap-image'
+		| 'redirect-target'
+		| 'ext-inner';
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -74,13 +80,20 @@ export abstract class LinkBaseToken extends Token {
 		this.#delimiter = delimiter;
 	}
 
+	/** 更新name */
+	#setName(): void {
+		if (this.type !== 'ext-inner') {
+			this.setAttribute('name', this.#title.title);
+		}
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		this.#title = this.getTitle();
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
-		this.setAttribute('name', this.#title.title);
+		this.#setName();
 		super.afterBuild();
 	}
 
