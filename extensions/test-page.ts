@@ -6,17 +6,13 @@ declare interface Test {
 }
 
 const ignoredGroups = new Set([
+	// <imagemap>
+	'imageMapParserTests',
 	// <ref>
-	'bookReferencing',
 	'citeParserTests',
 	'citeSmokeTests',
-	'fragmentModes',
-	// magic words
-	'magicWords',
-	'extTags',
-	'funcsParserTests',
-	'stringFunctionTests',
-	'parserFunctionTests',
+	'responsiveReferencesTests',
+	'subReferencingTests',
 ]);
 
 /**
@@ -31,12 +27,33 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 	}
 };
 
+/**
+ * 隐藏全部子项被禁用的 optgroup 元素
+ * @param optgroup optgroup 元素
+ */
+const hideOptGroup = (optgroup: HTMLOptGroupElement): void => {
+	// eslint-disable-next-line unicorn/prefer-spread
+	optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
+		.every(({style}) => style.display === 'none')
+		? 'none'
+		: '';
+};
+
 (async () => {
+	const key = 'wikiparser-node-done',
+		isGH = location.hostname.endsWith('.github.io');
+	let reviewed: string[] | null = null;
+	if (!isGH) {
+		reviewed = JSON.parse(localStorage.getItem(key)!);
+		if (!reviewed) {
+			reviewed = await (await fetch('./test/reviewed.json')).json();
+			localStorage.setItem(key, JSON.stringify(reviewed));
+		}
+	}
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
-		key = 'wikiparser-node-done',
-		dones = new Set(JSON.parse(localStorage.getItem(key)!) as string[]),
-		isGH = location.hostname.endsWith('.github.io'),
+		dones = new Set(reviewed),
 		isIframe = self !== top, // eslint-disable-line no-restricted-globals
+		input = document.getElementById('search') as HTMLInputElement,
 		select = document.querySelector('select')!,
 		btn = document.querySelector('button')!,
 		pre = document.querySelector('pre')!,
@@ -48,25 +65,37 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 	btn.disabled = !select.value;
 	if (!isGH) {
 		btn.style.display = '';
+		btn.addEventListener('click', () => {
+			dones.add(tests[Number(select.value)]!.desc);
+			localStorage.setItem(key, JSON.stringify([...dones]));
+			while (select.selectedOptions[0]!.disabled) {
+				select.selectedIndex++;
+			}
+			select.dispatchEvent(new Event('change'));
+		});
 	}
 	let optgroup: HTMLOptGroupElement | undefined;
 	for (let i = 0; i < tests.length; i++) {
 		const {desc, wikitext, html} = tests[i]!;
 		if (wikitext === undefined) {
-			if (optgroup && optgroup.childElementCount === 0) {
-				optgroup.remove();
+			if (optgroup) {
+				hideOptGroup(optgroup);
 			}
 			optgroup = document.createElement('optgroup');
 			optgroup.label = desc;
 			if (!isIframe || !ignoredGroups.has(desc)) {
 				select.append(optgroup);
 			}
-		} else if ((isIframe || html !== undefined) && (isGH || !dones.has(desc))) {
+		} else if (isIframe || html !== undefined) {
 			const option = document.createElement('option');
 			option.value = String(i);
 			option.textContent = desc;
 			// @ts-expect-error already assigned
 			optgroup.append(option);
+			if (!isGH && dones.has(desc)) {
+				option.disabled = true;
+				option.style.display = 'none';
+			}
 		}
 	}
 	const dblClickHandler = /** @ignore */ (e?: MouseEvent): void => {
@@ -92,6 +121,32 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 			Prism.highlightAllUnder(container);
 		}
 	};
+	/* eslint-disable unicorn/prefer-spread */
+	const options = Array.from(select.options),
+		optgroups = Array.from(select.querySelectorAll('optgroup'));
+	/* eslint-enable unicorn/prefer-spread */
+	input.addEventListener('input', () => {
+		const {value} = input,
+			lower = value.toLowerCase();
+		let re: RegExp | undefined;
+		try {
+			re = new RegExp(value, 'iu');
+		} catch {
+			try {
+				re = new RegExp(value, 'i'); // eslint-disable-line require-unicode-regexp
+			} catch {}
+		}
+		for (const option of options) {
+			const {textContent, value: v} = option;
+			option.style.display = !isGH && dones.has(textContent)
+				|| v && !textContent.toLowerCase().includes(lower) && !(re && re.test(textContent))
+				? 'none'
+				: '';
+		}
+		for (const group of optgroups) {
+			hideOptGroup(group);
+		}
+	});
 	select.addEventListener('change', () => {
 		const {wikitext, html, render, desc} = tests[Number(select.value)]!;
 		pre.textContent = wikitext!;
@@ -171,14 +226,6 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 		btn.disabled = false;
 		history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
 		dispatchEvent(new CustomEvent('casechange'));
-	});
-	btn.addEventListener('click', () => {
-		dones.add(tests[Number(select.value)]!.desc);
-		localStorage.setItem(key, JSON.stringify([...dones]));
-		while (select.selectedOptions[0]!.disabled) {
-			select.selectedIndex++;
-		}
-		select.dispatchEvent(new Event('change'));
 	});
 	container.addEventListener('click', e => {
 		e.preventDefault();

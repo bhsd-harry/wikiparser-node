@@ -40,20 +40,24 @@ article {
 	background-color: var(--color-select);
 	margin-bottom: .5rem;
 }
-select {
-	position: absolute;
+select, input[type="search"] {
 	width: 100%;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: var(--color-select);
 	border: 1px solid #a2a9b1;
 	border-radius: 2px;
-	text-align: center;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	cursor: pointer;
 	padding: 5px 12px;
+	font-size: 1em;
+	font-family: inherit;
+}
+select {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: var(--color-select);
+	text-align: center;
+	cursor: pointer;
 }
 pre {
 	border-radius: .3em;

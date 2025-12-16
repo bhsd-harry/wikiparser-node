@@ -1,15 +1,11 @@
 (() => {
 "use strict";
 const ignoredGroups = new Set([
-    'bookReferencing',
+    'imageMapParserTests',
     'citeParserTests',
     'citeSmokeTests',
-    'fragmentModes',
-    'magicWords',
-    'extTags',
-    'funcsParserTests',
-    'stringFunctionTests',
-    'parserFunctionTests',
+    'responsiveReferencesTests',
+    'subReferencingTests',
 ]);
 const removeClass = (ele, ...cls) => {
     ele.classList.remove(...cls);
@@ -17,20 +13,43 @@ const removeClass = (ele, ...cls) => {
         ele.removeAttribute('class');
     }
 };
+const hideOptGroup = (optgroup) => {
+    optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
+        .every(({ style }) => style.display === 'none')
+        ? 'none'
+        : '';
+};
 (async () => {
-    const tests = await (await fetch('./test/parserTests.json')).json(), key = 'wikiparser-node-done', dones = new Set(JSON.parse(localStorage.getItem(key))), isGH = location.hostname.endsWith('.github.io'), isIframe = self !== top, select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const key = 'wikiparser-node-done', isGH = location.hostname.endsWith('.github.io');
+    let reviewed = null;
+    if (!isGH) {
+        reviewed = JSON.parse(localStorage.getItem(key));
+        if (!reviewed) {
+            reviewed = await (await fetch('./test/reviewed.json')).json();
+            localStorage.setItem(key, JSON.stringify(reviewed));
+        }
+    }
+    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(reviewed), isIframe = self !== top, input = document.getElementById('search'), select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     wikiparse.setConfig(await (await fetch('./config/default.json')).json());
     await wikiparse.highlight(pre, false, true);
     btn.disabled = !select.value;
     if (!isGH) {
         btn.style.display = '';
+        btn.addEventListener('click', () => {
+            dones.add(tests[Number(select.value)].desc);
+            localStorage.setItem(key, JSON.stringify([...dones]));
+            while (select.selectedOptions[0].disabled) {
+                select.selectedIndex++;
+            }
+            select.dispatchEvent(new Event('change'));
+        });
     }
     let optgroup;
     for (let i = 0; i < tests.length; i++) {
         const { desc, wikitext, html } = tests[i];
         if (wikitext === undefined) {
-            if (optgroup && optgroup.childElementCount === 0) {
-                optgroup.remove();
+            if (optgroup) {
+                hideOptGroup(optgroup);
             }
             optgroup = document.createElement('optgroup');
             optgroup.label = desc;
@@ -38,11 +57,15 @@ const removeClass = (ele, ...cls) => {
                 select.append(optgroup);
             }
         }
-        else if ((isIframe || html !== undefined) && (isGH || !dones.has(desc))) {
+        else if (isIframe || html !== undefined) {
             const option = document.createElement('option');
             option.value = String(i);
             option.textContent = desc;
             optgroup.append(option);
+            if (!isGH && dones.has(desc)) {
+                option.disabled = true;
+                option.style.display = 'none';
+            }
         }
     }
     const dblClickHandler = (e) => {
@@ -66,6 +89,30 @@ const removeClass = (ele, ...cls) => {
             Prism.highlightAllUnder(container);
         }
     };
+    const options = Array.from(select.options), optgroups = Array.from(select.querySelectorAll('optgroup'));
+    input.addEventListener('input', () => {
+        const { value } = input, lower = value.toLowerCase();
+        let re;
+        try {
+            re = new RegExp(value, 'iu');
+        }
+        catch {
+            try {
+                re = new RegExp(value, 'i');
+            }
+            catch { }
+        }
+        for (const option of options) {
+            const { textContent, value: v } = option;
+            option.style.display = !isGH && dones.has(textContent)
+                || v && !textContent.toLowerCase().includes(lower) && !(re && re.test(textContent))
+                ? 'none'
+                : '';
+        }
+        for (const group of optgroups) {
+            hideOptGroup(group);
+        }
+    });
     select.addEventListener('change', () => {
         const { wikitext, html, render, desc } = tests[Number(select.value)];
         pre.textContent = wikitext;
@@ -135,14 +182,6 @@ const removeClass = (ele, ...cls) => {
         btn.disabled = false;
         history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
         dispatchEvent(new CustomEvent('casechange'));
-    });
-    btn.addEventListener('click', () => {
-        dones.add(tests[Number(select.value)].desc);
-        localStorage.setItem(key, JSON.stringify([...dones]));
-        while (select.selectedOptions[0].disabled) {
-            select.selectedIndex++;
-        }
-        select.dispatchEvent(new Event('change'));
     });
     container.addEventListener('click', e => {
         e.preventDefault();
