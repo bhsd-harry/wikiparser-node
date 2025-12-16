@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.32.1
 
-*2025-12-15*
+*2025-12-16*
 
 **Added**
 
@@ -9,6 +9,7 @@
 - [`ParamLineToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#lint) now reports unknown parameter names
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests parameter names in `<dynamicpagelist>` and `<inputbox>`
 - Parse and report extension tags inside `<categorytree>`
+- Parse `<pre>` tags with `format="wikitext"`
 
 **Fixed**
 
