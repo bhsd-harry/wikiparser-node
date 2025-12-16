@@ -117,6 +117,7 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 ### HTML tag
 
 1. Style sanitization is sometimes different ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
+1. Table fostered content from `<table>` HTML tags ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#6.%20Encapsulate%20foster-parented%20transclusion%20content)).
 
 ### Table
 
