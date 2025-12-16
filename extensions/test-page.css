@@ -108,7 +108,8 @@ pre {
 	cursor: not-allowed;
 }
 
-.mw-editsection, .mw-empty-elt {
+.frame .mw-editsection,
+.frame .mw-empty-elt {
 	display: none;
 }
 .frame p {
@@ -119,7 +120,8 @@ pre {
 	background-color: #a2a9b1;
 	margin: .2em 0;
 }
-.frame h1, .frame h2 {
+.frame h1,
+.frame h2 {
 	margin: 1em 0 .25em;
 	line-height: 1.38;
 	border-bottom: 1px solid #a2a9b1;
@@ -130,7 +132,10 @@ pre {
 .frame h2 {
 	font-size: 1.5em;
 }
-.frame h3, .frame h4, .frame h5, .frame h6 {
+.frame h3,
+.frame h4,
+.frame h5,
+.frame h6 {
 	margin-top: .3em;
 	line-height: 1.6;
 	font-weight: bold;
@@ -138,7 +143,9 @@ pre {
 .frame h3 {
 	font-size: 1.2em;
 }
-.frame h4, .frame h5, .frame h6 {
+.frame h4,
+.frame h5,
+.frame h6 {
 	font-size: 100%;
 }
 .frame a {
@@ -149,7 +156,8 @@ pre {
 .frame a.new {
 	color: #ba0000;
 }
-.frame a.external, .frame a.extiw {
+.frame a.external,
+.frame a.extiw {
 	color: #36b;
 }
 .frame a.external {
@@ -164,7 +172,8 @@ pre {
 	font-weight: bold;
 	cursor: inherit;
 }
-.frame a:hover, .frame a:focus {
+.frame a:hover,
+.frame a:focus {
 	text-decoration: underline;
 }
 .frame a.mw-selflink:hover {
@@ -186,11 +195,14 @@ pre {
 .frame li {
 	margin-bottom: .1em;
 }
-.frame ul > li, .frame ol > li {
+.frame ul > li,
+.frame ol > li {
 	min-height: 1em;
 }
-.frame li:empty, .frame li:-moz-only-whitespace,
-.frame p:empty, .frame p:-moz-only-whitespace {
+.frame li:empty,
+.frame li:-moz-only-whitespace,
+.frame p:empty,
+.frame p:-moz-only-whitespace {
 	display: none;
 }
 .frame .redirectText {
@@ -221,17 +233,20 @@ pre {
 	padding: 1px 4px;
 }
 .frame pre {
+	line-height: 1.3;
 	padding: 1em;
 	white-space: pre-wrap;
 	overflow: hidden;
 	overflow-wrap: break-word;
 }
-.frame code, .frame pre {
+.frame code,
+.frame pre {
 	background: #f8f9fa;
 	color: #000;
 	border: 1px solid #eaecf0;
 }
-.frame sub, .frame sup {
+.frame sub,
+.frame sup {
 	font-size: 80%;
 	line-height: 1;
 }
@@ -243,22 +258,27 @@ pre {
 	font-size: larger;
 	color: #d73333;
 }
-.frame p + ul, .frame p + ol, .frame p + table, .frame p + dl, .frame p + blockquote {
+.frame p + ul,
+.frame p + ol,
+.frame p + table,
+.frame p + dl,
+.frame p + blockquote {
 	margin-top: -.5em;
 }
-.wikitable {
+.frame .wikitable {
 	background-color: #f8f9fa;
 	color: #202122;
 	margin: 1em 0;
 	border: 1px solid #a2a9b1;
 	border-collapse: collapse;
 }
-.wikitable > * > tr > th {
+.frame .wikitable > * > tr > th {
 	background-color: #eaecf0;
 	color: #202122;
 	text-align: center;
 }
-.wikitable > * > tr > th, .wikitable > * > tr > td {
+.frame .wikitable > * > tr > th,
+.frame .wikitable > * > tr > td {
 	border: 1px solid #a2a9b1;
 	padding: .2em .4em;
 }
@@ -418,7 +438,8 @@ pre {
 	padding-right: .5em;
 	color: #202122;
 }
-.frame .tocnumber, .frame .toctext {
+.frame .tocnumber,
+.frame .toctext {
 	display: table-cell;
 }
 .frame ul.gallery {
@@ -467,6 +488,137 @@ pre {
 .frame li.gallerybox div.thumb img {
 	display: block;
 	margin: 0 auto;
+}
+.frame .CategoryTreeTag {
+	margin-top: .5ex;
+	margin-bottom: .5ex;
+}
+.frame .CategoryTreeNotice {
+	font-style: italic;
+}
+.frame .CategoryTreeEmptyBullet,
+.frame .CategoryTreeToggle {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	min-width: 14px;
+	min-height: 14px;
+	vertical-align: text-top;
+	/* stylelint-disable plugin/use-baseline */
+	-webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"%23000\"><path d=\"M10 15 2 5h16z\"/></svg>");
+	mask-image: url("data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"%23000\"><path d=\"M10 15 2 5h16z\"/></svg>");
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: calc(max(14px, 14px));
+	mask-size: calc(max(14px, 14px));
+	/* stylelint-enable plugin/use-baseline */
+}
+.frame .CategoryTreeBullet,
+.frame .CategoryTreeEmptyBullet {
+	-webkit-user-select: none;
+	user-select: none;
+}
+.frame .CategoryTreeEmptyBullet {
+	background-color: #dadde3;
+}
+.frame .CategoryTreeToggle {
+	background-color: #36c;
+}
+.frame .CategoryTreeEmptyBullet,
+.frame .CategoryTreeToggle[aria-expanded="false"] {
+	transform: rotate(-90deg);
+}
+.frame .CategoryTreeChildren {
+	margin-left: 1.25em;
+	margin-right: 0;
+	margin-inline: 1.25em 0;
+}
+.frame .mw-inputbox-centered {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+.frame form {
+	border: 0;
+	margin: 0;
+}
+.frame form.mw-inputbox-form {
+	line-height: .6;
+}
+.frame .cdx-text-input {
+	position: relative;
+	box-sizing: border-box;
+	min-width: 256px;
+	border-radius: 2px;
+	overflow: hidden;
+}
+.frame form.mw-inputbox-form .cdx-text-input {
+	display: flex;
+	justify-content: center;
+}
+.frame .cdx-text-input__input {
+	display: block;
+	box-sizing: border-box;
+	min-height: 32px;
+	max-height: 2rem;
+	margin: 0;
+	border: 1px solid;
+	border-radius: 0;
+	padding: 4px 8px;
+	font-family: inherit;
+	font-size: 1rem;
+	line-height: 1.38rem;
+}
+.frame .cdx-text-input__input:enabled {
+	background-color: #fff;
+	color: #202122;
+	border-color: #72777d;
+	box-shadow: inset 0 0 0 1px transparent;
+}
+.frame .cdx-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	box-sizing: border-box;
+	min-height: 32px;
+	max-width: 28rem;
+	margin: 0;
+	border: 1px solid;
+	border-radius: 2px;
+	padding-right: 11px;
+	padding-left: 11px;
+	font-family: inherit;
+	font-size: 1rem;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-transform: none;
+}
+.frame .cdx-button:enabled {
+	background-color: #f8f9fa;
+	color: #202122;
+	border-color: #72777d;
+}
+.frame .mw-highlight {
+	unicode-bidi: embed;
+	background: #f8f8f8;
+}
+.frame div.mw-highlight {
+	position: relative;
+	display: flow-root;
+	margin: 1em 0;
+}
+.frame .mw-highlight pre {
+	margin: 0;
+	tab-size: 4;
+}
+.frame .mw-highlight .hll {
+	display: block;
+	background-color: #ffc;
 }
 
 .frame > pre.language-html {

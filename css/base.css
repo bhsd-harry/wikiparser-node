@@ -4,6 +4,7 @@
 }
 .wikiparser {
 	white-space: pre-wrap;
+	tab-size: 4;
 	overflow-wrap: break-word;
 	word-break: break-all;
 	font-family: monospace;
