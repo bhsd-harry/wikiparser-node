@@ -5,6 +5,8 @@
 	],
 	"exclude": [
 		"gh-page.ts",
+		"test-page.ts",
+		"test-page-common.ts",
 		"codejar.ts"
 	],
 	"compilerOptions": {

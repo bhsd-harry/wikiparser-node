@@ -2,6 +2,8 @@
 	"extends": "./tsconfig",
 	"include": [
 		"gh-page.ts",
+		"test-page.ts",
+		"test-page-common.ts",
 		"codejar.ts"
 	],
 	"exclude": []

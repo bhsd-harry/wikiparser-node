@@ -1,3 +1,5 @@
+import {prepareDoneBtn, addOption, changeHandler, hashChangeHandler, inputHandler} from './test-page-common.js';
+
 declare interface Test {
 	desc: string;
 	wikitext?: string;
@@ -11,9 +13,13 @@ const ignoredGroups = new Set([
 	// <ref>
 	'citeParserTests',
 	'citeSmokeTests',
+	'parserFunctionTests',
 	'responsiveReferencesTests',
 	'subReferencingTests',
+	'urlFragmentModeTests',
 ]);
+
+const isIframe = self !== top; // eslint-disable-line no-restricted-globals
 
 /**
  * 移除元素的指定类名
@@ -28,22 +34,134 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
 };
 
 /**
- * 隐藏全部子项被禁用的 optgroup 元素
- * @param optgroup optgroup 元素
+ * 双击切换源代码视图
+ * @param container 容器
+ * @param container1 容器1
+ * @param container2 容器2
+ * @param e 事件对象
  */
-const hideOptGroup = (optgroup: HTMLOptGroupElement): void => {
-	// eslint-disable-next-line unicorn/prefer-spread
-	optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
-		.every(({style}) => style.display === 'none')
-		? 'none'
-		: '';
+const dblClickHandler = (
+	container: HTMLElement,
+	container1: HTMLElement,
+	container2: HTMLElement,
+	e?: MouseEvent,
+): void => {
+	e?.preventDefault();
+	if (container.dataset['source']) {
+		container.removeAttribute('data-source');
+		container1.innerHTML = container1.textContent!;
+		container2.innerHTML = container2.textContent!;
+	} else {
+		container.dataset['source'] = '1';
+		const pre1 = document.createElement('pre'),
+			pre2 = document.createElement('pre'),
+			code1 = document.createElement('code'),
+			code2 = document.createElement('code');
+		code1.textContent = container1.innerHTML;
+		code2.textContent = container2.innerHTML;
+		pre1.className = 'language-html';
+		pre2.className = 'language-html';
+		pre1.append(code1);
+		pre2.append(code2);
+		container1.replaceChildren(pre1);
+		container2.replaceChildren(pre2);
+		// @ts-expect-error Prism global
+		Prism.highlightAllUnder(container);
+	}
+};
+
+/**
+ * 重绘内容
+ * @param container 容器
+ * @param container1 容器1
+ * @param container2 容器2
+ * @param html 容器1内容
+ * @param render 容器2内容
+ */
+const repaint = (
+	container: HTMLElement,
+	container1: HTMLElement,
+	container2: HTMLElement,
+	html?: string,
+	render?: string,
+): void => {
+	container.removeAttribute('data-source');
+	if (html === undefined) {
+		container.style.display = 'none';
+	} else {
+		container.style.display = '';
+		container1.innerHTML = html!;
+		container2.innerHTML = render ?? '';
+		const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading'],
+			withClasses = container1
+				.querySelectorAll(classes.map(c => `.${c}`).join()) as unknown as Iterable<Element>,
+			empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>,
+			styles = container1
+				.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>,
+			typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
+			edits = container1
+				.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
+			tocs = container1.querySelectorAll('#toc') as unknown as Iterable<Element>,
+			anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
+		container2.querySelector('#catlinks')?.remove();
+		for (const ele of withClasses) {
+			removeClass(ele, ...classes);
+		}
+		for (const ele of empty) {
+			if (ele.childElementCount === 0 && !ele.textContent.trim()) {
+				removeClass(ele, 'mw-empty-elt');
+			}
+		}
+		for (const ele of styles) {
+			ele.removeAttribute('style');
+		}
+		for (const ele of typeofs) {
+			ele.removeAttribute('typeof');
+		}
+		for (const ele of edits) {
+			ele.remove();
+		}
+		for (const ele of tocs) {
+			const {nextSibling} = ele;
+			if (
+				nextSibling?.nodeType === Node.TEXT_NODE
+				&& nextSibling.textContent!.startsWith('\n\n')
+			) {
+				(nextSibling as Text).deleteData(0, 2);
+			}
+			ele.remove();
+		}
+		for (const ele of anchors) {
+			ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
+			try {
+				const url = new URL(ele.href);
+				if (ele.classList.contains('external')) {
+					ele.href = url.href;
+				} else if (
+					url.origin === location.origin
+					&& url.pathname === '/index.php'
+					&& url.searchParams.has('title')
+				) {
+					url.pathname = `/wiki/${
+						url.searchParams.get('title')!.replace(/:/gu, '%3A')
+					}`;
+					url.searchParams.delete('title');
+					ele.setAttribute('href', url.pathname + url.search);
+				}
+			} catch {
+				ele.removeAttribute('href');
+			}
+		}
+		if (isIframe && container1.innerHTML === container2.innerHTML) {
+			dblClickHandler(container, container1, container2);
+		}
+	}
 };
 
 (async () => {
-	const key = 'wikiparser-node-done',
-		isGH = location.hostname.endsWith('.github.io');
+	const key = 'wikiparser-node-done';
 	let reviewed: string[] | null = null;
-	if (!isGH) {
+	if (!location.hostname.endsWith('.github.io')) {
 		reviewed = JSON.parse(localStorage.getItem(key)!);
 		if (!reviewed) {
 			reviewed = await (await fetch('./test/reviewed.json')).json();
@@ -52,7 +170,6 @@ const hideOptGroup = (optgroup: HTMLOptGroupElement): void => {
 	}
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
 		dones = new Set(reviewed),
-		isIframe = self !== top, // eslint-disable-line no-restricted-globals
 		input = document.getElementById('search') as HTMLInputElement,
 		select = document.querySelector('select')!,
 		btn = document.querySelector('button')!,
@@ -62,182 +179,32 @@ const hideOptGroup = (optgroup: HTMLOptGroupElement): void => {
 		container2 = document.getElementById('frame2')!;
 	wikiparse.setConfig(await (await fetch('./config/default.json')).json() as import('./typings').ConfigData);
 	await wikiparse.highlight!(pre, false, true);
-	btn.disabled = !select.value;
-	if (!isGH) {
-		btn.style.display = '';
-		btn.addEventListener('click', () => {
-			dones.add(tests[Number(select.value)]!.desc);
-			localStorage.setItem(key, JSON.stringify([...dones]));
-			while (select.selectedOptions[0]!.disabled) {
-				select.selectedIndex++;
-			}
-			select.dispatchEvent(new Event('change'));
-		});
-	}
 	let optgroup: HTMLOptGroupElement | undefined;
 	for (let i = 0; i < tests.length; i++) {
-		const {desc, wikitext, html} = tests[i]!;
-		if (wikitext === undefined) {
-			if (optgroup) {
-				hideOptGroup(optgroup);
-			}
-			optgroup = document.createElement('optgroup');
-			optgroup.label = desc;
-			if (!isIframe || !ignoredGroups.has(desc)) {
-				select.append(optgroup);
-			}
-		} else if (isIframe || html !== undefined) {
-			const option = document.createElement('option');
-			option.value = String(i);
-			option.textContent = desc;
-			// @ts-expect-error already assigned
-			optgroup.append(option);
-			if (!isGH && dones.has(desc)) {
-				option.disabled = true;
-				option.style.display = 'none';
-			}
-		}
+		const {desc, html} = tests[i]!;
+		optgroup = addOption(
+			optgroup,
+			select,
+			tests,
+			dones,
+			i,
+			!ignoredGroups.has(desc),
+			isIframe || html !== undefined,
+		);
 	}
-	const dblClickHandler = /** @ignore */ (e?: MouseEvent): void => {
-		e?.preventDefault();
-		if (container.dataset['source']) {
-			container.removeAttribute('data-source');
-			container1.innerHTML = container1.textContent!;
-			container2.innerHTML = container2.textContent!;
-		} else {
-			container.dataset['source'] = '1';
-			const pre1 = document.createElement('pre'),
-				pre2 = document.createElement('pre'),
-				code1 = document.createElement('code'),
-				code2 = document.createElement('code');
-			code1.textContent = container1.innerHTML;
-			code2.textContent = container2.innerHTML;
-			pre1.className = 'language-html';
-			pre2.className = 'language-html';
-			pre1.append(code1);
-			pre2.append(code2);
-			container1.replaceChildren(pre1);
-			container2.replaceChildren(pre2);
-			Prism.highlightAllUnder(container);
-		}
-	};
-	/* eslint-disable unicorn/prefer-spread */
-	const options = Array.from(select.options),
-		optgroups = Array.from(select.querySelectorAll('optgroup'));
-	/* eslint-enable unicorn/prefer-spread */
-	input.addEventListener('input', () => {
-		const {value} = input,
-			lower = value.toLowerCase();
-		let re: RegExp | undefined;
-		try {
-			re = new RegExp(value, 'iu');
-		} catch {
-			try {
-				re = new RegExp(value, 'i'); // eslint-disable-line require-unicode-regexp
-			} catch {}
-		}
-		for (const option of options) {
-			const {textContent, value: v} = option;
-			option.style.display = !isGH && dones.has(textContent)
-				|| v && !textContent.toLowerCase().includes(lower) && !(re && re.test(textContent))
-				? 'none'
-				: '';
-		}
-		for (const group of optgroups) {
-			hideOptGroup(group);
-		}
-	});
 	select.addEventListener('change', () => {
-		const {wikitext, html, render, desc} = tests[Number(select.value)]!;
-		pre.textContent = wikitext!;
-		pre.classList.remove('wikiparser');
-		container.removeAttribute('data-source');
-		if (html === undefined) {
-			container.style.display = 'none';
-		} else {
-			container.style.display = '';
-			container1.innerHTML = html!;
-			container2.innerHTML = render ?? '';
-			const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading'],
-				withClasses = container1
-					.querySelectorAll(classes.map(c => `.${c}`).join()) as unknown as Iterable<Element>,
-				empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>,
-				styles = container1
-					.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>,
-				typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
-				edits = container1
-					.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
-				tocs = container1.querySelectorAll('#toc') as unknown as Iterable<Element>,
-				anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
-			for (const ele of withClasses) {
-				removeClass(ele, ...classes);
-			}
-			for (const ele of empty) {
-				if (ele.childElementCount === 0 && !ele.textContent.trim()) {
-					removeClass(ele, 'mw-empty-elt');
-				}
-			}
-			for (const ele of styles) {
-				ele.removeAttribute('style');
-			}
-			for (const ele of typeofs) {
-				ele.removeAttribute('typeof');
-			}
-			for (const ele of edits) {
-				ele.remove();
-			}
-			for (const ele of tocs) {
-				const {nextSibling} = ele;
-				if (
-					nextSibling?.nodeType === Node.TEXT_NODE
-					&& nextSibling.textContent!.startsWith('\n\n')
-				) {
-					(nextSibling as Text).deleteData(0, 2);
-				}
-				ele.remove();
-			}
-			for (const ele of anchors) {
-				ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
-				try {
-					const url = new URL(ele.href);
-					if (ele.classList.contains('external')) {
-						ele.href = url.href;
-					} else if (
-						url.origin === location.origin
-						&& url.pathname === '/index.php'
-						&& url.searchParams.has('title')
-					) {
-						url.pathname = `/wiki/${
-							url.searchParams.get('title')!.replace(/:/gu, '%3A')
-						}`;
-						url.searchParams.delete('title');
-						ele.setAttribute('href', url.pathname + url.search);
-					}
-				} catch {
-					ele.removeAttribute('href');
-				}
-			}
-			if (isIframe && container1.innerHTML === container2.innerHTML) {
-				dblClickHandler();
-			}
-		}
-		wikiparse.highlight!(pre, false, true);
-		select.selectedOptions[0]!.disabled = true;
-		btn.disabled = false;
-		history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
+		const {html, render} = tests[Number(select.value)]!;
+		repaint(container, container1, container2, html, render);
+		changeHandler(pre, btn, select, tests);
 		dispatchEvent(new CustomEvent('casechange'));
 	});
 	container.addEventListener('click', e => {
 		e.preventDefault();
 	}, {capture: true});
-	container.addEventListener('dblclick', dblClickHandler);
-	addEventListener('hashchange', () => {
-		const hash = decodeURIComponent(location.hash.slice(1)),
-			i = tests.findIndex(({desc}) => desc === hash);
-		if (i !== -1) {
-			select.value = String(i);
-			select.dispatchEvent(new Event('change'));
-		}
+	container.addEventListener('dblclick', e => {
+		dblClickHandler(container, container1, container2, e);
 	});
-	dispatchEvent(new HashChangeEvent('hashchange'));
+	prepareDoneBtn(btn, select, tests, dones, key);
+	inputHandler(input, select, dones);
+	hashChangeHandler(select, tests);
 })();

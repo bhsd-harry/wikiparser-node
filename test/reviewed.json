@@ -1330,5 +1330,10 @@
 	"Tag with Unknown category: <categorytree>Unknown category</categorytree>",
 	"Function with Unknown category: {{#categorytree:Unknown category}}",
 	"Tag with Unknown category and parameters: <categorytree mode=all depth=2 showcount=1>Unknown category</categorytree>",
-	"Tag with Category:CategoryTree test category"
+	"Tag with Category:CategoryTree test category",
+	"T406391: HTML entities in raw text elements",
+	"Non-wikilinks with html tags in target position",
+	"4. Category at the end of a bare <li> list item",
+	"1. Templated table wikitext syntax outside wiki-tables",
+	"2. Templated table wikitext syntax outside wiki-tables"
 ]

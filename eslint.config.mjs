@@ -205,6 +205,8 @@ export default extend(
 	{
 		files: [
 			'extensions/gh-page.ts',
+			'extensions/test-page.ts',
+			'extensions/test-page-common.ts',
 			'extensions/codejar.ts',
 		],
 		languageOptions: {

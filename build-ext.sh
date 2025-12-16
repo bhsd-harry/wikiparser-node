@@ -6,7 +6,7 @@ tsc --project extensions/tsconfig.codejar.json --module ES2020 --noImplicitAny f
 bash sed.sh -i -E "s|// (import type .+ from '../base';)|\1|" extensions/typings.d.ts
 for x in extensions/*/*.js
 do
-	if [[ $x != 'extensions/dist/gh-page.js' ]]
+	if [[ ! "$x" =~ extensions/dist/(gh|test)-page.*\.js ]]
 	then
 		bash sed.sh -i '/export {};/d' "$x"
 		printf '%s\n%s\n%s\n' '(() => {' "$(cat "$x")" '})();' > "$x"

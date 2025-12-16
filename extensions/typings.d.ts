@@ -94,6 +94,11 @@ export type Command = ['setI18N', Record<string, string>?]
 
 /* NOT EXPORTED END */
 
+declare interface Test {
+	desc: string;
+	wikitext?: string;
+}
+
 export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
 
 export interface PrinterBase {
@@ -154,6 +159,42 @@ export interface wikiparse {
 /* eslint-enable @typescript-eslint/method-signature-style */
 
 declare global {
+	type PrepareDoneBtn = (
+		btn: HTMLButtonElement,
+		select: HTMLSelectElement,
+		tests: Test[],
+		dones: Set<string>,
+		key: string,
+	) => void;
+	type HideOptGroup = (optgroup: HTMLOptGroupElement) => void;
+	type AddOption = (
+		optgroup: HTMLOptGroupElement | undefined,
+		select: HTMLSelectElement,
+		tests: Test[],
+		dones: Set<string>,
+		i: number,
+		appendOptgroup?: boolean,
+		appendOption?: boolean,
+	) => HTMLOptGroupElement | undefined;
+	type ChangeHandler = (
+		pre: HTMLPreElement,
+		btn: HTMLButtonElement,
+		select: HTMLSelectElement,
+		tests: Test[],
+	) => void;
+	type HashChangeHandler = (select: HTMLSelectElement, tests: Test[]) => void;
+	type InputHandler = (input: HTMLInputElement, select: HTMLSelectElement, dones: Set<string>) => void;
+
+	module '/wikiparser-node/extensions/*' {
+		export const prepareDoneBtn: PrepareDoneBtn;
+		export const hideOptGroup: HideOptGroup;
+		export const addOption: AddOption;
+		export const changeHandler: ChangeHandler;
+		export const hashChangeHandler: HashChangeHandler;
+		export const inputHandler: InputHandler;
+	}
+
+	const wikiparse: wikiparse;
 
 	/* NOT EXPORTED */
 
@@ -166,14 +207,9 @@ declare global {
 		const CodeJar: (...args: unknown[]) => CodeJar;
 		export {CodeJar};
 	}
-	module '/wikiparser-node/extensions/*';
 	module 'https://*';
 
 	type MonacoEditor = typeof editor;
 
 	const Parser: Parser;
-
-	/* NOT EXPORTED END */
-
-	const wikiparse: wikiparse;
 }
