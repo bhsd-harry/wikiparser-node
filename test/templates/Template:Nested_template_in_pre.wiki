@@ -1,0 +1,7 @@
+<pre>
+{{1x|hi}}
+</pre>
+
+<pre format="wikitext">
+{{1x|hi}}
+</pre>
