@@ -106,6 +106,7 @@ export const htmlAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 }))();
 
 export const extAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
+	pre: new Set(['format']),
 	gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails']),
 	poem: new Set(['compact']),
 	categorytree: new Set([
