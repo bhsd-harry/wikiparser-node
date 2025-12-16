@@ -61,14 +61,20 @@ export abstract class ExtToken extends TagPairToken {
 			};
 		let innerToken: Token;
 		switch (lcName) {
-			case 'tab':
-				newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
+			case 'pre':
+				if (attrToken.getAttr('format') !== 'wikitext') {
+					const {PreToken}: typeof import('../pre') = require('../pre');
+					// @ts-expect-error abstract class
+					innerToken = new PreToken(inner, newConfig, accum);
+					break;
+				}
 				// fall through
 			case 'indicator':
 			case 'poem':
 			case 'ref':
 			case 'option':
 			case 'combooption':
+			case 'tab':
 			case 'tabs':
 			case 'poll':
 			case 'seo':
@@ -76,15 +82,11 @@ export abstract class ExtToken extends TagPairToken {
 			case 'phonos':
 				if (lcName === 'poem') {
 					newConfig.excludes.push('heading');
+				} else if (lcName === 'tab') {
+					newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
-			case 'pre': {
-				const {PreToken}: typeof import('../pre') = require('../pre');
-				// @ts-expect-error abstract class
-				innerToken = new PreToken(inner, newConfig, accum);
-				break;
-			}
 			case 'dynamicpagelist': {
 				const {ParamTagToken}: typeof import('../multiLine/paramTag') = require('../multiLine/paramTag');
 				// @ts-expect-error abstract class
