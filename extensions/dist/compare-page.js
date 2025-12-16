@@ -5,7 +5,7 @@
     for (let i = 0; i < iframes.length; i++) {
         iframes[i].addEventListener('load', () => {
             const { contentDocument } = iframes[i], style = contentDocument.createElement('style');
-            style.textContent = `body{background:#fff}main{margin:0;box-shadow:none}${i === 0 ? '' : '.field{min-height:0}select,'}#compare>:last-child{display:none}`;
+            style.textContent = `body{background:#fff}main{margin:0;box-shadow:none}${i === 0 ? '' : '.field{min-height:0}select,button,input[type=search],'}#compare>:last-child{display:none}`;
             contentDocument.head.append(style);
         });
     }

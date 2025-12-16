@@ -7,7 +7,7 @@
 			const {contentDocument} = iframes[i]!,
 				style = contentDocument!.createElement('style');
 			style.textContent = `body{background:#fff}main{margin:0;box-shadow:none}${
-				i === 0 ? '' : '.field{min-height:0}select,'
+				i === 0 ? '' : '.field{min-height:0}select,button,input[type=search],'
 			}#compare>:last-child{display:none}`;
 			contentDocument!.head.append(style);
 		});
