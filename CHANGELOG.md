@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.32.1
 
-*2025-12-16*
+*2025-12-17*
 
 **Added**
 
@@ -17,6 +17,7 @@
 - [`AttributesToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#classlist) when the `class` attribute contains multiple spaces between class names
 - [`AttributesToken.prototype.sanitize`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#sanitize) should leave spaces between attributes
 - [`Token.prototype.createElement`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#createelement) for extension tags
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) for `#contentmodel` when the first argument is `canonical`
 
 ## v1.32.0
 

@@ -342,7 +342,15 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		const title = makeTitle(target, config, -1);
 		return title && title.ns === -1 ? title.prefix + title.main : 'Special:Badtitle';
 	},
-	contentmodels: Record<string, string> = {js: 'JavaScript', css: 'CSS', json: 'JSON', vue: 'Vue'},
+	contentmodels: Record<string, [string, string?]> = {
+		js: ['JavaScript', 'javascript'],
+		css: ['CSS'],
+		json: ['JSON'],
+		vue: ['Vue'],
+		'sanitized-css': ['Sanitized CSS'],
+		Scribunto: ['Scribunto module'],
+	},
+	contentmodel = (i: 0 | 1, extension: string): string => contentmodels[extension]![i] ?? extension,
 	cmp = (x: string, y: string, decode?: boolean): boolean => {
 		const a = decode ? decodeHtml(x) : x,
 			b = decodeHtml(y);
@@ -644,17 +652,18 @@ export const expandMagicWord = (
 				return '';
 			}
 			const {ns: n, main, extension} = title,
+				i = arg0 === 'local' ? 0 : 1,
 				isSubpage = main.includes('/');
 			if (isSubpage && (n === 10 || n === 828) && extension === 'css') {
-				return 'sanitized-css';
+				return contentmodel(i, 'sanitized-css');
 			} else if (n === 828) {
 				if (extension === 'json') {
-					return 'JSON';
+					return contentmodel(i, 'json');
 				}
-				return main.endsWith('/doc') ? 'wikitext' : 'Scribunto';
+				return main.endsWith('/doc') ? 'wikiext' : contentmodel(i, 'Scribunto');
 			}
 			return (n === 8 || n === 2 && isSubpage) && extension && extension in contentmodels
-				? contentmodels[extension]!
+				? contentmodel(i, extension)
 				: 'wikitext';
 		}
 		case 'tag': {

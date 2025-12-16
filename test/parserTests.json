@@ -6347,14 +6347,14 @@
 		"wikitext": "{{#contentmodel: canonical}}",
 		"title": "MediaWiki:Common.css",
 		"html": "<p>css\n</p>",
-		"render": "<p>CSS\n</p>",
+		"render": "<p>css\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#contentmodel</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> canonical</span></span>}}</span></span>"
 	},
 	{
 		"desc": "{{#contentmodel}} parser function for a JS page using the title argument",
 		"wikitext": "{{#contentmodel: canonical | MediaWiki:Common.js}}",
 		"html": "<p>javascript\n</p>",
-		"render": "<p>JavaScript\n</p>",
+		"render": "<p>javascript\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#contentmodel</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> canonical </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> MediaWiki:Common.js</span></span>}}</span></span>"
 	},
 	{

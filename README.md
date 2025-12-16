@@ -103,10 +103,12 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 ### Extension
 
 1. Many extensions are not supported, such as `<indicator>` and `<ref>`.
+1. `&` needs to be escaped in `<syntaxhighlight>` ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#XSS%20is%20escaped)).
 
 ### Transclusion
 
 1. Some parser functions are not supported.
+1. New lines in `{{localurl:}}` are not handled correctly ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Basic%20%7B%7Blocalurle%3A%7D%7D%20test)).
 
 ### Heading
 
@@ -127,6 +129,7 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
 1. Block elements inside a link should break it into multiple links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
 1. Invalid or missing images (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20image%20with%20bogus%20manual%20thumbnail), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20line%20not%20in%20the%20file%20namespace)).
+1. Link starting with `../` on a subpage ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parent%20directory%20in%20redirect)).
 
 ### External link
 
