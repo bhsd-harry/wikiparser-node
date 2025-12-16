@@ -19,7 +19,7 @@
 		"/extensions/typings.d.ts",
 		"/extensions/dist/*.js",
 		"/extensions/*.css",
-		"!/extensions/dist/*-page.js",
+		"!/extensions/dist/*-page*.js",
 		"!/extensions/*-page.css",
 		"/printed/README",
 		"/errors/README",
