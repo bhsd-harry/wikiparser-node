@@ -6337,6 +6337,7 @@
 	{
 		"desc": "{{#contentmodel}} parser function on a CSS page",
 		"wikitext": "{{#contentmodel}}",
+		"title": "MediaWiki:Common.css",
 		"html": "<p>CSS\n</p>",
 		"render": "<p>wikitext\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#contentmodel</span>}}</span></span>"
@@ -6344,8 +6345,9 @@
 	{
 		"desc": "{{#contentmodel}} parser function on a CSS page (canonical)",
 		"wikitext": "{{#contentmodel: canonical}}",
+		"title": "MediaWiki:Common.css",
 		"html": "<p>css\n</p>",
-		"render": "<p>wikitext\n</p>",
+		"render": "<p>CSS\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#contentmodel</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> canonical</span></span>}}</span></span>"
 	},
 	{
@@ -11135,6 +11137,7 @@
 	{
 		"desc": "Language links render as inline links in the Talk namespace",
 		"wikitext": "Blah blah blah\n[[zh:Chinese]]",
+		"title": "Talk:Foo",
 		"print": "<span class=\"wpb-root\">Blah blah blah\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">zh:Chinese</span>]]</span></span>"
 	},
 	{
@@ -16852,41 +16855,49 @@
 	{
 		"desc": "T319143 - copy-pasting of cells, before",
 		"wikitext": "{|\n|[[Eau]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, after",
 		"wikitext": "{|\n|[[Eau]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, before multiple cells",
 		"wikitext": "{|\n|[[Eau]]||[[Abc]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Abc</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, before multiple cells, without \"row\"",
 		"wikitext": "{|\n|[[Eau]]||[[Abc]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Abc</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, between multiple cells",
 		"wikitext": "{|\n|[[Eau]]||[[Abc]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Abc</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, between multiple cells, without \"row\"",
 		"wikitext": "{|\n|[[Eau]]||[[Abc]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Abc</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, after multiple cells",
 		"wikitext": "{|\n|[[Eau]]||[[Abc]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Abc</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T319143 - copy-pasting of cells, after multiple cells, without \"row\"",
 		"wikitext": "{|\n|[[Eau]]||[[Abc]]\n|}",
+		"title": "Eau",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Eau</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Abc</span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{

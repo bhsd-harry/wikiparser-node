@@ -108,7 +108,8 @@ for (const file of ['parserTests.txt', ...files]) {
 			continue;
 		}
 		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,
-			title = /\btitle=\s*\[\[([^\]]+)/u.exec(option)?.[1],
+			mt = /\btitle=\s*(?:\[\[([^\]]+)|\\"((?:(?!\\").)+)|(.+))/u.exec(option),
+			title = mt?.[1] ?? mt?.[2] ?? mt?.[3],
 			root = Parser.parse(wikitext, title ?? 'Parser test'),
 			t: Test = {desc, wikitext, title};
 		if (
