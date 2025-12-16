@@ -56,9 +56,6 @@ export abstract class ExtToken extends TagPairToken {
 			case 'indicator':
 			case 'poem':
 			case 'ref':
-			case 'seo':
-			case 'langconvert':
-			case 'phonos':
 				if (lcName === 'poem') {
 					newConfig.excludes.push('heading');
 				}
