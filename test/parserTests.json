@@ -14868,70 +14868,70 @@
 		"desc": "Template pre: Simple",
 		"wikitext": "<pre>123</pre>\n\n{{pre|123}}",
 		"html": "<pre>123</pre>\n<pre>123</pre>",
-		"render": "<pre>123</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>123</pre>\n<pre>123</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">123</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Quotes",
 		"wikitext": "<pre>'''123'''</pre>\n\n{{pre|'''123'''}}",
 		"html": "<pre>'''123'''</pre>\n<pre><b>123</b></pre>",
-		"render": "<pre>'''123'''</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>'''123'''</pre>\n<pre><b>123</b></pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">'''123'''</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">'''</span>123<span class=\"wpb-quote\">'''</span></span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Indent pre",
 		"wikitext": "<pre>a\n test\nb</pre>\n\n{{pre|a\n test\nb}}",
 		"html": "<pre>a\n test\nb</pre>\n<pre>a\n test\nb</pre>",
-		"render": "<pre>a&#10; test&#10;b</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>a&#10; test&#10;b</pre>\n<pre>a&#10; test&#10;b</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">a\n test\nb</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\n test\nb</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Pwrap",
 		"wikitext": "<pre>\nfoo\n\nbar\n</pre>\n\n{{pre|\nfoo\n\nbar\n}}",
 		"html": "<pre>foo\n\nbar\n</pre>\n<pre>foo\n\nbar\n</pre>",
-		"render": "<pre>&#10;foo&#10;&#10;bar&#10;</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>&#10;foo&#10;&#10;bar&#10;</pre>\n<pre>foo&#10;&#10;bar</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nfoo\n\nbar\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nfoo\n\nbar\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: List",
 		"wikitext": "<pre>\n*list\n*item\n</pre>\n\n{{pre|\n*list\n*item\n}}",
 		"html": "<pre>*list\n*item\n</pre>\n<pre>*list\n*item\n</pre>",
-		"render": "<pre>&#10;*list&#10;*item&#10;</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>&#10;*list&#10;*item&#10;</pre>\n<pre>*list&#10;<ul><li>item</li></ul></pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n*list\n*item\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-list\">*</span>list\n<span class=\"wpb-list\">*</span>item\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Table",
 		"wikitext": "<pre>\n{|\n|test\n|}\n</pre>\n\n{{pre|\n{{{!}}\n{{!}}test\n{{!}}}\n}}",
 		"html": "<pre>{|\n|test\n|}\n</pre>\n<pre><table>\n<tbody><tr>\n<td>test\n</td></tr></tbody></table>\n</pre>",
-		"render": "<pre>&#10;{|&#10;|test&#10;|}&#10;</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>&#10;{|&#10;|test&#10;|}&#10;</pre>\n<pre>{|&#10;|test&#10;|}</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n{|\n|test\n|}\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td-inner\">test</span></span><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>}</span></span>\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Link",
 		"wikitext": "<pre>\n[[Test]]\n[https://google.com 123]\n</pre>\n\n{{pre|\n[[Test]]\n[https://google.com 123]\n}}",
 		"html": "<pre>[[Test]]\n[https://google.com 123]\n</pre>\n<pre><a href=\"/index.php?title=Test&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Test (page does not exist)\">Test</a>\n<a rel=\"nofollow\" class=\"external text\" href=\"https://google.com\">123</a>\n</pre>",
-		"render": "<pre>&#10;[[Test]]&#10;[https://google.com 123]&#10;</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>&#10;[[Test]]&#10;[https://google.com 123]&#10;</pre>\n<pre><a href=\"/wiki/Test\" title=\"Test\">Test</a>&#10;<a rel=\"nofollow\" class=\"external\" href=\"https://google.com/\">123</a></pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n[[Test]]\n[https://google.com 123]\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test</span>]]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://google.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span>\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Heading",
 		"wikitext": "<pre>new\n=== test ===\nline</pre>\n\n{{pre|1=new\n=== test ===\nline}}",
 		"html": "<pre>new\n=== test ===\nline</pre>\n<pre>new\n<div class=\"mw-heading mw-heading3\"><h3 id=\"test\">test</h3><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: test\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\nline</pre>",
-		"render": "<pre>new&#10;=== test ===&#10;line</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>new&#10;=== test ===&#10;line</pre>\n<pre>new&#10;<div class=\"mw-heading mw-heading3\"><h3 id=\"test\">test</h3></div>&#10;line</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">new\n=== test ===\nline</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">new\n<span class=\"wpb-heading\">===<span class=\"wpb-heading-title\"> test </span>===</span>\nline</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Nested template",
 		"wikitext": "{{nested template in pre}}",
 		"html": "<pre>{{1x|hi}}\n</pre>\n<pre>hi\n</pre>",
-		"render": "<p><a href=\"/wiki/Template%3ANested_template_in_pre?action=edit&redlink=1\" class=\"new\" title=\"Template:Nested template in pre (page does not exist)\">Template:Nested template in pre</a>\n</p>",
+		"render": "<pre>&#10;{{1x|hi}}&#10;</pre>\n<pre>&#10;hi&#10;</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">nested template in pre</span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Nowiki",
 		"wikitext": "<pre>\n<nowiki>test</nowiki>\n</pre>\n\n{{pre|\n<nowiki>test</nowiki>\n}}",
 		"html": "<pre>test\n</pre>\n<pre>test\n</pre>",
-		"render": "<pre>&#10;test&#10;</pre>\n<p><a href=\"/wiki/Template%3APre?action=edit&redlink=1\" class=\"new\" title=\"Template:Pre (page does not exist)\">Template:Pre</a>\n</p>",
+		"render": "<pre>&#10;test&#10;</pre>\n<pre>test</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-noinclude\">&lt;nowiki&gt;</span>test<span class=\"wpb-noinclude\">&lt;/nowiki&gt;</span>\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">test</span>&lt;/nowiki&gt;</span>\n</span></span>}}</span></span>"
 	},
 	{
@@ -17012,7 +17012,7 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;translate&gt;<span class=\"wpb-ext-inner\">hello <span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|code</span>&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-tvar\">&lt;/&gt;</span>world<span class=\"wpb-tvar\">&lt;tvar<span class=\"wpb-tvar-name\">|code2</span>&gt;</span></span></span>}}</span><span class=\"wpb-tvar\">&lt;/&gt;</span></span>&lt;/translate&gt;</span></span>"
 	},
 	{
-		"desc": "urlFragmentModesTests"
+		"desc": "urlFragmentModeTests"
 	},
 	{
 		"desc": "Legacy fragment encoding",
