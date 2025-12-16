@@ -725,6 +725,8 @@
 	{
 		"desc": "Link containing % as a single hex sequence interpreted to char",
 		"wikitext": "[[7%25 Solution]]\n[[7%25 Solution|7%25 Solution]]",
+		"html": "<p><a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7% Solution</a>\n<a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7%25 Solution</a>\n</p>",
+		"render": "<p><a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7% Solution</a>\n<a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7%25 Solution</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">7%25 Solution</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">7%25 Solution</span>|<span class=\"wpb-link-text\">7%25 Solution</span>]]</span></span>"
 	},
 	{
@@ -2008,6 +2010,8 @@
 	{
 		"desc": "Parsoid: DOM fragment reuse",
 		"wikitext": "a{{1x|b<table></table>c}}d\n\na{{1x|b\n<table></table>\nc}}d\n\n{{1x|a\n\n<table></table>\n\nb}}",
+		"html": "<p>ab</p><table></table><p>cd\n</p><p>ab\n</p>\n<table></table>\n<p>cd\n</p><p>a\n</p>\n<table></table>\n<p>b\n</p>",
+		"render": "ab<table></table>cd\n<p>ab\n</p>\n<table></table>\n<p>cd\n</p><p>a\n</p>\n<table></table>\n<p>b\n</p>",
 		"print": "<span class=\"wpb-root\">a<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>c</span></span>}}</span>d\n\na<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\nc</span></span>}}</span>d\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\n\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\n\nb</span></span>}}</span></span>"
 	},
 	{
@@ -2730,6 +2734,8 @@
 		"desc": "Relative subpage noslash link",
 		"wikitext": "[[../../subpage/]]\n\n[[../../subpage]]",
 		"title": "Subpage test/1/2/3/4",
+		"html": "<p><a href=\"/wiki/Subpage_test/1/2/subpage\" title=\"Subpage test/1/2/subpage\">subpage</a>\n</p><p><a href=\"/wiki/Subpage_test/1/2/subpage\" title=\"Subpage test/1/2/subpage\">Subpage test/1/2/subpage</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Subpage_test%2F1%2F2%2Fsubpage%2F\" title=\"Subpage test/1/2/subpage/\">../../subpage/</a>\n</p><p><a href=\"/wiki/Subpage_test%2F1%2F2%2Fsubpage\" title=\"Subpage test/1/2/subpage\">../../subpage</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../subpage/</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../subpage</span>]]</span></span>"
 	},
 	{
@@ -5425,6 +5431,8 @@
 	{
 		"desc": "1. Encapsulate foster-parented transclusion content",
 		"wikitext": "<table>{{1x|foo<tr><td>bar</td></tr>}}</table>",
+		"html": "foo<table><tbody><tr><td>bar</td></tr></tbody></table>",
+		"render": "<table>foo<tr><td>bar</td></tr></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo<span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>bar<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
 	},
 	{
@@ -5452,6 +5460,8 @@
 	{
 		"desc": "6. Encapsulate foster-parented transclusion content",
 		"wikitext": "<table><tr><td><div><p>{{1x|foo</p></div></td>foo</tr></table>}}<p>ok</p>",
+		"html": "foo<table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table><p>ok</p>",
+		"render": "<table><tr><td><div><p>foo</p></div></td>foo</tr></table><p>ok</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;p&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo<span class=\"wpb-html\">&lt;/p&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/td&gt;</span>foo<span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;p&gt;</span>ok<span class=\"wpb-html\">&lt;/p&gt;</span></span>"
 	},
 	{
@@ -5462,6 +5472,8 @@
 	{
 		"desc": "8. Encapsulate foster-parented transclusion content",
 		"wikitext": "{{1x|a\n}}{|{{1x|style='color:red'}}\n|-\n|b\n|}",
+		"html": "<p>a\n</p>\n<table>\n\n<tbody><tr>\n<td>b\n</td></tr></tbody></table>",
+		"render": "<p>a\n</p>\n<table>\n<tbody><tr>\n<td>b\n</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\n</span></span>}}</span>{|<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">style</span>=<span class=\"wpb-parameter-value\">'color:red'</span></span>}}</span>\n|-\n|b\n|}</span>"
 	},
 	{
@@ -16374,13 +16386,6 @@
 		"html": "<div class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><pre><span></span><span class=\"kd\">function</span><span class=\"w\"> </span><span class=\"nx\">doSomething</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span>\n<span class=\"hll\"><span class=\"w\">\t</span><span class=\"kd\">var</span><span class=\"w\">\t</span><span class=\"nx\">foo</span><span class=\"p\">,</span>\n</span><span class=\"hll\"><span class=\"w\">\t\t</span><span class=\"nx\">bar</span><span class=\"p\">;</span>\n</span><span class=\"w\">\t</span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"nx\">baz</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span>\n</pre></div>",
 		"render": "<div class=\"mw-highlight mw-highlight-lang-javascript mw-content-ltr\" dir=\"ltr\"><pre><span class=\"token keyword\">function</span> <span class=\"token function\">doSomething</span><span class=\"token punctuation\">(</span><span class=\"token punctuation\">)</span> <span class=\"token punctuation\">{</span>&#10;<span class=\"hll\">\t<span class=\"token keyword\">var</span>\tfoo<span class=\"token punctuation\">,</span>&#10;</span><span class=\"hll\">\t\tbar<span class=\"token punctuation\">;</span>&#10;</span>\t<span class=\"token keyword\">if</span> <span class=\"token punctuation\">(</span>baz<span class=\"token punctuation\">)</span> <span class=\"token punctuation\">{</span></pre></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;syntaxhighlight<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">enclose</span>=\"<span class=\"wpb-attr-value\">pre</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">highlight</span>=\"<span class=\"wpb-attr-value\">2-3</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nfunction doSomething() {\n\tvar\tfoo,\n\t\tbar;\n\tif (baz) {\n</span>&lt;/syntaxhighlight&gt;</span></span>"
-	},
-	{
-		"desc": "deprecated source tag adds tracking category",
-		"wikitext": "<source lang=\"python\">print('Hi')</source>",
-		"html": "cat=Pages_using_deprecated_source_tags sort=",
-		"render": "<div class=\"mw-highlight mw-highlight-lang-python mw-content-ltr\" dir=\"ltr\"><pre><span class=\"token keyword\">print</span><span class=\"token punctuation\">(</span><span class=\"token string\">'Hi'</span><span class=\"token punctuation\">)</span></pre></div>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">python</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">print('Hi')</span>&lt;/source&gt;</span></span>"
 	},
 	{
 		"desc": "deprecated enclose option adds tracking category",
