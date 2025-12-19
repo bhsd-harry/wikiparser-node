@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {padded} from '../../mixin/padded';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import type {Config, LintError} from '../../base';
@@ -18,6 +19,7 @@ import {fixedToken} from '../../mixin/fixed';
  * @classdesc `{childNodes: [AtomToken]}`
  */
 @fixedToken
+@padded('')
 export abstract class CategorytreeToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken];
 	abstract override get lastChild(): AtomToken;
