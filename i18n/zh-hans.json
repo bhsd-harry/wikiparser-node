@@ -37,6 +37,7 @@
 	"invalid-content": "<$1>中的无效内容",
 	"invalid-conversion-flag": "无效的转换旗标",
 	"invalid-gallery": "无效的图库图像",
+	"invalid-gallery-link": "图库图像中的无效链接",
 	"invalid-image-parameter": "无效的图像参数",
 	"invalid-imagemap-link": "<imagemap>中的无效链接",
 	"invalid-isbn": "无效的ISBN",

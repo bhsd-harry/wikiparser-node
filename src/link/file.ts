@@ -93,13 +93,14 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param link 文件名
 	 * @param text 图片参数
 	 * @param delimiter `|`
+	 * @param type 节点类型
 	 */
-	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|', type?: TokenTypes) {
 		super(link, undefined, config, accum, delimiter);
 		const {extension} = this.getTitle(true, true);
 		this.safeAppend(explode(text).map(
 			// @ts-expect-error abstract class
-			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),
+			(part): ImageParameterToken => new ImageParameterToken(part, extension, type, config, accum),
 		));
 	}
 

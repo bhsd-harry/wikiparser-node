@@ -37,6 +37,7 @@
 	"invalid-content": "invalid content in <$1>",
 	"invalid-conversion-flag": "invalid conversion flag",
 	"invalid-gallery": "invalid gallery image",
+	"invalid-gallery-link": "invalid link in gallery image",
 	"invalid-image-parameter": "invalid image parameter",
 	"invalid-imagemap-link": "invalid link in <imagemap>",
 	"invalid-isbn": "invalid ISBN",
