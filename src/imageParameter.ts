@@ -15,7 +15,7 @@ import {Shadow} from '../util/debug';
 import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError, Config} from '../base';
+import type {LintError, Config, TokenTypes} from '../base';
 import type {Title} from '../lib/title';
 import type {
 	AtomToken,
@@ -60,7 +60,7 @@ function validate(
 	key: 'link',
 	val: string,
 	config: Config,
-	type: string | undefined,
+	type?: TokenTypes,
 	halfParsed?: boolean,
 ): string | Title | boolean;
 function validate(
@@ -155,8 +155,18 @@ export abstract class ImageParameterToken extends Token {
 		}
 	}
 
-	/** @param str 图片参数 */
-	constructor(str: string, extension: string | undefined, config: Config, accum?: Token[]) {
+	/**
+	 * @param str 图片参数
+	 * @param extension 文件扩展名
+	 * @param type 父节点类型
+	 */
+	constructor(
+		str: string,
+		extension: string | undefined,
+		type: TokenTypes | undefined,
+		config: Config,
+		accum?: Token[],
+	) {
 		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img)
 				.map(([syntax, param]) => [syntax, param, getSyntaxRegex(syntax)] as const),
@@ -169,7 +179,7 @@ export abstract class ImageParameterToken extends Token {
 							key,
 							mt[2],
 							config,
-							extension,
+							key === 'link' ? type : extension,
 							true,
 						) as string | Title | boolean !== false
 					);
@@ -261,7 +271,13 @@ export abstract class ImageParameterToken extends Token {
 					errors.push(e);
 				}
 			} else if (name === 'link') {
-				if (typeof link === 'string') {
+				if (link === undefined) {
+					const rule = 'invalid-gallery',
+						s = lintConfig.getSeverity(rule, 'link');
+					if (s) {
+						errors.push(generateForSelf(this, {start}, rule, 'invalid-gallery-link', s));
+					}
+				} else if (typeof link === 'string') {
 					const rule = 'invalid-url',
 						s = lintConfig.getSeverity(rule);
 					if (s && !this.querySelector('magic-word')) {
@@ -271,7 +287,7 @@ export abstract class ImageParameterToken extends Token {
 							errors.push(generateForSelf(this, {start}, rule, 'invalid-url', s));
 						}
 					}
-				} else if (link!.encoded) {
+				} else if (link.encoded) {
 					const rule = 'url-encoding',
 						s = lintConfig.getSeverity(rule, 'file');
 					if (s) {
