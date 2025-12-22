@@ -35,7 +35,8 @@ export abstract class GalleryImageToken extends FileToken {
 			}
 			accum.splice(length, 1);
 		}
-		super(link, token?.firstChild!.toString(), config, accum);
-		this.privateType = `${type}-image`;
+		const privateType: `${GalleryTypes}-image` = `${type}-image`;
+		super(link, token?.firstChild!.toString(), config, accum, undefined, privateType);
+		this.privateType = privateType;
 	}
 }
