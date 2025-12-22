@@ -38,6 +38,7 @@
 	"invalid-content": "<$1>有無效內容",
 	"invalid-conversion-flag": "無效的轉換旗標",
 	"invalid-gallery": "無效的圖庫圖片",
+	"invalid-gallery-link": "圖庫圖片裡有無效連結",
 	"invalid-image-parameter": "無效的圖片參數",
 	"invalid-imagemap-link": "<imagemap>裡有無效連結",
 	"invalid-isbn": "無效的ISBN",

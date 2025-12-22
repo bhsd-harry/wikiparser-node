@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.33.0
 
-*2025-12-25*
+*2026-01-01*
 
 **Added**
 
@@ -10,6 +10,7 @@
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now suggests parameter names in `<dynamicpagelist>` and `<inputbox>`
 - Parse and report extension tags inside `<categorytree>`
 - Parse `<pre>` tags with `format="wikitext"`
+- [`ImageParameterToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#lint) now reports invalid values for the `link` parameter in gallery images
 
 **Fixed**
 

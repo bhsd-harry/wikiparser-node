@@ -183,8 +183,9 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param link 文件名
 	 * @param text 图片参数
 	 * @param delimiter `|`
+	 * @param type 节点类型
 	 */
-	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|', type?: TokenTypes) {
 		super(link, undefined, config, accum, delimiter);
 
 		/* NOT FOR BROWSER */
@@ -197,7 +198,7 @@ export abstract class FileToken extends LinkBaseToken {
 		/-\{|\}-|\|/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		this.safeAppend(explode(text).map(
 			// @ts-expect-error abstract class
-			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),
+			(part): ImageParameterToken => new ImageParameterToken(part, extension, type, config, accum),
 		));
 	}
 
@@ -561,6 +562,7 @@ export abstract class FileToken extends LinkBaseToken {
 				new ImageParameterToken(
 					syntax.replace('$1', key === 'width' ? '1' : ''),
 					this.extension,
+					this.type,
 					config,
 				),
 		);

@@ -67,6 +67,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 		{
 			// extension: 2,
 			// image: 2,
+			// link: 2,
 			parameter: 1,
 			// thumb: 2,
 		},

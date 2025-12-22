@@ -789,12 +789,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* istanbul ignore next */
 	/** @implements */
 	reparse(date = '') {
-		const main = fs.readdirSync(path.join(__dirname, '..', 'errors'))
-			.find(name => name.startsWith(date) && name.endsWith('Z'));
+		const dir = path.join(__dirname, '..', 'errors'),
+			main = fs.readdirSync(dir).find(name => name.startsWith(date) && name.endsWith('Z'));
 		if (!main) {
 			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
 		}
-		const file = path.join(__dirname, '..', 'errors', main),
+		const file = path.join(dir, main),
 			wikitext = fs.readFileSync(file, 'utf8');
 		const {stage, include, config, page}: ParsingError = require(`${file}.json`),
 			{Token}: typeof import('./src/index') = require('./src/index');
