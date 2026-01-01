@@ -9,6 +9,7 @@ else
 		IFS='.' read major minor <<< "$1"
 		version=$(( major + 1 )).$minor
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$version\"/" package.json
+		rm package-lock.json
 		npm i --package-lock-only
 		git add -A
 		git commit -m "chore: bump version to v$1-m"
