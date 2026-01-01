@@ -68,6 +68,7 @@ export abstract class TableBaseToken extends Token {
 		);
 	}
 
+	/** @private */
 	override escape(): void {
 		LSP: {
 			for (const child of this.childNodes) {

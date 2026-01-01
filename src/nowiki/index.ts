@@ -3,7 +3,10 @@ import {generateForSelf, fixByRemove} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
-import type {AttributesToken, ExtToken} from '../../internal';
+import type {
+	AttributesToken,
+	ExtToken,
+} from '../../internal';
 
 const getLintRegex = /* #__PURE__ */ getRegex(
 	name => new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'),

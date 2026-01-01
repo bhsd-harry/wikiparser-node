@@ -334,6 +334,7 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
 	}
 
+	/** @private */
 	override escape(): void {
 		LSP: {
 			if (this.type !== 'ext-attr') {
