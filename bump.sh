@@ -7,6 +7,7 @@ else
 	if [[ $? -eq 0 ]]
 	then
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
+		rm package-lock.json
 		npm i --package-lock-only
 		git add -A
 		git commit -m "chore: bump version to v$1"
