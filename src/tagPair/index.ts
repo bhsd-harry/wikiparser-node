@@ -1,7 +1,9 @@
 import {gapped} from '../../mixin/gapped';
 import {noEscape} from '../../mixin/noEscape';
 import {Token} from '../index';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 import type {AstNodes} from '../../internal';
 
 /**
@@ -13,8 +15,8 @@ import type {AstNodes} from '../../internal';
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
 	readonly #tags: [string, string];
+	#selfClosing;
 	closed;
-	selfClosing;
 
 	abstract override get type(): 'ext' | 'include' | 'translate';
 	declare readonly childNodes: readonly [AstNodes, AstNodes];
@@ -23,7 +25,12 @@ export abstract class TagPairToken extends Token {
 
 	/** inner wikitext / 内部wikitext */
 	get innerText(): string | undefined {
-		return this.selfClosing ? undefined : this.lastChild.text();
+		return this.#selfClosing ? undefined : this.lastChild.text();
+	}
+
+	/** whether to be self-closing / 是否自封闭 */
+	get selfClosing(): boolean {
+		return this.#selfClosing;
 	}
 
 	/**
@@ -44,7 +51,7 @@ export abstract class TagPairToken extends Token {
 		this.setAttribute('name', name.toLowerCase());
 		this.#tags = [name, closed || name];
 		this.closed = closed !== '';
-		this.selfClosing = closed === undefined;
+		this.#selfClosing = closed === undefined;
 		this.append(attr, inner);
 		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
 		accum.splice(index === -1 ? Infinity : index, 0, this);
@@ -53,12 +60,11 @@ export abstract class TagPairToken extends Token {
 	/** @private */
 	override toString(skip?: boolean): string {
 		const {
-				selfClosing,
 				firstChild,
 				lastChild,
 			} = this,
 			[opening, closing] = this.#tags;
-		return selfClosing
+		return this.#selfClosing
 			? `<${opening}${firstChild.toString(skip)}/>`
 			: `<${opening}${firstChild.toString(skip)}>${lastChild.toString(skip)}${
 				this.closed ? `</${closing}>` : ''
@@ -68,7 +74,7 @@ export abstract class TagPairToken extends Token {
 	/** @private */
 	override text(): string {
 		const [opening, closing] = this.#tags;
-		return this.selfClosing
+		return this.#selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}

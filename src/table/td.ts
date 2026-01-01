@@ -193,6 +193,7 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
+	/** @private */
 	override escape(): void {
 		LSP: {
 			super.escape();

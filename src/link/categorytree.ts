@@ -4,7 +4,12 @@ import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import type {Config, LintError} from '../../base';
 import type {Title} from '../../lib/title';
-import type {Token, AtomToken, AttributesToken, ExtToken} from '../../internal';
+import type {
+	Token,
+	AtomToken,
+	AttributesToken,
+	ExtToken,
+} from '../../internal';
 
 /**
  * `<categorytree>`
@@ -29,6 +34,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 		this.setAttribute('bracket', false);
 	}
 
+	/** @private */
 	override getTitle(): Title {
 		const target = this.firstChild.toString().trim(),
 			opt = {halfParsed: true},
@@ -38,6 +44,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 			: this.normalizeTitle(`Category:${target}`, 0, opt);
 	}
 
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
 			const rule = 'no-ignored',

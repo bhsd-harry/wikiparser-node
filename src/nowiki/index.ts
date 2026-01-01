@@ -3,7 +3,10 @@ import {generateForSelf, fixByRemove} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
-import type {AttributesToken, ExtToken} from '../../internal';
+import type {
+	AttributesToken,
+	ExtToken,
+} from '../../internal';
 
 /* NOT FOR BROWSER ONLY */
 

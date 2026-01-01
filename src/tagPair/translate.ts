@@ -11,7 +11,6 @@ import type {Config} from '../../base';
 export abstract class TranslateToken extends TagPairToken {
 	declare name: 'translate';
 	declare closed: true;
-	declare selfClosing: false;
 
 	declare readonly childNodes: readonly [SyntaxToken, Token];
 	abstract override get firstChild(): SyntaxToken;
@@ -20,6 +19,10 @@ export abstract class TranslateToken extends TagPairToken {
 
 	override get type(): 'translate' {
 		return 'translate';
+	}
+
+	override get selfClosing(): false {
+		return false;
 	}
 
 	/**

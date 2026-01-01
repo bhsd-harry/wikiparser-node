@@ -250,6 +250,7 @@ export abstract class AttributesToken extends Token {
 		}
 	}
 
+	/** @private */
 	override escape(): void {
 		LSP: {
 			if (this.type !== 'ext-attrs') {
