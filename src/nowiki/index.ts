@@ -1,4 +1,7 @@
-import {getRegex, lintJSON} from '@bhsd/common';
+import {
+	getRegex,
+	lintJSON,
+} from '@bhsd/common';
 import {generateForSelf, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -85,6 +88,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			rule = 'invalid-json';
 			s = lintConfig.getSeverity(rule);
 			if (s && name === 'templatedata') {
+				// browser版本使用`lintJSONNative()`
 				const [error] = lintJSON(innerText);
 				if (!error) {
 					return [];
