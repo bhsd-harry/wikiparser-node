@@ -1,5 +1,6 @@
-import {getRegex} from '@bhsd/common';
+import {getRegex, lintJSON} from '@bhsd/common';
 import {generateForSelf, fixByRemove} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
@@ -40,12 +41,11 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		LINT: {
 			const {
 					name,
+					innerText,
 				} = this,
 				{lintConfig} = Parser;
-			/* eslint-disable prefer-const */
 			let rule: LintError.Rule = 'void-ext',
 				s = lintConfig.getSeverity(rule, name);
-			/* eslint-enable prefer-const */
 			if (s && this.#lint()) {
 				const e = generateForSelf(this, {start}, rule, Parser.msg('nothing-in', name), s);
 				if (lintConfig.computeEditInfo) {
@@ -53,8 +53,51 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				}
 				return [e];
 			}
-			const errors = super.lint(start, getLintRegex(name));
-			return errors;
+			rule = 'invalid-json';
+			s = lintConfig.getSeverity(rule);
+			if (s && name === 'templatedata') {
+				const [error] = lintJSON(innerText);
+				if (!error) {
+					return [];
+				}
+				const {message, position} = error;
+				let {line, column} = error,
+					startIndex = start,
+					{top, left} = new BoundingRect(this, start);
+				if (position !== null) {
+					startIndex += position;
+					if (!line || !column) {
+						const pos = this.posFromIndex(position)!;
+						line ??= pos.top + 1;
+						column ??= pos.left + 1;
+					}
+				} else if (line && column) {
+					startIndex += this.indexFromPos(line - 1, column - 1)!;
+				}
+				if (line) {
+					top += line - 1;
+					if (line > 1) {
+						left = 0;
+					}
+					if (column) {
+						left += column - 1;
+					}
+				}
+				return [
+					{
+						rule,
+						message,
+						severity: s,
+						startIndex,
+						endIndex: startIndex,
+						startLine: top,
+						endLine: top,
+						startCol: left,
+						endCol: left,
+					},
+				];
+			}
+			return super.lint(start, getLintRegex(name));
 		}
 	}
 
