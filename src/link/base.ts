@@ -35,6 +35,7 @@ import type {
 	LinkToken,
 	RedirectTargetToken,
 	CategoryToken,
+	CategorytreeToken,
 } from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -168,7 +169,10 @@ export abstract class LinkBaseToken extends Token {
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e,
 				{type} = this;
-			if (prevTarget?.is<AtomToken>('link-target')) {
+			if (
+				prevTarget?.is<AtomToken>('link-target')
+				&& !(this.is<CategorytreeToken>('ext-inner') && this.parentNode?.selfClosing)
+			) {
 				const name = prevTarget.text(),
 					titleObj = this.getTitle(),
 					{interwiki, ns, valid} = titleObj;

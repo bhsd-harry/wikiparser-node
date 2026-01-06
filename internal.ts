@@ -45,6 +45,9 @@ export type {GalleryToken} from './src/multiLine/gallery';
 export type {ImagemapLinkToken} from './src/imagemapLink';
 export type {ImagemapToken} from './src/multiLine/imagemap';
 export type {CommentedToken} from './src/commented';
+export type {CategorytreeToken} from './src/link/categorytree';
+export type {ParamLineToken} from './src/paramLine';
+export type {CommentLineToken} from './src/nowiki/commentLine';
 export type {TranslateToken} from './src/tagPair/translate';
 export type {TvarToken} from './src/tag/tvar';
 

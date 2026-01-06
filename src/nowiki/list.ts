@@ -28,6 +28,7 @@ export abstract class ListToken extends ListBaseToken {
 		return 'list';
 	}
 
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
 			const rule = 'syntax-like',

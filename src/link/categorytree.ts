@@ -4,7 +4,16 @@ import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import type {Config, LintError} from '../../base';
 import type {Title} from '../../lib/title';
-import type {Token, AtomToken, AttributesToken, ExtToken} from '../../internal';
+import type {
+	Token,
+	AtomToken,
+	AttributesToken,
+	ExtToken,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
+} from '../../internal';
 
 /* NOT FOR BROWSER */
 
@@ -54,6 +63,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 		this.firstChild.setAttribute('acceptable', {AstText: 0});
 	}
 
+	/** @private */
 	override getTitle(): Title {
 		const target = this.firstChild.toString().trim(),
 			opt = {halfParsed: true},
@@ -64,6 +74,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 			: this.normalizeTitle(`Category:${target}`, 0, opt);
 	}
 
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
 			const rule = 'no-ignored',
@@ -87,6 +98,15 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 	@cached()
 	override toHtmlInternal(): '' {
 		return '';
+	}
+
+	/** @private */
+	override safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
+		if (elements.length === 0) {
+			this.firstChild.replaceChildren();
+		} else {
+			super.safeReplaceChildren(elements);
+		}
 	}
 }
 

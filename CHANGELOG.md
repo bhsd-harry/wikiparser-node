@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.34.0
+
+*2026-01-06*
+
+**Changed**
+
+- Setting [`TagPairToken.selfClosing`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagPairToken-%28EN%29#selfclosing) to `true` now removes the inner content of the tag
+
 ## v1.33.0
 
 *2026-01-01*

@@ -3,7 +3,14 @@ import {generateForSelf, fixByRemove} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
-import type {AttributesToken, ExtToken} from '../../internal';
+import type {
+	AttributesToken,
+	ExtToken,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
+} from '../../internal';
 
 /* NOT FOR BROWSER ONLY */
 
@@ -151,6 +158,19 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+	}
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER */
+
+	/** @private */
+	override safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
+		if (elements.length === 0) {
+			this.setText('');
+		} else {
+			super.safeReplaceChildren(elements);
+		}
 	}
 }
 

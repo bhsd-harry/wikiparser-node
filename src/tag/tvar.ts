@@ -106,6 +106,7 @@ export abstract class TvarToken extends TagToken {
 		this.setAttribute('name', name!);
 	}
 
+	/** @private */
 	override afterBuild(): void {
 		super.afterBuild();
 		if (!this.closing) {

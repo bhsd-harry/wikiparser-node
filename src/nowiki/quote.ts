@@ -42,10 +42,12 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return 'quote';
 	}
 
+	/** @private */
 	override get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
+	/** @private */
 	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
@@ -65,6 +67,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	/** @private */
 	override get font(): Font {
 		return {bold: this.bold, italic: this.italic};
 	}
@@ -150,6 +153,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		);
 	}
 
+	/** @private */
 	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'bold') {
 			this.#match.bold = value as QuoteToken;

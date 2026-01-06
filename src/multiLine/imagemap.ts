@@ -202,7 +202,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 
 	/** @private */
 	override removeAt(i: number): AstNodes {
-		if (this.childNodes[i]?.is<GalleryImageToken>('imagemap-image')) {
+		if (!this.parentNode?.selfClosing && this.childNodes[i]?.is<GalleryImageToken>('imagemap-image')) {
 			throw new Error('Do not remove the image in <imagemap>!');
 		}
 		return super.removeAt(i);

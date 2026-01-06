@@ -50,6 +50,7 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 		return skip ? '' : super.toString();
 	}
 
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
 			const {lintConfig} = Parser,

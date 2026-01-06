@@ -25,7 +25,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 > {
 	declare name: 'translate';
 	declare closed: true;
-	declare selfClosing: false;
 
 	declare readonly childNodes: readonly [SyntaxToken, Token];
 	abstract override get firstChild(): SyntaxToken;
@@ -42,6 +41,10 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 
 	override get type(): 'translate' {
 		return 'translate';
+	}
+
+	override get selfClosing(): false {
+		return false;
 	}
 
 	/**
@@ -83,7 +86,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		/* PRINT ONLY */
 
 		this.seal('closed', true);
-		this.seal('selfClosing', true);
 	}
 
 	/** @private */

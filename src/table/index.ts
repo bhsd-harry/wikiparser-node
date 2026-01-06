@@ -364,6 +364,7 @@ export abstract class TableToken extends TrBaseToken {
 		return super.insertAt(token, i);
 	}
 
+	/** @private */
 	override getRowCount(): number {
 		return super.getRowCount()
 			+ this.childNodes.filter(child => child.is<TrToken>('tr') && child.getRowCount()).length;
