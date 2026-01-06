@@ -59,53 +59,60 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 			NPM: {
 				rule = 'invalid-json';
-				s = lintConfig.getSeverity(rule);
-				if (s && name === 'templatedata') {
+				const sSyntax = lintConfig.getSeverity(rule);
+				if (
+					// eslint-disable-next-line @stylistic/no-extra-parens
+					name === 'templatedata' && (
+						sSyntax
+					)
+				) {
 					// browser版本使用`lintJSONNative()`
-					const [error] = lintJSONNative(innerText);
-					if (!error) {
-						return [];
-					}
-					const {
-						message,
-						position,
-					} = error;
-					let {line, column} = error,
-						startIndex = start,
-						{top, left} = new BoundingRect(this, start);
-					if (position !== null) {
-						startIndex += position;
-						if (!line || !column) {
-							const pos = this.posFromIndex(position)!;
-							line ??= pos.top + 1;
-							column ??= pos.left + 1;
+					return lintJSONNative(
+						innerText,
+					).map((error): LintError | false => {
+						const {
+							message,
+							position,
+						} = error;
+						s =
+							sSyntax;
+						if (!s) {
+							return false;
 						}
-					} else if (line && column) {
-						startIndex += this.indexFromPos(line - 1, column - 1)!;
-					}
-					if (line) {
-						top += line - 1;
-						if (line > 1) {
-							left = 0;
+						let {line, column} = error,
+							startIndex = start,
+							{top, left} = new BoundingRect(this, start);
+						if (position !== null) {
+							startIndex += position;
+							if (!line || !column) {
+								const pos = this.posFromIndex(position)!;
+								line ??= pos.top + 1;
+								column ??= pos.left + 1;
+							}
+						} else if (line && column) {
+							startIndex += this.indexFromPos(line - 1, column - 1)!;
 						}
-						if (column) {
-							left += column - 1;
+						if (line) {
+							top += line - 1;
+							if (line > 1) {
+								left = 0;
+							}
+							if (column) {
+								left += column - 1;
+							}
 						}
-					}
-					return [
-						{
+						return {
 							rule,
 							message,
-							severity:
-								s,
+							severity: s,
 							startIndex,
 							endIndex: startIndex,
 							startLine: top,
 							endLine: top,
 							startCol: left,
 							endCol: left,
-						},
-					];
+						};
+					}).filter((e): e is LintError => e !== false);
 				}
 			}
 			return super.lint(start, getLintRegex(name));
