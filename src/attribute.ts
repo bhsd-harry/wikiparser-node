@@ -338,11 +338,9 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override escape(): void {
-		LSP: {
-			if (this.type !== 'ext-attr') {
-				this.#equal = '{{=}}';
-				this.lastChild.escape();
-			}
+		LSP: if (this.type !== 'ext-attr') {
+			this.#equal = '{{=}}';
+			this.lastChild.escape();
 		}
 	}
 }
