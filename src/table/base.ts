@@ -70,13 +70,11 @@ export abstract class TableBaseToken extends Token {
 
 	/** @private */
 	override escape(): void {
-		LSP: {
-			for (const child of this.childNodes) {
-				if (child instanceof SyntaxToken) {
-					escapeTable(child);
-				} else {
-					child.escape();
-				}
+		LSP: for (const child of this.childNodes) {
+			if (child instanceof SyntaxToken) {
+				escapeTable(child);
+			} else {
+				child.escape();
 			}
 		}
 	}
