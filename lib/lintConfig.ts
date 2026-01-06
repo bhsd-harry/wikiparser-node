@@ -87,7 +87,12 @@ const defaultLintRuleConfig: LintRuleConfig = {
 		},
 	],
 	'invalid-isbn': 2,
-	'invalid-json': 2,
+	'invalid-json': [
+		2,
+		{
+			duplicate: 1,
+		},
+	],
 	'invalid-url': 1,
 	'lonely-apos': [
 		1,
