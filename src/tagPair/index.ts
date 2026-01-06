@@ -1,5 +1,7 @@
 import {Token} from '../index';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 import type {AstNodes} from '../../internal';
 
 /**
@@ -9,13 +11,30 @@ import type {AstNodes} from '../../internal';
  */
 export abstract class TagPairToken extends Token {
 	readonly #tags: [string, string];
+	#selfClosing;
 	closed;
-	selfClosing;
 
 	abstract override get type(): 'ext' | 'include';
 	declare readonly childNodes: readonly [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
+
+	/** whether to be self-closing / 是否自封闭 */
+	get selfClosing(): boolean {
+		return this.#selfClosing;
+	}
+
+	set selfClosing(value) {
+		this.#selfClosing = Boolean(value);
+		if (value) {
+			const {lastChild} = this;
+			if (lastChild.type === 'text') {
+				lastChild.replaceData('');
+			} else {
+				lastChild.replaceChildren();
+			}
+		}
+	}
 
 	/**
 	 * @param name 标签名
@@ -34,7 +53,7 @@ export abstract class TagPairToken extends Token {
 		super(undefined, config);
 		this.#tags = [name, closed || name];
 		this.closed = closed !== '';
-		this.selfClosing = closed === undefined;
+		this.#selfClosing = closed === undefined;
 		this.append(attr, inner);
 		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
 		accum.splice(index === -1 ? Infinity : index, 0, this);
@@ -43,12 +62,11 @@ export abstract class TagPairToken extends Token {
 	/** @private */
 	override toString(skip?: boolean): string {
 		const {
-				selfClosing,
 				firstChild,
 				lastChild,
 			} = this,
 			[opening, closing] = this.#tags;
-		return selfClosing
+		return this.#selfClosing
 			? `<${opening}${firstChild.toString(skip)}/>`
 			: `<${opening}${firstChild.toString(skip)}>${lastChild.toString(skip)}${
 				this.closed ? `</${closing}>` : ''
@@ -58,7 +76,7 @@ export abstract class TagPairToken extends Token {
 	/** @private */
 	override text(): string {
 		const [opening, closing] = this.#tags;
-		return this.selfClosing
+		return this.#selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}
