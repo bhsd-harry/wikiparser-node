@@ -81,7 +81,7 @@
 	},
 	"dependencies": {
 		"@bhsd/cm-util": "^0.1.0",
-		"@bhsd/common": "^1.0.1",
+		"@bhsd/common": "^1.1.0",
 		"@bhsd/stylelint-util": "^0.1.0",
 		"binary-search": "^1.3.6",
 		"vscode-languageserver-types": "^3.17.5"

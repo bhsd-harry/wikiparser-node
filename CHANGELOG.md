@@ -3,6 +3,10 @@
 
 *2026-01-06*
 
+**Added**
+
+- New category of linting errors: [invalid JSON inside `<templatedata>`](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-json)
+
 **Changed**
 
 - Setting [`TagPairToken.selfClosing`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagPairToken-%28EN%29#selfclosing) to `true` now removes the inner content of the tag
@@ -65,7 +69,7 @@
 
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports more parser functions
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction)
-- New category of linting errors: template arguments inside an extension tag
+- New category of linting errors: [template arguments inside an extension tag](https://github.com/bhsd-harry/wikiparser-node/wiki/arg-in-ext)
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports transclusion of redirect pages
 
 **Fixed**
@@ -83,7 +87,7 @@
 - [`HeadingToken.prototype.section`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#section)
 - [`QuoteToken.prototype.findMatchingQuote`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#findmatchingquote) and [`QuoteToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#getrange)
 - [`NoincludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken-%28EN%29#lint) now reports useless attributes like [`IncludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken-%28EN%29#lint)
-- New category of linting errors: redirect-like text in list items and header-like text in plain text
+- New category of linting errors: [redirect-like text in list items and header-like text in plain text](https://github.com/bhsd-harry/wikiparser-node/wiki/syntax-like)
 
 **Fixed**
 
@@ -128,7 +132,7 @@
 - [`Token.pageName`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#pagename) property that gets or sets the page name
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports the `int` parser function
 - [`ImageParameterToken.thumb`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#thumb) property that gets the thumbnail filename from the `manualthumb` image parameter
-- New category of linting errors: invalid thumbnail filenames in image parameters
+- New category of linting errors: [invalid thumbnail filenames in image parameters](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-gallery#thumb)
 
 **Fixed**
 
@@ -146,7 +150,7 @@
 **Added**
 
 - Parse the `details` attribute of a `<ref>` extension tag
-- New categories of linting errors, including `<ref>` tags in internal or external links, and invalid URLs
+- New categories of linting errors, including [`<ref>` tags in internal or external links](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link#ref), and [invalid URLs](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-url)
 - Parse behavior switches with full-width underscores (`＿＿`)
 
 ## v1.28.0
@@ -701,7 +705,7 @@
 
 **Added**
 
-- New category of linting errors: lonely `RFC`/`PMID`/`ISBN`
+- New category of linting errors: [lonely `RFC`/`PMID`/`ISBN`](https://github.com/bhsd-harry/wikiparser-node/wiki/lonely-http#options)
 - [`LintError.Fix`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#linterrorfix) now has a new string property `desc`
 
 **Changed**
@@ -818,7 +822,7 @@
 **Added**
 
 - [`HeadingToken.id`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#id)
-- New category of linting errors: duplicated id
+- New category of linting errors: [duplicated id](https://github.com/bhsd-harry/wikiparser-node/wiki/no-duplicate#id)
 
 **Fixed**
 
@@ -1203,7 +1207,7 @@
 
 **Added**
 
-- New category of linting errors: inconsistent [table layout](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#getlayout)
+- New category of linting errors: [inconsistent table layout](https://github.com/bhsd-harry/wikiparser-node/wiki/table-layout)
 
 **Fixed**
 
@@ -1240,7 +1244,7 @@
 
 **Added**
 
-- New category of linting errors: `<ref>` or external links without specified text in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29)
+- New category of linting errors: [`<ref>` or external links without specified text in anchors](https://github.com/bhsd-harry/wikiparser-node/wiki/var-anchor)
 - New preset configuration [`enwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/enwiki.json) for English Wikipedia
 
 **Fixed**
@@ -1259,7 +1263,7 @@
 **Added**
 
 - Linting errors for [`LinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken-%28EN%29) are now also reported from [`CategoryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken-%28EN%29) and [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29) where applicable
-- New category of linting errors: duplicated categories, and bold (either [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29) or [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29)) in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29)
+- New category of linting errors: [duplicated categories](https://github.com/bhsd-harry/wikiparser-node/wiki/no-duplicate#category), and [bold in headers](https://github.com/bhsd-harry/wikiparser-node/wiki/bold-header)
 
 **Fixed**
 
@@ -1271,7 +1275,7 @@
 
 **Added**
 
-- New categories of linting errors, including obsolete HTML tags and attributes, internal links in external links, and unmatched [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29) inside a [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29)
+- New categories of linting errors, including [obsolete HTML tags](https://github.com/bhsd-harry/wikiparser-node/wiki/obsolete-tag) and [attributes](https://github.com/bhsd-harry/wikiparser-node/wiki/obsolete-attr), [internal links in external links](https://github.com/bhsd-harry/wikiparser-node/wiki/nested-link), and [unmatched apostrophes inside a header](https://github.com/bhsd-harry/wikiparser-node/wiki/format-leakage#apostrophe)
 - New properties for [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29): `bold` and `italic`
 
 **Fixed**

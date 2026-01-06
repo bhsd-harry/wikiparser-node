@@ -1,5 +1,6 @@
-import {getRegex} from '@bhsd/common';
+import {getRegex, lintJSON} from '@bhsd/common';
 import {generateForSelf, fixByRemove} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
@@ -82,10 +83,10 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		LINT: {
 			const {
 					name,
+					innerText,
 
 					/* NOT FOR BROWSER ONLY */
 
-					innerText,
 					previousSibling,
 				} = this,
 				{lintConfig} = Parser;
@@ -98,7 +99,50 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				}
 				return [e];
 			}
-			const errors = super.lint(start, getLintRegex(name));
+			rule = 'invalid-json';
+			s = lintConfig.getSeverity(rule);
+			if (s && name === 'templatedata') {
+				const [error] = lintJSON(innerText);
+				if (!error) {
+					return [];
+				}
+				const {message, position} = error;
+				let {line, column} = error,
+					startIndex = start,
+					{top, left} = new BoundingRect(this, start);
+				if (position !== null) {
+					startIndex += position;
+					if (!line || !column) {
+						const pos = this.posFromIndex(position)!;
+						line ??= pos.top + 1;
+						column ??= pos.left + 1;
+					}
+				} else if (line && column) {
+					startIndex += this.indexFromPos(line - 1, column - 1)!;
+				}
+				if (line) {
+					top += line - 1;
+					if (line > 1) {
+						left = 0;
+					}
+					if (column) {
+						left += column - 1;
+					}
+				}
+				return [
+					{
+						rule,
+						message,
+						severity: s,
+						startIndex,
+						endIndex: startIndex,
+						startLine: top,
+						endLine: top,
+						startCol: left,
+						endCol: left,
+					},
+				];
+			}
 
 			/* NOT FOR BROWSER ONLY */
 
@@ -133,23 +177,24 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						const result = texvcjs.check(tex, {
 							usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem')),
 						});
-						if (result.status !== '+') {
-							const e = generateForSelf(this, {start}, rule, 'chem-required', s);
-							if (result.status !== 'C') {
-								const {message, location} = result.error,
-									[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
-								[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
-								Object.assign(e, {endIndex, endLine, endCol, message});
-							}
-							errors.push(e);
+						if (result.status === '+') {
+							return [];
 						}
+						const e = generateForSelf(this, {start}, rule, 'chem-required', s);
+						if (result.status !== 'C') {
+							const {message, location} = result.error,
+								[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
+							[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
+							Object.assign(e, {endIndex, endLine, endCol, message});
+						}
+						return [e];
 					}
 				}
 			}
 
 			/* NOT FOR BROWSER ONLY END */
 
-			return errors;
+			return super.lint(start, getLintRegex(name));
 		}
 	}
 
