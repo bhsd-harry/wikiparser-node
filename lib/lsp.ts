@@ -1163,9 +1163,23 @@ export class LanguageService implements LanguageServiceBase {
 			{lintConfig} = Parser,
 			needFix = lintConfig.fix!;
 		lintConfig.fix = false;
-		const errors = root.lint();
+		let errors = root.lint();
 		lintConfig.fix = needFix;
-		const diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
+		if (!warning) {
+			errors = errors.filter(({severity}) => severity === 'error');
+		}
+
+		/* NOT FOR BROWSER ONLY */
+
+		const stylelint = await loadStylelint(),
+			jsonLSP = loadJsonLSP();
+		if (jsonLSP) {
+			errors = errors.filter(({rule}) => rule !== 'invalid-json');
+		}
+
+		/* NOT FOR BROWSER ONLY END */
+
+		const diagnostics = errors.map(
 				({
 					startLine,
 					startCol,
@@ -1201,14 +1215,6 @@ export class LanguageService implements LanguageServiceBase {
 					],
 				}),
 			),
-
-			/* NOT FOR BROWSER ONLY */
-
-			stylelint = await loadStylelint(),
-			jsonLSP = loadJsonLSP(),
-
-			/* NOT FOR BROWSER ONLY END */
-
 			/* eslint-disable @stylistic/operator-linebreak */
 			cssDiagnostics =
 				stylelint ?
