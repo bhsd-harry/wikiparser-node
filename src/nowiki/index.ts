@@ -56,56 +56,57 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				}
 				return [e];
 			}
-			rule = 'invalid-json';
-			s = lintConfig.getSeverity(rule);
-			if (s && name === 'templatedata') {
-				let result: ReturnType<typeof lintJSONNative> | undefined;
-				// eslint-disable-next-line prefer-const
-				result ??= lintJSONNative(innerText);
-				const [error] = result;
-				if (!error) {
-					return [];
-				}
-				const {
-					message,
-					position,
-				} = error;
-				let {line, column} = error,
-					startIndex = start,
-					{top, left} = new BoundingRect(this, start);
-				if (position !== null) {
-					startIndex += position;
-					if (!line || !column) {
-						const pos = this.posFromIndex(position)!;
-						line ??= pos.top + 1;
-						column ??= pos.left + 1;
+
+			NPM: {
+				rule = 'invalid-json';
+				s = lintConfig.getSeverity(rule);
+				if (s && name === 'templatedata') {
+					// browser版本使用`lintJSONNative()`
+					const [error] = lintJSONNative(innerText);
+					if (!error) {
+						return [];
 					}
-				} else if (line && column) {
-					startIndex += this.indexFromPos(line - 1, column - 1)!;
-				}
-				if (line) {
-					top += line - 1;
-					if (line > 1) {
-						left = 0;
-					}
-					if (column) {
-						left += column - 1;
-					}
-				}
-				return [
-					{
-						rule,
+					const {
 						message,
-						severity:
-							s,
-						startIndex,
-						endIndex: startIndex,
-						startLine: top,
-						endLine: top,
-						startCol: left,
-						endCol: left,
-					},
-				];
+						position,
+					} = error;
+					let {line, column} = error,
+						startIndex = start,
+						{top, left} = new BoundingRect(this, start);
+					if (position !== null) {
+						startIndex += position;
+						if (!line || !column) {
+							const pos = this.posFromIndex(position)!;
+							line ??= pos.top + 1;
+							column ??= pos.left + 1;
+						}
+					} else if (line && column) {
+						startIndex += this.indexFromPos(line - 1, column - 1)!;
+					}
+					if (line) {
+						top += line - 1;
+						if (line > 1) {
+							left = 0;
+						}
+						if (column) {
+							left += column - 1;
+						}
+					}
+					return [
+						{
+							rule,
+							message,
+							severity:
+								s,
+							startIndex,
+							endIndex: startIndex,
+							startLine: top,
+							endLine: top,
+							startCol: left,
+							endCol: left,
+						},
+					];
+				}
 			}
 			return super.lint(start, getLintRegex(name));
 		}

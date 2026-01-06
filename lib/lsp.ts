@@ -870,12 +870,9 @@ export class LanguageService implements LanguageServiceBase {
 			{lintConfig} = Parser,
 			needFix = lintConfig.fix!;
 		lintConfig.fix = false;
-		let errors = root.lint();
+		const errors = root.lint();
 		lintConfig.fix = needFix;
-		if (!warning) {
-			errors = errors.filter(({severity}) => severity === 'error');
-		}
-		const diagnostics = errors.map(
+		const diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
 				({
 					startLine,
 					startCol,
