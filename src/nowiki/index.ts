@@ -1,6 +1,5 @@
 import {
 	getRegex,
-	lintJSONNative,
 	lintJSON,
 } from '@bhsd/common';
 import {generateForSelf, fixByRemove} from '../../util/lint';
@@ -103,91 +102,78 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				}
 				return [e];
 			}
-			rule = 'invalid-json';
-			s = lintConfig.getSeverity(rule);
 
-			/* NOT FOR BROWSER ONLY */
+			NPM: {
+				rule = 'invalid-json';
+				s = lintConfig.getSeverity(rule);
+				if (s && name === 'templatedata') {
+					// browser版本使用`lintJSONNative()`
+					const [error] = lintJSON(innerText);
+					if (!error) {
+						return [];
+					}
+					const {
+						message,
+						position,
 
-			const sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
+						/* NOT FOR BROWSER ONLY */
 
-			/* NOT FOR BROWSER ONLY END */
-
-			if (s && name === 'templatedata') {
-				let result: ReturnType<typeof lintJSONNative> | undefined;
-
-				/* NOT FOR BROWSER ONLY */
-
-				NPM: result = lintJSON(innerText);
-
-				/* NOT FOR BROWSER ONLY END */
-
-				result ??= lintJSONNative(innerText);
-				const [error] = result;
-				if (!error) {
-					return [];
-				}
-				const {
-					message,
-					position,
+						severity,
+					} = error;
 
 					/* NOT FOR BROWSER ONLY */
 
-					severity,
-				} = error;
+					const sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
+					if (!sDuplicate && severity === 'warning') {
+						return [];
+					}
+
+					/* NOT FOR BROWSER ONLY END */
+
+					let {line, column} = error,
+						startIndex = start,
+						{top, left} = new BoundingRect(this, start);
+					if (position !== null) {
+						startIndex += position;
+						if (!line || !column) {
+							const pos = this.posFromIndex(position)!;
+							line ??= pos.top + 1;
+							column ??= pos.left + 1;
+						}
+					} else if (line && column) {
+						startIndex += this.indexFromPos(line - 1, column - 1)!;
+					}
+					if (line) {
+						top += line - 1;
+						if (line > 1) {
+							left = 0;
+						}
+						if (column) {
+							left += column - 1;
+						}
+					}
+					return [
+						{
+							rule,
+							message,
+							severity:
+								/* eslint-disable @stylistic/operator-linebreak */
+								severity === 'warning' ?
+									sDuplicate as LintError.Severity :
+								/* eslint-enable @stylistic/operator-linebreak */
+									s,
+							startIndex,
+							endIndex: startIndex,
+							startLine: top,
+							endLine: top,
+							startCol: left,
+							endCol: left,
+						},
+					];
+				}
 
 				/* NOT FOR BROWSER ONLY */
 
-				if (!sDuplicate && severity === 'warning') {
-					return [];
-				}
-
-				/* NOT FOR BROWSER ONLY END */
-
-				let {line, column} = error,
-					startIndex = start,
-					{top, left} = new BoundingRect(this, start);
-				if (position !== null) {
-					startIndex += position;
-					if (!line || !column) {
-						const pos = this.posFromIndex(position)!;
-						line ??= pos.top + 1;
-						column ??= pos.left + 1;
-					}
-				} else if (line && column) {
-					startIndex += this.indexFromPos(line - 1, column - 1)!;
-				}
-				if (line) {
-					top += line - 1;
-					if (line > 1) {
-						left = 0;
-					}
-					if (column) {
-						left += column - 1;
-					}
-				}
-				return [
-					{
-						rule,
-						message,
-						severity:
-							/* eslint-disable @stylistic/operator-linebreak */
-							severity === 'warning' ?
-								sDuplicate as LintError.Severity :
-							/* eslint-enable @stylistic/operator-linebreak */
-								s,
-						startIndex,
-						endIndex: startIndex,
-						startLine: top,
-						endLine: top,
-						startCol: left,
-						endCol: left,
-					},
-				];
-			}
-
-			/* NOT FOR BROWSER ONLY */
-
-			NPM: {
 				rule = 'invalid-math';
 				s = lintConfig.getSeverity(rule);
 				if (s && mathTags.has(name)) {

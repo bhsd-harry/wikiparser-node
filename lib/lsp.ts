@@ -64,6 +64,7 @@ import type {
 	/* NOT FOR BROWSER ONLY */
 
 	ConfigData,
+	LintConfigValue,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
@@ -1183,23 +1184,31 @@ export class LanguageService implements LanguageServiceBase {
 			{lintConfig} = Parser,
 			needFix = lintConfig.fix!;
 		lintConfig.fix = false;
-		let errors = root.lint();
-		lintConfig.fix = needFix;
-		if (!warning) {
-			errors = errors.filter(({severity}) => severity === 'error');
-		}
 
 		/* NOT FOR BROWSER ONLY */
 
 		const stylelint = await loadStylelint(),
 			jsonLSP = loadJsonLSP();
-		if (jsonLSP) {
-			errors = errors.filter(({rule}) => rule !== 'invalid-json');
+		let s: LintConfigValue | undefined;
+		NPM: if (jsonLSP) {
+			s = lintConfig.rules['invalid-json'];
+			lintConfig.rules['invalid-json'] = 0;
 		}
 
 		/* NOT FOR BROWSER ONLY END */
 
-		const diagnostics = errors.map(
+		const errors = root.lint();
+		lintConfig.fix = needFix;
+
+		/* NOT FOR BROWSER ONLY */
+
+		NPM: if (jsonLSP) {
+			lintConfig.rules['invalid-json'] = s!;
+		}
+
+		/* NOT FOR BROWSER ONLY END */
+
+		const diagnostics = (warning ? errors : errors.filter(({severity}) => severity === 'error')).map(
 				({
 					startLine,
 					startCol,
