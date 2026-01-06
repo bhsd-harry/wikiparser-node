@@ -59,12 +59,17 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			rule = 'invalid-json';
 			s = lintConfig.getSeverity(rule);
 			if (s && name === 'templatedata') {
-				// browser版本使用`lintJSONNative()`
-				const [error] = lintJSONNative(innerText);
+				let result: ReturnType<typeof lintJSONNative> | undefined;
+				// eslint-disable-next-line prefer-const
+				result ??= lintJSONNative(innerText);
+				const [error] = result;
 				if (!error) {
 					return [];
 				}
-				const {message, position} = error;
+				const {
+					message,
+					position,
+				} = error;
 				let {line, column} = error,
 					startIndex = start,
 					{top, left} = new BoundingRect(this, start);
@@ -91,7 +96,8 @@ export abstract class NowikiToken extends NowikiBaseToken {
 					{
 						rule,
 						message,
-						severity: s,
+						severity:
+							s,
 						startIndex,
 						endIndex: startIndex,
 						startLine: top,
