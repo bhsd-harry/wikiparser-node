@@ -44,12 +44,10 @@ export abstract class ParameterToken extends Token {
 
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
-		LSP: {
-			try {
-				return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-			} catch {
-				return false;
-			}
+		LSP: try {
+			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
+		} catch {
+			return false;
 		}
 	}
 

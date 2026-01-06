@@ -81,13 +81,11 @@ export abstract class ConverterFlagsToken extends Token {
 	isInvalidFlag(flag: string | Token, variant?: Set<string>, unknown?: Set<string>, valid?: Set<string>): boolean {
 		/* PRINT ONLY */
 
-		PRINT: {
-			if (typeof flag === 'object') {
-				flag = flag.text().trim();
-				variant = this.getVariantFlags();
-				unknown = this.getUnknownFlags();
-				valid = new Set(this.#flags!.filter(f => definedFlags.has(f)));
-			}
+		PRINT: if (typeof flag === 'object') {
+			flag = flag.text().trim();
+			variant = this.getVariantFlags();
+			unknown = this.getUnknownFlags();
+			valid = new Set(this.#flags!.filter(f => definedFlags.has(f)));
 		}
 
 		/* PRINT ONLY END */
