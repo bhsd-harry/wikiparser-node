@@ -1,5 +1,6 @@
 import {
 	getRegex,
+	lintJSONNative,
 	lintJSON,
 } from '@bhsd/common';
 import {generateForSelf, fixByRemove} from '../../util/lint';
@@ -87,13 +88,44 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			}
 			rule = 'invalid-json';
 			s = lintConfig.getSeverity(rule);
+
+			/* NOT FOR BROWSER ONLY */
+
+			const sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
+
+			/* NOT FOR BROWSER ONLY END */
+
 			if (s && name === 'templatedata') {
-				// browser版本使用`lintJSONNative()`
-				const [error] = lintJSON(innerText);
+				let result: ReturnType<typeof lintJSONNative> | undefined;
+
+				/* NOT FOR BROWSER ONLY */
+
+				NPM: result = lintJSON(innerText);
+
+				/* NOT FOR BROWSER ONLY END */
+
+				result ??= lintJSONNative(innerText);
+				const [error] = result;
 				if (!error) {
 					return [];
 				}
-				const {message, position} = error;
+				const {
+					message,
+					position,
+
+					/* NOT FOR BROWSER ONLY */
+
+					severity,
+				} = error;
+
+				/* NOT FOR BROWSER ONLY */
+
+				if (!sDuplicate && severity === 'warning') {
+					return [];
+				}
+
+				/* NOT FOR BROWSER ONLY END */
+
 				let {line, column} = error,
 					startIndex = start,
 					{top, left} = new BoundingRect(this, start);
@@ -120,7 +152,12 @@ export abstract class NowikiToken extends NowikiBaseToken {
 					{
 						rule,
 						message,
-						severity: s,
+						severity:
+							/* eslint-disable @stylistic/operator-linebreak */
+							severity === 'warning' ?
+								sDuplicate as LintError.Severity :
+							/* eslint-enable @stylistic/operator-linebreak */
+								s,
 						startIndex,
 						endIndex: startIndex,
 						startLine: top,
