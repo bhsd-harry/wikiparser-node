@@ -109,6 +109,8 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						const {
 							message,
 							position,
+							line,
+							column,
 
 							/* NOT FOR BROWSER ONLY */
 
@@ -123,38 +125,20 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						if (!s) {
 							return false;
 						}
-						let {line, column} = error,
-							startIndex = start,
-							{top, left} = new BoundingRect(this, start);
-						if (position !== null) {
-							startIndex += position;
-							if (!line || !column) {
-								const pos = this.posFromIndex(position)!;
-								line ??= pos.top + 1;
-								column ??= pos.left + 1;
-							}
-						} else if (line && column) {
-							startIndex += this.indexFromPos(line - 1, column - 1)!;
-						}
-						if (line) {
-							top += line - 1;
-							if (line > 1) {
-								left = 0;
-							}
-							if (column) {
-								left += column - 1;
-							}
-						}
+						const rect = new BoundingRect(this, start),
+							startIndex = start + position,
+							startLine = rect.top + line - 1,
+							startCol = (line > 1 ? 0 : rect.left) + column - 1;
 						return {
 							rule,
 							message,
 							severity: s,
 							startIndex,
 							endIndex: startIndex,
-							startLine: top,
-							endLine: top,
-							startCol: left,
-							endCol: left,
+							startLine,
+							endLine: startLine,
+							startCol,
+							endCol: startCol,
 						};
 					}).filter((e): e is LintError => e !== false);
 				}

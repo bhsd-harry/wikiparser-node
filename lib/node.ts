@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
+import {splitLines} from '@bhsd/common';
 import findIndex from '../util/search';
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
@@ -265,15 +266,6 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	@cached(false)
 	getLines(): [string, number, number][] {
-		LINT: {
-			const results: [string, number, number][] = [];
-			let start = 0;
-			for (const line of String(this).split('\n')) {
-				const end = start + line.length;
-				results.push([line, start, end]);
-				start = end + 1;
-			}
-			return results;
-		}
+		LINT: return splitLines(String(this));
 	}
 }
