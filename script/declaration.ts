@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
+import {styleText} from 'util';
 
 const regex = /^declare const \w+_base:(?:.+\) &)? typeof (?:\w+\.)?(\w+)\b.+(export [^\n]+ extends )\w+\b/imsu;
 
@@ -11,7 +11,7 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 	const fullPath = path.join('dist/src', file),
 		content = fs.readFileSync(fullPath, 'utf8');
 	if (/^declare const \w+_base: /mu.test(content)) {
-		console.log('%s %s', chalk.green('Cleaning declaration:'), file);
+		console.log('%s %s', styleText('green', 'Cleaning declaration:'), file);
 		fs.writeFileSync(
 			fullPath,
 			content.replace(regex, (_, base: string, exp: string): string => {

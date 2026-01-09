@@ -51,6 +51,7 @@ import type {
 
 /* NOT FOR BROWSER */
 
+import util from 'util';
 import {RedirectMap} from './lib/redirectMap';
 import type {log} from './util/diff';
 import type {MagicWord} from './render/magicWords';
@@ -71,7 +72,6 @@ import {
 	cmd,
 	info,
 	diff,
-	loadChalk,
 } from './util/diff';
 
 /* NOT FOR BROWSER ONLY END */
@@ -733,14 +733,16 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	warn(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.warning) {
-			console.warn(loadChalk()?.yellow(msg) ?? msg, ...args);
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			console.warn(util.styleText?.('yellow', msg) ?? msg, ...args);
 		}
 	},
 	/** @implements */
 	debug(msg, ...args) {
 		/* istanbul ignore if */
 		if (this.debugging) {
-			console.debug(loadChalk()?.blue(msg) ?? msg, ...args);
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			console.debug(util.styleText?.('blue', msg) ?? msg, ...args);
 		}
 	},
 	error,
