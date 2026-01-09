@@ -3,8 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
+import util from 'util';
 import Parser from '../index';
-import type {Chalk} from 'chalk';
 import type {LintError} from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
 
@@ -13,21 +13,6 @@ declare interface Cache {
 	include: CacheItems;
 	noinclude: CacheItems;
 }
-
-const chalk = ((): Chalk => {
-	try {
-		return require('chalk');
-	} catch {
-		const f = ((text: string): string => text) as Chalk,
-			proxy = new Proxy(f, {
-				/** @private */
-				get(): Chalk {
-					return proxy;
-				},
-			});
-		return proxy;
-	}
-})();
 
 const man = `
 Available options:
@@ -204,12 +189,15 @@ const throwOnCacheFile = (input: string | undefined): void => {
  */
 const plural = (n: number, word: string): string => `${n} ${word}${n === 1 ? '' : 's'}`;
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const styleText = util.styleText ?? ((_: string | string[], text: string): string => text);
+
 /**
  * color the severity
  * @param severity problem severity
  */
 const coloredSeverity = (severity: 'error' | 'warning'): string =>
-	chalk[severity === 'error' ? 'red' : 'yellow'](severity.padEnd(7));
+	styleText(severity === 'error' ? 'red' : 'yellow', severity.padEnd(7));
 
 for (let i = 2; i < argv.length; i++) {
 	option = argv[i]!;
@@ -429,18 +417,18 @@ try {
 			nFixableWarn += nLocalFixableWarn;
 		}
 		if (problems.length > 0) {
-			console.error(`\n${chalk.underline('%s')}`, file);
+			console.error('\n%s', styleText('underline', file));
 			const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
 				maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
 				maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
 			for (const {rule, message, severity, startLine, startCol} of problems) {
 				console.error(
-					`  ${chalk.dim('%s:%s')}  %s  %s  ${chalk.dim('%s')}`,
+					`  ${styleText('dim', '%s:%s')}  %s  %s  %s`,
 					String(startLine).padStart(maxLineChars),
 					String(startCol).padEnd(maxColChars),
 					coloredSeverity(severity),
 					message.padEnd(maxMessageChars),
-					rule,
+					styleText('dim', rule),
 				);
 			}
 		}
@@ -451,14 +439,14 @@ try {
 
 	if (nErr || nWarn) {
 		console.error(
-			chalk.red.bold('%s'),
+			styleText(['red', 'bold'], '%s'),
 			`\n✖ ${plural(nErr + nWarn, 'problem')} (${
 				plural(nErr, 'error')
 			}, ${plural(nWarn, 'warning')})`,
 		);
 		if (nFixableErr || nFixableWarn) {
 			console.error(
-				chalk.red.bold('%s'),
+				styleText(['red', 'bold'], '%s'),
 				`  ${plural(nFixableErr, 'error')} and ${
 					plural(nFixableWarn, 'warning')
 				} potentially fixable with the \`--fix\` option.`,

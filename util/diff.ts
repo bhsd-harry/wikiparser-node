@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
+import util from 'util';
 import {spawn} from 'child_process';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
-import type {Chalk} from 'chalk';
 
 /* istanbul ignore next */
 process.on('unhandledRejection', e => {
@@ -78,27 +78,16 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 	await Promise.allSettled([fs.unlink(oldFile), fs.unlink(newFile)]);
 };
 
-let chalk: Chalk | null | undefined;
-/* istanbul ignore next */
-export const loadChalk = /** @ignore */ (): Chalk | null => {
-	if (chalk === undefined) {
-		try {
-			chalk = require('chalk') as Chalk;
-		} catch {
-			chalk = null;
-		}
-	}
-	return chalk;
-};
-
 /* istanbul ignore next */
 /** @implements */
 export const error: log = (msg, ...args) => {
-	console.error(loadChalk()?.red(msg) ?? msg, ...args);
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	console.error(util.styleText?.('red', msg) ?? msg, ...args);
 };
 
 /* istanbul ignore next */
 /** @implements */
 export const info: log = (msg, ...args) => {
-	console.info(loadChalk()?.green(msg) ?? msg, ...args);
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	console.info(util.styleText?.('green', msg) ?? msg, ...args);
 };

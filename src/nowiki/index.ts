@@ -105,17 +105,16 @@ export abstract class NowikiToken extends NowikiBaseToken {
 					// browser版本使用`lintJSONNative()`
 					return lintJSON(
 						innerText,
-					).map((error): LintError | false => {
-						const {
-							message,
-							position,
-							line,
-							column,
+					).map(({
+						message,
+						position,
+						line,
+						column,
 
-							/* NOT FOR BROWSER ONLY */
+						/* NOT FOR BROWSER ONLY */
 
-							severity,
-						} = error;
+						severity,
+					}): LintError | false => {
 						s =
 							/* eslint-disable @stylistic/operator-linebreak */
 							severity === 'warning' ?
