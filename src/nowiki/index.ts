@@ -69,13 +69,12 @@ export abstract class NowikiToken extends NowikiBaseToken {
 					// browser版本使用`lintJSONNative()`
 					return lintJSONNative(
 						innerText,
-					).map((error): LintError | false => {
-						const {
-							message,
-							position,
-							line,
-							column,
-						} = error;
+					).map(({
+						message,
+						position,
+						line,
+						column,
+					}): LintError | false => {
 						s =
 							sSyntax;
 						const rect = new BoundingRect(this, start),
