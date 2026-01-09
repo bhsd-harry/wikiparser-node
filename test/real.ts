@@ -13,7 +13,7 @@ const {argv: [,, site = '']} = process,
 
 (async () => {
 	for (const [name, url, config] of apis) {
-		info(`开始检查${name}：\n`);
+		info(`\n开始检查${name}：\n`);
 		reset();
 		try {
 			for (const page of await getPages(`${url}/api.php`, name)) {
