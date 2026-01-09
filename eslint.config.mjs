@@ -117,6 +117,15 @@ export default extend(
 			'**/*.ts',
 		],
 		rules: {
+			'n/no-unsupported-features/node-builtins': [
+				2,
+				{
+					allowExperimental: true,
+					ignores: [
+						'util.styleText',
+					],
+				},
+			],
 			'@typescript-eslint/class-methods-use-this': [
 				2,
 				{

@@ -77,7 +77,6 @@
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
-		"chalk": "^4.1.2",
 		"color-name": "^2.0.0",
 		"entities": "^7.0.0",
 		"mathoid-texvcjs": "^0.6.0",
