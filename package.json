@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "2.33.0",
+	"version": "2.34.0",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -16,6 +16,7 @@
 	"author": "Bhsd",
 	"files": [
 		"/errors/README",
+		"/logo.png",
 		"/config/",
 		"!/config/mediawikiwiki.json",
 		"!/config/testwiki.json",
