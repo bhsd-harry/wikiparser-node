@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.33.0",
+	"version": "1.34.0",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -16,6 +16,7 @@
 	"author": "Bhsd",
 	"files": [
 		"/bundle/bundle.min.js",
+		"/logo.png",
 		"/dist/**/*.d.ts",
 		"!/dist/test/"
 	],

@@ -1,5 +1,14 @@
 {
 	"no-hard-tabs": false,
 	"line-length": false,
+	"no-inline-html": {
+		"allowed_elements": [
+			"br",
+			"details",
+			"div",
+			"img",
+			"summary"
+		]
+	},
 	"first-line-h1": false
 }
