@@ -334,9 +334,8 @@ export abstract class TranscludeToken extends Token {
 			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
 			 * @implements
 			 */
-			const transcludeListener: AstListener = (e, data) => {
-				const {prevTarget} = e,
-					{oldKey, newKey} = data;
+			const transcludeListener: AstListener = ({prevTarget}, data) => {
+				const {oldKey, newKey} = data;
 				if (typeof oldKey === 'string') {
 					delete data.oldKey;
 					delete data.newKey;
