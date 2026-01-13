@@ -221,9 +221,19 @@ export class AstText extends AstNode {
 					...lintConfig.getSeverity('tag-like', 'disallowed') ? disallowedTags : [],
 				]);
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
-				const [, tag, prefix] = mt;
 				let {index, 0: error} = mt;
-				if (prefix && prefix !== ']') {
+				const [, tag, prefix] = mt,
+					lbrackInExtLinkText = error === '[' && type === 'ext-link-text';
+				if (
+					error.startsWith('<') && !tags.has(tag!.toLowerCase())
+					|| lbrackInExtLinkText && (
+						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
+						|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
+						&& nextSibling.innerText?.includes(']')
+					)
+				) {
+					continue;
+				} else if (prefix && prefix !== ']') {
 					const {length} = prefix;
 					index += length;
 					error = error.slice(length);
@@ -233,22 +243,13 @@ export class AstText extends AstNode {
 				}
 				error = error.toLowerCase();
 				const [char] = error,
-					magicLink = char === 'r' || char === 'p' || char === 'i',
+					magicLink = error === 'rfc' || error === 'pmid' || error === 'isbn',
 					lbrace = char === '{',
 					rbrace = char === '}',
 					lbrack = char === '[',
 					rbrack = char === ']';
 				let {length} = error;
-				if (
-					char === '<' && !tags.has(tag!.toLowerCase())
-					|| lbrack && type === 'ext-link-text' && (
-						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-						|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
-						&& nextSibling.innerText?.includes(']')
-					)
-				) {
-					continue;
-				} else if (rbrack && (index || length > 1)) {
+				if (rbrack && (index || length > 1)) {
 					errorRegex.lastIndex--;
 				}
 
@@ -262,8 +263,8 @@ export class AstText extends AstNode {
 				const nextChar = rootStr[endIndex],
 					previousChar = rootStr[startIndex - 1],
 					leftBracket = lbrace || lbrack,
-					lConverter = lbrace && previousChar === '-' && variants.length > 0,
-					rConverter = rbrace && nextChar === '-' && variants.length > 0,
+					lConverter = error === '{' && previousChar === '-' && variants.length > 0,
+					rConverter = error === '}' && nextChar === '-' && variants.length > 0,
 					brokenExtLink = lbrack && nextType === 'free-ext-link' && !data.slice(index + 1).trim()
 						|| rbrack && previousType === 'free-ext-link'
 						&& !data.slice(0, index).includes(']');
@@ -306,7 +307,7 @@ export class AstText extends AstNode {
 					if (length > 1 || lbrace && nextChar === char || rbrace && previousChar === char) {
 						severity = lintConfig.getSeverity(rule, 'double');
 					} else {
-						if (!lbrack || type !== 'ext-link-text') {
+						if (!lbrackInExtLinkText) {
 							const regex = regexes[char],
 								remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
 							if (
@@ -392,10 +393,10 @@ export class AstText extends AstNode {
 						e.suggestions = [fixByEscape(startIndex, '&lt;')];
 					} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
 						e.suggestions = [fixBySpace(startIndex)];
-					} else if (lbrack && type === 'ext-link-text') {
+					} else if (lbrackInExtLinkText) {
 						const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
 						e.suggestions = [fixByEscape(i, '&#93;')];
-					} else if (rbrack && brokenExtLink) {
+					} else if (error === ']' && brokenExtLink) {
 						const i = start - previousSibling!.toString().length;
 						e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
 					} else if (magicLink) {
