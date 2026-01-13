@@ -1,3 +1,6 @@
+<div align="center"><img src="logo.png" width="200" alt="WikiParser-Node logo"></div>
+<br>
+
 [![npm version](https://badge.fury.io/js/wikiparser-template.svg)](https://www.npmjs.com/package/wikiparser-template)
 
 # Introduction
