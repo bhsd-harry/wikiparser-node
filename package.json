@@ -16,7 +16,6 @@
 	"author": "Bhsd",
 	"files": [
 		"/errors/README",
-		"/logo.png",
 		"/config/",
 		"!/config/mediawikiwiki.json",
 		"!/config/testwiki.json",
