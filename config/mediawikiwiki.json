@@ -29,9 +29,11 @@
 		"chem",
 		"maplink",
 		"mapframe",
+		"page-collection",
 		"phonos",
 		"translate",
-		"tvar"
+		"tvar",
+		"wish"
 	],
 	"html": [
 		[
@@ -137,6 +139,8 @@
 		"829": "Module talk",
 		"1198": "Translations",
 		"1199": "Translations talk",
+		"1728": "Event",
+		"1729": "Event talk",
 		"2600": "Topic",
 		"5500": "Newsletter",
 		"5501": "Newsletter talk",
@@ -178,6 +182,8 @@
 		"module talk": 829,
 		"translations": 1198,
 		"translations talk": 1199,
+		"event": 1728,
+		"event talk": 1729,
 		"topic": 2600,
 		"newsletter": 5500,
 		"newsletter talk": 5501,
