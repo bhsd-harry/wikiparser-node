@@ -11781,6 +11781,341 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|}-</span></span>"
 	},
 	{
+		"desc": "langParserTests2"
+	},
+	{
+		"desc": "Verify that the built-in transliteration rules contain our test\ncharacters (traditional to simplified)",
+		"wikitext": "* air (qì): 氣\n* horse (mǎ): 馬\n* electricity (diàn): 電",
+		"html": "<ul><li>air (qì): 气</li>\n<li>horse (mǎ): 马</li>\n<li>electricity (diàn): 电</li></ul>",
+		"render": "<ul><li>air (qì): 氣</li>\n<li>horse (mǎ): 馬</li>\n<li>electricity (diàn): 電</li></ul>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span>air (qì): 氣\n<span class=\"wpb-list\">* </span>horse (mǎ): 馬\n<span class=\"wpb-list\">* </span>electricity (diàn): 電</span>"
+	},
+	{
+		"desc": "Verify that the built-in transliteration rules contain our test\ncharacters (simplified to traditional)",
+		"wikitext": "* air (qì): 气\n* horse (mǎ): 马\n* electricity (diàn): 电",
+		"html": "<ul><li>air (qì): 氣</li>\n<li>horse (mǎ): 馬</li>\n<li>electricity (diàn): 電</li></ul>",
+		"render": "<ul><li>air (qì): 气</li>\n<li>horse (mǎ): 马</li>\n<li>electricity (diàn): 电</li></ul>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span>air (qì): 气\n<span class=\"wpb-list\">* </span>horse (mǎ): 马\n<span class=\"wpb-list\">* </span>electricity (diàn): 电</span>"
+	},
+	{
+		"desc": "Bidirectional conversion (hans)",
+		"wikitext": "-{zh-cn:气气气;zh-tw:電電電}-",
+		"html": "<p>气气气\n</p>",
+		"render": "<p>气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Bidirectional conversion (hant)",
+		"wikitext": "-{zh-cn:气气气;zh-tw:電電電}-",
+		"html": "<p>電電電\n</p>",
+		"render": "<p>气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Unidirectional conversion (zh)",
+		"wikitext": "-{H|電電電=>zh-cn:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n馬马: 電電電, 气气气\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion (zh-hans)",
+		"wikitext": "-{H|電電電=>zh-cn:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n马马: 电电电, 气气气\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion (zh-cn)",
+		"wikitext": "-{H|電電電=>zh-cn:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n马马: 气气气, 气气气\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion (zh-hant)",
+		"wikitext": "-{H|電電電=>zh-cn:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n馬馬: 電電電, 氣氣氣\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion 2 (zh)",
+		"wikitext": "-{H|電電電=>zh-hans:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n馬马: 電電電, 气气气\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion 2 (zh-cn)",
+		"wikitext": "-{H|電電電=>zh-hans:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n马马: 电电电, 气气气\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion 2 (zh-hans)",
+		"wikitext": "-{H|電電電=>zh-hans:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n马马: 气气气, 气气气\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Unidirectional conversion 2 (zh-hant)",
+		"wikitext": "-{H|電電電=>zh-hans:气气气}-\n馬马: 電電電, 气气气",
+		"html": "<p>\n馬馬: 電電電, 氣氣氣\n</p>",
+		"render": "<p>馬马: 電電電, 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n馬马: 電電電, 气气气</span>"
+	},
+	{
+		"desc": "Disable language conversion",
+		"wikitext": "-{氣气}-",
+		"html": "<p>氣气\n</p>",
+		"render": "<p>氣气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">氣气</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Disable language conversion (alternate form)",
+		"wikitext": "-{R|氣气}-",
+		"html": "<p>氣气\n</p>",
+		"render": "<p>氣气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">氣气</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Semi-disabled conversion (zh)",
+		"wikitext": "-{H|zh-hant:電電電;zh-hans:气气气}-\n電電電 气气气\n\n電-{}-電電 气-{}-气气",
+		"html": "<p>\n電電電 气气气\n</p><p>電電電 气气气\n</p>",
+		"render": "<p>電電電 气气气\n</p><p>電電電 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hant</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n電電電 气气气\n\n電<span class=\"wpb-converter\">-{}-</span>電電 气<span class=\"wpb-converter\">-{}-</span>气气</span>"
+	},
+	{
+		"desc": "Semi-disabled conversion (zh-hans)",
+		"wikitext": "-{H|zh-hant:電電電;zh-hans:气气气}-\n電電電 气气气\n\n電-{}-電電 气-{}-气气",
+		"html": "<p>\n气气气 气气气\n</p><p>电电电 气气气\n</p>",
+		"render": "<p>電電電 气气气\n</p><p>電電電 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hant</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n電電電 气气气\n\n電<span class=\"wpb-converter\">-{}-</span>電電 气<span class=\"wpb-converter\">-{}-</span>气气</span>"
+	},
+	{
+		"desc": "Semi-disabled conversion (zh-hant)",
+		"wikitext": "-{H|zh-hant:電電電;zh-hans:气气气}-\n電電電 气气气\n\n電-{}-電電 气-{}-气气",
+		"html": "<p>\n電電電 電電電\n</p><p>電電電 氣氣氣\n</p>",
+		"render": "<p>電電電 气气气\n</p><p>電電電 气气气\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hant</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hans</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span>\n電電電 气气气\n\n電<span class=\"wpb-converter\">-{}-</span>電電 气<span class=\"wpb-converter\">-{}-</span>气气</span>"
+	},
+	{
+		"desc": "Insert a conversion rule without output (zh)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马: 气气气, 馬馬馬, 電電電",
+		"html": "<p>\n馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"render": "<p>馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马: 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule without output (zh-hans)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马: 气气气, 馬馬馬, 電電電",
+		"html": "<p>\n马马: 气气气, 马马马, 电电电\n</p>",
+		"render": "<p>馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马: 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule without output (zh-cn)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马: 气气气, 馬馬馬, 電電電",
+		"html": "<p>\n马马: 气气气, 气气气, 气气气\n</p>",
+		"render": "<p>馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马: 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule without output (zh-hant)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马: 气气气, 馬馬馬, 電電電",
+		"html": "<p>\n馬馬: 氣氣氣, 馬馬馬, 電電電\n</p>",
+		"render": "<p>馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马: 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule without output (zh-hk)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马: 气气气, 馬馬馬, 電電電",
+		"html": "<p>\n馬馬: 馬馬馬, 馬馬馬, 馬馬馬\n</p>",
+		"render": "<p>馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马: 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule without output (zh-tw)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马: 气气气, 馬馬馬, 電電電",
+		"html": "<p>\n馬馬: 電電電, 電電電, 電電電\n</p>",
+		"render": "<p>馬马: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马: 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule with a result in the current language (zh)",
+		"wikitext": "-{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n\n气气气, 馬馬馬, 電電電",
+		"html": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"render": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n\n气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule with a result in the current language (zh-hans)",
+		"wikitext": "-{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n\n气气气, 馬馬馬, 電電電",
+		"html": "<p>气气气\n</p><p>气气气, 马马马, 电电电\n</p>",
+		"render": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n\n气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule with a result in the current language (zh-cn)",
+		"wikitext": "-{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n\n气气气, 馬馬馬, 電電電",
+		"html": "<p>气气气\n</p><p>气气气, 气气气, 气气气\n</p>",
+		"render": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n\n气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule with a result in the current language (zh-hant)",
+		"wikitext": "-{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n\n气气气, 馬馬馬, 電電電",
+		"html": "<p>電電電\n</p><p>氣氣氣, 馬馬馬, 電電電\n</p>",
+		"render": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n\n气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule with a result in the current language (zh-hk)",
+		"wikitext": "-{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n\n气气气, 馬馬馬, 電電電",
+		"html": "<p>馬馬馬\n</p><p>馬馬馬, 馬馬馬, 馬馬馬\n</p>",
+		"render": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n\n气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Insert a conversion rule with a result in the current language (zh-tw)",
+		"wikitext": "-{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n\n气气气, 馬馬馬, 電電電",
+		"html": "<p>電電電\n</p><p>電電電, 電電電, 電電電\n</p>",
+		"render": "<p>气气气\n</p><p>气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n\n气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Remove existing conversion rule (zh)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Add a rule -->\n+ 气气气, 馬馬馬, 電電電\n\n-{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->\n- 气气气, 馬馬馬, 電電電",
+		"html": "<p> \n+ 气气气, 馬馬馬, 電電電\n</p><p> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"render": "<p>+ 气气气, 馬馬馬, 電電電\n</p><p><br> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Add a rule --&gt;</span>\n+ 气气气, 馬馬馬, 電電電\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">-</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Remove a rule --&gt;</span>\n- 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Remove existing conversion rule (zh-hans)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Add a rule -->\n+ 气气气, 馬馬馬, 電電電\n\n-{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->\n- 气气气, 馬馬馬, 電電電",
+		"html": "<p> \n+ 气气气, 马马马, 电电电\n</p><p> \n- 气气气, 马马马, 电电电\n</p>",
+		"render": "<p>+ 气气气, 馬馬馬, 電電電\n</p><p><br> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Add a rule --&gt;</span>\n+ 气气气, 馬馬馬, 電電電\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">-</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Remove a rule --&gt;</span>\n- 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Remove existing conversion rule (zh-cn)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Add a rule -->\n+ 气气气, 馬馬馬, 電電電\n\n-{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->\n- 气气气, 馬馬馬, 電電電",
+		"html": "<p> \n+ 气气气, 气气气, 气气气\n</p><p> \n- 气气气, 马马马, 电电电\n</p>",
+		"render": "<p>+ 气气气, 馬馬馬, 電電電\n</p><p><br> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Add a rule --&gt;</span>\n+ 气气气, 馬馬馬, 電電電\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">-</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Remove a rule --&gt;</span>\n- 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Remove existing conversion rule (zh-hant)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Add a rule -->\n+ 气气气, 馬馬馬, 電電電\n\n-{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->\n- 气气气, 馬馬馬, 電電電",
+		"html": "<p> \n+ 氣氣氣, 馬馬馬, 電電電\n</p><p> \n- 氣氣氣, 馬馬馬, 電電電\n</p>",
+		"render": "<p>+ 气气气, 馬馬馬, 電電電\n</p><p><br> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Add a rule --&gt;</span>\n+ 气气气, 馬馬馬, 電電電\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">-</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Remove a rule --&gt;</span>\n- 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Remove existing conversion rule (zh-hk)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Add a rule -->\n+ 气气气, 馬馬馬, 電電電\n\n-{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->\n- 气气气, 馬馬馬, 電電電",
+		"html": "<p> \n+ 馬馬馬, 馬馬馬, 馬馬馬\n</p><p> \n- 氣氣氣, 馬馬馬, 電電電\n</p>",
+		"render": "<p>+ 气气气, 馬馬馬, 電電電\n</p><p><br> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Add a rule --&gt;</span>\n+ 气气气, 馬馬馬, 電電電\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">-</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Remove a rule --&gt;</span>\n- 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Remove existing conversion rule (zh-tw)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Add a rule -->\n+ 气气气, 馬馬馬, 電電電\n\n-{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->\n- 气气气, 馬馬馬, 電電電",
+		"html": "<p> \n+ 電電電, 電電電, 電電電\n</p><p> \n- 氣氣氣, 馬馬馬, 電電電\n</p>",
+		"render": "<p>+ 气气气, 馬馬馬, 電電電\n</p><p><br> \n- 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Add a rule --&gt;</span>\n+ 气气气, 馬馬馬, 電電電\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">-</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span> <span class=\"wpb-comment\">&lt;!-- Remove a rule --&gt;</span>\n- 气气气, 馬馬馬, 電電電</span>"
+	},
+	{
+		"desc": "Override page title (zh)",
+		"wikitext": "-{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-",
+		"title": "馬马",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span></span>"
+	},
+	{
+		"desc": "Override page title (zh-hans)",
+		"wikitext": "-{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-",
+		"title": "馬马",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span></span>"
+	},
+	{
+		"desc": "Override page title (zh-hk)",
+		"wikitext": "-{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-",
+		"title": "馬马",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span></span>"
+	},
+	{
+		"desc": "Override page title (zh-tw)",
+		"wikitext": "-{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-",
+		"title": "馬马",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span></span>"
+	},
+	{
+		"desc": "Describe bidirectional conversion rule",
+		"wikitext": "-{D|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-",
+		"html": "<p>大陆：气气气；香港：馬馬馬；臺灣：電電電；\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">D</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span></span>"
+	},
+	{
+		"desc": "Describe unidirectional conversion rule",
+		"wikitext": "-{D;H|電電電=>zh-cn:气气气}-",
+		"html": "<p>電電電⇒大陆：气气气；\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">D</span>;<span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">電電電</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Localized language names",
+		"wikitext": "-{N|zh-cn}-\n\n-{N|zh-tw}-\n\n-{N|sr-ec}-",
+		"html": "<p>大陆\n</p><p>臺灣\n</p><p>српски (ћирилица)\n</p>",
+		"render": "<p><br>\n</p><p><br>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">zh-cn</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">zh-tw</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">sr-ec</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Only consider certain variants for conversion (zh)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马 1: -{zh;zh-hans;zh-hant|气气气, 馬馬馬, 電電電}-\n\n馬马 2: -{zh;zh-cn;zh-hk|气气气, 馬馬馬, 電電電}-",
+		"html": "<p>\n馬马 1: 气气气, 馬馬馬, 電電電\n</p><p>馬马 2: 气气气, 馬馬馬, 電電電\n</p>",
+		"render": "<p>馬马 1: 气气气, 馬馬馬, 電電電\n</p><p>馬马 2: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马 1: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">气气气, 馬馬馬, 電電電</span></span>}-</span>\n\n馬马 2: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-cn</span>;<span class=\"wpb-converter-flag\">zh-hk</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">气气气, 馬馬馬, 電電電</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Only consider certain variants for conversion (zh-hans)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马 1: -{zh;zh-hans;zh-hant|气气气, 馬馬馬, 電電電}-\n\n馬马 2: -{zh;zh-cn;zh-hk|气气气, 馬馬馬, 電電電}-",
+		"html": "<p>\n马马 1: 气气气, 马马马, 电电电\n</p><p>马马 2: 气气气, 气气气, 气气气\n</p>",
+		"render": "<p>馬马 1: 气气气, 馬馬馬, 電電電\n</p><p>馬马 2: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马 1: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">气气气, 馬馬馬, 電電電</span></span>}-</span>\n\n馬马 2: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-cn</span>;<span class=\"wpb-converter-flag\">zh-hk</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">气气气, 馬馬馬, 電電電</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Only consider certain variants for conversion (zh-hant)",
+		"wikitext": "-{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-\n馬马 1: -{zh;zh-hans;zh-hant|气气气, 馬馬馬, 電電電}-\n\n馬马 2: -{zh;zh-cn;zh-hk|气气气, 馬馬馬, 電電電}-",
+		"html": "<p>\n馬馬 1: 氣氣氣, 馬馬馬, 電電電\n</p><p>馬馬 2: 馬馬馬, 馬馬馬, 馬馬馬\n</p>",
+		"render": "<p>馬马 1: 气气气, 馬馬馬, 電電電\n</p><p>馬马 2: 气气气, 馬馬馬, 電電電\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">气气气</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">馬馬馬</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">電電電</span></span>;}-</span>\n馬马 1: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">气气气, 馬馬馬, 電電電</span></span>}-</span>\n\n馬马 2: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-cn</span>;<span class=\"wpb-converter-flag\">zh-hk</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">气气气, 馬馬馬, 電電電</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Conversion skips <pre> and <code>",
+		"wikitext": "<pre>氣气</pre>\n<code>氣气</code>",
+		"html": "<pre>氣气</pre>\n<p><code>氣气</code>\n</p>",
+		"render": "<pre>氣气</pre>\n<p><code>氣气</code>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">氣气</span>&lt;/pre&gt;</span>\n<span class=\"wpb-html\">&lt;code&gt;</span>氣气<span class=\"wpb-html\">&lt;/code&gt;</span></span>"
+	},
+	{
+		"desc": "\"Force convert\" of <pre>",
+		"wikitext": "<pre>氣-{}-气</pre>",
+		"html": "<pre>气气</pre>",
+		"render": "<pre>氣气</pre>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">氣<span class=\"wpb-converter\">-{}-</span>气</span>&lt;/pre&gt;</span></span>"
+	},
+	{
+		"desc": "\"Force convert\" of <code>",
+		"wikitext": "<code>氣-{}-气</code>",
+		"html": "<p><code>氣氣</code>\n</p>",
+		"render": "<p><code>氣气</code>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;code&gt;</span>氣<span class=\"wpb-converter\">-{}-</span>气<span class=\"wpb-html\">&lt;/code&gt;</span></span>"
+	},
+	{
 		"desc": "luaParserTests"
 	},
 	{
@@ -13437,6 +13772,13 @@
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img alt=\"Alteration\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/220px-Foobar.jpg\" decoding=\"async\" width=\"220\" height=\"25\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/330px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/440px-Foobar.jpg 2x\" /></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a></figcaption></figure>",
 		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img alt=\"Alteration\" src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a></figcaption></figure>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-free-ext-link\">http://example.com</span></span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\">Alteration</span></span>]]</span></span>"
+	},
+	{
+		"desc": "SVG thumbnails with native SVG rendering",
+		"wikitext": "[[File:Foobar.svg|thumb|caption]]",
+		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.svg\" class=\"mw-file-description\"><img src=\"http://example.com/images/f/ff/Foobar.svg\" decoding=\"async\" width=\"180\" height=\"135\" class=\"mw-file-element\" /></a><figcaption>caption</figcaption></figure>",
+		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.svg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.svg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption>caption</figcaption></figure>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.svg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">caption</span>]]</span></span>"
 	},
 	{
 		"desc": "SVG thumbnails with no language set",
