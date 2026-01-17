@@ -61,7 +61,7 @@
 		"@bhsd/test-util": "^0.2.1",
 		"@codemirror/lint": "^6.9.2",
 		"@stylistic/eslint-plugin": "^5.5.0",
-		"@stylistic/stylelint-plugin": "^4.0.0",
+		"@stylistic/stylelint-plugin": "^4.0.1",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.10.1",
 		"@types/prismjs": "^1.26.5",
