@@ -13,6 +13,7 @@ declare interface Response {
 	query: {
 		general: {
 			articlepath: string;
+			langconversion: boolean;
 			variants?: {code: string}[];
 		};
 		magicwords: MagicWord[];
@@ -163,7 +164,7 @@ export default async (
 		},
 		{
 			query: {
-				general: {articlepath, variants},
+				general: {articlepath, variants, langconversion},
 				magicwords,
 				namespaces,
 				namespacealiases,
@@ -189,7 +190,7 @@ export default async (
 		config: ConfigData = {
 			...getParserConfig(require(path.join(dir, 'minimum')) as ConfigData, mwConfig),
 			...getKeywords(magicwords),
-			variants: getVariants(variants),
+			variants: langconversion ? getVariants(variants) : [],
 			namespaces: Object.fromEntries(ns),
 			nsid: Object.fromEntries([
 				...ns.map(([id, canonical]) => [canonical.toLowerCase(), Number(id)]),
