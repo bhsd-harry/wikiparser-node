@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.34.1
+
+*2026-01-18*
+
+**Fixed**
+
+- The executable [`getParserConfig`](./README#cli-usage) now checks whether language conversion is disabled for a MediaWiki site
+
 ## v1.34.0
 
 *2026-01-13*
