@@ -761,3 +761,15 @@ Attributes of a closing tag
 !! html
 <div>a</div>
 !! end
+
+!! test
+Chinese image keywords
+!! wikitext
+[[File:LoremIpsum.djvu|2页]]
+
+[[File:foobar.jpg|50像素]]
+!! html
+<p><span class="mw-default-size" typeof="mw:File"><a href="/wiki/File:LoremIpsum.djvu" class="mw-file-description"><img src="http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-2480px-LoremIpsum.djvu.jpg" decoding="async" width="2480" height="3508" class="mw-file-element" srcset="http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-3720px-LoremIpsum.djvu.jpg 1.5x, http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-4960px-LoremIpsum.djvu.jpg 2x" /></a></span>
+</p><p><span typeof="mw:File"><a href="/wiki/File:Foobar.jpg" class="mw-file-description"><img src="http://example.com/images/thumb/3/3a/Foobar.jpg/50px-Foobar.jpg" decoding="async" width="50" height="6" class="mw-file-element" srcset="http://example.com/images/thumb/3/3a/Foobar.jpg/75px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/100px-Foobar.jpg 2x" /></a></span>
+</p>
+!! end

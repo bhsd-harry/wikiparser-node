@@ -1,16 +1,16 @@
 import {states, parsers} from '../util/constants';
 import type {Token} from '../internal';
 
-const blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
-	antiBlockElems = 'td|th';
+const blockElems = 'table|h[1-6]|pre|p|[uod]l',
+	antiBlockElems = 't[dh]';
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<(?:table|\/(?:td|th)|\/?(?:tr|caption|dt|dd|li))\b/iu;
+/<(?:table|\/t[dh]|\/?(?:tr|caption|d[td]|li))\b/iu;
 const openRegex = new RegExp(
-	String.raw`<(?:${blockElems}|\/(?:${antiBlockElems})|\/?(?:tr|caption|dt|dd|li))\b`,
+	String.raw`<(?:${blockElems}|\/${antiBlockElems}|\/?(?:tr|caption|d[td]|li))\b`,
 	'iu',
 );
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<(?:\/(?:h1|h2)|td|th|\/?(?:center|blockquote|div|hr|figure))\b/iu;
+/<(?:\/(?:pre|p)|t[dh]|\/?(?:center|blockquote|div|hr|figure))\b/iu;
 const closeRegex = new RegExp(
 	String.raw`<(?:\/(?:${blockElems})|${antiBlockElems}|\/?(?:center|blockquote|div|hr|figure))\b`,
 	'iu',

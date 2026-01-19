@@ -19,8 +19,8 @@ declare interface Coverage {
 const {total: {statements: {pct}}}: Coverage = require('../../coverage/coverage-summary.json');
 const colors = ['#4c1', '#dfb317', '#e05d44'] as const,
 	value = String(Math.round(pct));
-/#4c1|#dfb317|#e05d44|\b\d{2}(?=%)/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const re = new RegExp(String.raw`${colors.join('|')}|\b\d{2}(?=%)`, 'gu');
+/(?:#4c1|#dfb317|#e05d44)\b|\b\d{2}(?=%)/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+const re = new RegExp(String.raw`(?:${colors.join('|')})\b|\b\d{2}(?=%)`, 'gu');
 let color: string;
 if (pct >= 80) {
 	[color] = colors;
