@@ -30,7 +30,7 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 				s = lintConfig.getSeverity(rule, 'include');
 			if (s) {
 				const {innerText} = this,
-					mt = /^<(noinclude|includeonly|onlyinclude)\s+(?:[^\s>/]|\/(?!>))[^>]*>$/iu.exec(innerText);
+					mt = /^<(includeonly|(?:no|only)include)\s+(?:[^\s>/]|\/(?!>))[^>]*>$/iu.exec(innerText);
 				if (mt) {
 					const e = generateForSelf(this, {start}, rule, 'useless-attribute', s),
 						{computeEditInfo} = lintConfig,

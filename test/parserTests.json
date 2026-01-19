@@ -6988,6 +6988,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>a<span class=\"wpb-html\">&lt;/div<span class=\"wpb-html-attrs wpb-invalid\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=<span class=\"wpb-attr-value\">a</span></span></span>&gt;</span></span>"
 	},
 	{
+		"desc": "Chinese image keywords",
+		"wikitext": "[[File:LoremIpsum.djvu|2页]]\n\n[[File:foobar.jpg|50像素]]",
+		"html": "<p><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:LoremIpsum.djvu\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-2480px-LoremIpsum.djvu.jpg\" decoding=\"async\" width=\"2480\" height=\"3508\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-3720px-LoremIpsum.djvu.jpg 1.5x, http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-4960px-LoremIpsum.djvu.jpg 2x\" /></a></span>\n</p><p><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/50px-Foobar.jpg\" decoding=\"async\" width=\"50\" height=\"6\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/75px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/100px-Foobar.jpg 2x\" /></a></span>\n</p>",
+		"render": "<p><span><a href=\"/wiki/File%3ALoremIpsum.djvu?page=2\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FLoremIpsum.djvu\" decoding=\"async\" class=\"mw-file-element\"></a></span>\n</p><p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg?width=50\" decoding=\"async\" class=\"mw-file-element\" width=\"50\"></a></span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:LoremIpsum.djvu</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">2</span>页</span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">50</span>像素</span>]]</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
