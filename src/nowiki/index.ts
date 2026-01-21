@@ -71,26 +71,26 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						innerText,
 					).map(({
 						message,
-						position,
+						from,
+						to = from,
 						line,
+						endLine = line,
 						column,
+						endColumn = column,
 					}): LintError | false => {
 						s =
 							sSyntax;
-						const rect = new BoundingRect(this, start),
-							startIndex = start + position,
-							startLine = rect.top + line - 1,
-							startCol = (line > 1 ? 0 : rect.left) + column - 1;
+						const rect = new BoundingRect(this, start);
 						return {
 							rule,
 							message,
 							severity: s,
-							startIndex,
-							endIndex: startIndex,
-							startLine,
-							endLine: startLine,
-							startCol,
-							endCol: startCol,
+							startIndex: start + from,
+							endIndex: start + to,
+							startLine: rect.top + line - 1,
+							endLine: rect.top + endLine - 1,
+							startCol: (line > 1 ? 0 : rect.left) + column - 1,
+							endCol: (endLine > 1 ? 0 : rect.left) + endColumn - 1,
 						};
 					}).filter((e): e is LintError => e !== false);
 				}
