@@ -44,6 +44,7 @@ export interface LanguageServiceBase extends Omit<
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
 	resolveCodeAction(rule?: string): Promise<CodeAction>;
 	findStyleTokens(): Promise<AST[]>;
+	findTemplateTokens(): Promise<AST[]>;
 }
 
 /* eslint-disable @typescript-eslint/method-signature-style */
