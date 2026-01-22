@@ -104,6 +104,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'provideHover':
 			case 'provideSignatureHelp':
 			case 'provideRefactoringAction':
+			case 'findTemplateTokens':
 			case 'include':
 				break;
 			case 'provideDocumentColors':

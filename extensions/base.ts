@@ -259,6 +259,9 @@ const workerJS = (): void => {
 				break;
 			case 'findStyleTokens':
 				postMessage([command, qid, getLSP(qid).findStyleTokens().map(token => token.json())]);
+				break;
+			case 'findTemplateTokens':
+				postMessage([command, qid, getLSP(qid).findTemplateTokens().map(token => token.json())]);
 			// no default
 		}
 	};

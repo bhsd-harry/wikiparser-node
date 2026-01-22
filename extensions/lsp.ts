@@ -202,6 +202,11 @@ class LanguageService implements LanguageServiceBase {
 	findStyleTokens(): Promise<AST[]> {
 		return wikiparse.provide('findStyleTokens', this.#id) as Promise<AST[]>;
 	}
+
+	/** @implements */
+	findTemplateTokens(): Promise<AST[]> {
+		return wikiparse.provide('findTemplateTokens', this.#id) as Promise<AST[]>;
+	}
 }
 
 wikiparse.LanguageService = LanguageService;

@@ -1459,4 +1459,11 @@ export class LanguageService implements LanguageServiceBase {
 			},
 		];
 	}
+
+	/* BROWSER ONLY */
+
+	/** @private */
+	findTemplateTokens(): TranscludeToken[] {
+		return this.#done.querySelectorAll<TranscludeToken>('template');
+	}
 }
