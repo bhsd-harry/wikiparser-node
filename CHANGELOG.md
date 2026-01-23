@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.35.1
+
+*2026-01-24*
+
+**Added**
+
+- [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#json) now takes an optional `depth` parameter to limit the depth of the output JSON
+
 ## v1.35.0
 
 *2026-01-22*

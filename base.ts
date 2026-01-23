@@ -328,8 +328,10 @@ interface Token extends AstNode {
 	 * Save in JSON format
 	 *
 	 * 保存为JSON
+	 * @param file file name / 文件名
+	 * @param depth depth of the node / 节点深度
 	 */
-	json(): AST;
+	json(file?: string, depth?: number): AST;
 
 	/* NOT FOR BROWSER */
 
