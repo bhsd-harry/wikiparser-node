@@ -294,9 +294,9 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
-			const json = super.json(undefined, start),
+			const json = super.json(undefined, depth, start),
 				{extension} = this;
 			if (extension) {
 				json['extension'] = extension;

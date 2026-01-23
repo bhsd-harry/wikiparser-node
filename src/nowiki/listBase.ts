@@ -18,9 +18,9 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
-			const json = super.json(undefined, start),
+			const json = super.json(undefined, depth, start),
 				{indent} = this;
 			if (indent) {
 				json['indent'] = indent;
