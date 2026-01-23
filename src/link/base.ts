@@ -201,9 +201,9 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
-			const json = super.json(undefined, start),
+			const json = super.json(undefined, depth, start),
 				{type, fragment} = this;
 			if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
 				json['fragment'] = fragment;

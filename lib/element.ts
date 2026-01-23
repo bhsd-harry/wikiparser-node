@@ -255,9 +255,10 @@ export abstract class AstElement extends AstNode {
 	 *
 	 * 保存为JSON
 	 * @param file file name / 文件名
+	 * @param depth depth of the node / 节点深度
 	 * @param start
 	 */
-	json(file?: string, start = this.getAbsoluteIndex()): AST {
+	json(file?: string, depth = Infinity, start = this.getAbsoluteIndex()): AST {
 		LSP: {
 			const json = {
 				...this, // eslint-disable-line @typescript-eslint/no-misused-spread
@@ -265,16 +266,18 @@ export abstract class AstElement extends AstNode {
 				range: [start, start + this.toString().length],
 				childNodes: [],
 			} as unknown as AST;
-			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-				const child = this.childNodes[i]!,
-					{length} = child.toString();
-				child.setAttribute('aIndex', cur);
-				json.childNodes!.push(
-					child.type === 'text'
-						? {data: child.data, range: [cur, cur + length]} as unknown as AST
-						: child.json(undefined, cur),
-				);
-				cur += length + this.getGaps(i);
+			if (depth >= 1) {
+				for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
+					const child = this.childNodes[i]!,
+						{length} = child.toString();
+					child.setAttribute('aIndex', cur);
+					json.childNodes!.push(
+						child.type === 'text'
+							? {data: child.data, range: [cur, cur + length]} as unknown as AST
+							: child.json(undefined, depth - 1, cur),
+					);
+					cur += length + this.getGaps(i);
+				}
 			}
 			return json;
 		}

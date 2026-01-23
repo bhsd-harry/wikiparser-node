@@ -212,9 +212,9 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** @private */
-	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
-			const json = super.json(undefined, start);
+			const json = super.json(undefined, depth, start);
 			json['closed'] = this.closed;
 			return json;
 		}
