@@ -4,7 +4,7 @@ import {
 	extUrlCharFirst,
 	removeComment,
 } from '../util/string';
-import {generateForSelf, fixByRemove, fixByDecode} from '../util/lint';
+import {generateForSelf, fixByRemove, fixByDecode, fixBySpace} from '../util/lint';
 import {
 	MAX_STAGE,
 	galleryParams,
@@ -143,12 +143,13 @@ export abstract class ImageParameterToken extends Token {
 			}
 			const value = super.text().trim();
 			return Shadow.run((): string | Title | undefined => {
-				const token = new Token(value, this.getAttribute('config'));
+				const config = this.getAttribute('config'),
+					token = new Token(value, config);
 				token.parseOnce(0, this.getAttribute('include')).parseOnce();
 				if (/^\0\d+m\x7F/u.test(token.firstChild!.toString())) {
 					return value;
 				}
-				const link = validate('link', value, this.getAttribute('config'), this.parentNode?.type);
+				const link = validate('link', value, config, this.parentNode?.type);
 				return link === true ? undefined : link as string | Title;
 			}, Parser);
 		}
@@ -266,7 +267,25 @@ export abstract class ImageParameterToken extends Token {
 					const rule = 'invalid-gallery',
 						s = lintConfig.getSeverity(rule, 'link');
 					if (s) {
-						errors.push(generateForSelf(this, {start}, rule, 'invalid-gallery-link', s));
+						const e = generateForSelf(this, {start}, rule, 'invalid-gallery-link', s);
+						if (computeEditInfo) {
+							const rawLink = super.toString(),
+								index = rawLink.indexOf('|'),
+								before = rawLink.slice(0, index).trim();
+							if (
+								index !== -1
+								&& !/[<{]/u.test(before)
+								&& typeof validate(
+									'link',
+									before,
+									this.getAttribute('config'),
+									this.parentNode?.type,
+								) === 'string'
+							) {
+								e.suggestions = [fixBySpace(start + this.getRelativeIndex(0) + index)];
+							}
+						}
+						errors.push(e);
 					}
 				} else if (typeof link === 'string') {
 					const rule = 'invalid-url',
