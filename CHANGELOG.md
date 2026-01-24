@@ -1,11 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.35.1
 
-*2026-01-24*
+*2026-01-26*
 
 **Added**
 
 - [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#json) now takes an optional `depth` parameter to limit the depth of the output JSON
+- Suggestion for [invalid gallery links](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-gallery#link)
 
 ## v1.35.0
 

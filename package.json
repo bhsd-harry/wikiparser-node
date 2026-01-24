@@ -23,7 +23,6 @@
 		"!/extensions/*-page.css",
 		"/printed/README",
 		"/errors/README",
-		"/logo.png",
 		"/config/",
 		"!/config/mediawikiwiki.json",
 		"!/config/testwiki.json",

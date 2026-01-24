@@ -1,5 +1,6 @@
-<div align="center"><img src="logo.png" width="200" alt="WikiParser-Node logo"></div>
-<br>
+<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div>
+
+# WikiParser-Node
 
 [![npm version](https://badge.fury.io/js/wikiparser-node.svg)](https://www.npmjs.com/package/wikiparser-node)
 [![CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml)
@@ -8,31 +9,31 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a2fbe7641031451baca2947ae6d7891f)](https://app.codacy.com/gh/bhsd-harry/wikiparser-node/dashboard)
 ![Istanbul coverage](./coverage/badge.svg)
 
-# Other Languages
+## Other Languages
 
 - [简体中文](./README-%28ZH%29.md)
 
-# Introduction
+## Introduction
 
 WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext) parser developed by Bhsd for the [Node.js](https://nodejs.org/) environment. It can parse almost all wiki syntax and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) ([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also allows for easy querying and modification of the AST, and returns the modified wikitext.
 
 Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages rendered using this package.
 
-# Other Versions
+## Other Versions
 
-## Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
+### Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
 This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 
 A list of available linting rules can be found [here](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules).
 
-## Browser-compatible
+### Browser-compatible
 
 A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)). It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror) since Release 1.45.
 
-# Installation
+## Installation
 
-## Node.js
+### Node.js
 
 Please install the corresponding version as needed (`WikiParser-Node` or `WikiLint`), for example:
 
@@ -46,7 +47,7 @@ or
 npm i wikilint
 ```
 
-## Browser
+### Browser
 
 You can download the code via CDN, for example:
 
@@ -62,9 +63,9 @@ or
 
 For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-%28EN%29).
 
-# Usage
+## Usage
 
-## CLI usage
+### CLI usage
 
 For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed, such as different language editions of Wikipedia and other [Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix), you can use the following command to obtain the parser configuration:
 
@@ -81,76 +82,76 @@ The generated configuration file will be saved in the `config` directory. You ca
 Parser.config = 'jawiki';
 ```
 
-## API usage
+### API usage
 
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).
 
-# Performance
+## Performance
 
 A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps) of English Wikipedia's ~19 million articles (parsing and linting) on a personal MacBook Air takes about 5 hours.
 
-# Known issues
+## Known issues
 
-## Parser
+### Parser
 
 1. Memory leaks may occur in rare cases.
 1. Invalid page names with unicode characters are treated like valid ones ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 1. Preformatted text with a leading space is only processed by [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
 1. BCP 47 language codes are not supported in language conversion ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20definition%20of%20language%20variant%20alternatives%20(BCP%2047%20codes))).
 
-## HTML conversion
+### HTML conversion
 
 <details>
     <summary>Expand</summary>
 
-### Extension
+#### Extension
 
 1. Many extensions are not supported, such as `<indicator>` and `<ref>`.
 1. `&` needs to be escaped in `<syntaxhighlight>` ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#XSS%20is%20escaped)).
 
-### Transclusion
+#### Transclusion
 
 1. Some parser functions are not supported.
 1. New lines in `{{localurl:}}` are not handled correctly ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Basic%20%7B%7Blocalurle%3A%7D%7D%20test)).
 
-### Heading
+#### Heading
 
 1. The table of contents (TOC) is not supported.
 
-### HTML tag
+#### HTML tag
 
 1. Style sanitization is sometimes different ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
 1. Table fostered content from `<table>` HTML tags ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#6.%20Encapsulate%20foster-parented%20transclusion%20content)).
 
-### Table
+#### Table
 
 1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
 1. Unclosed HTML tags in the table fostered content ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
 1. `<tr>` elements should not be fostered ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
 
-### Link
+#### Link
 
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
 1. Block elements inside a link should break it into multiple links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
 1. Invalid or missing images (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20image%20with%20bogus%20manual%20thumbnail), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20line%20not%20in%20the%20file%20namespace)).
 1. Link starting with `../` on a subpage ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parent%20directory%20in%20redirect)).
 
-### External link
+#### External link
 
 1. External images are not supported (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20links%3A%20Clickable%20images)).
 1. No percent-encoding in displayed free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
 
-### Block element
+#### Block element
 
 1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [`<div>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily) or even [closing tags](http://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
 1. Mixed lists ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Mixed%20Lists%3A%20Test%204)).
 
-### Language conversion
+#### Language conversion
 
 1. Automatic language conversion is not supported.
 1. Support for manual language conversion is minimal ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20session-wise%20one-way%20language%20variant%20mapping%20(A%20flag%20and%20-%20flag))).
 
-### Miscellaneous
+#### Miscellaneous
 
 1. Illegal HTML entities ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Illegal%20character%20references%20(T106578%2C%20T113194))).
 

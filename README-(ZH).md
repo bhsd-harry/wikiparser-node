@@ -1,5 +1,6 @@
-<div align="center"><img src="logo.png" width="200" alt="WikiParser-Node logo"></div>
-<br>
+<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div>
+
+# WikiParser-Node
 
 [![npm version](https://badge.fury.io/js/wikiparser-node.svg)](https://www.npmjs.com/package/wikiparser-node)
 [![CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml)
@@ -8,31 +9,31 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a2fbe7641031451baca2947ae6d7891f)](https://app.codacy.com/gh/bhsd-harry/wikiparser-node/dashboard)
 ![Istanbul coverage](./coverage/badge.svg)
 
-# Other Languages
+## Other Languages
 
 - [English](./README.md)
 
-# 简介
+## 简介
 
 WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
 
 尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表。
 
-# 其他版本
+## 其他版本
 
-## Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
+### Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
 
 提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 
 可用的语法检查规则列表请见[这里](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules)。
 
-## Browser-compatible
+### Browser-compatible
 
 兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为语法分析插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
 
-# 安装方法
+## 安装方法
 
-## Node.js
+### Node.js
 
 请根据需要需要安装对应的版本（`WikiParser-Node` 或 `WikiLint`），如：
 
@@ -46,7 +47,7 @@ npm i wikiparser-node
 npm i wikilint
 ```
 
-## 浏览器
+### 浏览器
 
 可以通过 CDN 下载代码，如：
 
@@ -62,9 +63,9 @@ npm i wikilint
 
 更多浏览器端可用的插件请查阅对应[文档](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)。
 
-# 使用方法
+## 使用方法
 
-## CLI 使用方法
+### CLI 使用方法
 
 对于安装了 [CodeMirror 扩展](https://mediawiki.org/wiki/Extension:CodeMirror)的 MediaWiki 站点，如不同语言版本的维基百科和其他[由维基媒体基金会托管的站点](https://meta.wikimedia.org/wiki/Special:SiteMatrix)，可以使用以下命令获取解析器配置：
 
@@ -81,14 +82,14 @@ npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
 Parser.config = 'jawiki';
 ```
 
-## API 使用方法
+### API 使用方法
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
 
-# 性能
+## 性能
 
 在一台个人的 MacBook Air 上对英文维基百科约 1900 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 5 小时。
 
-# 已知问题
+## 已知问题
 
 请参阅[英语版本](./README.md#known-issues)。
