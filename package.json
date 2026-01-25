@@ -16,7 +16,6 @@
 	"author": "Bhsd",
 	"files": [
 		"/bundle/bundle.min.js",
-		"/logo.png",
 		"/dist/**/*.d.ts",
 		"!/dist/test/"
 	],
