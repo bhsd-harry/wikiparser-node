@@ -1,5 +1,5 @@
 {
-	"line-length": false,
+	"extends": "@bhsd/code-standard/markdownlint",
 	"no-inline-html": {
 		"allowed_elements": [
 			"br",
@@ -8,9 +8,5 @@
 			"img",
 			"summary"
 		]
-	},
-	"first-line-h1": {
-		"allow_preamble": true
-	},
-	"descriptive-link-text": false
+	}
 }
