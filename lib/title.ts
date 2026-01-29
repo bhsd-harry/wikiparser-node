@@ -82,7 +82,7 @@ export class Title {
 		if (decode && title.includes('%')) {
 			try {
 				title = rawurldecode(title);
-			} catch {}
+			} catch /* c8 ignore next */ {}
 		}
 		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
 		if (subpage) {

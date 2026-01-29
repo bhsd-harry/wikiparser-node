@@ -56,7 +56,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return (key === 'padding' ? 0 : /* istanbul ignore next */ this[key as keyof this]) as TokenAttribute<T>;
+		return (key === 'padding' ? 0 : /* c8 ignore next */ this[key as keyof this]) as TokenAttribute<T>;
 	}
 
 	/** @private */
@@ -83,7 +83,7 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	insertAdjacent(nodes: readonly (AstNodes | string)[], offset: 0 | 1): void {
 		const {parentNode} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!parentNode) {
 			throw new Error('There is no parent node!');
 		}
