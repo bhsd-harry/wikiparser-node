@@ -8,8 +8,6 @@ dist/
 /.vscode/
 /.eslintcache*
 /.wikilintcache
-/.nyc_output/
-/.cache/
 /wiki/
 /test/*.wiki
 /test/prof*.json

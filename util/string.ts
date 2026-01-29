@@ -80,12 +80,12 @@ export const decodeHtml = (str: string): string => {
 			try {
 				const {decodeHTMLStrict}: typeof import('entities') = require('entities');
 				return (s): string => decodeHTMLStrict(s).replace(/\xA0/gu, ' ');
-			} catch {}
+			} catch /* c8 ignore next */ {}
 		}
 
 		/* NOT FOR BROWSER ONLY END */
 
-		/* istanbul ignore next */
+		/* c8 ignore next */
 		return decodeHtmlBasic;
 	})();
 	return decodeHtmlResolved(str);

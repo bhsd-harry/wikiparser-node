@@ -195,7 +195,8 @@ export abstract class TableToken extends TrBaseToken {
 				)
 			) {
 				return this;
-			} else if (isRow) {
+			}
+			if (isRow) {
 				n--;
 			}
 			for (const child of this.childNodes.slice(2)) {

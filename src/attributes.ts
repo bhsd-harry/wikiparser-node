@@ -33,9 +33,10 @@ const wordRegex = /* #__PURE__ */ ((): RegExp => {
 	try {
 		// eslint-disable-next-line prefer-regex-literals
 		return new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
-	} catch /* istanbul ignore next */ {
+	} catch /* c8 ignore start */ {
 		return /[^\W_]/u;
 	}
+	/* c8 ignore stop */
 })();
 
 /**

@@ -154,9 +154,12 @@ export class Token extends AstElement {
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
 		if (n < this.#stage || this.length !== 1 || !this.isPlain()) {
 			return this;
-		} else /* istanbul ignore if */ if (this.#stage >= MAX_STAGE) {
+		}
+		/* c8 ignore start */
+		if (this.#stage >= MAX_STAGE) {
 			return this;
 		}
+		/* c8 ignore stop */
 		switch (n) {
 			case 0:
 				if (this.type === 'root') {
@@ -396,7 +399,7 @@ export class Token extends AstElement {
 				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
-			/* istanbul ignore next */
+			/* c8 ignore next 2 */
 			case 'stage':
 				return this.#stage as TokenAttribute<T>;
 

@@ -388,7 +388,7 @@ const partialParse = async (
 	include: boolean,
 	config = Parser.getConfig(),
 ): Promise<Token> => {
-	const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
+	const set = typeof setImmediate === 'function' ? setImmediate : /* c8 ignore next */ setTimeout,
 		{running} = Shadow;
 	Shadow.running = true;
 
@@ -431,10 +431,11 @@ const partialParse = async (
 				};
 			set(parseOnce, 0);
 		});
-	} catch (e) /* istanbul ignore next */ {
+	} catch (e) /* c8 ignore start */ {
 		finish();
 		throw e;
 	}
+	/* c8 ignore stop */
 	finish();
 	return token;
 };
@@ -650,10 +651,10 @@ export class LanguageService implements LanguageServiceBase {
 			this.#running = undefined;
 			return root;
 		}
-		/* istanbul ignore next */
+		/* c8 ignore start */
 		this.#running = this.#parse();
-		/* istanbul ignore next */
 		return this.#running;
+		/* c8 ignore stop */
 	}
 
 	/**
@@ -691,10 +692,10 @@ export class LanguageService implements LanguageServiceBase {
 			this.#running2 = undefined;
 			return root;
 		}
-		/* istanbul ignore next */
+		/* c8 ignore start */
 		this.#running2 = this.#parseSignature();
-		/* istanbul ignore next */
 		return this.#running2;
+		/* c8 ignore stop */
 	}
 
 	/**
@@ -1743,7 +1744,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position position / 位置
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
-		/* istanbul ignore next */
+		/* c8 ignore next 3 */
 		if (!this.data) {
 			return undefined;
 		}
@@ -1854,7 +1855,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position position / 位置
 	 */
 	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
-		/* istanbul ignore next */
+		/* c8 ignore next 3 */
 		if (!this.data) {
 			return undefined;
 		}

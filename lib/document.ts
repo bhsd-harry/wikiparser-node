@@ -40,10 +40,10 @@ export const loadTexvcjs = /** @ignore */ (): Texvcjs | null => {
 		if (texcvjs === undefined) {
 			try {
 				texcvjs = require('mathoid-texvcjs') as Texvcjs;
-			} catch {
-				/* istanbul ignore next */
+			} catch /* c8 ignore start */ {
 				texcvjs = null;
 			}
+			/* c8 ignore stop */
 		}
 		return texcvjs;
 	}
@@ -57,10 +57,12 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | null => {
 		try {
 			jsonLSP = (require('vscode-json-languageservice') as typeof import('vscode-json-languageservice'))
 				.getLanguageService({
+					/* c8 ignore start */
 					/** @implements */
 					async schemaRequestService(uri) {
 						return (await fetch(uri)).text();
 					},
+					/* c8 ignore stop */
 				});
 			const dir = path.join('..', '..', 'data', 'ext');
 			jsonLSP.configure({
@@ -73,16 +75,16 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | null => {
 							fileMatch: [tag],
 							schema,
 						};
-					} catch {
-						/* istanbul ignore next */
+					} catch /* c8 ignore start */ {
 						return false;
 					}
+					/* c8 ignore stop */
 				}).filter(schema => schema !== false),
 			});
-		} catch {
-			/* istanbul ignore next */
+		} catch /* c8 ignore start */ {
 			jsonLSP = null;
 		}
+		/* c8 ignore stop */
 	}
 	return jsonLSP;
 };
@@ -93,10 +95,10 @@ export const loadCssLSP = /** @ignore */ (): CSSLanguageService | null => {
 		try {
 			cssLSP = (require('vscode-css-languageservice') as typeof import('vscode-css-languageservice'))
 				.getCSSLanguageService();
-		} catch {
-			/* istanbul ignore next */
+		} catch /* c8 ignore start */ {
 			cssLSP = null;
 		}
+		/* c8 ignore stop */
 	}
 	return cssLSP;
 };
@@ -107,10 +109,10 @@ export const loadHtmlData = /** @ignore */ (): IHTMLDataProvider | null => {
 		try {
 			htmlData = (require('vscode-html-languageservice') as typeof import('vscode-html-languageservice'))
 				.getDefaultHTMLDataProvider();
-		} catch {
-			/* istanbul ignore next */
+		} catch /* c8 ignore start */ {
 			htmlData = null;
 		}
+		/* c8 ignore stop */
 	}
 	return htmlData;
 };
@@ -121,10 +123,10 @@ export const loadStylelint = /** @ignore */ (): Promise<PublicApi | null> => {
 		stylelint ??= (async () => {
 			try {
 				return (await import('stylelint')).default;
-			} catch {
-				/* istanbul ignore next */
+			} catch /* c8 ignore start */ {
 				return null;
 			}
+			/* c8 ignore stop */
 		})();
 		return stylelint;
 	}
