@@ -111,7 +111,7 @@ export abstract class LinkBaseToken extends Token {
 		if (isLink(this.type)) {
 			const {prefix, main, fragment} = this.#title,
 				link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (interwiki && !this.isInterwiki(link)) {
 				throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
 			}
@@ -210,7 +210,8 @@ export abstract class LinkBaseToken extends Token {
 	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = value as TokenAttribute<'bracket'>;
-		} else /* istanbul ignore if */ if (key === 'title') {
+		} else if (key === 'title') {
+			/* c8 ignore next */
 			this.#title = value as TokenAttribute<'title'>;
 		} else {
 			super.setAttribute(key, value);
@@ -334,7 +335,7 @@ export abstract class LinkBaseToken extends Token {
 		});
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Set the link target
 	 *
@@ -345,8 +346,9 @@ export abstract class LinkBaseToken extends Token {
 		require('../../addon/link');
 		this.setTarget(link);
 	}
+	/* c8 ignore stop */
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Set the fragment
 	 *
@@ -357,6 +359,7 @@ export abstract class LinkBaseToken extends Token {
 		require('../../addon/link');
 		this.setFragment(fragment);
 	}
+	/* c8 ignore stop */
 
 	/**
 	 * Set the link text
@@ -394,7 +397,7 @@ export abstract class LinkBaseToken extends Token {
 					: sanitize(this.innerText)
 			}</a>`;
 		}
-		/* istanbul ignore next */
+		/* c8 ignore next */
 		return '';
 	}
 }

@@ -101,11 +101,12 @@ export abstract class TagPairToken extends Token {
 
 		/* NOT FOR BROWSER */
 
-		/* istanbul ignore next */
+		/* c8 ignore start */
 		if (!closed && nextSibling && type === 'include') {
 			Parser.error(`Auto-closing <${name}>`, lastChild);
 			this.closed = true;
 		}
+		/* c8 ignore stop */
 
 		/* NOT FOR BROWSER END */
 
@@ -164,11 +165,12 @@ export abstract class TagPairToken extends Token {
 	override afterBuild(): void {
 		super.afterBuild();
 		const /** @implements */ tagPairListener: AstListener = (e, data) => {
-			/* istanbul ignore if */
+			/* c8 ignore start */
 			if (this.#selfClosing && e.prevTarget === this.lastChild && this.lastChild.toString()) {
 				undo(e, data);
 				throw new Error('A self-closing tag does not have inner content.');
 			}
+			/* c8 ignore stop */
 		};
 		this.addEventListener(['insert', 'replace', 'text'], tagPairListener);
 	}

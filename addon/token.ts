@@ -44,12 +44,12 @@ Token.prototype.createElement = /** @implements */ function(
 			return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 		});
 	}
-	/* istanbul ignore next */
+	/* c8 ignore next */
 	throw new RangeError(`Invalid tag name: ${tagName}`);
 };
 
 Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined {
-	/* istanbul ignore if */
+	/* c8 ignore next 3 */
 	if (this.type !== 'root') {
 		return undefined;
 	}
@@ -90,10 +90,11 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 	const {html} = this.getAttribute('config'),
 		normalTags = new Set(html[0]),
 		voidTags = new Set(html[2]);
-	/* istanbul ignore next */
+	/* c8 ignore next 6 */
 	if (voidTags.has(tag!)) {
 		throw new RangeError(`Void tag: ${tag}`);
-	} else if (tag && !normalTags.has(tag) && !html[1].includes(tag)) {
+	}
+	if (tag && !normalTags.has(tag) && !html[1].includes(tag)) {
 		throw new RangeError(`Invalid tag name: ${tag}`);
 	}
 	const {parentNode} = this;

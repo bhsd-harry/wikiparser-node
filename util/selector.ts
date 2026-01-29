@@ -37,7 +37,7 @@ export const getCondition = <T>(selector: string, scope?: AstElement, has?: Toke
 
 	/* NOT FOR BROWSER END */
 
-	/* istanbul ignore if */
+	/* c8 ignore next 3 */
 	if (!selector) {
 		return (() => true) as unknown as TokenPredicate<T>;
 	}

@@ -46,7 +46,7 @@ export class AtomToken extends Token {
 	override set type(value) {
 		/* NOT FOR BROWSER */
 
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!atomTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for AtomToken!`);
 		}

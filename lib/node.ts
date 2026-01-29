@@ -227,7 +227,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return (key === 'padding' ? 0 : /* istanbul ignore next */ this[key as keyof this]) as TokenAttribute<T>;
+		return (key === 'padding' ? 0 : /* c8 ignore next */ this[key as keyof this]) as TokenAttribute<T>;
 	}
 
 	/** @private */
@@ -481,7 +481,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/* NOT FOR BROWSER */
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/** @private */
 	typeError(method: string, ...types: string[]): never {
 		throw new TypeError(
@@ -490,6 +490,7 @@ export abstract class AstNode implements AstNodeBase {
 			} as input parameters!`,
 		);
 	}
+	/* c8 ignore stop */
 
 	/** @private */
 	constructorError(msg: string): never {
@@ -510,7 +511,7 @@ export abstract class AstNode implements AstNodeBase {
 			if (e instanceof assert.AssertionError) {
 				return false;
 			}
-			/* istanbul ignore next */
+			/* c8 ignore next 2 */
 			throw e;
 		}
 		return true;
@@ -519,7 +520,7 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	insertAdjacent(nodes: readonly (AstNodes | string)[], offset: 0 | 1): void {
 		const {parentNode} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!parentNode) {
 			throw new Error('There is no parent node!');
 		}
@@ -597,7 +598,7 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	verifyChild(i: number, addition = 0): void {
 		const {length} = this.childNodes;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (i < -length || i >= length + addition) {
 			throw new RangeError(`The child node at position ${i} does not exist!`);
 		}
@@ -715,7 +716,9 @@ export abstract class AstNode implements AstNodeBase {
 			return -1;
 		} else if (other.contains(this)) {
 			return 1;
-		} else /* istanbul ignore if */ if (this.getRootNode() !== other.getRootNode()) {
+		}
+		/* c8 ignore next 3 */
+		if (this.getRootNode() !== other.getRootNode()) {
 			throw new RangeError('Nodes to be compared are not in the same document!');
 		}
 		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],

@@ -547,12 +547,12 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 		const config = this.getAttribute('config'),
 			syntax = key === 'caption' ? '$1' : Object.entries(config.img).find(([, name]) => name === key)?.[0];
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (syntax === undefined) {
 			throw new RangeError(`Unknown image parameter: ${key}`);
 		}
 		const free = syntax.includes('$1');
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (value === true && free) {
 			this.typeError('setValue', 'String');
 		}
@@ -573,7 +573,7 @@ export abstract class FileToken extends LinkBaseToken {
 		this.insertAt(parameter);
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * @override
 	 * @throws `Error` 不适用于图片
@@ -581,6 +581,7 @@ export abstract class FileToken extends LinkBaseToken {
 	override setLinkText(): never {
 		throw new Error('LinkBaseToken.setLinkText method is not applicable to images!');
 	}
+	/* c8 ignore stop */
 
 	/** @private */
 	@cached()

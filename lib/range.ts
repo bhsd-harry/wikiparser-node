@@ -30,11 +30,11 @@ const getParent = (node: AstNodes): Token => {
 	if (parentNode) {
 		return parentNode;
 	}
-	/* istanbul ignore next */
+	/* c8 ignore next */
 	throw new RangeError('The reference node has no parent node!');
 };
 
-/* istanbul ignore next */
+/* c8 ignore start */
 /**
  * 未初始化时抛出错误
  * @param start 是否未初始化起点
@@ -43,6 +43,7 @@ const getParent = (node: AstNodes): Token => {
 const notInit = (start: boolean): never => {
 	throw new Error(`Please set the ${start ? 'start' : 'end'} position first!`);
 };
+/* c8 ignore stop */
 
 /**
  * Range-like
@@ -58,12 +59,12 @@ export class AstRange {
 
 	/** start container / 起点容器 */
 	get startContainer(): AstNodes {
-		return this.#startContainer ?? /* istanbul ignore next */ notInit(true);
+		return this.#startContainer ?? /* c8 ignore next */ notInit(true);
 	}
 
 	/** start offset / 起点位置 */
 	get startOffset(): number {
-		return this.#startOffset ?? /* istanbul ignore next */ notInit(true);
+		return this.#startOffset ?? /* c8 ignore next */ notInit(true);
 	}
 
 	/** start character index / 起点绝对位置 */
@@ -78,12 +79,12 @@ export class AstRange {
 
 	/** end container / 终点容器 */
 	get endContainer(): AstNodes {
-		return this.#endContainer ?? /* istanbul ignore next */ notInit(false);
+		return this.#endContainer ?? /* c8 ignore next */ notInit(false);
 	}
 
 	/** end offset / 终点位置 */
 	get endOffset(): number {
-		return this.#endOffset ?? /* istanbul ignore next */ notInit(false);
+		return this.#endOffset ?? /* c8 ignore next */ notInit(false);
 	}
 
 	/** end character index / 终点绝对位置 */
@@ -128,7 +129,7 @@ export class AstRange {
 			msg1 = 'The start and end positions are not siblings!',
 			msg2 = 'The start position cannot be after the end position!';
 		if (startContainer === endContainer) {
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (startOffset > endOffset) {
 				throw new RangeError(msg2);
 			}
@@ -136,7 +137,7 @@ export class AstRange {
 		}
 		const {type: startType, parentNode: startParent} = startContainer,
 			{type: endType, parentNode: endParent} = endContainer;
-		/* istanbul ignore next */
+		/* c8 ignore start */
 		if (startType !== 'text') {
 			if (endType !== 'text' || startContainer !== endParent) {
 				throw new RangeError(msg1);
@@ -156,6 +157,7 @@ export class AstRange {
 		} else if (endOffset <= startParent.childNodes.indexOf(startContainer)) {
 			throw new RangeError(msg2);
 		}
+		/* c8 ignore stop */
 	}
 
 	/**
@@ -168,7 +170,7 @@ export class AstRange {
 	 */
 	setStart(startNode: AstNodes, offset: number): void {
 		const {length} = startNode;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (offset < 0 || offset > length) {
 			throw new RangeError(`The range of startOffset should be 0 ~ ${length}`);
 		}
@@ -179,11 +181,12 @@ export class AstRange {
 		if (this.#endContainer) {
 			try {
 				this.#check();
-			} catch (e) /* istanbul ignore next */ {
+			} catch (e) /* c8 ignore start */ {
 				this.#startContainer = startContainer;
 				this.#startOffset = startOffset;
 				throw e;
 			}
+			/* c8 ignore stop */
 		}
 	}
 
@@ -197,7 +200,7 @@ export class AstRange {
 	 */
 	setEnd(endNode: AstNodes, offset: number): void {
 		const {length} = endNode;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (offset < 0 || offset > length) {
 			throw new RangeError(`The range of endOffset should be 0 ~ ${length}`);
 		}
@@ -208,11 +211,12 @@ export class AstRange {
 		if (this.#startContainer) {
 			try {
 				this.#check();
-			} catch (e) /* istanbul ignore next */ {
+			} catch (e) /* c8 ignore start */ {
 				this.#endContainer = endContainer;
 				this.#endOffset = endOffset;
 				throw e;
 			}
+			/* c8 ignore stop */
 		}
 	}
 
@@ -330,7 +334,7 @@ export class AstRange {
 	 */
 	comparePoint(referenceNode: AstNodes, offset: number): -1 | 0 | 1 {
 		const {startContainer, startIndex, endContainer, endIndex} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (startContainer.getRootNode() !== referenceNode.getRootNode()) {
 			throw new RangeError('The point to be compared is not in the same document!');
 		}

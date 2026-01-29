@@ -50,9 +50,10 @@ const wordRegex = /* #__PURE__ */ ((): RegExp => {
 	try {
 		// eslint-disable-next-line prefer-regex-literals
 		return new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
-	} catch /* istanbul ignore next */ {
+	} catch /* c8 ignore start */ {
 		return /[^\W_]/u;
 	}
+	/* c8 ignore stop */
 })();
 
 /**
@@ -392,7 +393,7 @@ export abstract class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Sanitize invalid attributes
 	 *
@@ -402,6 +403,7 @@ export abstract class AttributesToken extends Token {
 		require('../addon/attribute');
 		this.sanitize();
 	}
+	/* c8 ignore stop */
 
 	@clone
 	override cloneNode(): this {
@@ -417,17 +419,18 @@ export abstract class AttributesToken extends Token {
 	 */
 	override insertAt<T extends AtomToken | AttributeToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (!Shadow.running && token.toString().trim()) {
 				this.constructorError('can only insert AttributeToken');
 			}
 			return super.insertAt(token, i);
 		}
 		const {type, name, length} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (token.type !== type.slice(0, -1) || token.tag !== name) {
 			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
-		} else if (i === length) {
+		}
+		if (i === length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
 				lastChild.close();
@@ -498,7 +501,7 @@ export abstract class AttributesToken extends Token {
 		}
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Toggle the specified attribute
 	 *
@@ -511,6 +514,7 @@ export abstract class AttributesToken extends Token {
 		require('../addon/attribute');
 		this.toggleAttr(key, force);
 	}
+	/* c8 ignore stop */
 
 	/**
 	 * 生成引导空格
@@ -550,7 +554,7 @@ export abstract class AttributesToken extends Token {
 		return output && ` ${output}`;
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Get the value of a style property
 	 *
@@ -563,6 +567,7 @@ export abstract class AttributesToken extends Token {
 		require('../addon/attribute');
 		return this.css(key, value);
 	}
+	/* c8 ignore stop */
 }
 
 classes['AttributesToken'] = __filename;

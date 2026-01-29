@@ -43,7 +43,7 @@ TranscludeToken.prototype.newAnonArg =
 TranscludeToken.prototype.setValue =
 	/** @implements */
 	function(key, value, newline): void {
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!this.isTemplate()) {
 			throw new Error('TranscludeToken.setValue method is only for templates!');
 		}
@@ -70,7 +70,7 @@ TranscludeToken.prototype.replaceTemplate =
 	/** @implements */
 	function(title): void {
 		const {type, firstChild} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (type === 'magic-word') {
 			throw new Error('TranscludeToken.replaceTemplate method is only for templates!');
 		}
@@ -82,10 +82,11 @@ TranscludeToken.prototype.replaceModule =
 	/** @implements */
 	function(title): void {
 		const {type, name, length, childNodes: [, mod]} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
-		} else if (length === 1) {
+		}
+		if (length === 1) {
 			Token.prototype.insertAt.call(
 				this,
 				Shadow.run(() => new AtomToken(
@@ -106,12 +107,14 @@ TranscludeToken.prototype.replaceFunction =
 	/** @implements */
 	function(func): void {
 		const {type, name, length, childNodes: [,, fun]} = this;
-		/* istanbul ignore next */
+		/* c8 ignore next 6 */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
-		} else if (length < 2) {
+		}
+		if (length < 2) {
 			throw new Error('No module name specified!');
-		} else if (length === 2) {
+		}
+		if (length === 2) {
 			Token.prototype.insertAt.call(
 				this,
 				Shadow.run(() => new AtomToken(
@@ -233,7 +236,7 @@ TranscludeToken.prototype.escapeTables =
 				return token;
 			}, Parser);
 		const {firstChild, length} = Parser.parseWithRef(`{{${parsed.toString()}}}`, this);
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('Failed to escape tables!');
 		}

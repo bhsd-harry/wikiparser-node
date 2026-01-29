@@ -111,9 +111,10 @@ const wordRegex = /* #__PURE__ */ ((): RegExp => {
 	try {
 		// eslint-disable-next-line prefer-regex-literals
 		return new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
-	} catch /* istanbul ignore next */ {
+	} catch /* c8 ignore start */ {
 		return /\w/u;
 	}
+	/* c8 ignore stop */
 })();
 
 /**
@@ -176,7 +177,7 @@ export class AstText extends AstNode {
 				return [];
 			}
 			const {data, parentNode, nextSibling, previousSibling} = this;
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (!parentNode) {
 				throw new Error('An isolated text node cannot be linted!');
 			}
@@ -461,7 +462,7 @@ export class AstText extends AstNode {
 		LSP: {
 			/* NOT FOR BROWSER */
 
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (offset > this.length || offset < -this.length) {
 				throw new RangeError(`Wrong offset to split: ${offset}`);
 			}
@@ -469,7 +470,7 @@ export class AstText extends AstNode {
 			/* NOT FOR BROWSER END */
 
 			const {parentNode, data} = this;
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (!parentNode) {
 				throw new Error('The text node to be split has no parent node!');
 			}
@@ -490,7 +491,7 @@ export class AstText extends AstNode {
 	escape(): void {
 		LSP: {
 			const {parentNode} = this;
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (!parentNode) {
 				throw new Error('The text node to be escaped has no parent node!');
 			}
@@ -582,10 +583,11 @@ export class AstText extends AstNode {
 
 	/** @private */
 	override getRelativeIndex(j?: number): number {
-		/* istanbul ignore else */
 		if (j === undefined) {
 			return super.getRelativeIndex();
-		} else if (j < 0 || j > this.length) {
+		}
+		/* c8 ignore next 3 */
+		if (j < 0 || j > this.length) {
 			throw new RangeError('Exceeding the text length range!');
 		}
 		return j;

@@ -31,7 +31,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 				})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 				'giu',
 			);
-		} catch /* istanbul ignore next */ {
+		} catch /* c8 ignore start */ {
 			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			/(^|\W)(?:(?:ftp:\/\/|http:\/\/)((?:\[[\da-f:.]+\]|[^[\]<>"\s])[^[\]<>"\0\s]*)|(?:rfc|pmid)\s+\d+\b|isbn\s+(?:97[89][\s-]?)?(?:\d[\s-]?){9}[\dx]\b)/giu;
 			config.regexMagicLinks = new RegExp(
@@ -39,6 +39,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 				'giu',
 			);
 		}
+		/* c8 ignore stop */
 	}
 	return wikitext.replace(config.regexMagicLinks, (m, lead: string, p1: string | undefined) => {
 		let url = lead ? m.slice(lead.length) : m;

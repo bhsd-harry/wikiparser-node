@@ -280,7 +280,7 @@ const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
  */
 const rootRequire = (file: string, dir: string): unknown => require(
 	path.isAbsolute(file)
-		? /* istanbul ignore next */ file
+		? /* c8 ignore next */ file
 		: path.join('..', file.includes('/') ? '' : dir, file),
 );
 
@@ -418,7 +418,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			if (typeof this.config === 'string') {
 				this.config = rootRequire(this.config, 'config') as ConfigData;
 			}
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (this.config.doubleUnderscore.length < 3 || !('functionHook' in this.config)) {
 				error(
 					`The schema (${
@@ -426,7 +426,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}) of parser configuration is updated.`,
 				);
 			}
-
 			return this.getConfig();
 		}
 
@@ -550,7 +549,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				return token.parse(maxStage, include);
 
 				/* NOT FOR BROWSER ONLY */
-			} catch (e) /* istanbul ignore next */ {
+			} catch (e) /* c8 ignore start */ {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
@@ -568,6 +567,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				}
 				throw e;
 			}
+			/* c8 ignore stop */
 
 			/* NOT FOR BROWSER ONLY END */
 		});
@@ -578,7 +578,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			root.buildLists();
 		}
 
-		/* istanbul ignore if */
+		/* c8 ignore start */
 		if (this.debugging) {
 			let restored = root.toString(),
 				proc = 'parsing';
@@ -600,6 +600,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				})());
 			}
 		}
+		/* c8 ignore stop */
 
 		/* NOT FOR BROWSER END */
 
@@ -644,7 +645,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getWMFSite(url) {
 		const mt = re.exec(url);
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!mt) {
 			throw new RangeError('Not a recognizable WMF site!');
 		}
@@ -652,12 +653,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		return [mt[1]!.toLowerCase() + (type === 'wikipedia' ? 'wiki' : type), mt[0]];
 	},
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/** @implements */
 	async fetchConfig(site, url, user) {
 		const {default: fetchConfig}: typeof import('./bin/config') = require('./bin/config');
 		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},
+	/* c8 ignore stop */
 
 	/* NOT FOR BROWSER ONLY END */
 
@@ -703,7 +705,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				const [insensitive, sensitive] = parserFunction,
 					entry = Object.entries(sensitive).find(([, v]) => v === lcName)
 						|| Object.entries(insensitive).find(([, v]) => v === lcName);
-				/* istanbul ignore if */
+				/* c8 ignore next 3 */
 				if (!entry) {
 					throw new RangeError(`Unable to resolve parser function: ${name}`);
 				}
@@ -722,7 +724,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else {
 			result = expandMagicWord(lcName as MagicWord, args);
 		}
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (result === false) {
 			throw new RangeError(`Unable to resolve parser function: ${name}`);
 		}
@@ -731,30 +733,33 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	warn(msg, ...args) {
-		/* istanbul ignore if */
+		/* c8 ignore start */
 		if (this.warning) {
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			console.warn(util.styleText?.('yellow', msg) ?? msg, ...args);
 		}
+		/* c8 ignore stop */
 	},
 	/** @implements */
 	debug(msg, ...args) {
-		/* istanbul ignore if */
+		/* c8 ignore start */
 		if (this.debugging) {
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			console.debug(util.styleText?.('blue', msg) ?? msg, ...args);
 		}
+		/* c8 ignore stop */
 	},
 	error,
 	info,
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/** @implements */
 	log(f) {
 		if (typeof f === 'function') {
 			console.log(String(f));
 		}
 	},
+	/* c8 ignore stop */
 
 	/** @implements */
 	require(name: string): unknown {
@@ -762,7 +767,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		return Object.hasOwn(classes, name) ? require(classes[name]!)[name] : require(path.join(__dirname, name));
 	},
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/** @implements */
 	async clearCache(): Promise<void> {
 		await cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']);
@@ -780,13 +785,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		this.info('已重新加载Parser');
 	},
+	/* c8 ignore stop */
 
 	/** @implements */
 	isInterwiki(title, config = Parser.getConfig()) {
 		return isInterwiki(title, config);
 	},
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/** @implements */
 	reparse(date = '') {
 		const dir = path.join(__dirname, '..', 'errors'),
@@ -814,6 +820,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			fs.unlinkSync(`${file}.json`);
 		}, this);
 	},
+	/* c8 ignore stop */
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {

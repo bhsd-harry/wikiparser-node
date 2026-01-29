@@ -115,7 +115,7 @@ export class Title {
 
 	/** @throws `RangeError` undefined namespace */
 	set ns(ns) {
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!(this.ns in this.#namespaces)) {
 			throw new RangeError('Undefined namespace!');
 		}
@@ -129,7 +129,7 @@ export class Title {
 			if (fragment.includes('%')) {
 				try {
 					fragment = rawurldecode(fragment);
-				} catch {}
+				} catch /* c8 ignore next */ {}
 			}
 			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd()
 				.replaceAll(' ', '_');
@@ -174,7 +174,7 @@ export class Title {
 				const encoded = /%(?!21|3[ce]|5[bd]|7[b-d])[\da-f]{2}/iu.test(title);
 				title = rawurldecode(title);
 				this.encoded = encoded;
-			} catch {}
+			} catch /* c8 ignore next */ {}
 		}
 		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
 		if (subpage || page && trimmed.startsWith('/')) {
@@ -213,7 +213,7 @@ export class Title {
 			if (fragment.includes('%')) {
 				try {
 					fragment = rawurldecode(fragment);
-				} catch {}
+				} catch /* c8 ignore next */ {}
 			}
 			this.#fragment = fragment.replace(/ /gu, '_');
 			title = title.slice(0, i).trim();
@@ -332,7 +332,7 @@ export class Title {
 		LSP: {
 			if (typeof articlePath === 'string') {
 				this.#path = articlePath;
-				/* istanbul ignore if */
+				/* c8 ignore next 3 */
 				if (!this.#path.includes('$1')) {
 					this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
 				}
@@ -370,13 +370,14 @@ export class Title {
 	 * @throws `Error` not a file
 	 */
 	getFileUrl(width?: number | false, height?: number | false): string {
-		/* istanbul ignore if */
+		/* c8 ignore start */
 		if (
 			typeof width === 'number' && (width <= 0 || !Number.isInteger(width))
 			|| typeof height === 'number' && (height <= 0 || !Number.isInteger(height))
 		) {
 			throw new RangeError('Width and height must be positive integers or omitted!');
 		}
+		/* c8 ignore stop */
 		const {main, valid, ns, interwiki} = this;
 		if (!valid || ns !== 6 || interwiki) {
 			throw new Error('Title.getFileUrl method is only for files!');

@@ -56,7 +56,7 @@ LinkToken.prototype.setLangLink =
 	/** @implements */
 	function(lang, link): void {
 		link = link.trim();
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (link.startsWith('#')) {
 			throw new SyntaxError('An interlanguage link cannot be fragment only!');
 		}
@@ -67,7 +67,7 @@ LinkToken.prototype.asSelfLink =
 	/** @implements */
 	function(fragment): void {
 		fragment ??= this.fragment;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!fragment?.trim()) {
 			throw new RangeError('LinkToken.asSelfLink method must specify a non-empty fragment!');
 		}
@@ -78,7 +78,7 @@ LinkToken.prototype.pipeTrick =
 	/** @implements */
 	function(): void {
 		const linkText = this.firstChild.text();
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick cannot be used with "#" or "%"!');
 		}

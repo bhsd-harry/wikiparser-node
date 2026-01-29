@@ -550,7 +550,7 @@ export abstract class AttributeToken extends Token {
 		this.setValue(value);
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Rename the attribute
 	 *
@@ -562,6 +562,7 @@ export abstract class AttributeToken extends Token {
 		require('../addon/attribute');
 		this.rename(key);
 	}
+	/* c8 ignore stop */
 
 	/** @private */
 	asHtmlAttr(): void {
@@ -586,7 +587,7 @@ export abstract class AttributeToken extends Token {
 		return `${name}="${sanitized}"`;
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Get or set the value of a style property
 	 *
@@ -602,6 +603,7 @@ export abstract class AttributeToken extends Token {
 		require('../addon/attribute');
 		return this.css(key, value);
 	}
+	/* c8 ignore stop */
 }
 
 classes['AttributeToken'] = __filename;

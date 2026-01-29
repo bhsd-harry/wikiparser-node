@@ -201,7 +201,7 @@ export class Token extends AstElement {
 			'converter-rule-to',
 			'converter-rule-from',
 		];
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!plainTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);
 		}
@@ -254,7 +254,9 @@ export class Token extends AstElement {
 	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
 		if (n < this.#stage || this.length !== 1 || !this.isPlain()) {
 			return this;
-		} else /* istanbul ignore if */ if (this.#stage >= MAX_STAGE) {
+		}
+		/* c8 ignore start */
+		if (this.#stage >= MAX_STAGE) {
 			/* NOt FOR BROWSER */
 
 			if (this.type === 'root') {
@@ -265,6 +267,7 @@ export class Token extends AstElement {
 
 			return this;
 		}
+		/* c8 ignore stop */
 		switch (n) {
 			case 0:
 				if (this.type === 'root') {
@@ -332,7 +335,7 @@ export class Token extends AstElement {
 			) {
 				return this.#accum[n]!;
 			}
-			/* istanbul ignore next */
+			/* c8 ignore next */
 			throw new Error(`Failed to build! Unrecognized token: ${s}`);
 		}).filter(node => node !== '');
 		if (type === BuildMethod.String) {
@@ -511,7 +514,7 @@ export class Token extends AstElement {
 				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
-			/* istanbul ignore next */
+			/* c8 ignore next 2 */
 			case 'stage':
 				return this.#stage as TokenAttribute<T>;
 
@@ -862,13 +865,12 @@ export class Token extends AstElement {
 	@readOnly()
 	safeReplaceWith(token: this): void {
 		const {parentNode} = this;
-		/* istanbul ignore next */
+		/* c8 ignore start */
 		if (!parentNode) {
 			throw new Error('The node does not have a parent node!');
 		} else if (token.constructor !== this.constructor) {
 			this.typeError('safeReplaceWith', this.constructor.name);
 		}
-		/* istanbul ignore next */
 		try {
 			assert.deepEqual(token.getAcceptable(), this.getAcceptable());
 		} catch (e) {
@@ -877,6 +879,7 @@ export class Token extends AstElement {
 			}
 			throw e;
 		}
+		/* c8 ignore stop */
 		const i = parentNode.childNodes.indexOf(this);
 		super.removeAt.call(parentNode, i);
 		super.insertAt.call(parentNode, token, i);
@@ -887,7 +890,7 @@ export class Token extends AstElement {
 		token.dispatchEvent(e, {type: 'replace', position: i, oldToken: this});
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Create an HTML comment
 	 *
@@ -898,6 +901,7 @@ export class Token extends AstElement {
 		require('../addon/token');
 		return this.createComment(data);
 	}
+	/* c8 ignore stop */
 
 	/**
 	 * Create a tag
@@ -957,7 +961,7 @@ export class Token extends AstElement {
 	 * 深拷贝节点
 	 */
 	cloneNode(): this {
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (this.constructor !== Token) {
 			this.constructorError('does not specify a cloneNode method');
 		}
@@ -975,7 +979,7 @@ export class Token extends AstElement {
 		});
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Get all sections
 	 *
@@ -985,6 +989,7 @@ export class Token extends AstElement {
 		require('../addon/token');
 		return this.sections();
 	}
+	/* c8 ignore stop */
 
 	/**
 	 * Get a section
@@ -996,7 +1001,7 @@ export class Token extends AstElement {
 		return this.sections()?.[n];
 	}
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Get the enclosing HTML tags
 	 *
@@ -1007,6 +1012,7 @@ export class Token extends AstElement {
 		require('../addon/token');
 		return this.findEnclosingHtml(tag);
 	}
+	/* c8 ignore stop */
 
 	/**
 	 * Get all categories

@@ -25,40 +25,41 @@ export class Range {
 			this.start = Number(start);
 			this.end = Number(end?.trim() || Infinity);
 			this.step = Math.max(Number(step), 1);
-			/* istanbul ignore next */
+			/* c8 ignore next 9 */
 			if (!Number.isInteger(this.start)) {
 				throw new RangeError(`The start of a range, \`${start}\`, should be an integer!`);
-			} else if (this.end !== Infinity && !Number.isInteger(this.end)) {
+			}
+			if (this.end !== Infinity && !Number.isInteger(this.end)) {
 				throw new RangeError(`The end of a range, \`${end}\`, should be an integer!`);
-			} else if (!Number.isInteger(this.step)) {
+			}
+			if (!Number.isInteger(this.step)) {
 				throw new RangeError(`The step of a range, \`${step}\`, should be an integer!`);
 			}
 		} else {
 			const mt = /^([+-])?(\d+)?n(?:\s*([+-])\s*(\d+))?$/u
 				.exec(str) as [string, string | undefined, string | undefined, string | undefined, string | undefined]
 				| null;
-			/* istanbul ignore else */
-			if (mt) {
-				const [, sgnA = '+', a = 1, sgnB = '+'] = mt,
-					b = Number(mt[4] ?? 0);
-				this.step = Number(a);
-				/* istanbul ignore if */
-				if (this.step === 0) {
-					throw new RangeError(`In the argument \`${str}\`, the coefficient of "n" must not be 0!`);
-				} else if (sgnA === '+') { // `an+b` or `an-b`
-					this.start = sgnB === '+' || b === 0 ? b : this.step - 1 - (b - 1) % this.step;
-					this.end = Infinity;
-				} else if (sgnB === '-') { // `-an-b`
-					this.start = 0;
-					this.end = b > 0 ? 0 : this.step;
-				} else { // `-an+b`
-					this.start = b % this.step;
-					this.end = this.step + b;
-				}
-			} else {
+			/* c8 ignore next 3 */
+			if (!mt) {
 				throw new RangeError(`The argument \`${
 					str
 				}\` should be either in the form of "an+b" as in CSS selectors or Python slices!`);
+			}
+			const [, sgnA = '+', a = 1, sgnB = '+'] = mt,
+				b = Number(mt[4] ?? 0);
+			this.step = Number(a);
+			/* c8 ignore next 3 */
+			if (this.step === 0) {
+				throw new RangeError(`In the argument \`${str}\`, the coefficient of "n" must not be 0!`);
+			} else if (sgnA === '+') { // `an+b` or `an-b`
+				this.start = sgnB === '+' || b === 0 ? b : this.step - 1 - (b - 1) % this.step;
+				this.end = Infinity;
+			} else if (sgnB === '-') { // `-an-b`
+				this.start = 0;
+				this.end = b > 0 ? 0 : this.step;
+			} else { // `-an+b`
+				this.start = b % this.step;
+				this.end = this.step + b;
 			}
 		}
 	}
@@ -93,11 +94,12 @@ export class Ranges extends Array<number | Range> {
 			} else if (typeof ele === 'string' && Number.isNaN(number)) {
 				try {
 					this.push(new Range(ele));
-				} catch (e) /* istanbul ignore next */ {
+				} catch (e) /* c8 ignore start */ {
 					if (e instanceof RangeError) {
 						error(e.message);
 					}
 				}
+				/* c8 ignore stop */
 			}
 		}
 	}

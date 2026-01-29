@@ -54,7 +54,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 			const rule = 'unclosed-comment',
 				{lintConfig} = Parser,
 				s = lintConfig.getSeverity(rule);
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (!s) {
 				return [];
 			}
@@ -70,11 +70,12 @@ export abstract class CommentToken extends NowikiBaseToken {
 	override toString(skip?: boolean): string {
 		/* NOT FOR BROWSER */
 
-		/* istanbul ignore if */
+		/* c8 ignore start */
 		if (!this.closed && this.nextSibling) {
 			Parser.error('Auto-closing HTML comment', this);
 			this.closed = true;
 		}
+		/* c8 ignore stop */
 
 		/* NOT FOR BROWSER END */
 
@@ -97,7 +98,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/** @private */
 	override setText(text: string): string {
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (text.includes('-->')) {
 			throw new RangeError('Do not contain "-->" in the comment!');
 		}

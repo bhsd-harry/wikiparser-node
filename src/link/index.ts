@@ -80,7 +80,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Set the interlanguage link
 	 *
@@ -93,8 +93,9 @@ export abstract class LinkToken extends LinkBaseToken {
 		require('../../addon/link');
 		this.setLangLink(lang, link);
 	}
+	/* c8 ignore stop */
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Convert to a self link
 	 *
@@ -106,8 +107,9 @@ export abstract class LinkToken extends LinkBaseToken {
 		require('../../addon/link');
 		this.asSelfLink(fragment);
 	}
+	/* c8 ignore stop */
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/**
 	 * Automatically generate the link text after the pipe
 	 *
@@ -118,6 +120,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		require('../../addon/link');
 		this.pipeTrick();
 	}
+	/* c8 ignore stop */
 }
 
 classes['LinkToken'] = __filename;

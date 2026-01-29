@@ -937,7 +937,7 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模块
 	 */
 	getModule(): [string, string | undefined] {
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error('TranscludeToken.getModule method is only for modules!');
 		}
@@ -953,7 +953,7 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模块
 	 */
 	getFrame(context?: this): Frame {
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (this.type === 'template' ? context : this.name !== 'invoke') {
 			throw new Error('TranscludeToken.getFrame method is only for modules!');
 		}

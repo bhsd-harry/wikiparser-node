@@ -173,7 +173,7 @@ const matches = (
 				case ':optional':
 					return isProtected(token) === false;
 				case ':scope':
-					/* istanbul ignore if */
+					/* c8 ignore next 3 */
 					if (!scope) {
 						throw new SyntaxError('The :scope pseudo-selector must be used with an element node.');
 					}
@@ -192,12 +192,13 @@ const matches = (
 			if (!equal) {
 				return thisVal !== undefined && thisVal !== false;
 			}
-			/* istanbul ignore else */
 			if (equal === '~=') {
 				const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
 				return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
 					&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
-			} else if (!(primitives.has(typeof thisVal) || thisVal instanceof Title)) {
+			}
+			/* c8 ignore next 3 */
+			if (!(primitives.has(typeof thisVal) || thisVal instanceof Title)) {
 				throw new RangeError(`The complex attribute ${key} cannot be used in a selector!`);
 			}
 			const stringVal = toCase(String(thisVal), i);
@@ -233,7 +234,7 @@ const matches = (
 			case 'contains':
 				return token.text().includes(s);
 			case 'has': {
-				/* istanbul ignore if */
+				/* c8 ignore next 3 */
 				if (has) {
 					throw new SyntaxError('The :has() pseudo-selector cannot be nested.');
 				}
@@ -264,7 +265,7 @@ const matches = (
 			}
 			case 'regex': {
 				const mt = /^([^,]+),\s*\/(.+)\/([a-z]*)$/u.exec(s) as [string, string, string, string] | null;
-				/* istanbul ignore if */
+				/* c8 ignore next 3 */
 				if (!mt) {
 					throw new SyntaxError(
 						`Wrong usage of the regex pseudo-selector. Use ":regex('attr, /re/i')" format.`,
@@ -272,11 +273,12 @@ const matches = (
 				}
 				try {
 					return new RegExp(mt[2], mt[3]).test(String(getAttr(token, mt[1].trim())));
-				} catch /* istanbul ignore next */ {
+				} catch /* c8 ignore start */ {
 					throw new SyntaxError(`Invalid regular expression: /${mt[2]}/${mt[3]}`);
 				}
+				/* c8 ignore stop */
 			}
-			/* istanbul ignore next */
+			/* c8 ignore next 2 */
 			default:
 				throw new SyntaxError(`Undefined pseudo-selector: ${pseudo}`);
 		}
@@ -373,20 +375,20 @@ export const checkToken = (
 		for (let i = 0; i < pieces.length; i++) {
 			const piece = pieces[i]!;
 			if (!/^[:#]/u.test(piece)) {
-				/* istanbul ignore if */
+				/* c8 ignore next 3 */
 				if (step.length > 0) {
 					throw new SyntaxError(`Invalid selector!\n${selector}\nType selectors must come first.`);
-				} else {
-					step.push(piece);
 				}
+				step.push(piece);
 			} else if (piece.startsWith(':')) {
 				if (simplePseudos.has(piece.slice(1))) {
 					step.push(piece);
-				} else /* istanbul ignore else */ if (pieces[i - 1]?.startsWith('#')) {
+				} else if (pieces[i - 1]?.startsWith('#')) {
 					pieces[i - 1] += piece;
 					pieces.splice(i, 1);
 					i--;
 				} else {
+					/* c8 ignore next 2 */
 					throw new SyntaxError(`Undefined pseudo selector!\n${desanitize(piece)}`);
 				}
 			}
@@ -399,7 +401,7 @@ export const checkToken = (
 	 * @throws `SyntaxError` 非法的选择器
 	 */
 	const needUniversal = (): void => {
-		/* istanbul ignore next */
+		/* c8 ignore next 3 */
 		if (step.length === 0 && (condition.length > 1 || !has)) {
 			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
 		}
@@ -439,7 +441,7 @@ export const checkToken = (
 		} else if (syntax === '(') { // 情形5：伪选择器开启
 			const i = sanitized.lastIndexOf(':', index),
 				pseudo = sanitized.slice(i + 1, index);
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (i === -1 || !complexPseudos.has(pseudo)) {
 				throw new SyntaxError(`Undefined pseudo selector!\n${desanitize(sanitized)}`);
 			}
@@ -463,7 +465,7 @@ export const checkToken = (
 		needUniversal();
 		return stack.some(copy => matchesArray(token, copy, scope, has));
 	}
-	/* istanbul ignore next */
+	/* c8 ignore next */
 	throw new SyntaxError(
 		`Unclosed '${regex === attributeRegex ? '[' : '('}' in the selector!\n${desanitize(sanitized)}`,
 	);

@@ -38,10 +38,11 @@ AttributeToken.prototype.setValue =
 			return;
 		}
 		const {type, lastChild} = this;
-		/* istanbul ignore next */
+		/* c8 ignore next 6 */
 		if (type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
-		} else if (value.includes('"') && value.includes(`'`)) {
+		}
+		if (value.includes('"') && value.includes(`'`)) {
 			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
 		}
 		const {childNodes} = Parser.parseWithRef(value, this, stages[type] + 1);
@@ -60,7 +61,7 @@ AttributeToken.prototype.rename =
 	/** @implements */
 	function(key): void {
 		const {type, name, tag, firstChild} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (name === 'title' || name === 'alt' && tag === 'img') {
 			throw new Error(`${name} attribute cannot be renamed!`);
 		}
@@ -72,14 +73,15 @@ AttributeToken.prototype.css =
 	/** @implements */
 	function(key, value): string | undefined {
 		const {name, lastChild} = this;
-		/* istanbul ignore next */
+		/* c8 ignore next 6 */
 		if (name !== 'style') {
 			throw new Error('Not a style attribute!');
-		} else if (lastChild.length > 1 || lastChild.length === 1 && lastChild.firstChild!.type !== 'text') {
+		}
+		if (lastChild.length > 1 || lastChild.length === 1 && lastChild.firstChild!.type !== 'text') {
 			throw new Error('Complex style attribute!');
 		}
 		const cssLSP = loadCssLSP();
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!cssLSP) {
 			throw new Error('CSS language service is not available!');
 		}
@@ -110,13 +112,15 @@ AttributeToken.prototype.css =
 		}
 		const hasQuote = value.includes('"'),
 			[quot] = this.getAttribute('quotes');
-		/* istanbul ignore next */
+		/* c8 ignore start */
 		if (quot && value.includes(quot) || hasQuote && value.includes(`'`)) {
 			const quote = quot || '"';
 			throw new RangeError(
 				`Please consider replacing \`${quote}\` with \`${quote === '"' ? `'` : '"'}\`!`,
 			);
-		} else if (declaration.length > 0) {
+		}
+		/* c8 ignore stop */
+		if (declaration.length > 0) {
 			const {offset, length} = declaration.at(-1)!.value;
 			this.setValue(style.slice(doc.pre.length, offset) + value + style.slice(offset + length));
 		} else {
@@ -160,7 +164,7 @@ AttributesToken.prototype.setAttr =
 			return;
 		}
 		const {type, name} = this;
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		}
@@ -190,10 +194,11 @@ AttributesToken.prototype.toggleAttr =
 	function(key, force): void {
 		key = trimLc(key);
 		const attr = this.getAttrToken(key);
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (attr && attr.getValue() !== true) {
 			throw new RangeError(`${key} attribute is not Boolean!`);
-		} else if (attr) {
+		}
+		if (attr) {
 			attr.setValue(force === true);
 		} else if (force !== false) {
 			this.setAttr(key, true);

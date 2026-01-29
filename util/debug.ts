@@ -36,10 +36,11 @@ export const Shadow = {
 			}
 			finish();
 			return result;
-		} catch (e) /* istanbul ignore next */ {
+		} catch (e) /* c8 ignore start */ {
 			finish();
 			throw e;
 		}
+		/* c8 ignore stop */
 	},
 
 	/** @private */
@@ -193,7 +194,7 @@ export const undo: AstListener = (e, data): void => {
 		case 'text':
 			target.setAttribute('data', data.oldText);
 			break;
-		/* istanbul ignore next */
+		/* c8 ignore next 2 */
 		default:
 			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
 	}

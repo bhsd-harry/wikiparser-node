@@ -306,13 +306,18 @@ export abstract class TableToken extends TrBaseToken {
 				)
 			) {
 				return this;
+			}
 
-				/* NOT FOR BROWSER */
-			} else /* istanbul ignore if */ if (n < 0 || n > nRows || n === nRows && !insert) {
+			/* NOT FOR BROWSER */
+
+			/* c8 ignore next 3 */
+			if (n < 0 || n > nRows || n === nRows && !insert) {
 				throw new RangeError(`The table does not have row ${n}!`);
+			}
 
-				/* NOT FOR BROWSER END */
-			} else if (isRow) {
+			/* NOT FOR BROWSER END */
+
+			if (isRow) {
 				n--;
 			}
 			for (const child of this.childNodes.slice(2)) {
@@ -354,11 +359,12 @@ export abstract class TableToken extends TrBaseToken {
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
 		const previous = this.childNodes[i - 1];
-		/* istanbul ignore else */
 		if (typeof token !== 'string' && token.is<TdToken>('td') && previous?.is<TrToken>('tr')) {
 			Parser.warn('The table cell is inserted into the current row instead.');
 			return previous.insertAt(token);
-		} else if (i > 0 && token instanceof SyntaxToken && token.pattern !== closingPattern) {
+		}
+		/* c8 ignore next 3 */
+		if (i > 0 && token instanceof SyntaxToken && token.pattern !== closingPattern) {
 			throw new SyntaxError(`The closing part of the table is invalid: ${noWrap(token.toString())}`);
 		}
 		return super.insertAt(token, i);
