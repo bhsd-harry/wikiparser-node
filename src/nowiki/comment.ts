@@ -34,7 +34,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 			const rule = 'unclosed-comment',
 				{lintConfig} = Parser,
 				s = lintConfig.getSeverity(rule);
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (!s) {
 				return [];
 			}

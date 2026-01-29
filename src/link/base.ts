@@ -91,7 +91,8 @@ export abstract class LinkBaseToken extends Token {
 	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = value as TokenAttribute<'bracket'>;
-		} else /* istanbul ignore if */ if (key === 'title') {
+		} else if (key === 'title') {
+			/* c8 ignore next */
 			this.#title = value as TokenAttribute<'title'>;
 		} else {
 			super.setAttribute(key, value);

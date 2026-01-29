@@ -83,7 +83,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return (key === 'padding' ? 0 : /* istanbul ignore next */ this[key as keyof this]) as TokenAttribute<T>;
+		return (key === 'padding' ? 0 : /* c8 ignore next */ this[key as keyof this]) as TokenAttribute<T>;
 	}
 
 	/** @private */

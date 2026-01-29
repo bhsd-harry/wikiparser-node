@@ -27,7 +27,7 @@ export const basic = (selector: string): BasicCondition => {
  */
 export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
 	selector = selector.trim();
-	/* istanbul ignore if */
+	/* c8 ignore next 3 */
 	if (!selector) {
 		return (() => true) as unknown as TokenPredicate<T>;
 	}

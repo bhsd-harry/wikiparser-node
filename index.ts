@@ -134,7 +134,7 @@ const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
  */
 const rootRequire = (file: string, dir: string): unknown => require(
 	path.isAbsolute(file)
-		? /* istanbul ignore next */ file
+		? /* c8 ignore next */ file
 		: path.join('..', file.includes('/') ? '' : dir, file),
 );
 
@@ -229,7 +229,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			if (typeof this.config === 'string') {
 				this.config = rootRequire(this.config, 'config') as ConfigData;
 			}
-			/* istanbul ignore if */
+			/* c8 ignore next 3 */
 			if (this.config.doubleUnderscore.length < 3 || !('functionHook' in this.config)) {
 				error(
 					`The schema (${
@@ -237,7 +237,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}) of parser configuration is updated.`,
 				);
 			}
-
 			return this.getConfig();
 		}
 
@@ -336,7 +335,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				return token.parse(maxStage, include);
 
 				/* NOT FOR BROWSER ONLY */
-			} catch (e) /* istanbul ignore next */ {
+			} catch (e) /* c8 ignore start */ {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
@@ -354,6 +353,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				}
 				throw e;
 			}
+			/* c8 ignore stop */
 
 			/* NOT FOR BROWSER ONLY END */
 		});
@@ -386,7 +386,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getWMFSite(url) {
 		const mt = re.exec(url);
-		/* istanbul ignore if */
+		/* c8 ignore next 3 */
 		if (!mt) {
 			throw new RangeError('Not a recognizable WMF site!');
 		}
@@ -394,12 +394,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		return [mt[1]!.toLowerCase() + (type === 'wikipedia' ? 'wiki' : type), mt[0]];
 	},
 
-	/* istanbul ignore next */
+	/* c8 ignore start */
 	/** @implements */
 	async fetchConfig(site, url, user) {
 		const {default: fetchConfig}: typeof import('./bin/config') = require('./bin/config');
 		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},
+	/* c8 ignore stop */
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {

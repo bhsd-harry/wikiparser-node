@@ -23,12 +23,13 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 				})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 				'giu',
 			);
-		} catch /* istanbul ignore next */ {
+		} catch /* c8 ignore start */ {
 			config.regexMagicLinks = new RegExp(
 				String.raw`(^|\W)(?:(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 				'giu',
 			);
 		}
+		/* c8 ignore stop */
 	}
 	return wikitext.replace(config.regexMagicLinks, (m, lead: string, p1: string | undefined) => {
 		let url = lead ? m.slice(lead.length) : m;
