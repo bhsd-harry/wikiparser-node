@@ -269,22 +269,24 @@ const validateConfigValue = (value: unknown): boolean => validateSeverity(value)
  * @throws `RangeError` 未知的规则或无效的值
  */
 const set = (obj: LintRuleConfig, key: LintError.Rule, value?: LintConfigValue): boolean => {
-	/* istanbul ignore if */
+	/* c8 ignore next 6 */
 	if (!rules.includes(key)) {
 		throw new RangeError(`Unknown lint rule: ${key}`);
-	} else /* istanbul ignore if */ if (value === undefined) {
+	}
+	if (value === undefined) {
 		return false;
-	} else if (validateConfigValue(value)) {
+	}
+	if (validateConfigValue(value)) {
 		obj[key] = value;
 		return true;
 	}
-	/* istanbul ignore next */
+	/* c8 ignore next */
 	throw new RangeError(`Invalid lint config for ${key}: ${JSON.stringify(value)}`);
 };
 
 const clone = typeof structuredClone === 'function'
 	? structuredClone
-	: /* istanbul ignore next */ <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+	: /* c8 ignore next */ <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 interface LintRuleConfiguration extends LintRuleConfigurationBase {}
 
@@ -325,11 +327,12 @@ export class LintConfiguration implements LintConfigurationBase {
 	set rules(config: LintRuleConfig | undefined) {
 		this.#rules = new Proxy(new LintRuleConfiguration(config), {
 			set,
-			/* istanbul ignore next */
+			/* c8 ignore start */
 			/** @ignore */
 			deleteProperty(): boolean {
 				return false;
 			},
+			/* c8 ignore stop */
 		}) as LintRuleConfiguration;
 	}
 

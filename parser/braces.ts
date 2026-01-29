@@ -93,7 +93,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					);
 					return `\0${length}${getSymbol(parts[0]!)}\x7F`;
 				} catch (e) {
-					/* istanbul ignore if */
+					/* c8 ignore next 3 */
 					if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
 						throw e;
 					}
@@ -182,12 +182,11 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					);
 					ch = getSymbol(parts![0]![0]!);
 				} catch (e) {
-					/* istanbul ignore else */
-					if (e instanceof SyntaxError && e.message === 'Invalid template name') {
-						skip = true;
-					} else {
+					/* c8 ignore next 3 */
+					if (!(e instanceof SyntaxError && e.message === 'Invalid template name')) {
 						throw e;
 					}
+					skip = true;
 				}
 			}
 			if (!skip) {

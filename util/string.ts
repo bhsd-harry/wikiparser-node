@@ -74,6 +74,7 @@ let decodeHtmlResolved: ((str: string) => string) | undefined;
 export const decodeHtml = (str: string): string => {
 	// eslint-disable-next-line arrow-body-style
 	decodeHtmlResolved ??= (() => {
+		/* c8 ignore next */
 		return decodeHtmlBasic;
 	})();
 	return decodeHtmlResolved(str);

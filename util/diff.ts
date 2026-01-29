@@ -3,14 +3,14 @@ import util from 'util';
 import {spawn} from 'child_process';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
-/* istanbul ignore next */
+export type log = (msg: string, ...args: unknown[]) => void;
+
+/* c8 ignore start */
 process.on('unhandledRejection', e => {
 	console.error(e);
 });
+/* c8 ignore stop */
 
-export type log = (msg: string, ...args: unknown[]) => void;
-
-/* istanbul ignore next */
 /**
  * 将shell命令转化为Promise对象
  * @param command shell指令
@@ -32,6 +32,7 @@ export const cmd = (command: string, args: readonly string[]): Promise<string | 
 	try {
 		shell = spawn(command, args);
 		timer = setTimeout(() => {
+			/* c8 ignore next */
 			shell!.kill('SIGINT');
 		}, 60 * 1e3);
 		let buf = '';
@@ -47,12 +48,13 @@ export const cmd = (command: string, args: readonly string[]): Promise<string | 
 		shell.on('error', () => {
 			r(undefined);
 		});
-	} catch {
+	} catch /* c8 ignore start */ {
 		r(undefined);
 	}
+	/* c8 ignore stop */
 });
 
-/* istanbul ignore next */
+/* c8 ignore start */
 /**
  * 比较两个文件
  * @param oldStr 旧文本
@@ -77,17 +79,20 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 	console.log(stdout?.split('\n').slice(4).join('\n'));
 	await Promise.allSettled([fs.unlink(oldFile), fs.unlink(newFile)]);
 };
+/* c8 ignore stop */
 
-/* istanbul ignore next */
+/* c8 ignore start */
 /** @implements */
 export const error: log = (msg, ...args) => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	console.error(util.styleText?.('red', msg) ?? msg, ...args);
 };
+/* c8 ignore stop */
 
-/* istanbul ignore next */
+/* c8 ignore start */
 /** @implements */
 export const info: log = (msg, ...args) => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	console.info(util.styleText?.('green', msg) ?? msg, ...args);
 };
+/* c8 ignore stop */

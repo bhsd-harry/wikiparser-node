@@ -8,9 +8,6 @@
 /.vscode/
 /.eslintcache*
 /.wikilintcache
-/.markdownlint.json
-/.nyc_output/
-/.cache/
 /wiki/
 /test/*.wiki
 /test/prof*.json

@@ -36,10 +36,11 @@ export const Shadow = {
 			}
 			finish();
 			return result;
-		} catch (e) /* istanbul ignore next */ {
+		} catch (e) /* c8 ignore start */ {
 			finish();
 			throw e;
 		}
+		/* c8 ignore stop */
 	},
 
 	/** @private */
