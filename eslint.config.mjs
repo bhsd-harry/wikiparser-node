@@ -180,6 +180,7 @@ export default extend(
 					version: '>=24.0.0',
 				},
 			],
+			'@typescript-eslint/strict-void-return': 0,
 		},
 	},
 );
