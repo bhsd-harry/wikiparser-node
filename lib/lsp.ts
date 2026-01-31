@@ -1334,6 +1334,7 @@ export class LanguageService implements LanguageServiceBase {
 					const file = path.join(dir, `${hash.digest('hex')}.ly`);
 					fs.writeFileSync(file, score);
 					try {
+						// eslint-disable-next-line @typescript-eslint/strict-void-return
 						await util.promisify(execFile)(this.lilypond, ['-s', '-o', dir, file]);
 						scores.set(score, []);
 					} catch (e) {
