@@ -78,7 +78,7 @@ export abstract class TagToken extends Token {
 				let isVoid = false,
 					isFlexible = false;
 				if (type === 'html') {
-					const {html: [, flexibleTags, voidTags]} = this.getAttribute('config');
+					const [, flexibleTags, voidTags] = this.getAttribute('config').html;
 					isVoid = voidTags.includes(name!);
 					isFlexible = flexibleTags.includes(name!);
 				}

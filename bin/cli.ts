@@ -347,7 +347,12 @@ let minimatch: (file: string, pattern: string) => boolean;
 try {
 	({minimatch} = require('minimatch'));
 } catch {
-	minimatch = path.matchesGlob.bind(path); // eslint-disable-line n/no-unsupported-features/node-builtins
+	/* eslint-disable n/no-unsupported-features/node-builtins */
+	if (typeof path.matchesGlob !== 'function') {
+		exit('Cannot load Node.js package "minimatch"');
+	}
+	minimatch = path.matchesGlob.bind(path);
+	/* eslint-enable n/no-unsupported-features/node-builtins */
 }
 
 (async () => {

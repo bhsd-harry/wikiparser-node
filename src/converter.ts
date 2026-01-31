@@ -54,7 +54,7 @@ export abstract class ConverterToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		const {childNodes: [flags, ...rules]} = this;
+		const [flags, ...rules] = this.childNodes;
 		return `-{${flags.toString(skip)}${flags.length > 0 ? '|' : ''}${
 			rules.map(rule => rule.toString(skip)).join(';')
 		}}-`;
@@ -62,7 +62,7 @@ export abstract class ConverterToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const {childNodes: [flags, ...rules]} = this;
+		const [flags, ...rules] = this.childNodes;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 

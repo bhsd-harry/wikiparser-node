@@ -88,7 +88,7 @@ export abstract class HtmlToken extends TagToken {
 	/** @private */
 	override text(): string {
 		const {closing, selfClosing, name} = this,
-			{html: [,, voidTags]} = this.getAttribute('config');
+			[,, voidTags] = this.getAttribute('config').html;
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : super.text('/');
 		}
@@ -136,7 +136,7 @@ export abstract class HtmlToken extends TagToken {
 				}
 				errors.push(e);
 			}
-			const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
+			const [, flexibleTags, voidTags] = this.getAttribute('config').html,
 				isVoid = voidTags.includes(name),
 				isFlexible = flexibleTags.includes(name),
 				isNormal = !isVoid && !isFlexible;
