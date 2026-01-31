@@ -81,7 +81,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	const source = String.raw`${
 			config.excludes.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
 		}\[\[|-\{(?!\{)`,
-		{parserFunction: [,,, subst]} = config,
+		[,,, subst] = config.parserFunction,
 		stack: BraceExecArrayOrEmpty[] = [],
 		linkStack: string[] = [];
 

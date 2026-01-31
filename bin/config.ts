@@ -163,16 +163,14 @@ export default async (
 			formatversion: '2',
 		},
 		{
-			query: {
-				general: {articlepath, variants, langconversion},
-				magicwords,
-				namespaces,
-				namespacealiases,
-				functionhooks,
-			},
-		} = await (
+			general: {articlepath, variants, langconversion},
+			magicwords,
+			namespaces,
+			namespacealiases,
+			functionhooks,
+		} = (await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
-		).json() as Response;
+		).json() as Response).query;
 	try {
 		eval(m); // eslint-disable-line no-eval
 	} catch (e) {
@@ -208,12 +206,12 @@ export default async (
 		Object.assign(config, {functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw']});
 	}
 	if (!mwConfig.variableIDs) {
-		const {query: {variables}} = await (
+		const {variables} = (await (
 			await fetch(
 				`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`,
 				headers,
 			)
-		).json() as Response;
+		).json() as Response).query;
 		Object.assign(config, {variable: [...new Set([...variables, '='])]});
 	}
 	if ('#choose' in parserFunction[0]) {
