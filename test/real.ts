@@ -8,7 +8,7 @@ import type {Config} from '../base';
 const i18n: Record<string, string> = require('../../i18n/zh-hans');
 wikiparse.setI18N(i18n);
 
-const {argv: [,, site = '']} = process,
+const [,, site = ''] = process.argv,
 	apis = ([
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],

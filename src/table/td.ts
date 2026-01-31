@@ -120,13 +120,13 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		const {childNodes: [syntax, attr, inner]} = this;
+		const [syntax, attr, inner] = this.childNodes;
 		return syntax.toString(skip) + attr.toString(skip) + this.#innerSyntax + inner.toString(skip);
 	}
 
 	/** @private */
 	override text(): string {
-		const {childNodes: [syntax, attr, inner]} = this;
+		const [syntax, attr, inner] = this.childNodes;
 		return syntax.text() + attr.text() + this.#innerSyntax + inner.text();
 	}
 
@@ -210,7 +210,7 @@ export abstract class TdToken extends TableBaseToken {
 	/** @private */
 	override print(): string {
 		PRINT: {
-			const {childNodes: [syntax, attr, inner]} = this;
+			const [syntax, attr, inner] = this.childNodes;
 			return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 		}
 	}
