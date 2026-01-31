@@ -155,7 +155,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param modifier transclusion modifier / 引用修饰符
 	 */
 	setModifier(modifier: string): boolean {
-		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
+		const [,, raw, subst] = this.getAttribute('config').parserFunction,
 			lcModifier = removeComment(modifier).trim();
 		const magicWord = lcModifier.slice(0, -1).toLowerCase(),
 			isRaw = raw.includes(magicWord),

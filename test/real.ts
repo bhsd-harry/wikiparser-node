@@ -2,7 +2,7 @@ import {getPages, reset} from '@bhsd/test-util';
 import {error, info} from '../util/diff';
 import single from './single';
 
-const {argv: [,, site = '']} = process,
+const [,, site = ''] = process.argv,
 	apis = ([
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
