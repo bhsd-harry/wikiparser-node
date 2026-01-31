@@ -94,7 +94,7 @@ export abstract class ConverterToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		const {childNodes: [flags, ...rules]} = this;
+		const [flags, ...rules] = this.childNodes;
 		return `-{${flags.toString(skip)}${flags.length > 0 ? '|' : ''}${
 			rules.map(rule => rule.toString(skip)).join(';')
 		}}-`;
@@ -102,7 +102,7 @@ export abstract class ConverterToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const {childNodes: [flags, ...rules]} = this;
+		const [flags, ...rules] = this.childNodes;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 
@@ -114,7 +114,7 @@ export abstract class ConverterToken extends Token {
 	/** @private */
 	override print(): string {
 		PRINT: {
-			const {childNodes: [flags, ...rules]} = this;
+			const [flags, ...rules] = this.childNodes;
 			return `<span class="wpb-converter">-{${flags.print()}${
 				flags.length > 0 ? '|' : ''
 			}${print(rules, {sep: ';'})}}-</span>`;
@@ -140,7 +140,7 @@ export abstract class ConverterToken extends Token {
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		const flags = this.getEffectiveFlags(),
 			nocc = opt?.nocc,
-			{childNodes: [, ...rules]} = this;
+			[, ...rules] = this.childNodes;
 		if (nocc || flags.has('R') || this.getVariantFlags().size > 0) {
 			return (nocc ? '-{' : '') + html(rules, ';', opt) + (nocc ? '}-' : '');
 		} else if (flags.has('S')) {

@@ -126,7 +126,7 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const {childNodes: [argName, argDefault, ...rest]} = this;
+			const [argName, argDefault, ...rest] = this.childNodes;
 			argName.setAttribute('aIndex', start + 3);
 			const errors = argName.lint(start + 3, re);
 			if (argDefault) {
@@ -272,7 +272,7 @@ export abstract class ArgToken extends Token {
 			this.removeAt(1);
 			return;
 		}
-		const {childNodes: [, oldDefault]} = this,
+		const [, oldDefault] = this.childNodes,
 			root = Parser.parseWithRef(value, this);
 		if (oldDefault) {
 			oldDefault.safeReplaceChildren(root.childNodes);

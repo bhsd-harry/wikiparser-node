@@ -42,7 +42,7 @@ export abstract class CategoryToken extends LinkBaseToken {
 	/** sort key / 分类排序关键字 */
 	get sortkey(): string | undefined {
 		LSP: {
-			const {childNodes: [, child]} = this;
+			const [, child] = this.childNodes;
 			return child && decodeHtml(child.text());
 		}
 	}

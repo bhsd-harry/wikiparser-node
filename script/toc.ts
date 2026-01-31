@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const {argv: [,, filename]} = process;
+const [,, filename] = process.argv;
 if (!filename) {
 	throw new RangeError('请指定文档文件！');
 }

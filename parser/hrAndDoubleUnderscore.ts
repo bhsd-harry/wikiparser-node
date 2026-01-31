@@ -22,7 +22,7 @@ export const parseHrAndDoubleUnderscore = (
 	config: Config,
 	accum: Token[],
 ): string => {
-	const {doubleUnderscore: [insensitive, sensitive, aliases]} = config,
+	const [insensitive, sensitive, aliases] = config.doubleUnderscore,
 		all = [...insensitive, ...sensitive];
 	config.insensitiveDoubleUnderscore ??= new Set(insensitive.filter(isUnderscore));
 	config.sensitiveDoubleUnderscore ??= new Set(sensitive.filter(isUnderscore));

@@ -52,7 +52,7 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 	if (!dt) {
 		return text;
 	}
-	const {html: [normalTags,, voidTags]} = config,
+	const [normalTags,, voidTags] = config.html,
 		fullRegex = /:+|-\{|\0\d+[xq]\x7F/gu;
 	let regex = fullRegex,
 		ex = regex.exec(text),

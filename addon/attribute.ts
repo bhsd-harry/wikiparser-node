@@ -87,7 +87,7 @@ AttributeToken.prototype.css =
 		}
 		const doc = new EmbeddedCSSDocument(this.getRootNode(), lastChild),
 			styleSheet = doc.styleSheet as StyleSheet,
-			{children: [{declarations: {children}}]} = styleSheet,
+			[{declarations: {children}}] = styleSheet.children,
 			declaration = children?.filter(({property}) => property.getText() === key) ?? [];
 		if (value === undefined) {
 			return declaration.at(-1)?.value.getText();

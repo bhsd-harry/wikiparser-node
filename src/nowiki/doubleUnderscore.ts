@@ -44,7 +44,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	constructor(word: string, sensitive: boolean, fullWidth: boolean, config: Config, accum?: Token[]) {
 		super(word, config, accum);
 		const lc = word.toLowerCase(),
-			{doubleUnderscore: [,, iAlias, sAlias]} = config;
+			[,, iAlias, sAlias] = config.doubleUnderscore;
 		this.setAttribute('name', (sensitive ? sAlias?.[word]?.toLowerCase() : iAlias?.[lc]) ?? lc);
 		this.#fullWidth = fullWidth;
 

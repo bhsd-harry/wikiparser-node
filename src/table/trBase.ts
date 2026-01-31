@@ -111,7 +111,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 
 	/** 修复简单的表格语法错误 */
 	#correct(): void {
-		const {childNodes: [,, child]} = this;
+		const [,, child] = this.childNodes;
 		if (child?.constructor === Token) {
 			const {firstChild} = child;
 			if (firstChild?.type !== 'text') {

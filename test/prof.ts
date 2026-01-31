@@ -15,7 +15,7 @@ register(pathToFileURL(path.join(__dirname, 'hooks.js')));
 /* NOT FOR BROWSER ONLY END */
 
 const content = readFileSync('test/page.wiki', 'utf8'),
-	{argv: [,, count, method = '']} = process;
+	[,, count, method = ''] = process.argv;
 
 (async () => {
 	/* NOT FOR BROWSER ONLY */

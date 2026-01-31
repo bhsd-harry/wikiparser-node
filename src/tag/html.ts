@@ -95,7 +95,7 @@ export abstract class HtmlToken extends TagToken {
 		} else if (this.closing) {
 			throw new Error('This is a closing tag!');
 		}
-		const {html: [tags]} = this.getAttribute('config');
+		const [tags] = this.getAttribute('config').html;
 		if (tags.includes(this.name)) {
 			throw new Error(`<${this.name}> tag cannot be self-closing!`);
 		}
@@ -113,7 +113,7 @@ export abstract class HtmlToken extends TagToken {
 			if (this.#selfClosing) {
 				throw new Error('This is a self-closing tag!');
 			}
-			const {html: [,, tags]} = this.getAttribute('config');
+			const [,, tags] = this.getAttribute('config').html;
 			if (tags.includes(this.name)) {
 				throw new Error('This is a void tag!');
 			}
@@ -145,7 +145,7 @@ export abstract class HtmlToken extends TagToken {
 	/** @private */
 	override text(): string {
 		const {closing, selfClosing, name} = this,
-			{html: [,, voidTags]} = this.getAttribute('config');
+			[,, voidTags] = this.getAttribute('config').html;
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : super.text('/');
 		}
@@ -193,7 +193,7 @@ export abstract class HtmlToken extends TagToken {
 				}
 				errors.push(e);
 			}
-			const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
+			const [, flexibleTags, voidTags] = this.getAttribute('config').html,
 				isVoid = voidTags.includes(name),
 				isFlexible = flexibleTags.includes(name),
 				isNormal = !isVoid && !isFlexible;
@@ -319,7 +319,7 @@ export abstract class HtmlToken extends TagToken {
 	 * @throws `Error` 无法修复无效自封闭标签
 	 */
 	fix(): void {
-		const {html: [normalTags]} = this.getAttribute('config'),
+		const [normalTags] = this.getAttribute('config').html,
 			{parentNode, name: tagName, firstChild, selfClosing} = this;
 		if (!parentNode || !selfClosing || !normalTags.includes(tagName)) {
 			return;
@@ -347,7 +347,7 @@ export abstract class HtmlToken extends TagToken {
 	@cached()
 	override toHtmlInternal(): string {
 		const {closing, name} = this,
-			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config'),
+			[, selfClosingTags, voidTags] = this.getAttribute('config').html,
 			tag = name + (closing ? '' : super.toHtmlInternal());
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : `<${tag}>`;
@@ -375,7 +375,7 @@ export abstract class HtmlToken extends TagToken {
 	/** @private */
 	override getRange(): AstRange | undefined {
 		const {selfClosing, name} = this,
-			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config');
+			[, selfClosingTags, voidTags] = this.getAttribute('config').html;
 		if (voidTags.includes(name) || selfClosing && selfClosingTags.includes(name)) {
 			return undefined;
 		}
