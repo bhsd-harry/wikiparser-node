@@ -4,7 +4,7 @@ import type {CodeJar as Jar, CodeJarAsync, codejar as f} from './typings';
 const codejar = (async (): Promise<f> => {
 	const {CodeJar}: {CodeJar: typeof Jar} = 'CodeJar' in globalThis
 		? globalThis
-		: await import('https://testingcf.jsdelivr.net/npm/codejar-async');
+		: await import('https://fastly.jsdelivr.net/npm/codejar-async');
 
 	return (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean): CodeJarAsync => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {

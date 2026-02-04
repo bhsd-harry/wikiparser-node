@@ -23,13 +23,13 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP,LINT --outfile=build/bundle.js",
-		"bundle:es8": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --drop-labels=LSP,PRINT --outfile=build/bundle-es8.js",
-		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --outfile=build/bundle-lsp.js",
+		"bundle:core": "esbuild index.ts --charset=utf8 --bundle --format=cjs --drop-labels=LSP,LINT --outfile=build/bundle.js",
+		"bundle:es8": "esbuild index.ts --charset=utf8 --bundle --format=cjs --drop-labels=LSP,PRINT --outfile=build/bundle-es8.js",
+		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --format=cjs --outfile=build/bundle-lsp.js",
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
-		"build:core": "npm run bundle:core && esbuild build/bundle.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
-		"build:es8": "npm run bundle:es8 && esbuild build/bundle-es8.js --charset=utf8 --minify --target=es2017 --format=iife --outfile=bundle/bundle-es8.min.js && eslint --no-config-lookup -c eslint.es8.mjs bundle/bundle-es8.min.js",
-		"build:lsp": "npm run bundle:lsp && esbuild build/bundle-lsp.js --charset=utf8 --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-lsp.min.js",
+		"build:core": "npm run bundle:core && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --drop-labels=LSP,LINT --sourcemap --outfile=bundle/bundle.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
+		"build:es8": "npm run bundle:es8 && esbuild index.ts --charset=utf8 --bundle --minify --target=es2017 --format=iife --drop-labels=LSP,PRINT --outfile=bundle/bundle-es8.min.js && eslint --no-config-lookup -c eslint.es8.mjs bundle/bundle-es8.min.js",
+		"build:lsp": "npm run bundle:lsp && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-lsp.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es8 && npm run build:lsp && npm run build:test && npm run build:css",
@@ -57,7 +57,7 @@
 	"devDependencies": {
 		"@bhsd/cm-util": "^0.1.0",
 		"@bhsd/code-standard": "^2.0.0",
-		"@bhsd/codemirror-mediawiki": "^3.10.1",
+		"@bhsd/codemirror-mediawiki": "^3.10.2",
 		"@bhsd/test-util": "^0.3.0",
 		"@codemirror/lint": "^6.9.3",
 		"@stylistic/eslint-plugin": "^5.7.1",

@@ -2,7 +2,7 @@
 const codejar = (async () => {
     const { CodeJar } = 'CodeJar' in globalThis
         ? globalThis
-        : await import('https://testingcf.jsdelivr.net/npm/codejar-async');
+        : await import('https://fastly.jsdelivr.net/npm/codejar-async');
     return (textbox, include, linenums) => {
         var _a;
         if (!(textbox instanceof HTMLTextAreaElement)) {

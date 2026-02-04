@@ -2,7 +2,7 @@
 var _a;
 const version = '1.35.0', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
-    : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
+    : `https://fastly.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle-lsp.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map(), last = { include: true };
