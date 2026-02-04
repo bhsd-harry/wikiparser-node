@@ -2,8 +2,8 @@
 
 rm -rf dist/
 tsc && \
-npm run bundle:core && \
-esbuild build/bundle-template.js --charset=utf8 --minify --target=es2017 --sourcemap --outfile=bundle/bundle.min.js && \
+esbuild index.ts --charset=utf8 --bundle --format=cjs --outfile=build/bundle-template.js && \
+esbuild index.ts --charset=utf8 --bundle --minify --target=es2017 --format=cjs --sourcemap --outfile=bundle/bundle.min.js && \
 eslint --no-config-lookup -c eslint.es8.mjs bundle/bundle.min.js
 if [[ $? -eq 0 ]]
 then
