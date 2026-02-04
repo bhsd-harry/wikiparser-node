@@ -225,7 +225,11 @@ export class AstText extends AstNode {
 				let {index, 0: error} = mt;
 				const [, tag, prefix] = mt,
 					lbrackInExtLinkText = error === '[' && type === 'ext-link-text';
-				if (
+				if (prefix && prefix !== ']') {
+					const {length} = prefix;
+					index += length;
+					error = error.slice(length);
+				} else if (
 					error.startsWith('<') && !tags.has(tag!.toLowerCase())
 					|| lbrackInExtLinkText && (
 						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
@@ -234,10 +238,6 @@ export class AstText extends AstNode {
 					)
 				) {
 					continue;
-				} else if (prefix && prefix !== ']') {
-					const {length} = prefix;
-					index += length;
-					error = error.slice(length);
 				} else if (error.startsWith('\n==')) {
 					index++;
 					error = error.slice(1);
