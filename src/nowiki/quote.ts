@@ -85,7 +85,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 							startCol: endCol - length,
 							endCol,
 						};
-					if (computeEditInfo) {
+					if (computeEditInfo && bold) {
 						eNew.suggestions = [
 							fixByEscape(startIndex, '&apos;', length),
 							fixByRemove(eNew),
