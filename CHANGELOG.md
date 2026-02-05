@@ -11,6 +11,7 @@
 **Fixed**
 
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#lint) when there are both `<` and unmatched `]`
+- [`QuoteToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#lint) stops offering suggestions for [lonely apostrophes](https://github.com/bhsd-harry/wikiparser-node/wiki/lonely-apos) next to italic apostrophes which can be ambiguous
 
 ## v1.35.0
 
