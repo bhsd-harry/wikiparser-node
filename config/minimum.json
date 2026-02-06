@@ -184,6 +184,7 @@
 			"#interwikilink": "interwikilink",
 			"#interlanguagelink": "interlanguagelink",
 			"#contentmodel": "contentmodel",
+			"#isbn": "isbn",
 			"#timef": "timef",
 			"#timefl": "timefl"
 		},
