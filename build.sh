@@ -9,7 +9,7 @@ then
 	rm dist/internal.js dist/[abprtu]*/*.d.ts dist/script/*.d.ts
 	grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\s+\/\*\* @private/,+1d'
 	grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\/util\//d'
-	grep -rl --include='*.d.ts' '/parser/' dist/ | xargs bash sed.sh -i -E '/^import .+\/parser\//d'
+	# grep -rl --include='*.d.ts' '/parser/' dist/ | xargs bash sed.sh -i -E '/^import .+\/parser\//d'
 	bash sed.sh -i -E 's/abstract (lint|print|text)\b/\1/' dist/lib/node.d.ts
 	node dist/script/declaration.js # dist/src/**/*.d.ts
 	bash sed.sh -i '/export declare const /,$d' dist/mixin/*.d.ts
