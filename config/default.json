@@ -427,6 +427,7 @@
 		"revisionuser",
 		"cascadingsources",
 		"namespace",
+		"isbn",
 		"int",
 		"special",
 		"speciale",
@@ -590,6 +591,7 @@
 		"contentmodel",
 		"dir",
 		"language",
+		"isbn",
 		"numberofwikis",
 		"pendingchangelevel",
 		"noexternallanglinks",
@@ -1262,6 +1264,7 @@
 			"#interwikilink": "interwikilink",
 			"#interlanguagelink": "interlanguagelink",
 			"#contentmodel": "contentmodel",
+			"#isbn": "isbn",
 			"#timef": "timef",
 			"#timefl": "timefl",
 			"USERLANGUAGE": "userlanguage"
