@@ -786,6 +786,19 @@
 		},
 		{
 			"aliases": [
+				"#isbn"
+			],
+			"signatures": [
+				[
+					{
+						"label": "ISBN number"
+					}
+				]
+			],
+			"description": "Create a link to [Special:Booksources](https://www.mediawiki.org/wiki/Special:Booksources) with the given ISBN number. This provides the same functionality as the deprecated [ISBN magic link](https://en.wikipedia.org/wiki/Help:Magic_links)."
+		},
+		{
+			"aliases": [
 				"#special"
 			],
 			"signatures": [
