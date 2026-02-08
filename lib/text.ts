@@ -37,9 +37,9 @@ const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|\n={2,}`
 	)();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/https?[:/]\/+|(?:rfc|pmid)(?=[-:：]?\s*\d)|isbn(?=[-:：]?\s*(?:\d(?:\s*|-)){6})/giu;
+/\bhttps?[:/]\/+|\b(?:rfc|pmid)(?=[-:：]?\s*\d)|\bisbn(?=[-:：]?\s*(?:\d(?:\s*|-)){6})/giu;
 const errorSyntax = /* #__PURE__ */ (() => new RegExp(
-	String.raw`${source}|https?[:/]/+|(?:rfc|pmid)(?=[-:：]?${sp}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
+	String.raw`${source}|\bhttps?[:/]/+|\b(?:rfc|pmid)(?=[-:：]?${sp}\d)|\bisbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
 	'giu',
 ))();
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions

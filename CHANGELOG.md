@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.35.2
+
+*2026-02-23*
+
+**Fixed**
+
+- The [`lonely-http`](https://github.com/bhsd-harry/wikiparser-node/wiki/lonely-http) rule should ignore `http://`, `RFC`, `PMID` or `ISBN` following word characters
+
 ## v1.35.1
 
 *2026-02-08*
