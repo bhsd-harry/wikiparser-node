@@ -18,7 +18,7 @@ const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|\n={2,}`
 	)();
 const errorSyntax = /* #__PURE__ */ (() => new RegExp(
-	String.raw`${source}|https?[:/]/+|(?:rfc|pmid)(?=[-:：]?${sp}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
+	String.raw`${source}|\bhttps?[:/]/+|\b(?:rfc|pmid)(?=[-:：]?${sp}\d)|\bisbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
 	'giu',
 ))();
 const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
