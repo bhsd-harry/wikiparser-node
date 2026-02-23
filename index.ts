@@ -277,12 +277,19 @@ const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
  * 从根路径require
  * @param file 文件名
  * @param dir 子路径
+ * @throws {RangeError} 仅支持JSON文件
  */
-const rootRequire = (file: string, dir: string): unknown => require(
-	path.isAbsolute(file)
-		? /* c8 ignore next */ file
-		: path.join('..', file.includes('/') ? '' : dir, file),
-);
+const rootRequire = (file: string, dir: string): unknown => {
+	const fullPath = require.resolve(
+		path.isAbsolute(file)
+			? /* c8 ignore next */ file
+			: path.join('..', file.includes('/') ? '' : dir, file),
+	);
+	if (!fullPath.endsWith('.json')) {
+		throw new RangeError('Only JSON files are supported!');
+	}
+	return require(fullPath);
+};
 
 /* NOT FOR BROWSER ONLY END */
 

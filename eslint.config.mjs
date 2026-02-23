@@ -75,6 +75,12 @@ export default extend(
 			],
 			'no-unused-labels': 0,
 			'prefer-object-has-own': 0,
+			'regexp/prefer-lookaround': [
+				2,
+				{
+					lookbehind: false,
+				},
+			],
 			'@stylistic/max-len': [
 				2,
 				{
