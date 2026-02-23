@@ -52,15 +52,15 @@
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
-		"stylelint": "^17.3.0"
+		"stylelint": "^17.4.0"
 	},
 	"devDependencies": {
 		"@bhsd/cm-util": "^0.1.0",
-		"@bhsd/code-standard": "^2.0.1",
-		"@bhsd/codemirror-mediawiki": "^3.11.1",
+		"@bhsd/code-standard": "^2.1.0",
+		"@bhsd/codemirror-mediawiki": "^3.11.2",
 		"@bhsd/test-util": "^0.3.0",
 		"@codemirror/lint": "^6.9.4",
-		"@stylistic/eslint-plugin": "^5.8.0",
+		"@stylistic/eslint-plugin": "^5.9.0",
 		"@stylistic/stylelint-plugin": "^5.0.1",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.10.13",
@@ -73,11 +73,11 @@
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.27.3",
 		"eslint": "^9.39.3",
-		"eslint-plugin-es-x": "^9.4.0",
+		"eslint-plugin-es-x": "^9.5.0",
 		"eslint-plugin-eslint-comments": "^3.2.0",
 		"eslint-plugin-jsdoc": "^62.7.0",
-		"eslint-plugin-jsonc": "^2.21.1",
-		"eslint-plugin-n": "^17.23.2",
+		"eslint-plugin-jsonc": "^3.1.0",
+		"eslint-plugin-n": "^17.24.0",
 		"eslint-plugin-promise": "^7.2.1",
 		"eslint-plugin-regexp": "^3.0.0",
 		"eslint-plugin-unicorn": "^63.0.0",
@@ -85,9 +85,9 @@
 		"mocha": "^11.7.5",
 		"monaco-editor": "^0.55.1",
 		"stylelint-config-recommended": "^18.0.0",
-		"stylelint-plugin-use-baseline": "^1.2.2",
+		"stylelint-plugin-use-baseline": "^1.2.4",
 		"typescript": "^5.9.3",
-		"v8r": "^5.1.0"
+		"v8r": "^6.0.0"
 	},
 	"engines": {
 		"node": ">=20.19.0"
