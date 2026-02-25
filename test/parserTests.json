@@ -479,6 +479,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">[[ Foo\nB\nC]]</span></span>}}</span></span>"
 	},
 	{
+		"desc": "Wikilinks with backslashes should be urlencoded in href (T415315)",
+		"wikitext": "[[foo\\bar]]",
+		"html": "<p><a href=\"/index.php?title=Foo%5Cbar&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Foo\\bar (page does not exist)\">foo\\bar</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo%5Cbar\" title=\"Foo\\bar\">foo\\bar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo\\bar</span>]]</span></span>"
+	},
+	{
 		"desc": "Broken templates",
 		"wikitext": "{{1x|[[Foo|}}]]\n\n[[Foo|{{1x|]]}}",
 		"html": "<p>{{1x|<a href=\"/wiki/Foo\" title=\"Foo\">}}</a>\n</p><p>[[Foo|]]\n</p>",
@@ -5541,6 +5548,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">xmlns:dct</span>=\"<span class=\"wpb-attr-value\">http://purl.org/dc/terms/</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">property</span>=\"<span class=\"wpb-attr-value\">dct:title</span>\"</span></span>&gt;</span>MediaWiki<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
 	},
 	{
+		"desc": "Serializer shouldn't blindly user dataParsoid.srcTagName",
+		"wikitext": "<FONT class=\"x\">boo</FONT>\n\n<span class=\"x\">boo</span>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;FONT<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;</span>boo<span class=\"wpb-html\">&lt;/FONT&gt;</span>\n\n<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;</span>boo<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
+	},
+	{
 		"desc": "Ignore rel attribute in a-tags during serialization to url-links",
 		"wikitext": "http://en.wikipedia.org/wiki/Foobar\nhttp://en.wikipedia.org/wiki/Foobar\nhttp://en.wikipedia.org/wiki/Foobar",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://en.wikipedia.org/wiki/Foobar</span>\n<span class=\"wpb-free-ext-link\">http://en.wikipedia.org/wiki/Foobar</span>\n<span class=\"wpb-free-ext-link\">http://en.wikipedia.org/wiki/Foobar</span></span>"
@@ -5729,6 +5741,21 @@
 		"desc": "7. T194083 Regression test: Manual edit test to ensure nested diff markers aren't inserted",
 		"wikitext": "<div>placeholder</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>placeholder<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "8. T409669 Regression test: Manual edit test to move format tags outside wikilinks with spaces in target",
+		"wikitext": "[[Foo bar baz]]",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo bar baz</span>]]</span></span>"
+	},
+	{
+		"desc": "9. T409669 Regression test: Don't move out format tags when originating as piped",
+		"wikitext": "[[Foo bar baz|''Foo bar baz'']]",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo bar baz</span>|<span class=\"wpb-link-text\"><span class=\"wpb-quote\">''</span>Foo bar baz<span class=\"wpb-quote\">''</span></span>]]</span></span>"
+	},
+	{
+		"desc": "10. T409669 Regression test: Don't move out format tags when originating as piped unless in edited content",
+		"wikitext": "[[Foo bar baz|Something else]]",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo bar baz</span>|<span class=\"wpb-link-text\">Something else</span>]]</span></span>"
 	},
 	{
 		"desc": "T192913 Regression test: 1. html2wt of links should not trip on parser functions found in target",
@@ -7188,8 +7215,6 @@
 	{
 		"desc": "<ref> in an ignored caption (T235656)",
 		"wikitext": "[[File:Foobar.jpg|frameless|ignored caption with a ref<ref>boo</ref>]]\n\n<references />",
-		"html": "<p><span class=\"mw-default-size\" typeof=\"mw:File/Frameless\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"ignored caption with a ref[1]\"><img alt=\"ignored caption with a ref[1]\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a></span>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite&#95;note-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-1\">↑</a></span> <span class=\"reference-text\">boo</span>\n</li>\n</ol></div>",
-		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"ignored caption with a ref\"><img alt=\"ignored caption with a ref\" src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a></span>\n</p><p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">frameless</span>|<span class=\"wpb-image-caption\">ignored caption with a ref<span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">boo</span>&lt;/ref&gt;</span></span>]]</span>\n\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -7202,8 +7227,6 @@
 	{
 		"desc": "<references> after <gallery> (bug 6164)",
 		"wikitext": "<ref>one</ref>\n\n<gallery>Image:Foobar.jpg</gallery>\n\n<references />",
-		"html": "<p><sup id=\"cite&#95;ref-1\" class=\"reference\"><a href=\"#cite_note-1\"><span class=\"cite-bracket\">&#91;</span>1<span class=\"cite-bracket\">&#93;</span></a></sup>\n</p>\n<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"></div>\n\t\t</li>\n</ul>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite&#95;note-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-1\">↑</a></span> <span class=\"reference-text\">one</span>\n</li>\n</ol></div>",
-		"render": "<p><br>\n</p>\n<ul class=\"gallery\">\n\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px\"><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg?width=120&height=120\" decoding=\"async\" class=\"mw-file-element\" width=\"120\" height=\"120\"></a></span></div>\n\t\t<div class=\"gallerytext\"></div>\n\t</li>\n</ul>\n<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">one</span>&lt;/ref&gt;</span>\n\n<span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">Image:Foobar.jpg</span></span></span>&lt;/gallery&gt;</span>\n\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -8034,8 +8057,6 @@
 	{
 		"desc": "T93580: 1. Templated <ref> inside block images",
 		"wikitext": "[[File:Foobar.jpg|thumb|Caption with templated ref: {{1x|<ref>foo</ref>}}]]\n\n<references />",
-		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>Caption with templated ref: <sup id=\"cite&#95;ref-1\" class=\"reference\"><a href=\"#cite_note-1\"><span class=\"cite-bracket\">&#91;</span>1<span class=\"cite-bracket\">&#93;</span></a></sup></figcaption></figure>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite&#95;note-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-1\">↑</a></span> <span class=\"reference-text\">foo</span>\n</li>\n</ol></div>",
-		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption>Caption with templated ref: </figcaption></figure>\n<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">Caption with templated ref: <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/ref&gt;</span></span></span>}}</span></span>]]</span>\n\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -11426,21 +11447,28 @@
 	{
 		"desc": "Adding explicit conversion rule for title (T flag)",
 		"wikitext": "Should be stripped-{T|zh:China;zh-tw:Taiwan}-!\n\nTaiwan is China.",
-		"html": "Taiwan\n<p>Should be stripped!\n</p><p>Taiwan is China.\n</p>",
+		"html": "<p>Should be stripped!\n</p><p>Taiwan is China.\n</p>",
 		"render": "<p>Should be stripped!\n</p><p>Taiwan is China.\n</p>",
 		"print": "<span class=\"wpb-root\">Should be stripped<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>!\n\nTaiwan is China.</span>"
 	},
 	{
 		"desc": "Code coverage: T combined with H flag",
 		"wikitext": "Should be stripped-{T;H|zh:China; zh-tw:Taiwan}-!\n\nTaiwan is China.",
-		"html": "Taiwan\n<p>Should be stripped!\n</p><p>Taiwan is Taiwan.\n</p>",
+		"html": "<p>Should be stripped!\n</p><p>Taiwan is Taiwan.\n</p>",
 		"render": "<p>Should be stripped!\n</p><p>Taiwan is China.\n</p>",
 		"print": "<span class=\"wpb-root\">Should be stripped<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span>;<span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>!\n\nTaiwan is China.</span>"
 	},
 	{
 		"desc": "Code coverage: T with no variants",
 		"wikitext": "-{H|zh:China; zh-tw:Taiwan}-\nTaiwan is China.-{T|Taiwan is China}-",
-		"html": "Taiwan is China\n<p>\nTaiwan is Taiwan.\n</p>",
+		"html": "<p>\nTaiwan is Taiwan.\n</p>",
+		"render": "<p>Taiwan is China.\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>\nTaiwan is China.<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Taiwan is China</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Code coverage: T with no variants (default variant)",
+		"wikitext": "-{H|zh:China; zh-tw:Taiwan}-\nTaiwan is China.-{T|Taiwan is China}-",
+		"html": "<p>\nTaiwan is China.\n</p>",
 		"render": "<p>Taiwan is China.\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>\nTaiwan is China.<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Taiwan is China</span></span>}-</span></span>"
 	},
@@ -11475,49 +11503,49 @@
 	{
 		"desc": "Testing that changing the language variant here in the tests actually works",
 		"wikitext": "Should be stripped-{T|zh:China; zh-tw:Taiwan}-!",
-		"html": "China\n<p>Should be stripped!\n</p>",
+		"html": "<p>Should be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\">Should be stripped<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>!</span>"
 	},
 	{
 		"desc": "Title with HTML",
 		"wikitext": "-{T|zh:Title <i style=\"color:red\">with</i> HTML&amp;Entities}-\nShould be stripped!",
-		"html": "Title <i style=\"color:red\">with</i> HTML&amp;Entities\n<p>\nShould be stripped!\n</p>",
+		"html": "<p>\nShould be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Title <span class=\"wpb-html\">&lt;i<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:red</span>\"</span></span>&gt;</span>with<span class=\"wpb-html\">&lt;/i&gt;</span> HTML&amp;amp;Entities</span></span>}-</span>\nShould be stripped!</span>"
 	},
 	{
 		"desc": "Title with Wiki syntax",
 		"wikitext": "-{T|zh:Title ''with'' Wiki's s&uuml;ntax&copy}-\nShould be stripped!",
-		"html": "Title <i>with</i> Wiki's süntax&amp;copy\n<p>\nShould be stripped!\n</p>",
+		"html": "<p>\nShould be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Title <span class=\"wpb-quote\">''</span>with<span class=\"wpb-quote\">''</span> Wiki's s&amp;uuml;ntax&amp;copy</span></span>}-</span>\nShould be stripped!</span>"
 	},
 	{
 		"desc": "Title with JavaScript injection",
 		"wikitext": "-{T|zh:Title <i onclick=\"alert(42)\">click me</i> <script>alert(43)</script>}-\nShould be stripped!",
-		"html": "Title <i>click me</i> &lt;script&gt;alert(43)&lt;/script&gt;\n<p>\nShould be stripped!\n</p>",
+		"html": "<p>\nShould be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Title <span class=\"wpb-html\">&lt;i<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr wpb-invalid\"><span class=\"wpb-attr-key\">onclick</span>=\"<span class=\"wpb-attr-value\">alert(42)</span>\"</span></span>&gt;</span>click me<span class=\"wpb-html\">&lt;/i&gt;</span> &lt;script&gt;alert(43)&lt;/script&gt;</span></span>}-</span>\nShould be stripped!</span>"
 	},
 	{
 		"desc": "Test 1 from T298401/T67747",
 		"wikitext": "-{T|zh:Title <script>a</script>&amp;<i>b</i>}-\nShould be stripped!",
-		"html": "Title &lt;script&gt;a&lt;/script&gt;&amp;<i>b</i>\n<p>\nShould be stripped!\n</p>",
+		"html": "<p>\nShould be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Title &lt;script&gt;a&lt;/script&gt;&amp;amp;<span class=\"wpb-html\">&lt;i&gt;</span>b<span class=\"wpb-html\">&lt;/i&gt;</span></span></span>}-</span>\nShould be stripped!</span>"
 	},
 	{
 		"desc": "Test 2 from T298401/T67747",
 		"wikitext": "-{T|zh:Title <code style=\"display:none\">}-\nShould be stripped!",
-		"html": "Title <code style=\"display:none\"></code>\n<p>\nShould be stripped!\n</p>",
+		"html": "<p>\nShould be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Title <span class=\"wpb-html\">&lt;code<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">display:none</span>\"</span></span>&gt;</span></span></span>}-</span>\nShould be stripped!</span>"
 	},
 	{
 		"desc": "Test 3 from T298401/T67747",
 		"wikitext": "-{T|zh:Title <b>Foo bar<b>}-\nShould be stripped!",
-		"html": "Title <b>Foo bar<b></b></b>\n<p>\nShould be stripped!\n</p>",
+		"html": "<p>\nShould be stripped!\n</p>",
 		"render": "<p>Should be stripped!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Title <span class=\"wpb-html\">&lt;b&gt;</span>Foo bar<span class=\"wpb-html\">&lt;b&gt;</span></span></span>}-</span>\nShould be stripped!</span>"
 	},
@@ -11529,7 +11557,7 @@
 	{
 		"desc": "T26072: more test on conversion rule for title",
 		"wikitext": "This should be stripped-{T|zh:China; zh-tw:Taiwan}-!\n\nThis won't take interferes with the title rule-{H|zh:Beijing; zh-tw:Taipei}-.",
-		"html": "Taiwan\n<p>This should be stripped!\n</p><p>This won't take interferes with the title rule.\n</p>",
+		"html": "<p>This should be stripped!\n</p><p>This won't take interferes with the title rule.\n</p>",
 		"render": "<p>This should be stripped!\n</p><p>This won't take interferes with the title rule.\n</p>",
 		"print": "<span class=\"wpb-root\">This should be stripped<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>!\n\nThis won't take interferes with the title rule<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">Beijing</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taipei</span></span>}-</span>.</span>"
 	},
@@ -11537,7 +11565,7 @@
 		"desc": "Partly disable title conversion if variant == main language code",
 		"wikitext": "-{T|zh-cn:CN;zh-tw:TW}-",
 		"title": "ZH",
-		"html": "<span class=\"mw-page-title-main\">ZH</span>\n<p class=\"mw-empty-elt\">\n</p>",
+		"html": "<p class=\"mw-empty-elt\">\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">CN</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">TW</span></span>}-</span></span>"
 	},
@@ -11545,7 +11573,7 @@
 		"desc": "Partly disable title conversion if variant == main language code, more",
 		"wikitext": "-{T|TW}-",
 		"title": "ZH",
-		"html": "<span class=\"mw-page-title-main\">ZH</span>\n<p class=\"mw-empty-elt\">\n</p>",
+		"html": "<p class=\"mw-empty-elt\">\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">T</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">TW</span></span>}-</span></span>"
 	},
@@ -11681,10 +11709,10 @@
 	},
 	{
 		"desc": "T153135: Nested language converter markup in definition list (code coverage)",
-		"wikitext": ";-{|zh-cn:AAA -{zh-hans|foo:bar}- -{R|bat:baz}-}-:def",
+		"wikitext": ";-{zh-cn:AAA -{zh-hans|foo:bar}- -{R|bat:baz}-}-:def",
 		"html": "<dl><dt>AAA foo:bar bat:baz</dt>\n<dd>def</dd></dl>",
 		"render": "<dl><dt>AAA foo:bar bat:baz</dt>\n<dd>def</dd></dl>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-converter\">-{|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">AAA <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo:bar</span></span>}-</span> <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bat:baz</span></span>}-</span></span></span>}-</span><span class=\"wpb-dd\">:</span>def</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">AAA <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo:bar</span></span>}-</span> <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bat:baz</span></span>}-</span></span></span>}-</span><span class=\"wpb-dd\">:</span>def</span>"
 	},
 	{
 		"desc": "Language converter tricky html2wt cases (5)",
@@ -11786,6 +11814,37 @@
 		"desc": "T302678: Serialize empty twoway",
 		"wikitext": "-{H|}-",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|}-</span></span>"
+	},
+	{
+		"desc": "Two-way rules with images",
+		"wikitext": "-{zh-tw:[[File:Foobar.jpg|thumb|tw]]; zh-hk:[[File:Foobar.jpg|thumb|hk]]; zh-cn:[[File:Foobar.jpg|thumb|cn]]}-",
+		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>tw</figcaption></figure>",
+		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption>tw</figcaption></figure>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">tw</span>]]</span></span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-hk</span>:<span class=\"wpb-converter-rule-to\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">hk</span>]]</span></span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-cn</span>:<span class=\"wpb-converter-rule-to\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">cn</span>]]</span></span></span>}-</span></span>"
+	},
+	{
+		"desc": "Embedded new lines",
+		"wikitext": "-{zh-tw:* foo;\nzh-cn:* bar}-",
+		"html": "<p>* foo\n</p>",
+		"render": "<p>* foo\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">* foo</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">\nzh-cn</span>:<span class=\"wpb-converter-rule-to\">* bar</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Language variant with empty flag section",
+		"wikitext": "This is -{|a test}-",
+		"html": "<p>This is a test\n</p>",
+		"render": "<p>This is a test\n</p>",
+		"print": "<span class=\"wpb-root\">This is <span class=\"wpb-converter\">-{|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">a test</span></span>}-</span></span>"
+	},
+	{
+		"desc": "html2wt of language variant text that could be confused for a flag",
+		"wikitext": "-{R|R|R}-",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">R|R</span></span>}-</span></span>"
+	},
+	{
+		"desc": "Don't crash if there are no possible variants of a redlink",
+		"wikitext": "[[This is a red link]]",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">This is a red link</span>]]</span></span>"
 	},
 	{
 		"desc": "langParserTests2"
@@ -12075,10 +12134,10 @@
 	},
 	{
 		"desc": "Localized language names",
-		"wikitext": "-{N|zh-cn}-\n\n-{N|zh-tw}-\n\n-{N|sr-ec}-",
+		"wikitext": "-{N|zh-cn}-\n\n-{N|zh-tw}-\n\n-{N|sr-Cyrl}-",
 		"html": "<p>大陆\n</p><p>臺灣\n</p><p>српски (ћирилица)\n</p>",
 		"render": "<p><br>\n</p><p><br>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">zh-cn</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">zh-tw</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">sr-ec</span></span>}-</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">zh-cn</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">zh-tw</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">N</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">sr-Cyrl</span></span>}-</span></span>"
 	},
 	{
 		"desc": "Only consider certain variants for conversion (zh)",
@@ -12359,6 +12418,13 @@
 		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
 		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 822</span>\nRFC\n822</span>"
+	},
+	{
+		"desc": "Magic links: ISBN using parser function syntax (T413375)",
+		"wikitext": "{{#isbn:0-306-40615-2}}",
+		"html": "<p><a href=\"/wiki/Special:BookSources/0306406152\" class=\"internal mw-magiclink-isbn\">ISBN 0-306-40615-2</a>\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#isbn</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">0-306-40615-2</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Magic links: ISBN (T3937)",
@@ -14418,10 +14484,10 @@
 	},
 	{
 		"desc": "T146305: Don't break image parsing if nested language converter markup is in the caption.",
-		"wikitext": "[[File:Foobar.jpg|thumb|-{|zh-cn:blog (hk: -{zh-hans|WEBJOURNAL}-, tw: -{zh-hans|WEBLOG}-)}-]]",
+		"wikitext": "[[File:Foobar.jpg|thumb|-{zh-cn:blog (hk: -{zh-hans|WEBJOURNAL}-, tw: -{zh-hans|WEBLOG}-)}-]]",
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>blog (hk: WEBJOURNAL, tw: WEBLOG)</figcaption></figure>",
 		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption>blog (hk: WEBJOURNAL, tw: WEBLOG)</figcaption></figure>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-converter\">-{|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">blog (hk: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">WEBJOURNAL</span></span>}-</span>, tw: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">WEBLOG</span></span>}-</span>)</span></span>}-</span></span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">blog (hk: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">WEBJOURNAL</span></span>}-</span>, tw: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">WEBLOG</span></span>}-</span>)</span></span>}-</span></span>]]</span></span>"
 	},
 	{
 		"desc": "Don't break gallery if language converter markup is inside.",
@@ -16183,6 +16249,13 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- Not a valid redirect nor a valid parser function --&gt;</span>\n{{#REDIRECT [[]]}}</span>"
 	},
 	{
+		"desc": "Redirect wikitext become ol list items when they come from a template",
+		"wikitext": "{{1x|#REDIRECT [[Foo]]}}",
+		"html": "<ol><li>REDIRECT <a href=\"/index.php?title=Foo&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Foo (page does not exist)\">Foo</a></li></ol>",
+		"render": "<ol><li>REDIRECT <a href=\"/wiki/Foo\" title=\"Foo\">Foo</a></li></ol>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">#REDIRECT <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>]]</span></span></span>}}</span></span>"
+	},
+	{
 		"desc": "responsiveReferencesTests"
 	},
 	{
@@ -16737,6 +16810,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;syntaxhighlight<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">javascript</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">enclose</span>=\"<span class=\"wpb-attr-value\">pre</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">highlight</span>=\"<span class=\"wpb-attr-value\">2-3</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nfunction doSomething() {\n\tvar\tfoo,\n\t\tbar;\n\tif (baz) {\n</span>&lt;/syntaxhighlight&gt;</span></span>"
 	},
 	{
+		"desc": "deprecated source tag adds tracking category",
+		"wikitext": "<source lang=\"python\">print('Hi')</source>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;source<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">python</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">print('Hi')</span>&lt;/source&gt;</span></span>"
+	},
+	{
 		"desc": "deprecated enclose option adds tracking category",
 		"wikitext": "<syntaxhighlight enclose=\"none\" lang=\"python\">print('Hi')</syntaxhighlight>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;syntaxhighlight<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">enclose</span>=\"<span class=\"wpb-attr-value\">none</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">lang</span>=\"<span class=\"wpb-attr-value\">python</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">print('Hi')</span>&lt;/syntaxhighlight&gt;</span></span>"
@@ -17075,6 +17153,13 @@
 		"html": "<table class=\"wikitable\">\n<tbody><tr>\n<th>header\n</th>\n<th>second header\n</th></tr>\n<tr style=\"color:red;\">\n<td>data</td>\n<td style=\"color:red;\">second data\n</td>\n<td>data</td>\n<td style=\"color:green;\">third data\n</td>\n<td>data</td>\n<td style=\"color:blue;\">fourth data\n</td></tr></tbody></table>",
 		"render": "<table class=\"wikitable\">\n<tbody><tr>\n<th>header\n</th>\n<th>second header\n</th></tr>\n<tr style=\"color:red;\">\n<td>data</td>\n<td style=\"color:red;\">second data\n</td>\n<td>data</td>\n<td style=\"color:green;\">third data\n</td>\n<td>data</td>\n<td style=\"color:blue;\">fourth data\n</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">wikitable</span>\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">header</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">second header</span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>-</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:red;</span>\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td-inner\">data</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:red;</span>\"</span></span>{{!}}<span class=\"wpb-td-inner\">second data</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td-inner\">data</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:green;</span>\"</span></span>{{!}}<span class=\"wpb-td-inner\">third data</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td-inner\">data</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">|<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:blue;</span>\"</span></span>{{!}}<span class=\"wpb-td-inner\">fourth data</span></span></span><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>}</span></span></span>"
+	},
+	{
+		"desc": "Edge cases with use of {{!}}",
+		"wikitext": "{|\n| width=60{{!}} foo\n| width=60 {{!}} foo\n| width=\"60{{!}}0\" foo\n| width=\"60 {{!}}0\" foo\n|}",
+		"html": "<table>\n<tbody><tr>\n<td width=\"60\">foo\n</td>\n<td width=\"60\">foo\n</td>\n<td width=\"60\">0\" foo\n</td>\n<td width=\"60\">0\" foo\n</td></tr></tbody></table>",
+		"render": "<table>\n<tbody><tr>\n<td width=\"60\">foo\n</td>\n<td width=\"60\">foo\n</td>\n<td width=\"60\">0\" foo\n</td>\n<td width=\"60\">0\" foo\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">width</span>=<span class=\"wpb-attr-value\">60</span></span></span>{{!}}<span class=\"wpb-td-inner\"> foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">width</span>=<span class=\"wpb-attr-value\">60</span></span> </span>{{!}}<span class=\"wpb-td-inner\"> foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">width</span>=\"<span class=\"wpb-attr-value\">60</span></span></span>{{!}}<span class=\"wpb-td-inner\">0\" foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">width</span>=\"<span class=\"wpb-attr-value\">60 </span></span></span>{{!}}<span class=\"wpb-td-inner\">0\" foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Build table with pipe as data",
