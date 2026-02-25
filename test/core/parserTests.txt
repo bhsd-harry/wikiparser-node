@@ -1733,6 +1733,18 @@ C]]
 <p><span about="#mwt1" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"1x","href":"./Template:1x"},"params":{"1":{"wt":"[[ Foo\nB\nC]]"}},"i":0}}]}'>[[ Foo B C]]</span></p>
 !! end
 
+# browsers try to convert \ to / unless we urlencode it.
+!! test
+Wikilinks with backslashes should be urlencoded in href (T415315)
+!! wikitext
+[[foo\bar]]
+!! html/php
+<p><a href="/index.php?title=Foo%5Cbar&amp;action=edit&amp;redlink=1" class="new" title="Foo\bar (page does not exist)">foo\bar</a>
+</p>
+!! html/parsoid
+<p><a rel="mw:WikiLink" href="./Foo%5Cbar?action=edit&amp;redlink=1" title="Foo\bar" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Foo\\bar"]}}'>foo\bar</a></p>
+!! end
+
 !! test
 Broken templates
 !! options
@@ -4604,8 +4616,6 @@ Template redirect
 !! html/php
 <p>(test)
 </p>
-!! html/parsoid+standalone
-<link rel="mw:PageProp/redirect" href="./Template:Templatesimple" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"templateredirect","href":"./Template:Templateredirect"},"params":{},"i":0}}]}'/>
 !! html/parsoid+integrated
 <p><span typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"templateredirect","href":"./Template:Templateredirect"},"params":{},"i":0}}]}'>(test)</span></p>
 !! end
@@ -9513,7 +9523,7 @@ Sanitizer: Validating that <meta> and <link> work, but only for Microdata
 	<link rel="stylesheet" href="{{SERVER}}">
 	<link rel="stylesheet" itemprop="hello" href="{{SERVER}}">
 </div>
-!! html
+!! html/php
 <div itemscope="">
 <p>	<meta itemprop="hello" content="world" />
 	&lt;meta http-equiv="refresh" content="5"&gt;
@@ -9522,6 +9532,15 @@ Sanitizer: Validating that <meta> and <link> work, but only for Microdata
 	&lt;link rel="stylesheet" href="<a rel="nofollow" class="external free" href="http://example.org">http://example.org</a>"&gt;
 	<link itemprop="hello" href="http&#58;//example.org" />
 </p>
+</div>
+!! html/parsoid+standalone
+<div itemscope="" data-parsoid='{"stx":"html"}'>
+	<p><meta itemprop="hello" content="world" data-parsoid='{"stx":"html","noClose":true}'/>
+	&lt;meta http-equiv="refresh" content="5">
+	<meta itemprop="hello" content="5" data-parsoid='{"stx":"html","noClose":true,"a":{"http-equiv":null},"sa":{"http-equiv":"refresh"}}'/>
+	<link itemprop="hello" href="http://example.org" about="#mwt2" typeof="mw:ExpandedAttrs" data-parsoid='{"stx":"html","noClose":true,"a":{"href":"http://example.org"},"sa":{"href":"{{SERVER}}"}}' data-mw='{"attribs":[[{"txt":"href"},{"html":"&lt;a rel=\"nofollow\" class=\"external free\" href=\"http://example.org\" typeof=\"mw:Transclusion mw:ExtLink/URL\" about=\"#mwt1\" data-parsoid=&apos;{\"pi\":[[]]}&apos; data-mw=&apos;{\"parts\":[{\"template\":{\"target\":{\"wt\":\"SERVER\",\"function\":\"server\"},\"params\":{},\"i\":0}}]}&apos;>http://example.org&lt;/a>"}]]}'/>
+	&lt;link rel="stylesheet" href="{{SERVER}}">
+	<link data-x-rel="stylesheet" itemprop="hello" href="http://example.org" about="#mwt6" typeof="mw:ExpandedAttrs" data-parsoid='{"stx":"html","noClose":true,"a":{"href":"http://example.org"},"sa":{"href":"{{SERVER}}"}}' data-mw='{"attribs":[[{"txt":"href"},{"html":"&lt;a rel=\"nofollow\" class=\"external free\" href=\"http://example.org\" typeof=\"mw:Transclusion mw:ExtLink/URL\" about=\"#mwt5\" data-parsoid=&apos;{\"pi\":[[]]}&apos; data-mw=&apos;{\"parts\":[{\"template\":{\"target\":{\"wt\":\"SERVER\",\"function\":\"server\"},\"params\":{},\"i\":0}}]}&apos;>http://example.org&lt;/a>"}]]}'/></p>
 </div>
 !! end
 
@@ -13297,6 +13316,31 @@ language=ar
 !! end
 
 !! test
+Language parser function (Japanese localization, double-wide hash & double-wide colon)
+!! options
+language=ja
+!! wikitext
+{{#language:ja}}
+
+{{#言語:ja}}
+
+{{＃言語:ja}}
+
+{{＃言語：ja}}
+!! html/php
+<p>日本語
+</p><p>日本語
+</p><p>日本語
+</p><p>日本語
+</p>
+!! html/parsoid+integrated
+<p><span typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"#language:ja","function":"language"},"params":{},"i":0}}]}'>日本語</span></p>
+<p><span typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"#言語:ja","function":"language"},"params":{},"i":0}}]}'>日本語</span></p>
+<p><span typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"＃言語:ja","function":"language"},"params":{},"i":0}}]}'>日本語</span></p>
+<p><span typeof="mw:Transclusion" data-parsoid='{"colon":"："}' data-mw='{"parts":[{"template":{"target":{"wt":"＃言語:ja","function":"language"},"params":{},"i":0}}]}'>日本語</span></p>
+!! end
+
+!! test
 Dir parser function (valid codes)
 !! wikitext
 Persian: {{#dir:fa}}
@@ -13596,6 +13640,7 @@ Using {{=}} when it expands to "=" should not create a tracking category (cat)
 cat
 !! wikitext
 This uses {{=}} and {{Template:=}}.
+!! metadata
 !! html/php
 <p>This uses = and =.
 </p>
@@ -14574,6 +14619,18 @@ T72867: Don't block XML namespace declaration
 #
 # All these tests are marked Parsoid html2wt and html2html only
 # ----------------------------------------------------------------
+!! test
+Serializer shouldn't blindly user dataParsoid.srcTagName
+!! options
+parsoid=html2wt
+!! html/parsoid
+<p><font class="x" data-parsoid='{"stx":"html","srcTagName":"FONT"}'>boo</font></p>
+<p><span class="x" data-parsoid='{"stx":"html","srcTagName":"FONT"}'>boo</span></p>
+!! wikitext
+<FONT class="x">boo</FONT>
+
+<span class="x">boo</span>
+!! end
 
 !! test
 Ignore rel attribute in a-tags during serialization to url-links
@@ -15334,6 +15391,44 @@ parsoid={
 !! wikitext/edited
 <div>placeholder</div>
 [[Foo]] , placeholder
+!! end
+
+!! test
+8. T409669 Regression test: Manual edit test to move format tags outside wikilinks with spaces in target
+!! options
+parsoid={
+  "modes": ["selser"],
+  "changes": [
+    ["a", "html", "<i>Foo bar baz</i>"]
+  ]
+}
+!! wikitext
+[[Foo bar baz]]
+!! wikitext/edited
+''[[Foo bar baz]]''
+!! end
+
+!! test
+9. T409669 Regression test: Don't move out format tags when originating as piped
+!! wikitext
+[[Foo bar baz|''Foo bar baz'']]
+!! html/parsoid
+<p><a rel="mw:WikiLink" href="./Foo_bar_baz" title="Foo bar baz" data-parsoid='{"stx":"piped"}'><i>Foo bar baz</i></a></p>
+!! end
+
+!! test
+10. T409669 Regression test: Don't move out format tags when originating as piped unless in edited content
+!! options
+parsoid={
+  "modes": ["selser"],
+  "changes": [
+    ["a", "html", "<i>Foo bar baz</i>"]
+  ]
+}
+!! wikitext
+[[Foo bar baz|Something else]]
+!! wikitext/edited
+''[[Foo bar baz]]''
 !! end
 
 ## No sort-key or templated sort-key

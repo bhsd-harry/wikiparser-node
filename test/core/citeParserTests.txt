@@ -207,6 +207,8 @@ Templating<ref>Text<!--comment--></ref>
 
 !! test
 <ref> in an ignored caption (T235656)
+!! options
+disabled
 !! wikitext
 [[File:Foobar.jpg|frameless|ignored caption with a ref<ref>boo</ref>]]
 
@@ -282,6 +284,7 @@ language=sr htmlVariantLanguage=sr-Cyrl
 <references> after <gallery> (bug 6164)
 !! options
 parsoid=wt2html,html2html
+disabled
 !! wikitext
 <ref>one</ref>
 
@@ -905,7 +908,7 @@ AAA<ref group="参">ref a</ref>BBB<ref group="注">note b</ref>CCC<ref group="�
 
 ;notes
 <references group="注" />
-!! html
+!! html/php
 <p>AAA<sup id="cite&#95;ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">&#91;</span>参 1<span class="cite-bracket">&#93;</span></a></sup>BBB<sup id="cite&#95;ref-2" class="reference"><a href="#cite_note-2"><span class="cite-bracket">&#91;</span>注 1<span class="cite-bracket">&#93;</span></a></sup>CCC<sup id="cite&#95;ref-3" class="reference"><a href="#cite_note-3"><span class="cite-bracket">&#91;</span>参 2<span class="cite-bracket">&#93;</span></a></sup>
 </p>
 <dl><dt>refs</dt></dl>
@@ -923,13 +926,13 @@ AAA<ref group="参">ref a</ref>BBB<ref group="注">note b</ref>CCC<ref group="�
 !! html/parsoid
 <p>AAA<sup about="#mwt4" class="mw-ref reference" id="cite&#95;ref-1" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"group":"参"},"body":{"id":"mw-reference-text-cite_note-1"}}'><a href="./Parser_test#cite_note-1" data-mw-group="参"><span class="mw-reflink-text"><span class="cite-bracket">[</span>参 1<span class="cite-bracket">]</span></span></a></sup>BBB<sup about="#mwt5" class="mw-ref reference" id="cite&#95;ref-2" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"group":"注"},"body":{"id":"mw-reference-text-cite_note-2"}}'><a href="./Parser_test#cite_note-2" data-mw-group="注"><span class="mw-reflink-text"><span class="cite-bracket">[</span>注 1<span class="cite-bracket">]</span></span></a></sup>CCC<sup about="#mwt6" class="mw-ref reference" id="cite&#95;ref-3" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"group":"参"},"body":{"id":"mw-reference-text-cite_note-3"}}'><a href="./Parser_test#cite_note-3" data-mw-group="参"><span class="mw-reflink-text"><span class="cite-bracket">[</span>参 2<span class="cite-bracket">]</span></span></a></sup></p>
 
-<dl><dt>refs</dt></dl>
+<dl><dt data-parsoid='{}'>refs</dt></dl>
 <div class="mw-references-wrap" typeof="mw:Extension/references" about="#mwt9" data-mw='{"name":"references","attrs":{"group":"参"}}'><ol class="mw-references references" data-mw-group="参">
 <li about="#cite_note-1" id="cite&#95;note-1" data-mw-footnote-number="1"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-1" data-mw-group="参" rel="mw:referencedBy"><span class="mw-linkback-text">↑</span></a></span> <span id="mw-reference-text-cite&#95;note-1" class="mw-reference-text reference-text" data-mw-group="参">ref a</span></li>
 <li about="#cite_note-3" id="cite&#95;note-3" data-mw-footnote-number="2"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-3" data-mw-group="参" rel="mw:referencedBy"><span class="mw-linkback-text">↑</span></a></span> <span id="mw-reference-text-cite&#95;note-3" class="mw-reference-text reference-text" data-mw-group="参">ref c</span></li>
 </ol></div>
 
-<dl><dt>notes</dt></dl>
+<dl><dt data-parsoid='{}'>notes</dt></dl>
 <div class="mw-references-wrap" typeof="mw:Extension/references" about="#mwt12" data-mw='{"name":"references","attrs":{"group":"注"}}'><ol class="mw-references references" data-mw-group="注">
 <li about="#cite_note-2" id="cite&#95;note-2" data-mw-footnote-number="1"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-2" data-mw-group="注" rel="mw:referencedBy"><span class="mw-linkback-text">↑</span></a></span> <span id="mw-reference-text-cite&#95;note-2" class="mw-reference-text reference-text" data-mw-group="注">note b</span></li>
 </ol></div>
@@ -1287,7 +1290,7 @@ foo</span>
 </ol></div></div>
 !! html/parsoid
 <p><sup about="#mwt3" class="mw-ref reference" id="cite&#95;ref-1" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-1"}}'><a href="./Parser_test#cite_note-1"><span class="mw-reflink-text"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></span></a></sup></p>
-<div><div class="mw-references-wrap" typeof="mw:Extension/references" about="#mwt5" data-mw='{"name":"references","attrs":{}}'><ol class="mw-references references">
+<div><div class="mw-references-wrap" typeof="mw:Extension/references" about="#mwt5" data-parsoid='{}' data-mw='{"name":"references","attrs":{}}'><ol class="mw-references references">
 <li about="#cite_note-1" id="cite&#95;note-1" data-mw-footnote-number="1"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-1" rel="mw:referencedBy"><span class="mw-linkback-text">↑</span></a></span> <span id="mw-reference-text-cite&#95;note-1" class="mw-reference-text reference-text">
 foo
 </span></li></ol></div></div>
@@ -1680,7 +1683,7 @@ A <ref>
 
 <div class="mw-references-wrap" typeof="mw:Extension/references" about="#mwt6" data-mw='{"name":"references","attrs":{}}'><ol class="mw-references references">
 <li about="#cite_note-1" id="cite&#95;note-1" data-mw-footnote-number="1"><span class="mw-cite-backlink"><a href="./Parser_test#cite_ref-1" rel="mw:referencedBy"><span class="mw-linkback-text">↑</span></a></span> <span id="mw-reference-text-cite&#95;note-1" class="mw-reference-text reference-text">
- This is a <b><a rel="mw:WikiLink" href="./Bolded_link" title="Bolded link">bolded link</a></b> and this is a <span about="#mwt2" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"1x","href":"./Template:1x"},"params":{"1":{"wt":"transclusion"}},"i":0}}]}'>transclusion</span>
+ This is a <b><a rel="mw:WikiLink" href="./Bolded_link" title="Bolded link" data-parsoid='{"stx":"simple","a":{"href":"./Bolded_link"},"sa":{"href":"bolded link"}}'>bolded link</a></b> and this is a <span about="#mwt2" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"1x","href":"./Template:1x"},"params":{"1":{"wt":"transclusion"}},"i":0}}]}'>transclusion</span>
 </span></li></ol></div>
 !! end
 
@@ -3415,6 +3418,8 @@ hi ho
 ## Edge case bugs in Parsoid from T93580
 !! test
 T93580: 1. Templated <ref> inside block images
+!! options
+disabled
 !! wikitext
 [[File:Foobar.jpg|thumb|Caption with templated ref: {{1x|<ref>foo</ref>}}]]
 

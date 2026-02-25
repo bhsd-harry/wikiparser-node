@@ -1,6 +1,12 @@
-!! Version 2
 # LanguageConverter and language variants parser tests (v2)
 # Based on https://www.mediawiki.org/wiki/Writing_systems/Syntax
+# This file is primarily for testing actual LanguageConverter
+# behavior, aka +langconv output for various constructs, focusing
+# on examples from the zhwiki documentation.
+!! options
+version=2
+parsoid-compatible=wt2html
+!! end
 
 # This is the standard article assumed to exist.
 !! article
@@ -38,10 +44,16 @@ language=zh htmlVariantLanguage=zh-hans
 * air (qì): 氣
 * horse (mǎ): 馬
 * electricity (diàn): 電
-!! html
+!! html/php
 <ul><li>air (qì): 气</li>
 <li>horse (mǎ): 马</li>
 <li>electricity (diàn): 电</li></ul>
+!! html/parsoid+langconv
+<ul>
+<li>air (qì): 气</li>
+<li>horse (mǎ): 马</li>
+<li>electricity (diàn): 电</li>
+</ul>
 !! end
 
 !! test
@@ -53,10 +65,16 @@ language=zh htmlVariantLanguage=zh-hant
 * air (qì): 气
 * horse (mǎ): 马
 * electricity (diàn): 电
-!! html
+!! html/php
 <ul><li>air (qì): 氣</li>
 <li>horse (mǎ): 馬</li>
 <li>electricity (diàn): 電</li></ul>
+!! html/parsoid+langconv
+<ul>
+<li>air (qì): 氣</li>
+<li>horse (mǎ): 馬</li>
+<li>electricity (diàn): 電</li>
+</ul>
 !! end
 
 ### Basic syntax ###
@@ -68,9 +86,11 @@ Bidirectional conversion (hans)
 language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg
 !! wikitext
 -{zh-cn:气气气;zh-tw:電電電}-
-!! html
+!! html/php
 <p>气气气
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-tw","t":"電電電"}]}'>气气气</span></p>
 !! end
 
 !! test
@@ -79,9 +99,11 @@ Bidirectional conversion (hant)
 language=zh htmlVariantLanguage=zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{zh-cn:气气气;zh-tw:電電電}-
-!! html
+!! html/php
 <p>電電電
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-tw","t":"電電電"}]}'>電電電</span></p>
 !! end
 
 # Unidirectional
@@ -95,10 +117,13 @@ language=zh htmlVariantLanguage=zh
 !! wikitext
 -{H|電電電=>zh-cn:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 馬马: 電電電, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-cn","t":"气气气"}]}'/>
+馬马: 電電電, 气气气</p>
 !! end
 
 !! test
@@ -108,10 +133,13 @@ language=zh htmlVariantLanguage=zh-hans,zh-my,zh-sg
 !! wikitext
 -{H|電電電=>zh-cn:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 马马: 电电电, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-cn","t":"气气气"}]}'/>
+马马: 电电电, 气气气</p>
 !! end
 
 !! test
@@ -121,10 +149,13 @@ language=zh htmlVariantLanguage=zh-cn
 !! wikitext
 -{H|電電電=>zh-cn:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 马马: 气气气, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-cn","t":"气气气"}]}'/>
+马马: 气气气, 气气气</p>
 !! end
 
 !! test
@@ -134,10 +165,13 @@ language=zh htmlVariantLanguage=zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{H|電電電=>zh-cn:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 馬馬: 電電電, 氣氣氣
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-cn","t":"气气气"}]}'/>
+馬馬: 電電電, 氣氣氣</p>
 !! end
 
 # Similarly, zh-cn will not use zh-hans's rules.
@@ -149,10 +183,13 @@ language=zh htmlVariantLanguage=zh
 !! wikitext
 -{H|電電電=>zh-hans:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 馬马: 電電電, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-hans","t":"气气气"}]}'/>
+馬马: 電電電, 气气气</p>
 !! end
 
 !! test
@@ -162,10 +199,13 @@ language=zh htmlVariantLanguage=zh-cn,zh-my,zh-sg
 !! wikitext
 -{H|電電電=>zh-hans:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 马马: 电电电, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-hans","t":"气气气"}]}'/>
+马马: 电电电, 气气气</p>
 !! end
 
 !! test
@@ -175,10 +215,13 @@ language=zh htmlVariantLanguage=zh-hans
 !! wikitext
 -{H|電電電=>zh-hans:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 马马: 气气气, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-hans","t":"气气气"}]}'/>
+马马: 气气气, 气气气</p>
 !! end
 
 !! test
@@ -188,10 +231,13 @@ language=zh htmlVariantLanguage=zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{H|電電電=>zh-hans:气气气}-
 馬马: 電電電, 气气气
-!! html
+!! html/php
 <p>
 馬馬: 電電電, 氣氣氣
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"oneway":[{"f":"電電電","l":"zh-hans","t":"气气气"}]}'/>
+馬馬: 電電電, 氣氣氣</p>
 !! end
 
 # Disabled
@@ -202,9 +248,11 @@ Disable language conversion
 language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg,zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{氣气}-
-!! html
+!! html/php
 <p>氣气
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":"氣气"}}'>氣气</span></p>
 !! end
 
 !! test
@@ -213,9 +261,11 @@ Disable language conversion (alternate form)
 language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg,zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{R|氣气}-
-!! html
+!! html/php
 <p>氣气
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":"氣气"}}'>氣气</span></p>
 !! end
 
 !! test
@@ -227,11 +277,15 @@ language=zh htmlVariantLanguage=zh
 電電電 气气气
 
 電-{}-電電 气-{}-气气
-!! html
+!! html/php
 <p>
 電電電 气气气
 </p><p>電電電 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-hant","t":"電電電"},{"l":"zh-hans","t":"气气气"}]}'/>
+電電電 气气气</p>
+<p>電<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>電電 气<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>气气</p>
 !! end
 
 !! test
@@ -243,11 +297,15 @@ language=zh htmlVariantLanguage=zh-cn,zh-my,zh-sg
 電電電 气气气
 
 電-{}-電電 气-{}-气气
-!! html
+!! html/php
 <p>
 气气气 气气气
 </p><p>电电电 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-hant","t":"電電電"},{"l":"zh-hans","t":"气气气"}]}'/>
+气气气 气气气</p>
+<p>电<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>电电 气<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>气气</p>
 !! end
 
 !! test
@@ -259,11 +317,15 @@ language=zh htmlVariantLanguage=zh-hk,zh-mo,zh-tw
 電電電 气气气
 
 電-{}-電電 气-{}-气气
-!! html
+!! html/php
 <p>
 電電電 電電電
 </p><p>電電電 氣氣氣
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-hant","t":"電電電"},{"l":"zh-hans","t":"气气气"}]}'/>
+電電電 電電電</p>
+<p>電<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>電電 氣<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>氣氣</p>
 !! end
 
 ### Common Conversion flags ###
@@ -279,8 +341,12 @@ language=zh htmlVariantLanguage=zh
 !! wikitext
 -{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 馬马: 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>
+馬马: 气气气, 馬馬馬, 電電電
+</p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
 馬马: 气气气, 馬馬馬, 電電電
 </p>
 !! end
@@ -292,8 +358,12 @@ language=zh htmlVariantLanguage=zh-hans
 !! wikitext
 -{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 馬马: 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>
+马马: 气气气, 马马马, 电电电
+</p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
 马马: 气气气, 马马马, 电电电
 </p>
 !! end
@@ -305,8 +375,12 @@ language=zh htmlVariantLanguage=zh-cn,zh-my,zh-sg
 !! wikitext
 -{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 馬马: 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>
+马马: 气气气, 气气气, 气气气
+</p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
 马马: 气气气, 气气气, 气气气
 </p>
 !! end
@@ -318,8 +392,12 @@ language=zh htmlVariantLanguage=zh-hant
 !! wikitext
 -{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 馬马: 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>
+馬馬: 氣氣氣, 馬馬馬, 電電電
+</p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
 馬馬: 氣氣氣, 馬馬馬, 電電電
 </p>
 !! end
@@ -331,8 +409,12 @@ language=zh htmlVariantLanguage=zh-hk,zh-mo
 !! wikitext
 -{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 馬马: 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>
+馬馬: 馬馬馬, 馬馬馬, 馬馬馬
+</p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
 馬馬: 馬馬馬, 馬馬馬, 馬馬馬
 </p>
 !! end
@@ -344,8 +426,12 @@ language=zh htmlVariantLanguage=zh-tw
 !! wikitext
 -{H|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 馬马: 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>
+馬馬: 電電電, 電電電, 電電電
+</p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
 馬馬: 電電電, 電電電, 電電電
 </p>
 !! end
@@ -360,10 +446,13 @@ language=zh htmlVariantLanguage=zh
 -{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 
 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>气气气
 </p><p>气气气, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>气气气</span></p>
+<p>气气气, 馬馬馬, 電電電</p>
 !! end
 
 !! test
@@ -374,10 +463,13 @@ language=zh htmlVariantLanguage=zh-hans
 -{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 
 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>气气气
 </p><p>气气气, 马马马, 电电电
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>气气气</span></p>
+<p>气气气, 马马马, 电电电</p>
 !! end
 
 !! test
@@ -388,10 +480,13 @@ language=zh htmlVariantLanguage=zh-cn,zh-my,zh-sg
 -{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 
 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>气气气
 </p><p>气气气, 气气气, 气气气
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>气气气</span></p>
+<p>气气气, 气气气, 气气气</p>
 !! end
 
 !! test
@@ -402,10 +497,13 @@ language=zh htmlVariantLanguage=zh-hant
 -{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 
 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>電電電
 </p><p>氣氣氣, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>電電電</span></p>
+<p>氣氣氣, 馬馬馬, 電電電</p>
 !! end
 
 !! test
@@ -416,10 +514,13 @@ language=zh htmlVariantLanguage=zh-hk,zh-mo
 -{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 
 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>馬馬馬
 </p><p>馬馬馬, 馬馬馬, 馬馬馬
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>馬馬馬</span></p>
+<p>馬馬馬, 馬馬馬, 馬馬馬</p>
 !! end
 
 !! test
@@ -430,10 +531,13 @@ language=zh htmlVariantLanguage=zh-tw
 -{A|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
 
 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p>電電電
 </p><p>電電電, 電電電, 電電電
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>電電電</span></p>
+<p>電電電, 電電電, 電電電</p>
 !! end
 
 # - flag
@@ -448,12 +552,17 @@ language=zh htmlVariantLanguage=zh
 
 -{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->
 - 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p> 
 + 气气气, 馬馬馬, 電電電
 </p><p> 
 - 气气气, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Add a rule -->
++ 气气气, 馬馬馬, 電電電</p>
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"remove":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Remove a rule -->
+- 气气气, 馬馬馬, 電電電</p>
 !! end
 
 !! test
@@ -466,12 +575,17 @@ language=zh htmlVariantLanguage=zh-hans
 
 -{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->
 - 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p> 
 + 气气气, 马马马, 电电电
 </p><p> 
 - 气气气, 马马马, 电电电
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Add a rule -->
++ 气气气, 马马马, 电电电</p>
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"remove":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Remove a rule -->
+- 气气气, 马马马, 电电电</p>
 !! end
 
 !! test
@@ -484,12 +598,17 @@ language=zh htmlVariantLanguage=zh-cn,zh-my,zh-sg
 
 -{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->
 - 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p> 
 + 气气气, 气气气, 气气气
 </p><p> 
 - 气气气, 马马马, 电电电
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Add a rule -->
++ 气气气, 气气气, 气气气</p>
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"remove":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Remove a rule -->
+- 气气气, 马马马, 电电电</p>
 !! end
 
 !! test
@@ -502,12 +621,17 @@ language=zh htmlVariantLanguage=zh-hant
 
 -{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->
 - 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p> 
 + 氣氣氣, 馬馬馬, 電電電
 </p><p> 
 - 氣氣氣, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Add a rule -->
++ 氣氣氣, 馬馬馬, 電電電</p>
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"remove":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Remove a rule -->
+- 氣氣氣, 馬馬馬, 電電電</p>
 !! end
 
 !! test
@@ -520,12 +644,17 @@ language=zh htmlVariantLanguage=zh-hk,zh-mo
 
 -{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->
 - 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p> 
 + 馬馬馬, 馬馬馬, 馬馬馬
 </p><p> 
 - 氣氣氣, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Add a rule -->
++ 馬馬馬, 馬馬馬, 馬馬馬</p>
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"remove":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Remove a rule -->
+- 氣氣氣, 馬馬馬, 電電電</p>
 !! end
 
 !! test
@@ -538,12 +667,17 @@ language=zh htmlVariantLanguage=zh-tw
 
 -{-|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}- <!-- Remove a rule -->
 - 气气气, 馬馬馬, 電電電
-!! html
+!! html/php
 <p> 
 + 電電電, 電電電, 電電電
 </p><p> 
 - 氣氣氣, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Add a rule -->
++ 電電電, 電電電, 電電電</p>
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"remove":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/> <!-- Remove a rule -->
+- 氣氣氣, 馬馬馬, 電電電</p>
 !! end
 
 # T flag
@@ -556,11 +690,13 @@ language=zh htmlVariantLanguage=zh
 showtitle
 !! wikitext
 -{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
-!! metadata
+!! metadata+langconv
 <span class="mw-page-title-main">馬马</span>
-!! html
+!! html/php
 <p class="mw-empty-elt">
 </p>
+!! html/parsoid+langconv
+<p class="mw-empty-elt"><meta typeof="mw:LanguageVariant" data-mw-variant='{"title":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/></p>
 !! end
 
 !! test
@@ -571,11 +707,13 @@ language=zh htmlVariantLanguage=zh-hans,zh-cn,zh-my,zh-sg
 showtitle
 !! wikitext
 -{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
-!! metadata
+!! metadata+langconv
 气气气
-!! html
+!! html/php
 <p class="mw-empty-elt">
 </p>
+!! html/parsoid+langconv
+<p class="mw-empty-elt"><meta typeof="mw:LanguageVariant" data-mw-variant='{"title":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/></p>
 !! end
 
 !! test
@@ -586,11 +724,13 @@ language=zh htmlVariantLanguage=zh-hk,zh-mo
 showtitle
 !! wikitext
 -{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
-!! metadata
+!! metadata+langconv
 馬馬馬
-!! html
+!! html/php
 <p class="mw-empty-elt">
 </p>
+!! html/parsoid+langconv
+<p class="mw-empty-elt"><meta typeof="mw:LanguageVariant" data-mw-variant='{"title":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/></p>
 !! end
 
 !! test
@@ -601,11 +741,13 @@ language=zh htmlVariantLanguage=zh-tw
 showtitle
 !! wikitext
 -{T|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
-!! metadata
+!! metadata+langconv
 電電電
-!! html
+!! html/php
 <p class="mw-empty-elt">
 </p>
+!! html/parsoid+langconv
+<p class="mw-empty-elt"><meta typeof="mw:LanguageVariant" data-mw-variant='{"title":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/></p>
 !! end
 
 # D flag
@@ -616,9 +758,11 @@ Describe bidirectional conversion rule
 language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg,zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{D|zh-cn:气气气;zh-hk:馬馬馬;zh-tw:電電電;}-
-!! html
+!! html/php
 <p>大陆：气气气；香港：馬馬馬；臺灣：電電電；
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"describe":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'>大陆：气气气；香港：馬馬馬；臺灣：電電電；</span></p>
 !! end
 
 !! test
@@ -627,9 +771,11 @@ Describe unidirectional conversion rule
 language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg,zh-hant,zh-hk,zh-mo,zh-tw
 !! wikitext
 -{D;H|電電電=>zh-cn:气气气}-
-!! html
+!! html/php
 <p>電電電⇒大陆：气气气；
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"describe":true,"oneway":[{"f":"電電電","l":"zh-cn","t":"气气气"}]}'>電電電⇒大陆：气气气；</span></p>
 !! end
 
 # N flag
@@ -643,12 +789,16 @@ language=zh htmlVariantLanguage=zh-Hans-CN
 
 -{N|zh-tw}-
 
--{N|sr-ec}-
-!! html
+-{N|sr-Cyrl}-
+!! html/php
 <p>大陆
 </p><p>臺灣
 </p><p>српски (ћирилица)
 </p>
+!! html/parsoid+langconv
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"name":{"t":"zh-cn"}}'>大陆</span></p>
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"name":{"t":"zh-tw"}}'>臺灣</span></p>
+<p><span typeof="mw:LanguageVariant" data-mw-variant='{"name":{"t":"sr-Cyrl"}}'>српски (ћирилица)</span></p>
 !! end
 
 ### Combined conversion flags ###
@@ -662,11 +812,15 @@ language=zh htmlVariantLanguage=zh
 馬马 1: -{zh;zh-hans;zh-hant|气气气, 馬馬馬, 電電電}-
 
 馬马 2: -{zh;zh-cn;zh-hk|气气气, 馬馬馬, 電電電}-
-!! html
+!! html/php
 <p>
 馬马 1: 气气气, 馬馬馬, 電電電
 </p><p>馬马 2: 气气气, 馬馬馬, 電電電
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
+馬马 1: <span typeof="mw:LanguageVariant" data-mw-variant='{"filter":{"l":["zh","zh-hans","zh-hant"],"t":"气气气, 馬馬馬, 電電電"}}'>气气气, 馬馬馬, 電電電</span></p>
+<p>馬马 2: <span typeof="mw:LanguageVariant" data-mw-variant='{"filter":{"l":["zh","zh-cn","zh-hk"],"t":"气气气, 馬馬馬, 電電電"}}'>气气气, 馬馬馬, 電電電</span></p>
 !! end
 
 !! test
@@ -678,11 +832,15 @@ language=zh htmlVariantLanguage=zh-hans,zh-cn,zh-my,zh-sg
 馬马 1: -{zh;zh-hans;zh-hant|气气气, 馬馬馬, 電電電}-
 
 馬马 2: -{zh;zh-cn;zh-hk|气气气, 馬馬馬, 電電電}-
-!! html
+!! html/php
 <p>
 马马 1: 气气气, 马马马, 电电电
 </p><p>马马 2: 气气气, 气气气, 气气气
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
+马马 1: <span typeof="mw:LanguageVariant" data-mw-variant='{"filter":{"l":["zh","zh-hans","zh-hant"],"t":"气气气, 馬馬馬, 電電電"}}'>气气气, 马马马, 电电电</span></p>
+<p>马马 2: <span typeof="mw:LanguageVariant" data-mw-variant='{"filter":{"l":["zh","zh-cn","zh-hk"],"t":"气气气, 馬馬馬, 電電電"}}'>气气气, 气气气, 气气气</span></p>
 !! end
 
 !! test
@@ -694,11 +852,15 @@ language=zh htmlVariantLanguage=zh-hant,zh-hk,zh-mo,zh-tw
 馬马 1: -{zh;zh-hans;zh-hant|气气气, 馬馬馬, 電電電}-
 
 馬马 2: -{zh;zh-cn;zh-hk|气气气, 馬馬馬, 電電電}-
-!! html
+!! html/php
 <p>
 馬馬 1: 氣氣氣, 馬馬馬, 電電電
 </p><p>馬馬 2: 馬馬馬, 馬馬馬, 馬馬馬
 </p>
+!! html/parsoid+langconv
+<p><meta typeof="mw:LanguageVariant" data-mw-variant='{"add":true,"twoway":[{"l":"zh-cn","t":"气气气"},{"l":"zh-hk","t":"馬馬馬"},{"l":"zh-tw","t":"電電電"}]}'/>
+馬馬 1: <span typeof="mw:LanguageVariant" data-mw-variant='{"filter":{"l":["zh","zh-hans","zh-hant"],"t":"气气气, 馬馬馬, 電電電"}}'>氣氣氣, 馬馬馬, 電電電</span></p>
+<p>馬馬 2: <span typeof="mw:LanguageVariant" data-mw-variant='{"filter":{"l":["zh","zh-cn","zh-hk"],"t":"气气气, 馬馬馬, 電電電"}}'>馬馬馬, 馬馬馬, 馬馬馬</span></p>
 !! end
 
 ### Exceptions ###
@@ -709,10 +871,13 @@ language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg,zh-hant,zh-hk,zh-mo
 !! wikitext
 <pre>氣气</pre>
 <code>氣气</code>
-!! html
+!! html/php
 <pre>氣气</pre>
 <p><code>氣气</code>
 </p>
+!! html/parsoid+langconv
+<pre typeof="mw:Extension/pre" data-mw='{"name":"pre","attrs":{},"body":{"extsrc":"氣气"}}'>氣气</pre>
+<p><code>氣气</code></p>
 !! end
 
 !! test
@@ -721,8 +886,10 @@ language=zh htmlVariantLanguage=zh,zh-hans,zh-cn,zh-my,zh-sg,zh-hant,zh-hk,zh-mo
 language=zh htmlVariantLanguage=zh-hans
 !! wikitext
 <pre>氣-{}-气</pre>
-!! html
+!! html/php
 <pre>气气</pre>
+!! html/parsoid+langconv
+<pre typeof="mw:Extension/pre" data-mw='{"name":"pre","attrs":{},"body":{"extsrc":"氣-{}-气"}}'>气气</pre>
 !! end
 
 !! test
@@ -731,7 +898,9 @@ language=zh htmlVariantLanguage=zh-hans
 language=zh htmlVariantLanguage=zh-hant
 !! wikitext
 <code>氣-{}-气</code>
-!! html
+!! html/php
 <p><code>氣氣</code>
 </p>
+!! html/parsoid+langconv
+<p><code>氣<span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":""}}'></span>氣</code></p>
 !! end

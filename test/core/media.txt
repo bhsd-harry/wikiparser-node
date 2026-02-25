@@ -1487,7 +1487,7 @@ wgSVGNativeRendering=true
 [[File:Foobar.svg|thumb|caption]]
 !! html/php
 <figure class="mw-default-size" typeof="mw:File/Thumb"><a href="/wiki/File:Foobar.svg" class="mw-file-description"><img src="http://example.com/images/f/ff/Foobar.svg" decoding="async" width="180" height="135" class="mw-file-element" /></a><figcaption>caption</figcaption></figure>
-!! html/parsoid
+!! html/parsoid+integrated
 <figure class="mw-default-size" typeof="mw:File/Thumb"><a href="./File:Foobar.svg" class="mw-file-description"><img resource="./File:Foobar.svg" src="http://example.com/images/f/ff/Foobar.svg" decoding="async" data-file-width="240" data-file-height="180" data-file-type="drawing" height="135" width="180" class="mw-file-element"/></a><figcaption>caption</figcaption></figure>
 !! end
 
@@ -3183,7 +3183,7 @@ T146305: Don't break image parsing if nested language converter markup is in the
 !! options
 language=zh htmlVariantLanguage=zh-Hans-CN
 !! wikitext
-[[File:Foobar.jpg|thumb|-{|zh-cn:blog (hk: -{zh-hans|WEBJOURNAL}-, tw: -{zh-hans|WEBLOG}-)}-]]
+[[File:Foobar.jpg|thumb|-{zh-cn:blog (hk: -{zh-hans|WEBJOURNAL}-, tw: -{zh-hans|WEBLOG}-)}-]]
 !! html/php
 <figure class="mw-default-size" typeof="mw:File/Thumb"><a href="/wiki/File:Foobar.jpg" class="mw-file-description"><img src="http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg" decoding="async" width="180" height="20" class="mw-file-element" srcset="http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x" /></a><figcaption>blog (hk: WEBJOURNAL, tw: WEBLOG)</figcaption></figure>
 !! html/parsoid
