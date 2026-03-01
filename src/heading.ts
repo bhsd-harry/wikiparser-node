@@ -16,7 +16,10 @@ import type {
 	LintError,
 	AST,
 } from '../base';
-import type {QuoteToken, AstText} from '../internal';
+import type {
+	AstText,
+	QuoteToken,
+} from '../internal';
 
 /* NOT FOR BROWSER */
 

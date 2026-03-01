@@ -6,7 +6,10 @@ import Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
