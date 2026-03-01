@@ -6,7 +6,10 @@ import {
 	escape,
 } from '../util/string';
 import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
-import {isToken, Shadow, getMagicWordInfo} from '../util/debug';
+import {
+	getMagicWordInfo,
+	Shadow,
+} from '../util/debug';
 import {
 	BuildMethod,
 } from '../util/constants';
@@ -18,7 +21,10 @@ import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
 
@@ -404,7 +410,9 @@ export abstract class TranscludeToken extends Token {
 	 * 获取所有参数
 	 */
 	getAllArgs(): ParameterToken[] {
-		return this.childNodes.filter(isToken<ParameterToken>('parameter'));
+		const {childNodes} = this,
+			i = childNodes.findIndex(({type}) => type === 'parameter');
+		return i === -1 ? [] : childNodes.slice(i) as ParameterToken[];
 	}
 
 	/**

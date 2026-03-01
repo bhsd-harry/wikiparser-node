@@ -5,7 +5,10 @@ import {attributesParent} from '../../mixin/attributesParent';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
-import type {LintError, Config} from '../../base';
+import type {
+	Config,
+	LintError,
+} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 export interface ExtToken extends AttributesParentBase {}

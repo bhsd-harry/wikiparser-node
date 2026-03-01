@@ -65,7 +65,10 @@ import {
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
-import type {LintError, TokenTypes} from '../base';
+import type {
+	TokenTypes,
+	LintError,
+} from '../base';
 import type {Cached} from '../util/lint';
 import type {Title, TitleOptions} from '../lib/title';
 import type {

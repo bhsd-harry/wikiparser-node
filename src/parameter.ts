@@ -10,7 +10,11 @@ import type {
 	LintError,
 	AST,
 } from '../base';
-import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
+import type {
+	AtomToken,
+	TranscludeToken,
+	SyntaxToken,
+} from '../internal';
 
 const linkRegex = /* #__PURE__ */ (() =>
 	new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu'))();
