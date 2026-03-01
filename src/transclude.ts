@@ -61,9 +61,8 @@ export abstract class TranscludeToken extends Token {
 	#colon = ':';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
+	#anonCount = 0;
 	#title: Title;
-	/** @private */
-	anonCount = 0;
 
 	/* NOT FOR BROWSER */
 
@@ -124,6 +123,16 @@ export abstract class TranscludeToken extends Token {
 		if (this.duplication && !duplication) {
 			this.fixDuplication();
 		}
+	}
+
+	/**
+	 * number of anonymous parameters
+	 *
+	 * 匿名参数的个数
+	 * @since v1.36.0
+	 */
+	get anonCount(): number {
+		return this.#anonCount;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -498,30 +507,49 @@ export abstract class TranscludeToken extends Token {
 	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
 	#handleAnonArgChange(addedToken: number): void;
 	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
-		const added = typeof addedToken !== 'number';
-		this.anonCount += added ? 1 : -1;
+		/* NOT FOR BROWSER */
+
+		const removing = typeof addedToken === 'number';
+
+		/* NOT FOR BROWSER END */
+
+		/* eslint-disable @stylistic/operator-linebreak */
+		this.#anonCount +=
+			removing ?
+				-1 :
+				1;
+		/* eslint-enable @stylistic/operator-linebreak */
 
 		/* NOT FOR BROWSER */
 
-		const maxAnon = String(this.anonCount + (added ? 0 : 1));
-		if (added) {
+		const maxAnon = String(this.#anonCount + (removing ? 1 : 0));
+		if (!removing) {
 			this.#keys.add(maxAnon);
 		} else if (!this.hasArg(maxAnon, true)) {
 			this.#keys.delete(maxAnon);
 		}
+		let args: ParameterToken[];
 
 		/* NOT FOR BROWSER END */
 
-		let args: ParameterToken[];
 		let i: number;
 		if (append) {
-			i = this.anonCount - 1;
+			i = this.#anonCount - 1;
+
+			/* NOT FOR BROWSER */
 		} else {
 			args = this.getAnonArgs();
-			i = added ? args.indexOf(addedToken) : addedToken - 1;
+			i = removing ? addedToken - 1 : args.indexOf(addedToken);
 		}
-		for (; i < this.anonCount; i++) {
-			const token = append ? addedToken as ParameterToken : args![i]!,
+		for (; i < this.#anonCount; i++) {
+			/* NOT FOR BROWSER END */
+
+			const token =
+					/* eslint-disable @stylistic/operator-linebreak, unicorn/no-negated-condition */
+					!append ?
+						args![i]! :
+						addedToken as ParameterToken,
+				/* eslint-enable @stylistic/operator-linebreak, unicorn/no-negated-condition */
 				{name} = token,
 				newName = String(i + 1);
 			if (name !== newName || token === addedToken) {
@@ -545,7 +573,10 @@ export abstract class TranscludeToken extends Token {
 	override insertAt<T extends ParameterToken>(token: T, i = this.length): T {
 		super.insertAt(token, i);
 		if (token.anon) {
-			this.#handleAnonArgChange(token, i === this.length - 1);
+			this.#handleAnonArgChange(
+				token,
+				i === this.length - 1,
+			);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
 
@@ -554,26 +585,6 @@ export abstract class TranscludeToken extends Token {
 			this.#keys.add(token.name);
 		}
 		return token;
-	}
-
-	/**
-	 * Get all parameters
-	 *
-	 * 获取所有参数
-	 */
-	getAllArgs(): ParameterToken[] {
-		const {childNodes} = this,
-			i = childNodes.findIndex(({type}) => type === 'parameter');
-		return i === -1 ? [] : childNodes.slice(i) as ParameterToken[];
-	}
-
-	/**
-	 * Get all anonymous parameters
-	 *
-	 * 获取所有匿名参数
-	 */
-	getAnonArgs(): ParameterToken[] {
-		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
 	/**
@@ -591,7 +602,9 @@ export abstract class TranscludeToken extends Token {
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;
 		} else {
-			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
+			args = new Set(
+				this.getAllArgs().filter(({name}) => keyStr === name),
+			);
 			this.#args.set(keyStr, args);
 		}
 
@@ -758,6 +771,26 @@ export abstract class TranscludeToken extends Token {
 			}
 		}
 		return token;
+	}
+
+	/**
+	 * Get all parameters
+	 *
+	 * 获取所有参数
+	 */
+	getAllArgs(): ParameterToken[] {
+		const {childNodes} = this,
+			i = childNodes.findIndex(({type}) => type === 'parameter');
+		return i === -1 ? [] : childNodes.slice(i) as ParameterToken[];
+	}
+
+	/**
+	 * Get all anonymous parameters
+	 *
+	 * 获取所有匿名参数
+	 */
+	getAnonArgs(): ParameterToken[] {
+		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
 	/**

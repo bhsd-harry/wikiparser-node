@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.36.0
+
+*2026-03-02*
+
+**Added**
+
+- [`TranscludeToken.prototype.anonCount`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#anoncount)
+
 ## v1.35.2
 
 *2026-02-23*
