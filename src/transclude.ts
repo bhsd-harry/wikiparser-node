@@ -43,6 +43,7 @@ export abstract class TranscludeToken extends Token {
 	#colon = ':';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
+	#anonCount = 0;
 	#title: Title;
 
 	declare readonly name: string;
@@ -233,12 +234,21 @@ export abstract class TranscludeToken extends Token {
 	/**
 	 * 处理匿名参数更改
 	 * @param addedToken 新增的参数
+	 * @param append 是否在末尾新增参数
 	 */
-	#handleAnonArgChange(addedToken: ParameterToken): void {
-		const args = this.getAnonArgs(),
-			added = true;
-		const token = addedToken,
-			newName = String(args.length);
+	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
+	#handleAnonArgChange(addedToken: number): void;
+	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
+		/* eslint-disable @stylistic/operator-linebreak */
+		this.#anonCount +=
+			1;
+		/* eslint-enable @stylistic/operator-linebreak */
+		let i: number;
+		// eslint-disable-next-line prefer-const
+		i = this.#anonCount - 1;
+		const token =
+				addedToken as ParameterToken,
+			newName = String(i + 1);
 		token.setAttribute('name', newName);
 		this.getArgs(newName, false, false).add(token);
 	}
@@ -251,11 +261,36 @@ export abstract class TranscludeToken extends Token {
 	override insertAt<T extends ParameterToken>(token: T, i = this.length): T {
 		super.insertAt(token, i);
 		if (token.anon) {
-			this.#handleAnonArgChange(token);
+			this.#handleAnonArgChange(
+				token,
+			);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
 		}
 		return token;
+	}
+
+	// eslint-disable-next-line jsdoc/require-param
+	/**
+	 * Get parameters with the specified name
+	 *
+	 * 获取指定参数
+	 * @param key parameter name / 参数名
+	 */
+	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
+		const keyStr = String(key)
+			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		let args: Set<ParameterToken>;
+		if (this.#args.has(keyStr)) {
+			args = this.#args.get(keyStr)!;
+		} else {
+			/* eslint-disable @stylistic/function-paren-newline */
+			args = new Set(
+			);
+			/* eslint-enable @stylistic/function-paren-newline */
+			this.#args.set(keyStr, args);
+		}
+		return args;
 	}
 
 	/**
@@ -276,26 +311,6 @@ export abstract class TranscludeToken extends Token {
 	 */
 	getAnonArgs(): ParameterToken[] {
 		return this.getAllArgs().filter(({anon}) => anon);
-	}
-
-	// eslint-disable-next-line jsdoc/require-param
-	/**
-	 * Get parameters with the specified name
-	 *
-	 * 获取指定参数
-	 * @param key parameter name / 参数名
-	 */
-	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
-		const keyStr = String(key)
-			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
-		let args: Set<ParameterToken>;
-		if (this.#args.has(keyStr)) {
-			args = this.#args.get(keyStr)!;
-		} else {
-			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
-			this.#args.set(keyStr, args);
-		}
-		return args;
 	}
 
 	/**
