@@ -2,14 +2,18 @@ import {
 	removeComment,
 	text,
 } from '../util/string';
-import {getMagicWordInfo} from '../util/debug';
+import {
+	getMagicWordInfo,
+} from '../util/debug';
 import {
 	BuildMethod,
 } from '../util/constants';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
-import type {Config} from '../base';
+import type {
+	Config,
+} from '../base';
 import type {Title} from '../lib/title';
 
 /**
@@ -260,7 +264,9 @@ export abstract class TranscludeToken extends Token {
 	 * 获取所有参数
 	 */
 	getAllArgs(): ParameterToken[] {
-		return this.childNodes.slice(1) as ParameterToken[];
+		const {childNodes} = this,
+			i: number = 1;
+		return i === -1 ? [] : childNodes.slice(i) as ParameterToken[];
 	}
 
 	/**

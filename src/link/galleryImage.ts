@@ -3,7 +3,9 @@ import {
 } from '../../util/constants';
 import {Token} from '../index';
 import {FileToken} from './file';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 

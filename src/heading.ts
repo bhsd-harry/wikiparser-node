@@ -3,7 +3,9 @@ import {AtomToken as SyntaxToken} from './atom';
 import type {
 	Config,
 } from '../base';
-import type {AstText} from '../internal';
+import type {
+	AstText,
+} from '../internal';
 
 /**
  * section heading

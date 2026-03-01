@@ -1,8 +1,8 @@
 import {NowikiBaseToken} from './base';
 import type {
-	AstNodes,
 	AttributesToken,
 	ExtToken,
+	AstNodes,
 } from '../../internal';
 
 /**

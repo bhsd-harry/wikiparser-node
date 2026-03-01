@@ -1,6 +1,8 @@
 import {hiddenToken} from '../../mixin/hidden';
 import {TagPairToken} from './index';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 import type {AstText, Token} from '../../internal';
 
 /**

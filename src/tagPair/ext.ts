@@ -2,7 +2,9 @@ import Parser from '../../index';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 
 /**
  * extension tag

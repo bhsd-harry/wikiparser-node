@@ -1,6 +1,8 @@
 import {hiddenToken} from '../../mixin/hidden';
 import {NowikiBaseToken} from './base';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 import type {Token} from '../../internal';
 
 /**

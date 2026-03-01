@@ -5,7 +5,10 @@ import {Token} from './index';
 import type {
 	Config,
 } from '../base';
-import type {AtomToken, TranscludeToken} from '../internal';
+import type {
+	AtomToken,
+	TranscludeToken,
+} from '../internal';
 
 /**
  * template or magic word parameter

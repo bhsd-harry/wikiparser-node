@@ -5,7 +5,9 @@ import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 /* eslint-enable @typescript-eslint/consistent-type-imports */
-import type {Config} from '../base';
+import type {
+	Config,
+} from '../base';
 import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;

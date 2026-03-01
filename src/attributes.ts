@@ -3,8 +3,13 @@ import {
 } from '../util/string';
 import {Token} from './index';
 import {AttributeToken} from './attribute';
-import type {Config} from '../base';
-import type {ExtToken, AstText as AtomToken} from '../internal';
+import type {
+	Config,
+} from '../base';
+import type {
+	ExtToken,
+	AstText as AtomToken,
+} from '../internal';
 import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = `${AttributeTypes}s`;

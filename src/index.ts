@@ -56,7 +56,9 @@ import {
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
-import type {TokenTypes} from '../base';
+import type {
+	TokenTypes,
+} from '../base';
 import type {Title, TitleOptions} from '../lib/title';
 import type {
 	AstNodes,

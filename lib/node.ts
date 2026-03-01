@@ -1,5 +1,8 @@
 import {nodeLike} from '../mixin/nodeLike';
-import type {AstNode as AstNodeBase, TokenTypes} from '../base';
+import type {
+	AstNode as AstNodeBase,
+	TokenTypes,
+} from '../base';
 import type {NodeLike} from '../mixin/nodeLike';
 import type {
 	AstText,
