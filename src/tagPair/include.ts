@@ -3,7 +3,10 @@ import {BoundingRect} from '../../lib/rect';
 import {hiddenToken} from '../../mixin/hidden';
 import Parser from '../../index';
 import {TagPairToken} from './index';
-import type {LintError, Config} from '../../base';
+import type {
+	Config,
+	LintError,
+} from '../../base';
 import type {AstText, Token} from '../../internal';
 
 /**

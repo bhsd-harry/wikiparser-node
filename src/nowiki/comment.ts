@@ -3,7 +3,10 @@ import {hiddenToken} from '../../mixin/hidden';
 import {padded} from '../../mixin/padded';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError, Config} from '../../base';
+import type {
+	Config,
+	LintError,
+} from '../../base';
 import type {Token} from '../../internal';
 
 /**

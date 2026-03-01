@@ -7,7 +7,10 @@ import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
-import type {Config, LintError} from '../../base';
+import type {
+	Config,
+	LintError,
+} from '../../base';
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 

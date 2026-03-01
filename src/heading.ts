@@ -11,7 +11,10 @@ import type {
 	Config,
 	LintError,
 } from '../base';
-import type {QuoteToken, AstText} from '../internal';
+import type {
+	AstText,
+	QuoteToken,
+} from '../internal';
 
 /**
  * section heading
