@@ -62,6 +62,8 @@ export abstract class TranscludeToken extends Token {
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 	#title: Title;
+	/** @private */
+	anonCount = 0;
 
 	/* NOT FOR BROWSER */
 
@@ -491,14 +493,17 @@ export abstract class TranscludeToken extends Token {
 	/**
 	 * 处理匿名参数更改
 	 * @param addedToken 新增的参数
+	 * @param append 是否在末尾新增参数
 	 */
-	#handleAnonArgChange(addedToken: number | ParameterToken): void {
-		const args = this.getAnonArgs(),
-			added = typeof addedToken !== 'number';
+	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
+	#handleAnonArgChange(addedToken: number): void;
+	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
+		const added = typeof addedToken !== 'number';
+		this.anonCount += added ? 1 : -1;
 
 		/* NOT FOR BROWSER */
 
-		const maxAnon = String(args.length + (added ? 0 : 1));
+		const maxAnon = String(this.anonCount + (added ? 0 : 1));
 		if (added) {
 			this.#keys.add(maxAnon);
 		} else if (!this.hasArg(maxAnon, true)) {
@@ -507,8 +512,16 @@ export abstract class TranscludeToken extends Token {
 
 		/* NOT FOR BROWSER END */
 
-		for (let i = added ? args.indexOf(addedToken) : addedToken - 1; i < args.length; i++) {
-			const token = args[i]!,
+		let args: ParameterToken[];
+		let i: number;
+		if (append) {
+			i = this.anonCount - 1;
+		} else {
+			args = this.getAnonArgs();
+			i = added ? args.indexOf(addedToken) : addedToken - 1;
+		}
+		for (; i < this.anonCount; i++) {
+			const token = append ? addedToken as ParameterToken : args![i]!,
 				{name} = token,
 				newName = String(i + 1);
 			if (name !== newName || token === addedToken) {
@@ -532,7 +545,7 @@ export abstract class TranscludeToken extends Token {
 	override insertAt<T extends ParameterToken>(token: T, i = this.length): T {
 		super.insertAt(token, i);
 		if (token.anon) {
-			this.#handleAnonArgChange(token);
+			this.#handleAnonArgChange(token, i === this.length - 1);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
 

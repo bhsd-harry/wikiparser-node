@@ -138,7 +138,7 @@ TranscludeToken.prototype.fixDuplication =
 			return [];
 		}
 		const duplicatedKeys: string[] = [];
-		let anonCount = this.getAnonArgs().length;
+		let {anonCount} = this;
 		for (const [key, args] of this.getDuplicatedArgs()) {
 			if (args.length <= 1) {
 				continue;
