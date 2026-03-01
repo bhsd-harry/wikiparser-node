@@ -5,7 +5,11 @@ import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {cached} from '../mixin/cached';
 import {nodeLike} from '../mixin/nodeLike';
-import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
+import type {
+	AstNode as AstNodeBase,
+	TokenTypes,
+	LintError,
+} from '../base';
 import type {Cached} from '../util/lint';
 import type {NodeLike} from '../mixin/nodeLike';
 import type {
