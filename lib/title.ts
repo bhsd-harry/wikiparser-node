@@ -382,10 +382,10 @@ export class Title {
 		if (!valid || ns !== 6 || interwiki) {
 			throw new Error('Title.getFileUrl method is only for files!');
 		}
-		const {expandMagicWord}: typeof import('../render/magicWords') = require('../render/magicWords');
 		if (height) {
 			width ||= 1e4;
 		}
+		const {expandMagicWord}: typeof import('../render/magicWords') = require('../render/magicWords');
 		return expandMagicWord('filepath', [main, `${width || ''}${height ? `x${height}` : ''}`]) as string;
 	}
 

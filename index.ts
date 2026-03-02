@@ -690,7 +690,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	callParserFunction(name: string, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
-		const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords');
 		if (typeof arg === 'string') {
 			args.unshift(arg);
 		} else if (Array.isArray(arg)) {
@@ -705,9 +704,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			}
 		}
 		const {parserFunction} = this.getConfig(),
-			[lcName, canonicalName] = getCanonicalName(name, parserFunction);
+			[lcName, canonicalName] = getCanonicalName(name, parserFunction),
+			custom = functionHooks.has(lcName);
 		let result: string | false;
-		if (functionHooks.has(lcName)) {
+		if (custom) {
 			if (!canonicalName) {
 				const [insensitive, sensitive] = parserFunction,
 					entry = Object.entries(sensitive).find(([, v]) => v === lcName)
@@ -729,11 +729,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			result = length === 1 && firstChild!.is<TranscludeToken>('magic-word')
 				&& functionHooks.get(lcName)!(firstChild);
 		} else {
+			const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords');
 			result = expandMagicWord(lcName as MagicWord, args);
 		}
 		/* c8 ignore next 3 */
 		if (result === false) {
-			throw new RangeError(`Unable to resolve parser function: ${name}`);
+			throw new RangeError(
+				`Unable to resolve ${custom ? 'custom' : 'built-in'} parser function: ${name}`,
+			);
 		}
 		return result;
 	},
@@ -807,10 +810,16 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (!main) {
 			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
 		}
+		const {Token}: typeof import('./src/index') = require('./src/index');
 		const file = path.join(dir, main),
-			wikitext = fs.readFileSync(file, 'utf8');
-		const {stage, include, config, page}: ParsingError = require(`${file}.json`),
-			{Token}: typeof import('./src/index') = require('./src/index');
+			wikitext = fs.readFileSync(file, 'utf8'),
+			{stage = MAX_STAGE, include, config, page}: ParsingError = (() => {
+				try {
+					return require(`${file}.json`);
+				} catch {
+					return {};
+				}
+			})();
 		Shadow.run(() => {
 			const halfParsed = stage < MAX_STAGE,
 				token = new Token(halfParsed ? wikitext : tidy(wikitext), config);
@@ -823,8 +832,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				token.parse(undefined, include);
 			}
 			fs.unlinkSync(file);
-			fs.unlinkSync(`${file}.err`);
-			fs.unlinkSync(`${file}.json`);
+			fs.rmSync(`${file}.err`, {force: true});
+			fs.rmSync(`${file}.json`, {force: true});
 		}, this);
 	},
 	/* c8 ignore stop */

@@ -54,9 +54,9 @@ declare global {
 	/* NOT FOR BROWSER */
 
 	interface ParsingError {
-		readonly stage: number;
-		readonly include: boolean;
-		readonly config: Config;
+		readonly stage?: number;
+		readonly include?: boolean;
+		readonly config?: Config;
 		readonly page?: string;
 	}
 
