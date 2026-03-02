@@ -238,7 +238,6 @@ const defaultLintRuleConfig: LintRuleConfig = {
 		},
 	],
 };
-Object.freeze(defaultLintRuleConfig);
 
 const defaultLintConfig: Omit<FullLintConfig, 'rules'> = {
 	configurationComment: 'lint',
@@ -246,7 +245,6 @@ const defaultLintConfig: Omit<FullLintConfig, 'rules'> = {
 	fix: true,
 	computeEditInfo: true,
 };
-Object.freeze(defaultLintConfig);
 
 /**
  * 验证错误级别是否符合规范
