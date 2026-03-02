@@ -62,6 +62,7 @@
 		"test:unit": "mocha dist/test/test.js",
 		"test:clonenode": "CLONENODE=1 npm run test:unit",
 		"test:parser": "LC_ALL=en.UTF-8 mocha dist/test/parserTests.js",
+		"test:perf": "mocha --reporter spec dist/test/perf.js",
 		"test": "npm run test:unit && npm run test:clonenode && npm run test:parser",
 		"test:parseronly": "LSP=0 npm run test:parser",
 		"test:ci": "LSP=0 npm test",
