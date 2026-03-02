@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.37.0
+
+*2026-03-03*
+
+**Removed**
+
+- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#json) no longer includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#duplicated) property for performance reasons
+
 ## v1.36.0
 
 *2026-03-02*
