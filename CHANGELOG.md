@@ -7,6 +7,10 @@
 
 - [`TranscludeToken.prototype.anonCount`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#anoncount)
 
+**Changed**
+
+- Improved performance for template parsing with many anonymous parameters
+
 ## v1.35.2
 
 *2026-02-23*
