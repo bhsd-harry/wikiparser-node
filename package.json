@@ -52,6 +52,7 @@
 		"coverage": "tsc --declaration false --target es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
 		"test:parser": "LC_ALL=en.UTF-8 mocha dist/test/parserTests.js",
+		"test:perf": "mocha --reporter spec dist/test/perf.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:parseronly": "LSP=0 npm run test:parser",
 		"test:ci": "LSP=0 npm test",
