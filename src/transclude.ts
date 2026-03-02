@@ -418,7 +418,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取指定参数
 	 * @param key parameter name / 参数名
 	 */
-	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
+	getArgs(key: string | number, exact?: boolean, copy = true, init = true): Set<ParameterToken> {
 		const keyStr = String(key)
 			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args: Set<ParameterToken>;
