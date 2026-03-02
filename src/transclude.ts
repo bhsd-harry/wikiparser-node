@@ -594,8 +594,9 @@ export abstract class TranscludeToken extends Token {
 	 * @param key parameter name / 参数名
 	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 * @param copy whether to return a copy / 是否返回一个备份
+	 * @param init whether to initialize during parsing / 是否在解析时进行初始化
 	 */
-	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
+	getArgs(key: string | number, exact?: boolean, copy = true, init = true): Set<ParameterToken> {
 		const keyStr = String(key)
 			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args: Set<ParameterToken>;
@@ -603,7 +604,7 @@ export abstract class TranscludeToken extends Token {
 			args = this.#args.get(keyStr)!;
 		} else {
 			args = new Set(
-				this.getAllArgs().filter(({name}) => keyStr === name),
+				init ? [] : this.getAllArgs().filter(({name}) => keyStr === name),
 			);
 			this.#args.set(keyStr, args);
 		}
@@ -801,7 +802,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
 	hasArg(key: string | number, exact?: boolean): boolean {
-		return this.getArgs(key, exact, false).size > 0;
+		return this.getArgs(key, exact, false, false).size > 0;
 	}
 
 	/**
