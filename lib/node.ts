@@ -206,10 +206,14 @@ export abstract class AstNode implements AstNodeBase {
 			this.#rIndex[j],
 			() => {
 				const {childNodes} = this,
+					parentAIndex = this.#aIndex?.[0] === Shadow.rev && this.#aIndex[1],
 					n = j + (j < 0 ? childNodes.length : 0);
 				let acc = this.getAttribute('padding');
 				for (let i = 0; i < n; i++) {
 					this.#rIndex[i] = [Shadow.rev, acc];
+					if (parentAIndex !== false) {
+						childNodes[i]!.#aIndex = [Shadow.rev, parentAIndex + acc];
+					}
 					acc += childNodes[i]!.toString().length + this.getGaps(i);
 				}
 				return acc;
