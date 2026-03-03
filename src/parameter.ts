@@ -44,6 +44,19 @@ export abstract class ParameterToken extends Token {
 		return this.firstChild.length === 0;
 	}
 
+	/* PRINT ONLY */
+
+	/** whether to be a duplicated parameter / 是否是重复参数 */
+	get duplicated(): boolean {
+		LSP: {
+			const {parentNode, name} = this;
+			return Boolean(parentNode?.isTemplate())
+				&& parentNode!.getArgs(name, false, false).size > 1;
+		}
+	}
+
+	/* PRINT ONLY END */
+
 	/**
 	 * @param key 参数名
 	 * @param value 参数值
@@ -133,7 +146,7 @@ export abstract class ParameterToken extends Token {
 	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
 			const json = super.json(undefined, depth, start);
-			json['anon'] = this.anon;
+			Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
 			return json;
 		}
 	}
