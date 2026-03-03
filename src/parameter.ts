@@ -70,16 +70,20 @@ export abstract class ParameterToken extends Token {
 		return this.firstChild.length === 0;
 	}
 
-	/* NOT FOR BROWSER */
+	/* PRINT ONLY */
 
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
-		LSP: try {
-			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-		} catch {
-			return false;
+		LSP: {
+			const {parentNode, name} = this;
+			return Boolean(parentNode?.isTemplate())
+				&& parentNode!.getArgs(name, false, false).size > 1;
 		}
 	}
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER */
 
 	set duplicated(value) {
 		if (this.duplicated && !value) {
@@ -221,7 +225,7 @@ export abstract class ParameterToken extends Token {
 	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
 			const json = super.json(undefined, depth, start);
-			json['anon'] = this.anon;
+			Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
 			return json;
 		}
 	}
