@@ -1,14 +1,36 @@
 import * as assert from 'assert';
 import Parser from '../index';
+import type {SeverityLevel} from '../base';
 import type {Token, TableToken} from '../internal';
 
-const N = 1e4;
+declare type FullLintConfigValue = [SeverityLevel, Record<string, SeverityLevel>];
+
+const N = 1e4,
+	{rules} = Parser.lintConfig,
+	[, noDuplicate] = rules['no-duplicate'] as FullLintConfigValue,
+	[, noIgnored] = rules['no-ignored'] as FullLintConfigValue;
+noDuplicate['attribute'] = 0;
+noDuplicate['parameter'] = 0;
+noDuplicate['imageParameter'] = 0;
+noIgnored['arg'] = 0;
+
+/** @ignore */
+const methods = (root: Token): void => {
+	root.lint();
+
+	/* NOT FOR BROWSER */
+
+	root.print();
+	root.json();
+	root.toHtml();
+};
 
 /** @ignore */
 const basic = (content: string, type: string, n = N, include?: boolean): void => {
 	const root = Parser.parse(content, include);
 	assert.strictEqual(root.firstChild!.type, type);
 	assert.strictEqual(root.length, n);
+	methods(root);
 };
 
 /** @ignore */
@@ -20,12 +42,14 @@ const complex = (
 	n = N,
 	getter?: 'firstChild' | 'lastChild',
 ): void => {
-	const first = Parser.parse(content).firstChild as Token,
+	const root = Parser.parse(content),
+		first = root.firstChild as Token,
 		token = getter ? first[getter] as Token : first;
 	assert.strictEqual(first.type, type);
 	assert.strictEqual(token.firstChild!.type, firstType);
 	assert.strictEqual(token.lastChild!.type, lastType);
 	assert.strictEqual(token.length, n);
+	methods(root);
 };
 
 describe('Performance test', () => {
@@ -90,7 +114,7 @@ describe('Performance test', () => {
 		complex(content, 'template', 'template-name', 'parameter', N + 1);
 	});
 	it('heading', () => {
-		const content = '=a=\n'.repeat(N);
+		const content = Array.from({length: N}, (_, i) => `==${i}==\n`).join('');
 		basic(content, 'heading', N * 2);
 	});
 	it('HTML', () => {
@@ -183,7 +207,7 @@ describe('Performance test', () => {
 		basic(content, 'quote', N * 2);
 	});
 	it('external link', () => {
-		const content = '[http://a]'.repeat(N);
+		const content = '[http://a a]'.repeat(N);
 		basic(content, 'ext-link');
 	});
 	it('free external link', () => {
@@ -207,7 +231,7 @@ describe('Performance test', () => {
 		basic(content, 'converter');
 	});
 	it('language conversion flag', () => {
-		const content = `-{${'A;'.repeat(N)}|}-`;
+		const content = `-{${'zh-cn;'.repeat(N)}|}-`;
 		complex(
 			content,
 			'converter',
