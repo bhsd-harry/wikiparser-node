@@ -140,22 +140,28 @@ declare interface Parser extends ParserBase {
 const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
 
 /**
+ * require一个JSON文件
+ * @param file 文件名
+ * @throws {RangeError} 仅支持JSON文件
+ */
+const jsonRequire = (file: string): unknown => {
+	const fullPath = require.resolve(file);
+	if (fullPath.endsWith('.json')) {
+		return require(fullPath);
+	}
+	throw new RangeError('Only JSON files are supported!');
+};
+
+/**
  * 从根路径require
  * @param file 文件名
  * @param dir 子路径
- * @throws {RangeError} 仅支持JSON文件
  */
-const rootRequire = (file: string, dir: string): unknown => {
-	const fullPath = require.resolve(
-		path.isAbsolute(file)
-			? /* c8 ignore next */ file
-			: path.join('..', file.includes('/') ? '' : dir, file),
-	);
-	if (!fullPath.endsWith('.json')) {
-		throw new RangeError('Only JSON files are supported!');
-	}
-	return require(fullPath);
-};
+const rootRequire = (file: string, dir: string): unknown => jsonRequire(
+	path.isAbsolute(file)
+		? /* c8 ignore next */ file
+		: path.join('..', file.includes('/') ? '' : dir, file),
+);
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -246,7 +252,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			if (!path.isAbsolute(this.config)) {
 				for (const p of this.configPaths) {
 					try {
-						this.config = require(path.resolve(process.cwd(), p, this.config as string));
+						this.config = jsonRequire(path.resolve(process.cwd(), p, this.config as string)) as ConfigData;
 						break;
 					} catch {}
 				}

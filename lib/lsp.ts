@@ -576,8 +576,8 @@ export class LanguageService implements LanguageServiceBase {
 
 		const dataDir = path.join('..', '..', 'data'),
 			extDir = path.join(dataDir, 'ext');
-		this.#lilypondData = require(path.join(extDir, 'score'));
-		this.#mathData = require(path.join(extDir, 'math'));
+		this.#lilypondData = require(path.join(extDir, 'score.json'));
+		this.#mathData = require(path.join(extDir, 'math.json'));
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -588,7 +588,7 @@ export class LanguageService implements LanguageServiceBase {
 
 				/* NOT FOR BROWSER ONLY */
 
-				value: require(path.join(dataDir, 'signatures')),
+				value: require(path.join(dataDir, 'signatures.json')),
 			},
 		});
 	}
@@ -2099,7 +2099,7 @@ export class LanguageService implements LanguageServiceBase {
 	async setTargetWikipedia(wiki: string, user: string): Promise<void> {
 		const [site, host] = Parser.getWMFSite(wiki);
 		try {
-			const config: ConfigData = require(path.join('..', '..', 'config', site));
+			const config: ConfigData = require(path.join('..', '..', 'config', `${site}.json`));
 			this.config = Parser.getConfig(config);
 		} catch {
 			this.config = await Parser.fetchConfig(site, `${host}/w`, user);
