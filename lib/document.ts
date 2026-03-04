@@ -73,9 +73,9 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | null => {
 			const dir = path.join('..', '..', 'data', 'ext');
 			jsonLSP.configure({
 				schemas: jsonTags.map((tag): SchemaConfiguration | false => {
-					const uri = path.join(dir, tag);
+					const uri = path.join(dir, `${tag}.json`);
 					try {
-						const schema = require(tag === 'maplink' ? path.join(dir, 'mapframe') : uri);
+						const schema = require(tag === 'maplink' ? path.join(dir, 'mapframe.json') : uri);
 						return {
 							uri,
 							fileMatch: [tag],

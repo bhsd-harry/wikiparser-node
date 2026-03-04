@@ -186,7 +186,7 @@ export default async (
 				...name === canonical ? [] : [[id, canonical] as const],
 			]),
 		config: ConfigData = {
-			...getParserConfig(require(path.join(dir, 'minimum')) as ConfigData, mwConfig),
+			...getParserConfig(require(path.join(dir, 'minimum.json')) as ConfigData, mwConfig),
 			...getKeywords(magicwords),
 			variants: langconversion ? getVariants(variants) : [],
 			namespaces: Object.fromEntries(ns),
