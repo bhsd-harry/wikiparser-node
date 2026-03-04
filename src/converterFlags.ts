@@ -75,8 +75,11 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/** @private */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	isInvalidFlag(flag: string, variant?: Set<string>, unknown?: Set<string>, valid?: Set<string>): boolean {
-		return Boolean(flag) && !variant!.has(flag) && !unknown!.has(flag) && (variant!.size > 0 || !valid!.has(flag));
+	isInvalidFlag(flag: string, variant?: Set<string>, unknown?: Set<string>): boolean {
+		return Boolean(flag)
+			&& !variant!.has(flag)
+			&& !unknown!.has(flag)
+			&& (variant!.size > 0 || !definedFlags.has(flag));
 	}
 
 	/** @private */
@@ -84,13 +87,15 @@ export abstract class ConverterFlagsToken extends Token {
 		LINT: {
 			const variantFlags = this.getVariantFlags(),
 				unknownFlags = this.getUnknownFlags(),
-				validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
 				emptyFlagCount = this.#flags!.filter(flag => !flag).length,
 				knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
 				errors = super.lint(start, re);
-			if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
+			if (
+				variantFlags.size === knownFlagCount
+				|| this.#flags!.filter(flag => definedFlags.has(flag)).length === knownFlagCount
+			) {
 				return errors;
 			}
 			const rule = 'no-ignored',
@@ -100,7 +105,7 @@ export abstract class ConverterFlagsToken extends Token {
 				for (let i = 0; i < this.length; i++) {
 					const child = this.childNodes[i]!,
 						flag = child.text().trim();
-					if (this.isInvalidFlag(flag, variantFlags, unknownFlags, validFlags)) {
+					if (this.isInvalidFlag(flag, variantFlags, unknownFlags)) {
 						const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
 						if (computeEditInfo || fix) {
 							if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {

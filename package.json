@@ -104,7 +104,7 @@
 		"color-rgba": "^3.0.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.27.3",
-		"eslint": "^9.39.3",
+		"eslint": "^9.39.4",
 		"eslint-plugin-eslint-comments": "^3.2.0",
 		"eslint-plugin-jsdoc": "^62.7.1",
 		"eslint-plugin-jsonc": "^3.1.1",
