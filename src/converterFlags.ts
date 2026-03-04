@@ -127,10 +127,11 @@ export abstract class ConverterFlagsToken extends Token {
 		/* PRINT ONLY */
 
 		PRINT: if (typeof flag === 'object') {
+			const variants = new Set(this.getAttribute('config').variants);
 			flag = flag.text().trim();
-			variant = this.getVariantFlags();
+			variant = this.#flags!.some(f => variants.has(f)) ? variants : new Set();
 			unknown = this.getUnknownFlags();
-			valid = new Set(this.#flags!.filter(f => definedFlags.has(f)));
+			valid = definedFlags;
 		}
 
 		/* PRINT ONLY END */
