@@ -131,7 +131,16 @@ export default async (
 	fs.writeFileSync(tempFile, m);
 	const {stdout, stderr} = spawnSync(
 		process.execPath,
-		['-r', './env.js', '--permission', tempFile],
+		[
+			'-r',
+			'./env.js',
+			process.allowedNodeEnvironmentFlags.has('--permission')
+				? '--permission'
+				: '--experimental-permission',
+			`--allow-fs-read=${__dirname}`,
+			'--disable-warning=ExperimentalWarning',
+			tempFile,
+		],
 		{cwd: __dirname, encoding: 'utf8'},
 	);
 	fs.unlinkSync(tempFile);
