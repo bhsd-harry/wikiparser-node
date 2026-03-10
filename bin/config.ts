@@ -2,7 +2,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import {execSync} from 'child_process';
+import {execSync, spawnSync} from 'child_process';
 import assert from 'assert/strict';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/cm-util';
 import {error} from '../util/diff';
@@ -22,10 +22,6 @@ declare interface Response {
 		functionhooks: string[];
 		variables: string[];
 	};
-}
-
-declare interface Implementation {
-	files: Record<string, Function>;
 }
 
 declare const $PKG: string;
@@ -63,48 +59,8 @@ const filterGadget = (id: string | number): boolean => {
 	return n < 2300 || n > 2303; // Gadget, Gadget talk, Gadget definition, Gadget definition talk
 };
 
-/**
- * Execute the data script.
- * @param obj MediaWiki module implementation
- */
-const execute = (obj: Implementation): void => {
-	Object.entries(obj.files).find(([k]) => k.endsWith('.data.js'))![1]();
-};
-
-const mw = { // eslint-disable-line @typescript-eslint/no-unused-vars
-	loader: {
-		done: false,
-		/** @ignore */
-		impl(callback: () => [string, Implementation]): void {
-			execute(callback()[1]);
-		},
-		/** @ignore */
-		implement(name: string, callback: (() => void) | Implementation): void {
-			if (typeof callback === 'object') {
-				execute(callback);
-			} else if (!this.done) {
-				callback();
-			}
-			if (name.startsWith('ext.CodeMirror.data')) {
-				this.done = true;
-			}
-		},
-		/** @ignore */
-		state(): void {
-			//
-		},
-	},
-	config: {
-		/** @ignore */
-		set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
-			mwConfig = extCodeMirrorConfig;
-		},
-	},
-};
-
 const pkg = $PKG,
 	version = $VERSION;
-let mwConfig: MwConfig | undefined;
 
 /**
  * Get the parser configuration for a Wikimedia Foundation project.
@@ -170,14 +126,23 @@ export default async (
 			functionhooks,
 		} = (await (
 			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
-		).json() as Response).query;
-	try {
-		eval(m); // eslint-disable-line no-eval
-	} catch (e) {
-		console.log(m);
-		throw e;
+		).json() as Response).query,
+		tempFile = path.join(__dirname, 'mw.js');
+	fs.writeFileSync(tempFile, m);
+	const {stdout, stderr} = spawnSync(
+		process.execPath,
+		['-r', './env.js', '--permission', tempFile],
+		{cwd: __dirname, encoding: 'utf8'},
+	);
+	fs.unlinkSync(tempFile);
+	if (stderr) {
+		console.error(stderr);
+		throw new Error('Failed to execute the fetched MediaWiki module!', {cause: m});
 	}
-	if (!mwConfig) {
+	let mwConfig: MwConfig;
+	try {
+		mwConfig = JSON.parse(stdout);
+	} catch {
 		throw new RangeError('Extension:CodeMirror is not installed!');
 	}
 	const ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
