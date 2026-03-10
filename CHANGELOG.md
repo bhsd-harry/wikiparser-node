@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.37.0
+
+*2026-03-11*
+
+**Changed**
+
+- The executable [`getParserConfig`](./README#cli-usage) now executes JavaScript modules fetched from the specified MediaWiki site in a sandboxed environment using the [permission model](https://nodejs.org/api/permissions.html)
+
 ## v1.36.0
 
 *2026-03-02*
