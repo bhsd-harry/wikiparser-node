@@ -63,8 +63,8 @@ export type {
 export type Command = ['setI18N', Record<string, string>?]
 	| ['setLintConfig', LintConfig | undefined]
 	| ['setConfig', ConfigData]
-	| ['getConfig', number]
-	| ['destroy' | 'findStyleTokens' | 'findTemplateTokens', number]
+	| ['getConfig' | 'destroy' | 'findStyleTokens', number]
+	| ['querySelectorAll', number, string, number | undefined]
 	| ['data', number, SignatureData, boolean]
 	| ['colorPresentations', number, ColorInformation, boolean]
 	| ['diagnostics', number, string, boolean, boolean | undefined]
@@ -126,6 +126,7 @@ export interface LanguageServiceBase extends Omit<
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
 	resolveCodeAction(rule?: string): Promise<CodeAction>;
+	querySelectorAll(selector: string): Promise<AST[]>;
 	findStyleTokens(): Promise<AST[]>;
 	findTemplateTokens(): Promise<AST[]>;
 }

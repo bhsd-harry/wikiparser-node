@@ -264,11 +264,11 @@ const workerJS = (): void => {
 					getLSP(qid).findStyleTokens().map(token => token.json(undefined, 2)),
 				]);
 				break;
-			case 'findTemplateTokens':
+			case 'querySelectorAll':
 				postMessage([
 					command,
 					qid,
-					getLSP(qid).findTemplateTokens().map(token => token.json(undefined, 1)),
+					getLSP(qid).querySelectorAll(wikitext).map(node => node.json(undefined, include)),
 				]);
 			// no default
 		}
@@ -384,7 +384,13 @@ const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[
  * @param args 额外参数
  */
 const provide = (command: string, qid: number, wikitext?: unknown, ...args: unknown[]): Promise<unknown> =>
-	getFeedback(command, qid, typeof wikitext === 'string', wikitext as string, ...args);
+	getFeedback(
+		command,
+		qid,
+		typeof wikitext === 'string' && command !== 'querySelectorAll',
+		wikitext as string,
+		...args,
+	);
 
 /**
  * 插入非空文本

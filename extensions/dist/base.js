@@ -226,11 +226,11 @@ const workerJS = () => {
                     getLSP(qid).findStyleTokens().map(token => token.json(undefined, 2)),
                 ]);
                 break;
-            case 'findTemplateTokens':
+            case 'querySelectorAll':
                 postMessage([
                     command,
                     qid,
-                    getLSP(qid).findTemplateTokens().map(token => token.json(undefined, 1)),
+                    getLSP(qid).querySelectorAll(wikitext).map(node => node.json(undefined, include)),
                 ]);
         }
     };
@@ -264,7 +264,7 @@ const getConfig = () => getFeedback('getConfig', -3);
 const json = (wikitext, include, qid = -4, stage) => getFeedback('json', qid, false, wikitext, include, stage);
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
-const provide = (command, qid, wikitext, ...args) => getFeedback(command, qid, typeof wikitext === 'string', wikitext, ...args);
+const provide = (command, qid, wikitext, ...args) => getFeedback(command, qid, typeof wikitext === 'string' && command !== 'querySelectorAll', wikitext, ...args);
 const append = (parent, text) => {
     if (text) {
         parent.append(text);

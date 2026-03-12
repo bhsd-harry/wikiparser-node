@@ -199,13 +199,18 @@ class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
+	querySelectorAll(selector: string, depth?: number): Promise<AST[]> {
+		return wikiparse.provide('querySelectorAll', this.#id, selector, depth) as Promise<AST[]>;
+	}
+
+	/** @implements */
 	findStyleTokens(): Promise<AST[]> {
 		return wikiparse.provide('findStyleTokens', this.#id) as Promise<AST[]>;
 	}
 
 	/** @implements */
 	findTemplateTokens(): Promise<AST[]> {
-		return wikiparse.provide('findTemplateTokens', this.#id) as Promise<AST[]>;
+		return this.querySelectorAll('template', 1);
 	}
 }
 

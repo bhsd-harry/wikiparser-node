@@ -74,11 +74,14 @@ class LanguageService {
     resolveCodeAction(rule = '') {
         return wikiparse.provide('resolveCodeAction', __classPrivateFieldGet(this, _LanguageService_id, "f"), rule, __classPrivateFieldGet(this, _LanguageService_include, "f"));
     }
+    querySelectorAll(selector, depth) {
+        return wikiparse.provide('querySelectorAll', __classPrivateFieldGet(this, _LanguageService_id, "f"), selector, depth);
+    }
     findStyleTokens() {
         return wikiparse.provide('findStyleTokens', __classPrivateFieldGet(this, _LanguageService_id, "f"));
     }
     findTemplateTokens() {
-        return wikiparse.provide('findTemplateTokens', __classPrivateFieldGet(this, _LanguageService_id, "f"));
+        return this.querySelectorAll('template', 1);
     }
 }
 _LanguageService_id = new WeakMap(), _LanguageService_include = new WeakMap(), _LanguageService_hasData = new WeakMap(), _LanguageService_instances = new WeakSet(), _LanguageService_loadData = async function _LanguageService_loadData() {

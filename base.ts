@@ -479,10 +479,8 @@ export interface LanguageService {
 	/** @private */
 	findStyleTokens(): Token[];
 
-	/* BROWSER ONLY */
-
 	/** @private */
-	findTemplateTokens(): Token[];
+	querySelectorAll<T = Token>(selector: string): T[];
 }
 
 export type SeverityLevel = 0 | 1 | 2 | false | 'off' | 'warning' | 'error';

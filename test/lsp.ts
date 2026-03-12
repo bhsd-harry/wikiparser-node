@@ -9,7 +9,7 @@ import type {
 	Config,
 } from '../base';
 
-declare type Key = keyof LanguageService | 'constructor';
+declare type Key = keyof LanguageService | 'constructor' | 'findTemplateTokens';
 
 const config: Config = require('../../config/default');
 wikiparse.setConfig({...config, articlePath: 'https://mediawiki.org/wiki/$1'});
@@ -94,6 +94,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'data':
 			case 'destroy':
 			case 'findStyleTokens':
+			case 'querySelectorAll':
 			case 'provideInlayHints':
 			case 'provideColorPresentations':
 			case 'resolveCodeAction':
