@@ -43,6 +43,7 @@ export interface LanguageServiceBase extends Omit<
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
 	resolveCodeAction(rule?: string): Promise<CodeAction>;
+	querySelectorAll(selector: string): Promise<AST[]>;
 	findStyleTokens(): Promise<AST[]>;
 	findTemplateTokens(): Promise<AST[]>;
 }

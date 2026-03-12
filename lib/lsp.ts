@@ -1935,8 +1935,13 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @private */
+	querySelectorAll<T = Token>(selector: string): T[] {
+		return this.#done.querySelectorAll<T>(selector);
+	}
+
+	/** @private */
 	findStyleTokens(): AttributeToken[] {
-		return this.#done.querySelectorAll<AttributeToken>(cssSelector).filter(({lastChild}) => isAttr(lastChild));
+		return this.querySelectorAll<AttributeToken>(cssSelector).filter(({lastChild}) => isAttr(lastChild));
 	}
 
 	/**
