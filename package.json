@@ -100,7 +100,7 @@
 		"vscode-json-languageservice": "^5.7.2"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.1.0",
+		"@bhsd/code-standard": "^2.1.1",
 		"@bhsd/nodejs": "^0.1.1",
 		"@bhsd/test-util": "^0.3.0",
 		"@codemirror/lint": "^6.9.5",

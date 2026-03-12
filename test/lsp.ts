@@ -156,6 +156,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'data':
 			case 'destroy':
 			case 'findStyleTokens':
+			case 'querySelectorAll':
 			case 'provideInlayHints':
 			case 'provideColorPresentations':
 			case 'resolveCodeAction':

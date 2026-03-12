@@ -514,6 +514,9 @@ export interface LanguageService {
 	/** @private */
 	findStyleTokens(): Token[];
 
+	/** @private */
+	querySelectorAll<T = Token>(selector: string): T[];
+
 	/* NOT FOR BROWSER ONLY */
 
 	/**
