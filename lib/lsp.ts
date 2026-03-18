@@ -447,7 +447,7 @@ const cssRules = {'block-no-empty': null},
 	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
-let colors: Promise<RegExp | false> | undefined;
+let colors: RegExp | false | undefined;
 
 /**
  * Correct the position of an error.
@@ -715,17 +715,14 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY */
 
-		colors ??= (async () => {
+		if (colors === undefined) {
 			try {
-				return new RegExp(
-					String.raw`\b${Object.keys((await import('color-name')).default).join('|')}\b`,
-					'giu',
-				);
+				const {default: colorName}: typeof import('color-name') = require('color-name');
+				colors = new RegExp(String.raw`\b${Object.keys(colorName).join('|')}\b`, 'giu');
 			} catch {
-				return false;
+				colors = false;
 			}
-		})();
-		const re = await colors;
+		}
 
 		/* NOT FOR BROWSER ONLY END */
 
@@ -751,7 +748,7 @@ export class LanguageService implements LanguageServiceBase {
 
 			/* NOT FOR BROWSER ONLY */
 
-			const isStyle = re && type === 'attr-value' && parentNode!.name === 'style';
+			const isStyle = colors && type === 'attr-value' && parentNode!.name === 'style';
 
 			/* NOT FOR BROWSER ONLY END */
 
@@ -763,7 +760,7 @@ export class LanguageService implements LanguageServiceBase {
 
 				if (isStyle) {
 					parts.push(
-						...[...data.matchAll(re)].map(
+						...[...data.matchAll(colors as RegExp)].map(
 							({index, 0: s}): [string, number, number, true] =>
 								[s, index, index + s.length, true],
 						),
@@ -1179,7 +1176,7 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY */
 
-		const stylelint = await loadStylelint(),
+		const stylelint = loadStylelint(),
 			jsonLSP = loadJsonLSP();
 		let s: LintConfigValue | undefined;
 		NPM: if (jsonLSP) {
