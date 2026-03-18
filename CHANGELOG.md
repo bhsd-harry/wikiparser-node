@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.37.0
 
-*2026-03-11*
+*2026-03-21*
 
 **Changed**
 
@@ -51,7 +51,7 @@
 
 **Removed**
 
-- Support for Node.js 18
+- Support for Node.js < 20.19.0
 
 ## v1.34.0
 

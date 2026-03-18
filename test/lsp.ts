@@ -18,6 +18,7 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import {execSync} from 'child_process';
+import rgba from 'color-rgba';
 import Parser from '../index';
 import type {
 	Token,
@@ -103,7 +104,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 	const lsp = Parser.createLanguageService();
 	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
 	lsp.config = {...Parser.getConfig(), articlePath: 'https://mediawiki.org/wiki/$1'};
-	const rgba = (await import('color-rgba')).default;
 	const root = Parser.parse(content, title, true),
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
