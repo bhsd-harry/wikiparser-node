@@ -117,17 +117,17 @@ export const loadHtmlData = /** @ignore */ (): IHTMLDataProvider | null => {
 	return htmlData;
 };
 
-let stylelint: Promise<PublicApi | null> | undefined;
-export const loadStylelint = /** @ignore */ (): Promise<PublicApi | null> => {
+let stylelint: PublicApi | undefined | null;
+export const loadStylelint = /** @ignore */ (): PublicApi | null => {
 	NPM: {
-		stylelint ??= (async () => {
+		if (stylelint === undefined) {
 			try {
-				return (await import('stylelint')).default;
+				stylelint = require('stylelint') as PublicApi;
 			} catch /* c8 ignore start */ {
-				return null;
+				stylelint = null;
 			}
 			/* c8 ignore stop */
-		})();
+		}
 		return stylelint;
 	}
 };

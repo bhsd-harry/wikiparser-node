@@ -116,15 +116,8 @@ const throwOnLintConfig = (config: string | undefined): void => {
  * load lintConfig
  * @param file lintConfig file path
  */
-const loadLintConfig = async (file: string): Promise<LintConfiguration> => {
-	const symbol = Symbol('lintConfig');
-	let lintConfig: unknown = symbol;
-	try {
-		lintConfig = require(file);
-	} catch {}
-	if (lintConfig === symbol) {
-		lintConfig = await import(file);
-	}
+const loadLintConfig = (file: string): LintConfiguration => {
+	let lintConfig: unknown = require(file);
 	if (lintConfig && typeof lintConfig === 'object' && 'default' in lintConfig) {
 		lintConfig = lintConfig.default;
 	}
@@ -358,25 +351,23 @@ try {
 (async () => {
 	if (lintConfigFile) {
 		try {
-			Parser.lintConfig = await loadLintConfig(lintConfigFile);
+			Parser.lintConfig = loadLintConfig(lintConfigFile);
 		} catch {
 			exit(`Cannot load lint config file: ${lintConfigFile}`);
 		}
 	} else {
-		await (async () => {
-			let cur = process.cwd(),
-				last: string | undefined;
-			while (last !== cur) {
-				for (const file of lintConfigDefaults) {
-					try {
-						Parser.lintConfig = await loadLintConfig(path.join(cur, file));
-						return;
-					} catch {}
-				}
-				last = cur;
-				cur = path.dirname(cur);
+		let cur = process.cwd(),
+			last: string | undefined;
+		while (last !== cur) {
+			for (const file of lintConfigDefaults) {
+				try {
+					Parser.lintConfig = loadLintConfig(path.join(cur, file));
+					return;
+				} catch {}
 			}
-		})();
+			last = cur;
+			cur = path.dirname(cur);
+		}
 	}
 	Parser.lintConfig.computeEditInfo = false;
 	Parser.lintConfig.fix = true;
