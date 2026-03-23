@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
-import util from 'util';
 import {spawn} from 'child_process';
+import {green, red} from '@bhsd/nodejs';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 export type log = (msg: string, ...args: unknown[]) => void;
@@ -84,15 +84,13 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 /* c8 ignore start */
 /** @implements */
 export const error: log = (msg, ...args) => {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	console.error(util.styleText?.('red', msg) ?? msg, ...args);
+	console.error(red(msg), ...args);
 };
 /* c8 ignore stop */
 
 /* c8 ignore start */
 /** @implements */
 export const info: log = (msg, ...args) => {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	console.info(util.styleText?.('green', msg) ?? msg, ...args);
+	console.info(green(msg), ...args);
 };
 /* c8 ignore stop */

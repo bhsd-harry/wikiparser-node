@@ -89,7 +89,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^2.1.1",
-		"@bhsd/nodejs": "^0.1.1",
+		"@bhsd/nodejs": "^0.2.0",
 		"@bhsd/test-util": "^0.4.0",
 		"@codemirror/lint": "^6.9.5",
 		"@stylistic/eslint-plugin": "^5.10.0",
