@@ -95,12 +95,12 @@ import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
 import findIndex from '../util/search';
+import {jsonTags} from '../util/constants';
 import {
 	EmbeddedJSONDocument,
 	EmbeddedCSSDocument,
 	loadJsonLSP,
 	loadCssLSP,
-	jsonTags,
 	loadHtmlData,
 	loadStylelint,
 } from './document';

@@ -20,6 +20,8 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption'])
 
 export const extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
 
+export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
+
 /* NOT FOR BROWSER ONLY */
 
 export const mathTags = new Set(['math', 'chem', 'ce']);

@@ -1,7 +1,5 @@
-import {
-	getRegex,
-	lintJSON,
-} from '@bhsd/common';
+import {getRegex, lintJSON, lintJSONC} from '@bhsd/common';
+import {jsonTags} from '../../util/constants';
 import {generateForSelf, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -107,8 +105,8 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				rule = 'invalid-json';
 				const sSyntax = lintConfig.getSeverity(rule),
 					sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
-				if (name === 'templatedata' && (sSyntax || sDuplicate)) {
-					return lintJSON(innerText).map(({
+				if (jsonTags.includes(name) && (sSyntax || sDuplicate)) {
+					return (name === 'templatedata' ? lintJSON : lintJSONC)(innerText).map(({
 						message,
 						from,
 						to = from,

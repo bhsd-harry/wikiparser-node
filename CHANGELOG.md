@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.37.0
 
-*2026-03-21*
+*2026-03-25*
+
+**Added**
+
+- [`NowikiToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/NowikiToken-%28EN%29#lint) now reports invalid JSONC inside `<maplink>` and `<mapframe>`
 
 **Changed**
 
