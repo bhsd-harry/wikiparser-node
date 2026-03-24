@@ -1,6 +1,6 @@
 import {
 	getRegex,
-	lintJSONNative,
+	lintJSON,
 } from '@bhsd/common';
 import {generateForSelf, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
@@ -59,17 +59,10 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 			NPM: {
 				rule = 'invalid-json';
-				const sSyntax = lintConfig.getSeverity(rule);
-				if (
-					// eslint-disable-next-line @stylistic/no-extra-parens
-					name === 'templatedata' && (
-						sSyntax
-					)
-				) {
-					// browser版本使用`lintJSONNative()`
-					return lintJSONNative(
-						innerText,
-					).map(({
+				const sSyntax = lintConfig.getSeverity(rule),
+					sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
+				if (name === 'templatedata' && (sSyntax || sDuplicate)) {
+					return lintJSON(innerText).map(({
 						message,
 						from,
 						to = from,
@@ -77,9 +70,12 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						endLine = line,
 						column,
 						endColumn = column,
+						severity,
 					}): LintError | false => {
-						s =
-							sSyntax;
+						s = severity === 'warning' ? sDuplicate : sSyntax;
+						if (!s) {
+							return false;
+						}
 						const rect = new BoundingRect(this, start);
 						return {
 							rule,
