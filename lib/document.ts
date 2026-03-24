@@ -1,5 +1,6 @@
 import path from 'path';
 import {sanitizeInlineStyle} from '@bhsd/common';
+import {jsonTags} from '../util/constants';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument} from 'vscode-languageserver-textdocument';
 import type {
@@ -48,8 +49,6 @@ export const loadTexvcjs = /** @ignore */ (): Texvcjs | null => {
 		return texcvjs;
 	}
 };
-
-export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
 
 let jsonLSP: JSONLanguageService | undefined | null;
 export const loadJsonLSP = /** @ignore */ (): JSONLanguageService | null => {
