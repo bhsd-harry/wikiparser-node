@@ -15,4 +15,6 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption'])
 
 export const extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
 
+export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
+
 export const minConfig: ConfigData = require('../config/minimum');
