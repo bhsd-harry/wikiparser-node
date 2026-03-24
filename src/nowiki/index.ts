@@ -105,24 +105,10 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 			NPM: {
 				rule = 'invalid-json';
-				const sSyntax = lintConfig.getSeverity(rule);
-
-				/* NOT FOR BROWSER ONLY */
-
-				const sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
-
-				/* NOT FOR BROWSER ONLY END */
-
-				if (
-					name === 'templatedata' && (
-						sSyntax
-						|| sDuplicate
-					)
-				) {
-					// browser版本使用`lintJSONNative()`
-					return lintJSON(
-						innerText,
-					).map(({
+				const sSyntax = lintConfig.getSeverity(rule),
+					sDuplicate = lintConfig.getSeverity(rule, 'duplicate');
+				if (name === 'templatedata' && (sSyntax || sDuplicate)) {
+					return lintJSON(innerText).map(({
 						message,
 						from,
 						to = from,
@@ -130,17 +116,9 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						endLine = line,
 						column,
 						endColumn = column,
-
-						/* NOT FOR BROWSER ONLY */
-
 						severity,
 					}): LintError | false => {
-						s =
-							/* eslint-disable @stylistic/operator-linebreak */
-							severity === 'warning' ?
-								sDuplicate :
-								/* eslint-enable @stylistic/operator-linebreak */
-								sSyntax;
+						s = severity === 'warning' ? sDuplicate : sSyntax;
 						if (!s) {
 							return false;
 						}
