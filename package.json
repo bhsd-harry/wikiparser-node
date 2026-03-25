@@ -48,17 +48,17 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^1.4.0",
+		"@bhsd/common": "^2.0.0",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
 		"stylelint": "^17.5.0"
 	},
 	"devDependencies": {
-		"@bhsd/cm-util": "^0.2.0",
+		"@bhsd/cm-util": "^1.0.0",
 		"@bhsd/code-standard": "^2.1.1",
-		"@bhsd/codemirror-mediawiki": "^3.12.1",
-		"@bhsd/nodejs": "^0.2.0",
+		"@bhsd/codemirror-mediawiki": "^3.12.2",
+		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^0.4.0",
 		"@codemirror/lint": "^6.9.5",
 		"@stylistic/eslint-plugin": "^5.10.0",
@@ -91,6 +91,6 @@
 		"v8r": "^6.0.0"
 	},
 	"engines": {
-		"node": ">=20.19.0"
+		"node": "^20.19.0 || ^22.13.0 || >=24.11.0"
 	}
 }

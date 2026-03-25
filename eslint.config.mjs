@@ -171,13 +171,6 @@ export default extend(
 		],
 		rules: {
 			'n/no-missing-require': 0,
-			'n/no-unsupported-features/node-builtins': [
-				2,
-				{
-					allowExperimental: true,
-					version: '>=24.0.0',
-				},
-			],
 			'@typescript-eslint/strict-void-return': 0,
 		},
 	},
@@ -197,7 +190,15 @@ export default extend(
 			'unicorn/no-this-assignment': 2,
 			'unicorn/empty-brace-spaces': 2,
 			'n/no-missing-import': 0,
-			'n/no-unsupported-features/node-builtins': 0,
+			'n/no-unsupported-features/node-builtins': [
+				2,
+				{
+					allowExperimental: true,
+					ignores: [
+						'localStorage',
+					],
+				},
+			],
 			'@typescript-eslint/no-unused-vars': [
 				2,
 				{

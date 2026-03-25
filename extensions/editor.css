@@ -3,7 +3,7 @@
 	display: block;
 	box-sizing: border-box;
 	width: 100%;
-	resize: vertical; /* stylelint-disable-line plugin/use-baseline */
+	resize: vertical;
 	font-family: monospace;
 	background: none !important;
 	caret-color: #000;
