@@ -4,7 +4,7 @@ import type * as PrismJS from 'prismjs';
 
 export const Prism = (() => {
 	try {
-		return require('prismjs') as typeof PrismJS;
+		return require('prismjs') as typeof PrismJS & {default: typeof PrismJS};
 	} catch {
 		return undefined;
 	}

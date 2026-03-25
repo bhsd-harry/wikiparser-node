@@ -180,13 +180,6 @@ export default extend(
 		],
 		rules: {
 			'n/no-missing-require': 0,
-			'n/no-unsupported-features/node-builtins': [
-				2,
-				{
-					allowExperimental: true,
-					version: '>=24.0.0',
-				},
-			],
 			'@typescript-eslint/strict-void-return': 0,
 		},
 	},
