@@ -105,6 +105,11 @@ export default extend(
 				},
 			],
 		},
+		settings: {
+			node: {
+				version: '>=24.0.0',
+			},
+		},
 	},
 	{
 		files: [
@@ -164,53 +169,7 @@ export default extend(
 		],
 		rules: {
 			'n/no-missing-require': 0,
-			'n/no-unsupported-features/node-builtins': [
-				2,
-				{
-					allowExperimental: true,
-					version: '>=24.0.0',
-				},
-			],
 			'@typescript-eslint/strict-void-return': 0,
-		},
-	},
-	{
-		files: [
-			'extensions/*.ts',
-		],
-		languageOptions: {
-			parserOptions: {
-				project: './extensions/tsconfig.json',
-			},
-		},
-		rules: {
-			'no-control-regex': 2,
-			'no-new': 2,
-			'no-param-reassign': 2,
-			'unicorn/no-this-assignment': 2,
-			'unicorn/empty-brace-spaces': 2,
-			'n/no-missing-import': 0,
-			'n/no-unsupported-features/node-builtins': 0,
-			'@typescript-eslint/no-unused-vars': [
-				2,
-				{
-					args: 'all',
-					caughtErrors: 'all',
-					ignoreRestSiblings: true,
-				},
-			],
-			'@typescript-eslint/no-floating-promises': 0,
-		},
-	},
-	{
-		files: [
-			'extensions/gh-page.ts',
-			'extensions/codejar.ts',
-		],
-		languageOptions: {
-			parserOptions: {
-				project: './extensions/tsconfig.codejar.json',
-			},
 		},
 	},
 	{

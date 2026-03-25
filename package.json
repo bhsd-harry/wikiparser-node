@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.36.0",
+	"version": "1.37.0",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -42,8 +42,8 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^2.1.1",
-		"@bhsd/common": "^1.4.0",
-		"@bhsd/nodejs": "^0.2.0",
+		"@bhsd/common": "^2.0.0",
+		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^0.4.0",
 		"@stylistic/eslint-plugin": "^5.10.0",
 		"@types/mocha": "^10.0.10",
@@ -64,8 +64,5 @@
 		"markdownlint-cli2": "^0.21.0",
 		"mocha": "^11.7.5",
 		"typescript": "^5.9.3"
-	},
-	"engines": {
-		"node": ">=20.19.0"
 	}
 }
