@@ -121,15 +121,6 @@ export default extend(
 			'**/*.ts',
 		],
 		rules: {
-			'n/no-unsupported-features/node-builtins': [
-				2,
-				{
-					allowExperimental: true,
-					ignores: [
-						'util.styleText',
-					],
-				},
-			],
 			'@typescript-eslint/class-methods-use-this': [
 				2,
 				{
@@ -177,13 +168,6 @@ export default extend(
 		],
 		rules: {
 			'n/no-missing-require': 0,
-			'n/no-unsupported-features/node-builtins': [
-				2,
-				{
-					allowExperimental: true,
-					version: '>=24.0.0',
-				},
-			],
 			'@typescript-eslint/strict-void-return': 0,
 		},
 	},

@@ -336,18 +336,6 @@ config = (
 const {mtimeMs} = fs.statSync(config),
 	obj = cache?.[include ? 'include' : 'noinclude'];
 
-let minimatch: (file: string, pattern: string) => boolean;
-try {
-	({minimatch} = require('minimatch'));
-} catch {
-	/* eslint-disable n/no-unsupported-features/node-builtins */
-	if (typeof path.matchesGlob !== 'function') {
-		exit('Cannot load Node.js package "minimatch"');
-	}
-	minimatch = path.matchesGlob.bind(path);
-	/* eslint-enable n/no-unsupported-features/node-builtins */
-}
-
 (async () => {
 	if (lintConfigFile) {
 		try {
@@ -378,7 +366,7 @@ try {
 			console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
 			exiting = true;
 			continue;
-		} else if (ignorePatterns.some(ignore => minimatch(file, ignore))) {
+		} else if (ignorePatterns.some(ignore => path.matchesGlob(file, ignore))) {
 			continue;
 		}
 		const fileCache = obj?.[file];
