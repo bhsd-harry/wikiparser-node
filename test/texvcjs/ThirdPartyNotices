@@ -1,0 +1,15 @@
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+Do Not Translate or Localize
+
+This project incorporates components from the projects listed below. The original copyright notices and the licenses
+under which such components were received are set forth below.
+
+
+
+%% texvcjs (https://gerrit.wikimedia.org/r/mediawiki/services/texvcjs)
+=========================================
+Copyright (c) 2014-2022 C. Scott Ananian, Moritz Schubotz, Johannes Stegmüller
+
+Licensed under GPLv2.
+=========================================
+END OF texvcjs NOTICES AND INFORMATION

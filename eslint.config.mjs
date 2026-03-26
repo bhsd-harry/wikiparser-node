@@ -42,6 +42,7 @@ export default extend(
 			'errors/',
 			'printed/',
 			'test/parserTests.json',
+			'test/texvcjs/',
 		],
 	},
 	{

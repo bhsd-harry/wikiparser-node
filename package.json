@@ -60,6 +60,7 @@
 		"prof": "node dist/test/prof.js",
 		"coverage": "tsc --declaration false --target es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
+		"test:math": "mocha dist/test/math.js",
 		"test:clonenode": "CLONENODE=1 npm run test:unit",
 		"test:parser": "LC_ALL=en.UTF-8 mocha dist/test/parserTests.js",
 		"test:perf": "mocha --reporter spec dist/test/perf.js",
@@ -94,7 +95,7 @@
 		"mathoid-texvcjs": "^0.6.0",
 		"prism-wiki": "^2.0.0",
 		"prismjs": "^1.30.0",
-		"stylelint": "^17.5.0",
+		"stylelint": "^17.6.0",
 		"vscode-css-languageservice": "^6.3.10",
 		"vscode-html-languageservice": "^5.6.2",
 		"vscode-json-languageservice": "^5.7.2"

@@ -1,0 +1,1761 @@
+[
+	{
+		"id": 1,
+		"input": "\\thetasym",
+		"texvcjs": "\\vartheta ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 2,
+		"input": "\\koppa",
+		"texvcjs": "\\mathrm {\\koppa} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 3,
+		"input": "\\stigma",
+		"texvcjs": "\\mathrm {\\stigma} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 4,
+		"input": "\\coppa",
+		"texvcjs": "\\mathrm {\\coppa} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 5,
+		"input": "\\C",
+		"texvcjs": "\\mathbb {C} ",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 6,
+		"input": "\\cnums",
+		"texvcjs": "\\mathbb {C} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 7,
+		"input": "\\Complex",
+		"texvcjs": "\\mathbb {C} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 8,
+		"input": "\\H",
+		"texvcjs": "\\mathbb {H} ",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 9,
+		"input": "\\N",
+		"texvcjs": "\\mathbb {N} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 10,
+		"input": "\\natnums",
+		"texvcjs": "\\mathbb {N} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 11,
+		"input": "\\Q",
+		"texvcjs": "\\mathbb {Q} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 12,
+		"input": "\\R",
+		"texvcjs": "\\mathbb {R} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 13,
+		"input": "\\reals",
+		"texvcjs": "\\mathbb {R} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 14,
+		"input": "\\Reals",
+		"texvcjs": "\\mathbb {R} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 15,
+		"input": "\\Z",
+		"texvcjs": "\\mathbb {Z} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 16,
+		"input": "\\sect",
+		"texvcjs": "\\S ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 17,
+		"input": "\\P",
+		"texvcjs": "\\P ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 18,
+		"input": "\\AA",
+		"texvcjs": "\\mathrm {\\AA} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 19,
+		"input": "\\alef",
+		"texvcjs": "\\aleph ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 20,
+		"input": "\\alefsym",
+		"texvcjs": "\\aleph ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 21,
+		"input": "\\weierp",
+		"texvcjs": "\\wp ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 22,
+		"input": "\\real",
+		"texvcjs": "\\Re ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 23,
+		"input": "\\part",
+		"texvcjs": "\\partial ",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 24,
+		"input": "\\infin",
+		"texvcjs": "\\infty ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 25,
+		"input": "\\empty",
+		"texvcjs": "\\emptyset ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 26,
+		"input": "\\O",
+		"texvcjs": "\\emptyset ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 27,
+		"input": "\\ang",
+		"texvcjs": "\\angle ",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 28,
+		"input": "\\exist",
+		"texvcjs": "\\exists ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 29,
+		"input": "\\clubs",
+		"texvcjs": "\\clubsuit ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 30,
+		"input": "\\diamonds",
+		"texvcjs": "\\diamondsuit ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 31,
+		"input": "\\hearts",
+		"texvcjs": "\\heartsuit ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 32,
+		"input": "\\spades",
+		"texvcjs": "\\spadesuit ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 33,
+		"input": "\\textvisiblespace",
+		"texvcjs": "\\mathrm {\\textvisiblespace} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 34,
+		"input": "\\and",
+		"texvcjs": "\\land ",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 35,
+		"input": "\\or",
+		"texvcjs": "\\lor ",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 36,
+		"input": "\\bull",
+		"texvcjs": "\\bullet ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 37,
+		"input": "\\plusmn",
+		"texvcjs": "\\pm ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 38,
+		"input": "\\sdot",
+		"texvcjs": "\\cdot ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 39,
+		"input": "\\sup",
+		"texvcjs": "\\sup ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 40,
+		"input": "\\sub",
+		"texvcjs": "\\subset ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 41,
+		"input": "\\supe",
+		"texvcjs": "\\supseteq ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 42,
+		"input": "\\sube",
+		"texvcjs": "\\subseteq ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 43,
+		"input": "\\isin",
+		"texvcjs": "\\in ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 44,
+		"input": "\\hArr",
+		"texvcjs": "\\Leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 45,
+		"input": "\\harr",
+		"texvcjs": "\\leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 46,
+		"input": "\\Harr",
+		"texvcjs": "\\Leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 47,
+		"input": "\\Lrarr",
+		"texvcjs": "\\Leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 48,
+		"input": "\\lrArr",
+		"texvcjs": "\\Leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 49,
+		"input": "\\lArr",
+		"texvcjs": "\\Leftarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 50,
+		"input": "\\Larr",
+		"texvcjs": "\\Leftarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 51,
+		"input": "\\rArr",
+		"texvcjs": "\\Rightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 52,
+		"input": "\\Rarr",
+		"texvcjs": "\\Rightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 53,
+		"input": "\\harr",
+		"texvcjs": "\\leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 54,
+		"input": "\\lrarr",
+		"texvcjs": "\\leftrightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 55,
+		"input": "\\larr",
+		"texvcjs": "\\leftarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 56,
+		"input": "\\gets",
+		"texvcjs": "\\gets ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 57,
+		"input": "\\rarr",
+		"texvcjs": "\\rightarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 58,
+		"input": "\\oiint",
+		"texvcjs": "\\oiint ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 59,
+		"input": "\\oiiint",
+		"texvcjs": "\\oiiint ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 60,
+		"input": "\\Alpha",
+		"texvcjs": "\\mathrm {A} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 61,
+		"input": "\\Beta",
+		"texvcjs": "\\mathrm {B} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 62,
+		"input": "\\Epsilon",
+		"texvcjs": "\\mathrm {E} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 63,
+		"input": "\\Zeta",
+		"texvcjs": "\\mathrm {Z} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 64,
+		"input": "\\Eta",
+		"texvcjs": "\\mathrm {H} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 65,
+		"input": "\\Iota",
+		"texvcjs": "\\mathrm {I} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 66,
+		"input": "\\Kappa",
+		"texvcjs": "\\mathrm {K} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 67,
+		"input": "\\Mu",
+		"texvcjs": "\\mathrm {M} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 68,
+		"input": "\\Nu",
+		"texvcjs": "\\mathrm {N} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 69,
+		"input": "\\Omicron",
+		"texvcjs": "O",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 70,
+		"input": "\\Rho",
+		"texvcjs": "\\mathrm {P} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 71,
+		"input": "\\Tau",
+		"texvcjs": "\\mathrm {T} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 72,
+		"input": "\\Chi",
+		"texvcjs": "\\mathrm {X} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 73,
+		"input": "\\Koppa",
+		"texvcjs": "\\mathrm {\\Koppa} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 74,
+		"input": "\\Stigma",
+		"texvcjs": "\\mathrm {\\Stigma} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 75,
+		"input": "\\Coppa",
+		"texvcjs": "\\mathrm {\\Coppa} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 76,
+		"input": "\\uarr",
+		"texvcjs": "\\uparrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 77,
+		"input": "\\darr",
+		"texvcjs": "\\downarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 78,
+		"input": "\\Uarr",
+		"texvcjs": "\\Uparrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 79,
+		"input": "\\uArr",
+		"texvcjs": "\\Uparrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 80,
+		"input": "\\Darr",
+		"texvcjs": "\\Downarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 81,
+		"input": "\\dArr",
+		"texvcjs": "\\Downarrow ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 82,
+		"input": "\\rang",
+		"texvcjs": "\\rangle ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 83,
+		"input": "\\lang",
+		"texvcjs": "\\langle ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 84,
+		"input": "\\arccot",
+		"texvcjs": "\\operatorname {arccot} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 85,
+		"input": "\\arcsec",
+		"texvcjs": "\\operatorname {arcsec} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 86,
+		"input": "\\arccsc",
+		"texvcjs": "\\operatorname {arccsc} ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 87,
+		"input": "\\bold{x}",
+		"texvcjs": "{\\mathbf {x}}",
+		"options": {
+			"usemathrm": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 88,
+		"input": "\\href",
+		"ignore": true,
+		"comment": "Considered as dangerous MathJax command.",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 89,
+		"input": "\\style",
+		"ignore": true,
+		"comment": "Considered as dangerous MathJax command.",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 90,
+		"input": "\\pagecolor{red}x",
+		"texvcjs": "\\pagecolor {red}x",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 91,
+		"input": "\\vline",
+		"texvcjs": "\\vline ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 92,
+		"input": "\\image",
+		"texvcjs": "\\Im ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 93,
+		"input": "\\ointctrclockwise",
+		"texvcjs": "\\ointctrclockwise ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 94,
+		"input": "\\varointclockwise",
+		"texvcjs": "\\varointclockwise ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 95,
+		"input": "\\text{[h]}",
+		"texvcjs": "{\\text{[h]}}",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 96,
+		"input": "\\ce{H2O2}",
+		"texvcjs": "{\\ce {H2O2}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 97,
+		"input": "\\ce{H H H}",
+		"texvcjs": "{\\ce {H H H}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 98,
+		"input": "\\ce{H   H   H}",
+		"texvcjs": "{\\ce {H H H}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 99,
+		"input": "\\ce{H_2HHHHH\\bond{...}H}",
+		"texvcjs": "{\\ce {H_2HHHHH{\\bond {...}}H}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 100,
+		"input": "\\ce{^}",
+		"texvcjs": "{\\ce {^}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 101,
+		"input": "\\ce{CO2 + C -> 2 CO}",
+		"texvcjs": "{\\ce {CO2 + C -> 2 CO}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 102,
+		"input": "\\ce{CO_2 + C -> 2 CO}",
+		"texvcjs": "{\\ce {CO_2 + C -> 2 CO}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 103,
+		"input": "\\ce{\\underbrace{O2}_{oxygen molecule} -> 2O}",
+		"texvcjs": "{\\ce {\\underbrace{O2}_{oxygen molecule}-> 2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 104,
+		"input": "\\ce{^{227}_{90}Th+}",
+		"texvcjs": "{\\ce {^{227}_{90}Th+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 105,
+		"input": "\\ce{CO2 + C -> 2 CO}",
+		"texvcjs": "{\\ce {CO2 + C -> 2 CO}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 106,
+		"input": "\\ce{Hg^2+ ->[I-] HgI2}",
+		"texvcjs": "{\\ce {Hg^2+ ->[I-] HgI2}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 107,
+		"input": "\\ce{H2O}",
+		"texvcjs": "{\\ce {H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 108,
+		"input": "\\ce{Sb2O3}",
+		"texvcjs": "{\\ce {Sb2O3}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 109,
+		"input": "\\ce{N2}",
+		"texvcjs": "{\\ce {N2}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 110,
+		"input": "\\ce{O2}",
+		"texvcjs": "{\\ce {O2}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 111,
+		"input": "\\ce{CO2}",
+		"texvcjs": "{\\ce {CO2}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 112,
+		"input": "\\ce{A <--> B}",
+		"texvcjs": "{\\ce {A <--> B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 113,
+		"input": "\\ce{H2O\\\\ CO2}",
+		"texvcjs": "{\\ce {H2O\\\\ CO2}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 114,
+		"input": "\\ce{\\frac{1}{2}H\\bond{-}H \\ce{H2O}}",
+		"texvcjs": "{\\ce {{\\frac {1}{2}}H{\\bond {-}}H {\\ce {H2O}}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 115,
+		"input": "\\ce{\\color{red}{H2O}}",
+		"texvcjs": "{\\ce {{\\color {red}{H2O}}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 116,
+		"input": "\\ce{CrO4^2-}",
+		"texvcjs": "{\\ce {CrO4^2-}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 117,
+		"input": "\\ce{CrO4^2-}",
+		"texvcjs": "{\\ce {CrO4^2-}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 118,
+		"input": "\\ce{\\underbrace{a}_{b}}",
+		"texvcjs": "{\\ce {\\underbrace{a}_{b}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 119,
+		"input": "\\ce{H+}",
+		"texvcjs": "{\\ce {H+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 121,
+		"input": "\\ce{[AgCl2]-}",
+		"texvcjs": "{\\ce {[AgCl2]-}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 122,
+		"input": "\\ce{Y^99+}",
+		"texvcjs": "{\\ce {Y^99+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 123,
+		"input": "\\ce{Y^{99+}}",
+		"texvcjs": "{\\ce {Y^{99+}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 124,
+		"input": "\\ce{Fe^{II}Fe^{III}2O4}",
+		"texvcjs": "{\\ce {Fe^{II}Fe^{III}2O4}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 125,
+		"input": "\\ce{2H2O}",
+		"texvcjs": "{\\ce {2H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 126,
+		"input": "\\ce{2 H2O}",
+		"texvcjs": "{\\ce {2 H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 127,
+		"input": "\\ce{0.5H2O}",
+		"texvcjs": "{\\ce {0.5H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 128,
+		"input": "\\ce{1/2H2O}",
+		"texvcjs": "{\\ce {1/2H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 129,
+		"input": "\\ce{(1/2)H2O}",
+		"texvcjs": "{\\ce {(1/2)H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 130,
+		"input": "\\ce{\\begin{math}n\\end{math}H2O}",
+		"texvcjs": "{\\ce {$n$H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 131,
+		"input": "\\ce{^{227}_{90}Th+}",
+		"texvcjs": "{\\ce {^{227}_{90}Th+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 132,
+		"input": "\\ce{^227_90Th+}",
+		"texvcjs": "{\\ce {^227_90Th+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 133,
+		"input": "\\ce{^{0}_{-1}n^{-}}",
+		"texvcjs": "{\\ce {^{0}_{-1}n^{-}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 134,
+		"input": "\\ce{^0_-1n-}",
+		"texvcjs": "{\\ce {^0_-1n-}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 135,
+		"input": "\\ce{H{}^3HO}",
+		"texvcjs": "{\\ce {H{}^3HO}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 136,
+		"input": "\\ce{H^3HO}",
+		"texvcjs": "{\\ce {H^3HO}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 137,
+		"input": "\\ce{(NH4)2S}",
+		"texvcjs": "{\\ce {(NH4)2S}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 138,
+		"input": "\\ce{[\\{(X2)3\\}2]^3+}",
+		"texvcjs": "{\\ce {[\\{(X2)3\\}2]^3+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 139,
+		"input": "\\ce{H2(aq)}",
+		"texvcjs": "{\\ce {H2(aq)}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 140,
+		"input": "\\ce{CO3^2-{}_{(aq)}}",
+		"texvcjs": "{\\ce {CO3^2-{}_{(aq)}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 141,
+		"input": "\\ce{NaOH(aq,\\begin{math}\\infty\\end{math})}",
+		"texvcjs": "{\\ce {NaOH(aq,$\\infty $)}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 142,
+		"input": "\\ce{OCO^{.-}}",
+		"texvcjs": "{\\ce {OCO^{.-}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 143,
+		"input": "\\ce{NO^{(2.)-}}",
+		"texvcjs": "{\\ce {NO^{(2.)-}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 144,
+		"input": "\\ce{\\mu-Cl}",
+		"texvcjs": "{\\ce {\\mu-Cl}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 145,
+		"input": "\\ce{[Pt(\\eta^2-C2H4)Cl3]-}",
+		"texvcjs": "{\\ce {[Pt(\\eta^2-C2H4)Cl3]-}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 146,
+		"input": "\\ce{NaOH(aq,\\begin{math}\\infty\\end{math})}",
+		"texvcjs": "{\\ce {NaOH(aq,$\\infty $)}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 147,
+		"input": "\\ce{Fe(CN)_{\\begin{math}\\frac{6}{2}\\end{math}}}",
+		"texvcjs": "{\\ce {Fe(CN)_{${\\frac {6}{2}}$}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 148,
+		"input": "\\ce{\\begin{math}cis\\end{math}{-}[PtCl2(NH3)2]}",
+		"texvcjs": "{\\ce {$cis${-}[PtCl2(NH3)2]}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 149,
+		"input": "\\ce{{(+)}_589{-}[Co(en)3]Cl3}",
+		"texvcjs": "{\\ce {{(+)}_589{-}[Co(en)3]Cl3}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 150,
+		"input": "\\ce{{(+)}_589{-}[Co(en)3]Cl3}",
+		"texvcjs": "{\\ce {{(+)}_589{-}[Co(en)3]Cl3}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 151,
+		"input": "\\ce{KCr(SO4)2*12H2O}",
+		"texvcjs": "{\\ce {KCr(SO4)2*12H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 152,
+		"input": "\\ce{KCr(SO4)2.12H2O}",
+		"texvcjs": "{\\ce {KCr(SO4)2.12H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 153,
+		"input": "\\ce{KCr(SO4)2 * 12 H2O}",
+		"texvcjs": "{\\ce {KCr(SO4)2 * 12 H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 154,
+		"input": "\\ce{C6H5-CHO}",
+		"texvcjs": "{\\ce {C6H5-CHO}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 155,
+		"input": "\\ce{A-B=C#D}",
+		"texvcjs": "{\\ce {A-B=C#D}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 156,
+		"input": "\\ce{A-B=C#D}",
+		"texvcjs": "{\\ce {A-B=C#D}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 157,
+		"input": "\\ce{A\\bond{-}B\\bond{=}C\\bond{#}D}",
+		"texvcjs": "{\\ce {A{\\bond {-}}B{\\bond {=}}C{\\bond {#}}D}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 158,
+		"input": "\\ce{A\\bond{1}B\\bond{2}C\\bond{3}D}",
+		"texvcjs": "{\\ce {A{\\bond {1}}B{\\bond {2}}C{\\bond {3}}D}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 159,
+		"input": "\\ce{A\\bond{~}B\\bond{~-}C}",
+		"texvcjs": "{\\ce {A{\\bond {~}}B{\\bond {~-}}C}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 160,
+		"input": "\\ce{A\\bond{~--}B\\bond{~=}C\\bond{-~-}D}",
+		"texvcjs": "{\\ce {A{\\bond {~--}}B{\\bond {~=}}C{\\bond {-~-}}D}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 161,
+		"input": "\\ce{A\\bond{...}B\\bond{....}C}",
+		"texvcjs": "{\\ce {A{\\bond {...}}B{\\bond {....}}C}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 162,
+		"input": "\\ce{A\\bond{->}B\\bond{<-}C}",
+		"texvcjs": "{\\ce {A{\\bond {->}}B{\\bond {<-}}C}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 163,
+		"input": "\\underset{\\mathrm{red}}{\\ce{[Hg^{II}I4]^2-}}",
+		"texvcjs": "{\\underset {\\mathrm {red} }{{\\ce {[Hg^{II}I4]^2-}}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 164,
+		"input": "\\ce{Hg^2+ ->[I-] \\begin{math}\\underset{\\mathrm{red}}{\\ce{HgI2}}\\end{math}} ",
+		"texvcjs": "{\\ce {Hg^2+ ->[I-] ${\\underset {\\mathrm {red} }{{\\ce {HgI2}}}}$}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 169,
+		"input": "\\ce{A ->[H2O] B}",
+		"texvcjs": "{\\ce {A ->[H2O] B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 170,
+		"input": "\\ce{A ->[H2O] B}",
+		"texvcjs": "{\\ce {A ->[H2O] B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 171,
+		"input": "\\ce{A ->[{text above}][{text below}] B}",
+		"texvcjs": "{\\ce {A ->[{text above}][{text below}] B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 172,
+		"input": "\\ce{A ->[{text above}][{text below}] B}",
+		"texvcjs": "{\\ce {A ->[{text above}][{text below}] B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 173,
+		"input": "\\ce{A ->[\\begin{math}x\\end{math}][\\begin{math}x_i\\end{math}] B}",
+		"texvcjs": "{\\ce {A ->[$x$][$x_{i}$] B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 175,
+		"input": "\\ce{A ->[\\begin{math}{x}\\end{math}] B}",
+		"texvcjs": "{\\ce {A ->[${x}$] B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 177,
+		"input": "\\ce{A + B}",
+		"texvcjs": "{\\ce {A + B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 178,
+		"input": "\\ce{A - B}",
+		"texvcjs": "{\\ce {A - B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 179,
+		"input": "\\ce{A = B}",
+		"texvcjs": "{\\ce {A = B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 180,
+		"input": "\\ce{A \\pm B}",
+		"texvcjs": "{\\ce {A \\pm B}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 181,
+		"input": "\\ce{SO4^2- + Ba^2+ -> BaSO4 v}",
+		"texvcjs": "{\\ce {SO4^2- + Ba^2+ -> BaSO4 v}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 182,
+		"input": "\\ce{A v B (v) -> B ^ B (^)}",
+		"texvcjs": "{\\ce {A v B (v) -> B ^ B (^)}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 183,
+		"input": "\\ce{Zn^2+}",
+		"texvcjs": "{\\ce {Zn^2+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 184,
+		"input": "\\ce{RNO2 &<=>[+e] RNO2^{-.}}",
+		"texvcjs": "{\\ce {RNO2 &<=>[+e] RNO2^{-.}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 185,
+		"input": "\\ce{NaOH(aq,\\begin{math}\\infty\\end{math})}",
+		"texvcjs": "{\\ce {NaOH(aq,$\\infty $)}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 186,
+		"input": "\\ce{H2O}",
+		"texvcjs": "{\\ce {H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 187,
+		"input": "\\ce{Fe(CN)_{\\begin{math}\\frac{6}{2}\\end{math}}}",
+		"texvcjs": "{\\ce {Fe(CN)_{${\\frac {6}{2}}$}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 188,
+		"input": "\\ce{NO_x}",
+		"texvcjs": "{\\ce {NO_x}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 189,
+		"input": "\\ce{Fe^n+}",
+		"texvcjs": "{\\ce {Fe^n+}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 190,
+		"input": "\\ce{x Na(NH4)HPO4 ->[\\Delta] (NaPO3)_x + x NH3 ^ + x H2O}",
+		"texvcjs": "{\\ce {x Na(NH4)HPO4 ->[\\Delta] (NaPO3)_x + x NH3 ^ + x H2O}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 191,
+		"input": "\\ce{NO_\\begin{math}x\\end{math}}",
+		"texvcjs": "{\\ce {NO_$x$}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 192,
+		"input": "\\ce{NO_\\begin{math}{x}\\end{math}}",
+		"texvcjs": "{\\ce {NO_${x}$}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 193,
+		"input": "\\ce{NO_{\\begin{math}x\\end{math}}}",
+		"texvcjs": "{\\ce {NO_{$x$}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 194,
+		"input": "$\\ce{\\begin{math}cis\\end{math}{-}[PtCl2(NH3)2]}$",
+		"texvcjs": "\\${\\ce {$cis${-}[PtCl2(NH3)2]}}\\$",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 195,
+		"input": "\\underset{\\text{amphoteres Hydroxid}}{\\ce{Zn(OH)2 v}}",
+		"texvcjs": "{\\underset {\\text{amphoteres Hydroxid}}{{\\ce {Zn(OH)2 v}}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 196,
+		"input": "\\underset{\\text{Hydroxozikat}}{\\ce{[Zn(OH)4]^2-}}",
+		"texvcjs": "{\\underset {\\text{Hydroxozikat}}{{\\ce {[Zn(OH)4]^2-}}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 197,
+		"input": "K = \\frac{[\\ce{Hg^2+}][\\ce{Hg}]}{[\\ce{Hg2^2+}]}",
+		"texvcjs": "K={\\frac {[{\\ce {Hg^2+}}][{\\ce {Hg}}]}{[{\\ce {Hg2^2+}}]}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 198,
+		"input": "K = \\ce{\\frac{[Hg^2+][Hg]}{[Hg2^2+]}}",
+		"texvcjs": "K={\\ce {{\\frac {[Hg^2+][Hg]}{[Hg2^2+]}}}}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 199,
+		"input": "^1",
+		"texvcjs": "^{1}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 200,
+		"input": "_1",
+		"texvcjs": "_{1}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 201,
+		"input": "1^1",
+		"texvcjs": "1^{1}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 202,
+		"input": "1_1",
+		"texvcjs": "1_{1}",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 204,
+		"input": "\\intbar",
+		"texvcjs": "\\intbar ",
+		"options": {
+			"usemathrm": true
+		}
+	},
+	{
+		"id": 205,
+		"input": "\\ ",
+		"texvcjs": "\\ ",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 206,
+		"input": "\\ce {\\ }",
+		"texvcjs": "{\\ce {\\ }}",
+		"comment": "Bug T183557",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 207,
+		"input": "\\ce {A\\;+\\;B\\;->\\;C}",
+		"texvcjs": "{\\ce {A\\;+\\;B\\;->\\;C}}",
+		"comment": "Bug T183557",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 208,
+		"input": "\\ce {pH=-\\log _{10}[H+]}",
+		"texvcjs": "{\\ce {pH=-\\log _{10}[H+]}}",
+		"comment": "Bug T183557",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		},
+		"warnCount": 1
+	},
+	{
+		"id": 209,
+		"input": "\\ce {pH = -\\begin{math}\\log_10\\end{math}[H+]}",
+		"texvcjs": "{\\ce {pH = -$\\log _{1}0$[H+]}}",
+		"comment": "Bug T183557",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		}
+	},
+	{
+		"id": 210,
+		"input": "\\ce {pH = -$\\log_10$[H+]}",
+		"texvcjs": "{\\ce {pH=-\\$\\log _{1}0\\$[H+]}}",
+		"comment": "TODO: Consider allowing dollar inside math mode, or add math commands as chem symbols",
+		"options": {
+			"usemathrm": true,
+			"usemhchem": true
+		},
+		"warnCount": 2
+	},
+	{
+		"id": 211,
+		"input": "\\$",
+		"texvcjs": "\\$"
+	},
+	{
+		"id": 212,
+		"input": "$",
+		"texvcjs": "\\$",
+		"warnCount": 1
+	},
+	{
+		"id": 213,
+		"input": "\\intBar",
+		"texvcjs": "\\intBar ",
+		"options": {
+			"usemathrm": true
+		}
+	}
+]
