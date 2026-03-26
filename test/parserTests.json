@@ -7022,6 +7022,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:LoremIpsum.djvu</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">2</span>页</span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">50</span>像素</span>]]</span></span>"
 	},
 	{
+		"desc": "Template inside <inputbox>",
+		"wikitext": "<inputbox>\ntype=search\nprefix={{FULLPAGENAME}}/Archive\n</inputbox>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n<span class=\"wpb-param-line\">prefix=<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span>/Archive</span>\n</span>&lt;/inputbox&gt;</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
