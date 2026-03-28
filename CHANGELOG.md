@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## 1.37.1
+
+*2026-03-28*
+
+**Removed**
+
+- [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) no longer suggests [LilyPond](https://lilypond.org/) commands that do not start with a backslash (`\`) in `<score>` extension tags
+
 ## v1.37.0
 
 *2026-03-26*
@@ -577,7 +585,7 @@
 **Added**
 
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now provide documentations for suggested magic words
-- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now support the `score` extension tag written in [LilyPond](https://lilypond.org)
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) and [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now support the `<score>` extension tag written in [LilyPond](https://lilypond.org)
 - New executable [`getParserConfig`](./README#cli-usage)
 
 **Fixed**

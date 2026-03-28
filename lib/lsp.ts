@@ -1119,30 +1119,9 @@ export class LanguageService implements LanguageServiceBase {
 			) {
 				return undefined;
 			}
-			const word = /\\?\b(?:\w|\b(?:->?|\.)|\bly:)+$/u.exec(curLine!.slice(0, character))?.[0];
+			const word = /(?<!\\)\\[-a-z]+$/u.exec(curLine!.slice(0, character))?.[0];
 			if (word) {
-				const data = this.#lilypondData;
-				return word.startsWith('\\')
-					? getCompletion(
-						data.filter(w => w.startsWith('\\')),
-						'Function',
-						word,
-						position,
-					)
-					: [
-						...getCompletion(
-							data.filter(w => /^[a-z]/u.test(w)),
-							'Variable',
-							word,
-							position,
-						),
-						...getCompletion(
-							data.filter(w => /^[A-Z]/u.test(w)),
-							'Class',
-							word,
-							position,
-						),
-					];
+				return getCompletion(this.#lilypondData, 'Function', word, position);
 			}
 		} else if (type === 'ext-inner' && mathTags.has(cur!.name!)) {
 			const word = /(?<!\\)\\[a-z]+$/iu.exec(curLine!.slice(0, character))?.[0];
