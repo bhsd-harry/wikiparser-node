@@ -156,6 +156,7 @@ const refTags = new Set(['ref']),
 		...renameTypes,
 	]),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
+	rawLilyPondCommands = new Set(['paper', 'book', 'bookpart', 'score', 'markuplist'].map(c => `\\${c}`)),
 	cssSelector = ['ext', 'html', 'table'].map(s => `${s}-attr#style`).join();
 const getLinkRegex = getRegex(protocol => new RegExp(`^(?:${protocol}|//)`, 'iu'));
 
@@ -999,7 +1000,10 @@ export class LanguageService implements LanguageServiceBase {
 		let type: TokenTypes | undefined,
 			parentNode: Token | undefined;
 		if (mt?.[8] === undefined) {
-			cur = root.elementFromPoint(character, line)!;
+			cur = root.elementFromPoint(character, line);
+			if (!cur) {
+				return undefined;
+			}
 			({type, parentNode} = cur);
 		}
 		if (mt?.[7] !== undefined || type === 'image-parameter') { // image parameter
@@ -1112,7 +1116,10 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			const word = /(?<!\\)\\[-a-z]+$/u.exec(curLine!.slice(0, character))?.[0];
 			if (word) {
-				return getCompletion(this.#lilypondData, 'Function', word, position);
+				const words = (parentNode as ExtToken).hasAttr('raw')
+					? this.#lilypondData
+					: this.#lilypondData.filter(c => !rawLilyPondCommands.has(c));
+				return getCompletion(words, 'Function', word, position);
 			}
 		} else if (type === 'ext-inner' && mathTags.has(cur!.name!)) {
 			const word = /(?<!\\)\\[a-z]+$/iu.exec(curLine!.slice(0, character))?.[0];
@@ -1616,8 +1623,11 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		const root = await this.#queue(text),
-			node = root.elementFromPoint(position.character, position.line)!,
-			ext = node.is<ExtToken>('ext') && node.name === 'ref'
+			node = root.elementFromPoint(position.character, position.line);
+		if (!node) {
+			return undefined;
+		}
+		const ext = node.is<ExtToken>('ext') && node.name === 'ref'
 				? node
 				: node.closest<ExtToken>('ext#ref'),
 			refName = getRefTagAttr(ext, 'name');
@@ -1644,8 +1654,11 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
 		const root = await this.#queue(text),
-			node = root.elementFromPoint(position.character, position.line)!,
-			{type} = node,
+			node = root.elementFromPoint(position.character, position.line);
+		if (!node) {
+			return undefined;
+		}
+		const {type} = node,
 			refName = getRefName(node),
 			refGroup = getRefGroup(node);
 		return !refName && !refGroup && (
@@ -1667,8 +1680,11 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		const root = await this.#queue(text),
-			node = root.elementFromPoint(position.character, position.line)!,
-			{type} = node,
+			node = root.elementFromPoint(position.character, position.line);
+		if (!node) {
+			return undefined;
+		}
+		const {type} = node,
 			refName = getRefName(node),
 			refNameGroup = refName && getRefTagAttr(node.parentNode!.parentNode as AttributesToken, 'group'),
 			refGroup = getRefGroup(node),
