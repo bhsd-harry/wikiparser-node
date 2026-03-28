@@ -3,6 +3,10 @@
 
 *2026-03-28*
 
+**Added**
+
+- The preset configuration for Moegirlpedia is updated to include the [Math](https://www.mediawiki.org/wiki/Extension:Math) extension
+
 **Removed**
 
 - [`LanguageService.prototype.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) no longer suggests [LilyPond](https://lilypond.org/) commands that do not start with a backslash (`\`) in `<score>` extension tags
