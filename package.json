@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.37.1",
+	"version": "1.38.0",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -27,6 +27,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:test",
@@ -44,12 +45,12 @@
 		"@bhsd/code-standard": "^2.1.1",
 		"@bhsd/common": "^2.0.0",
 		"@bhsd/nodejs": "^1.0.0",
-		"@bhsd/test-util": "^0.4.0",
+		"@bhsd/test-util": "^1.0.0",
 		"@stylistic/eslint-plugin": "^5.10.0",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.11.0",
-		"@typescript-eslint/eslint-plugin": "^8.57.0",
-		"@typescript-eslint/parser": "^8.57.0",
+		"@typescript-eslint/eslint-plugin": "^8.58.0",
+		"@typescript-eslint/parser": "^8.58.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.27.4",
 		"eslint": "^9.39.4",
@@ -63,6 +64,6 @@
 		"eslint-plugin-unicorn": "^63.0.0",
 		"markdownlint-cli2": "^0.21.0",
 		"mocha": "^11.7.5",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.2"
 	}
 }

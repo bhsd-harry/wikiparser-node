@@ -27,6 +27,7 @@ const resolve = (title: string): [number, string] => {
  * MediaWiki页面标题对象
  */
 export class Title {
+	// @ts-expect-error lazy initialization
 	#main: string;
 	readonly #namespaces;
 	#ns;

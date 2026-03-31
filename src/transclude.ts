@@ -44,6 +44,7 @@ export abstract class TranscludeToken extends Token {
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 	#anonCount = 0;
+	// @ts-expect-error lazy initialization
 	#title: Title;
 
 	declare readonly name: string;
