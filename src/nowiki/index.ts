@@ -172,6 +172,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 						}
 						const e = generateForSelf(this, {start}, rule, 'chem-required', s);
 						if (result.status !== 'C') {
+							/** @todo native MathML supports more macros than texvcjs */
 							const {message, location} = result.error,
 								[endIndex, endLine, endCol] = updateLocation(e, location.end, n);
 							[e.startIndex, e.startLine, e.startCol] = updateLocation(e, location.start, n);
