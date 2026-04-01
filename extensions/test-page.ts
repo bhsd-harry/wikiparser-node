@@ -1,4 +1,5 @@
 import {prepareDoneBtn, addOption, changeHandler, hashChangeHandler, inputHandler} from './test-page-common.js';
+import type {} from 'prismjs'; // eslint-disable-line n/no-extraneous-import
 
 declare interface Test {
 	desc: string;

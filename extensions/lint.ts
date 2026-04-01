@@ -3,9 +3,12 @@ import type {ConfigData, LintError, Diagnostic, Action, LinterBase, editor} from
 /** 用于语法分析 */
 class Linter implements LinterBase {
 	readonly #id;
+	// @ts-expect-error lazy initialization
 	#wikitext: string;
 	#running: Promise<LintError[]> | undefined;
+	// @ts-expect-error lazy initialization
 	#done: LintError[];
+	// @ts-expect-error lazy initialization
 	#config: ConfigData;
 	include;
 

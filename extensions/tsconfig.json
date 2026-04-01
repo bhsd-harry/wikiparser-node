@@ -12,6 +12,7 @@
 	"compilerOptions": {
 		"target": "es2019",
 		"module": "CommonJS",
+		"rootDir": ".",
 		"outDir": "dist",
 		"skipLibCheck": true
 	}

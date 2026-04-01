@@ -208,7 +208,7 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 	container.append(preview, textbox);
 
 	textbox.addEventListener('input', e => {
-		if (!(e as InputEvent).isComposing) {
+		if (!e.isComposing) {
 			printer.queue(2000, PrintType.Coarse);
 		}
 		textbox.style.color = '';
