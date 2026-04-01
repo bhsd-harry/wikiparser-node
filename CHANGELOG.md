@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
-## 1.37.2
+## 1.38.0
 
-*2026-04-01*
+*2026-04-02*
+
+**Added**
+
+- New category of linting errors: [blank image alt attribute](https://github.com/bhsd-harry/wikiparser-node/wiki/blank-alt) which is an accessibility issue
 
 **Fixed**
 

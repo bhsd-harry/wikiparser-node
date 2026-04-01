@@ -267,6 +267,18 @@ export abstract class FileToken extends LinkBaseToken {
 					errors.push(e);
 				}
 			}
+			rule = 'blank-alt';
+			s = lintConfig.getSeverity(rule);
+			if (s) {
+				const alt = this.getArg('alt');
+				if (alt?.getValue() === '') {
+					const e = generateForChild(alt, rect, rule, 'blank-alt', s);
+					if (computeEditInfo || fix) {
+						e.fix = fixByRemove(e, -1);
+					}
+					errors.push(e);
+				}
+			}
 			if (
 				args.length === keys.length
 				&& frameKeys.length < 2

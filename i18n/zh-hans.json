@@ -1,6 +1,7 @@
 {
 	"argument-in-ext": "扩展标签内的模板参数",
 	"attributes-of-closing-tag": "结束标签的属性",
+	"blank-alt": "空的alt属性",
 	"bold-apostrophes": "粗体撇号",
 	"bold-in-header": "章节标题中的加粗文本",
 	"chem-required": "需要chem属性",
