@@ -56,6 +56,7 @@ export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;
 	#delimiter;
+	// @ts-expect-error lazy initialization
 	#title: Title;
 
 	abstract override get type(): 'link'

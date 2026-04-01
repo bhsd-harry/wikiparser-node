@@ -42,7 +42,6 @@ export default extend(
 			'errors/',
 			'printed/',
 			'test/parserTests.json',
-			'test/texvcjs/',
 		],
 	},
 	{
@@ -182,6 +181,14 @@ export default extend(
 		rules: {
 			'n/no-missing-require': 0,
 			'@typescript-eslint/strict-void-return': 0,
+		},
+	},
+	{
+		files: [
+			'test/math/*.json',
+		],
+		rules: {
+			'no-irregular-whitespace': 0,
 		},
 	},
 	{

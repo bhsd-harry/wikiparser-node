@@ -85,6 +85,7 @@
 	"dependencies": {
 		"@bhsd/cm-util": "^1.0.0",
 		"@bhsd/common": "^2.0.0",
+		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/stylelint-util": "^1.0.1",
 		"binary-search": "^1.3.6",
 		"vscode-languageserver-types": "^3.17.5"
@@ -102,7 +103,6 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^2.1.1",
-		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^0.4.0",
 		"@codemirror/lint": "^6.9.5",
 		"@eslint/markdown": "^8.0.1",

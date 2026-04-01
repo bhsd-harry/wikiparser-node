@@ -3,8 +3,11 @@ import {error} from '../util/diff';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
 export class Range {
+	// @ts-expect-error lazy initialization
 	readonly start: number;
+	// @ts-expect-error lazy initialization
 	readonly end: number;
+	// @ts-expect-error lazy initialization
 	readonly step: number;
 
 	/**
