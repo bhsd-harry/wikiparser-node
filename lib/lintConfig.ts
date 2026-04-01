@@ -22,6 +22,7 @@ const dict = new Map<SeverityLevel | undefined, LintError.Severity | false>([
 
 const defaultLintRuleConfig: LintRuleConfig = {
 	'arg-in-ext': 1,
+	'blank-alt': 1,
 	'bold-header': [
 		1,
 		{

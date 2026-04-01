@@ -1,6 +1,7 @@
 {
 	"argument-in-ext": "template argument inside an extension tag",
 	"attributes-of-closing-tag": "attributes of a closing tag",
+	"blank-alt": "blank alt attribute",
 	"bold-apostrophes": "bold apostrophes",
 	"bold-in-header": "bold text in a section header",
 	"close": null,
