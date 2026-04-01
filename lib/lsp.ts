@@ -533,13 +533,19 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
+	// @ts-expect-error lazy initialization
 	#text: string;
+	// @ts-expect-error lazy initialization
 	#text2: string;
 	#running: Promise<Token> | undefined;
 	#running2: Promise<Token> | undefined;
+	// @ts-expect-error lazy initialization
 	#done: Token;
+	// @ts-expect-error lazy initialization
 	#done2: Token;
+	// @ts-expect-error lazy initialization
 	#config: Config | string;
+	// @ts-expect-error lazy initialization
 	#include: boolean;
 	#completionConfig: [CompletionConfig, Config] | undefined;
 	/** @since v1.17.1 */
@@ -552,6 +558,7 @@ export class LanguageService implements LanguageServiceBase {
 	/* NOT FOR BROWSER ONLY */
 
 	/** @private */
+	// @ts-expect-error lazy initialization
 	lilypond: string;
 	#lilypondData: string[];
 	#mathData: string[];

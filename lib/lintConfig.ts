@@ -326,6 +326,7 @@ export interface LintConfiguration extends LintConfigurationBase {}
 
 /** 语法检查设置 */
 export class LintConfiguration implements LintConfigurationBase {
+	// @ts-expect-error lazy initialization
 	#rules: LintRuleConfiguration;
 
 	/** @implements */
