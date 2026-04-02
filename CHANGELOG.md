@@ -1,5 +1,5 @@
 <!-- markdownlint-disable first-line-h1 -->
-## 1.38.0
+## v1.38.0
 
 *2026-04-02*
 
@@ -11,7 +11,7 @@
 
 - `nowrap` is now a valid but obsolete attribute for `<td>` and `<th>` tags
 
-## 1.37.1
+## v1.37.1
 
 *2026-03-31*
 
