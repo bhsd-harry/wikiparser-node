@@ -15,7 +15,7 @@ export interface TableBaseToken extends AttributesParentBase {}
  * 转义表格语法
  * @param syntax 表格语法节点
  */
-const escapeTable = (syntax: SyntaxToken): void => {
+export const escapeTable = (syntax: SyntaxToken): void => {
 	const wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
 				? child.data.replace(/\|{1,2}/gu, ({length}) => `{{${'!'.repeat(length)}}}`)

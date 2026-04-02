@@ -6,7 +6,9 @@ import {BoundingRect} from '../../lib/rect';
 import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 import {Token} from '../index';
-import {TableBaseToken} from './base';
+import {
+	TableBaseToken,
+} from './base';
 import type {
 	Config,
 	LintError,
