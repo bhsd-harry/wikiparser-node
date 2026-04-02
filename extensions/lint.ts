@@ -8,7 +8,8 @@ class Linter implements LinterBase {
 	#running: Promise<LintError[]> | undefined;
 	// @ts-expect-error lazy initialization
 	#done: LintError[];
-	// @ts-expect-error lazy initialization
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore lazy initialization
 	#config: ConfigData;
 	include;
 

@@ -59,7 +59,7 @@
 		"@bhsd/code-standard": "^2.1.1",
 		"@bhsd/codemirror-mediawiki": "^3.12.3",
 		"@bhsd/nodejs": "^1.0.0",
-		"@bhsd/test-util": "^0.4.0",
+		"@bhsd/test-util": "^1.0.0",
 		"@codemirror/lint": "^6.9.5",
 		"@stylistic/eslint-plugin": "^5.10.0",
 		"@stylistic/stylelint-plugin": "^5.0.1",

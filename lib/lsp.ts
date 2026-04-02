@@ -687,9 +687,9 @@ export class LanguageService implements LanguageServiceBase {
 					} else if (!isJa) {
 						name = name.slice(2, -2);
 					}
-					if (name in iAlias) {
+					if (Object.hasOwn(iAlias, name)) {
 						name = iAlias[name]!;
-					} else if (name in sAlias) {
+					} else if (Object.hasOwn(sAlias, name)) {
 						name = sAlias[name]!;
 					}
 					return this.#getBehaviorSwitch(name.toLowerCase());
@@ -743,9 +743,9 @@ export class LanguageService implements LanguageServiceBase {
 					name => {
 						if (!this.data) {
 							return undefined;
-						} else if (name in insensitive) {
+						} else if (Object.hasOwn(insensitive, name)) {
 							name = insensitive[name]!;
-						} else if (name in sensitive) {
+						} else if (Object.hasOwn(sensitive, name)) {
 							name = sensitive[name]!;
 						}
 						return this.#getParserFunction(name.toLowerCase());
