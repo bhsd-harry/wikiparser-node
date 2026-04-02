@@ -208,7 +208,11 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		}
 		let nsVal: number | undefined = Number(val);
 		if (Number.isNaN(nsVal)) {
-			nsVal = nsid[val.toLowerCase().replaceAll('_', ' ')];
+			const key = val.toLowerCase().replaceAll('_', ' ');
+			if (!Object.hasOwn(nsid, key)) {
+				return '';
+			}
+			nsVal = nsid[key];
 		}
 		return namespaces[nsVal!] ?? '';
 	},
@@ -342,15 +346,15 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		const title = makeTitle(target, config, -1);
 		return title && title.ns === -1 ? title.prefix + title.main : 'Special:Badtitle';
 	},
-	contentmodels: Record<string, [string, string?]> = {
-		js: ['JavaScript', 'javascript'],
-		css: ['CSS'],
-		json: ['JSON'],
-		vue: ['Vue'],
-		'sanitized-css': ['Sanitized CSS'],
-		Scribunto: ['Scribunto module'],
-	},
-	contentmodel = (i: 0 | 1, extension: string): string => contentmodels[extension]![i] ?? extension,
+	contentmodels = new Map<string, [string, string?]>([
+		['js', ['JavaScript', 'javascript']],
+		['css', ['CSS']],
+		['json', ['JSON']],
+		['vue', ['Vue']],
+		['sanitized-css', ['Sanitized CSS']],
+		['Scribunto', ['Scribunto module']],
+	]),
+	contentmodel = (i: 0 | 1, extension: string): string => contentmodels.get(extension)![i] ?? extension,
 	cmp = (x: string, y: string, decode?: boolean): boolean => {
 		const a = decode ? decodeHtml(x) : x,
 			b = decodeHtml(y);
@@ -662,7 +666,7 @@ export const expandMagicWord = (
 				}
 				return main.endsWith('/doc') ? 'wikiext' : contentmodel(i, 'Scribunto');
 			}
-			return (n === 8 || n === 2 && isSubpage) && extension && extension in contentmodels
+			return (n === 8 || n === 2 && isSubpage) && extension && contentmodels.has(extension)
 				? contentmodel(i, extension)
 				: 'wikitext';
 		}

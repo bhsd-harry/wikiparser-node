@@ -11,7 +11,7 @@ import {TrBaseToken} from '../src/table/trBase';
 import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
 import type {TableRenderedCoords} from '../src/table/index';
-import type {TdAttrs, TdSpanAttrs} from '../src/table/td';
+import type {TdAttrs, TdSpanAttrs, TdSubtypes} from '../src/table/td';
 
 /**
  * 比较两个数
@@ -71,7 +71,7 @@ const occupied = (layout: Layout, i: number, oneRow?: true, cells?: readonly TdT
  * @param attr 属性
  * @param multi 是否对所有单元格设置，或是仅对行首单元格设置
  */
-const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | string = {}, multi?: boolean): void => {
+const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | TdSubtypes = {}, multi?: boolean): void => {
 	for (const [token, start] of cells) {
 		if (multi || start) {
 			if (typeof attr === 'string') {

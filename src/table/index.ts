@@ -458,7 +458,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr table attribute / 表格属性
 	 * @param multiRow whether to format multi-row cells / 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
-	formatTableRow(y: number, attr?: TdAttrs | string, multiRow?: boolean): void {
+	formatTableRow(y: number, attr?: TdAttrs | TdSubtypes, multiRow?: boolean): void {
 		require('../../addon/table');
 		this.formatTableRow(y, attr, multiRow);
 	}
@@ -471,7 +471,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr table attribute / 表格属性
 	 * @param multiCol whether to format multi-column cells / 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
-	formatTableCol(x: number, attr?: TdAttrs | string, multiCol?: boolean): void {
+	formatTableCol(x: number, attr?: TdAttrs | TdSubtypes, multiCol?: boolean): void {
 		require('../../addon/table');
 		this.formatTableCol(x, attr, multiCol);
 	}

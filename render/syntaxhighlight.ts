@@ -387,8 +387,9 @@ const dependencies: Record<string, string | string[]> = {
 export const loadLanguage = (lang: string): string => {
 	if (lang in Prism!.languages) {
 		return lang;
+	} else if (Object.hasOwn(aliases, lang)) {
+		lang = aliases[lang]!;
 	}
-	lang = aliases[lang] ?? lang;
 	if (lang === 'wiki') {
 		try {
 			const {default: registerWiki}: typeof import('prism-wiki') = require('prism-wiki');
@@ -397,12 +398,14 @@ export const loadLanguage = (lang: string): string => {
 			return lang;
 		} catch {}
 	}
-	const dep = dependencies[lang];
-	if (typeof dep === 'string') {
-		loadLanguage(dep);
-	} else if (dep) {
-		for (const d of dep) {
-			loadLanguage(d);
+	if (Object.hasOwn(dependencies, lang)) {
+		const dep = dependencies[lang];
+		if (typeof dep === 'string') {
+			loadLanguage(dep);
+		} else if (dep) {
+			for (const d of dep) {
+				loadLanguage(d);
+			}
 		}
 	}
 	require(`prismjs/components/prism-${lang}.js`);

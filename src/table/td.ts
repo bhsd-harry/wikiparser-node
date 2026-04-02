@@ -10,7 +10,13 @@ import {BoundingRect} from '../../lib/rect';
 import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 import {Token} from '../index';
-import {TableBaseToken} from './base';
+import {
+	TableBaseToken,
+
+	/* NOT FOR BROWSER */
+
+	escapeTable,
+} from './base';
 import type {
 	Config,
 	LintError,
@@ -366,9 +372,13 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override setSyntax(syntax: string, esc?: boolean): void {
-		const aliases: Record<string, string> = {td: '\n|', th: '\n!', caption: '\n|+'};
-		super.setSyntax(aliases[syntax] ?? syntax, esc);
+	setSyntax(subtype: TdSubtypes, esc?: boolean): void {
+		const aliases: Record<TdSubtypes, string> = {td: '\n|', th: '\n!', caption: '\n|+'},
+			{firstChild} = this;
+		firstChild.replaceChildren(aliases[subtype]);
+		if (esc) {
+			escapeTable(firstChild);
+		}
 	}
 
 	/** 修复\<td\>语法 */
