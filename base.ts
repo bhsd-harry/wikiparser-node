@@ -374,7 +374,7 @@ export interface LanguageService {
 	 *
 	 * 销毁实例
 	 */
-	destroy(): void;
+	destroy(): Promise<void>;
 
 	/**
 	 * Provide color decorators
@@ -544,6 +544,8 @@ export interface LanguageService {
 	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
 	 */
 	setTargetWikipedia(wiki: string, user: string): Promise<void>;
+
+	[Symbol.dispose](): void;
 }
 
 export type SeverityLevel = 0 | 1 | 2 | false | 'off' | 'warning' | 'error';

@@ -37,7 +37,7 @@ Parser.internal = true;
 
 /* NOT FOR BROWSER END */
 
-declare type Key = keyof LanguageService | 'constructor';
+declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose> | 'constructor';
 
 /**
  * 测试单个指令
@@ -101,7 +101,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 
 	/* NOT FOR BROWSER ONLY */
 
-	const lsp = Parser.createLanguageService();
+	using lsp = Parser.createLanguageService();
 	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
 	lsp.config = {...Parser.getConfig(), articlePath: 'https://mediawiki.org/wiki/$1'};
 	const root = Parser.parse(content, title, true),
@@ -300,7 +300,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				throw new Error(`未检测的方法：${method as string}`);
 		}
 	}
-	lsp.destroy();
 	if (!silent) {
 		console.timeEnd(`LSP: ${title}`);
 	}
