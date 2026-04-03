@@ -602,20 +602,14 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
-	destroy(): void {
+	async destroy(): Promise<void> {
 		Object.setPrototypeOf(this, null);
 
 		/* NOT FOR BROWSER ONLY */
 
 		const dir = path.join(__dirname, 'lilypond');
 		if (fs.existsSync(dir)) {
-			for (const file of fs.readdirSync(dir)) {
-				(async () => {
-					try {
-						await fs.promises.unlink(path.join(dir, file));
-					} catch {}
-				})();
-			}
+			await Promise.allSettled(fs.readdirSync(dir).map(file => fs.promises.unlink(path.join(dir, file))));
 		}
 	}
 
@@ -2109,5 +2103,10 @@ export class LanguageService implements LanguageServiceBase {
 			this.config = await Parser.fetchConfig(site, `${host}/w`, user);
 		}
 		Object.assign(this.config, {articlePath: `${host}/wiki/`});
+	}
+
+	/** @implements */
+	[Symbol.dispose](): void {
+		void this.destroy();
 	}
 }
