@@ -24,7 +24,7 @@ class LanguageService {
         __classPrivateFieldSet(this, _LanguageService_id, wikiparse.id++, "f");
         __classPrivateFieldSet(this, _LanguageService_include, include, "f");
     }
-    destroy() {
+    async destroy() {
         wikiparse.provide('destroy', __classPrivateFieldGet(this, _LanguageService_id, "f"));
     }
     provideColorPresentations(color) {

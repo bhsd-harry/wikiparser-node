@@ -429,7 +429,8 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
-	destroy(): void {
+	// eslint-disable-next-line @typescript-eslint/require-await
+	async destroy(): Promise<void> {
 		Object.setPrototypeOf(this, null);
 	}
 

@@ -339,7 +339,7 @@ export interface LanguageService {
 	 *
 	 * 销毁实例
 	 */
-	destroy(): void;
+	destroy(): Promise<void>;
 
 	/**
 	 * Provide color decorators

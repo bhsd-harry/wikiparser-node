@@ -9,7 +9,7 @@ import type {
 	Config,
 } from '../base';
 
-declare type Key = keyof LanguageService | 'constructor' | 'findTemplateTokens';
+declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose> | 'constructor' | 'findTemplateTokens';
 
 const config: Config = require('../../config/default');
 wikiparse.setConfig({...config, articlePath: 'https://mediawiki.org/wiki/$1'});
@@ -142,7 +142,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				throw new Error(`未检测的方法：${method as string}`);
 		}
 	}
-	lsp.destroy();
 	if (!silent) {
 		console.timeEnd(`LSP: ${title}`);
 	}

@@ -38,7 +38,7 @@ class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
-	destroy(): void {
+	async destroy(): Promise<void> { // eslint-disable-line @typescript-eslint/require-await
 		wikiparse.provide('destroy', this.#id);
 	}
 
