@@ -1308,8 +1308,15 @@ export class LanguageService implements LanguageServiceBase {
 		let lilypondDiagnostics: DiagnosticBase[][] = [];
 		if (this.lilypond) {
 			const tokens = root.querySelectorAll<ExtToken>('ext#score').filter(token => {
-				const lang = token.getAttr('lang');
-				return (lang === undefined || lang === 'lilypond') && token.innerText;
+				const lang = token.getAttr('lang'),
+					{innerText} = token;
+				if (lang !== undefined && lang !== 'lilypond' || !innerText?.trim()) {
+					return false;
+				} else if (/[#$](?!@?\s*(?:'\s*)?(?:[#"]|-?\.?\d|[a-z_][-:\w]*(?![^)\]}\s])))/iu.test(innerText)) {
+					Parser.debug('Skipping score containing LilyPond Guile scheme:\n', innerText);
+					return false;
+				}
+				return true;
 			});
 			if (tokens.length > 0) {
 				const dir = path.join(__dirname, 'lilypond');
@@ -1330,7 +1337,7 @@ export class LanguageService implements LanguageServiceBase {
 					fs.writeFileSync(file, score);
 					try {
 						// eslint-disable-next-line @typescript-eslint/strict-void-return
-						await util.promisify(execFile)(this.lilypond, ['-s', '-o', dir, file]);
+						await util.promisify(execFile)(this.lilypond, ['-dno-print-pages', '-s', '-o', dir, file]);
 						scores.set(score, []);
 					} catch (e) {
 						const {stderr} = e as ExecException;
