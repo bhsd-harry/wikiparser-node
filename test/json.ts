@@ -36,7 +36,8 @@ for (const file of fs.readdirSync('config')) {
 			});
 
 			it('nsid', () => {
-				for (const [ns, namespace] of Object.entries(namespaces)) {
+				for (const ns in namespaces) {
+					const namespace = namespaces[ns]!;
 					assert.equal(nsid[namespace.toLowerCase()], ns, `'${namespace}' not in nsid`);
 				}
 			});
@@ -93,8 +94,9 @@ const defaultConfig = configs['default.json']!,
 	{
 		parserFunction,
 	} = defaultConfig;
-for (const [file, config] of Object.entries(configs)) {
+for (const file in configs) {
 	if (file !== 'default.json' && file !== 'testwiki.json') {
+		const config = configs[file]!;
 		describe(`${file} vs. default.json`, () => {
 			// ext/variable/functionHook/redirection/variants
 			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
@@ -125,11 +127,16 @@ for (const [file, config] of Object.entries(configs)) {
 			// namspaces/nsid/img
 			for (const key of ['namespaces', 'nsid', 'img'] as const) {
 				it(key, () => {
-					for (const [k, v] of Object.entries(config[key])) {
+					const val = config[key];
+					for (const k in val) {
 						if (file === 'jawiki.json' || file === 'mediawikiwiki.json') {
 							assert.ok(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
 						} else {
-							assert.strictEqual(defaultConfig[key][k], v, `'${k}' not in defaultConfig.${key}`);
+							assert.strictEqual(
+								defaultConfig[key][k],
+								val[k],
+								`'${k}' not in defaultConfig.${key}`,
+							);
 						}
 					}
 				});
@@ -141,10 +148,10 @@ for (const [file, config] of Object.entries(configs)) {
 					for (let i = 0; i < config[key].length; i++) {
 						const obj = config[key][i]!;
 						if (!Array.isArray(obj)) {
-							for (const [alias, canonical] of Object.entries(obj)) {
+							for (const alias in obj) {
 								assert.strictEqual(
 									(defaultConfig[key][i] as Record<string, string>)[alias],
-									canonical,
+									obj[alias],
 									`'${alias}' not in defaultConfig.${key}[${i}]`,
 								);
 							}
@@ -165,11 +172,12 @@ for (const [file, config] of Object.entries(configs)) {
 			if (file === 'minimum.json') {
 				it('minimum parserFunction', () => {
 					for (let i = 0; i < 2; i++) {
-						for (const [alias, canonical] of Object.entries(parserFunction[i]!)) {
+						const obj = parserFunction[i] as Record<string, string>;
+						for (const alias in obj) {
 							if (/^#[\w-]+$/u.test(alias)) {
 								assert.strictEqual(
 									(config.parserFunction[i] as Record<string, string>)[alias],
-									canonical,
+									obj[alias],
 									`'${alias}' not in minConfig.parserFunction[${i}]`,
 								);
 							}
@@ -189,8 +197,8 @@ describe('i18n', () => {
 	for (const file of fs.readdirSync('i18n')) {
 		if (file === 'en.json') {
 			it('en.json', () => {
-				for (const [key, value] of Object.entries(base)) {
-					assert.notStrictEqual(key, value, `'${key}' is the same as its value`);
+				for (const key in base) {
+					assert.notStrictEqual(key, base[key], `'${key}' is the same as its value`);
 				}
 			});
 		} else {

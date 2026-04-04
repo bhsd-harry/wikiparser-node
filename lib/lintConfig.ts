@@ -297,8 +297,8 @@ class LintRuleConfiguration implements LintRuleConfigurationBase {
 		if (!config) {
 			return;
 		}
-		for (const [key, value] of Object.entries(config)) {
-			set(this, key as LintError.Rule, value);
+		for (const key in config) {
+			set(this, key as LintError.Rule, config[key as LintError.Rule]);
 		}
 	}
 
@@ -348,7 +348,8 @@ export class LintConfiguration implements LintConfigurationBase {
 		} else {
 			const {rules: ruleConfig, ...other} = (config ?? {}) as FullLintConfig;
 			this.rules = ruleConfig;
-			for (const [key, value] of Object.entries(other)) {
+			for (const key in other) {
+				const value = other[key as keyof typeof other];
 				if (value as unknown !== undefined && Object.prototype.hasOwnProperty.call(defaultLintConfig, key)) {
 					(this as Record<string, unknown>)[key] = value;
 				}
