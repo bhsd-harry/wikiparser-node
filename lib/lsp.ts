@@ -1302,7 +1302,6 @@ export class LanguageService implements LanguageServiceBase {
 				if (lang !== undefined && lang !== 'lilypond' || !innerText?.trim()) {
 					return false;
 				} else if (/[#$](?!@?\s*(?:'\s*)?(?:[#"]|-?\.?\d|[a-z_][-:\w]*(?![^)\]}\s])))/iu.test(innerText)) {
-					Parser.debug('Skipping score containing LilyPond Guile scheme:\n', innerText);
 					return false;
 				}
 				return true;
