@@ -134,17 +134,17 @@ const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id'];
  */
 const getAcceptable = (value: WikiParserAcceptable): Record<string, Ranges> => {
 	const acceptable: Record<string, Ranges> = {};
-	for (const [k, v] of Object.entries(value)) {
+	for (const k in value) {
 		if (k.startsWith('Stage-')) {
 			for (let i = 0; i <= Number(k.slice(6)); i++) {
 				for (const type of aliases[i]!) {
-					acceptable[type] = new Ranges(v as string | number);
+					acceptable[type] = new Ranges(value[k] as string | number);
 				}
 			}
 		} else if (k.startsWith('!')) { // `!`项必须放在最后
 			delete acceptable[k.slice(1)];
 		} else {
-			acceptable[k] = new Ranges(v as string | number);
+			acceptable[k] = new Ranges(value[k] as string | number);
 		}
 	}
 	return acceptable;

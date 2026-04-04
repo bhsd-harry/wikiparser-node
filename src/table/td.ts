@@ -428,8 +428,8 @@ export abstract class TdToken extends TableBaseToken {
 		value?: TdAttrSetter<T>,
 	): void {
 		if (typeof keyOrProp !== 'string') {
-			for (const [key, val] of Object.entries(keyOrProp)) {
-				this.setAttr(key, val as string | boolean);
+			for (const key in keyOrProp) {
+				this.setAttr(key, keyOrProp[key] as string | boolean);
 			}
 			return;
 		}

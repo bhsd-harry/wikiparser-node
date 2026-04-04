@@ -158,8 +158,8 @@ AttributesToken.prototype.setAttr =
 	/** @implements */
 	function(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
 		if (typeof keyOrProp === 'object') {
-			for (const [key, val] of Object.entries(keyOrProp)) {
-				this.setAttr(key, val);
+			for (const key in keyOrProp) {
+				this.setAttr(key, keyOrProp[key]!);
 			}
 			return;
 		}

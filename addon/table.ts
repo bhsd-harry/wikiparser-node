@@ -597,6 +597,7 @@ TableToken.prototype.moveTableRowBefore =
 					`The structure of row ${y} is different from that of row ${
 						before
 					}, so it cannot be moved!`,
+					{cause: e},
 				);
 			}
 			throw e;
@@ -631,6 +632,7 @@ TableToken.prototype.moveTableRowAfter =
 					`The structure of row ${y} is different from that of row ${
 						after
 					}, so it cannot be moved!`,
+					{cause: e},
 				);
 			}
 			throw e;

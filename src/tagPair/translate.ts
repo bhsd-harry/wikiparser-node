@@ -141,8 +141,8 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	/** @implements */
 	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
 		if (typeof keyOrProp === 'object') {
-			for (const [key, val] of Object.entries(keyOrProp)) {
-				this.setAttr(key, val);
+			for (const key in keyOrProp) {
+				this.setAttr(key, keyOrProp[key]);
 			}
 		} else if (trimLc(keyOrProp) === 'nowrap') {
 			this.#setNowrap(value);

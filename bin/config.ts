@@ -33,7 +33,8 @@ declare const $VERSION: string;
  * @param config.articlePath article path
  */
 const arrToObj = ({articlePath, ...obj}: ConfigData): Record<string, unknown> => {
-	for (const [k, v] of Object.entries(obj)) {
+	for (const k in obj) {
+		const v = obj[k as keyof typeof obj];
 		if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
 			Object.assign(obj, {[k]: Object.fromEntries(v.map(x => [x, true]))});
 		}
@@ -202,9 +203,9 @@ export default async (
 	} else {
 		const oldConfig = arrToObj(require(file) as ConfigData),
 			newConfig = arrToObj(config);
-		for (const [k, v] of Object.entries(newConfig)) {
+		for (const k in newConfig) {
 			try {
-				assert.deepStrictEqual(oldConfig[k], v);
+				assert.deepStrictEqual(oldConfig[k], newConfig[k]);
 			} catch (e) {
 				if (e instanceof assert.AssertionError) {
 					error(`Configuration mismatch for "${k}"`);

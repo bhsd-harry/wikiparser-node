@@ -566,7 +566,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
-					for (const k of Object.keys(config)) {
+					for (const k in config) {
 						if (k.startsWith('regex') || config[k as keyof Config] instanceof Set) {
 							delete config[k as keyof Config];
 						}
@@ -705,8 +705,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				args.push(arg[i]!);
 				delete arg[i];
 			}
-			for (const [key, value] of Object.entries(arg)) {
-				args.push(`${key}=${value}`);
+			for (const key in arg) {
+				args.push(`${key}=${arg[key]}`);
 			}
 		}
 		const {parserFunction} = this.getConfig(),
@@ -864,7 +864,7 @@ const def: PropertyDescriptorMap = {
 		'debugging',
 		'isInterwiki',
 	]);
-for (const key of Object.keys(Parser)) {
+for (const key in Parser) {
 	if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};
 	}
