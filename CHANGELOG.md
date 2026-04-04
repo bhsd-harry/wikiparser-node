@@ -1,4 +1,13 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.38.1
+
+*2026-04-04*
+
+**Changed**
+
+- [`LanguageService.prototype.destroy`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#destroy) now returns a promise that resolves when the cleanup is complete, but usually it is not necessary to await the promise
+- [`LanguageService.prototype.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics) now always skips `<score>` extension tags containing LilyPond Scheme
+
 ## v1.38.0
 
 *2026-04-02*
