@@ -89,7 +89,7 @@
 		"vscode-json-languageservice": "^5.7.2"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.1.1",
+		"@bhsd/code-standard": "^2.2.0",
 		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^1.0.0",
 		"@eslint-community/eslint-plugin-eslint-comments": "^4.7.1",
