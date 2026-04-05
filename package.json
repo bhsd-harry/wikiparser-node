@@ -119,6 +119,9 @@
 		"v8r": "^6.0.0",
 		"vscode-languageserver-textdocument": "^1.0.12"
 	},
+	"overrides": {
+		"eslint": "^10.2.0"
+	},
 	"engines": {
 		"node": "^20.19.0 || ^22.13.0 || >=24.11.0"
 	}
