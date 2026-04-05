@@ -30,7 +30,7 @@ else
 	then
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 		rm package-lock.json
-		npm i --package-lock-only
+		npm i --package-lock-only --legacy-peer-deps
 		git add -A
 		git commit -m "chore: bump version to v$1"
 		git push

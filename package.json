@@ -102,7 +102,7 @@
 		"vscode-json-languageservice": "^5.7.2"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.1.1",
+		"@bhsd/code-standard": "^2.2.0",
 		"@bhsd/test-util": "^1.0.0",
 		"@codemirror/lint": "^6.9.5",
 		"@eslint/markdown": "^8.0.1",

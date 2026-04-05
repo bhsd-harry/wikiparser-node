@@ -1319,13 +1319,8 @@ export class LanguageService implements LanguageServiceBase {
 			const tokens = root.querySelectorAll<ExtToken>('ext#score').filter(token => {
 				const lang = token.getAttr('lang'),
 					{innerText} = token;
-				if (lang !== undefined && lang !== 'lilypond' || !innerText?.trim()) {
-					return false;
-				} else if (/[#$](?!@?\s*(?:'\s*)?(?:[#"]|-?\.?\d|[a-z_][-:\w]*(?![^)\]}\s])))/iu.test(innerText)) {
-					Parser.debug('Skipping score containing LilyPond Guile scheme:\n', innerText);
-					return false;
-				}
-				return true;
+				return (lang === undefined || lang === 'lilypond') && innerText?.trim()
+					&& !/[#$](?!@?\s*(?:'\s*)?(?:[#"]|-?\.?\d|[a-z_][-:\w]*(?![^)\]}\s])))/iu.test(innerText);
 			});
 			if (tokens.length > 0) {
 				const dir = path.join(__dirname, 'lilypond');
