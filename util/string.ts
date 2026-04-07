@@ -79,7 +79,7 @@ export const decodeHtml = (str: string): string => {
 		if (typeof process === 'object' && typeof process.versions?.node === 'string') {
 			try {
 				const {decodeHTMLStrict}: typeof import('entities') = require('entities');
-				return (s): string => decodeHTMLStrict(s).replace(/\xA0/gu, ' ');
+				return (s): string => decodeHTMLStrict(s).replaceAll('\xA0', ' ');
 			} catch /* c8 ignore next */ {}
 		}
 

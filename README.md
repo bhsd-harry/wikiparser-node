@@ -42,12 +42,12 @@ For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/E
 ```sh
 npx getParserConfig <site> <script path> [user] [force]
 # For example:
-npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
+npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 ```
 
 The generated configuration file will be saved in the `config` directory. You can then use the site name as the `--config` option.
 
 ```sh
 # For example:
-npx wikilint --config jawiki *.wiki
+npx wikilint --config frwiki *.wiki
 ```
