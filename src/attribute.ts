@@ -200,7 +200,7 @@ export abstract class AttributeToken extends Token {
 				// 不支持通用HTML属性的扩展标签
 				type === 'ext-attr' && !attrs2
 				// 或非通用HTML属性
-				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
+				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:_]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
 			|| (name === 'itemtype' || name === 'itemid' || name === 'itemref')
