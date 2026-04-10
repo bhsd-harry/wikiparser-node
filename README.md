@@ -17,19 +17,19 @@
 
 WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext) parser developed by Bhsd for the [Node.js](https://nodejs.org/) environment. It can parse almost all wiki syntax and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) ([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also allows for easy querying and modification of the AST, and returns the modified wikitext.
 
-Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages rendered using this package.
+Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages from [MediaWiki.org](https://www.mediawiki.org/) rendered using this package.
 
 ## Other Versions
 
 ### Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing and linting functionality. The parsed AST cannot be modified. It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 
 A list of available linting rules can be found [here](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules).
 
 ### Browser-compatible
 
-A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)). It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror) since Release 1.45.
+A browser-compatible version, which can be used for code highlighting or as a LSP plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)). It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror) since Release 1.45.
 
 ## Installation
 
@@ -72,14 +72,14 @@ For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/E
 ```sh
 npx getParserConfig <site> <script path> [user] [force]
 # For example:
-npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
+npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 ```
 
 The generated configuration file will be saved in the `config` directory. You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).
 
 ```javascript
 // For example:
-Parser.config = 'jawiki';
+Parser.config = 'frwiki';
 ```
 
 ### API usage

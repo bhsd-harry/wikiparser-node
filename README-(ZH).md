@@ -17,19 +17,19 @@
 
 WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
 
-尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表。
+尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表，来源于 [MediaWiki.org](https://www.mediawiki.org/)。
 
 ## 其他版本
 
 ### Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能，解析生成的语法树不能修改。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 
 可用的语法检查规则列表请见[这里](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules)。
 
 ### Browser-compatible
 
-兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为语法分析插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
+兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为语言服务器协议（LSP）插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
 
 ## 安装方法
 
@@ -72,14 +72,14 @@ npm i wikilint
 ```sh
 npx getParserConfig <site> <script path> [user] [force]
 # 例如：
-npx getParserConfig jawiki https://ja.wikipedia.org/w user@example.net
+npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 ```
 
 生成的配置文件将保存在 `config` 目录下，然后就可以使用站点名称设置 [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config)。
 
 ```javascript
 // 例如：
-Parser.config = 'jawiki';
+Parser.config = 'frwiki';
 ```
 
 ### API 使用方法
