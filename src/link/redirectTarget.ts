@@ -44,7 +44,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	 * @since v1.10.0
 	 */
 	get innerText(): string {
-		return this.link.toString(true);
+		return this.link.toString(true, false);
 	}
 
 	/* NOT FOR BROWSER END */

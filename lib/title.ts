@@ -253,8 +253,9 @@ export class Title {
 	/**
 	 * 生成标题
 	 * @param prefix 前缀
+	 * @param redirect 是否允许重定向
 	 */
-	#getTitle(prefix: string): [boolean, string] {
+	#getTitle(prefix: string, redirect = true): [boolean, string] {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
 			title = (this.page ?? '') + title.replace(/(.)\/$/u, '$1');
@@ -268,13 +269,15 @@ export class Title {
 
 		/* NOT FOR BROWSER */
 
-		const media = title.startsWith('Media:');
-		let redirected = this.redirects.get(media ? `File:${title.slice(6)}` : title);
-		if (redirected) {
-			const hash = redirected.indexOf('#');
-			this.#redirectFragment = hash === -1 ? undefined : redirected.slice(hash + 1);
-			redirected = hash === -1 ? redirected : redirected.slice(0, hash);
-			return [true, media ? redirected.replace(/^File:/u, 'Media:') : redirected];
+		if (redirect) {
+			const media = title.startsWith('Media:');
+			let redirected = this.redirects.get(media ? `File:${title.slice(6)}` : title);
+			if (redirected) {
+				const hash = redirected.indexOf('#');
+				this.#redirectFragment = hash === -1 ? undefined : redirected.slice(hash + 1);
+				redirected = hash === -1 ? redirected : redirected.slice(0, hash);
+				return [true, media ? redirected.replace(/^File:/u, 'Media:') : redirected];
+			}
 		}
 
 		/* NOT FOR BROWSER */
@@ -391,12 +394,18 @@ export class Title {
 	}
 
 	/** @private */
-	toString(display?: boolean): string {
-		return (display ? this.displayTitle : this.title) + (
-			this.#fragment === undefined && this.#redirectFragment === undefined
-				? ''
-				: `#${this.#fragment ?? this.#redirectFragment}`
-		);
+	toString(display?: boolean, redirect = true): string {
+		if (redirect) {
+			return (display ? this.displayTitle : this.title) + (
+				this.#fragment === undefined && this.#redirectFragment === undefined
+					? ''
+					: `#${this.#fragment ?? this.#redirectFragment}`
+			);
+		}
+		const {prefix, interwiki} = this,
+			[, result] = this.#getTitle(interwiki + (interwiki && ':') + prefix, false);
+		return (display ? result.replaceAll('_', ' ') : result)
+			+ (this.#fragment === undefined ? '' : `#${this.#fragment}`);
 	}
 
 	/**
