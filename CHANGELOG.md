@@ -3,6 +3,10 @@
 
 *2026-04-16*
 
+**Added**
+
+- [`Title.prototype.isRedirect`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#isredirect)
+
 **Fixed**
 
 - [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) now reports data attributes with underscores (`_`) in their names, which will be sanitized by the MediaWiki parser
