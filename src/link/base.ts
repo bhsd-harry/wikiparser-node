@@ -22,7 +22,6 @@ import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {
-	Config,
 	LintError,
 	AST,
 } from '../../base';
@@ -127,7 +126,7 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
 	 */
-	constructor(link: string, linkText?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 			AtomToken: 0, Token: 1,
 		});
@@ -135,9 +134,12 @@ export abstract class LinkBaseToken extends Token {
 			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
-			const inner = new Token(linkText, config, accum, {
-				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
-			});
+			const inner = new Token(
+				linkText,
+				{...config, excludes: [...config.excludes, 'list']},
+				accum,
+				{'Stage-5': ':', QuoteToken: ':', ConverterToken: ':'},
+			);
 			inner.type = 'link-text';
 			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);

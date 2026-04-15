@@ -41,15 +41,19 @@ LinkBaseToken.prototype.setLinkText =
 			this.childNodes[1]?.remove();
 			return;
 		} else if (this.length === 1) {
+			const config = this.getAttribute('config');
 			this.insertAt(Shadow.run(() => {
-				const inner = new Token(undefined, this.getAttribute('config'), [], {
-					'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
-				});
+				const inner = new Token(
+					undefined,
+					{...config, excludes: [...config.excludes, 'list']},
+					[],
+					{'Stage-5': ':', QuoteToken: ':', ConverterToken: ':'},
+				);
 				inner.type = 'link-text';
 				return inner;
 			}));
 		}
-		this.lastChild.safeReplaceChildren(Parser.parseWithRef(linkStr, this).childNodes);
+		this.lastChild.safeReplaceChildren(Parser.parseWithRef(linkStr, this.lastChild).childNodes);
 	};
 
 LinkToken.prototype.setLangLink =

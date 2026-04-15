@@ -8,6 +8,7 @@
 - [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#lint) now reports data attributes with underscores (`_`) in their names, which will be sanitized by the MediaWiki parser
 - [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29#innertext) should not be the final redirect target when there are double redirects
 - [`TranscludeToken.prototype.removeArg`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#removearg) when removing an anonymous parameter
+- [`LinkBaseToken.prototype.setLinkText`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#setlinktext) when the link text contains list-like syntax such as `*` or `#`
 
 ## v1.38.1
 
