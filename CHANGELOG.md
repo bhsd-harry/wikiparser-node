@@ -9,6 +9,7 @@
 - [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken-%28EN%29#innertext) should not be the final redirect target when there are double redirects
 - [`TranscludeToken.prototype.removeArg`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#removearg) when removing an anonymous parameter
 - [`LinkBaseToken.prototype.setLinkText`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#setlinktext) when the link text contains list-like syntax such as `*` or `#`
+- [`ListToken.indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken-%28EN%29#indent) setter when there are trailing spaces
 
 ## v1.38.1
 

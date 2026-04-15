@@ -40,7 +40,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 
 	/** @throws `Error` not `<dd>` only */
 	set indent(indent) {
-		if (/[^:]/u.test(this.innerText)) {
+		if (/[^:\s]/u.test(this.innerText)) {
 			throw new Error('The token is not <dd>!');
 		}
 		this.setText(':'.repeat(indent));
