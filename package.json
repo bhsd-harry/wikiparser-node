@@ -83,7 +83,7 @@
 		"color-name": "^2.0.0",
 		"entities": "^8.0.0",
 		"mathoid-texvcjs": "^0.6.0",
-		"stylelint": "^17.7.0",
+		"stylelint": "^17.8.0",
 		"vscode-css-languageservice": "^6.3.10",
 		"vscode-html-languageservice": "^5.6.2",
 		"vscode-json-languageservice": "^5.7.2"

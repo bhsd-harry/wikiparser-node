@@ -161,8 +161,9 @@ export class Title {
 	/**
 	 * 生成标题
 	 * @param prefix 前缀
+	 * @param redirect 是否允许重定向
 	 */
-	#getTitle(prefix: string): [boolean, string] {
+	#getTitle(prefix: string, redirect = true): [boolean, string] {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
 			title = (this.page ?? '') + title.replace(/(.)\/$/u, '$1');
