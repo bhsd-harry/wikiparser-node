@@ -134,9 +134,9 @@ export class Title {
 	}
 
 	/**
-	 * Check if the title is a redirect
+	 * Check if the title is a redirect and get the redirect target
 	 *
-	 * 检测是否是重定向
+	 * 检测是否是重定向并获取重定向目标
 	 * @since v1.12.2
 	 */
 	getRedirection(): [boolean, string] {
