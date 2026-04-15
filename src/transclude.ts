@@ -827,6 +827,9 @@ export abstract class TranscludeToken extends Token {
 	removeArg(key: string | number, exact?: boolean): void {
 		Shadow.run(() => {
 			for (const token of this.getArgs(key, exact, false)) {
+				if (token.anon) {
+					this.anonToNamed();
+				}
 				this.removeChild(token);
 			}
 		});
