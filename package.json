@@ -57,7 +57,7 @@
 	"devDependencies": {
 		"@bhsd/cm-util": "^1.0.0",
 		"@bhsd/code-standard": "^2.2.0",
-		"@bhsd/codemirror-mediawiki": "^3.12.5",
+		"@bhsd/codemirror-mediawiki": "^3.13.0",
 		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^1.0.1",
 		"@codemirror/lint": "^6.9.5",

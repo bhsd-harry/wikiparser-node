@@ -26,7 +26,7 @@ describe('API tests', () => {
 		if (file.endsWith('.md')) {
 			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
 				codes = [...md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
-					.map(([code]) => code.replace(/[ \n]\/\/ .*$/gmu, '')),
+					.map(([code]) => code.replace(/(?: |\n\t*)\/\/ .*$/gmu, '')),
 				testCodes = file.startsWith('LanguageService')
 					? codes.flatMap(code => [
 						code,
