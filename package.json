@@ -52,7 +52,7 @@
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
-		"stylelint": "^17.7.0"
+		"stylelint": "^17.8.0"
 	},
 	"devDependencies": {
 		"@bhsd/cm-util": "^1.0.0",

@@ -4931,8 +4931,8 @@
 		"desc": "HTML5 data attributes",
 		"wikitext": "<span data-foo=\"bar\">Baz</span>\n<p data-abc-def_hij=\"\">Quuz</p>",
 		"html": "<p><span data-foo=\"bar\">Baz</span>\n</p>\n<p>Quuz</p>",
-		"render": "<p><span data-foo=\"bar\">Baz</span>\n</p>\n<p data-abc-def_hij=\"\">Quuz</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-foo</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span></span>&gt;</span>Baz<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-html\">&lt;p<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-abc-def_hij</span>=\"\"</span></span>&gt;</span>Quuz<span class=\"wpb-html\">&lt;/p&gt;</span></span>"
+		"render": "<p><span data-foo=\"bar\">Baz</span>\n</p>\n<p>Quuz</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-foo</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span></span>&gt;</span>Baz<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-html\">&lt;p<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr wpb-invalid\"><span class=\"wpb-attr-key\">data-abc-def_hij</span>=\"\"</span></span>&gt;</span>Quuz<span class=\"wpb-html\">&lt;/p&gt;</span></span>"
 	},
 	{
 		"desc": "Strip reserved data attributes",

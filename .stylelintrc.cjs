@@ -7,4 +7,15 @@ module.exports = {
 	ignoreFiles: [
 		'extensions/ui.css',
 	],
+	rules: {
+		...config.rules,
+		'selector-no-deprecated': [
+			true,
+			{
+				ignoreSelectors: [
+					'center',
+				],
+			},
+		],
+	},
 };
