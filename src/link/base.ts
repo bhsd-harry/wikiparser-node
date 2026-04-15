@@ -1,7 +1,5 @@
+import Parser from '../../index';
 import {Token} from '../index';
-import type {
-	Config,
-} from '../../base';
 import type {
 	AstText as AtomToken,
 } from '../../internal';
@@ -23,7 +21,7 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
 	 */
-	constructor(link: string, linkText?: string, config?: Config, accum: Token[] = [], delimiter = '|') {
+	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 		});
 		this.insertAt(link);
