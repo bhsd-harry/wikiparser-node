@@ -10,7 +10,7 @@ const md = fs.readFileSync(path.resolve('test', 'test.md'), 'utf8');
 for (const section of md.split(/^## /mu).slice(1)) {
 	describe(section.slice(0, section.indexOf('\n')), () => {
 		const codes = [...section.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
-			.map(([code]) => code.replace(/[ \n]\/\/ .*$/gmu, ''));
+			.map(([code]) => code.replace(/(?: |\n\t*)\/\/ .*$/gmu, ''));
 		for (const code of codes) {
 			const lines = code.split('\n') as [string, ...string[]],
 				[first] = lines;
