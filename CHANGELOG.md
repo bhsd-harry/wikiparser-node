@@ -11,6 +11,10 @@
 - [`LinkBaseToken.prototype.setLinkText`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken-%28EN%29#setlinktext) when the link text contains list-like syntax such as `*` or `#`
 - [`ListToken.indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken-%28EN%29#indent) setter when there are trailing spaces
 
+**Changed**
+
+- Setting the stage parameter of [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) to `Infinity` now implicitly calls [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) after parsing to build the list items
+
 ## v1.38.1
 
 *2026-04-05*

@@ -587,7 +587,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 		/* NOT FOR BROWSER */
 
-		if (types?.includes('list-range')) {
+		if (maxStage > MAX_STAGE || types?.includes('list-range')) {
 			root.buildLists();
 		}
 

@@ -84,7 +84,7 @@ Parser.config = 'frwiki';
 
 ### API 使用方法
 
-请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
+请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。其中包含一些[应用实例](https://github.com/bhsd-harry/wikiparser-node/wiki/Home#示例)展示了如何使用这个库完成各种任务。
 
 ## 性能
 

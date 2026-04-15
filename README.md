@@ -84,7 +84,7 @@ Parser.config = 'frwiki';
 
 ### API usage
 
-Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).
+Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29). In particular, there are some [usage examples](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29#examples) that demonstrate how to use this package to complete various tasks.
 
 ## Performance
 
