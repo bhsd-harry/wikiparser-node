@@ -15,7 +15,7 @@
 
 ## 简介
 
-WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
+WikiParser-Node 是一款由 [Bhsd](https://github.com/bhsd-harry) 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的[维基语法](https://www.mediawiki.org/wiki/Help:Advanced_editing)并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
 
 尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表，来源于 [MediaWiki.org](https://www.mediawiki.org/)。
 
@@ -29,7 +29,7 @@ WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/)
 
 ### Browser-compatible
 
-兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为语言服务器协议（LSP）插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
+兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为[语言服务器协议（LSP）](https://microsoft.github.io/language-server-protocol/)插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
 
 ## 安装方法
 
@@ -75,7 +75,7 @@ npx getParserConfig <site> <script path> [user] [force]
 npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 ```
 
-生成的配置文件将保存在 `config` 目录下，然后就可以使用站点名称设置 [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config)。
+生成的配置文件将保存在 [`config` 目录](https://github.com/bhsd-harry/wikiparser-node/tree/main/config/)下，然后就可以使用站点名称设置 [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config)。
 
 ```javascript
 // 例如：
