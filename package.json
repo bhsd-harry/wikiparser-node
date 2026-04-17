@@ -38,6 +38,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --omit=dev",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = $(npm pkg get name)/; s/version = \\$VERSION/version = $(npm pkg get version)/\" dist/bin/config.js",
@@ -98,14 +99,14 @@
 		"@types/color-rgba": "^2.1.3",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.11.0",
-		"@typescript-eslint/eslint-plugin": "^8.58.1",
-		"@typescript-eslint/parser": "^8.58.1",
+		"@typescript-eslint/eslint-plugin": "^8.58.2",
+		"@typescript-eslint/parser": "^8.58.2",
 		"c8": "^11.0.0",
 		"codejar-async": "^4.3.0",
 		"color-rgba": "^3.0.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.0",
-		"eslint": "^10.2.0",
+		"eslint": "^10.2.1",
 		"eslint-plugin-jsdoc": "^62.9.0",
 		"eslint-plugin-jsonc": "^3.1.2",
 		"eslint-plugin-n": "^17.24.0",
@@ -115,12 +116,12 @@
 		"markdownlint-cli2": "~0.21.0",
 		"mocha": "^11.7.5",
 		"monaco-editor": "~0.53.0",
-		"typescript": "^6.0.2",
+		"typescript": "^6.0.3",
 		"v8r": "^6.0.0",
 		"vscode-languageserver-textdocument": "^1.0.12"
 	},
 	"overrides": {
-		"eslint": "^10.2.0"
+		"eslint": "^10.2.1"
 	},
 	"engines": {
 		"node": "^20.19.0 || ^22.13.0 || >=24.11.0"
