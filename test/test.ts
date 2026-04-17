@@ -25,7 +25,7 @@ describe('API tests', () => {
 	for (const file of fs.readdirSync(path.resolve('wiki'))) {
 		if (file.endsWith('.md')) {
 			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
-				codes = [...md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
+				codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
 					.map(([code]) => code.replace(/(?: |\n\t*)\/\/ .*$/gmu, '')),
 				testCodes = file.startsWith('LanguageService')
 					? codes.flatMap(code => [
@@ -47,7 +47,9 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (
+					if (file.startsWith('Examples-')) {
+						it.skip(first.slice(3));
+					} else if (
 						/ \((?:main|Node\.js)\)/u.test(first)
 						|| / \(self\)/u.test(first)
 					) {
