@@ -10,6 +10,7 @@ import type {LintConfiguration} from '../lib/lintConfig';
 
 /* NOT FOR BROWSER */
 
+import {spawnSync} from 'child_process';
 import type {Token} from '../internal';
 
 const clone = process.env['CLONENODE'];
@@ -35,7 +36,7 @@ describe('API tests', () => {
 	for (const file of fs.readdirSync(path.resolve('wiki'))) {
 		if (file.endsWith('.md')) {
 			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
-				codes = [...md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
+				codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
 					.map(([code]) => code.replace(/(?: |\n\t*)\/\/ .*$/gmu, '')),
 				testCodes = file.startsWith('LanguageService')
 					? codes.flatMap(code => [
@@ -75,7 +76,36 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (
+					if (file.startsWith('Examples-')) {
+						if (clone) {
+							it.skip(first.slice(3));
+
+							/* NOT FOR BROWSER */
+						} else {
+							it(first.slice(3), () => {
+								const {stderr} = spawnSync(
+									'tsx',
+									[
+										'--tsconfig',
+										'./tsconfig.json',
+										'-e',
+										`import * as assert from 'assert';
+										import Parser from './dist';
+										Parser.warning = false;
+										${code}`,
+									],
+									{encoding: 'utf8'},
+								);
+								if (stderr) {
+									throw new Error(`Failed to execute the example!\n${stderr}`, {
+										cause: {message: code},
+									});
+								}
+							});
+						}
+
+						/* NOT FOR BROWSER END */
+					} else if (
 						/ \(browser\)/u.test(first)
 						|| / \(self\)/u.test(first)
 						&& clone
@@ -137,23 +167,25 @@ describe('API tests', () => {
 
 /* NOT FOR BROWSER */
 
-describe('Documentation tests', () => {
-	for (const [file, enCodes] of allCodes) {
-		if (file.endsWith('-(EN)')) {
-			const zhFile = file.slice(0, -5);
-			describe(zhFile, () => {
-				const zhCodes = allCodes.get(zhFile)!;
-				for (let i = 0; i < zhCodes.length; i++) {
-					const code = zhCodes[i]!;
-					it(code.split('\n', 1)[0]!.slice(3), () => {
-						assert.strictEqual(
-							code,
-							enCodes[i],
-							`${zhFile} is different from its English version`,
-						);
-					});
-				}
-			});
+if (clone) {
+	describe('Documentation tests', () => {
+		for (const [file, enCodes] of allCodes) {
+			if (file.endsWith('-(EN)')) {
+				const zhFile = file.slice(0, -5);
+				describe(zhFile, () => {
+					const zhCodes = allCodes.get(zhFile)!;
+					for (let i = 0; i < zhCodes.length; i++) {
+						const code = zhCodes[i]!;
+						it(code.split('\n', 1)[0]!.slice(3), () => {
+							assert.strictEqual(
+								code,
+								enCodes[i],
+								`${zhFile} is different from its English version`,
+							);
+						});
+					}
+				});
+			}
 		}
-	}
-});
+	});
+}
