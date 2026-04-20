@@ -1,7 +1,10 @@
 import {getCondition} from '../util/selector';
 import type {TokenPredicate} from '../util/selector';
 import type {AstElement} from '../lib/element';
-import type {AstNodes, Token} from '../internal';
+import type {
+	AstNodes,
+	Token,
+} from '../internal';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly childNodes: readonly AstNodes[];
