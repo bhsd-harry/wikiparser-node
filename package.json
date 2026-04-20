@@ -61,7 +61,7 @@
 		"coverage": "tsc --declaration false --target es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
 		"test:math": "mocha dist/test/math.js",
-		"test:clonenode": "CLONENODE=1 npm run test:unit",
+		"test:clonenode": "CLONENODE=1 mocha --require dist/test/env.js dist/test/test.js",
 		"test:parser": "LC_ALL=en.UTF-8 mocha dist/test/parserTests.js",
 		"test:perf": "mocha --reporter spec dist/test/perf.js",
 		"test": "npm run test:unit && npm run test:clonenode && npm run test:parser",
