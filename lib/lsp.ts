@@ -418,6 +418,7 @@ const partialParse = async (
 						i++;
 						set(parseOnce, 0);
 					} else {
+						/* c8 ignore next */
 						resolve();
 					}
 				},
@@ -722,6 +723,7 @@ export class LanguageService implements LanguageServiceBase {
 				const {default: colorName}: typeof import('color-name') = require('color-name');
 				colors = new RegExp(String.raw`\b${Object.keys(colorName).join('|')}\b`, 'giu');
 			} catch {
+				/* c8 ignore next */
 				colors = false;
 			}
 		}

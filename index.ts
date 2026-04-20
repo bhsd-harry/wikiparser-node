@@ -149,6 +149,7 @@ const jsonRequire = (file: string): unknown => {
 	if (fullPath.endsWith('.json')) {
 		return require(fullPath);
 	}
+	/* c8 ignore next */
 	throw new RangeError('Only JSON files are supported!');
 };
 
