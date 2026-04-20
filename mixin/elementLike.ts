@@ -2,7 +2,12 @@ import {mixin} from '../util/debug';
 import {getCondition} from '../util/selector';
 import type {TokenPredicate} from '../util/selector';
 import type {AstElement} from '../lib/element';
-import type {AstNodes, Token} from '../internal';
+import type {
+	AstNodes,
+	Token,
+	HtmlToken,
+	ExtToken,
+} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -92,7 +97,7 @@ export interface ElementLike {
 	 * 标签名选择器
 	 * @param tag tag name / 标签名
 	 */
-	getElementsByTagName<T = Token>(tag: string): T[];
+	getElementsByTagName<T extends HtmlToken | ExtToken = HtmlToken | ExtToken>(tag: string): T[];
 }
 
 /** @ignore */
@@ -203,7 +208,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				);
 			}
 
-			getElementsByTagName<T = Token>(tag: string): T[] {
+			getElementsByTagName<T extends HtmlToken | ExtToken = HtmlToken | ExtToken>(tag: string): T[] {
 				return this.getElementsBy<T>(
 					(({type, name}) => name === tag && (type === 'html' || type === 'ext')) as TokenPredicate<T>,
 				);
