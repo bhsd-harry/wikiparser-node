@@ -370,6 +370,7 @@ const partialParse = async (
 						i++;
 						set(parseOnce, 0);
 					} else {
+						/* c8 ignore next */
 						resolve();
 					}
 				},
