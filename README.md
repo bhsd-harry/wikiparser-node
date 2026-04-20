@@ -23,13 +23,16 @@ npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 | `-c`, `--config` | \<path or preset config\> | Choose parser's [configuration](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config) | `default` |
 | `--cache` | | Enable caching | `false` |
 | `--cache-file` | \<path\> | Specify cache file and enable caching | `.wikilintcache` |
-| `--ext` | \<extension\> | Specify file extension<br>Can be used multiple times | all files |
+| `-e`, `--ext` | \<extension\> | Specify file extension<br>Can be used multiple times | all files |
 | `--fix` | | Automatically fix problems | `false` |
 | `-h`, `--help` | | Print available options | |
 | `-i`, `--include` | | Parse for inclusion | `false` |
+| `--id`, `--ignore-disables` | | Ignore inline configuration comments | `false` |
 | `--ignore` | \<pattern\> | Ignore files matching the glob pattern<br>Can be used multiple times | |
 | `-l`, `--lang` | \<path or preset language\> | Choose [i18n](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#i18n) language | English |
 | `--lc`, `--lint-config` | \<path\> | Specify [lint config](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#configuration) file | `.wikilintrc.json`<br>`.wikilintrc.js`<br>`.wikilintrc.cjs`<br>`.wikilintrc.mjs` |
+| `--nc`, `--no-color` | | Disable colored output | `false` |
+| `--print-config`, `--print-lint-config` | | Print the resolved lint config and exit | |
 | `-q`, `--quiet` | | Report errors only | errors and warnings |
 | `-r`, `--recursive` | | Recursively lint files | `false` |
 | `-s`, `--strict` | | Exit when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |

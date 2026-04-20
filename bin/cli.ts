@@ -19,13 +19,16 @@ Available options:
 -c, --config <path or preset config>    Choose parser's configuration
 --cache                                 Enable caching
 --cache-file <path>                     Specify cache file
---ext <extension>                       Specify file extension
+-e, --ext <extension>                   Specify file extension
 --fix                                   Automatically fix problems
 -h, --help                              Print available options
 -i, --include                           Parse for inclusion
+--id, --ignore-disables                 Ignore inline configuration comments
 --ignore <pattern>                      Ignore files that match the pattern
 -l, --lang <path or preset language>    Choose i18n language
 --lc, --lint-config <path>              Specify lint config file
+--nc, --no-color                        Disable colored output
+--print-config, --print-lint-config     Print resolved lint config and exit
 -q, --quiet                             Report errors only
 -r, --recursive                         Lint files in directories recursively
 -s, --strict                            Exit when there is an error or warning
@@ -43,6 +46,7 @@ Available options:
 		fs.readdirSync(path.join(root, 'i18n')).filter(file => file.endsWith('.json'))
 			.map(file => file.slice(0, -5)),
 	),
+	colorSet = new Set(['red', 'yellow']),
 	{argv} = process,
 	exts: string[] = [],
 	ignorePatterns: string[] = [],
@@ -51,13 +55,16 @@ let files: string[] = [],
 	lintConfigFile: string | undefined,
 	cacheFile = '.wikilintcache',
 	cache: Cache | undefined,
+	caching = false,
+	colors = true,
 	exiting = false,
 	fixing = false,
 	include = false,
+	ignoreDisables = false,
+	printLintConfig = false,
 	quiet = false,
 	recursive = false,
 	strict = false,
-	caching = false,
 	nErr = 0,
 	nWarn = 0,
 	nFixableErr = 0,
@@ -182,8 +189,17 @@ const throwOnCacheFile = (input: string | undefined): void => {
  */
 const plural = (n: number, word: string): string => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const styleText = util.styleText ?? ((_: string | string[], text: string): string => text);
+/**
+ * style text if possible
+ * @param format style format
+ * @param text text to style
+ */
+const styleText = (format: Parameters<typeof util.styleText>[0], text: string): string => {
+	if (!colors) {
+		format = (Array.isArray(format) ? format : [format]).filter(f => !colorSet.has(f));
+	}
+	return util.styleText(format, text);
+};
 
 /**
  * color the severity
@@ -199,16 +215,13 @@ for (let i = 2; i < argv.length; i++) {
 		case '--config':
 			throwOnConfig(argv[++i]);
 			break;
-		case '--lc':
-		case '--lint-config':
-			throwOnLintConfig(argv[++i]);
-			break;
 		case '--cache':
 			caching = true;
 			break;
 		case '--cache-file':
 			throwOnCacheFile(argv[++i]);
 			break;
+		case '-e':
 		case '--ext':
 			throwOnExt(argv[++i]);
 			break;
@@ -224,12 +237,28 @@ for (let i = 2; i < argv.length; i++) {
 		case '--include':
 			include = true;
 			break;
+		case '--id':
+		case '--ignore-disables':
+			ignoreDisables = true;
+			break;
 		case '--ignore':
 			throwOnIgnore(argv[++i]);
 			break;
 		case '-l':
 		case '--lang':
 			throwOnLang(argv[++i]);
+			break;
+		case '--lc':
+		case '--lint-config':
+			throwOnLintConfig(argv[++i]);
+			break;
+		case '--nc':
+		case '--no-color':
+			colors = false;
+			break;
+		case '--print-config':
+		case '--print-lint-config':
+			printLintConfig = true;
 			break;
 		case '-q':
 		case '--quiet':
@@ -270,6 +299,10 @@ for (let i = 2; i < argv.length; i++) {
 						break;
 					case '--lang':
 						throwOnLang(value);
+						break;
+					case '--lc':
+					case '--lint-config':
+						throwOnLintConfig(value);
 						break;
 					default:
 						known = false;
@@ -357,8 +390,20 @@ const {mtimeMs} = fs.statSync(config),
 			cur = path.dirname(cur);
 		}
 	}
-	Parser.lintConfig.computeEditInfo = false;
-	Parser.lintConfig.fix = true;
+	Parser.lintConfig.computeEditInfo = true;
+	Parser.lintConfig.fix = fixing;
+	Parser.lintConfig.ignoreDisables = ignoreDisables;
+
+	if (printLintConfig) {
+		console.log(util.inspect(
+			{
+				...Parser.lintConfig, // eslint-disable-line @typescript-eslint/no-misused-spread
+				rules: Parser.lintConfig.rules,
+			},
+			{depth: null, colors},
+		));
+		process.exit(0);
+	}
 
 	for (const file of new Set(files.map(f => path.resolve(f)))) {
 		const stat = fs.statSync(file);
