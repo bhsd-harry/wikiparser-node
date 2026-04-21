@@ -56,7 +56,8 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 			}
 		}
 		if (set.size > 0) {
-			error('未构建的节点：', set);
+			error('未构建的节点：');
+			console.error(set);
 		}
 	}
 

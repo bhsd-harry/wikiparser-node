@@ -9,7 +9,7 @@ import type {
 	CodeAction,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService} from '../base';
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData} from '../base';
 
 declare interface Test {
 	desc: string;
@@ -40,6 +40,7 @@ export interface LanguageServiceBase extends Omit<
 	LanguageService,
 	'provideDocumentSymbols' | 'provideCodeAction'
 > {
+	data?: SignatureData;
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
 	resolveCodeAction(rule?: string): Promise<CodeAction>;

@@ -91,10 +91,12 @@ for (const file of ['parserTests.txt', ...files]) {
 		optionInfo = cases.map(([test]) => regex.options.exec(test)?.[1]!.trim())
 			.filter(x => x && !optionRegex.test(x));
 	if (htmlInfo.length > 0) {
-		info('html', new Set(htmlInfo));
+		info('html');
+		console.info(new Set(htmlInfo));
 	}
 	if (optionInfo.length > 0) {
-		info('options', new Set(optionInfo));
+		info('options');
+		console.info(new Set(optionInfo));
 	}
 	for (const [test] of cases) {
 		const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
@@ -139,5 +141,6 @@ const dir = 'test/templates',
 				);
 		});
 if (unused.length > 0) {
-	console.log('Unused templates', unused.sort());
+	console.log('Unused templates');
+	console.log(unused.sort());
 }

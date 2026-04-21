@@ -60,7 +60,8 @@ const [,, site = ''] = process.argv,
 						await lsp(page, true);
 					}
 				} catch (e) {
-					error(`解析 ${title} 页面时出错！`, e);
+					error(`解析 ${title} 页面时出错！`);
+					console.error(e);
 					failed++;
 				}
 				console.log();
@@ -69,7 +70,8 @@ const [,, site = ''] = process.argv,
 				failures.set(name, failed);
 			}
 		} catch (e) {
-			error(`访问${name}的API端口时出错！`, e);
+			error(`访问${name}的API端口时出错！`);
+			console.error(e);
 		}
 	}
 	if (failures.size > 0) {

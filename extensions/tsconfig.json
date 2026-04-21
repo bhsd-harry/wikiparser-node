@@ -7,8 +7,6 @@
 		"lib": [
 			"dom"
 		],
-		"target": "es2019",
-		"outDir": "dist",
-		"skipLibCheck": true
+		"noEmit": true
 	}
 }
