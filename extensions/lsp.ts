@@ -25,6 +25,7 @@ class LanguageService implements LanguageServiceBase {
 	readonly #id;
 	readonly #include;
 	#hasData = false;
+	declare data?: SignatureData;
 
 	/** @implements */
 	get include(): boolean {
@@ -144,7 +145,8 @@ class LanguageService implements LanguageServiceBase {
 		if (!this.#hasData) {
 			this.#hasData = true;
 			data ??= (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())();
-			wikiparse.provide('data', this.#id, await data, this.#include);
+			this.data = await data;
+			wikiparse.provide('data', this.#id, this.data, this.#include);
 		}
 	}
 

@@ -27,7 +27,7 @@ import type {
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 // eslint-disable-next-line @stylistic/max-len
-import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData, CompletionItem, Parser} from '../base';
 
 /* NOT EXPORTED */
 
@@ -123,6 +123,7 @@ export interface LanguageServiceBase extends Omit<
 	LanguageService,
 	'provideDocumentSymbols' | 'provideCodeAction'
 > {
+	data?: SignatureData;
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
 	resolveCodeAction(rule?: string): Promise<CodeAction>;

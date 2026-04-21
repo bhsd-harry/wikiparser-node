@@ -88,7 +88,8 @@ _LanguageService_id = new WeakMap(), _LanguageService_include = new WeakMap(), _
     if (!__classPrivateFieldGet(this, _LanguageService_hasData, "f")) {
         __classPrivateFieldSet(this, _LanguageService_hasData, true, "f");
         data !== null && data !== void 0 ? data : (data = (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())());
-        wikiparse.provide('data', __classPrivateFieldGet(this, _LanguageService_id, "f"), await data, __classPrivateFieldGet(this, _LanguageService_include, "f"));
+        this.data = await data;
+        wikiparse.provide('data', __classPrivateFieldGet(this, _LanguageService_id, "f"), this.data, __classPrivateFieldGet(this, _LanguageService_include, "f"));
     }
 };
 wikiparse.LanguageService = LanguageService;
