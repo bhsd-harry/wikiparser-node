@@ -20,7 +20,8 @@ const [,, site = ''] = process.argv,
 				await single(page);
 			}
 		} catch (e) {
-			error(`访问${name}的API端口时出错！`, e);
+			error(`访问${name}的API端口时出错！`);
+			console.error(e);
 		}
 	}
 })();
