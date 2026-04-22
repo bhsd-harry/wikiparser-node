@@ -891,7 +891,7 @@ export class LanguageService implements LanguageServiceBase {
 			{line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line],
 			mt = re.exec(curLine?.slice(0, character) ?? ''),
-			[,, iAlias = {}, sAlias = {}] = this.config!.doubleUnderscore;
+			[,, iAlias, sAlias] = this.config!.doubleUnderscore;
 		if (mt?.[1] !== undefined) { // tag
 			const closing = mt[1].startsWith('/');
 			return getCompletion(

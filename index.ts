@@ -262,7 +262,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				this.config = rootRequire(this.config, 'config') as ConfigData;
 			}
 			/* c8 ignore next 3 */
-			if (this.config.doubleUnderscore.length < 3 || !('functionHook' in this.config)) {
+			if (!('functionHook' in this.config)) {
 				error(
 					`The schema (${
 						path.join(__dirname, '..', 'config', '.schema.json')
@@ -282,7 +282,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				variable,
 			} = parserConfig;
 		for (let i = 0; i < 2; i++) {
-			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
+			if (doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
 			}
 		}
