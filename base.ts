@@ -24,7 +24,7 @@ export interface Config {
 	readonly variable: string[];
 	readonly functionHook: string[];
 	readonly parserFunction: [Record<string, string>, Record<string, string>, string[], string[]];
-	readonly doubleUnderscore: [string[], string[], Record<string, string>?, Record<string, string>?];
+	readonly doubleUnderscore: [string[], string[], Record<string, string>, Record<string, string>];
 	readonly protocol: string;
 	readonly interwiki: string[];
 	readonly img: Record<string, string>;

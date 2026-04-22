@@ -172,7 +172,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				variable,
 			} = parserConfig;
 		for (let i = 0; i < 2; i++) {
-			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
+			if (doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
 			}
 		}
