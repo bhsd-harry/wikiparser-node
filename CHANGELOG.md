@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.38.2
+## v1.39.0
 
-*2026-04-16*
+*2026-04-23*
 
 **Added**
 
@@ -18,6 +18,10 @@
 **Changed**
 
 - Setting the stage parameter of [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) to `Infinity` now implicitly calls [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) after parsing to build the list items
+
+**Removed**
+
+- The old schema of [`Config.doubleUnderscore`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) is no longer supported
 
 ## v1.38.1
 
