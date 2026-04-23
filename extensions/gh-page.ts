@@ -144,7 +144,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	let timer: NodeJS.Timeout;
 	jar.onUpdate(code => {
 		clearTimeout(timer);
-		timer = setTimeout((async () => {
+		timer = setTimeout((async () => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
 			const astDom = createAST(await wikiparse.json(code, jar.include, qid));
 			astDom.children[0]!.classList.remove('inactive');
 			astContainer.replaceChildren(astDom);

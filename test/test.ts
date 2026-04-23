@@ -82,6 +82,7 @@ describe('API tests', () => {
 						const [, state, config, wikitext] = code as string[] as [string, string, string, string];
 						it(config, () => {
 							const rules: LintRuleConfig = JSON.parse(config);
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 							Parser.lintConfig = {
 								rules,
 								fix: false,
