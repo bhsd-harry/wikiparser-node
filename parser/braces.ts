@@ -172,7 +172,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						}`;
 						lastIndex = index! + 4 + String(accum.length).length;
 						// @ts-expect-error abstract class
-						new HeadingToken(rmt[1].length, rmt.slice(2) as [string, string], config, accum);
+						new HeadingToken(rmt[1].length, rmt.slice(2), config, accum);
 					}
 				}
 			}
@@ -209,7 +209,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					// @ts-expect-error abstract class
 					new TranscludeToken(
 						parts![0]![0]!,
-						parts!.slice(1) as ([string] | [string, string])[],
+						parts!.slice(1),
 						config,
 						accum,
 					);
