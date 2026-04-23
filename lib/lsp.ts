@@ -59,7 +59,6 @@ import type {
 	SignatureData,
 	SignatureInfo,
 	LintError,
-	LintRuleConfig,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -362,7 +361,7 @@ const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 	lintConfig.fix = true;
 	lintConfig.computeEditInfo = false;
 	if (rule) {
-		lintConfig.rules = undefined as unknown as LintRuleConfig;
+		lintConfig.rules = undefined;
 		for (const key of rules) {
 			lintConfig.rules[key] = key === rule ? ruleConfig[key]! : 0;
 		}

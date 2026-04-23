@@ -9,10 +9,6 @@ import type {
 import type {SimplePage} from '@bhsd/test-util';
 import type {
 	LanguageService,
-
-	/* NOT FOR BROWSER ONLY */
-
-	TokenTypes,
 } from '../base';
 
 /* NOT FOR BROWSER ONLY */
@@ -113,15 +109,15 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 		argName = root.querySelector('arg-name'),
 		templateName = root.querySelector('template-name'),
 		magicWordName = root.querySelector('magic-word-name'),
-		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke' as TokenTypes),
+		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke'),
 		doubleUnderscore = root.querySelector('double-underscore'),
 		table = root.querySelector('table'),
 
 		/* NOT FOR BROWSER */
 
-		parameterKey = root.querySelector('template > parameter[anon!=true] > parameter-key' as TokenTypes),
-		linkTarget = root.querySelector('link > link-target' as TokenTypes),
-		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name' as TokenTypes),
+		parameterKey = root.querySelector('template > parameter[anon!=true] > parameter-key'),
+		linkTarget = root.querySelector('link > link-target'),
+		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name'),
 
 		/* NOT FOR BROWSER END */
 

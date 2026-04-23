@@ -107,7 +107,7 @@ export const parseTable = (
 		} else if (row) {
 			top = pop(top, stack);
 			if (top.is<TrToken>('tr')) {
-				top = stack.pop() as TableToken;
+				top = stack.pop() as TableToken; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
 			}
 			// @ts-expect-error abstract class
 			const tr: TrToken = new TrToken(`\n${spaces}${row}`, attr, config, accum);

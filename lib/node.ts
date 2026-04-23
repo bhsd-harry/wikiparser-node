@@ -690,7 +690,7 @@ export abstract class AstNode implements AstNodeBase {
 			currentTarget: {value: this, enumerable: true, configurable: true},
 		});
 		this.#events.emit(e.type, e, data);
-		if (e.bubbles && !(e.cancelBubble as unknown as boolean) && this.parentNode) {
+		if (e.bubbles && !e.cancelBubble && this.parentNode) {
 			this.parentNode.dispatchEvent(e, data);
 		}
 	}

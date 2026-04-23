@@ -28,6 +28,16 @@ else
 	npm run build && npm run lint && npm test && npm run test:perf && npm run test:math && npm run test:real
 	if [[ $? -eq 0 ]]
 	then
+		# Update the wiki first, so that the GitHub Node.js workflow can pass
+		cd wiki/
+		if [[ $? -eq 0 ]]
+		then
+			git add -A
+			git commit -m "doc: update"
+			git push
+			cd ..
+		fi
+
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 		rm package-lock.json
 		npm i --package-lock-only --legacy-peer-deps
