@@ -1,5 +1,5 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.39.0
+## v1.39.1
 
 *2026-04-23*
 
