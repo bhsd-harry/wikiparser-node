@@ -237,7 +237,7 @@ export abstract class MagicLinkToken extends Token {
 	 * @param articlePath article path / 条目路径
 	 */
 	getUrl(articlePath?: string): URL | string {
-		LSP: {
+		LINT: {
 			const {type} = this;
 			let {link} = this;
 			if (type === 'magic-link') {
