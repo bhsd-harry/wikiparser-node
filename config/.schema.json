@@ -169,7 +169,7 @@
 					}
 				}
 			],
-			"minItems": 2,
+			"minItems": 4,
 			"maxItems": 4
 		},
 		"protocol": {
