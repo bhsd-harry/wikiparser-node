@@ -28,7 +28,7 @@
 		"bundle:lsp": "esbuild index.ts --charset=utf8 --bundle --format=cjs --outfile=build/bundle-lsp.js",
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
 		"build:core": "npm run bundle:core && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --drop-labels=LSP,LINT --sourcemap --outfile=bundle/bundle.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
-		"build:es8": "npm run bundle:es8 && esbuild index.ts --charset=utf8 --bundle --minify --target=es2017 --format=iife --drop-labels=LSP,PRINT --outfile=bundle/bundle-es8.min.js && eslint --no-config-lookup -c eslint.es8.mjs bundle/bundle-es8.min.js",
+		"build:es8": "npm run bundle:es8 && esbuild index.ts --charset=utf8 --bundle --minify --target=es2017 --format=iife --drop-labels=LSP,PRINT --sourcemap --outfile=bundle/bundle-es8.min.js && eslint --no-config-lookup -c eslint.es8.mjs bundle/bundle-es8.min.js",
 		"build:lsp": "npm run bundle:lsp && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-lsp.min.js",
 		"build:ext": "npm run clean && bash build-ext.sh",
 		"build:test": "npm run clean && tsc --project tsconfig.dist.json",
@@ -43,8 +43,9 @@
 		"prof": "node dist/test/prof.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
 		"test:unit": "mocha --require bundle/bundle-lsp.min.js dist/test/test.js",
+		"test:es8": "mocha --require bundle/bundle-es8.min.js dist/test/test-es8.js",
 		"test:parser": "LC_ALL=en.UTF-8 mocha --require bundle/bundle.min.js dist/test/parserTests.js",
-		"test": "npm run test:unit && npm run test:parser",
+		"test": "npm run test:unit && npm run test:parser && npm run test:es8",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
@@ -57,7 +58,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/cm-util": "^1.0.0",
-		"@bhsd/code-standard": "^2.2.0",
+		"@bhsd/code-standard": "^2.3.0",
 		"@bhsd/codemirror-mediawiki": "^3.14.0",
 		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^1.1.0",

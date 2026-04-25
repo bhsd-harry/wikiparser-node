@@ -48,7 +48,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** full link / 完整链接 */
 	get link(): string | Title {
-		LSP: return this.#title;
+		LINT: return this.#title;
 	}
 
 	/* PRINT ONLY */
