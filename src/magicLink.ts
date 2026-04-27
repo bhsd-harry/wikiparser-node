@@ -193,7 +193,7 @@ export abstract class MagicLinkToken extends Token {
 				severity = lintConfig.getSeverity(rule);
 			if (severity && !this.querySelector('magic-word')) {
 				try {
-					this.getUrl();
+					this.#getUrl();
 				} catch {
 					errors.push(generateForSelf(this, rect, rule, 'invalid-url', severity));
 				}
@@ -230,6 +230,17 @@ export abstract class MagicLinkToken extends Token {
 		}
 	}
 
+	/** 获取自由外链的 URL */
+	#getUrl(): URL {
+		LINT: {
+			let {link} = this;
+			if (link.startsWith('//')) {
+				link = `https:${link}`;
+			}
+			return new URL(link);
+		}
+	}
+
 	/**
 	 * Get the URL
 	 *
@@ -237,22 +248,19 @@ export abstract class MagicLinkToken extends Token {
 	 * @param articlePath article path / 条目路径
 	 */
 	getUrl(articlePath?: string): URL | string {
-		LINT: {
-			let {link} = this;
-			LSP: if (this.type === 'magic-link') {
-				if (link.startsWith('ISBN')) {
-					return this
-						.normalizeTitle(`BookSources/${link.slice(5)}`, -1, {temporary: true})
-						.getUrl(articlePath);
-				}
-				link = link.startsWith('RFC')
-					? `https://datatracker.ietf.org/doc/html/rfc${link.slice(4)}`
-					: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`;
+		LSP: {
+			if (this.type !== 'magic-link') {
+				return this.#getUrl();
 			}
-			if (link.startsWith('//')) {
-				link = `https:${link}`;
-			}
-			return new URL(link);
+			const {link} = this;
+			return link.startsWith('ISBN')
+				? this.normalizeTitle(`BookSources/${link.slice(5)}`, -1, {temporary: true})
+					.getUrl(articlePath)
+				: new URL(
+					link.startsWith('RFC')
+						? `https://datatracker.ietf.org/doc/html/rfc${link.slice(4)}`
+						: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`,
+				);
 		}
 	}
 
