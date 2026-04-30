@@ -191,14 +191,4 @@ export default extend(
 			'no-irregular-whitespace': 0,
 		},
 	},
-	{
-		files: [
-			'extensions/*.ts',
-		],
-		languageOptions: {
-			parserOptions: {
-				project: './extensions/tsconfig.json',
-			},
-		},
-	},
 );
