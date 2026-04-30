@@ -1,6 +1,6 @@
 ---
 exclude_paths:
-  - "package-lock.json"
-  - "test/math/**"
-  - "test/core/**"
-  - "test/templates/**"
+  - package-lock.json
+  - 'test/math/**'
+  - 'test/core/**'
+  - 'test/templates/**'
