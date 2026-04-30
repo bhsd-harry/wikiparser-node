@@ -178,11 +178,6 @@ export default extend(
 		files: [
 			'extensions/*.ts',
 		],
-		languageOptions: {
-			parserOptions: {
-				project: './extensions/tsconfig.json',
-			},
-		},
 		rules: {
 			'no-control-regex': 2,
 			'no-new': 2,
@@ -219,6 +214,7 @@ export default extend(
 		],
 		languageOptions: {
 			parserOptions: {
+				projectService: false,
 				project: './extensions/tsconfig.codejar.json',
 			},
 		},
