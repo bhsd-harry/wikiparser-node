@@ -182,15 +182,18 @@ http://example.com
 </p><p><a rel="nofollow" class="external text" href="http://example.com">abcd</a>
 </p>
 !! html/parsoid
-<p><a rel="mw:ExtLink" href="http://example.com" class="external text">abcd</a></p>
-<p><a rel="mw:ExtLink" href="http://example.com" class="external text">http://foo.com</a></p>
-<p><a rel="mw:ExtLink" href="http://example.com" class="external free">http://example.com</a></p>
-<p><a rel="mw:ExtLink" href="http://example.com" class="external text"><span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":"abcd"}}'></span></a></p>
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external text">abcd</a></p>
+
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external text">http://foo.com</a></p>
+
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external free">http://example.com</a></p>
+
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external text"><span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":"abcd"}}'></span></a></p>
 !! html/parsoid+langconv
-<p><a rel="mw:ExtLink" href="http://example.com" class="external text">абцд</a></p>
-<p><a rel="mw:ExtLink" href="http://example.com" class="external text">http://foo.com</a></p>
-<p><a rel="mw:ExtLink" href="http://example.com" class="external free">http://example.com</a></p>
-<p><a rel="mw:ExtLink" href="http://example.com" class="external text"><span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":"abcd"}}'>abcd</span></a></p>
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external text">абцд</a></p>
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external text">http://foo.com</a></p>
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external free">http://example.com</a></p>
+<p><a rel="mw:ExtLink nofollow" href="http://example.com" class="external text"><span typeof="mw:LanguageVariant" data-mw-variant='{"disabled":{"t":"abcd"}}'>abcd</span></a></p>
 !! end
 
 !! test
@@ -512,6 +515,21 @@ language=zh htmlVariantLanguage=zh-Hant-TW
 !! end
 
 !! test
+Filter rules with BCP 47 codes
+!! options
+language=zh htmlVariantLanguage=zh-Hant-TW
+!! wikitext
+-{zh-Hant-TW;|-{zh-tw:Taiwan;zh-hk:Hong Kong;zh-cn:China}-}-
+!! html/php
+<p>Taiwan
+</p>
+!! html/parsoid
+<p><span data-mw-variant='{"filter":{"l":["zh-Hant-TW"],"t":"&lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"twoway\":[{\"l\":\"zh-tw\",\"t\":\"Taiwan\"},{\"l\":\"zh-hk\",\"t\":\"Hong Kong\"},{\"l\":\"zh-cn\",\"t\":\"China\"}]}&apos;>&lt;/span>"}}' typeof="mw:LanguageVariant"></span></p>
+!! html/parsoid+langconv
+<p><span data-mw-variant='{"filter":{"l":["zh-Hant-TW"],"t":"&lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"twoway\":[{\"l\":\"zh-tw\",\"t\":\"Taiwan\"},{\"l\":\"zh-hk\",\"t\":\"Hong Kong\"},{\"l\":\"zh-cn\",\"t\":\"China\"}]}&apos;>&lt;/span>"}}' typeof="mw:LanguageVariant"><span data-mw-variant='{"twoway":[{"l":"zh-tw","t":"Taiwan"},{"l":"zh-hk","t":"Hong Kong"},{"l":"zh-cn","t":"China"}]}' typeof="mw:LanguageVariant">Taiwan</span></span></p>
+!! end
+
+!! test
 html2wt support for edited wildcard rule (strip trailing semi where needed)
 !! options
 language=zh htmlVariantLanguage=zh-Hant-TW
@@ -737,7 +755,7 @@ language=zh htmlVariantLanguage=zh showtitle
 -{H|zh:China; zh-tw:Taiwan}-
 Taiwan is China.-{T|Taiwan is China}-
 !! metadata+langconv
-<span class="mw-page-title-main">Parser test</span>
+<span lang="zh" dir="ltr"><span class="mw-page-title-main">Parser test</span></span>
 !! html/php
 <p>
 Taiwan is China.
@@ -1028,7 +1046,7 @@ language=zh htmlVariantLanguage=zh title=[[ZH]] showtitle
 !! wikitext
 -{T|zh-cn:CN;zh-tw:TW}-
 !! metadata+langconv
-<span class="mw-page-title-main">ZH</span>
+<span lang="zh" dir="ltr"><span class="mw-page-title-main">ZH</span></span>
 !! html/php
 <p class="mw-empty-elt">
 </p>
@@ -1045,7 +1063,7 @@ language=zh htmlVariantLanguage=zh title=[[ZH]] showtitle
 !! wikitext
 -{T|TW}-
 !! metadata+langconv
-<span class="mw-page-title-main">ZH</span>
+<span lang="zh" dir="ltr"><span class="mw-page-title-main">ZH</span></span>
 !! html/php
 <p class="mw-empty-elt">
 </p>
@@ -1368,13 +1386,13 @@ gopher://www.google.com
 <a rel="nofollow" class="external text" href="//www.google.com">www.гоогле.цом</a>
 </p>
 !! html/parsoid
-<p><a rel="mw:ExtLink" href="http://www.google.com" class="external free">http://www.google.com</a>
-<a rel="mw:ExtLink" href="gopher://www.google.com" class="external free">gopher://www.google.com</a>
-<a rel="mw:ExtLink" href="http://www.google.com" class="external text">http://www.google.com</a>
-<a rel="mw:ExtLink" href="gopher://www.google.com" class="external text">gopher://www.google.com</a>
-<a rel="mw:ExtLink" href="https://www.google.com" class="external text">irc://www.google.com</a>
-<a rel="mw:ExtLink" href="ftp://www.google.com" class="external text">www.google.com/ftp://dir</a>
-<a rel="mw:ExtLink" href="//www.google.com" class="external text">www.google.com</a></p>
+<p><a rel="mw:ExtLink nofollow" href="http://www.google.com" class="external free">http://www.google.com</a>
+<a rel="mw:ExtLink nofollow" href="gopher://www.google.com" class="external free">gopher://www.google.com</a>
+<a rel="mw:ExtLink nofollow" href="http://www.google.com" class="external text">http://www.google.com</a>
+<a rel="mw:ExtLink nofollow" href="gopher://www.google.com" class="external text">gopher://www.google.com</a>
+<a rel="mw:ExtLink nofollow" href="https://www.google.com" class="external text">irc://www.google.com</a>
+<a rel="mw:ExtLink nofollow" href="ftp://www.google.com" class="external text">www.google.com/ftp://dir</a>
+<a rel="mw:ExtLink nofollow" href="//www.google.com" class="external text">www.google.com</a></p>
 !! end
 
 !! test
@@ -1779,6 +1797,20 @@ x<langconvert from="crh-latn" to="crh-cyrl"/>x
 !! end
 
 !! test
+Langconvert tag: ensure output is not double-converted
+!! options
+language=zh htmlVariantLanguage=zh-hans
+!! wikitext
+氣
+
+<langconvert from="zh-hans" to="zh-hant">气</langconvert>
+!! html/php
+<p>气
+</p><p>氣
+</p>
+!! end
+
+!! test
 T302678: Serialize empty twoway
 !! options
 language=zh
@@ -1838,9 +1870,9 @@ language=zh htmlVariantLanguage=zh-tw
 !! wikitext
 -{zh-tw:[[File:Foobar.jpg|thumb|tw]]; zh-hk:[[File:Foobar.jpg|thumb|hk]]; zh-cn:[[File:Foobar.jpg|thumb|cn]]}-
 !! html/php
-<figure class="mw-default-size" typeof="mw:File/Thumb"><a href="/wiki/File:Foobar.jpg" class="mw-file-description"><img src="http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg" decoding="async" width="180" height="20" class="mw-file-element" srcset="http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x" /></a><figcaption>tw</figcaption></figure>
+<figure class="mw-default-size" typeof="mw:File/Thumb"><a href="/wiki/File:Foobar.jpg" class="mw-file-description"><img src="http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg" decoding="async" width="180" height="20" class="mw-file-element" srcset="http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x" /></a><figcaption>tw</figcaption></figure>
 !! html/parsoid
-<div typeof="mw:LanguageVariant" data-mw-variant='{"twoway":[{"l":"zh-tw","t":"&lt;figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\">&lt;a href=\"./File:Foobar.jpg\" class=\"mw-file-description\">&lt;img resource=\"./File:Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" data-file-width=\"1941\" data-file-height=\"220\" data-file-type=\"bitmap\" height=\"20\" width=\"180\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" class=\"mw-file-element\"/>&lt;/a>&lt;figcaption>tw&lt;/figcaption>&lt;/figure>"},{"l":"zh-hk","t":"&lt;figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\">&lt;a href=\"./File:Foobar.jpg\" class=\"mw-file-description\">&lt;img resource=\"./File:Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" data-file-width=\"1941\" data-file-height=\"220\" data-file-type=\"bitmap\" height=\"20\" width=\"180\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" class=\"mw-file-element\"/>&lt;/a>&lt;figcaption>hk&lt;/figcaption>&lt;/figure>"},{"l":"zh-cn","t":"&lt;figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\">&lt;a href=\"./File:Foobar.jpg\" class=\"mw-file-description\">&lt;img resource=\"./File:Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" data-file-width=\"1941\" data-file-height=\"220\" data-file-type=\"bitmap\" height=\"20\" width=\"180\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" class=\"mw-file-element\"/>&lt;/a>&lt;figcaption>cn&lt;/figcaption>&lt;/figure>"}]}'></div>
+<div typeof="mw:LanguageVariant" data-mw-variant='{"twoway":[{"l":"zh-tw","t":"&lt;figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\">&lt;a href=\"./File:Foobar.jpg\" class=\"mw-file-description\">&lt;img resource=\"./File:Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" data-file-width=\"1941\" data-file-height=\"220\" data-file-type=\"bitmap\" height=\"20\" width=\"180\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" class=\"mw-file-element\"/>&lt;/a>&lt;figcaption>tw&lt;/figcaption>&lt;/figure>"},{"l":"zh-hk","t":"&lt;figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\">&lt;a href=\"./File:Foobar.jpg\" class=\"mw-file-description\">&lt;img resource=\"./File:Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" data-file-width=\"1941\" data-file-height=\"220\" data-file-type=\"bitmap\" height=\"20\" width=\"180\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" class=\"mw-file-element\"/>&lt;/a>&lt;figcaption>hk&lt;/figcaption>&lt;/figure>"},{"l":"zh-cn","t":"&lt;figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\">&lt;a href=\"./File:Foobar.jpg\" class=\"mw-file-description\">&lt;img resource=\"./File:Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" data-file-width=\"1941\" data-file-height=\"220\" data-file-type=\"bitmap\" height=\"20\" width=\"180\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" class=\"mw-file-element\"/>&lt;/a>&lt;figcaption>cn&lt;/figcaption>&lt;/figure>"}]}'></div>
 !! end
 
 !! test
@@ -1891,4 +1923,293 @@ language=zh htmlVariantLanguage=zh-tw
 [[This is a red link]]
 !! html/parsoid+langconv
 <p><a rel="mw:WikiLink" href="./This_is_a_red_link?action=edit&amp;redlink=1" title="This is a red link" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["This is a red link"]}}'>This is a red link</a></p>
+!! end
+
+!! test
+Language converter markup can contain tables (T422966)
+!! options
+language=zh htmlVariantLanguage=zh-tw
+parsoid=wt2html
+!! wikitext
+-{zh-tw;|
+{|
+| col1
+| col2
+|-
+| foo || bar
+|}
+}-
+!! html/php
+<p class="mw-empty-elt">
+</p>
+<table>
+<tbody><tr>
+<td>col1
+</td>
+<td>col2
+</td></tr>
+<tr>
+<td>foo</td>
+<td>bar
+</td></tr></tbody></table>
+<p class="mw-empty-elt">
+</p>
+!! html/parsoid
+<div data-mw-variant='{"filter":{"l":["zh-tw"],"t":"\n&lt;table>\n&lt;tbody>&lt;tr>&lt;td>col1&lt;/td>\n&lt;td>col2&lt;/td>&lt;/tr>\n&lt;tr>\n&lt;td>foo&lt;/td>&lt;td>bar&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>\n"}}' typeof="mw:LanguageVariant"></div>
+!! html/parsoid+langconv
+<div data-mw-variant='{"filter":{"l":["zh-tw"],"t":"\n&lt;table>\n&lt;tbody>&lt;tr>&lt;td>col1&lt;/td>\n&lt;td>col2&lt;/td>&lt;/tr>\n&lt;tr>\n&lt;td>foo&lt;/td>&lt;td>bar&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>\n"}}' typeof="mw:LanguageVariant">
+<table>
+<tbody>
+<tr>
+<td>col1</td>
+<td>col2</td>
+</tr>
+<tr>
+<td>foo</td>
+<td>bar</td>
+</tr>
+</tbody>
+</table>
+</div>
+!! end
+
+!! test
+Language converter markup can contain tables containing tables (T422966)
+!! options
+language=zh htmlVariantLanguage=zh-tw
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+-{zh-tw;|before table
+{| border="1"
+|&alpha;
+|
+{| bgcolor="#ABCDEF" border="2"
+|nested
+|-
+|table
+|}
+|the original table again
+|}
+after table}-
+!! html/php
+<p>before table
+</p>
+<table border="1">
+<tbody><tr>
+<td>&#945;
+</td>
+<td>
+<table bgcolor="#ABCDEF" border="2">
+<tbody><tr>
+<td>nested
+</td></tr>
+<tr>
+<td>table
+</td></tr></tbody></table>
+</td>
+<td>the original table again
+</td></tr></tbody></table>
+<p>after table
+</p>
+!! html/parsoid
+<div data-mw-variant='{"filter":{"l":["zh-tw"],"t":"before table\n&lt;table border=\"1\">\n&lt;tbody>&lt;tr>&lt;td>&lt;span typeof=\"mw:Entity\">α&lt;/span>&lt;/td>\n&lt;td>\n&lt;table bgcolor=\"#ABCDEF\" border=\"2\">\n&lt;tbody>&lt;tr>&lt;td>nested&lt;/td>&lt;/tr>\n&lt;tr>\n&lt;td>table&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>&lt;/td>\n&lt;td>the original table again&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>\nafter table"}}' typeof="mw:LanguageVariant"></div>
+!! html/parsoid+langconv
+<div data-mw-variant='{"filter":{"l":["zh-tw"],"t":"before table\n&lt;table border=\"1\">\n&lt;tbody>&lt;tr>&lt;td>&lt;span typeof=\"mw:Entity\">α&lt;/span>&lt;/td>\n&lt;td>\n&lt;table bgcolor=\"#ABCDEF\" border=\"2\">\n&lt;tbody>&lt;tr>&lt;td>nested&lt;/td>&lt;/tr>\n&lt;tr>\n&lt;td>table&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>&lt;/td>\n&lt;td>the original table again&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>\nafter table"}}' typeof="mw:LanguageVariant">before table
+<table border="1">
+<tbody>
+<tr>
+<td><span typeof="mw:Entity">α</span></td>
+<td>
+<table bgcolor="#ABCDEF" border="2">
+<tbody>
+<tr>
+<td>nested</td>
+</tr>
+<tr>
+<td>table</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>the original table again</td>
+</tr>
+</tbody>
+</table>
+after table</div>
+!! end
+
+!! test
+Tables can contain language converter markup that can contain tables (T422966)
+!! options
+language=zh htmlVariantLanguage=zh-tw
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+{| border="1"
+|&alpha;
+|
+-{zh-tw;|before table
+{| bgcolor="#ABCDEF" border="2"
+|nested
+|-
+|table
+|}
+after table}-
+|the original table again
+|}
+!! html/php
+<table border="1">
+<tbody><tr>
+<td>&#945;
+</td>
+<td>
+<p>before table
+</p>
+<table bgcolor="#ABCDEF" border="2">
+<tbody><tr>
+<td>nested
+</td></tr>
+<tr>
+<td>table
+</td></tr></tbody></table>
+<p>after table
+</p>
+</td>
+<td>the original table again
+</td></tr></tbody></table>
+!! html/parsoid
+<table border="1">
+<tbody>
+<tr>
+<td><span typeof="mw:Entity">α</span></td>
+<td>
+<div data-mw-variant='{"filter":{"l":["zh-tw"],"t":"before table\n&lt;table bgcolor=\"#ABCDEF\" border=\"2\">\n&lt;tbody>&lt;tr>&lt;td>nested&lt;/td>&lt;/tr>\n&lt;tr>\n&lt;td>table&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>\nafter table"}}' typeof="mw:LanguageVariant"></div>
+</td>
+<td>the original table again</td>
+</tr>
+</tbody>
+</table>
+!! html/parsoid+langconv
+<table border="1">
+<tbody>
+<tr>
+<td><span typeof="mw:Entity">α</span></td>
+<td>
+<div data-mw-variant='{"filter":{"l":["zh-tw"],"t":"before table\n&lt;table bgcolor=\"#ABCDEF\" border=\"2\">\n&lt;tbody>&lt;tr>&lt;td>nested&lt;/td>&lt;/tr>\n&lt;tr>\n&lt;td>table&lt;/td>&lt;/tr>\n&lt;/tbody>&lt;/table>\nafter table"}}' typeof="mw:LanguageVariant">before table
+<table bgcolor="#ABCDEF" border="2">
+<tbody>
+<tr>
+<td>nested</td>
+</tr>
+<tr>
+<td>table</td>
+</tr>
+</tbody>
+</table>
+after table</div>
+</td>
+<td>the original table again</td>
+</tr>
+</tbody>
+</table>
+!! end
+
+!! test
+Language converter markup can contain lists (T422966)
+!! options
+language=zh htmlVariantLanguage=zh-tw
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+-{
+#foo
+#bar
+}-
+!! html/php
+<p class="mw-empty-elt">
+</p>
+<ol><li>foo</li>
+<li>bar</li></ol>
+<p class="mw-empty-elt">
+</p>
+!! html/parsoid
+<div data-mw-variant='{"disabled":{"t":"\n&lt;ol>&lt;li>foo&lt;/li>\n&lt;li>bar&lt;/li>&lt;/ol>\n"}}' typeof="mw:LanguageVariant"></div>
+!! html/parsoid+langconv
+<div data-mw-variant='{"disabled":{"t":"\n&lt;ol>&lt;li>foo&lt;/li>\n&lt;li>bar&lt;/li>&lt;/ol>\n"}}' typeof="mw:LanguageVariant">
+<ol>
+<li>foo</li>
+<li>bar</li>
+</ol>
+</div>
+!! end
+
+!! test
+Nested raw markup
+!! options
+language=sr htmlVariantLanguage=sr-Cyrl
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+-{raw1 -{raw2}- -{R|raw3}-}-
+
+-{raw -{sr-Cyrl;|filter}- -{sr-Latn:foo;sr-Cyrl:bar}- -{xyz=>sr-Cyrl:bat}-}-
+!! html/php
+<p>raw1 raw2 raw3
+</p><p>raw филтер bar bat
+</p>
+!! html/parsoid
+<p><span data-mw-variant='{"disabled":{"t":"raw1 &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"disabled\":{\"t\":\"raw2\"}}&apos;>&lt;/span> &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"disabled\":{\"t\":\"raw3\"}}&apos;>&lt;/span>"}}' typeof="mw:LanguageVariant"></span></p>
+<p><span data-mw-variant='{"disabled":{"t":"raw &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"filter\":{\"l\":[\"sr-Cyrl\"],\"t\":\"filter\"}}&apos;>&lt;/span> &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"twoway\":[{\"l\":\"sr-Latn\",\"t\":\"foo\"},{\"l\":\"sr-Cyrl\",\"t\":\"bar\"}]}&apos;>&lt;/span> &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"oneway\":[{\"f\":\"xyz\",\"l\":\"sr-Cyrl\",\"t\":\"bat\"}]}&apos;>&lt;/span>"}}' typeof="mw:LanguageVariant"></span></p>
+!! html/parsoid+langconv
+<p><span data-mw-variant='{"disabled":{"t":"raw1 &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"disabled\":{\"t\":\"raw2\"}}&apos;>&lt;/span> &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"disabled\":{\"t\":\"raw3\"}}&apos;>&lt;/span>"}}' typeof="mw:LanguageVariant">raw1 <span data-mw-variant='{"disabled":{"t":"raw2"}}' typeof="mw:LanguageVariant">raw2</span> <span data-mw-variant='{"disabled":{"t":"raw3"}}' typeof="mw:LanguageVariant">raw3</span></span></p>
+<p><span data-mw-variant='{"disabled":{"t":"raw &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"filter\":{\"l\":[\"sr-Cyrl\"],\"t\":\"filter\"}}&apos;>&lt;/span> &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"twoway\":[{\"l\":\"sr-Latn\",\"t\":\"foo\"},{\"l\":\"sr-Cyrl\",\"t\":\"bar\"}]}&apos;>&lt;/span> &lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"oneway\":[{\"f\":\"xyz\",\"l\":\"sr-Cyrl\",\"t\":\"bat\"}]}&apos;>&lt;/span>"}}' typeof="mw:LanguageVariant">raw <span data-mw-variant='{"filter":{"l":["sr-Cyrl"],"t":"filter"}}' typeof="mw:LanguageVariant">филтер</span> <span data-mw-variant='{"twoway":[{"l":"sr-Latn","t":"foo"},{"l":"sr-Cyrl","t":"bar"}]}' typeof="mw:LanguageVariant">bar</span> <span data-mw-variant='{"oneway":[{"f":"xyz","l":"sr-Cyrl","t":"bat"}]}' typeof="mw:LanguageVariant">bat</span></span></p>
+!! end
+
+!! test
+Nested raw markup with <pre>
+!! options
+language=sr htmlVariantLanguage=sr-Cyrl
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+-{<pre>foo-{bar}-bat</pre>}-
+!! html/php
+<pre>foobarbat</pre>
+!! html/parsoid
+<div data-mw-variant='{"disabled":{"t":"&lt;pre typeof=\"mw:Extension/pre\" data-mw=&apos;{\"name\":\"pre\",\"attrs\":{},\"body\":{\"extsrc\":\"foo-{bar}-bat\"}}&apos;>foo-{bar}-bat&lt;/pre>"}}' typeof="mw:LanguageVariant"></div>
+!! html/parsoid+langconv
+<div data-mw-variant='{"disabled":{"t":"&lt;pre typeof=\"mw:Extension/pre\" data-mw=&apos;{\"name\":\"pre\",\"attrs\":{},\"body\":{\"extsrc\":\"foo-{bar}-bat\"}}&apos;>foo-{bar}-bat&lt;/pre>"}}' typeof="mw:LanguageVariant"><pre data-mw='{"name":"pre","attrs":{},"body":{"extsrc":"foo-{bar}-bat"}}' typeof="mw:Extension/pre">foobarbat</pre></div>
+!! end
+
+!! test
+T424391: Nested language converter markup in links
+!! options
+language=sr htmlVariantLanguage=sr-Cyrl
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+-{ [http://www.paris.fr -{paris.fr}-] }-
+!! html/php
+<p> <a rel="nofollow" class="external text" href="http://www.paris.fr">paris.fr</a> 
+</p>
+!! html/parsoid
+<p><span data-mw-variant='{"disabled":{"t":" &lt;a rel=\"mw:ExtLink nofollow\" href=\"http://www.paris.fr\" class=\"external text\">&lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"disabled\":{\"t\":\"paris.fr\"}}&apos;>&lt;/span>&lt;/a> "}}' typeof="mw:LanguageVariant"></span></p>
+!! html/parsoid+langconv
+<p><span data-mw-variant='{"disabled":{"t":" &lt;a rel=\"mw:ExtLink nofollow\" href=\"http://www.paris.fr\" class=\"external text\">&lt;span typeof=\"mw:LanguageVariant\" data-mw-variant=&apos;{\"disabled\":{\"t\":\"paris.fr\"}}&apos;>&lt;/span>&lt;/a> "}}' typeof="mw:LanguageVariant"><a class="external text" href="http://www.paris.fr" rel="mw:ExtLink nofollow"><span data-mw-variant='{"disabled":{"t":"paris.fr"}}' typeof="mw:LanguageVariant">paris.fr</span></a></span></p>
+!! end
+
+!! test
+T424401: Don't convert inside <nowiki>
+!! options
+language=sr htmlVariantLanguage=sr-Cyrl
+parsoid=wt2html,wt2wt,html2html
+!! wikitext
+This <nowiki>is Latin</nowiki>.
+
+Even if the <nowiki>nowiki -{contains}- lc markup</nowiki>.
+!! html/php
+<p>Тхис is Latin.
+</p><p>Евен иф тхе nowiki -&#123;contains&#125;- lc markup.
+</p>
+!! html/parsoid
+<p>This <span typeof="mw:Nowiki">is Latin</span>.</p>
+<p>Even if the <span typeof="mw:Nowiki">nowiki -{contains}- lc markup</span>.</p>
+!! html/parsoid+langconv
+<p>Тхис <span typeof="mw:Nowiki">is Latin</span>.</p>
+<p>Евен иф тхе <span typeof="mw:Nowiki">nowiki -{contains}- lc markup</span>.</p>
 !! end

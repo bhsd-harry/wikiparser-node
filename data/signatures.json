@@ -1962,7 +1962,7 @@
 					}
 				]
 			],
-			"description": "The canonical or localized name of the content model of the specified page."
+			"description": "**[Expensive]** The canonical or localized name of the content model of the specified page."
 		},
 		{
 			"aliases": [

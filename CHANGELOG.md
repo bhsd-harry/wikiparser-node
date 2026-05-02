@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.39.2
+
+*2026-05-02*
+
+**Changed**
+
+- The preset configurations are updated
+
 ## v1.39.1
 
 *2026-04-23*
@@ -44,7 +52,7 @@
 
 *2026-03-31*
 
-**Added**
+**Changed**
 
 - The preset configuration for Moegirlpedia is updated to include [Extension:Math](https://www.mediawiki.org/wiki/Extension:Math)
 
