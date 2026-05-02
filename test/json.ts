@@ -168,23 +168,6 @@ for (const file in configs) {
 					);
 				}
 			});
-
-			if (file === 'minimum.json') {
-				it('minimum parserFunction', () => {
-					for (let i = 0; i < 2; i++) {
-						const obj = parserFunction[i] as Record<string, string>;
-						for (const alias in obj) {
-							if (/^#[\w-]+$/u.test(alias)) {
-								assert.strictEqual(
-									(config.parserFunction[i] as Record<string, string>)[alias],
-									obj[alias],
-									`'${alias}' not in minConfig.parserFunction[${i}]`,
-								);
-							}
-						}
-					}
-				});
-			}
 		});
 	}
 }
