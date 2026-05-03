@@ -83,10 +83,17 @@ export abstract class ExtToken extends TagPairToken {
 			case 'seo':
 			case 'langconvert':
 			case 'phonos':
-				if (lcName === 'poem') {
-					newConfig.excludes.push('heading');
-				} else if (lcName === 'tab') {
-					newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
+				switch (lcName) {
+					case 'poem':
+						newConfig.excludes.push('heading');
+						break;
+					case 'langconvert':
+						newConfig.excludes.push('list');
+						break;
+					case 'tab':
+						newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
+						break;
+					// No default
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;

@@ -11815,70 +11815,70 @@
 		"desc": "Langconvert tag: crh-latn to crh-cyrl",
 		"wikitext": "<langconvert from=\"crh-latn\" to=\"crh-cyrl\">test</langconvert>",
 		"html": "<p>тест\n</p>",
-		"render": "",
+		"render": "<p>test\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">crh-latn</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">crh-cyrl</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">test</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: en to en-x-piglatin",
 		"wikitext": "<langconvert from=\"en\" to=\"en-x-piglatin\">test</langconvert>",
 		"html": "<p>esttay\n</p>",
-		"render": "",
+		"render": "<p>test\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">en</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">en-x-piglatin</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">test</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: gan-hans to gan-hant",
 		"wikitext": "<langconvert from=\"gan-hans\" to=\"gan-hant\">爱</langconvert>",
 		"html": "<p>愛\n</p>",
-		"render": "",
+		"render": "<p>爱\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">gan-hans</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">gan-hant</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">爱</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: ku-latn to ku-arab",
 		"wikitext": "<langconvert from=\"ku-latn\" to=\"ku-arab\">test</langconvert>",
 		"html": "<p>تەست\n</p>",
-		"render": "",
+		"render": "<p>test\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">ku-latn</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">ku-arab</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">test</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: shi-latn to shi-tfng",
 		"wikitext": "<langconvert from=\"shi-latn\" to=\"shi-tfng\">test</langconvert>",
 		"html": "<p>ⵜⴻⵙⵜ\n</p>",
-		"render": "",
+		"render": "<p>test\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">shi-latn</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">shi-tfng</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">test</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: sr-latn to sr-cyrl",
 		"wikitext": "<langconvert from=\"sr-latn\" to=\"sr-cyrl\">zdravo</langconvert>",
 		"html": "<p>здраво\n</p>",
-		"render": "",
+		"render": "<p>zdravo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">sr-latn</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">sr-cyrl</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">zdravo</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: sr-el to sr-ec (should fail)",
 		"wikitext": "<langconvert from=\"sr-el\" to=\"sr-ec\">zdravo</langconvert>",
 		"html": "<p><span class=\"error\"><strong>Error:</strong> Langconvert tag's <code>from</code> and <code>to</code> attributes must not be empty and must contain BCP 47 codes for convertible variants of the same language.</span>\n</p>",
-		"render": "",
+		"render": "<p>zdravo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">sr-el</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">sr-ec</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">zdravo</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: tg to tg-latn",
 		"wikitext": "<langconvert from=\"tg\" to=\"tg-latn\">тест</langconvert>",
 		"html": "<p>test\n</p>",
-		"render": "",
+		"render": "<p>тест\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">tg</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">tg-latn</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">тест</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: uz-cyrl to uz-latn",
 		"wikitext": "<langconvert from=\"uz-cyrl\" to=\"uz-latn\">тест</langconvert>",
 		"html": "<p>test\n</p>",
-		"render": "",
+		"render": "<p>тест\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">uz-cyrl</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">uz-latn</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">тест</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: zh-hans to zh-hant",
 		"wikitext": "<langconvert from=\"zh-hans\" to=\"zh-hant\">爱</langconvert>",
 		"html": "<p>愛\n</p>",
-		"render": "",
+		"render": "<p>爱\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">zh-hans</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">zh-hant</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">爱</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
@@ -11892,7 +11892,7 @@
 		"desc": "Langconvert tag: ensure output is not double-converted",
 		"wikitext": "氣\n\n<langconvert from=\"zh-hans\" to=\"zh-hant\">气</langconvert>",
 		"html": "<p>气\n</p><p>氣\n</p>",
-		"render": "<p>氣\n</p><p><br>\n</p>",
+		"render": "<p>氣\n</p><p>气\n</p>",
 		"print": "<span class=\"wpb-root\">氣\n\n<span class=\"wpb-ext\">&lt;langconvert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">from</span>=\"<span class=\"wpb-attr-value\">zh-hans</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">to</span>=\"<span class=\"wpb-attr-value\">zh-hant</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">气</span>&lt;/langconvert&gt;</span></span>"
 	},
 	{
