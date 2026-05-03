@@ -200,6 +200,7 @@ export const rules = /* #__PURE__ */ (() => {
 		'obsolete-tag',
 		'parsing-order',
 		'pipe-like',
+		'required-attr',
 		'syntax-like',
 		'table-layout',
 		'tag-like',

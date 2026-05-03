@@ -47,6 +47,16 @@ const wordRegex = /* #__PURE__ */ ((): RegExp => {
 	/* c8 ignore stop */
 })();
 
+const required = new Map([
+	['indicator', ['name']],
+	['langconvert', ['from', 'to']],
+	['mapframe', ['width', 'height']],
+	['maplink', ['width', 'height']],
+	['phonos', [['ipa', 'file', 'wikibase']]],
+	['section', [['begin', 'end']]],
+	['templatestyles', ['src']],
+]);
+
 /**
  * attributes of extension and HTML tags
  *
@@ -184,11 +194,11 @@ export abstract class AttributesToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
-				{parentNode, childNodes} = this,
+				{parentNode, childNodes, type, name: tag} = this,
 				attrs = new Map<string, AttributeToken[]>(),
 				duplicated = new Set<string>(),
 				rect = new BoundingRect(this, start),
-				rules = ['no-ignored', 'no-duplicate'] as const,
+				rules = ['no-ignored', 'no-duplicate', 'required-attr'] as const,
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
 				s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
@@ -222,6 +232,27 @@ export abstract class AttributesToken extends Token {
 							e.suggestions = [fixByRemove(e, 0, ' ')];
 						}
 						errors.push(e);
+					}
+				}
+			}
+			if (type === 'ext-attrs' && required.has(tag)) {
+				const severity = lintConfig.getSeverity(rules[2], tag);
+				if (severity) {
+					for (const key of required.get(tag)!) {
+						const keys = typeof key === 'string' ? [key] : key,
+							missing = keys.every(k => {
+								const value = this.getAttr(k);
+								return value === true || !value;
+							});
+						if (missing) {
+							errors.push(generateForSelf(
+								this,
+								rect,
+								rules[2],
+								Parser.msg('required-attribute', keys.join('/')),
+								severity,
+							));
+						}
 					}
 				}
 			}
