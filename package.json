@@ -50,15 +50,15 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^2.2.0",
+		"@bhsd/common": "^2.2.1",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"optionalDependencies": {
-		"stylelint": "^17.9.1"
+		"stylelint": "^17.10.0"
 	},
 	"devDependencies": {
 		"@bhsd/cm-util": "^1.1.0",
-		"@bhsd/code-standard": "^2.4.0",
+		"@bhsd/code-standard": "^2.4.1",
 		"@bhsd/codemirror-mediawiki": "^3.15.0",
 		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^1.1.0",

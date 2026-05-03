@@ -66,6 +66,7 @@
 	"redirect-like": "redirect-like syntax in a list item",
 	"ref-in-link": "<ref> in an internal or external link",
 	"remove": null,
+	"required-attribute": "required $1 attribute is missing",
 	"template-in-link": "template in an internal link target",
 	"unbalanced-in-section-header": "unbalanced $1 in a section header",
 	"unclosed": "unclosed $1",

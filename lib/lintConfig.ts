@@ -173,6 +173,18 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// td: 1,
 		},
 	],
+	'required-attr': [
+		2,
+		{
+			// indicator: 2,
+			// langconvert: 2,
+			// mapframe: 2,
+			// maplink: 2,
+			// phonos: 2,
+			// section: 2,
+			// templatestyles: 2,
+		},
+	],
 	'syntax-like': [
 		2,
 		{
