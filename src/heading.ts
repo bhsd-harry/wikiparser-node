@@ -1,3 +1,4 @@
+import {numLeadingSpaces} from '@bhsd/common';
 import {generateForChild, generateForSelf, fixBy, fixByRemove, fixByClose} from '../util/lint';
 import {
 	isToken,
@@ -181,11 +182,15 @@ export abstract class HeadingToken extends Token {
 				if (!computeEditInfo || innerStr === '=') {
 					//
 				} else if (unbalancedStart) {
-					const [extra] = /^=+/u.exec(innerStr)!,
-						newLevel = level + extra.length;
-					e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''}];
+					const extra = numLeadingSpaces(innerStr, /[^=]|$/u),
+						newLevel = level + extra;
+					e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra], text: ''}];
 					if (newLevel < 7) {
-						e.suggestions.push({desc: `h${newLevel}`, range: [e.endIndex, e.endIndex], text: extra});
+						e.suggestions.push({
+							desc: `h${newLevel}`,
+							range: [e.endIndex, e.endIndex],
+							text: '='.repeat(extra),
+						});
 					}
 				} else {
 					const extra = /[^=](=+)$/u.exec(innerStr)![1]!,
