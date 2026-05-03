@@ -15,6 +15,7 @@ import type {
 
 import {execSync} from 'child_process';
 import rgba from 'color-rgba';
+import {numLeadingSpaces} from '@bhsd/common';
 import Parser from '../index';
 import type {
 	Token,
@@ -153,7 +154,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 						attrKey,
 
 					].filter(token => token !== undefined)
-						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
+						.map(token => token.getAbsoluteIndex() + numLeadingSpaces(token.toString()) + 1),
 
 					/* NOT FOR BROWSER ONLY END */
 
