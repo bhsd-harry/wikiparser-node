@@ -58,8 +58,10 @@ export abstract class ExtToken extends TagPairToken {
 			case 'indicator':
 			case 'poem':
 			case 'ref':
-				if (lcName === 'poem') {
-					newConfig.excludes.push('heading');
+				switch (lcName) {
+					case 'poem':
+						newConfig.excludes.push('heading');
+					// No default
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
