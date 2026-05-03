@@ -1,11 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.39.2
+## v1.40.0
 
-*2026-05-02*
+*2026-05-05*
 
 **Added**
 
 - Minimal support for HTML conversion of `<langconvert>`
+- New category of linting errors: [missing required attributes](https://github.com/bhsd-harry/wikiparser-node/wiki/required-attr)
 
 **Changed**
 
