@@ -2,6 +2,7 @@ import {
 	splitColors,
 	numToHex,
 	getRegex,
+	numLeadingSpaces,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -1848,7 +1849,9 @@ export class LanguageService implements LanguageServiceBase {
 		const {line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line]!,
 			{lastChild} = await this.#queueSignature(
-				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
+				`${
+					curLine.slice(0, character + numLeadingSpaces(curLine.slice(character), /[{}<]|$/u))
+				}}}`,
 			);
 		if (!lastChild!.is<TranscludeToken>('magic-word') || lastChild.length === 1) {
 			return undefined;
