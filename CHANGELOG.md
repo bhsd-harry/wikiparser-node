@@ -3,6 +3,10 @@
 
 *2026-05-02*
 
+**Added**
+
+- Minimal support for HTML conversion of `<langconvert>`
+
 **Changed**
 
 - The preset configurations are updated

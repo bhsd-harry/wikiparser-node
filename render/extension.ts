@@ -12,6 +12,21 @@ import type {ExtToken, GalleryToken} from '../internal';
 export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): string => {
 	const {name, firstChild, lastChild} = token;
 	switch (name) {
+		case 'nowiki': {
+			const html = lastChild.toHtmlInternal();
+			return token.closest('ext-inner')?.name === 'poem' ? html : newline(html);
+		}
+		case 'pre': {
+			const html = lastChild.toHtmlInternal({
+				...opt,
+				nowrap: false,
+			});
+			return `<pre${firstChild.toHtmlInternal()}>${
+				token.closest('ext-inner')?.name === 'poem' ? html : newline(html)
+			}</pre>`;
+		}
+		case 'langconvert':
+			return lastChild.toHtmlInternal({...opt, nowrap: true});
 		case 'poem': {
 			const padding = firstChild.hasAttr('compact') ? '' : '\n';
 			firstChild.classList.add('poem');

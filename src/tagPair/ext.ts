@@ -15,7 +15,6 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 import {Shadow} from '../../util/debug';
 import {classes, tagHooks} from '../../util/constants';
-import {newline} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -99,10 +98,17 @@ export abstract class ExtToken extends TagPairToken {
 			case 'seo':
 			case 'langconvert':
 			case 'phonos':
-				if (lcName === 'poem') {
-					newConfig.excludes.push('heading');
-				} else if (lcName === 'tab') {
-					newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
+				switch (lcName) {
+					case 'poem':
+						newConfig.excludes.push('heading');
+						break;
+					case 'langconvert':
+						newConfig.excludes.push('list');
+						break;
+					case 'tab':
+						newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
+						break;
+					// No default
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
@@ -256,20 +262,9 @@ export abstract class ExtToken extends TagPairToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		const {name, firstChild, lastChild} = this;
+		const {name} = this;
 		if (tagHooks.has(name)) {
 			return tagHooks.get(name)!(this);
-		} else if (name === 'nowiki') {
-			const html = lastChild.toHtmlInternal();
-			return this.closest('ext-inner')?.name === 'poem' ? html : newline(html);
-		} else if (name === 'pre') {
-			const html = lastChild.toHtmlInternal({
-				...opt,
-				nowrap: false,
-			});
-			return `<pre${firstChild.toHtmlInternal()}>${
-				this.closest('ext-inner')?.name === 'poem' ? html : newline(html)
-			}</pre>`;
 		}
 		const {renderExt}: typeof import('../../render/extension') = require('../../render/extension');
 		return renderExt(this, opt);
