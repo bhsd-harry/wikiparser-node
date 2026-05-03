@@ -67,6 +67,7 @@
 	"redirect-like": "列表项中的疑似重定向语法",
 	"ref-in-link": "内部或外部链接中的<ref>",
 	"remove": "移除",
+	"required-attribute": "缺少必需的$1属性",
 	"template-in-link": "内部链接目标中的模板",
 	"unbalanced-in-section-header": "章节标题中未成对的$1",
 	"unclosed": "未闭合的$1",
