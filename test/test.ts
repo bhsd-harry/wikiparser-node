@@ -66,7 +66,7 @@ describe('API tests', () => {
 					/* NOT FOR BROWSER END */
 
 					if (typeof Parser.config === 'object') {
-						Object.assign(Parser.config, {articlePath: '/wiki/$1'});
+						Parser.config.articlePath = '/wiki/$1';
 
 						/* NOT FOR BROWSER */
 
