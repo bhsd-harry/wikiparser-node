@@ -29,5 +29,5 @@ if (pct >= 80) {
 	[,, color] = colors;
 }
 const svg = fs.readFileSync('coverage/badge.svg', 'utf8')
-	.replace(re, m => m.startsWith('#') ? color : value);
+	.replaceAll(re, m => m.startsWith('#') ? color : value);
 fs.writeFileSync('coverage/badge.svg', svg);

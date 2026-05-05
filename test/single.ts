@@ -27,7 +27,7 @@ const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table
  */
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export default async ({pageid, title, ns, content}: SimplePage, method?: string): Promise<LintError[] | void> => {
-	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	content = content.replaceAll(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
 
 	/* NOT FOR BROWSER ONLY */
@@ -62,7 +62,7 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 		console.time(`print: ${title}`);
 		const printed = token.print();
 		console.timeEnd(`print: ${title}`);
-		const restored = printed.replace(
+		const restored = printed.replaceAll(
 			/<[^<]+?>|&([lg]t|amp);/gu,
 			(_, s?: keyof typeof entities) => s ? entities[s] : '',
 		);
