@@ -26,11 +26,11 @@ describe('API tests', () => {
 		if (file.endsWith('.md')) {
 			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
 				codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
-					.map(([code]) => code.replace(/(?: |\n\t*)\/\/ .*$/gmu, '')),
+					.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, '')),
 				testCodes = file.startsWith('LanguageService')
 					? codes.flatMap(code => [
 						code,
-						code.replace(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
+						code.replaceAll(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
 							.replace('\n', ' (CRLF)\n'),
 					])
 					: codes;

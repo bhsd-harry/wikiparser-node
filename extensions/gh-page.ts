@@ -115,7 +115,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 				const dd = document.createElement('dd'),
 					code = document.createElement('code');
 				code.textContent = typeof value === 'string'
-					? `"${value.replace(/[\\"]/gu, String.raw`\$&`)}"`
+					? `"${value.replaceAll(/[\\"]/gu, String.raw`\$&`)}"`
 					: String(value);
 				code.className = typeof value;
 				dd.textContent = `${key}: `;

@@ -203,7 +203,7 @@ declare global {
 
 	module '/codemirror-mediawiki/*' {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
-		export {CodeMirror6, registerMediaWiki};
+		export {CodeMirror6, registerMediaWiki}; // eslint-disable-line unicorn/prefer-export-from
 	}
 	module '/codejar-async/*' {
 		/** @see https://www.npmjs.com/package/codejar-async */

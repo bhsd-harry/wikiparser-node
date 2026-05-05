@@ -32,7 +32,7 @@ class MockWorker {
 		this.worker = (async () => {
 			const blob = await (await fetch(url)).blob();
 			mock.worker = new Worker(
-				String(head).replace(/^\(\)\s*=>\s*\{|\}$/gu, '') + await blob.text(),
+				String(head).replaceAll(/^\(\)\s*=>\s*\{|\}$/gu, '') + await blob.text(),
 				{eval: true},
 			);
 			return mock.worker;

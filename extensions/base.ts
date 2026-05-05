@@ -120,7 +120,8 @@ const workerJS = (): void => {
 						stage ?? Infinity,
 						String(child),
 						child.type === 'text'
-							? String(child).replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
+							? String(child)
+								.replaceAll(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
 							: child.print(),
 					]),
 				]);

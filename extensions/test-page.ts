@@ -144,7 +144,7 @@ const repaint = (
 					&& url.searchParams.has('title')
 				) {
 					url.pathname = `/wiki/${
-						url.searchParams.get('title')!.replace(/:/gu, '%3A')
+						url.searchParams.get('title')!.replaceAll(':', '%3A')
 					}`;
 					url.searchParams.delete('title');
 					ele.setAttribute('href', url.pathname + url.search);

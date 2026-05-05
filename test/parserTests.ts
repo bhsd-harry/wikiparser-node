@@ -17,7 +17,7 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * 移除HTML标签
  * @param str HTML字符串
  */
-const deprint = (str: string): string => str.replace(
+const deprint = (str: string): string => str.replaceAll(
 	/<[^<]+?>|&([lg]t|amp);/gu,
 	(_, s?: keyof typeof entities) => s ? entities[s] : '',
 );

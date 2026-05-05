@@ -955,7 +955,7 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text),
 			{length} = root.getLines(),
 			ranges: FoldingRange[] = [],
-			levels = new Array<number | undefined>(6),
+			levels = Array.from<number | undefined>({length: 6}),
 			tokens = root.querySelectorAll<Token>('heading-title,table,template,magic-word');
 		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
 			token.getRelativeIndex();
