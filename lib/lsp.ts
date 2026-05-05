@@ -2097,7 +2097,7 @@ export class LanguageService implements LanguageServiceBase {
 		} catch {
 			this.config = await Parser.fetchConfig(site, `${host}/w`, user);
 		}
-		Object.assign(this.config, {articlePath: `${host}/wiki/`});
+		this.config.articlePath = `${host}/wiki/`;
 	}
 
 	/** @implements */

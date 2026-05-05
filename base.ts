@@ -34,7 +34,7 @@ export interface Config {
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
 	readonly variants: string[];
-	readonly articlePath?: string;
+	articlePath?: string;
 
 	/** @private */
 	readonly excludes: string[];
