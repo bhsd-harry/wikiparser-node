@@ -93,7 +93,7 @@ export abstract class TrToken extends TrBaseToken {
 	 * 获取前一行
 	 */
 	getPreviousRow(): TrToken | undefined {
-		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).reverse());
+		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).toReversed());
 	}
 }
 

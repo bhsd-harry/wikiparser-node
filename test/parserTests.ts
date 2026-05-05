@@ -39,7 +39,7 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * 移除HTML标签
  * @param str HTML字符串
  */
-const deprint = (str: string): string => str.replace(
+const deprint = (str: string): string => str.replaceAll(
 	/<[^<]+?>|&([lg]t|amp);/gu,
 	(_, s?: keyof typeof entities) => s ? entities[s] : '',
 );
@@ -49,7 +49,7 @@ const deprint = (str: string): string => str.replace(
  * @param str HTML字符串
  */
 const split = (str: string): string[] => str
-	.replace(/(?:<span class="wpb-list">[^<]+<\/span>)+/gu, merge)
+	.replaceAll(/(?:<span class="wpb-list">[^<]+<\/span>)+/gu, merge)
 	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
 
 /* PRINT ONLY END */

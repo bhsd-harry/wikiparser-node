@@ -166,6 +166,23 @@ export default extend(
 	},
 	{
 		files: [
+			'*.ts',
+			'lib/*.ts',
+			'mixin/*.ts',
+			'parser/*.ts',
+			'src/**/*.ts',
+			'util/*.ts',
+		],
+		rules: {
+			'unicorn/no-array-reverse': 0,
+			'unicorn/no-array-sort': 0,
+			'unicorn/prefer-at': 0,
+			'unicorn/prefer-string-replace-all': 0,
+			'unicorn/prefer-structured-clone': 0,
+		},
+	},
+	{
+		files: [
 			'mixin/*.ts',
 			'test/hooks.ts',
 			'lib/attributes.ts',

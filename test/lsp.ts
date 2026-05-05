@@ -94,7 +94,7 @@ const indexToPos = (
  * @param silent 是否静默
  */
 export default async ({title, content}: SimplePage, summary?: boolean, silent?: boolean): Promise<void> => {
-	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	content = content.replaceAll(/[\0\x7F]|\r$/gmu, '');
 
 	/* NOT FOR BROWSER ONLY */
 

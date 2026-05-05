@@ -170,7 +170,7 @@ function urlFunction(config: TestConfig, args: string[], local?: true): URL | st
 		protocol = link.startsWith('//') ? 'https:' : '';
 	try {
 		const url = new URL(protocol + link);
-		url.search = query ? `?${query.replace(/\s/gu, '_')}` : '';
+		url.search = query ? `?${query.replaceAll(/\s/gu, '_')}` : '';
 		return local ? url : [url, protocol];
 	} catch (e) {
 		if (local) {
@@ -229,9 +229,9 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		40: '@',
 		'7E': '~',
 	},
-	strip = (s: string): string => s.replace(/\0\d+.\x7F/gu, ''),
+	strip = (s: string): string => s.replaceAll(/\0\d+.\x7F/gu, ''),
 	wfUrlencode = (s: string): string => encodeURIComponent(s.replaceAll(' ', '_'))
-		.replace(/%(2[01489ACF]|3B|40|7E)/gu, (_, p) => dictUrl[p as keyof typeof dictUrl]),
+		.replaceAll(/%(2[01489ACF]|3B|40|7E)/gu, (_, p) => dictUrl[p as keyof typeof dictUrl]),
 	localurl = (config: Config, args: string[]): string => {
 		const url = urlFunction(config, args, true);
 		return typeof url === 'string' ? url : url.pathname + url.search;
@@ -293,7 +293,7 @@ const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL
 		if (!text) {
 			return '';
 		}
-		let output = `\n${text}`.replace(
+		let output = `\n${text}`.replaceAll(
 			/["&'=;＿]|!!|__|:\/\/|~{3}|\n(?:[!#*:]|-{4})|(?:ISBN|PMID|RFC) /gu,
 			m => dictHtml1[m as keyof typeof dictHtml1],
 		).slice(1);
@@ -415,7 +415,7 @@ export const expandMagicWord = (
 		case 'currentweek':
 			return currentWeek(now, new Date(Date.UTC(now.getUTCFullYear(), 0, 1)));
 		case 'currenttimestamp':
-			return now.toISOString().slice(0, 19).replace(/[-:T]/gu, '');
+			return now.toISOString().slice(0, 19).replaceAll(/[-:T]/gu, '');
 		case 'localyear':
 			return localYear(now);
 		case 'localmonth':
@@ -633,14 +633,14 @@ export const expandMagicWord = (
 			return pad(args as [string, ...string[]], 'padEnd');
 		case 'anchorencode':
 			return anchorencode(getId(
-				strip(arg0).replace(
+				strip(arg0).replaceAll(
 					/\[\[([^[]+?)\]\]/gu,
 					(_, p: string) => {
 						const i = p.indexOf('|');
 						return i <= 0 || i === p.length - 1 ? p : p.slice(i + 1);
 					},
 				),
-			)).replace(/%(?=[\da-f]{2})/giu, '%25');
+			)).replaceAll(/%(?=[\da-f]{2})/giu, '%25');
 		case 'special':
 			return special(target, config);
 		case 'speciale':

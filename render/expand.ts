@@ -126,7 +126,7 @@ const expand = (
 			if (!/\0\d+g\x7F/u.test(data)) {
 				continue;
 			}
-			const expanded = data.replace(/\0(\d+)g\x7F/gu, (_, i: number) => {
+			const expanded = data.replaceAll(/\0(\d+)g\x7F/gu, (_, i: number) => {
 				const target = accum[i] as OnlyincludeToken | TranslateToken;
 				if (target.type === 'onlyinclude') {
 					clean(accum, target);
@@ -134,7 +134,7 @@ const expand = (
 				}
 				const {lastChild} = target;
 				clean(accum, lastChild);
-				return lastChild.firstChild!.toString().replace(
+				return lastChild.firstChild!.toString().replaceAll(
 					/\0(\d+)c\x7F[\n ]|\0(\d+)n\x7F|^\n|\n$/gu,
 					(m, p1?: number, p2?: number) => {
 						if (p1 !== undefined) {
@@ -161,7 +161,7 @@ const expand = (
 		if (!/\0\d+[tm!{}+~-]\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = data.replace(
+		const expanded = data.replaceAll(
 			/([^\x7F]?)\0(\d+)[tm!{}+~-]\x7F/gu,
 			(m, prev: string, i: number) => {
 				const target = accum[i] as ArgToken | TranscludeToken,

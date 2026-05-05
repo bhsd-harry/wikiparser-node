@@ -142,5 +142,5 @@ const dir = 'test/templates',
 		});
 if (unused.length > 0) {
 	console.log('Unused templates');
-	console.log(unused.sort());
+	console.log(unused.toSorted());
 }

@@ -511,8 +511,8 @@ TableToken.prototype.mergeCells =
 	function(xlim, ylim): TdToken {
 		const layout = this.getLayout(),
 			maxCol = getMaxCol(layout),
-			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort(compare) as [number, number],
-			[ymin, ymax] = ylim.map(y => y < 0 ? y + layout.length : y).sort(compare) as [number, number],
+			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).toSorted(compare) as [number, number],
+			[ymin, ymax] = ylim.map(y => y < 0 ? y + layout.length : y).toSorted(compare) as [number, number],
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
 		if (
 			[...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))

@@ -729,8 +729,8 @@ export abstract class AstNode implements AstNodeBase {
 		if (this.getRootNode() !== other.getRootNode()) {
 			throw new RangeError('Nodes to be compared are not in the same document!');
 		}
-		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],
-			bAncestors = [...other.getAncestors().reverse(), other],
+		const aAncestors = [...this.getAncestors().toReversed(), this as AstNode as AstNodes],
+			bAncestors = [...other.getAncestors().toReversed(), other],
 			depth = aAncestors.findIndex((ancestor, i) => bAncestors[i] !== ancestor),
 			{childNodes} = aAncestors[depth - 1]!;
 		return childNodes.indexOf(aAncestors[depth]!) - childNodes.indexOf(bAncestors[depth]!);

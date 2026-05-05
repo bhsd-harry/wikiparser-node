@@ -55,7 +55,6 @@ import {yellow, blue} from '@bhsd/nodejs';
 import {RedirectMap} from './lib/redirectMap';
 import type {log} from './util/diff';
 import type {MagicWord} from './render/magicWords';
-import type {AstRange} from './lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -885,9 +884,9 @@ export type {
 	QuickFixData,
 	Title,
 	AST,
-
-	/* NOT FOR BROWSER */
-
-	AstRange,
 };
 export type * from './internal';
+
+/* NOT FOR BROWSER */
+
+export type {AstRange} from './lib/range';

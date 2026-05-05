@@ -32,8 +32,8 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			firstChild.classList.add('poem');
 			return `<div${firstChild.toHtmlInternal()}>${padding}${
 				lastChild.toHtmlInternal({...opt, nowrap: false})
-					.replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
-					.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
+					.replaceAll(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+					.replaceAll(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 					.trim()
 			}${padding}</div>`;
 		}

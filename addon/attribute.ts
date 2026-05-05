@@ -106,7 +106,7 @@ AttributeToken.prototype.css =
 					start = offset + length;
 				}
 				output += style.slice(start);
-				this.setValue(output.replace(/^\s*;\s*|;\s*(?=;)/gu, ''));
+				this.setValue(output.replaceAll(/^\s*;\s*|;\s*(?=;)/gu, ''));
 			}
 			return undefined;
 		}

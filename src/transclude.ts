@@ -814,7 +814,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
 	getArg(key: string | number, exact?: boolean): ParameterToken | undefined {
-		return [...this.getArgs(key, exact, false)].sort((a, b) => b.compareDocumentPosition(a))[0];
+		return [...this.getArgs(key, exact, false)].toSorted((a, b) => b.compareDocumentPosition(a))[0];
 	}
 
 	/**
