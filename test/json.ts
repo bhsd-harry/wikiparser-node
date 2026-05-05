@@ -90,10 +90,7 @@ for (const file of fs.readdirSync('config')) {
 	}
 }
 
-const defaultConfig = configs['default.json']!,
-	{
-		parserFunction,
-	} = defaultConfig;
+const defaultConfig = configs['default.json']!;
 for (const file in configs) {
 	if (file !== 'default.json' && file !== 'testwiki.json') {
 		const config = configs[file]!;

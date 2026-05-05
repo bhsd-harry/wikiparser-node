@@ -61,7 +61,7 @@
 		"@bhsd/code-standard": "^2.4.1",
 		"@bhsd/codemirror-mediawiki": "^3.16.0",
 		"@bhsd/nodejs": "^1.0.0",
-		"@bhsd/test-util": "^1.1.0",
+		"@bhsd/test-util": "^1.2.0",
 		"@codemirror/lint": "^6.9.5",
 		"@stylistic/stylelint-plugin": "^5.1.0",
 		"@types/mocha": "^10.0.10",
