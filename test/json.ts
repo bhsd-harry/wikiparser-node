@@ -94,14 +94,7 @@ for (const file of fs.readdirSync('config')) {
 	}
 }
 
-const defaultConfig = configs['default.json']!,
-	{
-		parserFunction,
-
-		/* NOT FOR BROWSER ONLY */
-
-		doubleUnderscore,
-	} = defaultConfig;
+const defaultConfig = configs['default.json']!;
 for (const file in configs) {
 	if (file !== 'default.json' && file !== 'testwiki.json') {
 		const config = configs[file]!;
@@ -212,7 +205,8 @@ const {
 	behaviorSwitches,
 	parserFunctions,
 } = require(path.join(basePath, 'data', 'signatures.json')) as SignatureData;
-const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
+const {parserFunction, doubleUnderscore} = defaultConfig,
+	doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
 		.map(s => s.toLowerCase()),
 	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]]
 		.flat(2)
