@@ -42,7 +42,7 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.4.1",
+		"@bhsd/code-standard": "^2.4.2",
 		"@bhsd/common": "^2.2.1",
 		"@bhsd/nodejs": "^1.0.0",
 		"@bhsd/test-util": "^1.2.0",

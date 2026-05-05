@@ -14,7 +14,7 @@ Parser.config = require('../../config/default');
  */
 // eslint-disable-next-line @typescript-eslint/require-await
 export default async ({pageid, title, ns, content}: SimplePage, method?: string): Promise<void> => {
-	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	content = content.replaceAll(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
 
 	console.time(`parse: ${title}`);
