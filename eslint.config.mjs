@@ -184,6 +184,20 @@ export default extend(
 			'test/*.ts',
 		],
 		rules: {
+			'n/no-unsupported-features/node-builtins': [
+				2,
+				{
+					allowExperimental: true,
+					version: '^26.0.0',
+				},
+			],
+		},
+	},
+	{
+		files: [
+			'test/*.ts',
+		],
+		rules: {
 			'n/no-missing-require': 0,
 			'@typescript-eslint/strict-void-return': 0,
 		},

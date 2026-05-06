@@ -11,7 +11,6 @@ then
 	grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\/util\//d'
 	# grep -rl --include='*.d.ts' '/parser/' dist/ | xargs bash sed.sh -i -E '/^import .+\/parser\//d'
 	bash sed.sh -i -E 's/abstract (lint|print|text)\b/\1/' dist/lib/node.d.ts
-	node dist/script/declaration.js # dist/src/**/*.d.ts
 	bash sed.sh -i '/export declare const /,$d' dist/mixin/*.d.ts
 	echo 'declare global { type WikiParserAcceptable = Record<string, any>; }' >> dist/index.d.ts
 	bash sed.sh -i '/export = Parser/i \
