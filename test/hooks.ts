@@ -1,8 +1,7 @@
 import {pathToFileURL} from 'url';
 import path from 'path';
+import type {ResolveHookSync} from 'module';
 
-declare type Resolve = (specifier: string, context: unknown, defaultResolve: Resolve) => {url: string};
-
-export const resolve: Resolve = (specifier, context, defaultResolve) => specifier === 'stylelint'
+export const resolve: ResolveHookSync = (specifier, context, defaultResolve) => specifier === 'stylelint'
 	? {url: pathToFileURL(path.join(__dirname, 'stylelint.js')).toString()}
-	: defaultResolve(specifier, context, defaultResolve);
+	: defaultResolve(specifier, context);
