@@ -35,7 +35,7 @@
 		"build": "npm run build:core && npm run build:es8 && npm run build:lsp && npm run build:test && npm run build:css",
 		"clean": "rm -f dist/extensions/typings.d.ts",
 		"diff": "bash diff.sh",
-		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . | grep '\\.ts'; }; f",
+		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "npm run clean && tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && mocha dist/test/json.js",
 		"lint:css": "stylelint css/*.css extensions/*.css",
