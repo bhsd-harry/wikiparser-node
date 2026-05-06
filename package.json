@@ -51,7 +51,7 @@
 		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = $(npm pkg get name)/; s/version = \\$VERSION/version = $(npm pkg get version)/\" dist/bin/config.js",
 		"build": "npm run build:core && LC_ALL=en.UTF-8 node dist/script/parserTests.js",
 		"diff": "bash diff.sh",
-		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . | grep '\\.ts'; }; f",
+		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && mocha dist/test/json.js",
 		"lint:md": "markdownlint-cli2 '**/*.md'",
