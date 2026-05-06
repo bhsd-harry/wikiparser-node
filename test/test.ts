@@ -3,7 +3,6 @@ import path from 'path';
 import * as assert from 'assert';
 import {mock} from './wikiparse';
 import type {
-	LintError,
 	LintRuleConfig,
 	Parser as ParserBase,
 } from '../base';
@@ -22,93 +21,90 @@ const re = /\*\*((?:in)?correct)\*\* .+ `(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\
 const mockCRLF = (str: string): string => str.replaceAll('\n', '\\r\n');
 
 describe('API tests', () => {
-	for (const file of fs.readdirSync(path.resolve('wiki'))) {
-		if (file.endsWith('.md')) {
-			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
-				codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
-					.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, '')),
-				testCodes = file.startsWith('LanguageService')
-					? codes.flatMap(code => [
-						code,
-						code.replaceAll(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
-							.replace('\n', ' (CRLF)\n'),
-					])
-					: codes;
-			describe(file, () => {
-				beforeEach(() => {
-					Parser.i18n = undefined;
-					Parser.lintConfig = undefined as unknown as LintConfiguration;
-					if (typeof Parser.config === 'object') {
-						Parser.config.articlePath = '/wiki/$1';
-					}
-					wikiparse.setI18N();
-					wikiparse.setLintConfig();
-				});
-				for (const code of testCodes) {
-					const lines = code.split('\n') as [string, ...string[]],
-						[first] = lines;
-					if (file.startsWith('Examples-')) {
-						it.skip(first.slice(3));
-					} else if (
-						/ \((?:main|Node\.js)\)/u.test(first)
-						|| / \(self\)/u.test(first)
-					) {
-						it.skip(first.slice(3));
-					} else {
-						it(first.slice(3), async () => {
+	for (const fullPath of fs.globSync(path.resolve('wiki', '*.md'))) {
+		const md = fs.readFileSync(fullPath, 'utf8'),
+			codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
+				.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, '')),
+			file = path.basename(fullPath, '.md'),
+			testCodes = file.startsWith('LanguageService')
+				? codes.flatMap(code => [
+					code,
+					code.replaceAll(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
+						.replace('\n', ' (CRLF)\n'),
+				])
+				: codes;
+		describe(file, () => {
+			beforeEach(() => {
+				Parser.i18n = undefined;
+				Parser.lintConfig = undefined as unknown as LintConfiguration;
+				if (typeof Parser.config === 'object') {
+					Parser.config.articlePath = '/wiki/$1';
+				}
+				wikiparse.setI18N();
+				wikiparse.setLintConfig();
+			});
+			for (const code of testCodes) {
+				const lines = code.split('\n') as [string, ...string[]],
+					[first] = lines;
+				if (file.startsWith('Examples-')) {
+					it.skip(first.slice(3));
+				} else if (
+					/ \((?:main|Node\.js)\)/u.test(first)
+					|| / \(self\)/u.test(first)
+				) {
+					it.skip(first.slice(3));
+				} else {
+					it(first.slice(3), async () => {
+						try {
+							await eval(code); // eslint-disable-line no-eval
+							if (code.includes('Parser.config = ')) {
+								Parser.config = require('../../config/default');
+							}
+						} catch (e) {
+							if (e instanceof assert.AssertionError) {
+								const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
+									end = lines
+										.findIndex((line, i) => i >= start && line.endsWith(';'));
+								e.cause = {
+									message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
+								};
+							}
+							throw e;
+						}
+					});
+				}
+			}
+			if (file !== 'invalid-css' && file !== 'invalid-math') {
+				for (const code of md.matchAll(re)) {
+					const [, state, config, wikitext] = code as string[] as [string, string, string, string];
+					it(config, () => {
+						const rules: LintRuleConfig = JSON.parse(config);
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+						Parser.lintConfig = {
+							rules,
+							fix: false,
+							computeEditInfo: false,
+							ignoreDisables: true,
+						} as LintConfiguration;
+						for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
 							try {
-								await eval(code); // eslint-disable-line no-eval
-								if (code.includes('Parser.config = ')) {
-									Parser.config = require('../../config/default');
-								}
+								assert.strictEqual(
+									state === 'incorrect',
+									Parser.lint(block)
+										.some(({rule, severity}) => rule === file && severity === 'error'),
+									`${state === 'incorrect' ? 'No' : 'An'} error found!`,
+								);
 							} catch (e) {
 								if (e instanceof assert.AssertionError) {
-									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
-										end = lines
-											.findIndex((line, i) => i >= start && line.endsWith(';'));
-									e.cause = {
-										message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
-									};
+									e.cause = {message: `\n${block}`};
 								}
 								throw e;
 							}
-						});
-					}
+						}
+					});
 				}
-				const cur = file.slice(0, -3) as LintError.Rule;
-				// @ts-expect-error Node.js-only rule
-				if (cur !== 'invalid-css' && cur !== 'invalid-math') {
-					for (const code of md.matchAll(re)) {
-						const [, state, config, wikitext] = code as string[] as [string, string, string, string];
-						it(config, () => {
-							const rules: LintRuleConfig = JSON.parse(config);
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-							Parser.lintConfig = {
-								rules,
-								fix: false,
-								computeEditInfo: false,
-								ignoreDisables: true,
-							} as LintConfiguration;
-							for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
-								try {
-									assert.strictEqual(
-										state === 'incorrect',
-										Parser.lint(block)
-											.some(({rule, severity}) => rule === cur && severity === 'error'),
-										`${state === 'incorrect' ? 'No' : 'An'} error found!`,
-									);
-								} catch (e) {
-									if (e instanceof assert.AssertionError) {
-										e.cause = {message: `\n${block}`};
-									}
-									throw e;
-								}
-							}
-						});
-					}
-				}
-			});
-		}
+			}
+		});
 	}
 });
 

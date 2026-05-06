@@ -8,93 +8,92 @@ import type {
 const basePath = path.join('..', '..');
 
 const configs: Record<string, ConfigData> = {};
-for (const file of fs.readdirSync('config')) {
-	if (!file.startsWith('.')) {
-		describe(file, () => {
-			const config: ConfigData = require(path.join(basePath, 'config', file));
-			const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config,
-				magicWords = parserFunction.slice(0, 2) as Record<string, string>[],
-				magicWordKeys = magicWords.flatMap(Object.keys),
-				magicWordValues = magicWords.flatMap(Object.values<string>);
+for (const fullPath of fs.globSync('config/*.json')) {
+	const file = path.basename(fullPath, '.json');
+	describe(file, () => {
+		const config: ConfigData = require(path.join(basePath, fullPath));
+		const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config,
+			magicWords = parserFunction.slice(0, 2) as Record<string, string>[],
+			magicWordKeys = magicWords.flatMap(Object.keys),
+			magicWordValues = magicWords.flatMap(Object.values<string>);
 
-			// ext/variable/functionHook/redirection/variants
-			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
-				it(key, () => {
-					const v = config[key];
-					assert.strictEqual(v.length, new Set(v).size, `${key} not unique`);
-					if (key === 'variable' || key === 'functionHook') {
-						for (const word of v) {
-							assert.ok(magicWordValues.includes(word), `'${word}' not in parserFunction`);
-						}
+		// ext/variable/functionHook/redirection/variants
+		for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
+			it(key, () => {
+				const v = config[key];
+				assert.strictEqual(v.length, new Set(v).size, `${key} not unique`);
+				if (key === 'variable' || key === 'functionHook') {
+					for (const word of v) {
+						assert.ok(magicWordValues.includes(word), `'${word}' not in parserFunction`);
 					}
-				});
-			}
-
-			it('html', () => {
-				const htmls = html.flat();
-				assert.strictEqual(htmls.length, new Set(htmls).size, 'htmls not unique');
-			});
-
-			it('nsid', () => {
-				for (const ns in namespaces) {
-					const namespace = namespaces[ns]!;
-					assert.equal(nsid[namespace.toLowerCase()], ns, `'${namespace}' not in nsid`);
 				}
 			});
-			it('namespaces', () => {
-				for (const ns of new Set(Object.values(nsid))) {
-					assert.ok(ns in namespaces, `'${ns}' not in namespaces`);
-				}
-			});
+		}
 
-			it('doubleUnderscore', () => {
-				const keys = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys);
-				assert.strictEqual(keys.length, new Set(keys).size, 'doubleUnderscore not unique');
-			});
-
-			if (file !== 'minimum.json') {
-				it('parserFunction', () => {
-					assert.strictEqual(
-						magicWordKeys.length,
-						new Set(magicWordKeys).size,
-						'parserFunction not unique',
-					);
-					for (let i = 2; i < 4; i++) {
-						assert.strictEqual(
-							parserFunction[i as 2 | 3].length,
-							new Set(parserFunction[i as 2 | 3]).size,
-							`parserFunction[${i}] not unique`,
-						);
-					}
-					for (const alias of [...variable, ...functionHook]) {
-						assert.ok(magicWordValues.includes(alias), `'${alias}' not in parserFunction`);
-					}
-				});
-
-				it('img', () => {
-					const entries = Object.entries(img),
-						constants = new Set(entries.filter(([k]) => !k.includes('$1')).map(([, v]) => v)),
-						variables = new Set(entries.filter(([k]) => k.includes('$1')).map(([, v]) => v));
-					assert.ok(constants.has('upright'), `'upright' not in img`);
-					assert.ok(variables.has('upright'), `'manual-upright' not in img`);
-					assert.strictEqual(
-						constants.size + variables.size - 1,
-						new Set([...constants, ...variables]).size,
-						'img not unique',
-					);
-				});
-			}
-
-			configs[file] = config;
+		it('html', () => {
+			const htmls = html.flat();
+			assert.strictEqual(htmls.length, new Set(htmls).size, 'htmls not unique');
 		});
-	}
+
+		it('nsid', () => {
+			for (const ns in namespaces) {
+				const namespace = namespaces[ns]!;
+				assert.equal(nsid[namespace.toLowerCase()], ns, `'${namespace}' not in nsid`);
+			}
+		});
+		it('namespaces', () => {
+			for (const ns of new Set(Object.values(nsid))) {
+				assert.ok(ns in namespaces, `'${ns}' not in namespaces`);
+			}
+		});
+
+		it('doubleUnderscore', () => {
+			const keys = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys);
+			assert.strictEqual(keys.length, new Set(keys).size, 'doubleUnderscore not unique');
+		});
+
+		if (file !== 'minimum') {
+			it('parserFunction', () => {
+				assert.strictEqual(
+					magicWordKeys.length,
+					new Set(magicWordKeys).size,
+					'parserFunction not unique',
+				);
+				for (let i = 2; i < 4; i++) {
+					assert.strictEqual(
+						parserFunction[i as 2 | 3].length,
+						new Set(parserFunction[i as 2 | 3]).size,
+						`parserFunction[${i}] not unique`,
+					);
+				}
+				for (const alias of [...variable, ...functionHook]) {
+					assert.ok(magicWordValues.includes(alias), `'${alias}' not in parserFunction`);
+				}
+			});
+
+			it('img', () => {
+				const entries = Object.entries(img),
+					constants = new Set(entries.filter(([k]) => !k.includes('$1')).map(([, v]) => v)),
+					variables = new Set(entries.filter(([k]) => k.includes('$1')).map(([, v]) => v));
+				assert.ok(constants.has('upright'), `'upright' not in img`);
+				assert.ok(variables.has('upright'), `'manual-upright' not in img`);
+				assert.strictEqual(
+					constants.size + variables.size - 1,
+					new Set([...constants, ...variables]).size,
+					'img not unique',
+				);
+			});
+		}
+
+		configs[file] = config;
+	});
 }
 
-const defaultConfig = configs['default.json']!;
+const defaultConfig = configs['default']!;
 for (const file in configs) {
-	if (file !== 'default.json' && file !== 'testwiki.json') {
+	if (file !== 'default' && file !== 'testwiki') {
 		const config = configs[file]!;
-		describe(`${file} vs. default.json`, () => {
+		describe(`${file} vs. default`, () => {
 			// ext/variable/functionHook/redirection/variants
 			for (const key of ['ext', 'variable', 'functionHook', 'redirection', 'variants'] as const) {
 				it(key, () => {
@@ -126,7 +125,7 @@ for (const file in configs) {
 				it(key, () => {
 					const val = config[key];
 					for (const k in val) {
-						if (file === 'jawiki.json' || file === 'mediawikiwiki.json') {
+						if (file === 'jawiki' || file === 'mediawikiwiki') {
 							assert.ok(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
 						} else {
 							assert.strictEqual(
