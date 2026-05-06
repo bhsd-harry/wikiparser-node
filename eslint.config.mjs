@@ -193,6 +193,21 @@ export default extend(
 	},
 	{
 		files: [
+			'script/*.ts',
+			'test/*.ts',
+		],
+		rules: {
+			'n/no-unsupported-features/node-builtins': [
+				2,
+				{
+					allowExperimental: true,
+					version: '^26.0.0',
+				},
+			],
+		},
+	},
+	{
+		files: [
 			'test/*.ts',
 		],
 		rules: {

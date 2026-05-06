@@ -4,13 +4,12 @@ import type {SimplePage} from '@bhsd/test-util';
 
 /* NOT FOR BROWSER ONLY */
 
-import {register} from 'module';
-import {pathToFileURL} from 'url';
-import path from 'path';
+import {registerHooks} from 'module';
 import {profile} from '@bhsd/nodejs';
 import lsp from './lsp';
+import {resolve} from './hooks';
 
-register(pathToFileURL(path.join(__dirname, 'hooks.js')));
+registerHooks({resolve});
 
 /* NOT FOR BROWSER ONLY END */
 

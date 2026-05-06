@@ -3,7 +3,6 @@ import path from 'path';
 import * as assert from 'assert';
 import Parser = require('../index');
 import type {
-	LintError,
 	LintRuleConfig,
 } from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
@@ -33,135 +32,135 @@ const re = /\*\*((?:in)?correct)\*\* .+ `(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\
 const mockCRLF = (str: string): string => str.replaceAll('\n', '\\r\n');
 
 describe('API tests', () => {
-	for (const file of fs.readdirSync(path.resolve('wiki'))) {
-		if (file.endsWith('.md')) {
-			const md = fs.readFileSync(path.resolve('wiki', file), 'utf8'),
-				codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
-					.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, '')),
-				testCodes = file.startsWith('LanguageService')
-					? codes.flatMap(code => [
-						code,
-						code.replaceAll(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
-							.replace('\n', ' (CRLF)\n'),
-					])
-					: codes;
+	for (const fullPath of fs.globSync(path.resolve('wiki', '*.md'))) {
+		const md = fs.readFileSync(fullPath, 'utf8'),
+			codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
+				.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, '')),
+			file = path.basename(fullPath, '.md'),
+			testCodes = file.startsWith('LanguageService')
+				? codes.flatMap(code => [
+					code,
+					code.replaceAll(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
+						.replace('\n', ' (CRLF)\n'),
+				])
+				: codes;
 
-			/* NOT FOR BROWSER */
+		/* NOT FOR BROWSER */
 
-			allCodes.set(file.slice(0, -3), codes);
+		allCodes.set(file, codes);
 
-			/* NOT FOR BROWSER END */
+		/* NOT FOR BROWSER END */
 
-			describe(file, () => {
-				beforeEach(() => {
-					Parser.i18n = 'en';
-					Parser.lintConfig = undefined as unknown as LintConfiguration;
+		describe(file, () => {
+			beforeEach(() => {
+				Parser.i18n = 'en';
+				Parser.lintConfig = undefined as unknown as LintConfiguration;
+
+				/* NOT FOR BROWSER */
+
+				Parser.viewOnly = false;
+				Parser.conversionTable.clear();
+				Parser.redirects.clear();
+
+				/* NOT FOR BROWSER END */
+
+				if (typeof Parser.config === 'object') {
+					Parser.config.articlePath = '/wiki/$1';
 
 					/* NOT FOR BROWSER */
 
-					Parser.viewOnly = false;
-					Parser.conversionTable.clear();
-					Parser.redirects.clear();
-
-					/* NOT FOR BROWSER END */
-
-					if (typeof Parser.config === 'object') {
-						Parser.config.articlePath = '/wiki/$1';
+					Parser.config.interwiki.length = 0;
+				}
+			});
+			for (const code of testCodes) {
+				const lines = code.split('\n') as [string, ...string[]],
+					[first] = lines;
+				if (file.startsWith('Examples-')) {
+					if (clone) {
+						it.skip(first.slice(3));
 
 						/* NOT FOR BROWSER */
-
-						Parser.config.interwiki.length = 0;
-					}
-				});
-				for (const code of testCodes) {
-					const lines = code.split('\n') as [string, ...string[]],
-						[first] = lines;
-					if (file.startsWith('Examples-')) {
-						if (clone) {
-							it.skip(first.slice(3));
-
-							/* NOT FOR BROWSER */
-						} else {
-							it(first.slice(3), () => {
-								const {stderr} = spawnSync(
-									'tsx',
-									[
-										'--tsconfig',
-										'./tsconfig.json',
-										'-e',
-										`import * as assert from 'assert';
-										import Parser from './dist';
-										Parser.warning = false;
-										${code}`,
-									],
-									{encoding: 'utf8'},
-								);
-								if (stderr) {
-									throw new Error(`Failed to execute the example!\n${stderr}`, {
-										cause: {message: code},
-									});
-								}
-							});
-						}
-
-						/* NOT FOR BROWSER END */
-					} else if (
-						/ \(browser\)/u.test(first)
-						|| / \(self\)/u.test(first)
-						&& clone
-					) {
-						it.skip(first.slice(3));
 					} else {
-						it(first.slice(3), async () => {
-							try {
-								await eval(code); // eslint-disable-line no-eval
-								if (code.includes('Parser.config = ')) {
-									Parser.config = 'default';
-								}
-							} catch (e) {
-								if (e instanceof assert.AssertionError) {
-									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
-										end = lines
-											.findIndex((line, i) => i >= start && line.endsWith(';'));
-									e.cause = {
-										message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
-									};
-								}
-								throw e;
+						it(first.slice(3), () => {
+							const {stderr} = spawnSync(
+								'tsx',
+								[
+									/** @todo 等tsx弃用module.register()后移除 */
+									'--disable-warning=DEP0205',
+									'--tsconfig',
+									'./tsconfig.json',
+									'-e',
+									`import * as assert from 'assert';
+									import Parser from './dist';
+									Parser.warning = false;
+									${code}`,
+								],
+								{encoding: 'utf8'},
+							);
+							if (stderr) {
+								throw new Error(`Failed to execute the example!\n${stderr}`, {
+									cause: {message: code},
+								});
 							}
 						});
 					}
-				}
-				const cur = file.slice(0, -3) as LintError.Rule;
-				for (const code of md.matchAll(re)) {
-					const [, state, config, wikitext] = code as string[] as [string, string, string, string];
-					it(config, () => {
-						const rules: LintRuleConfig = JSON.parse(config);
-						Parser.lintConfig = {
-							rules,
-							fix: false,
-							computeEditInfo: false,
-							ignoreDisables: true,
-						} as LintConfiguration;
-						for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
-							try {
-								assert.strictEqual(
-									state === 'incorrect',
-									Parser.lint(block)
-										.some(({rule, severity}) => rule === cur && severity === 'error'),
-									`${state === 'incorrect' ? 'No' : 'An'} error found!`,
-								);
-							} catch (e) {
-								if (e instanceof assert.AssertionError) {
-									e.cause = {message: `\n${block}`};
-								}
-								throw e;
+
+					/* NOT FOR BROWSER END */
+				} else if (
+					/ \(browser\)/u.test(first)
+					|| / \(self\)/u.test(first)
+					&& clone
+				) {
+					it.skip(first.slice(3));
+				} else {
+					it(first.slice(3), async () => {
+						try {
+							await eval(code); // eslint-disable-line no-eval
+							if (code.includes('Parser.config = ')) {
+								Parser.config = 'default';
 							}
+						} catch (e) {
+							if (e instanceof assert.AssertionError) {
+								const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
+									end = lines
+										.findIndex((line, i) => i >= start && line.endsWith(';'));
+								e.cause = {
+									message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
+								};
+							}
+							throw e;
 						}
 					});
 				}
-			});
-		}
+			}
+			for (const code of md.matchAll(re)) {
+				const [, state, config, wikitext] = code as string[] as [string, string, string, string];
+				it(config, () => {
+					const rules: LintRuleConfig = JSON.parse(config);
+					Parser.lintConfig = {
+						rules,
+						fix: false,
+						computeEditInfo: false,
+						ignoreDisables: true,
+					} as LintConfiguration;
+					for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
+						try {
+							assert.strictEqual(
+								state === 'incorrect',
+								Parser.lint(block)
+									.some(({rule, severity}) => rule === file && severity === 'error'),
+								`${state === 'incorrect' ? 'No' : 'An'} error found!`,
+							);
+						} catch (e) {
+							if (e instanceof assert.AssertionError) {
+								e.cause = {message: `\n${block}`};
+							}
+							throw e;
+						}
+					}
+				});
+			}
+		});
 	}
 });
 

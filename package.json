@@ -46,7 +46,6 @@
 	},
 	"scripts": {
 		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --omit=dev",
-		"toc": "node dist/script/toc.js",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = $(npm pkg get name)/; s/version = \\$VERSION/version = $(npm pkg get version)/\" dist/bin/config.js",
@@ -102,7 +101,7 @@
 		"vscode-json-languageservice": "^5.7.2"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.4.1",
+		"@bhsd/code-standard": "^2.4.2",
 		"@bhsd/test-util": "^1.2.0",
 		"@codemirror/lint": "^6.9.5",
 		"@eslint/markdown": "^8.0.1",
