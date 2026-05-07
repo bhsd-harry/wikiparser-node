@@ -251,7 +251,7 @@ export abstract class TranscludeToken extends Token {
 				(isTemplate ? '' : 'Module:')
 				+ removeComment(
 					this.childNodes[
-						isTemplate ? // eslint-disable-line @stylistic/operator-linebreak
+						isTemplate ?
 							0
 							: 1
 					].text(),
@@ -411,10 +411,8 @@ export abstract class TranscludeToken extends Token {
 	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
 	#handleAnonArgChange(addedToken: number): void;
 	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
-		/* eslint-disable @stylistic/operator-linebreak */
 		this.#anonCount +=
 			1;
-		/* eslint-enable @stylistic/operator-linebreak */
 		let i: number;
 		// eslint-disable-next-line prefer-const
 		i = this.#anonCount - 1;
@@ -456,10 +454,8 @@ export abstract class TranscludeToken extends Token {
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;
 		} else {
-			/* eslint-disable @stylistic/function-paren-newline */
 			args = new Set(
 			);
-			/* eslint-enable @stylistic/function-paren-newline */
 			this.#args.set(keyStr, args);
 		}
 		return args;

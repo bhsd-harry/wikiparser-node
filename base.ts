@@ -137,8 +137,8 @@ export type TokenTypes = 'root'
 	| 'converter-rule-to'
 	| 'converter-rule-from'
 	| 'param-line'
-	// eslint-disable-next-line @stylistic/semi
 	| 'imagemap-link'
+	;
 
 export const stages = /* #__PURE__ */ (() => {
 	const obj = {
@@ -551,7 +551,7 @@ export type MaxStage = number
 
 export interface Parser {
 	config:
-		string | // eslint-disable-line @stylistic/operator-linebreak
+		string |
 		ConfigData;
 	i18n: Record<string, string>
 		| string
