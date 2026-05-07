@@ -75,7 +75,11 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/** @private */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	isInvalidFlag(flag: string, variant?: Set<string>, unknown?: Set<string>): boolean {
+	isInvalidFlag(
+		flag: string,
+		variant?: Set<string>,
+		unknown?: Set<string>,
+	): boolean {
 		return Boolean(flag)
 			&& !variant!.has(flag)
 			&& !unknown!.has(flag)

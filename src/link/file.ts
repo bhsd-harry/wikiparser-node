@@ -98,8 +98,15 @@ export abstract class FileToken extends LinkBaseToken {
 		super(link, undefined, config, accum, delimiter);
 		const {extension} = this.getTitle(true, true);
 		this.safeAppend(explode(text).map(
-			// @ts-expect-error abstract class
-			(part): ImageParameterToken => new ImageParameterToken(part, extension, type, config, accum),
+			(part): ImageParameterToken =>
+				// @ts-expect-error abstract class
+				new ImageParameterToken(
+					part,
+					extension,
+					type,
+					config,
+					accum,
+				),
 		));
 	}
 

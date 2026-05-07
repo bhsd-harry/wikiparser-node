@@ -44,10 +44,18 @@ export abstract class TranscludeToken extends Token {
 	#title: Title;
 
 	declare readonly name: string;
-	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
-		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstChild(): AtomToken | SyntaxToken;
-	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
+	declare readonly childNodes: readonly [
+		SyntaxToken,
+		AtomToken,
+		AtomToken,
+		...ParameterToken[],
+	]
+	| readonly [AtomToken | SyntaxToken, ...ParameterToken[]];
+	abstract override get firstChild(): AtomToken
+		| SyntaxToken;
+	abstract override get lastChild(): AtomToken
+		| SyntaxToken
+		| ParameterToken;
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
@@ -175,7 +183,11 @@ export abstract class TranscludeToken extends Token {
 		let i = 1;
 		for (let j = 0; j < parts.length; j++) {
 			const part = parts[j]!;
-			if (!(templateLike || this.name === 'switch' && j > 0 || this.name === 'tag' && j > 1)) {
+			if (!(
+				templateLike
+				|| this.name === 'switch' && j > 0
+				|| this.name === 'tag' && j > 1
+			)) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}
@@ -205,7 +217,9 @@ export abstract class TranscludeToken extends Token {
 			isSubst = subst.includes(magicWord);
 		if (
 			(this.#raw ? isRaw : isSubst || !modifier)
-			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || !modifier)
+			|| (Shadow.running || this.length > 1) && (
+				isRaw || isSubst || !modifier
+			)
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -220,14 +234,22 @@ export abstract class TranscludeToken extends Token {
 	 * 是否是模板或模块
 	 */
 	isTemplate(): boolean {
-		return this.type === 'template' || this.name === 'invoke';
+		return this.type === 'template'
+			|| this.name === 'invoke';
 	}
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
 			title = this.normalizeTitle(
-				(isTemplate ? '' : 'Module:') + removeComment(this.childNodes[isTemplate ? 0 : 1].text()),
+				(isTemplate ? '' : 'Module:')
+				+ removeComment(
+					this.childNodes[
+						isTemplate ? // eslint-disable-line @stylistic/operator-linebreak
+							0
+							: 1
+					].text(),
+				),
 				10,
 				{temporary: true, ...!isTemplate && {page: ''}},
 			);
@@ -263,16 +285,24 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const {childNodes, length, firstChild, modifier, type, name} = this;
-		return type === 'magic-word' && name === 'vardefine'
-			? ''
-			: `{{${modifier}${
-				type === 'magic-word'
-					? firstChild.text()
-					+ (length === 1 ? '' : this.#colon)
-					+ text(childNodes.slice(1), '|')
-					: super.text('|')
-			}}}`;
+		const {
+			childNodes,
+			length,
+			firstChild,
+			modifier,
+			type,
+			name,
+		} = this;
+		if (type === 'magic-word' && name === 'vardefine') {
+			return '';
+		}
+		return `{{${modifier}${
+			type === 'magic-word'
+				? firstChild.text()
+				+ (length === 1 ? '' : this.#colon)
+				+ text(childNodes.slice(1), '|')
+				: super.text('|')
+		}}}`;
 	}
 
 	/** @private */

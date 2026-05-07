@@ -82,7 +82,10 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	getChildNodes(): AstNodes[] {
 		const {childNodes} = this;
-		return Object.isFrozen(childNodes) ? [...childNodes] : childNodes as AstNodes[];
+		if (Object.isFrozen(childNodes)) {
+			return [...childNodes];
+		}
+		return childNodes as AstNodes[];
 	}
 
 	/** @private */

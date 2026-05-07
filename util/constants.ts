@@ -1,4 +1,5 @@
-export const MAX_STAGE = 11;
+export const MAX_STAGE =
+	11;
 
 export enum BuildMethod {
 	String,
@@ -6,8 +7,10 @@ export enum BuildMethod {
 }
 
 export const enMsg = /* #__PURE__ */ (() => {
-	// eslint-disable-next-line n/no-missing-require
-	LSP: return require('../../i18n/en.json');
+	LSP: return require(
+		// eslint-disable-next-line n/no-missing-require
+		'../../i18n/en.json',
+	);
 })();
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);

@@ -517,6 +517,9 @@ export interface LintConfiguration extends FullLintConfig {
 	rules: LintRuleConfiguration;
 	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false;
 }
+export type MaxStage = number
+	| Stage
+	| Stage[];
 
 export interface Parser {
 	config:
@@ -548,20 +551,8 @@ export interface Parser {
 	 * @param maxStage max stage for parsing / 最大解析层级
 	 * @param page page name / 页面名称
 	 */
-	parse(
-		wikitext: string,
-		include?: boolean,
-		maxStage?: number | Stage | Stage[],
-		config?: Config,
-		page?: string,
-	): Token;
-	parse(
-		wikitext: string,
-		page: string,
-		include?: boolean,
-		maxStage?: number | Stage | Stage[],
-		config?: Config,
-	): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
 
 	/**
 	 * Create a language server
