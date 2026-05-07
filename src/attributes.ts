@@ -98,7 +98,7 @@ export abstract class AttributesToken extends Token {
 		| TableTokens
 		| undefined;
 	abstract override get previousSibling():
-		SyntaxToken | // eslint-disable-line @stylistic/operator-linebreak
+		SyntaxToken |
 		undefined;
 
 	/* NOT FOR BROWSER */

@@ -1,5 +1,3 @@
-/* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
-
 import {parsers} from '../util/constants';
 import {newline} from '../util/string';
 import type {ExtToken, GalleryToken} from '../internal';

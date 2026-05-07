@@ -29,7 +29,7 @@ export function restore(s: string, stack: string[]): string;
 export function restore(
 	s: string,
 	stack:
-		Token[] | // eslint-disable-line @stylistic/operator-linebreak
+		Token[] |
 		string[],
 	translate?: 1 | 2,
 ): string {

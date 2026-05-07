@@ -127,9 +127,9 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			#getCondition<T>(selector: string): TokenPredicate<T> {
 				return getCondition<T>(
 					selector,
-					// eslint-disable-next-line unicorn/no-negated-condition, @stylistic/operator-linebreak
+					// eslint-disable-next-line unicorn/no-negated-condition
 					!('type' in this) ?
-						undefined : // eslint-disable-line @stylistic/operator-linebreak
+						undefined :
 						this as unknown as AstElement,
 				);
 			}

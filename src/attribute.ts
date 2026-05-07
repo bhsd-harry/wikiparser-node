@@ -83,12 +83,12 @@ export abstract class AttributeToken extends Token {
 
 	declare readonly childNodes: readonly [
 		AtomToken,
-		// eslint-disable-next-line @stylistic/comma-dangle
 		Token
+		,
 	];
 	abstract override get firstChild(): AtomToken;
-	// eslint-disable-next-line @stylistic/semi
 	abstract override get lastChild(): Token
+	;
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
@@ -163,8 +163,8 @@ export abstract class AttributeToken extends Token {
 				accum,
 				type === 'ext-attr' ? {AstText: ':'} : {'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 			);
-		// eslint-disable-next-line @stylistic/semi
 		let valueToken: Token
+		;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, accum, {
 				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',

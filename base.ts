@@ -573,7 +573,7 @@ export type MaxStage = number
 
 export interface Parser {
 	config:
-		string | // eslint-disable-line @stylistic/operator-linebreak
+		string |
 		ConfigData;
 	i18n: Record<string, string>
 		| string

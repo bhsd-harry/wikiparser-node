@@ -262,7 +262,7 @@ export class Title {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
 			title =
-				(this.page ?? '') + // eslint-disable-line @stylistic/operator-linebreak
+				(this.page ?? '') +
 				title.replace(/(.)\/$/u, '$1');
 		} else if (title.startsWith('../') && this.page?.includes('/')) {
 			const [level, sub] = resolve(title),
@@ -306,7 +306,7 @@ export class Title {
 				interwiki,
 			} = this,
 			pre =
-				interwiki + (interwiki && ':') + // eslint-disable-line @stylistic/operator-linebreak
+				interwiki + (interwiki && ':') +
 				prefix,
 			result = this.#getTitle(pre);
 

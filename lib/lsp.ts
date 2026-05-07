@@ -1217,12 +1217,10 @@ export class LanguageService implements LanguageServiceBase {
 					},
 					severity: severity === 'error' ? 1 : 2,
 					source:
-						/* eslint-disable @stylistic/operator-linebreak */
 						sources[rule] ??
 						'WikiLint',
 					code:
 						code ??
-						/* eslint-enable @stylistic/operator-linebreak */
 						rule,
 					message,
 					data: [
@@ -1231,7 +1229,6 @@ export class LanguageService implements LanguageServiceBase {
 					],
 				}),
 			),
-			/* eslint-disable @stylistic/operator-linebreak */
 			cssDiagnostics =
 				stylelint ?
 					await (async () => {
@@ -1312,7 +1309,6 @@ export class LanguageService implements LanguageServiceBase {
 						}),
 					) :
 					[] as const;
-			/* eslint-enable @stylistic/operator-linebreak */
 
 		/* NOT FOR BROWSER ONLY */
 

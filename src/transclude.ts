@@ -336,7 +336,7 @@ export abstract class TranscludeToken extends Token {
 				(isTemplate ? '' : 'Module:')
 				+ removeComment(
 					this.childNodes[
-						isTemplate ? // eslint-disable-line @stylistic/operator-linebreak
+						isTemplate ?
 							0
 							: 1
 					].text(),
@@ -544,12 +544,10 @@ export abstract class TranscludeToken extends Token {
 
 		/* NOT FOR BROWSER END */
 
-		/* eslint-disable @stylistic/operator-linebreak */
 		this.#anonCount +=
 			removing ?
 				-1 :
 				1;
-		/* eslint-enable @stylistic/operator-linebreak */
 
 		/* NOT FOR BROWSER */
 
@@ -576,11 +574,11 @@ export abstract class TranscludeToken extends Token {
 			/* NOT FOR BROWSER END */
 
 			const token =
-					/* eslint-disable @stylistic/operator-linebreak, unicorn/no-negated-condition */
+					/* eslint-disable unicorn/no-negated-condition */
 					!append ?
 						args![i]! :
 						addedToken as ParameterToken,
-				/* eslint-enable @stylistic/operator-linebreak, unicorn/no-negated-condition */
+				/* eslint-enable unicorn/no-negated-condition */
 				{name} = token,
 				newName = String(i + 1);
 			if (name !== newName || token === addedToken) {

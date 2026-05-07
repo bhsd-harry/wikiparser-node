@@ -96,7 +96,7 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 
 1. Memory leaks may occur in rare cases.
 1. Invalid page names with unicode characters are treated like valid ones ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
-1. Preformatted text with a leading space is only processed by [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
+1. Preformatted text with a leading space is only processed by [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
 1. BCP 47 language codes are not supported in language conversion ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20definition%20of%20language%20variant%20alternatives%20(BCP%2047%20codes))).
 
 ### HTML conversion

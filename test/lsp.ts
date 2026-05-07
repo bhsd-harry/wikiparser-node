@@ -196,8 +196,8 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 						/(?<=\{{3})/u, // argument
 						/(?<=\[\[)/u, // link
 						/(?<=(?<!\{)\{\{)/u, // parser function or template
-					// eslint-disable-next-line @stylistic/comma-dangle
 					].map(re => content.search(re)).filter(i => i !== -1)
+					,
 				]
 					.map(i => indexToPos(
 						root,

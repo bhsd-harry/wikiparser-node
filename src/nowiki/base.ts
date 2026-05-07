@@ -17,8 +17,8 @@ declare type NowikiTypes = 'ext-inner'
 	| 'double-underscore'
 	| 'hr'
 	| 'list'
-	| 'noinclude'
-	| 'quote';
+	| 'quote'
+	| 'noinclude';
 
 /**
  * text-only token that will not be parsed
