@@ -8,14 +8,16 @@ import type {
 	Token,
 } from '../../internal';
 
+declare type Child = GalleryImageToken
+	| AstText;
+
 /**
  * `<gallery>`
- * @classdesc `{childNodes: (GalleryImageToken|AstText)[]}`
  */
 export abstract class GalleryToken extends MultiLineToken {
-	declare readonly childNodes: readonly (GalleryImageToken | AstText)[];
-	abstract override get firstChild(): GalleryImageToken | AstText | undefined;
-	abstract override get lastChild(): GalleryImageToken | AstText | undefined;
+	declare readonly childNodes: readonly Child[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | undefined;
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
@@ -24,7 +26,9 @@ export abstract class GalleryToken extends MultiLineToken {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
-				super.insertAt(line);
+				super.insertAt(
+					line,
+				);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -32,7 +36,9 @@ export abstract class GalleryToken extends MultiLineToken {
 				// @ts-expect-error abstract class
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
-				super.insertAt(line);
+				super.insertAt(
+					line,
+				);
 			}
 		}
 	}

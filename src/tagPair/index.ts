@@ -14,7 +14,8 @@ export abstract class TagPairToken extends Token {
 	#selfClosing;
 	closed;
 
-	abstract override get type(): 'ext' | 'include';
+	abstract override get type(): 'ext'
+		| 'include';
 	declare readonly childNodes: readonly [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;

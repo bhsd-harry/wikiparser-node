@@ -10,7 +10,6 @@ import type {
  * argument wrapped in `{{{}}}`
  *
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
  */
 export abstract class ArgToken extends Token {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];

@@ -11,7 +11,6 @@ import type {
  * section heading
  *
  * 章节标题
- * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 export abstract class HeadingToken extends Token {
 	#level;

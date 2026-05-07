@@ -25,7 +25,6 @@ export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
  * attributes of extension and HTML tags
  *
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: (AstText|AttributeToken)[]}`
  */
 export abstract class AttributesToken extends Token {
 	readonly #type;
@@ -33,8 +32,10 @@ export abstract class AttributesToken extends Token {
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
-	abstract override get parentNode(): ExtToken | undefined;
-	abstract override get previousSibling(): undefined;
+	abstract override get parentNode(): ExtToken
+		| undefined;
+	abstract override get previousSibling():
+	undefined;
 
 	override get type(): AttributesTypes {
 		return this.#type;
@@ -56,14 +57,19 @@ export abstract class AttributesToken extends Token {
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
-					super.insertAt(out);
+					super.insertAt(
+						out,
+					);
 					out = '';
 				}
 			};
 			while (mt) {
 				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
 				out += attr.slice(lastIndex, index);
-				if (/^[\w:][\w:.-]*$/u.test(removeComment(key).trim())) {
+				if (
+					/^[\w:][\w:.-]*$/u
+						.test(removeComment(key).trim())
+				) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd] as [string?, string?],
 						// @ts-expect-error abstract class

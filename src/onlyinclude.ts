@@ -4,7 +4,6 @@ import {Token} from './index';
  * `<onlyinclude>` during transclusion
  *
  * 嵌入时的`<onlyinclude>`
- * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {

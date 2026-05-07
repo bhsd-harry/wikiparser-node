@@ -1,5 +1,8 @@
 import {getPages, reset} from '@bhsd/test-util';
-import {error, info} from '../util/diff';
+import {
+	error,
+	info,
+} from '../util/diff';
 import single from './single';
 
 const [,, site = ''] = process.argv,
@@ -16,8 +19,13 @@ const [,, site = ''] = process.argv,
 		info(`\n开始检查${name}：\n`);
 		reset();
 		try {
-			for (const page of await getPages(`${url}/api.php`, name)) {
-				await single(page);
+			const pages = await getPages(
+				`${url}/api.php`,
+				name,
+			);
+			for (const page of pages) {
+				// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+				const errors = await single(page);
 			}
 		} catch (e) {
 			error(`访问${name}的API端口时出错！`);

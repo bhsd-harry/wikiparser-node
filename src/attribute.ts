@@ -6,22 +6,27 @@ import type {
 import type {AstText as AtomToken} from '../lib/text';
 import type {AttributesToken} from '../internal';
 
-export type AttributeTypes = 'ext-attr';
+// eslint-disable-next-line @stylistic/semi
+export type AttributeTypes = 'ext-attr'
 
 /**
  * attribute of extension and HTML tags
  *
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: [AstText, Token|AstText]}`
  */
 export abstract class AttributeToken extends Token {
 	#type;
 	#equal;
 	#quotes: [string?, string?];
 
-	declare readonly childNodes: readonly [AtomToken, Token | AtomToken];
+	declare readonly childNodes: readonly [
+		AtomToken,
+		Token
+		| AtomToken,
+	];
 	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): Token | AtomToken;
+	abstract override get lastChild(): Token
+		| AtomToken;
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
@@ -48,8 +53,10 @@ export abstract class AttributeToken extends Token {
 		value?: string,
 		accum: Token[] = [],
 	) {
-		const keyToken = key;
-		let valueToken: Token | string;
+		const keyToken =
+			key;
+		let valueToken: Token
+			| string;
 		if (
 			tag === 'gallery' && key === 'caption'
 			|| tag === 'ref' && key === 'details'
@@ -63,7 +70,8 @@ export abstract class AttributeToken extends Token {
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
-			valueToken = value ?? '';
+			valueToken =
+				value ?? '';
 		}
 		super(undefined, config, accum);
 		this.#type = type;

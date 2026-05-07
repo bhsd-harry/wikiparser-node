@@ -8,12 +8,12 @@ import type {
  * internal link
  *
  * 内链
- * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
 export abstract class LinkBaseToken extends Token {
 	#delimiter;
 
-	abstract override get type(): 'gallery-image' | 'imagemap-image';
+	abstract override get type(): 'gallery-image'
+		| 'imagemap-image';
 	abstract override get firstChild(): AtomToken;
 
 	/**
@@ -24,7 +24,9 @@ export abstract class LinkBaseToken extends Token {
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 		});
-		this.insertAt(link);
+		this.insertAt(
+			link,
+		);
 		this.#delimiter = delimiter;
 	}
 

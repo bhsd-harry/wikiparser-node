@@ -13,7 +13,6 @@ import type {
  * image
  *
  * 图片
- * @classdesc `{childNodes: [AstText, ...ImageParameterToken[]]}`
  */
 export abstract class FileToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
@@ -28,8 +27,14 @@ export abstract class FileToken extends LinkBaseToken {
 	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|', type?: TokenTypes) {
 		super(link, undefined, config, accum, delimiter);
 		if (text !== undefined) {
-			// @ts-expect-error abstract class
-			this.append(new ImageParameterToken(text, config, accum) as ImageParameterToken);
+			this.append(
+				// @ts-expect-error abstract class
+				new ImageParameterToken(
+					text,
+					config,
+					accum,
+				) as ImageParameterToken,
+			);
 		}
 	}
 }

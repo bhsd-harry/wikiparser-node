@@ -11,6 +11,7 @@ import {
 } from './util/string';
 import {Title} from './lib/title';
 import type {
+	MaxStage,
 	Config,
 	ConfigData,
 	TokenTypes,
@@ -42,20 +43,8 @@ declare interface Parser extends ParserBase {
 		opt?: TitleOptions, // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(
-		wikitext: string,
-		include?: boolean,
-		maxStage?: number,
-		config?: Config,
-		page?: string,
-	): Token;
-	parse(
-		wikitext: string,
-		page: string,
-		include?: boolean,
-		maxStage?: number,
-		config?: Config,
-	): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
 }
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
@@ -85,7 +74,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.parseOnce(0, include).parseOnce();
 				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt);
 				root.build();
-				for (const key of ['main'] as const) {
+				/* eslint-disable @stylistic/array-bracket-newline */
+				const keys = [
+					'main',
+				] as const;
+				/* eslint-enable @stylistic/array-bracket-newline */
+				for (const key of keys) {
 					const str = t[key];
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					if (str?.includes('\0')) {
@@ -103,16 +97,16 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	parse(wikitext, includeOrPage, maxStageOrInclude, configOrStage, pageOrConfig) {
 		wikitext = tidy(wikitext);
 		let include: boolean,
-			maxStage: number | undefined,
+			maxStage: MaxStage | undefined,
 			config: Config | undefined,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
-			maxStage = configOrStage as number | undefined;
+			maxStage = configOrStage as MaxStage | undefined;
 			config = pageOrConfig as Config | undefined;
 		} else {
 			include = Boolean(includeOrPage);
-			maxStage = maxStageOrInclude as number | undefined;
+			maxStage = maxStageOrInclude as MaxStage | undefined;
 			config = configOrStage as Config | undefined;
 		}
 		maxStage ??= MAX_STAGE;

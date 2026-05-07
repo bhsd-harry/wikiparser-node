@@ -11,31 +11,16 @@ import {
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
+import {format} from '../addon/transclude';
 import type {
 	Config,
 } from '../base';
 import type {Title} from '../lib/title';
 
 /**
- * 调整最后一个子节点的换行符
- * @param token 魔术字或模板节点
- */
-const format = (token: TranscludeToken): void => {
-	const {lastChild, type} = token,
-		isParameter = lastChild.type === 'parameter';
-	if (
-		!(type === 'template' ? isParameter && lastChild.anon : lastChild.type === 'magic-word-name')
-		&& !lastChild.toString().endsWith('\n')
-	) {
-		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');
-	}
-};
-
-/**
  * template or magic word
  *
  * 模板或魔术字
- * @classdesc `{childNodes: [AtomToken, ...ParameterToken[]]}`
  */
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
@@ -48,10 +33,15 @@ export abstract class TranscludeToken extends Token {
 	#title: Title;
 
 	declare readonly name: string;
+	declare readonly childNodes: readonly [
+		AtomToken,
+		...ParameterToken[],
+		// eslint-disable-next-line @stylistic/semi
+	]
 	// eslint-disable-next-line @stylistic/semi
-	declare readonly childNodes: readonly [AtomToken, ...ParameterToken[]]
-	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): AtomToken | ParameterToken;
+	abstract override get firstChild(): AtomToken
+	abstract override get lastChild(): AtomToken
+		| ParameterToken;
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
@@ -141,7 +131,10 @@ export abstract class TranscludeToken extends Token {
 		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let j = 0; j < parts.length; j++) {
 			const part = parts[j]!;
-			if (!templateLike) {
+			// eslint-disable-next-line @stylistic/no-extra-parens
+			if (!(
+				templateLike
+			)) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}
@@ -182,14 +175,17 @@ export abstract class TranscludeToken extends Token {
 	 * 是否是模板或模块
 	 */
 	isTemplate(): boolean {
-		return this.type === 'template';
+		// eslint-disable-next-line @stylistic/semi
+		return this.type === 'template'
 	}
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
 			title = this.normalizeTitle(
-				this.childNodes[0].text(),
+				this.childNodes[
+					0
+				].text(),
 				10,
 				{temporary: true, ...!isTemplate && {page: ''}},
 			);
@@ -210,7 +206,7 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		const {childNodes, length, firstChild, modifier, type, name} = this;
+		const {childNodes, length, firstChild, modifier, type} = this;
 		return `{{${modifier}${
 			type === 'magic-word'
 				? firstChild.toString(skip)
@@ -222,7 +218,13 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const {childNodes, length, firstChild, modifier, type} = this;
+		const {
+			childNodes,
+			length,
+			firstChild,
+			modifier,
+			type,
+		} = this;
 		return `{{${modifier}${
 			type === 'magic-word'
 				? firstChild.text()
@@ -320,9 +322,18 @@ export abstract class TranscludeToken extends Token {
 	 * 获取生效的指定参数
 	 * @param key parameter name / 参数名
 	 */
-	getArg(key: string | number): ParameterToken | undefined {
+	getArg(
+		key: string | number,
+	): ParameterToken | undefined {
 		const {childNodes} = this;
-		return [...this.getArgs(key)].sort((a, b) => childNodes.indexOf(b) - childNodes.indexOf(a))[0];
+		return [
+			...this.getArgs(
+				key,
+			),
+		].sort(
+			(a, b) =>
+				childNodes.indexOf(b) - childNodes.indexOf(a),
+		)[0];
 	}
 
 	/**
@@ -331,7 +342,11 @@ export abstract class TranscludeToken extends Token {
 	 * 获取生效的参数值
 	 * @param key parameter name / 参数名
 	 */
-	getValue(key: string | number): string | undefined {
+	getValue(
+		key: string
+			| number,
+	): string
+		| undefined {
 		return this.getArg(key)?.getValue();
 	}
 
@@ -343,7 +358,13 @@ export abstract class TranscludeToken extends Token {
 	 * @param value parameter value / 参数值
 	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
 	 */
-	setValue(key: string | number, value: string, newline?: boolean): void {
+	setValue(
+		key:
+			number | // eslint-disable-line @stylistic/operator-linebreak
+			string,
+		value: string,
+		newline?: boolean,
+	): void {
 		const arg = this.getArg(key);
 		if (arg) {
 			arg.setValue(value);

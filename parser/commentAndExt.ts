@@ -107,7 +107,8 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 					const closed = substr.endsWith('-->');
 					// @ts-expect-error abstract class
 					new CommentToken(
-						substr.slice(4, closed ? -3 : undefined),
+						substr
+							.slice(4, closed ? -3 : undefined),
 						closed,
 						config,
 						accum,

@@ -10,7 +10,6 @@ import type {
  * extension tag
  *
  * 扩展标签
- * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
 export abstract class ExtToken extends TagPairToken {
 	declare closed: true;

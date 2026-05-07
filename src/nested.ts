@@ -16,7 +16,6 @@ declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | A
  * extension tag that has a nested structure
  *
  * 嵌套式的扩展标签
- * @classdesc `{childNodes: (ExtToken|NoincludeToken|CommentToken)[]}`
  */
 export abstract class NestedToken extends Token {
 	declare readonly childNodes: readonly Child[];
@@ -36,7 +35,8 @@ export abstract class NestedToken extends Token {
 	 */
 	constructor(
 		wikitext: string | undefined,
-		regex: boolean,
+		regex:
+		boolean,
 		tags: readonly string[],
 		config: Config,
 		accum: Token[] = [],

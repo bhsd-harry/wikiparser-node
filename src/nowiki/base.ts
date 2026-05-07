@@ -11,7 +11,6 @@ declare type NowikiTypes = 'ext-inner'
  * text-only token that will not be parsed
  *
  * 纯文字Token，不会被解析
- * @classdesc `{childNodes: [AstText]}`
  */
 export abstract class NowikiBaseToken extends Token {
 	abstract override get type(): NowikiTypes;

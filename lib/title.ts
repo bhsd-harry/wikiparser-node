@@ -86,7 +86,9 @@ export class Title {
 			} catch /* c8 ignore next */ {}
 		}
 		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
-		if (subpage) {
+		if (
+			subpage
+		) {
 			this.#ns = 0;
 		} else {
 			let ns = defaultNs;
@@ -128,7 +130,8 @@ export class Title {
 	#getTitle(prefix: string, redirect = true): [boolean, string] {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
-			title = title.replace(/(.)\/$/u, '$1');
+			title =
+				title.replace(/(.)\/$/u, '$1');
 		}
 		return [false, title];
 	}

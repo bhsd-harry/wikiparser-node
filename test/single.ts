@@ -1,4 +1,6 @@
-import {error} from '../util/diff';
+import {
+	error,
+} from '../util/diff';
 import Parser from '../../bundle/bundle.min.js'; // eslint-disable-line n/no-missing-import
 import type {SimplePage} from '@bhsd/test-util';
 
@@ -12,8 +14,13 @@ Parser.config = require('../../config/default');
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
+export default async (
+	{pageid, title, ns, content}: SimplePage,
+	method?: string,
+): Promise<
+	void
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async ({pageid, title, ns, content}: SimplePage, method?: string): Promise<void> => {
+> => {
 	content = content.replaceAll(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
 

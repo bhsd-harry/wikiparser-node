@@ -77,6 +77,8 @@ interface Token extends AstNode {
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
 }
+// eslint-disable-next-line @stylistic/semi
+export type MaxStage = number
 
 export interface Parser {
 	config?: Partial<ConfigData>;
@@ -97,18 +99,6 @@ export interface Parser {
 	 * @param maxStage max stage for parsing / 最大解析层级
 	 * @param page page name / 页面名称
 	 */
-	parse(
-		wikitext: string,
-		include?: boolean,
-		maxStage?: number,
-		config?: Config,
-		page?: string,
-	): Token;
-	parse(
-		wikitext: string,
-		page: string,
-		include?: boolean,
-		maxStage?: number,
-		config?: Config,
-	): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
 }

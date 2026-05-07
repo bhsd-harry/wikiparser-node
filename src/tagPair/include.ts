@@ -9,7 +9,6 @@ import type {AstText, Token} from '../../internal';
  * `<includeonly>`, `<noinclude>` or `<onlyinclude>`
  *
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
- * @classdesc `{childNodes: [AstText, AstText]}`
  */
 @hiddenToken(false)
 export abstract class IncludeToken extends TagPairToken {

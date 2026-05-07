@@ -68,7 +68,6 @@ import type {
  * base class for all tokens
  *
  * 所有节点的基类
- * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 export class Token extends AstElement {
 	#type: TokenTypes = 'plain';
