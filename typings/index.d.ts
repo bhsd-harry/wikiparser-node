@@ -20,7 +20,8 @@ import type {Ranges} from '../lib/ranges';
 /* NOT FOR BROWSER END */
 
 declare global {
-	type WikiParserAcceptable = Record<string, number | string | Ranges | (number | string)[]>;
+	type WikiParserAcceptable =
+		Record<string, number | string | Ranges | (number | string)[]>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly childNodes: readonly AstNodes[];

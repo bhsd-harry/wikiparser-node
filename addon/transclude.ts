@@ -18,7 +18,11 @@ const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
 		isParameter = lastChild.is<ParameterToken>('parameter');
 	if (
-		!(type === 'template' ? isParameter && lastChild.anon : lastChild.is<SyntaxToken>('magic-word-name'))
+		!(
+			type === 'template'
+				? isParameter && lastChild.anon
+				: lastChild.is<SyntaxToken>('magic-word-name')
+		)
 		&& !lastChild.toString().endsWith('\n')
 	) {
 		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');

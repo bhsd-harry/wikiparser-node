@@ -93,8 +93,13 @@ export abstract class AttributesToken extends Token {
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
-	abstract override get parentNode(): ExtToken | HtmlToken | TableTokens | undefined;
-	abstract override get previousSibling(): SyntaxToken | undefined;
+	abstract override get parentNode(): ExtToken
+		| HtmlToken
+		| TableTokens
+		| undefined;
+	abstract override get previousSibling():
+		SyntaxToken | // eslint-disable-line @stylistic/operator-linebreak
+		undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -198,16 +203,25 @@ export abstract class AttributesToken extends Token {
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
-					super.insertAt(new AtomToken(out, toDirty(type), config, accum, {
-						[`Stage-${stages[type]}`]: ':',
-					}));
+					super.insertAt(
+						new AtomToken(
+							out,
+							toDirty(type),
+							config,
+							accum,
+							{[`Stage-${stages[type]}`]: ':'},
+						),
+					);
 					out = '';
 				}
 			};
 			while (mt) {
 				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
 				out += attr.slice(lastIndex, index);
-				if (/^(?:[\w:]|\0\d+t\x7F)(?:[\w:.-]|\0\d+t\x7F)*$/u.test(removeComment(key).trim())) {
+				if (
+					/^(?:[\w:]|\0\d+t\x7F)(?:[\w:.-]|\0\d+t\x7F)*$/u
+						.test(removeComment(key).trim())
+				) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd] as [string?, string?],
 						// @ts-expect-error abstract class

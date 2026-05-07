@@ -34,7 +34,8 @@ Parser.internal = true;
 
 /* NOT FOR BROWSER END */
 
-declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose> | 'constructor';
+declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose>
+	| 'constructor';
 
 /**
  * 测试单个指令
@@ -161,7 +162,15 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'setTargetWikipedia':
 				break;
 			case 'provideDocumentColors':
-				await wrap(method, title, () => lsp.provideDocumentColors(rgba, content), summary);
+				await wrap(
+					method,
+					title,
+					() => lsp.provideDocumentColors(
+						rgba,
+						content,
+					),
+					summary,
+				);
 				break;
 			case 'provideCompletionItems': {
 				const positions = [

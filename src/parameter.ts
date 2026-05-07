@@ -48,7 +48,10 @@ export abstract class ParameterToken extends Token {
 	abstract override get lastChild(): Token;
 	abstract override get parentNode(): TranscludeToken | undefined;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get previousSibling(): AtomToken | SyntaxToken | this | undefined;
+	abstract override get previousSibling(): AtomToken
+		| SyntaxToken
+		| this
+		| undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -133,9 +136,19 @@ export abstract class ParameterToken extends Token {
 	}
 
 	/** @private */
-	trimName(name: string | Token, set = true): string {
-		const trimmed = (typeof name === 'string' ? name : name.toString(true))
-			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+	trimName(
+		name:
+			string | // eslint-disable-line @stylistic/operator-linebreak
+			Token,
+		set = true,
+	): string {
+		const trimmed =
+			(
+				typeof name === 'string'
+					? name : // eslint-disable-line @stylistic/operator-linebreak
+					name.toString(true)
+			)
+				.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		if (set) {
 			this.setAttribute('name', trimmed);
 		}
@@ -273,7 +286,8 @@ export abstract class ParameterToken extends Token {
 	 */
 	setValue(value: string): void {
 		const {childNodes} = Parser.parseWithRef(value, this);
-		this.lastChild.safeReplaceChildren(childNodes);
+		this.lastChild
+			.safeReplaceChildren(childNodes);
 	}
 
 	/**

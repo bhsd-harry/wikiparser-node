@@ -33,10 +33,10 @@ const mockCRLF = (str: string): string => str.replaceAll('\n', '\\r\n');
 
 describe('API tests', () => {
 	for (const fullPath of fs.globSync(path.resolve('wiki', '*.md'))) {
-		const md = fs.readFileSync(fullPath, 'utf8'),
-			codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
-				.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, '')),
-			file = path.basename(fullPath, '.md'),
+		const md = fs.readFileSync(fullPath, 'utf8');
+		const codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
+			.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''));
+		const file = path.basename(fullPath, '.md'),
 			testCodes = file.startsWith('LanguageService')
 				? codes.flatMap(code => [
 					code,
@@ -53,7 +53,8 @@ describe('API tests', () => {
 
 		describe(file, () => {
 			beforeEach(() => {
-				Parser.i18n = 'en';
+				Parser.i18n =
+					'en';
 				Parser.lintConfig = undefined as unknown as LintConfiguration;
 
 				/* NOT FOR BROWSER */
@@ -117,7 +118,8 @@ describe('API tests', () => {
 						try {
 							await eval(code); // eslint-disable-line no-eval
 							if (code.includes('Parser.config = ')) {
-								Parser.config = 'default';
+								Parser.config =
+									'default';
 							}
 						} catch (e) {
 							if (e instanceof assert.AssertionError) {

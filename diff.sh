@@ -5,6 +5,7 @@ then
 else
 	git diff -w --color-moved --minimal --diff-filter=ad "$@" -- *.ts \
 	bin/ \
+	addon/ \
 	config/ data/ i18n/ lib/ mixin/ parser/ src/ test/ typings/ util/ \
 	| diff2html -i stdin -F diff.html
 fi

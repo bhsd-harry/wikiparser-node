@@ -72,10 +72,18 @@ export abstract class TranscludeToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	declare readonly name: string;
-	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
-		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstChild(): AtomToken | SyntaxToken;
-	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
+	declare readonly childNodes: readonly [
+		SyntaxToken,
+		AtomToken,
+		AtomToken,
+		...ParameterToken[],
+	]
+	| readonly [AtomToken | SyntaxToken, ...ParameterToken[]];
+	abstract override get firstChild(): AtomToken
+		| SyntaxToken;
+	abstract override get lastChild(): AtomToken
+		| SyntaxToken
+		| ParameterToken;
 
 	/* NOT FOR BROWSER */
 
@@ -256,7 +264,11 @@ export abstract class TranscludeToken extends Token {
 		let i = 1;
 		for (let j = 0; j < parts.length; j++) {
 			const part = parts[j]!;
-			if (!(templateLike || this.name === 'switch' && j > 0 || this.name === 'tag' && j > 1)) {
+			if (!(
+				templateLike
+				|| this.name === 'switch' && j > 0
+				|| this.name === 'tag' && j > 1
+			)) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}
@@ -296,7 +308,9 @@ export abstract class TranscludeToken extends Token {
 			isSubst = subst.includes(magicWord);
 		if (
 			(this.#raw ? isRaw : isSubst || !modifier)
-			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || !modifier)
+			|| (Shadow.running || this.length > 1) && (
+				isRaw || isSubst || !modifier
+			)
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -311,14 +325,22 @@ export abstract class TranscludeToken extends Token {
 	 * 是否是模板或模块
 	 */
 	isTemplate(): boolean {
-		return this.type === 'template' || this.name === 'invoke';
+		return this.type === 'template'
+			|| this.name === 'invoke';
 	}
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
 			title = this.normalizeTitle(
-				(isTemplate ? '' : 'Module:') + removeComment(this.childNodes[isTemplate ? 0 : 1].text()),
+				(isTemplate ? '' : 'Module:')
+				+ removeComment(
+					this.childNodes[
+						isTemplate ? // eslint-disable-line @stylistic/operator-linebreak
+							0
+							: 1
+					].text(),
+				),
 				10,
 				{temporary: true, ...!isTemplate && {page: ''}},
 			);
@@ -389,16 +411,24 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const {childNodes, length, firstChild, modifier, type, name} = this;
-		return type === 'magic-word' && name === 'vardefine'
-			? ''
-			: `{{${modifier}${
-				type === 'magic-word'
-					? firstChild.text()
-					+ (length === 1 ? '' : this.#colon)
-					+ text(childNodes.slice(1), '|')
-					: super.text('|')
-			}}}`;
+		const {
+			childNodes,
+			length,
+			firstChild,
+			modifier,
+			type,
+			name,
+		} = this;
+		if (type === 'magic-word' && name === 'vardefine') {
+			return '';
+		}
+		return `{{${modifier}${
+			type === 'magic-word'
+				? firstChild.text()
+				+ (length === 1 ? '' : this.#colon)
+				+ text(childNodes.slice(1), '|')
+				: super.text('|')
+		}}}`;
 	}
 
 	/** @private */
@@ -813,8 +843,20 @@ export abstract class TranscludeToken extends Token {
 	 * @param key parameter name / 参数名
 	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
-	getArg(key: string | number, exact?: boolean): ParameterToken | undefined {
-		return [...this.getArgs(key, exact, false)].toSorted((a, b) => b.compareDocumentPosition(a))[0];
+	getArg(
+		key: string | number,
+		exact?: boolean,
+	): ParameterToken | undefined {
+		return [
+			...this.getArgs(
+				key,
+				exact,
+				false,
+			),
+		].toSorted(
+			(a, b) =>
+				b.compareDocumentPosition(a),
+		)[0];
 	}
 
 	/**
@@ -868,10 +910,16 @@ export abstract class TranscludeToken extends Token {
 	 */
 	getValue(): Record<string, string>;
 	getValue(key: string | number): string | undefined;
-	getValue(key?: string | number): Record<string, string> | string | undefined {
-		return key === undefined
-			? Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)!]))
-			: this.getArg(key)?.getValue();
+	getValue(
+		key?: string
+			| number,
+	): string
+		| Record<string, string>
+		| undefined {
+		if (key === undefined) {
+			return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)!]));
+		}
+		return this.getArg(key)?.getValue();
 	}
 
 	/**
@@ -894,7 +942,12 @@ export abstract class TranscludeToken extends Token {
 	 * @param value parameter value / 参数值
 	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
 	 */
-	setValue(key: string, value: string, newline?: boolean): void {
+	setValue(
+		key:
+		string,
+		value: string,
+		newline?: boolean,
+	): void {
 		require('../addon/transclude');
 		this.setValue(key, value, newline);
 	}
