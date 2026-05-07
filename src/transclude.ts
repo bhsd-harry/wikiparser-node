@@ -36,10 +36,10 @@ export abstract class TranscludeToken extends Token {
 	declare readonly childNodes: readonly [
 		AtomToken,
 		...ParameterToken[],
-		// eslint-disable-next-line @stylistic/semi
 	]
-	// eslint-disable-next-line @stylistic/semi
+		;
 	abstract override get firstChild(): AtomToken
+	;
 	abstract override get lastChild(): AtomToken
 		| ParameterToken;
 
@@ -175,8 +175,8 @@ export abstract class TranscludeToken extends Token {
 	 * 是否是模板或模块
 	 */
 	isTemplate(): boolean {
-		// eslint-disable-next-line @stylistic/semi
 		return this.type === 'template'
+		;
 	}
 
 	/** 获取模板或模块名 */
@@ -242,10 +242,8 @@ export abstract class TranscludeToken extends Token {
 	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
 	#handleAnonArgChange(addedToken: number): void;
 	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
-		/* eslint-disable @stylistic/operator-linebreak */
 		this.#anonCount +=
 			1;
-		/* eslint-enable @stylistic/operator-linebreak */
 		let i: number;
 		// eslint-disable-next-line prefer-const
 		i = this.#anonCount - 1;
@@ -287,10 +285,8 @@ export abstract class TranscludeToken extends Token {
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;
 		} else {
-			/* eslint-disable @stylistic/function-paren-newline */
 			args = new Set(
 			);
-			/* eslint-enable @stylistic/function-paren-newline */
 			this.#args.set(keyStr, args);
 		}
 		return args;
@@ -360,7 +356,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	setValue(
 		key:
-			number | // eslint-disable-line @stylistic/operator-linebreak
+			number |
 			string,
 		value: string,
 		newline?: boolean,

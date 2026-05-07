@@ -6,8 +6,8 @@ import type {
 import type {AstText as AtomToken} from '../lib/text';
 import type {AttributesToken} from '../internal';
 
-// eslint-disable-next-line @stylistic/semi
 export type AttributeTypes = 'ext-attr'
+;
 
 /**
  * attribute of extension and HTML tags

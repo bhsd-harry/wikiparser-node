@@ -113,8 +113,8 @@ export class Title {
 		}
 		const [level, sub] = subpage ? resolve(title) : [0, title];
 		this.valid = Boolean(
-			// eslint-disable-next-line @stylistic/comma-dangle
 			title
+			,
 		)
 		&& decodeHtml(title) === title
 		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(sub);

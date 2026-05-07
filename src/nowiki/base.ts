@@ -4,8 +4,7 @@ import type {AstText} from '../../internal';
 
 declare type NowikiTypes = 'ext-inner'
 	| 'comment'
-	// eslint-disable-next-line @stylistic/semi
-	| 'noinclude'
+	| 'noinclude';
 
 /**
  * text-only token that will not be parsed

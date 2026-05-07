@@ -38,8 +38,8 @@ export type TokenTypes = 'root'
 	| 'heading-trail'
 	| 'gallery-image'
 	| 'imagemap-image'
-	// eslint-disable-next-line @stylistic/semi
 	| 'image-parameter'
+	;
 
 /**
  * Node-like
@@ -77,8 +77,8 @@ interface Token extends AstNode {
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
 }
-// eslint-disable-next-line @stylistic/semi
 export type MaxStage = number
+;
 
 export interface Parser {
 	config?: Partial<ConfigData>;
