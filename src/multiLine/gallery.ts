@@ -13,6 +13,10 @@ import type {
 	Token,
 } from '../../internal';
 
+declare type Child = GalleryImageToken
+	| CommentLineToken
+	| AstText;
+
 /**
  * `<gallery>`
  * @classdesc `{childNodes: (GalleryImageToken|CommentLineToken|AstText)[]}`
@@ -20,9 +24,9 @@ import type {
 export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: readonly (GalleryImageToken | CommentLineToken | AstText)[];
-	abstract override get firstChild(): GalleryImageToken | CommentLineToken | AstText | undefined;
-	abstract override get lastChild(): GalleryImageToken | CommentLineToken | AstText | undefined;
+	declare readonly childNodes: readonly Child[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | undefined;
 
 	/* PRINT ONLY */
 
@@ -55,8 +59,18 @@ export abstract class GalleryToken extends MultiLineToken {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
-				// @ts-expect-error abstract class
-				super.insertAt((line.trim() ? new CommentLineToken(line, config, accum) : line) as string);
+				super.insertAt(
+					(
+						line.trim()
+							// @ts-expect-error abstract class
+							? new CommentLineToken(
+								line,
+								config,
+								accum,
+							)
+							: line
+					) as string,
+				);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -64,8 +78,14 @@ export abstract class GalleryToken extends MultiLineToken {
 				// @ts-expect-error abstract class
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
-				// @ts-expect-error abstract class
-				super.insertAt(new CommentLineToken(line, config, accum) as CommentLineToken);
+				super.insertAt(
+					// @ts-expect-error abstract class
+					new CommentLineToken(
+						line,
+						config,
+						accum,
+					) as CommentLineToken,
+				);
 			}
 		}
 	}

@@ -9,7 +9,9 @@ import type {
 	Config,
 } from '../base';
 
-declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose> | 'constructor' | 'findTemplateTokens';
+declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose>
+	| 'findTemplateTokens'
+	| 'constructor';
 
 const config: Config = require('../../config/default');
 wikiparse.setConfig({...config, articlePath: 'https://mediawiki.org/wiki/$1'});
@@ -109,7 +111,14 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'include':
 				break;
 			case 'provideDocumentColors':
-				await wrap(method, title, () => lsp.provideDocumentColors(content), summary);
+				await wrap(
+					method,
+					title,
+					() => lsp.provideDocumentColors(
+						content,
+					),
+					summary,
+				);
 				break;
 			case 'provideCompletionItems': {
 				const positions = [

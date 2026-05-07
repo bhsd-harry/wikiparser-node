@@ -88,7 +88,10 @@ export class AstText extends AstNode {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		return skip && !this.parentNode?.getAttribute('built') ? removeComment(this.data) : this.data;
+		if (skip && !this.parentNode?.getAttribute('built')) {
+			return removeComment(this.data);
+		}
+		return this.data;
 	}
 
 	/** @private */

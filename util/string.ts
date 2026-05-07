@@ -19,7 +19,13 @@ export const trimLc = (s: string): string => s.trim().toLowerCase();
  */
 export function restore(s: string, stack: Token[], translate: 1 | 2): string;
 export function restore(s: string, stack: string[]): string;
-export function restore(s: string, stack: string[] | Token[], translate?: 1 | 2): string {
+export function restore(
+	s: string,
+	stack:
+		Token[] | // eslint-disable-line @stylistic/operator-linebreak
+		string[],
+	translate?: 1 | 2,
+): string {
 	if (translate === 1) {
 		return s.replace(
 			/\0(\d+)g\x7F/gu,

@@ -78,7 +78,11 @@ export abstract class ConverterFlagsToken extends Token {
 	/** @private */
 	isInvalidFlag(child: Token): boolean;
 	/** @private */
-	isInvalidFlag(flag: string | Token, variant?: Set<string>, unknown?: Set<string>): boolean {
+	isInvalidFlag(
+		flag: string | Token,
+		variant?: Set<string>,
+		unknown?: Set<string>,
+	): boolean {
 		/* PRINT ONLY */
 
 		PRINT: if (typeof flag === 'object') {

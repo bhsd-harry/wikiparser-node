@@ -1,5 +1,9 @@
 import {getPages, reset} from '@bhsd/test-util';
-import {error, info, diff} from '../util/diff';
+import {
+	error,
+	info,
+	diff,
+} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
 import {mock} from './wikiparse';
@@ -20,13 +24,18 @@ const [,, site = ''] = process.argv,
 (async () => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
-		info(`开始检查${name}：\n`);
+		info(`\n开始检查${name}：\n`);
 		const parserConfig: Config = require(`../../config/${config}`);
 		wikiparse.setConfig(parserConfig);
 		reset();
 		try {
 			let failed = 0;
-			for (const page of await getPages(`${url}/api.php`, name, '10')) {
+			const pages = await getPages(
+				`${url}/api.php`,
+				name,
+				'10',
+			);
+			for (const page of pages) {
 				const {pageid, title, content} = page;
 				try {
 					const errors = await single(page);

@@ -48,7 +48,9 @@ export abstract class NestedToken extends Token {
 	 */
 	constructor(
 		wikitext: string | undefined,
-		regex: RegExp | boolean,
+		regex:
+			RegExp | // eslint-disable-line @stylistic/operator-linebreak
+			boolean,
 		tags: readonly string[],
 		config: Config,
 		accum: Token[] = [],
