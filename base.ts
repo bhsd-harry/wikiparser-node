@@ -133,8 +133,8 @@ export type TokenTypes = 'root'
 	| 'converter-rule-to'
 	| 'converter-rule-from'
 	| 'param-line'
-	// eslint-disable-next-line @stylistic/semi
 	| 'imagemap-link'
+	;
 
 export const stages = /* #__PURE__ */ (() => {
 	const obj = {

@@ -178,7 +178,7 @@ export class Title {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
 			title =
-				(this.page ?? '') + // eslint-disable-line @stylistic/operator-linebreak
+				(this.page ?? '') +
 				title.replace(/(.)\/$/u, '$1');
 		} else if (title.startsWith('../') && this.page?.includes('/')) {
 			const [level, sub] = resolve(title),
@@ -236,8 +236,8 @@ export class Title {
 					+ (
 						fragment
 							? `#${encodeURIComponent(
-								// eslint-disable-next-line @stylistic/comma-dangle
 								fragment
+								,
 							)}`
 							: ''
 					),

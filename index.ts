@@ -122,8 +122,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	set i18n(
-		// eslint-disable-next-line @stylistic/comma-dangle
 		data: Record<string, string>
+		,
 	) {
 		LINT: i18n = data;
 	},
