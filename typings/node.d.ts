@@ -1,4 +1,4 @@
-/* eslint-disable @stylistic/indent, @stylistic/operator-linebreak */
+/* eslint-disable @stylistic/indent */
 import type {Config} from '../base';
 import type {Title} from '../lib/title';
 import type {

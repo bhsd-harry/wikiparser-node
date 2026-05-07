@@ -65,14 +65,14 @@ export abstract class ParameterToken extends Token {
 	/** @private */
 	trimName(
 		name:
-			string | // eslint-disable-line @stylistic/operator-linebreak
+			string |
 			Token,
 		set = true,
 	): string {
 		const trimmed =
 			(
 				typeof name === 'string'
-					? name : // eslint-disable-line @stylistic/operator-linebreak
+					? name :
 					name.toString(true)
 			)
 				.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
