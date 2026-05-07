@@ -6,7 +6,8 @@ import type {
 } from '../internal';
 
 declare global {
-	type WikiParserAcceptable = unknown;
+	type WikiParserAcceptable =
+		unknown;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly childNodes: readonly AstNodes[];

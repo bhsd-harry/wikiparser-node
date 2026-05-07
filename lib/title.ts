@@ -112,7 +112,10 @@ export class Title {
 			} catch /* c8 ignore next */ {}
 		}
 		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
-		if (subpage || page && trimmed.startsWith('/')) {
+		if (
+			subpage
+			|| page && trimmed.startsWith('/')
+		) {
 			this.#ns = 0;
 		} else {
 			let ns = defaultNs;
@@ -174,7 +177,9 @@ export class Title {
 	#getTitle(prefix: string, redirect = true): [boolean, string] {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		if (title.startsWith('/')) {
-			title = (this.page ?? '') + title.replace(/(.)\/$/u, '$1');
+			title =
+				(this.page ?? '') + // eslint-disable-line @stylistic/operator-linebreak
+				title.replace(/(.)\/$/u, '$1');
 		} else if (title.startsWith('../') && this.page?.includes('/')) {
 			const [level, sub] = resolve(title),
 				dirs = this.page.split('/');

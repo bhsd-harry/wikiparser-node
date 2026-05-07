@@ -27,7 +27,9 @@ import {loadCssLSP, EmbeddedCSSDocument} from '../lib/document';
 
 /* NOT FOR BROWSER ONLY END */
 
-export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
+export type AttributeTypes = 'ext-attr'
+	| 'html-attr'
+	| 'table-attr';
 
 const insecureStyle =
 		/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
@@ -59,9 +61,14 @@ export abstract class AttributeToken extends Token {
 	#equal;
 	#quotes: [string?, string?];
 
-	declare readonly childNodes: readonly [AtomToken, Token];
+	declare readonly childNodes: readonly [
+		AtomToken,
+		// eslint-disable-next-line @stylistic/comma-dangle
+		Token
+	];
 	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): Token;
+	// eslint-disable-next-line @stylistic/semi
+	abstract override get lastChild(): Token
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
@@ -98,13 +105,15 @@ export abstract class AttributeToken extends Token {
 		value?: string,
 		accum: Token[] = [],
 	) {
-		const keyToken = new AtomToken(
-			key,
-			'attr-key',
-			config,
-			accum,
-		);
-		let valueToken: Token;
+		const keyToken =
+			new AtomToken(
+				key,
+				'attr-key',
+				config,
+				accum,
+			);
+		// eslint-disable-next-line @stylistic/semi
+		let valueToken: Token
 		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, accum, {
 			});
@@ -125,8 +134,9 @@ export abstract class AttributeToken extends Token {
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
-			valueToken = new AtomToken(value, 'attr-value', config, accum, {
-			});
+			valueToken =
+				new AtomToken(value, 'attr-value', config, accum, {
+				});
 		}
 		super(undefined, config, accum);
 		this.#type = type;
@@ -177,7 +187,11 @@ export abstract class AttributeToken extends Token {
 	 */
 	#lint(): boolean;
 	#lint(start: number, rect: BoundingRect): LintError | false;
-	#lint(start?: number, rect?: BoundingRect): LintError | boolean {
+	#lint(
+		start?: number,
+		rect?: BoundingRect,
+	): LintError
+		| boolean {
 		const {firstChild, lastChild, type, name, tag, parentNode} = this,
 			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),

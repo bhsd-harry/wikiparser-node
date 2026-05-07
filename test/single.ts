@@ -1,4 +1,7 @@
-import {diff, error} from '../util/diff';
+import {
+	error,
+	diff,
+} from '../util/diff';
 import type {SimplePage} from '@bhsd/test-util';
 import type {LintError} from '../base';
 
@@ -25,8 +28,14 @@ const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table
  * @param page.content 页面源代码
  * @param method 方法
  */
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-export default async ({pageid, title, ns, content}: SimplePage, method?: string): Promise<LintError[] | void> => {
+export default async (
+	{pageid, title, ns, content}: SimplePage,
+	method?: string,
+): Promise<
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+	void
+		| LintError[]
+> => {
 	content = content.replaceAll(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
 
@@ -60,7 +69,8 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 
 	if (!method || method === 'print') {
 		console.time(`print: ${title}`);
-		const printed = token.print();
+		const printed =
+			token.print();
 		console.timeEnd(`print: ${title}`);
 		const restored = printed.replaceAll(
 			/<[^<]+?>|&([lg]t|amp);/gu,
@@ -82,8 +92,9 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 
 	if (!method || method === 'lint') {
 		console.time(`lint: ${title}`);
-		const errors = token.lint()
-			.filter(({rule}) => !ignored.has(rule));
+		const errors =
+			token.lint()
+				.filter(({rule}) => !ignored.has(rule));
 		console.timeEnd(`lint: ${title}`);
 		return errors;
 	}

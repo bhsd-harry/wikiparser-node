@@ -14,6 +14,7 @@ import {
 import {LintConfiguration} from './lib/lintConfig';
 import {Title} from './lib/title';
 import type {
+	MaxStage,
 	Config,
 	ConfigData,
 	LintError,
@@ -74,20 +75,8 @@ declare interface Parser extends ParserBase {
 		opt?: TitleOptions, // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(
-		wikitext: string,
-		include?: boolean,
-		maxStage?: number | Stage | Stage[],
-		config?: Config,
-		page?: string,
-	): Token;
-	parse(
-		wikitext: string,
-		page: string,
-		include?: boolean,
-		maxStage?: number | Stage | Stage[],
-		config?: Config,
-	): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
 
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
@@ -166,7 +155,8 @@ const rootRequire = (file: string, dir: string): unknown => jsonRequire(
 
 /* NOT FOR BROWSER ONLY END */
 
-let viewOnly = true;
+let viewOnly =
+	true;
 
 let lintConfig = (() => {
 		LINT: return new LintConfiguration();
@@ -188,7 +178,8 @@ const getParams = (
 	: [Boolean(includeOrPage), configOrInclude as Config | undefined, pageOrConfig as string | undefined];
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
-	config: 'default',
+	config:
+		'default',
 
 	/** @implements */
 	get rules() {
@@ -200,7 +191,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		LINT: return {...enMsg, ...i18n};
 	},
 
-	set i18n(data: Record<string, string> | string | undefined) {
+	set i18n(
+		data: Record<string, string>
+			| string
+			| undefined,
+	) {
 		/* NOT FOR BROWSER ONLY */
 
 		if (typeof data === 'string') {
@@ -316,7 +311,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.parseOnce(0, include).parseOnce();
 				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt);
 				root.build();
-				for (const key of ['main', 'fragment'] as const) {
+				const keys = [
+					'main',
+					'fragment',
+				] as const;
+				for (const key of keys) {
 					const str = t[key];
 					if (str?.includes('\0')) {
 						const s = root.buildFromStr(str, BuildMethod.Text);
@@ -337,17 +336,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	parse(wikitext, includeOrPage, maxStageOrInclude, configOrStage, pageOrConfig) {
 		wikitext = tidy(wikitext);
 		let include: boolean,
-			maxStage: number | Stage | Stage[] | undefined,
+			maxStage: MaxStage | undefined,
 			config: Config | undefined,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
-			maxStage = configOrStage as number | Stage | Stage[] | undefined;
+			maxStage = configOrStage as MaxStage | undefined;
 			config = pageOrConfig as Config | undefined;
 			page = includeOrPage;
 		} else {
 			include = Boolean(includeOrPage);
-			maxStage = maxStageOrInclude as number | Stage | Stage[] | undefined;
+			maxStage = maxStageOrInclude as MaxStage | undefined;
 			config = configOrStage as Config | undefined;
 			page = pageOrConfig as string | undefined;
 		}

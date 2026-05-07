@@ -35,13 +35,13 @@ export abstract class LinkBaseToken extends Token {
 	// @ts-expect-error lazy initialization
 	#title: Title;
 
-	abstract override get type(): 'link'
+	abstract override get type(): 'gallery-image'
+		| 'link'
 		| 'category'
 		| 'file'
-		| 'gallery-image'
-		| 'imagemap-image'
 		| 'redirect-target'
-		| 'ext-inner';
+		| 'ext-inner'
+		| 'imagemap-image';
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -68,8 +68,14 @@ export abstract class LinkBaseToken extends Token {
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
 		});
-		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
-		}));
+		this.insertAt(
+			new AtomToken(
+				link,
+				'link-target',
+				config,
+				accum,
+			),
+		);
 		if (linkText !== undefined) {
 			const inner = new Token(
 				linkText,
@@ -115,13 +121,19 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override toString(skip?: boolean): string {
 		const str = super.toString(skip, this.#delimiter);
-		return this.#bracket ? `[[${str}]]` : str;
+		if (this.#bracket) {
+			return `[[${str}]]`;
+		}
+		return str;
 	}
 
 	/** @private */
 	override text(): string {
 		const str = super.text('|');
-		return this.#bracket ? `[[${str}]]` : str;
+		if (this.#bracket) {
+			return `[[${str}]]`;
+		}
+		return str;
 	}
 
 	/** @private */
