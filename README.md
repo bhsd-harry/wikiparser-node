@@ -6,7 +6,7 @@
 [![CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml)
 [![CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a2fbe7641031451baca2947ae6d7891f)](https://app.codacy.com/gh/bhsd-harry/wikiparser-node/dashboard)
-![Istanbul coverage](./coverage/badge.svg)
+![Coverage](./coverage/badge.svg)
 
 This is a minimal version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node). The [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) and the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension is written based on this package.
 
