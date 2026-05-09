@@ -86,7 +86,7 @@ const repaint = (container, container1, container2, html, render) => {
                 else if (url.origin === location.origin
                     && url.pathname === '/index.php'
                     && url.searchParams.has('title')) {
-                    url.pathname = `/wiki/${url.searchParams.get('title').replace(/:/gu, '%3A')}`;
+                    url.pathname = `/wiki/${url.searchParams.get('title').replaceAll(':', '%3A')}`;
                     url.searchParams.delete('title');
                     ele.setAttribute('href', url.pathname + url.search);
                 }

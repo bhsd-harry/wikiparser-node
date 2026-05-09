@@ -57,7 +57,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
         const entries = Object.entries(ast).filter(([key]) => !keys.has(key)), dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd'), dds = entries.map(([key, value]) => {
             const dd = document.createElement('dd'), code = document.createElement('code');
             code.textContent = typeof value === 'string'
-                ? `"${value.replace(/[\\"]/gu, String.raw `\$&`)}"`
+                ? `"${value.replaceAll(/[\\"]/gu, String.raw `\$&`)}"`
                 : String(value);
             code.className = typeof value;
             dd.textContent = `${key}: `;

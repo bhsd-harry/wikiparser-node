@@ -1,6 +1,6 @@
 (() => {
 var _a;
-const version = '1.39.1', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+const version = '1.40.0', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
     : `https://fastly.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
@@ -82,7 +82,8 @@ const workerJS = () => {
                         stage !== null && stage !== void 0 ? stage : Infinity,
                         String(child),
                         child.type === 'text'
-                            ? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+                            ? String(child)
+                                .replaceAll(/[&<>]/gu, p => `&${entities[p]};`)
                             : child.print(),
                     ]),
                 ]);
