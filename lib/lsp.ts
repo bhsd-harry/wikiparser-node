@@ -396,7 +396,7 @@ const partialParse = async (
 	include: boolean,
 	config = Parser.getConfig(),
 ): Promise<Token> => {
-	const set = typeof setImmediate === 'function' ? setImmediate : /* c8 ignore next */ setTimeout,
+	const set = typeof setImmediate === 'function' ? setImmediate<[number]> : /* c8 ignore next */ setTimeout,
 		{running} = Shadow;
 	Shadow.running = true;
 
