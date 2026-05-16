@@ -317,7 +317,7 @@ export abstract class AttributesToken extends Token {
 				attrs = new Map<string, AttributeToken[]>(),
 				duplicated = new Set<string>(),
 				rect = new BoundingRect(this, start),
-				rules = ['no-ignored', 'no-duplicate', 'required-attr'] as const,
+				rules = ['no-ignored', 'required-attr', 'no-duplicate'] as const,
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
 				s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
@@ -355,7 +355,7 @@ export abstract class AttributesToken extends Token {
 				}
 			}
 			if (type === 'ext-attrs' && required.has(tag)) {
-				const severity = lintConfig.getSeverity(rules[2], tag);
+				const severity = lintConfig.getSeverity(rules[1], tag);
 				if (severity) {
 					for (const key of required.get(tag)!) {
 						const keys = typeof key === 'string' ? [key] : key,
@@ -367,7 +367,7 @@ export abstract class AttributesToken extends Token {
 							errors.push(generateForSelf(
 								this,
 								rect,
-								rules[2],
+								rules[1],
 								Parser.msg('required-attribute', keys.join('/')),
 								severity,
 							));
@@ -375,7 +375,7 @@ export abstract class AttributesToken extends Token {
 					}
 				}
 			}
-			const severity = lintConfig.getSeverity(rules[1], 'attribute');
+			const severity = lintConfig.getSeverity(rules[2], 'attribute');
 			if (severity && duplicated.size > 0) {
 				for (const key of duplicated) {
 					const pairs = attrs.get(key)!.map(attr => {
@@ -388,7 +388,7 @@ export abstract class AttributesToken extends Token {
 							const e = generateForChild(
 								attr,
 								rect,
-								rules[1],
+								rules[2],
 								Parser.msg('duplicate-attribute', key),
 								severity,
 							);
