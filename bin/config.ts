@@ -19,7 +19,7 @@ declare interface Response {
 		magicwords: MagicWord[];
 		namespaces: Record<number, {name: string, canonical?: string}>;
 		namespacealiases: {id: number, alias: string}[];
-		functionhooks: string[];
+		functionhooks?: string[];
 		variables: string[];
 	};
 }
@@ -112,22 +112,6 @@ export default async (
 			}
 			: undefined,
 		m = await (await fetch(`${url}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`, headers)).text(),
-		params = {
-			action: 'query',
-			meta: 'siteinfo',
-			siprop: 'general|magicwords|functionhooks|namespaces|namespacealiases',
-			format: 'json',
-			formatversion: '2',
-		},
-		{
-			general: {articlepath, variants, langconversion},
-			magicwords,
-			namespaces,
-			namespacealiases,
-			functionhooks,
-		} = (await (
-			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
-		).json() as Response).query,
 		tempFile = path.join(__dirname, 'mw.js');
 	fs.writeFileSync(tempFile, m);
 	const {stdout, stderr} = spawnSync(
@@ -155,7 +139,23 @@ export default async (
 	} catch {
 		throw new RangeError('Extension:CodeMirror is not installed!');
 	}
-	const ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
+	const params = {
+			action: 'query',
+			meta: 'siteinfo',
+			siprop: `general|magicwords|namespaces|namespacealiases${mwConfig.functionHooks ? '' : '|functionhooks'}`,
+			format: 'json',
+			formatversion: '2',
+		},
+		{
+			general: {articlepath, variants, langconversion},
+			magicwords,
+			namespaces,
+			namespacealiases,
+			functionhooks,
+		} = (await (
+			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
+		).json() as Response).query,
+		ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
 			.flatMap(([id, {name, canonical = ''}]): (readonly [string, string])[] => [
 				[id, name],
 				...name === canonical ? [] : [[id, canonical] as const],
@@ -178,7 +178,7 @@ export default async (
 	parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
 	parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
 	if (!mwConfig.functionHooks) {
-		Object.assign(config, {functionHook: [...functionhooks.map(s => s.toLowerCase()), 'msgnw']});
+		Object.assign(config, {functionHook: [...functionhooks!.map(s => s.toLowerCase()), 'msgnw']});
 	}
 	if (!mwConfig.variableIDs) {
 		const {variables} = (await (
