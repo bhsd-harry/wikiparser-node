@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.40.1
+
+*2026-05-19*
+
+**Changed**
+
+- Updated executable [`getParserConfig`](./README#cli-usage) to match MediaWiki's [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror)
+
 ## v1.40.0
 
 *2026-05-09*
