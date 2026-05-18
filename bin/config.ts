@@ -162,7 +162,7 @@ export default async (
 			]),
 		config: ConfigData = {
 			...getParserConfig(require(path.join(dir, 'minimum.json')) as ConfigData, mwConfig),
-			...getKeywords(magicwords),
+			...!(mwConfig.imageKeywords && mwConfig.redirection) && getKeywords(magicwords),
 			variants: langconversion ? getVariants(variants) : [],
 			namespaces: Object.fromEntries(ns),
 			nsid: Object.fromEntries([
