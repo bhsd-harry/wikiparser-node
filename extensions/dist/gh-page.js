@@ -1,11 +1,42 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/demo.min.js';
 import { CodeJar } from '/codejar-async/dist/codejar.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
+const execute = (obj) => {
+    Object.entries(obj.files).find(([k]) => k.endsWith('.data.js'))[1]();
+};
+const mw = {
+    loader: {
+        done: false,
+        impl(callback) {
+            execute(callback()[1]);
+        },
+        implement(name, callback) {
+            if (typeof callback === 'object') {
+                execute(callback);
+            }
+            else if (!this.done) {
+                callback();
+            }
+            if (name.startsWith('ext.CodeMirror.data')) {
+                this.done = true;
+            }
+        },
+        state() {
+        },
+    },
+    config: {
+        values: {},
+        set({ extCodeMirrorConfig }) {
+            this.values.extCodeMirrorConfig = extCodeMirrorConfig;
+        },
+    },
+};
+Object.assign(globalThis, { mw });
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
     Object.assign(globalThis, { CodeJar });
     await import('/wikiparser-node/extensions/dist/codejar.js');
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [
         ...document
             .getElementsByClassName('highlight'),
     ];
@@ -45,6 +76,52 @@ const keys = new Set(['type', 'childNodes', 'range']);
         const i = Number(checked);
         highlighters[i].style.display = '';
         highlighters[1 - i].style.display = 'none';
+    });
+    const toggleApi = (disable, invalid = disable) => {
+        fetchBtn.disabled = disable;
+        api.classList.toggle('invalid', invalid);
+    }, validateApi = () => {
+        const value = api.value.trim();
+        if (!value) {
+            toggleApi(true, false);
+            return false;
+        }
+        try {
+            const url = new URL(value).href;
+            if (url.endsWith('/api.php')) {
+                toggleApi(false);
+                return url;
+            }
+        }
+        catch { }
+        toggleApi(true);
+        return false;
+    };
+    fetchBtn.addEventListener('click', () => {
+        if (fetchBtn.disabled) {
+            return;
+        }
+        const url = validateApi();
+        if (!url) {
+            api.focus();
+            return;
+        }
+        fetchBtn.disabled = true;
+        const script = document.createElement('script');
+        script.src = `${url.slice(0, -8)}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`;
+        script.addEventListener('error', e => {
+            console.error(e);
+            toggleApi(true);
+            api.focus();
+        });
+        script.addEventListener('load', () => {
+            wikiparse.setConfig(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig));
+            fetchBtn.disabled = false;
+        });
+        document.head.append(script);
+    });
+    api.addEventListener('input', () => {
+        validateApi();
     });
     const setLang = () => {
         cm.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);

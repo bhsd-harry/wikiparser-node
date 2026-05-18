@@ -1,9 +1,14 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/demo.min.js';
 import {CodeJar} from '/codejar-async/dist/codejar.js';
+import type {MwConfig} from '@bhsd/cm-util';
 import type {ConfigData, AST} from './typings';
 
 declare global {
 	const monaco: PromiseLike<{editor: MonacoEditor}>;
+}
+
+declare interface Implementation {
+	files: Record<string, Function>;
 }
 
 /**
@@ -12,6 +17,47 @@ declare global {
  */
 const transform = (type?: string): string | undefined =>
 	type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
+
+/**
+ * Execute the data script.
+ * @param obj MediaWiki module implementation
+ */
+const execute = (obj: Implementation): void => {
+	Object.entries(obj.files).find(([k]) => k.endsWith('.data.js'))![1]();
+};
+
+const mw = {
+	loader: {
+		done: false,
+		/** @ignore */
+		impl(callback: () => [string, Implementation]): void {
+			execute(callback()[1]);
+		},
+		/** @ignore */
+		implement(name: string, callback: (() => void) | Implementation): void {
+			if (typeof callback === 'object') {
+				execute(callback);
+			} else if (!this.done) {
+				callback();
+			}
+			if (name.startsWith('ext.CodeMirror.data')) {
+				this.done = true;
+			}
+		},
+		/** @ignore */
+		state(): void {
+			//
+		},
+	},
+	config: {
+		values: {} as {extCodeMirrorConfig?: MwConfig},
+		/** @ignore */
+		set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
+			this.values.extCodeMirrorConfig = extCodeMirrorConfig;
+		},
+	},
+};
+Object.assign(globalThis, {mw});
 
 const keys = new Set(['type', 'childNodes', 'range']);
 
@@ -25,6 +71,8 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		monacoContainer = document.getElementById('monaco-container')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
+		api = document.querySelector<HTMLInputElement>('#wpAPI')!,
+		fetchBtn = document.querySelector<HTMLButtonElement>('#wpFetch')!,
 		h2 = document.querySelector('h2')!,
 		buttons = [...document.querySelectorAll('.tab > button') as unknown as Iterable<HTMLButtonElement>],
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
@@ -92,6 +140,61 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		const i = Number(checked);
 		highlighters[i]!.style.display = '';
 		highlighters[1 - i]!.style.display = 'none';
+	});
+
+	// 获取MediaWiki配置
+	/**
+	 * 禁用/启用API按钮
+	 * @param disable 是否禁用
+	 * @param invalid 是否将输入框标记为无效
+	 */
+	const toggleApi = (disable: boolean, invalid = disable): void => {
+			fetchBtn.disabled = disable;
+			api.classList.toggle('invalid', invalid);
+		},
+
+		/** 根据输入的URL禁用/启用API按钮 */
+		validateApi = (): string | false => {
+			const value = api.value.trim();
+			if (!value) {
+				toggleApi(true, false);
+				return false;
+			}
+			try {
+				const url = new URL(value).href;
+				if (url.endsWith('/api.php')) {
+					toggleApi(false);
+					return url;
+				}
+			} catch {}
+			toggleApi(true);
+			return false;
+		};
+	fetchBtn.addEventListener('click', () => {
+		if (fetchBtn.disabled) {
+			return;
+		}
+		const url = validateApi();
+		if (!url) {
+			api.focus();
+			return;
+		}
+		fetchBtn.disabled = true;
+		const script = document.createElement('script');
+		script.src = `${url.slice(0, -8)}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`;
+		script.addEventListener('error', e => {
+			console.error(e);
+			toggleApi(true);
+			api.focus();
+		});
+		script.addEventListener('load', () => {
+			wikiparse.setConfig(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig!));
+			fetchBtn.disabled = false;
+		});
+		document.head.append(script);
+	});
+	api.addEventListener('input', () => {
+		validateApi();
 	});
 
 	/** 切换CodeMirror语言 */
