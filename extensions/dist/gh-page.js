@@ -1,37 +1,6 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/demo.min.js';
 import { CodeJar } from '/codejar-async/dist/codejar.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
-const execute = (obj) => {
-    Object.entries(obj.files).find(([k]) => k.endsWith('.data.js'))[1]();
-};
-const mw = {
-    loader: {
-        done: false,
-        impl(callback) {
-            execute(callback()[1]);
-        },
-        implement(name, callback) {
-            if (typeof callback === 'object') {
-                execute(callback);
-            }
-            else if (!this.done) {
-                callback();
-            }
-            if (name.startsWith('ext.CodeMirror.data')) {
-                this.done = true;
-            }
-        },
-        state() {
-        },
-    },
-    config: {
-        values: {},
-        set({ extCodeMirrorConfig }) {
-            this.values.extCodeMirrorConfig = extCodeMirrorConfig;
-        },
-    },
-};
-Object.assign(globalThis, { mw });
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
     Object.assign(globalThis, { CodeJar });
@@ -77,6 +46,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
         highlighters[i].style.display = '';
         highlighters[1 - i].style.display = 'none';
     });
+    const configMap = new Map();
     const toggleApi = (disable, invalid = disable) => {
         fetchBtn.disabled = disable;
         api.classList.toggle('invalid', invalid);
@@ -106,6 +76,10 @@ const keys = new Set(['type', 'childNodes', 'range']);
             api.focus();
             return;
         }
+        else if (configMap.has(url)) {
+            wikiparse.setConfig(configMap.get(url));
+            return;
+        }
         fetchBtn.disabled = true;
         const script = document.createElement('script');
         script.src = `${url.slice(0, -8)}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`;
@@ -115,7 +89,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
             api.focus();
         });
         script.addEventListener('load', () => {
-            wikiparse.setConfig(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig));
+            const configData = JSON.parse(JSON.stringify(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig)));
+            configMap.set(url, configData);
+            wikiparse.setConfig(configData);
             fetchBtn.disabled = false;
         });
         document.head.append(script);

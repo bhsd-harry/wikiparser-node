@@ -5,10 +5,11 @@ import type {ConfigData, AST} from './typings';
 
 declare global {
 	const monaco: PromiseLike<{editor: MonacoEditor}>;
-}
-
-declare interface Implementation {
-	files: Record<string, Function>;
+	const mw: {
+		config: {
+			values: {extCodeMirrorConfig?: MwConfig};
+		};
+	};
 }
 
 /**
@@ -17,47 +18,6 @@ declare interface Implementation {
  */
 const transform = (type?: string): string | undefined =>
 	type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
-
-/**
- * Execute the data script.
- * @param obj MediaWiki module implementation
- */
-const execute = (obj: Implementation): void => {
-	Object.entries(obj.files).find(([k]) => k.endsWith('.data.js'))![1]();
-};
-
-const mw = {
-	loader: {
-		done: false,
-		/** @ignore */
-		impl(callback: () => [string, Implementation]): void {
-			execute(callback()[1]);
-		},
-		/** @ignore */
-		implement(name: string, callback: (() => void) | Implementation): void {
-			if (typeof callback === 'object') {
-				execute(callback);
-			} else if (!this.done) {
-				callback();
-			}
-			if (name.startsWith('ext.CodeMirror.data')) {
-				this.done = true;
-			}
-		},
-		/** @ignore */
-		state(): void {
-			//
-		},
-	},
-	config: {
-		values: {} as {extCodeMirrorConfig?: MwConfig},
-		/** @ignore */
-		set({extCodeMirrorConfig}: {extCodeMirrorConfig: MwConfig}): void {
-			this.values.extCodeMirrorConfig = extCodeMirrorConfig;
-		},
-	},
-};
-Object.assign(globalThis, {mw});
 
 const keys = new Set(['type', 'childNodes', 'range']);
 
@@ -143,6 +103,8 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	});
 
 	// 获取MediaWiki配置
+	const configMap = new Map<string, ConfigData>();
+
 	/**
 	 * 禁用/启用API按钮
 	 * @param disable 是否禁用
@@ -178,6 +140,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		if (!url) {
 			api.focus();
 			return;
+		} else if (configMap.has(url)) {
+			wikiparse.setConfig(configMap.get(url)!);
+			return;
 		}
 		fetchBtn.disabled = true;
 		const script = document.createElement('script');
@@ -188,7 +153,11 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			api.focus();
 		});
 		script.addEventListener('load', () => {
-			wikiparse.setConfig(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig!));
+			const configData: ConfigData = JSON.parse(JSON.stringify(
+				CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig!),
+			));
+			configMap.set(url, configData);
+			wikiparse.setConfig(configData);
 			fetchBtn.disabled = false;
 		});
 		document.head.append(script);
