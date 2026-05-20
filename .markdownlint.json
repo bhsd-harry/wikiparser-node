@@ -2,6 +2,7 @@
 	"extends": "@bhsd/code-standard/markdownlint",
 	"no-inline-html": {
 		"allowed_elements": [
+			"a",
 			"br",
 			"details",
 			"div",

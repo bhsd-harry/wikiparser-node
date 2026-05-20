@@ -20,6 +20,15 @@ WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext
 
 Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages from [MediaWiki.org](https://www.mediawiki.org/) rendered using this package.
 
+## Used by
+
+<div align="center">
+<a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
+<a href="https://helix-editor.com/"><img src="https://helix-editor.com/logo.svg" width="50" height="50" alt="Helix"></a>
+<a href="https://lsp.sublimetext.io/"><img src="https://avatars.githubusercontent.com/u/48095564?s=100" width="50" height="50" alt="LSP for Sublime Text"></a>
+<a href="http://www.qbittorrent.org/"><img src="https://avatars.githubusercontent.com/u/2131270?s=100" width="50" height="50" alt="qBittorrent"></a>
+</div>
+
 ## Other Versions
 
 ### Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
