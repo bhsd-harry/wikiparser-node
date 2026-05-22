@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.40.0",
+	"version": "1.41.0",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -42,7 +42,7 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.5.0",
+		"@bhsd/code-standard": "^2.5.1",
 		"@bhsd/common": "^2.2.1",
 		"@bhsd/nodejs": "^1.0.1",
 		"@bhsd/test-util": "^1.3.1",
