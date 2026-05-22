@@ -11,7 +11,7 @@ import {getEndPos, fixByUpper, fixBySpace, fixByEscape, fixByInsert} from '../ut
 import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
-import type {LintError, TokenTypes} from '../base';
+import type {LintError, TokenTypes, FullLintConfigValue} from '../base';
 import type {
 	AttributeToken,
 	ExtToken,
@@ -209,8 +209,8 @@ export class AstText extends AstNode {
 				{ext, html, variants} = root.getAttribute('config'),
 				{top, left} = root.posFromIndex(start)!,
 				{lintConfig} = Parser,
-				tagLike = lintConfig.rules['tag-like']!,
-				specified = typeof tagLike === 'object' && tagLike[1]
+				tagLike = lintConfig.rules['tag-like'] as FullLintConfigValue,
+				specified = tagLike[1]
 					? new Set(Object.keys(tagLike[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed'))
 					: new Set(),
 				tags = new Set([

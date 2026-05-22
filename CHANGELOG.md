@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.40.1
+## v1.41.0
 
-*2026-05-19*
+*2026-05-22*
+
+**Added**
+
+- The individual linting rules can now be configured with a plain object as the second element of the [rule configuration array](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#rule-configuration), which will be merged with the default options of the rule instead of replacing them
 
 **Changed**
 

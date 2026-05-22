@@ -3,6 +3,7 @@ import type {
 	LintError,
 	SeverityLevel,
 	LintConfigValue,
+	FullLintConfigValue,
 	LintRuleConfig,
 	LintRuleConfiguration as LintRuleConfigurationBase,
 	LintConfig,
@@ -26,9 +27,9 @@ const dict = new Map<SeverityLevel | undefined, LintError.Severity | false>([
 	['error', 'error'],
 ]);
 
-const defaultLintRuleConfig: LintRuleConfig = {
-	'arg-in-ext': 1,
-	'blank-alt': 1,
+const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
+	'arg-in-ext': [1],
+	'blank-alt': [1],
 	'bold-header': [
 		1,
 		{
@@ -62,7 +63,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// value: 2,
 		},
 	],
-	'insecure-style': 2,
+	'insecure-style': [2],
 	'invalid-gallery': [
 		2,
 		{
@@ -87,14 +88,14 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// name: 2,
 		},
 	],
-	'invalid-isbn': 2,
+	'invalid-isbn': [2],
 	'invalid-json': [
 		2,
 		{
 			duplicate: 1,
 		},
 	],
-	'invalid-url': 1,
+	'invalid-url': [1],
 	'lonely-apos': [
 		1,
 		{
@@ -125,7 +126,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// ref: 2,
 		},
 	],
-	'no-arg': 1,
+	'no-arg': [1],
 	'no-duplicate': [
 		2,
 		{
@@ -160,8 +161,8 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// references: 2,
 		},
 	],
-	'obsolete-attr': 1,
-	'obsolete-tag': 1,
+	'obsolete-attr': [1],
+	'obsolete-tag': [1],
 	'parsing-order': [
 		2,
 		{
@@ -198,7 +199,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			// redirect: 2,
 		},
 	],
-	'table-layout': 1,
+	'table-layout': [1],
 	'tag-like': [
 		2,
 		{
@@ -206,17 +207,17 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			invalid: 1,
 		},
 	],
-	'unbalanced-header': 2,
+	'unbalanced-header': [2],
 	'unclosed-comment': [
 		1,
 		{
 			// include: 1,
 		},
 	],
-	'unclosed-quote': 1,
-	'unclosed-table': 2,
-	unescaped: 2,
-	'unknown-page': 1,
+	'unclosed-quote': [1],
+	'unclosed-table': [2],
+	unescaped: [2],
+	'unknown-page': [1],
 	'unmatched-tag': [
 		1,
 		{
@@ -265,7 +266,7 @@ const defaultLintRuleConfig: LintRuleConfig = {
 			warn: 1,
 		},
 	],
-	'invalid-math': 2,
+	'invalid-math': [2],
 };
 
 const defaultLintConfig: Omit<FullLintConfig, 'rules'> = {
@@ -285,8 +286,11 @@ const validateSeverity = (severity: unknown): boolean => dict.has(severity as Se
  * 验证设置值是否符合规范
  * @param value 设置值
  */
-const validateConfigValue = (value: unknown): boolean => validateSeverity(value)
-	|| Array.isArray(value) && validateSeverity(value[0]) && (value.length === 1 || typeof value[1] === 'object');
+const validateConfigValue = (value: unknown): boolean => validateSeverity(value) || (
+	Array.isArray(value)
+		? validateSeverity(value[0]) && (value.length === 1 || typeof value[1] === 'object')
+		: typeof value === 'object'
+);
 
 /**
  * 设置语法检查规则
@@ -304,7 +308,14 @@ const set = (obj: LintRuleConfig, key: LintError.Rule, value?: LintConfigValue):
 		return false;
 	}
 	if (validateConfigValue(value)) {
-		obj[key] = value;
+		if (Array.isArray(value)) {
+			obj[key] = value;
+		} else if (typeof value === 'object') {
+			const [base, options = {}] = defaultLintRuleConfig[key];
+			obj[key] = [base, {...clone(options), ...value}];
+		} else {
+			obj[key] = [value];
+		}
 		return true;
 	}
 	/* c8 ignore next */
@@ -332,11 +343,9 @@ class LintRuleConfiguration implements LintRuleConfigurationBase {
 
 	/** @implements */
 	getSeverity(rule: LintError.Rule, key?: string): LintError.Severity | false {
-		const value = this[rule]!;
-		if (typeof value !== 'object') {
-			return dict.get(value)!;
-		}
-		return key ? dict.get(value[1]?.[key]) ?? dict.get(value[0])! : dict.get(value[0])!;
+		const [base, options] = this[rule] as FullLintConfigValue,
+			severity = dict.get(base)!;
+		return key ? dict.get(options?.[key]) ?? severity : severity;
 	}
 }
 
