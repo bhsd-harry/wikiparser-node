@@ -234,6 +234,10 @@ pre {
 }
 .frame pre {
 	line-height: 1.3;
+	/* stylelint-disable declaration-block-no-redundant-longhand-properties */
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	/* stylelint-enable declaration-block-no-redundant-longhand-properties */
 	padding: 1em;
 	white-space: pre-wrap;
 	overflow: hidden;

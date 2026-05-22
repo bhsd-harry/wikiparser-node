@@ -52,7 +52,7 @@ for (const fullPath of fs.globSync('config/*.json')) {
 			assert.strictEqual(keys.length, new Set(keys).size, 'doubleUnderscore not unique');
 		});
 
-		if (file !== 'minimum') {
+		if (file !== 'minimum' && file !== 'github') {
 			it('parserFunction', () => {
 				assert.strictEqual(
 					magicWordKeys.length,
@@ -91,7 +91,7 @@ for (const fullPath of fs.globSync('config/*.json')) {
 
 const defaultConfig = configs['default']!;
 for (const file in configs) {
-	if (file !== 'default' && file !== 'testwiki') {
+	if (file !== 'default' && file !== 'github') {
 		const config = configs[file]!;
 		describe(`${file} vs. default`, () => {
 			// ext/variable/functionHook/redirection/variants

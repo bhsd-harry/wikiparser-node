@@ -13,5 +13,5 @@
 /test/prof*.json
 /build
 !README
-/config/testwiki.json
+/config/github.json
 /diff.html
