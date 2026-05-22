@@ -51,6 +51,10 @@ A list of available linting rules can be found [here](https://github.com/bhsd-ha
 
 A browser-compatible version, which can be used for code highlighting or as a [LSP](https://microsoft.github.io/language-server-protocol/) plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)). It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror) since Release 1.45.
 
+### [WikiParser-Template](https://www.npmjs.com/package/wikiparser-template)
+
+A lightweight version that only supports parsing and manipulation of templates. This version is designed for use cases where only template processing is needed, such as certain types of bots or web tools (e.g., [GANReviewTool](https://en.wikipedia.org/wiki/User:Novem_Linguae/Scripts/GANReviewTool)) that focus on template manipulation.
+
 ## Installation
 
 ### Node.js
@@ -106,7 +110,7 @@ Parser.config = "frwiki";
 
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29). In particular, there are some [usage examples](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29#examples) that demonstrate how to use this package to complete various tasks.
 
-### Round-trip editing quickstart (TypeScript)
+#### Round-trip editing quickstart (TypeScript)
 
 ```ts
 import Parser from "wikiparser-node";

@@ -51,6 +51,10 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为[语言服务器协议（LSP）](https://microsoft.github.io/language-server-protocol/)插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
 
+### [WikiParser-Template](https://www.npmjs.com/package/wikiparser-template)
+
+一个轻量级版本，仅支持模板的解析和操作。这个版本适用于仅需要处理模板的使用场景，例如某些专注于模板操作的的机器人或网络工具（例如 [GANReviewTool](https://en.wikipedia.org/wiki/User:Novem_Linguae/Scripts/GANReviewTool)）。
+
 ## 安装方法
 
 ### Node.js
@@ -106,7 +110,7 @@ Parser.config = "frwiki";
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。其中包含一些[应用实例](https://github.com/bhsd-harry/wikiparser-node/wiki/Home#示例)展示了如何使用这个库完成各种任务。
 
-### 快速入门示例（TypeScript）
+#### 快速入门示例（TypeScript）
 
 ```ts
 import Parser from "wikiparser-node";
