@@ -8,7 +8,7 @@
 		"parser",
 		"browser"
 	],
-	"homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
+	"homepage": "https://github.com/bhsd-harry/wikiparser-node#readme",
 	"bugs": {
 		"url": "https://github.com/bhsd-harry/wikiparser-node/issues"
 	},
