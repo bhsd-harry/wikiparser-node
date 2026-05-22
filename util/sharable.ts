@@ -103,6 +103,10 @@ export const htmlAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 	categorytree: blockAttrs,
 	combooption: blockAttrs,
 	img: new Set(['alt', 'src', 'width', 'height', 'loading', 'srcset']),
+
+	/* NOT FOR BROWSER ONLY */
+
+	a: new Set(['href', 'rel', 'rev']),
 }))();
 
 export const extAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
