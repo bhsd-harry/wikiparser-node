@@ -34,6 +34,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      - run: npm ci --legacy-peer-deps
+      - run: npm ci --legacy-peer-deps --ignore-scripts
       - run: npm run build:core
       - run: npm run test:ci
