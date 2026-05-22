@@ -86,8 +86,6 @@ describe('API tests', () => {
 							const {stderr} = spawnSync(
 								'tsx',
 								[
-									/** @todo 等tsx弃用module.register()后移除 */
-									'--disable-warning=DEP0205',
 									'--tsconfig',
 									'./tsconfig.json',
 									'-e',

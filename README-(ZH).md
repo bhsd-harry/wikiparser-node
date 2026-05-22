@@ -18,7 +18,17 @@
 
 WikiParser-Node 是一款由 [Bhsd](https://github.com/bhsd-harry) 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的[维基语法](https://www.mediawiki.org/wiki/Help:Advanced_editing)并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
 
-尽管 WikiParser-Node 并非专门用于将维基文本转换为 HTML，但它提供了有限的转换能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表，来源于 [MediaWiki.org](https://www.mediawiki.org/)。
+尽管 WikiParser-Node 并非以将维基文本完整转换为 HTML 为主要目标，但它在很多场合中能提供实用的 HTML 渲染能力。[这里](https://bhsd-harry.github.io/wikiparser-website/)是一个使用这个库渲染的 HTML 示例页面列表，来源于 [MediaWiki.org](https://www.mediawiki.org/)。
+
+WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP 解析器测试集](https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/refs/heads/master/tests/parser/)进行了广泛的测试，这些测试用例涵盖了维基文本的各种边缘情况和特殊情况。测试结果可在[这里](https://bhsd-harry.github.io/wikiparser-node/tests.html)查看。
+
+## 为什么选择 WikiParser-Node
+
+- **维基文本与语法树的双向转换**：将维基文本解析为语法树，查询并修改节点后可以安全地写回有效的维基文本，适用于需要程序化编辑的机器人和自动化脚本。
+- **面向 Node.js 的语言服务器协议（LSP）与校验能力**：为 [WikiLint](https://www.npmjs.com/package/wikilint) 和 [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) 等工具提供解析与诊断能力，便于集成到编辑器和 CI 流程中。
+- **浏览器与编辑器集成**：可与 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki)、[Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器配合使用，并已集成到 MediaWiki 官方的 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
+- **大规模适用性**：在消费级硬件上对英文维基百科数据库转储文件进行解析与校验的[实际案例](https://lint-wiki-dumps.toolforge.org/)表明，处理百万级规模工作负载是可行的。
+- **透明的质量信号**：本仓库包含[持续集成](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml)与 [CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml) 检查、公开的[解析器测试报告](https://bhsd-harry.github.io/wikiparser-node/tests.html)以及覆盖率报告。
 
 ## 使用者
 
@@ -89,16 +99,36 @@ npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 
 ```javascript
 // 例如：
-Parser.config = 'frwiki';
+Parser.config = "frwiki";
 ```
 
 ### API 使用方法
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。其中包含一些[应用实例](https://github.com/bhsd-harry/wikiparser-node/wiki/Home#示例)展示了如何使用这个库完成各种任务。
 
+### 快速入门示例（TypeScript）
+
+```ts
+import Parser from "wikiparser-node";
+import type {TranscludeToken} from "wikiparser-node";
+Parser.config = "enwiki";
+const root = Parser.parse("{{Infobox|name=Old}}\nText"),
+	template = root.querySelector<TranscludeToken>("template#Template:Infobox");
+template?.setValue("name", "New");
+const wikitext = String(root);
+assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
+```
+
 ## 性能
 
 在一台个人的 MacBook Air 上对英文维基百科约 1900 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 5 小时。
+
+## 最佳适用场景
+
+- MediaWiki 机器人工作流，尤其是需要可靠的语法树操作和编辑操作时。
+- Node.js 大规模维基文本校验和格式化工作流。
+- 基于语言服务器协议（LSP）的语言工具。
+- 浏览器端用于全站小工具、用户脚本和编辑器插件中的维基文本解析与编辑辅助功能。
 
 ## 已知问题
 

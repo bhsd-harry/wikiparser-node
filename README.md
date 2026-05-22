@@ -18,7 +18,17 @@
 
 WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext) parser developed by [Bhsd](https://github.com/bhsd-harry) for the [Node.js](https://nodejs.org/) environment. It can parse almost all [wiki syntax](https://www.mediawiki.org/wiki/Help:Advanced_editing) and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) ([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also allows for easy querying and modification of the AST, and returns the modified Wikitext.
 
-Although WikiParser-Node is not originally designed to convert Wikitext to HTML, it provides a limited capability to do so. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages from [MediaWiki.org](https://www.mediawiki.org/) rendered using this package.
+Although WikiParser-Node is not primarily designed to convert Wikitext to HTML, it provides pragmatic HTML rendering for many situations. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages from [MediaWiki.org](https://www.mediawiki.org/) rendered using this package.
+
+WikiParser-Node has been extensively tested against the official [MediaWiki PHP parser tests](https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/refs/heads/master/tests/parser/) with ~3,000 test cases, covering various edge cases and peculiarities of Wikitext. These tests are available [here](https://bhsd-harry.github.io/wikiparser-node/tests.html).
+
+## Why WikiParser-Node
+
+- **Round-trip editing for bots and automation**: parse Wikitext into an AST, query and modify nodes, then write back valid Wikitext.
+- **LSP and linting ready for Node.js tooling**: powers [WikiLint](https://www.npmjs.com/package/wikilint) and [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp).
+- **Browser/editor integration**: works with [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki), [Monaco](https://www.npmjs.com/package/monaco-wiki), and MediaWiki's official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror).
+- **Large-scale usage evidence**: [full-dump parsing and linting on English Wikipedia scale](https://lint-wiki-dumps.toolforge.org/) is practical on consumer hardware.
+- **Transparent quality signals**: [CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml), [CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml), public [parser-test results](https://bhsd-harry.github.io/wikiparser-node/tests.html), and coverage are all visible in this repository.
 
 ## Used by
 
@@ -89,18 +99,40 @@ The generated configuration file will be saved in the [`config` directory](https
 
 ```javascript
 // For example:
-Parser.config = 'frwiki';
+Parser.config = "frwiki";
 ```
 
 ### API usage
 
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29). In particular, there are some [usage examples](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29#examples) that demonstrate how to use this package to complete various tasks.
 
+### Round-trip editing quickstart (TypeScript)
+
+```ts
+import Parser from "wikiparser-node";
+import type {TranscludeToken} from "wikiparser-node";
+Parser.config = "enwiki";
+const root = Parser.parse("{{Infobox|name=Old}}\nText"),
+	template = root.querySelector<TranscludeToken>("template#Template:Infobox");
+template?.setValue("name", "New");
+const wikitext = String(root);
+assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
+```
+
 ## Performance
 
 A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps) of English Wikipedia's ~19 million articles (parsing and linting) on a personal MacBook Air takes about 5 hours.
 
+## Best fit
+
+- MediaWiki bot workflows that require robust AST manipulation and round-trip-safe edits.
+- Node.js pipelines for linting and refactoring Wikitext.
+- LSP-based language tooling.
+- Browser-side editing helpers, and gadgets/user scripts that require Wikitext parsing.
+
 ## Known issues
+
+The following limitations are documented for transparency.
 
 ### Parser
 
