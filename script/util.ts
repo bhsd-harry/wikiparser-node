@@ -19,7 +19,7 @@ export const prepare = (Parser: ParserBase): void => {
 	Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 	Parser.getConfig();
 	Object.assign(Parser.config, {
-		testArticlePath: '//example.org/wiki/$1',
-		testServer: 'http://example.org/wiki/$1',
+		articlePath: '/wiki/$1',
+		server: '//example.org',
 	});
 };

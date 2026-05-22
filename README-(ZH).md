@@ -41,7 +41,7 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 ## 其他版本
 
-### Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
+### [WikiLint](https://www.npmjs.com/package/wikilint)
 
 提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能，解析生成的语法树不能修改。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 

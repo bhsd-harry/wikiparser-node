@@ -12,10 +12,6 @@ declare interface Locale extends Intl.Locale {
 	getTextInfo?: () => {direction: 'ltr' | 'rtl'}; // eslint-disable-line @typescript-eslint/method-signature-style
 	textInfo: {direction: 'ltr' | 'rtl'};
 }
-declare interface TestConfig extends Config {
-	testArticlePath?: string;
-	testServer?: string;
-}
 
 const magicWords = [
 	'currentmonth',
@@ -145,9 +141,9 @@ const magicWords = [
 export type MagicWord = typeof magicWords[number];
 export const expandedMagicWords = new Set<string>(magicWords);
 
-function urlFunction(config: TestConfig, args: string[], local: true): URL | string;
-function urlFunction(config: TestConfig, args: string[]): [URL?, string?];
-function urlFunction(config: TestConfig, args: string[], local?: true): URL | string | [URL?, string?] {
+function urlFunction(config: Config, args: string[], local: true): URL | string;
+function urlFunction(config: Config, args: string[]): [URL?, string?];
+function urlFunction(config: Config, args: string[], local?: true): URL | string | [URL?, string?] {
 	const [value, query] = args as [string, string?],
 		fallback = (local ? '' : []) as [];
 	if (value.includes('\0')) {
@@ -166,7 +162,9 @@ function urlFunction(config: TestConfig, args: string[], local?: true): URL | st
 		title.ns = 6;
 		title.fragment = undefined;
 	}
-	const link = title.getUrl(config.testArticlePath),
+	const {articlePath, server = ''} = config,
+		path = articlePath && (/^\/(?!\/)/u.test(articlePath) ? server : '') + articlePath,
+		link = title.getUrl(path),
 		protocol = link.startsWith('//') ? 'https:' : '';
 	try {
 		const url = new URL(protocol + link);
@@ -175,13 +173,16 @@ function urlFunction(config: TestConfig, args: string[], local?: true): URL | st
 	} catch (e) {
 		if (local) {
 			title.fragment = undefined;
-			return title.getUrl(config.testArticlePath) + (query ? `?${query}` : '');
+			return title.getUrl(path) + (query ? `?${query}` : '');
 		}
 		throw e;
 	}
 }
 
-const parseUrl = ({testServer = '', articlePath = testServer}: TestConfig): [URL, number] => {
+const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
+		if (/^\/(?!\/)/u.test(articlePath)) {
+			articlePath = server + articlePath;
+		}
 		let offset = 0;
 		if (articlePath.startsWith('//')) {
 			offset = 6;

@@ -41,7 +41,7 @@ WikiParser-Node has been extensively tested against the official [MediaWiki PHP 
 
 ## Other Versions
 
-### Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
+### [WikiLint](https://www.npmjs.com/package/wikilint)
 
 This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing and linting functionality. The parsed AST cannot be modified. It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 
