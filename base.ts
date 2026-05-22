@@ -528,8 +528,9 @@ export interface LanguageService {
 }
 
 export type SeverityLevel = 0 | 1 | 2 | false | 'off' | 'warning' | 'error';
-export type LintConfigValue = SeverityLevel | [SeverityLevel, Record<string, SeverityLevel>?];
-export type LintRuleConfig = Partial<Record<LintError.Rule, LintConfigValue>>;
+export type FullLintConfigValue = [SeverityLevel, Record<string, SeverityLevel>?];
+export type LintConfigValue = SeverityLevel | FullLintConfigValue | Record<string, SeverityLevel>;
+export type LintRuleConfig<T = LintConfigValue> = Partial<Record<LintError.Rule, T>>;
 export interface FullLintConfig {
 	rules: LintRuleConfig;
 	configurationComment?: string;

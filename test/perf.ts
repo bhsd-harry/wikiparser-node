@@ -1,18 +1,16 @@
 import * as assert from 'assert';
 import Parser from '../index';
-import type {SeverityLevel} from '../base';
+import type {FullLintConfigValue} from '../base';
 import type {Token, TableToken} from '../internal';
-
-declare type FullLintConfigValue = [SeverityLevel, Record<string, SeverityLevel>];
 
 const N = 1e4,
 	{rules} = Parser.lintConfig,
 	[, noDuplicate] = rules['no-duplicate'] as FullLintConfigValue,
 	[, noIgnored] = rules['no-ignored'] as FullLintConfigValue;
-noDuplicate['attribute'] = 0;
-noDuplicate['parameter'] = 0;
-noDuplicate['imageParameter'] = 0;
-noIgnored['arg'] = 0;
+noDuplicate!['attribute'] = 0;
+noDuplicate!['parameter'] = 0;
+noDuplicate!['imageParameter'] = 0;
+noIgnored!['arg'] = 0;
 
 /** @ignore */
 const methods = (root: Token): void => {
