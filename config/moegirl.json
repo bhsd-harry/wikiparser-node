@@ -997,5 +997,6 @@
 		"zh-hk",
 		"zh-tw"
 	],
-	"articlePath": "/$1"
+	"articlePath": "/$1",
+	"server": "https://zh.moegirl.org.cn"
 }

@@ -1011,5 +1011,6 @@
 		"zh-sg",
 		"zh-tw"
 	],
-	"articlePath": "/zh/$1"
+	"articlePath": "/zh/$1",
+	"server": "//llwiki.org"
 }
