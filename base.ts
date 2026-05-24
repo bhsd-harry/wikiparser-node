@@ -35,13 +35,6 @@ export interface Config {
 	readonly variants: string[];
 	articlePath?: string;
 
-	/* NOT FOR BROWSER */
-
-	readonly interwiki: string[];
-	server?: string;
-
-	/* NOT FOR BROWSER END */
-
 	/** @private */
 	readonly excludes: string[];
 	/** @private */
@@ -69,6 +62,8 @@ export interface Config {
 
 	readonly conversionTable?: [string, string][];
 	readonly redirects?: [string, string][];
+	readonly interwiki: string[];
+	server?: string;
 }
 export type ConfigData = Omit<Config, 'excludes'>;
 
