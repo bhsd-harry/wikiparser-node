@@ -13,6 +13,7 @@ declare interface Response {
 	query: {
 		general: {
 			articlepath: string;
+			server: string;
 			langconversion: boolean;
 			variants?: {code: string}[];
 		};
@@ -147,7 +148,7 @@ export default async (
 			formatversion: '2',
 		},
 		{
-			general: {articlepath, variants, langconversion},
+			general: {articlepath, server, variants, langconversion},
 			magicwords,
 			namespaces,
 			namespacealiases,
@@ -170,6 +171,7 @@ export default async (
 				...namespacealiases.filter(({id}) => filterGadget(id)).map(({id, alias}) => [alias.toLowerCase(), id]),
 			]),
 			articlePath: articlepath,
+			server,
 		},
 		{doubleUnderscore, parserFunction, variable} = config;
 	doubleUnderscore[0] = [];

@@ -196,7 +196,7 @@ const plural = (n: number, word: string): string => `${n} ${word}${n === 1 ? '' 
  */
 const styleText = (format: Parameters<typeof util.styleText>[0], text: string): string => {
 	if (!colors) {
-		format = (Array.isArray(format) ? format : [format]).filter(f => !colorSet.has(f));
+		format = (Array.isArray(format) ? format : [format]).filter((f: util.InspectColor) => !colorSet.has(f));
 	}
 	return util.styleText(format, text);
 };
