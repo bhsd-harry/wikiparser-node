@@ -36,7 +36,7 @@ const dblClickHandler = (container, container1, container2, e) => {
         Prism.highlightAllUnder(container);
     }
 };
-const repaint = (container, container1, container2, html, render) => {
+const repaint = (container, container1, container2, html, render, isGH) => {
     var _a;
     container.removeAttribute('data-source');
     if (html === undefined) {
@@ -51,29 +51,31 @@ const repaint = (container, container1, container2, html, render) => {
             .querySelectorAll('[style="/* insecure input */"]'), typeofs = container1.querySelectorAll('span[typeof]'), edits = container1
             .querySelectorAll('.mw-editsection'), tocs = container1.querySelectorAll('#toc'), anchors = container1.querySelectorAll('a[href]');
         (_a = container2.querySelector('#catlinks')) === null || _a === void 0 ? void 0 : _a.remove();
-        for (const ele of withClasses) {
-            removeClass(ele, ...classes);
-        }
-        for (const ele of empty) {
-            if (ele.childElementCount === 0 && !ele.textContent.trim()) {
-                removeClass(ele, 'mw-empty-elt');
+        if (!isGH) {
+            for (const ele of withClasses) {
+                removeClass(ele, ...classes);
             }
-        }
-        for (const ele of styles) {
-            ele.removeAttribute('style');
-        }
-        for (const ele of typeofs) {
-            ele.removeAttribute('typeof');
+            for (const ele of empty) {
+                if (ele.childElementCount === 0 && !ele.textContent.trim()) {
+                    removeClass(ele, 'mw-empty-elt');
+                }
+            }
+            for (const ele of styles) {
+                ele.removeAttribute('style');
+            }
+            for (const ele of typeofs) {
+                ele.removeAttribute('typeof');
+            }
+            for (const ele of tocs) {
+                const { nextSibling } = ele;
+                if ((nextSibling === null || nextSibling === void 0 ? void 0 : nextSibling.nodeType) === Node.TEXT_NODE
+                    && nextSibling.textContent.startsWith('\n\n')) {
+                    nextSibling.deleteData(0, 2);
+                }
+                ele.remove();
+            }
         }
         for (const ele of edits) {
-            ele.remove();
-        }
-        for (const ele of tocs) {
-            const { nextSibling } = ele;
-            if ((nextSibling === null || nextSibling === void 0 ? void 0 : nextSibling.nodeType) === Node.TEXT_NODE
-                && nextSibling.textContent.startsWith('\n\n')) {
-                nextSibling.deleteData(0, 2);
-            }
             ele.remove();
         }
         for (const ele of anchors) {
@@ -101,9 +103,9 @@ const repaint = (container, container1, container2, html, render) => {
     }
 };
 (async () => {
-    const key = 'wikiparser-node-done';
+    const key = 'wikiparser-node-done', isGH = location.hostname.endsWith('.github.io');
     let reviewed = null;
-    if (!location.hostname.endsWith('.github.io')) {
+    if (!isGH) {
         reviewed = JSON.parse(localStorage.getItem(key));
         if (!reviewed) {
             reviewed = await (await fetch('./test/reviewed.json')).json();
@@ -120,7 +122,7 @@ const repaint = (container, container1, container2, html, render) => {
     }
     select.addEventListener('change', () => {
         const { html, render } = tests[Number(select.value)];
-        repaint(container, container1, container2, html, render);
+        repaint(container, container1, container2, html, render, isGH);
         changeHandler(pre, btn, select, tests);
         dispatchEvent(new CustomEvent('casechange'));
     });

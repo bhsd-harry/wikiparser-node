@@ -242,6 +242,11 @@
 			"description": "base URL of internal links",
 			"type": "string",
 			"pattern": "\\$1"
+		},
+		"server": {
+			"description": "base URL of the server",
+			"type": "string",
+			"pattern": "^(?:https?:)?//"
 		}
 	},
 	"required": [

@@ -78,6 +78,7 @@ const dblClickHandler = (
  * @param container2 容器2
  * @param html 容器1内容
  * @param render 容器2内容
+ * @param isGH 是否为 GitHub Page
  */
 const repaint = (
 	container: HTMLElement,
@@ -85,6 +86,7 @@ const repaint = (
 	container2: HTMLElement,
 	html?: string,
 	render?: string,
+	isGH?: boolean,
 ): void => {
 	container.removeAttribute('data-source');
 	if (html === undefined) {
@@ -105,31 +107,33 @@ const repaint = (
 			tocs = container1.querySelectorAll('#toc') as unknown as Iterable<Element>,
 			anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
 		container2.querySelector('#catlinks')?.remove();
-		for (const ele of withClasses) {
-			removeClass(ele, ...classes);
-		}
-		for (const ele of empty) {
-			if (ele.childElementCount === 0 && !ele.textContent.trim()) {
-				removeClass(ele, 'mw-empty-elt');
+		if (!isGH) {
+			for (const ele of withClasses) {
+				removeClass(ele, ...classes);
 			}
-		}
-		for (const ele of styles) {
-			ele.removeAttribute('style');
-		}
-		for (const ele of typeofs) {
-			ele.removeAttribute('typeof');
+			for (const ele of empty) {
+				if (ele.childElementCount === 0 && !ele.textContent.trim()) {
+					removeClass(ele, 'mw-empty-elt');
+				}
+			}
+			for (const ele of styles) {
+				ele.removeAttribute('style');
+			}
+			for (const ele of typeofs) {
+				ele.removeAttribute('typeof');
+			}
+			for (const ele of tocs) {
+				const {nextSibling} = ele;
+				if (
+					nextSibling?.nodeType === Node.TEXT_NODE
+					&& nextSibling.textContent!.startsWith('\n\n')
+				) {
+					(nextSibling as Text).deleteData(0, 2);
+				}
+				ele.remove();
+			}
 		}
 		for (const ele of edits) {
-			ele.remove();
-		}
-		for (const ele of tocs) {
-			const {nextSibling} = ele;
-			if (
-				nextSibling?.nodeType === Node.TEXT_NODE
-				&& nextSibling.textContent!.startsWith('\n\n')
-			) {
-				(nextSibling as Text).deleteData(0, 2);
-			}
 			ele.remove();
 		}
 		for (const ele of anchors) {
@@ -160,9 +164,10 @@ const repaint = (
 };
 
 (async () => {
-	const key = 'wikiparser-node-done';
+	const key = 'wikiparser-node-done',
+		isGH = location.hostname.endsWith('.github.io');
 	let reviewed: string[] | null = null;
-	if (!location.hostname.endsWith('.github.io')) {
+	if (!isGH) {
 		reviewed = JSON.parse(localStorage.getItem(key)!);
 		if (!reviewed) {
 			reviewed = await (await fetch('./test/reviewed.json')).json();
@@ -195,7 +200,7 @@ const repaint = (
 	}
 	select.addEventListener('change', () => {
 		const {html, render} = tests[Number(select.value)]!;
-		repaint(container, container1, container2, html, render);
+		repaint(container, container1, container2, html, render, isGH);
 		changeHandler(pre, btn, select, tests);
 		dispatchEvent(new CustomEvent('casechange'));
 	});
