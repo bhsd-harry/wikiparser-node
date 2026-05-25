@@ -5,7 +5,7 @@
 
 **Added**
 
-- The individual linting rules can now be configured with a plain object as the second element of the [rule configuration array](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#rule-configuration), which will be merged with the default options of the rule instead of replacing them
+- The individual linting rules can now be configured with a single plain object (similar to the second element of the full [rule configuration array](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules#rule-configuration)), which will be merged with the default options of the rule instead of replacing them
 - [`Config.server`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) property which is useful when `Config.articlePath` is a relative path
 
 **Changed**
