@@ -432,7 +432,7 @@ pre {
 	content: "]";
 }
 .frame .toctogglelabel::after {
-	content: "隐藏";
+	content: "hide";
 }
 .frame .toc ul {
 	list-style: none;
