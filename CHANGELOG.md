@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.41.1
+
+*2026-05-26*
+
+**Fixed**
+
+- Lowered severity of a lonely `]` following a free external link and some plain text
+
 ## v1.41.0
 
 *2026-05-25*
