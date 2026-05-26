@@ -195,8 +195,7 @@ export class AstText extends AstNode {
 					lConverter = error === '{' && previousChar === '-' && variants.length > 0,
 					rConverter = error === '}' && nextChar === '-' && variants.length > 0,
 					brokenExtLink = lbrack && nextType === 'free-ext-link' && !data.slice(index + 1).trim()
-						|| rbrack && previousType === 'free-ext-link'
-						&& !data.slice(0, index).includes(']');
+						|| rbrack && previousType === 'free-ext-link' && index === 0;
 				if (magicLink) {
 					rule = 'lonely-http';
 					error = error.toUpperCase();
