@@ -1,5 +1,4 @@
 import {states, parsers} from '../util/constants';
-import {sanitizeId} from '../util/string';
 import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken} from '../internal';
 
 const blockElems = 'table|h[1-6]|pre|p|[uod]l',
@@ -37,7 +36,7 @@ export const toHtml = (token: Token): string => {
 		let firstHeading: HeadingToken | HtmlToken | undefined;
 		for (const heading of headings) {
 			if (heading.type === 'heading') {
-				tocData.push([heading.level, sanitizeId(heading.id), heading.firstChild.toHtmlInternal().trim()]);
+				tocData.push([heading.level, heading.getRenderedId(), heading.firstChild.toHtmlInternal().trim()]);
 				firstHeading ??= heading;
 			} else {
 				const tocLine = heading.getTocLine();

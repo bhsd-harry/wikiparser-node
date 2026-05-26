@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.41.1
+## v1.42.0
 
-*2026-05-26*
+*2026-05-27*
+
+**Added**
+
+- HTML conversion with a table of contents (TOC)
 
 **Fixed**
 

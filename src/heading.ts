@@ -332,10 +332,9 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal(): string {
+	getRenderedId(): string {
 		let id = this.#getId();
-		const {level, firstChild} = this,
-			lcId = id.toLowerCase(),
+		const lcId = id.toLowerCase(),
 			headings = states.get(this.getRootNode())?.headings;
 		if (headings?.has(lcId)) {
 			let i = 2;
@@ -347,9 +346,16 @@ export abstract class HeadingToken extends Token {
 		} else {
 			headings?.add(lcId);
 		}
-		return `${this.tocData ?? ''}<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${
-			firstChild.toHtmlInternal().trim()
-		}</h${level}></div>`;
+		return sanitizeId(id);
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(): string {
+		const {level, firstChild} = this;
+		return `${this.tocData ?? ''}<div class="mw-heading mw-heading${level}"><h${level} id="${
+			this.getRenderedId()
+		}">${firstChild.toHtmlInternal().trim()}</h${level}></div>`;
 	}
 
 	/**

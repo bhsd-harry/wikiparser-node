@@ -163,7 +163,7 @@ The following limitations are documented for transparency.
 
 #### Heading
 
-1. The table of contents (TOC) is not supported.
+1. The table of contents (TOC) is not fully sanitized (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#T35845%3A%20Headings%20become%20cursive%20in%20TOC%20when%20they%20contain%20an%20image), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#T35845%20(2)%3A%20Headings%20become%20bold%20in%20TOC%20when%20they%20contain%20a%20blockquote), [3](http://bhsd-harry.github.io/wikiparser-node/tests.html#Tags%20with%20parameters%20in%20TOC)).
 
 #### HTML tag
 
