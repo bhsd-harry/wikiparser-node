@@ -104,7 +104,9 @@ const repaint = (
 			typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
 			edits = container1
 				.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
-			tocs = container1.querySelectorAll('#toc') as unknown as Iterable<Element>,
+			tocToggles = container1
+				.querySelectorAll('#toctogglecheckbox, .toctogglespan') as unknown as Iterable<Element>,
+			tocTitles = container1.querySelectorAll('.toctitle') as unknown as Iterable<Element>,
 			anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
 		container2.querySelector('#catlinks')?.remove();
 		if (!isGH) {
@@ -122,7 +124,11 @@ const repaint = (
 			for (const ele of typeofs) {
 				ele.removeAttribute('typeof');
 			}
-			for (const ele of tocs) {
+			for (const ele of tocTitles) {
+				ele.removeAttribute('lang');
+				ele.removeAttribute('dir');
+			}
+			for (const ele of tocToggles) {
 				const {nextSibling} = ele;
 				if (
 					nextSibling?.nodeType === Node.TEXT_NODE

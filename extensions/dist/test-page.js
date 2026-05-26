@@ -49,7 +49,8 @@ const repaint = (container, container1, container2, html, render, isGH) => {
         const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading'], withClasses = container1
             .querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), styles = container1
             .querySelectorAll('[style="/* insecure input */"]'), typeofs = container1.querySelectorAll('span[typeof]'), edits = container1
-            .querySelectorAll('.mw-editsection'), tocs = container1.querySelectorAll('#toc'), anchors = container1.querySelectorAll('a[href]');
+            .querySelectorAll('.mw-editsection'), tocToggles = container1
+            .querySelectorAll('#toctogglecheckbox, .toctogglespan'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
         (_a = container2.querySelector('#catlinks')) === null || _a === void 0 ? void 0 : _a.remove();
         if (!isGH) {
             for (const ele of withClasses) {
@@ -66,7 +67,11 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             for (const ele of typeofs) {
                 ele.removeAttribute('typeof');
             }
-            for (const ele of tocs) {
+            for (const ele of tocTitles) {
+                ele.removeAttribute('lang');
+                ele.removeAttribute('dir');
+            }
+            for (const ele of tocToggles) {
                 const { nextSibling } = ele;
                 if ((nextSibling === null || nextSibling === void 0 ? void 0 : nextSibling.nodeType) === Node.TEXT_NODE
                     && nextSibling.textContent.startsWith('\n\n')) {
@@ -112,7 +117,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             localStorage.setItem(key, JSON.stringify(reviewed));
         }
     }
-    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(reviewed), input = document.getElementById('search'), select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(), input = document.getElementById('search'), select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     wikiparse.setConfig(await (await fetch('./config/default.json')).json());
     await wikiparse.highlight(pre, false, true);
     let optgroup;
