@@ -115,6 +115,7 @@ Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Ho
 ```ts
 import Parser from "wikiparser-node";
 import type {TranscludeToken} from "wikiparser-node";
+
 Parser.config = "enwiki";
 const root = Parser.parse("{{Infobox|name=Old}}\nText"),
 	template = root.querySelector<TranscludeToken>("template#Template:Infobox");

@@ -8,6 +8,7 @@ dist/
 /printed/*
 /.vscode/
 /.eslintcache*
+/.stylelintcache*
 /.wikilintcache
 /wiki/
 /test/*.wiki

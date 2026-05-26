@@ -115,6 +115,7 @@ Parser.config = "frwiki";
 ```ts
 import Parser from "wikiparser-node";
 import type {TranscludeToken} from "wikiparser-node";
+
 Parser.config = "enwiki";
 const root = Parser.parse("{{Infobox|name=Old}}\nText"),
 	template = root.querySelector<TranscludeToken>("template#Template:Infobox");
