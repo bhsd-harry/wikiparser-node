@@ -9,7 +9,7 @@ import type {Token} from '../../internal';
  *
  * 状态开关
  */
-@hiddenToken() @padded('__')
+@hiddenToken(true, false) @padded('__')
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
 	readonly #fullWidth;
