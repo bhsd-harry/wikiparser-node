@@ -70,6 +70,8 @@ export abstract class HtmlToken extends TagToken {
 
 	/* NOT FOR BROWSER */
 
+	/** @private */
+	declare tocData?: string;
 	abstract override get children(): [AttributesToken];
 	abstract override get firstElementChild(): AttributesToken;
 	abstract override get lastElementChild(): AttributesToken;
@@ -384,7 +386,7 @@ export abstract class HtmlToken extends TagToken {
 				}
 			}
 		}
-		return result;
+		return (this.tocData ?? '') + result;
 	}
 
 	/** @private */

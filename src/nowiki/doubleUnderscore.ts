@@ -21,7 +21,7 @@ export interface DoubleUnderscoreToken extends SyntaxBase {}
  * 状态开关
  */
 @syntax()
-@hiddenToken() @padded('__')
+@hiddenToken(true, false) @padded('__')
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
 	readonly #fullWidth;
@@ -29,6 +29,8 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
 
 	readonly #sensitive;
+	/** @private */
+	declare tocData?: string;
 
 	/* NOT FOR BROWSER END */
 
@@ -78,6 +80,10 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 			this.#fullWidth,
 			this.getAttribute('config'),
 		));
+	}
+
+	override toHtmlInternal(): string {
+		return this.tocData ?? '';
 	}
 }
 

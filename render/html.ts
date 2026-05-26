@@ -1,8 +1,11 @@
 import {states, parsers} from '../util/constants';
-import type {Token} from '../internal';
+import {sanitizeId} from '../util/string';
+import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken} from '../internal';
 
 const blockElems = 'table|h[1-6]|pre|p|[uod]l',
-	antiBlockElems = 't[dh]';
+	antiBlockElems = 't[dh]',
+	tocContainer = '<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">'
+		+ '<div class="toctitle"><h2 id="mw-toc-heading">Contents</h2></div>';
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:table|\/t[dh]|\/?(?:tr|caption|d[td]|li))\b/iu;
 const openRegex = new RegExp(
@@ -22,6 +25,65 @@ const closeRegex = new RegExp(
  */
 export const toHtml = (token: Token): string => {
 	states.set(token, {headings: new Set(), categories: new Set()});
+
+	// 处理目录
+	const tocSwitch = token.querySelector<DoubleUnderscoreToken>('double-underscore#toc'),
+		forcetoc = tocSwitch || token.querySelector<DoubleUnderscoreToken>('double-underscore#forcetoc'),
+		tocData: [number, string, string][] = [];
+	if (forcetoc || !token.querySelector<DoubleUnderscoreToken>('double-underscore#notoc')) {
+		const headings = token.querySelectorAll<HeadingToken | HtmlToken>(
+			'heading,html#h1,html#h2,html#h3,html#h4,html#h5,html#h6',
+		);
+		let firstHeading: HeadingToken | HtmlToken | undefined;
+		for (const heading of headings) {
+			if (heading.type === 'heading') {
+				tocData.push([heading.level, sanitizeId(heading.id), heading.firstChild.toHtmlInternal().trim()]);
+				firstHeading ??= heading;
+			} else {
+				const tocLine = heading.getTocLine();
+				if (tocLine) {
+					tocData.push([Number(heading.name.slice(1)), ...tocLine]);
+					firstHeading ??= heading;
+				}
+			}
+		}
+		const {length} = tocData;
+		if (forcetoc && length || length > 3) {
+			const levels: number[] = [],
+				tocNumbers: number[] = [];
+			let toc = tocContainer,
+				i = 0;
+			for (const [level, id, text] of tocData) {
+				const n = levels.length;
+				let j = levels.findIndex(l => l >= level),
+					prefix: string;
+				if (j === -1) {
+					j = n;
+					prefix = '\n<ul>';
+					levels.push(level);
+					tocNumbers.push(1);
+				} else {
+					prefix = `${'</li>\n</ul>\n'.repeat(n - j - 1)}</li>`;
+					levels.splice(j, Infinity, level);
+					tocNumbers.length = j + 1;
+					tocNumbers[j]!++;
+				}
+				toc += `${prefix}\n<li class="toclevel-${j + 1} tocsection-${++i}"><a href="#${
+					id
+				}"><span class="tocnumber">${tocNumbers.join('.')}</span> <span class="toctext">${
+					text
+				}</span></a>`;
+			}
+			toc = i === 0 ? '' : `${toc}${'</li>\n</ul>'.repeat(levels.length)}\n</div>\n`;
+			if (tocSwitch) {
+				tocSwitch.tocData = toc;
+			} else {
+				firstHeading!.tocData = toc;
+			}
+		}
+	}
+
+	// 处理正文
 	const lines = token.toHtmlInternal().split('\n');
 	let output = '',
 		inBlockElem = false,
@@ -83,9 +145,11 @@ export const toHtml = (token: Token): string => {
 		}
 	}
 	output += closeParagraph();
+	let html = output.trimEnd();
+
+	// 处理分类
 	const {categories} = states.get(token)!;
 	states.delete(token);
-	let html = output.trimEnd();
 	if (categories.size > 0) {
 		html += `
 <div id="catlinks" class="catlinks"><div><a href="${

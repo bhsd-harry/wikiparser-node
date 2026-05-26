@@ -52,6 +52,8 @@ export abstract class HeadingToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	/** @private */
+	declare tocData?: string;
 	abstract override get children(): [Token, SyntaxToken];
 	abstract override get firstElementChild(): Token;
 	abstract override get lastElementChild(): SyntaxToken;
@@ -345,7 +347,7 @@ export abstract class HeadingToken extends Token {
 		} else {
 			headings?.add(lcId);
 		}
-		return `<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${
+		return `${this.tocData ?? ''}<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${
 			firstChild.toHtmlInternal().trim()
 		}</h${level}></div>`;
 	}
