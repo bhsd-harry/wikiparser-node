@@ -15,7 +15,7 @@ import type {Token, AttributesToken, TranscludeToken} from '../../internal';
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
-import {getId} from '../../util/html';
+import {getId, html} from '../../util/html';
 import {cached} from '../../mixin/cached';
 import type {AstRange} from '../../lib/range';
 
@@ -345,28 +345,43 @@ export abstract class HtmlToken extends TagToken {
 
 	/** @private */
 	@cached()
+	getTocLine(): [string, string] | undefined {
+		if (this.closing || !/^h\d$/u.test(this.name)) {
+			return undefined;
+		}
+		const matched = this.findMatchingTag();
+		if (!matched) {
+			return undefined;
+		}
+		const range = this.createRange();
+		range.setStartAfter(this);
+		range.setEndBefore(matched);
+		const content = html(range.cloneContents(), '', {nocc: true});
+		return [getId(content), content];
+	}
+
+	/** @private */
+	@cached()
 	override toHtmlInternal(): string {
-		const {closing, name} = this,
+		const {closing, name, selfClosing} = this,
 			[, selfClosingTags, voidTags] = this.getAttribute('config').html,
 			tag = name + (closing ? '' : super.toHtmlInternal());
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : `<${tag}>`;
 		}
 		const result = `<${closing ? '/' : ''}${tag}>${
-			this.#selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
+			selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
 		}`;
-		if (/^h\d$/u.test(name) && (this.closing || !this.id)) {
-			const matched = this.findMatchingTag();
-			if (matched) {
-				if (closing) {
-					return result + (matched.id ? '' : '</div>');
+		if (/^h\d$/u.test(name)) {
+			if (closing) {
+				return result + (this.findMatchingTag()?.id === '' ? '</div>' : '');
+			} else if (!this.id) {
+				const id = this.getTocLine()?.[0];
+				if (id !== undefined) {
+					return `<div class="mw-heading mw-heading${name.slice(-1)}">${
+						result.slice(0, -1)
+					} id="${id}">`;
 				}
-				const range = this.createRange();
-				range.setStartAfter(this);
-				range.setEndBefore(matched);
-				return `<div class="mw-heading mw-heading${name.slice(-1)}">${
-					result.slice(0, -1)
-				} id="${getId(range.cloneContents())}">`;
 			}
 		}
 		return result;
