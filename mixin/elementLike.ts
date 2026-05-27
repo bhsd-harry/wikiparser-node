@@ -20,6 +20,7 @@ export interface ElementLike {
 	 * 符合选择器的第一个后代节点
 	 * @param selector selector / 选择器
 	 */
+	querySelector<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K] | undefined;
 	querySelector<T = Token>(selector: string): T | undefined;
 
 	/**
