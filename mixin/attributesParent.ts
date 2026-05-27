@@ -12,7 +12,8 @@ export interface AttributesParentBase {
 	/* NOT FOR BROWSER */
 
 	/** all attributes / 全部属性 */
-	attributes: Record<string, string | true>;
+	get attributes(): Record<string, string>;
+	set attributes(attrs: Record<string, string | true>);
 
 	/** class attribute in string / 以字符串表示的class属性 */
 	className: string;
@@ -39,7 +40,7 @@ export interface AttributesParentBase {
 	 * 获取指定属性
 	 * @param key attribute name / 属性键
 	 */
-	getAttr(key: string): string | true | undefined;
+	getAttr(key: string): string | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -55,7 +56,7 @@ export interface AttributesParentBase {
 	 *
 	 * 获取全部属性
 	 */
-	getAttrs(): Record<string, string | true>;
+	getAttrs(): Record<string, string>;
 
 	/**
 	 * Set the attribute
@@ -103,11 +104,11 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 		abstract class AttributesParent extends constructor implements AttributesParentBase {
 			/* NOT FOR BROWSER */
 
-			get attributes(): Record<string, string | true> {
+			get attributes(): Record<string, string> {
 				return this.#getAttributesChild().attributes;
 			}
 
-			set attributes(attributes) {
+			set attributes(attributes: Record<string, string | true>) {
 				this.#getAttributesChild().attributes = attributes;
 			}
 
@@ -142,7 +143,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 				LSP: return this.#getAttributesChild().hasAttr(key);
 			}
 
-			getAttr(key: string): string | true | undefined {
+			getAttr(key: string): string | undefined {
 				return this.#getAttributesChild().getAttr(key);
 			}
 
@@ -152,7 +153,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 				return this.#getAttributesChild().getAttrNames();
 			}
 
-			getAttrs(): Record<string, string | true> {
+			getAttrs(): Record<string, string> {
 				return this.#getAttributesChild().getAttrs();
 			}
 

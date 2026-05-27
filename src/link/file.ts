@@ -667,8 +667,7 @@ export abstract class FileToken extends LinkBaseToken {
 				: `<span${classAttr}>${a}</span>`;
 		}
 		const parent = this.parentNode as GalleryToken | undefined,
-			mode = parent?.parentNode?.getAttr('mode'),
-			nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
+			nolines = parent?.parentNode?.getAttr('mode')?.toLowerCase() === 'nolines',
 			padding = nolines ? 0 : 30;
 		return `\t<li class="gallerybox" style="width: ${
 			Number(width) + padding + 5

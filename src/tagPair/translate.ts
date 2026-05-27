@@ -129,8 +129,8 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	}
 
 	/** @implements */
-	getAttr(key: string): true | undefined {
-		return trimLc(key) === 'nowrap' && this.#isNowrap() || undefined;
+	getAttr(key: string): '' | undefined {
+		return trimLc(key) === 'nowrap' && this.#isNowrap() ? '' : undefined;
 	}
 
 	/** @implements */

@@ -37,22 +37,20 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		}
 		case 'gallery': {
 			const caption = firstChild.getAttrToken('caption'),
-				perrow = parseInt(String(firstChild.getAttr('perrow'))),
-				mode = firstChild.getAttr('mode'),
+				perrow = parseInt(firstChild.getAttr('perrow') || ''),
 				{classList} = firstChild,
-				nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
+				nolines = firstChild.getAttr('mode')?.toLowerCase() === 'nolines',
 				padding = nolines ? 9 : 43;
 			classList.add('gallery');
 			if (nolines) {
 				classList.add('mw-gallery-nolines');
 			}
 			if (perrow > 0) {
-				const style = firstChild.getAttr('style');
 				firstChild.setAttr(
 					'style',
 					`max-width: ${
 						((lastChild as GalleryToken).widths + padding) * perrow
-					}px;${typeof style === 'string' ? style : ''}`,
+					}px;${firstChild.getAttr('style') || ''}`,
 				);
 			}
 			return `<ul${firstChild.toHtmlInternal()}>\n${
@@ -70,7 +68,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				showLines = firstChild.hasAttr('line'),
 				{classList} = firstChild;
 			classList.add('mw-highlight');
-			if (lexer && lexer !== true) {
+			if (lexer) {
 				const {Prism, loadLanguage}: typeof import('./syntaxhighlight') = require('./syntaxhighlight');
 				lexer = lexer.toLowerCase();
 				if (Prism) {
@@ -89,7 +87,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					} catch {}
 				}
 				const highlight = firstChild.getAttr('highlight'),
-					lines = typeof highlight === 'string' && new Set(
+					lines = highlight && new Set(
 						highlight.split(',').flatMap((str): number | number[] => {
 							const num = Number(str);
 							if (Number.isInteger(num) && num > 0) {
@@ -114,13 +112,13 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 						const linelinks = firstChild.getAttr('linelinks'),
 							startAttr = firstChild.getAttr('start');
 						lineReplace = '<span class="linenos" data-line="$1"></span>';
-						if (startAttr && startAttr !== true) {
+						if (startAttr) {
 							start = Number(startAttr);
 							if (!Number.isInteger(start) || start < 0) {
 								start = 1;
 							}
 						}
-						if (linelinks && linelinks !== true) {
+						if (linelinks) {
 							lineReplace = `<a href="#${linelinks}-$1">${lineReplace}</a>`;
 							begin = `${linelinks}-`;
 							end = '</span>';

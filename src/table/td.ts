@@ -45,12 +45,12 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
-declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
+declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | undefined;
 
 /* NOT FOR BROWSER */
 
 declare type TdAttrSetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | boolean;
-export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
+export type TdAttrs = Record<string, string> & TdSpanAttrs;
 
 /* NOT FOR BROWSER END */
 
@@ -318,7 +318,7 @@ export abstract class TdToken extends TableBaseToken {
 
 			const value = super.getAttr(key);
 			return (
-				key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value
+				key === 'rowspan' || key === 'colspan' ? parseInt(value || '') || 1 : value
 			) as TdAttrGetter<T>;
 		}
 	}

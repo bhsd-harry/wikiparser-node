@@ -195,7 +195,7 @@ AttributesToken.prototype.toggleAttr =
 		key = trimLc(key);
 		const attr = this.getAttrToken(key);
 		/* c8 ignore next 3 */
-		if (attr && attr.getValue() !== true) {
+		if (attr && attr.getValue() !== '') {
 			throw new RangeError(`${key} attribute is not Boolean!`);
 		}
 		if (attr) {

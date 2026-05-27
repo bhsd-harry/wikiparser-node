@@ -182,9 +182,8 @@ const matches = (
 					return basic(selector)(type, name);
 			}
 		} else if (selector.length === 4) { // 情形2：属性选择器
-			const [key, equal, val = '', i] = selector,
-				isAttr = typeof token.hasAttr === 'function' && typeof token.getAttr === 'function';
-			if (!(key in token || isAttr && token.hasAttr!(key))) {
+			const [key, equal, val = '', i] = selector;
+			if (!(key in token || typeof token.hasAttr === 'function' && token.hasAttr(key))) {
 				return equal === '!=';
 			}
 			const v = toCase(val, i),
@@ -258,7 +257,7 @@ const matches = (
 				for (; node; node = node.parentNode) {
 					const lang = node.attributes?.['lang'];
 					if (lang !== undefined) {
-						return typeof lang === 'string' && regex.test(lang);
+						return regex.test(lang);
 					}
 				}
 				return false;
