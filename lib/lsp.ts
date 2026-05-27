@@ -68,7 +68,6 @@ import type {
 	HeadingToken,
 	ExtToken,
 	AttributesToken,
-	ArgToken,
 	LinkToken,
 	FileToken,
 	CategoryToken,
@@ -76,6 +75,7 @@ import type {
 	ImageParameterToken,
 	TranscludeToken,
 } from '../internal';
+import type {TokenTypeMap} from '../map';
 
 /* NOT FOR BROWSER ONLY */
 
@@ -920,7 +920,7 @@ export class LanguageService implements LanguageServiceBase {
 			const match = mt[3] ?? '';
 			if (mt[2] === '{{{') { // argument
 				return getCompletion(
-					root.querySelectorAll<ArgToken>('arg').filter(token => token.name && token !== cur)
+					root.querySelectorAll('arg').filter(token => token.name && token !== cur)
 						.map(({name}) => name),
 					'Variable',
 					match,
@@ -969,18 +969,17 @@ export class LanguageService implements LanguageServiceBase {
 				...match.startsWith('#')
 					? []
 					: getCompletion(
-						root.querySelectorAll<TranscludeToken>('template').filter(token => token !== cur)
-							.map(token => {
-								const {name} = token;
-								if (colon) {
-									return name;
-								}
-								const {ns} = token.getAttribute('title');
-								if (ns === 0) {
-									return `:${name}`;
-								}
-								return ns === 10 ? name.slice(9) : name;
-							}),
+						root.querySelectorAll('template').filter(token => token !== cur).map(token => {
+							const {name} = token;
+							if (colon) {
+								return name;
+							}
+							const {ns} = token.getAttribute('title');
+							if (ns === 0) {
+								return `:${name}`;
+							}
+							return ns === 10 ? name.slice(9) : name;
+						}),
 						'Folder',
 						str,
 						position,
@@ -1047,7 +1046,7 @@ export class LanguageService implements LanguageServiceBase {
 				{module: mod, function: func} = transclusion;
 			return key
 				? getCompletion(
-					root.querySelectorAll<ParameterToken>('parameter').filter(token => {
+					root.querySelectorAll('parameter').filter(token => {
 						if (
 							token === parentNode
 							|| token.anon
@@ -1387,7 +1386,7 @@ export class LanguageService implements LanguageServiceBase {
 			{length} = root.getLines(),
 			ranges: FoldingRange[] = [],
 			levels = Array.from<number | undefined>({length: 6}),
-			tokens = root.querySelectorAll<Token>('heading-title,table,template,magic-word');
+			tokens = root.querySelectorAll('heading-title,table,template,magic-word');
 		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
 			token.getRelativeIndex();
 		}
@@ -1916,6 +1915,8 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @private */
+	querySelectorAll<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K][];
+	querySelectorAll<T = Token>(selector: string): T[];
 	querySelectorAll<T = Token>(selector: string): T[] {
 		return this.#done.querySelectorAll<T>(selector);
 	}
@@ -2035,7 +2036,7 @@ export class LanguageService implements LanguageServiceBase {
 			symbols: DocumentSymbol[] = [],
 			names = new Set<string>(),
 			sections = Array.from<DocumentSymbol | undefined>({length: 6}),
-			tokens = root.querySelectorAll<Token>('heading-title');
+			tokens = root.querySelectorAll('heading-title');
 		for (const token of tokens) {
 			const {top, height, left, width} = token.getBoundingClientRect(),
 				{level} = token.parentNode as HeadingToken;
