@@ -1,5 +1,6 @@
 import type {TokenTypes, Config, Parser as ParserBase} from '../base';
 import type {AstNodes, Token} from '../internal';
+import type {TokenTypeMap} from '../map';
 
 export const Shadow = {
 	running: false,
@@ -41,7 +42,11 @@ export const Shadow = {
  * 是否是某一特定类型的节点
  * @param type 节点类型
  */
-export const isToken = <T extends Token>(type: TokenTypes) => (node: AstNodes): node is T => node.type === type;
+export function isToken<K extends keyof TokenTypeMap>(type: K): (node: AstNodes) => node is TokenTypeMap[K];
+export function isToken<T extends Token>(type: TokenTypes): (node: AstNodes) => node is T;
+export function isToken<T extends Token>(type: TokenTypes) {
+	return (node: AstNodes): node is T => node.type === type;
+}
 
 /**
  * 是否是行尾
