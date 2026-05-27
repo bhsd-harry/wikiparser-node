@@ -19,9 +19,6 @@ import {numLeadingSpaces} from '@bhsd/common';
 import Parser from '../index';
 import type {
 	Token,
-	ImageParameterToken,
-	ExtToken,
-	HtmlToken,
 	AtomToken,
 } from '../internal';
 
@@ -103,10 +100,10 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
 	lsp.config = {...Parser.getConfig(), articlePath: 'https://mediawiki.org/wiki/$1'};
 	const root = Parser.parse(content, title, true),
-		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
+		imageParameter = root.querySelector('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
-		ext = root.querySelector<ExtToken>('ext'),
-		html = root.querySelector<HtmlToken>('html'),
+		ext = root.querySelector('ext'),
+		html = root.querySelector('html'),
 		headingTitle = root.querySelector('heading-title'),
 		argName = root.querySelector('arg-name'),
 		templateName = root.querySelector('template-name'),

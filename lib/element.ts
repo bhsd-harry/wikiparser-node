@@ -467,6 +467,8 @@ export abstract class AstElement extends AstNode {
 	 * 检查是否符合选择器
 	 * @param selector selector / 选择器
 	 */
+	matches<K extends keyof TokenTypeMap>(selector: K): this is TokenTypeMap[K];
+	matches<T>(selector: string): this is T;
 	matches<T>(selector: string): this is T {
 		return getCondition<T>(selector, this)(this);
 	}
