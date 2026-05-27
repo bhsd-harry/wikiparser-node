@@ -8,11 +8,7 @@ import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes, FullLintConfigValue} from '../base';
-import type {
-	AttributeToken,
-	ExtToken,
-	TranscludeToken,
-} from '../internal';
+import type {AttributeToken, TranscludeToken} from '../internal';
 
 const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
 	source = /* #__PURE__ */ (
@@ -162,7 +158,7 @@ export class AstText extends AstNode {
 					error.startsWith('<') && !tags.has(tag!.toLowerCase())
 					|| lbrackInExtLinkText && (
 						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-						|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
+						|| nextSibling?.is('ext') && nextName === 'nowiki'
 						&& nextSibling.innerText?.includes(']')
 					)
 				) {

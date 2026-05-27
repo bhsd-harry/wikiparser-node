@@ -75,7 +75,6 @@ import type {
 	AstNodes,
 	CategoryToken,
 	AttributeToken,
-	AttributesToken,
 } from '../internal';
 
 declare interface LintIgnore {
@@ -473,11 +472,8 @@ export class Token extends AstElement {
 
 	/** @private */
 	inTableAttrs(): 1 | 2 | false {
-		return this.isInside('table-attrs') && (
-			this.closest('table-attrs,arg,parameter')?.is<AttributesToken>('table-attrs')
-				? 2
-				: 1
-		);
+		return this.isInside('table-attrs')
+			&& (this.closest('table-attrs,arg,parameter')?.is('table-attrs') ? 2 : 1);
 	}
 
 	/** @private */
@@ -500,7 +496,7 @@ export class Token extends AstElement {
 				if (selector) {
 					for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 						let key;
-						if (cat.is<CategoryToken>('category')) {
+						if (cat.is('category')) {
 							key = cat.name;
 						} else {
 							const value = cat.getValue();

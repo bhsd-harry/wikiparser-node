@@ -33,7 +33,7 @@
 		"build:ext": "npm run clean && bash build-ext.sh",
 		"build:test": "npm run clean && tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es8 && npm run build:lsp && npm run build:test && npm run build:css",
-		"clean": "rm -f dist/extensions/typings.d.ts",
+		"clean": "rm -f dist/extensions/typings.d.ts dist/base.d.ts",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "npm run clean && tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
