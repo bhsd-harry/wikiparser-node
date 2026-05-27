@@ -86,12 +86,11 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             ele.remove();
         }
         for (const ele of anchors) {
-            ele.classList.remove('text', 'autonumber', 'internal', 'mw-magiclink-pmid', 'mw-magiclink-rfc', 'mw-magiclink-isbn');
-            if (ele.classList.length === 0) {
-                ele.removeAttribute('class');
-            }
             try {
                 const url = new URL(ele.href);
+                if (ele.classList.contains('mw-magiclink-pmid')) {
+                    url.protocol = 'https:';
+                }
                 if (ele.classList.contains('external')) {
                     ele.href = url.href;
                 }
@@ -105,6 +104,10 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             }
             catch {
                 ele.removeAttribute('href');
+            }
+            ele.classList.remove('text', 'autonumber', 'internal', 'mw-magiclink-pmid', 'mw-magiclink-rfc', 'mw-magiclink-isbn');
+            if (ele.classList.length === 0) {
+                ele.removeAttribute('class');
             }
         }
         if (!isGH && container1.innerHTML === container2.innerHTML) {
