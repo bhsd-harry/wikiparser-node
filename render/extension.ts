@@ -76,7 +76,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 						lexer = loadLanguage(lexer);
 						html = Prism.highlight(
 							lastChild.childNodes.map(
-								child => child.is<ExtToken>('ext') && child.name === 'nowiki'
+								child => child.is('ext') && child.name === 'nowiki'
 									? child.innerText ?? ''
 									: child.toString(),
 							).join().trimEnd().replace(/^\n+/u, ''),

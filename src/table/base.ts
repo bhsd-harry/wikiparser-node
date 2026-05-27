@@ -10,7 +10,6 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import type {TdToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -109,7 +108,7 @@ export abstract class TableBaseToken extends Token {
 				token = new C(undefined, undefined, this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(syntax);
 			token.childNodes[1].safeReplaceWith(attr);
-			if (token.is<TdToken>('td')) { // TdToken
+			if (token.is('td')) { // TdToken
 				token.childNodes[2].safeReplaceWith(cloned[0]!);
 			} else {
 				token.safeAppend(cloned);

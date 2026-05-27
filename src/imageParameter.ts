@@ -28,7 +28,6 @@ import type {Title} from '../lib/title';
 import type {
 	AtomToken,
 	FileToken,
-	GalleryImageToken,
 
 	/* NOT FOR BROWSER */
 
@@ -337,7 +336,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.parentNode?.is<GalleryImageToken>('gallery-image') && !galleryParams.has(this.name)) {
+		if (this.parentNode?.is('gallery-image') && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
 		super.afterBuild();

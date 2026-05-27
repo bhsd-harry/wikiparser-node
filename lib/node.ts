@@ -12,16 +12,8 @@ import type {
 } from '../base';
 import type {Cached} from '../util/lint';
 import type {NodeLike} from '../mixin/nodeLike';
-import type {
-	AstText,
-	Token,
-
-	/* NOT FOR BROWSER */
-
-	QuoteToken,
-	ExtLinkToken,
-	HtmlToken,
-} from '../internal';
+import type {AstText, Token} from '../internal';
+import type {TokenTypeMap} from '../map';
 
 /* PRINT ONLY */
 
@@ -442,7 +434,9 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param type token type / 节点类型
 	 * @since v1.10.0
 	 */
-	is<T extends Token>(type: TokenTypes): this is T {
+	is<K extends keyof TokenTypeMap>(type: K): this is TokenTypeMap[K];
+	is<T extends Token>(type: TokenTypes): this is T;
+	is(type: TokenTypes): this is Token {
 		return this.type === type;
 	}
 
@@ -797,21 +791,21 @@ export abstract class AstNode implements AstNodeBase {
 		};
 		for (let j = childNodes.indexOf(this as unknown as AstNodes) - 1; j >= 0; j--) {
 			const child = childNodes[j]!;
-			if (child.is<QuoteToken>('quote')) {
+			if (child.is('quote')) {
 				const {closing} = child;
 				bold ??= closing.bold === undefined ? undefined : !closing.bold;
 				italic ??= closing.italic === undefined ? undefined : !closing.italic;
 				if (bold !== undefined && italic !== undefined) {
 					break;
 				}
-			} else if (child.is<HtmlToken>('html')) {
+			} else if (child.is('html')) {
 				const {name, closing} = child;
 				if (bold === undefined && name === 'b' && b <= 0) {
 					b += closing ? -1 : 1;
 				} else if (italic === undefined && name === 'i' && i <= 0) {
 					i += closing ? -1 : 1;
 				}
-			} else if (child.is<ExtLinkToken>('ext-link') && child.length === 2 && child.lastChild.length > 0) {
+			} else if (child.is('ext-link') && child.length === 2 && child.lastChild.length > 0) {
 				update(child.lastChild.lastChild!);
 				break;
 			} else if (child.type === 'text' && child.data.includes('\n')) {

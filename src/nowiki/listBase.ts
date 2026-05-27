@@ -94,22 +94,22 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			throw new Error('There is no parent node!');
 		}
 		let {nextSibling} = this;
-		if (nextSibling?.is<ListRangeToken>('list-range')) {
+		if (nextSibling?.is('list-range')) {
 			return nextSibling;
 		}
 		const {dt, type} = this;
 		let nDt = 0;
 		while (nextSibling && (nextSibling.type !== 'text' || !nextSibling.data.includes('\n'))) {
 			if (type === 'list') {
-				if (nextSibling.is<DdToken>('dd')) {
+				if (nextSibling.is('dd')) {
 					nDt -= nextSibling.indent;
 					if (dt && nDt < 0) {
 						break;
 					}
-				} else if (nextSibling.is<ListToken>('list') && nextSibling.dt) {
+				} else if (nextSibling.is('list') && nextSibling.dt) {
 					nDt++;
 				}
-			} else if (nextSibling.is<DdToken>('dd')) {
+			} else if (nextSibling.is('dd')) {
 				break;
 			}
 			({nextSibling} = nextSibling);
@@ -124,7 +124,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			contents = childNodes.slice(start, end);
 		} else {
 			if (type === 'list') {
-				while (this.previousSibling?.is<ListToken>('list')) {
+				while (this.previousSibling?.is('list')) {
 					this.setText(this.previousSibling.innerText + this.innerText);
 					this.previousSibling.remove();
 				}
@@ -133,7 +133,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 					this.setText(this.innerText + token.innerText);
 					token.remove();
 				}
-				if (parentNode.is<ListRangeToken>('list-range')) {
+				if (parentNode.is('list-range')) {
 					parentNode.previousSibling.setText(parentNode.previousSibling.innerText + this.innerText);
 					this.remove();
 					return parentNode;

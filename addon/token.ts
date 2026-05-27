@@ -55,7 +55,7 @@ Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined
 	}
 	const {childNodes, length} = this,
 		headings: [number, number][] = [...childNodes.entries()]
-			.filter((entry): entry is [number, HeadingToken] => entry[1].is<HeadingToken>('heading'))
+			.filter((entry): entry is [number, HeadingToken] => entry[1].is('heading'))
 			.map(([i, {level}]) => [i, level]),
 		lastHeading = [-1, -1, -1, -1, -1, -1],
 		sections = headings.map(([i]) => {
@@ -109,7 +109,7 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 		const open = childNodes[i]!,
 			{name, closing, selfClosing} = open as HtmlToken;
 		if (
-			open.is<HtmlToken>('html') && !closing
+			open.is('html') && !closing
 			&& (tag ? name === tag : !voidTags.has(name))
 			&& (normalTags.has(name) || !selfClosing)
 		) {

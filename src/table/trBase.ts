@@ -102,7 +102,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 				if (n < 0) {
 					return child;
 				}
-			} else if (child.is<TrToken>('tr') || child.is<SyntaxToken>('table-syntax')) {
+			} else if (child.is('tr') || child.is('table-syntax')) {
 				return child;
 			}
 		}
@@ -140,7 +140,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		const child = this.childNodes[i];
 		if (child instanceof TdToken && child.isIndependent()) {
 			const {nextSibling} = child;
-			if (nextSibling?.is<TdToken>('td')) {
+			if (nextSibling?.is('td')) {
 				nextSibling.independence();
 			}
 		}
@@ -153,12 +153,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		if (!Shadow.running && !token.is<TdToken>('td')) {
+		if (!Shadow.running && !token.is('td')) {
 			/* c8 ignore next 6 */
-			if (this.is<TrToken>('tr')) {
+			if (this.is('tr')) {
 				this.typeError('insertAt', 'TdToken');
 			}
-			if (!token.is<TrToken>('tr')) {
+			if (!token.is('tr')) {
 				this.typeError('insertAt', 'TrToken', 'TdToken');
 			}
 		}

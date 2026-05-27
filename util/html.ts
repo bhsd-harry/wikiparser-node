@@ -1,7 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {decodeHtml, sanitizeAlt} from './string';
-import type {AstNodes, ListRangeToken, Token, DdToken, ListToken} from '../internal';
+import type {AstNodes, ListRangeToken, Token} from '../internal';
 
 declare type Prefix = '#' | '*' | ';' | ':';
 declare interface State {
@@ -106,12 +106,12 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 	for (let j = 0; j < childNodes.length; j++) {
 		const child = childNodes[j]!;
 		let result = child.toHtmlInternal(opt);
-		if (child.is<ListRangeToken>('list-range')) {
+		if (child.is('list-range')) {
 			const {previousSibling} = child,
 				{innerText} = previousSibling;
 			if (
 				(child.length > 0 || /\s$/u.test(innerText))
-				&& previousSibling.is<ListToken>('list')
+				&& previousSibling.is('list')
 				&& !/[;#*]/u.test(innerText)
 				&& child.closest('ext-inner#poem,list-range')?.type === 'ext-inner'
 			) {
@@ -138,7 +138,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 				}
 				result = pre + result;
 				let {nextSibling} = child;
-				while (nextSibling?.is<DdToken>('dd')) {
+				while (nextSibling?.is('dd')) {
 					const next = nextSibling.nextSibling as ListRangeToken;
 					result += nextItem(':', state) + next.toHtmlInternal(opt).trim();
 					({nextSibling} = next);
@@ -147,7 +147,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 				if (
 					nextSibling?.type === 'text'
 					&& nextSibling.data === '\n'
-					&& nextSibling.nextVisibleSibling?.is<ListToken>('list')
+					&& nextSibling.nextVisibleSibling?.is('list')
 				) {
 					j += 2;
 					lastPrefix = prefix2;

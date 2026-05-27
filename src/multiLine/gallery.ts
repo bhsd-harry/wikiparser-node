@@ -238,10 +238,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	/** @private */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
-		if (
-			!Shadow.running
-			&& (typeof token === 'string' ? token.trim() : !token.is<GalleryImageToken>('gallery-image'))
-		) {
+		if (!Shadow.running && (typeof token === 'string' ? token.trim() : !token.is('gallery-image'))) {
 			throw new RangeError('Please do not insert invisible content into <gallery>!');
 		}
 		return super.insertAt(token as T, i);

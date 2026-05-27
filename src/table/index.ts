@@ -84,7 +84,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** whether the table is closed / 表格是否闭合 */
 	get closed(): boolean {
-		LINT: return this.lastChild.is<SyntaxToken>('table-syntax');
+		LINT: return this.lastChild.is('table-syntax');
 	}
 
 	/* NOT FOR BROWSER */
@@ -161,7 +161,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax syntax of the table end / 表格结尾语法
 	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
-		if (!this.lastChild.is<SyntaxToken>('table-syntax')) {
+		if (!this.lastChild.is('table-syntax')) {
 			Shadow.run(() => {
 				const token = new SyntaxToken(
 					halfParsed ? syntax : undefined,
@@ -220,7 +220,7 @@ export abstract class TableToken extends TrBaseToken {
 					k = 0,
 					last: boolean | undefined;
 				for (const cell of rows[i]!.childNodes.slice(2)) {
-					if (cell.is<TdToken>('td')) {
+					if (cell.is('td')) {
 						if (cell.isIndependent()) {
 							last = cell.subtype !== 'caption';
 						}
@@ -272,7 +272,7 @@ export abstract class TableToken extends TrBaseToken {
 		LINT: return [
 			...super.getRowCount() ? [this] : [],
 			...this.childNodes.slice(1)
-				.filter((child): child is TrToken => child.is<TrToken>('tr') && child.getRowCount() > 0),
+				.filter((child): child is TrToken => child.is('tr') && child.getRowCount() > 0),
 		];
 	}
 
@@ -359,7 +359,7 @@ export abstract class TableToken extends TrBaseToken {
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
 		const previous = this.childNodes[i - 1];
-		if (typeof token !== 'string' && token.is<TdToken>('td') && previous?.is<TrToken>('tr')) {
+		if (typeof token !== 'string' && token.is('td') && previous?.is('tr')) {
 			Parser.warn('The table cell is inserted into the current row instead.');
 			return previous.insertAt(token);
 		}
@@ -373,7 +373,7 @@ export abstract class TableToken extends TrBaseToken {
 	/** @private */
 	override getRowCount(): number {
 		return super.getRowCount()
-			+ this.childNodes.filter(child => child.is<TrToken>('tr') && child.getRowCount()).length;
+			+ this.childNodes.filter(child => child.is('tr') && child.getRowCount()).length;
 	}
 
 	/**

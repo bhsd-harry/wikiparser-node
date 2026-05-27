@@ -105,10 +105,7 @@ export abstract class AstElement extends AstNode {
 	get links(): LinkTokens[] {
 		return this.querySelectorAll<LinkTokens>(
 			'link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link',
-		).filter(
-			({parentNode}) => !parentNode?.is<ImageParameterToken>('image-parameter')
-				|| parentNode.name !== 'link',
-		);
+		).filter(({parentNode}) => !parentNode?.is('image-parameter') || parentNode.name !== 'link');
 	}
 
 	/** all templates and modules / 所有模板和模块 */

@@ -188,13 +188,9 @@ export abstract class ImagemapToken extends MultiLineToken {
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		const {image} = this;
-		if (
-			!image && (
-				typeof token === 'string' || token.is<ImagemapLinkToken>('imagemap-link') || token.type === 'text'
-			)
-		) {
+		if (!image && (typeof token === 'string' || token.is('imagemap-link') || token.type === 'text')) {
 			throw new Error('Missing a valid image!');
-		} else if (image && typeof token !== 'string' && token.is<GalleryImageToken>('imagemap-image')) {
+		} else if (image && typeof token !== 'string' && token.is('imagemap-image')) {
 			throw new RangeError('Already have a valid image!');
 		}
 		return super.insertAt(token as T, i);
@@ -202,7 +198,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 
 	/** @private */
 	override removeAt(i: number): AstNodes {
-		if (!this.parentNode?.selfClosing && this.childNodes[i]?.is<GalleryImageToken>('imagemap-image')) {
+		if (!this.parentNode?.selfClosing && this.childNodes[i]?.is('imagemap-image')) {
 			throw new Error('Do not remove the image in <imagemap>!');
 		}
 		return super.removeAt(i);

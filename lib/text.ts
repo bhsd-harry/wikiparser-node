@@ -12,17 +12,7 @@ import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes, FullLintConfigValue} from '../base';
-import type {
-	AttributeToken,
-	ExtToken,
-	TranscludeToken,
-
-	/* NOT FOR BROWSER */
-
-	CommentToken,
-	CategoryToken,
-	TableToken,
-} from '../internal';
+import type {AttributeToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -236,7 +226,7 @@ export class AstText extends AstNode {
 					error.startsWith('<') && !tags.has(tag!.toLowerCase())
 					|| lbrackInExtLinkText && (
 						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-						|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
+						|| nextSibling?.is('ext') && nextName === 'nowiki'
 						&& nextSibling.innerText?.includes(']')
 					)
 				) {
@@ -615,11 +605,8 @@ export class AstText extends AstNode {
 			let {nextSibling} = this,
 				mt2: RegExpExecArray | null = null;
 			while (
-				nextSibling && (
-					nextSibling.is<CommentToken>('comment')
-					|| nextSibling.is<CategoryToken>('category')
-					|| nextSibling.type === 'text'
-				)
+				nextSibling
+				&& (nextSibling.is('comment') || nextSibling.is('category') || nextSibling.type === 'text')
 			) {
 				if (nextSibling.type === 'text') {
 					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(nextSibling.data);
@@ -628,7 +615,7 @@ export class AstText extends AstNode {
 					} else {
 						spaces.push(nextSibling);
 					}
-				} else if (mt && nextSibling.is<CategoryToken>('category')) {
+				} else if (mt && nextSibling.is('category')) {
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -641,7 +628,7 @@ export class AstText extends AstNode {
 				}
 				({nextSibling} = nextSibling);
 			}
-			if (mt2 || nextSibling?.is<TableToken>('table')) {
+			if (mt2 || nextSibling?.is('table')) {
 				if (mt) {
 					this.deleteData(mt.index + (mt2 ? 0 : 1));
 					if (mt2) {

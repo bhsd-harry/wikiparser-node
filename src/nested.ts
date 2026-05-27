@@ -157,7 +157,7 @@ export abstract class NestedToken extends Token {
 	 * @param i position to be inseted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i?: number): T {
-		if (!Shadow.running && token.is<ExtToken>('ext') && !this.#tags.includes(token.name)) {
+		if (!Shadow.running && token.is('ext') && !this.#tags.includes(token.name)) {
 			this.constructorError(`can only have ${this.#tags.join(' or ')} tags as child nodes`);
 		}
 		return super.insertAt(token, i);

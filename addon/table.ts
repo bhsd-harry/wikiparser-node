@@ -396,7 +396,7 @@ TableToken.prototype.insertTableRow =
 		// @ts-expect-error abstract class
 		const token = Shadow.run((): TrToken => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		token.setAttr(attr);
-		if (reference?.is<TableToken>('table')) { // `row === 0`且表格自身是有效行
+		if (reference?.is('table')) { // `row === 0`且表格自身是有效行
 			reference = prependTableRow(this);
 		}
 		this.insertBefore(token, reference);
@@ -485,7 +485,7 @@ TableToken.prototype.removeTableRow =
 			}
 		}
 		const row = rows[y]!,
-			rowToken = row.is<TrToken>('tr') ? row : prependTableRow(this);
+			rowToken = row.is('tr') ? row : prependTableRow(this);
 		rowToken.remove();
 		return rowToken;
 	};
@@ -554,7 +554,7 @@ TableToken.prototype.replicateTableRow =
 	/** @implements */
 	function(row): TrToken {
 		let rowToken = this.getNthRow(row)!;
-		if (rowToken.is<TableToken>('table')) {
+		if (rowToken.is('table')) {
 			rowToken = prependTableRow(this);
 		}
 		const replicated = this.insertBefore(rowToken.cloneNode(), rowToken);
@@ -609,7 +609,7 @@ TableToken.prototype.moveTableRowBefore =
 			}
 		}
 		let beforeToken = this.getNthRow(before)!;
-		if (beforeToken.is<TableToken>('table')) {
+		if (beforeToken.is('table')) {
 			beforeToken = prependTableRow(this);
 		}
 		this.insertBefore(rowToken, beforeToken);
@@ -622,7 +622,7 @@ TableToken.prototype.moveTableRowAfter =
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after)!,
 			cells = afterToken.childNodes.filter(
-				child => child.is<TdToken>('td') && child.subtype !== 'caption',
+				child => child.is('td') && child.subtype !== 'caption',
 			) as TdToken[];
 		try {
 			assert.deepEqual(occupied(layout, y), occupied(layout, after, true, cells));

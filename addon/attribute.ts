@@ -142,7 +142,7 @@ AttributesToken.prototype.sanitize =
 			const child = this.childNodes[i]!;
 			if (child instanceof AtomToken && child.text().trim()) {
 				dirty = true;
-				if (child.previousSibling?.is<AttributeToken>(type) && child.nextSibling?.is<AttributeToken>(type)) {
+				if (child.previousSibling?.is(type) && child.nextSibling?.is(type)) {
 					child.replaceChildren(' ');
 				} else {
 					this.removeAt(i);

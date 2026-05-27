@@ -8,7 +8,6 @@ import {Token} from '../src/index';
 import {TranscludeToken} from '../src/transclude';
 import {ParameterToken} from '../src/parameter';
 import {AtomToken} from '../src/atom';
-import type {TableToken, SyntaxToken} from '../internal';
 
 /**
  * 调整最后一个子节点的换行符
@@ -16,13 +15,9 @@ import type {TableToken, SyntaxToken} from '../internal';
  */
 const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
-		isParameter = lastChild.is<ParameterToken>('parameter');
+		isParameter = lastChild.is('parameter');
 	if (
-		!(
-			type === 'template'
-				? isParameter && lastChild.anon
-				: lastChild.is<SyntaxToken>('magic-word-name')
-		)
+		!(type === 'template' ? isParameter && lastChild.anon : lastChild.is('magic-word-name'))
 		&& !lastChild.toString().endsWith('\n')
 	) {
 		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');
@@ -233,7 +228,7 @@ TranscludeToken.prototype.escapeTables =
 			parsed = Shadow.internal(() => {
 				const token = Parser.parseWithRef(stripped, this, 4);
 				for (const table of token.childNodes) {
-					if (table.is<TableToken>('table')) {
+					if (table.is('table')) {
 						table.escape();
 					}
 				}

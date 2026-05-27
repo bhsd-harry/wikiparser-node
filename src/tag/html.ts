@@ -246,7 +246,7 @@ export abstract class HtmlToken extends TagToken {
 					if (formattingTags.has(name)) {
 						if (
 							childNodes?.slice(0, childNodes.indexOf(this)).some(
-								tag => tag.is<this>('html') && tag.name === name && !tag.findMatchingTag(),
+								tag => tag.is('html') && tag.name === name && !tag.findMatchingTag(),
 							)
 						) {
 							error.suggestions = [fixByClose(start + 1, '/')];
@@ -333,7 +333,7 @@ export abstract class HtmlToken extends TagToken {
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
 			prevSiblings = childNodes.slice(0, i)
-				.filter((child): child is this => child.is<this>('html') && child.name === tagName),
+				.filter((child): child is this => child.is('html') && child.name === tagName),
 			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
 		if (imbalance < 0) {
 			this.#selfClosing = false;

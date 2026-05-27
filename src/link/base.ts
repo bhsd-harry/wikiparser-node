@@ -31,9 +31,6 @@ import type {
 
 	/* NOT FOR BROWSER */
 
-	LinkToken,
-	RedirectTargetToken,
-	CategoryToken,
 	CategorytreeToken,
 } from '../../internal';
 
@@ -179,7 +176,7 @@ export abstract class LinkBaseToken extends Token {
 			const {prevTarget} = e,
 				{type} = this;
 			if (
-				prevTarget?.is<AtomToken>('link-target')
+				prevTarget?.is('link-target')
 				&& !(this.is<CategorytreeToken>('ext-inner') && this.parentNode?.selfClosing)
 			) {
 				const name = prevTarget.text(),
@@ -390,11 +387,7 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		if (
-			this.is<LinkToken>('link')
-			|| this.is<RedirectTargetToken>('redirect-target')
-			|| this.is<CategoryToken>('category')
-		) {
+		if (this.is('link') || this.is('redirect-target') || this.is('category')) {
 			const {link, length, lastChild, type, pageName} = this;
 			let attr;
 			if (type === 'link' && link.title === pageName && !link.fragment) {

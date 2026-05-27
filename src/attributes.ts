@@ -21,7 +21,6 @@ import type {
 	ExtToken,
 	HtmlToken,
 	SyntaxToken,
-	TdToken,
 } from '../internal';
 import type {AttributeTypes} from './attribute';
 import type {TableTokens} from './table/index';
@@ -249,7 +248,7 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		const {parentNode} = this;
-		if (parentNode?.is<TdToken>('td')) {
+		if (parentNode?.is('td')) {
 			this.setAttribute('name', parentNode.subtype);
 		}
 		super.afterBuild();

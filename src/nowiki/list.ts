@@ -9,7 +9,6 @@ import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {syntax} from '../../mixin/syntax';
 import type {SyntaxBase} from '../../mixin/syntax';
-import type {ListRangeToken} from './listBase';
 
 export interface ListToken extends SyntaxBase {}
 
@@ -39,7 +38,7 @@ export abstract class ListToken extends ListBaseToken {
 
 				/* NOT FOR BROWSER */
 
-				if (nextSibling?.is<ListRangeToken>('list-range')) {
+				if (nextSibling?.is('list-range')) {
 					nextSibling = nextSibling.firstChild;
 				}
 

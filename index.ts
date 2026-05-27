@@ -45,7 +45,6 @@ import type {
 
 	/* NOT FOR BROWSER */
 
-	TranscludeToken,
 	FunctionHook,
 	TagHook,
 } from './internal';
@@ -731,8 +730,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				),
 				this,
 			);
-			result = length === 1 && firstChild!.is<TranscludeToken>('magic-word')
-				&& functionHooks.get(lcName)!(firstChild);
+			result = length === 1 && firstChild!.is('magic-word') && functionHooks.get(lcName)!(firstChild);
 		} else {
 			const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords');
 			result = expandMagicWord(lcName as MagicWord, args);

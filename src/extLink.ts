@@ -17,7 +17,6 @@ import type {Config, LintError} from '../base';
 import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
 import {cached} from '../mixin/cached';
-import type {LinkToken, FileToken, ConverterToken} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -191,7 +190,7 @@ export abstract class ExtLinkToken extends Token {
 		if (
 			!this.#space
 			&& length > 1
-			&& (firstChild?.type === 'text' || firstChild?.is<ConverterToken>('converter'))
+			&& (firstChild?.type === 'text' || firstChild?.is('converter'))
 			// 都替换成`<`肯定不对，但无妨
 			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u
 				.test(lastChild.text().replace(/&[lg]t;/u, '<'))
@@ -231,9 +230,8 @@ export abstract class ExtLinkToken extends Token {
 			lastChild.normalize();
 			const {childNodes} = lastChild,
 				i = childNodes.findIndex(
-					child => child.is<LinkToken>('link')
-						|| child.is<FileToken>('file')
-						&& (child.getValue('link') as string | undefined)?.trim() !== '',
+					child => child.is('link')
+						|| child.is('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
 				);
 			if (i !== -1) {
 				const after = childNodes.slice(i);

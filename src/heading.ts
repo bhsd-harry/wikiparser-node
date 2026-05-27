@@ -375,7 +375,7 @@ export abstract class HeadingToken extends Token {
 		range.setStart(parentNode, i);
 		for (i++; i < length; i++) {
 			const sibling = childNodes[i]!;
-			if (sibling.is<this>('heading') && sibling.level <= level) {
+			if (sibling.is('heading') && sibling.level <= level) {
 				break;
 			}
 		}

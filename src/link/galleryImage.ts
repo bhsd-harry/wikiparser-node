@@ -135,11 +135,7 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (
-			this.type === 'gallery-image'
-			&& child.is<ImageParameterToken>('image-parameter')
-			&& !galleryParams.has(child.name)
-		) {
+		if (this.type === 'gallery-image' && child.is('image-parameter') && !galleryParams.has(child.name)) {
 			child.setAttribute('name', 'invalid');
 		}
 		return super.insertAt(child, i);

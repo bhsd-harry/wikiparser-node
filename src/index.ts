@@ -89,7 +89,6 @@ import type {
 	AstNodes,
 	CategoryToken,
 	AttributeToken,
-	AttributesToken,
 
 	/* NOT FOR BROWSER */
 
@@ -97,9 +96,6 @@ import type {
 	HtmlToken,
 	ExtToken,
 	CommentToken,
-	ListToken,
-	DdToken,
-	ListRangeToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -644,11 +640,8 @@ export class Token extends AstElement {
 
 	/** @private */
 	inTableAttrs(): 1 | 2 | false {
-		return this.isInside('table-attrs') && (
-			this.closest('table-attrs,arg,parameter')?.is<AttributesToken>('table-attrs')
-				? 2
-				: 1
-		);
+		return this.isInside('table-attrs')
+			&& (this.closest('table-attrs,arg,parameter')?.is('table-attrs') ? 2 : 1);
 	}
 
 	/** @private */
@@ -672,7 +665,7 @@ export class Token extends AstElement {
 				if (selector) {
 					for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 						let key;
-						if (cat.is<CategoryToken>('category')) {
+						if (cat.is('category')) {
 							key = cat.name;
 						} else {
 							const value = cat.getValue();
@@ -794,7 +787,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	override print(opt?: PrintOpt): string {
-		return this.is<ListRangeToken>('list-range') ? print(this.childNodes) : super.print(opt);
+		return this.is('list-range') ? print(this.childNodes) : super.print(opt);
 	}
 
 	/** @private */
@@ -1098,7 +1091,7 @@ export class Token extends AstElement {
 	#buildLists(recursive?: boolean): void {
 		for (let i = 0; i < this.length; i++) {
 			const child = this.childNodes[i]!;
-			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
+			if (child.is('list') || child.is('dd')) {
 				child.getRange();
 			} else if (recursive && child.type !== 'text') {
 				child.#buildLists(true);
