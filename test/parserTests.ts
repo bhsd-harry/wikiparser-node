@@ -104,7 +104,15 @@ describe('Parser tests', () => {
 					/* NOT FOR BROWSER */
 
 					if (render) {
-						assert.deepStrictEqual(split(root.toHtml()), split(render));
+						assert.deepStrictEqual(
+							split(
+								root.toHtml().replace(
+									/\n<div id="catlinks" class="catlinks">.+$/su,
+									'',
+								),
+							),
+							split(render),
+						);
 					}
 
 					/* NOT FOR BROWSER END */

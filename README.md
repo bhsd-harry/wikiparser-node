@@ -163,7 +163,7 @@ The following limitations are documented for transparency.
 
 #### Heading
 
-1. The table of contents (TOC) is not fully sanitized (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#T35845%3A%20Headings%20become%20cursive%20in%20TOC%20when%20they%20contain%20an%20image), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#T35845%20(2)%3A%20Headings%20become%20bold%20in%20TOC%20when%20they%20contain%20a%20blockquote), [3](http://bhsd-harry.github.io/wikiparser-node/tests.html#Tags%20with%20parameters%20in%20TOC)).
+1. RTL support in the table of contents (TOC) ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#span%20tags%20with%20directionality%20in%20TOC)).
 
 #### HTML tag
 
@@ -197,6 +197,7 @@ The following limitations are documented for transparency.
 
 1. Automatic language conversion is not supported.
 1. Support for manual language conversion is minimal ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20session-wise%20one-way%20language%20variant%20mapping%20(A%20flag%20and%20-%20flag))).
+1. BCP 47 language codes are not supported in language conversion ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20definition%20of%20language%20variant%20alternatives%20(BCP%2047%20codes))).
 
 #### Miscellaneous
 

@@ -3,6 +3,7 @@ import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken} from '../int
 
 const blockElems = 'table|h[1-6]|pre|p|[uod]l',
 	antiBlockElems = 't[dh]',
+	allowed = new Set(['sup', 'sub', 'bdi', 'i', 'b', 's', 'strike', 'q']),
 	tocContainer = '<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">'
 		+ '<div class="toctitle"><h2 id="mw-toc-heading">Contents</h2></div>';
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -70,10 +71,13 @@ export const toHtml = (token: Token): string => {
 				toc += `${prefix}\n<li class="toclevel-${j + 1} tocsection-${++i}"><a href="#${
 					id
 				}"><span class="tocnumber">${tocNumbers.join('.')}</span> <span class="toctext">${
-					text
+					text.replaceAll(
+						/<(\/?)([a-z]\w*)\b.*?>/gu,
+						(_, slash: string, tag: string) => allowed.has(tag) ? `<${slash}${tag}>` : '',
+					).trim()
 				}</span></a>`;
 			}
-			toc = i === 0 ? '' : `${toc}${'</li>\n</ul>'.repeat(levels.length)}\n</div>\n`;
+			toc = i === 0 ? '' : `${toc}${'</li>\n</ul>\n'.repeat(levels.length)}</div>\n`;
 			if (tocSwitch) {
 				tocSwitch.tocData = toc;
 			} else {
