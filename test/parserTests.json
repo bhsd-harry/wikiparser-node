@@ -6816,7 +6816,7 @@
 		"desc": "Magic link in language conversion",
 		"wikitext": "-{PMID 1}-\n\n-{PMID 1|bar}-",
 		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1?dopt=Abstract\">PMID 1</a>\n</p><p>bar\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1\">PMID 1</a>\n</p><p>bar\n</p>",
+		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/1?dopt=Abstract\">PMID 1</a>\n</p><p>bar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\"><span class=\"wpb-magic-link\">PMID 1</span></span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bar</span></span>}-</span></span>"
 	},
 	{
@@ -12583,21 +12583,21 @@
 		"desc": "Magic links: PMID incorrectly converts space to underscore",
 		"wikitext": "PMID 1234",
 		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\n</p>",
+		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">PMID 1234</span></span>"
 	},
 	{
 		"desc": "Magic links: PMID (T67278)",
 		"wikitext": "This is PMID 1234 but thisPMID 1234 is not PMID 1234linked.",
 		"html": "<p>This is <a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
-		"render": "<p>This is <a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
+		"render": "<p>This is <a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
 		"print": "<span class=\"wpb-root\">This is <span class=\"wpb-magic-link\">PMID 1234</span> but thisPMID 1234 is not PMID 1234linked.</span>"
 	},
 	{
 		"desc": "Magic links: PMID (w/ non-newline whitespace, T30950/T31025)",
 		"wikitext": "PMID &nbsp;&#160;&#0160;&#xA0;&#Xa0; 1234\nPMID\n1234",
 		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\nPMID\n1234\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\nPMID\n1234\n</p>",
+		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\nPMID\n1234\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">PMID &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 1234</span>\nPMID\n1234</span>"
 	},
 	{
@@ -12611,7 +12611,7 @@
 		"desc": "Magic links: All disabled (T47942)",
 		"wikitext": "ISBN 0-306-40615-2\nPMID 1234\nRFC 4321",
 		"html": "<p>ISBN 0-306-40615-2\nPMID 1234\nRFC 4321\n</p>",
-		"render": "<p><a href=\"/wiki/Special%3ABookSources%2F0306406152\">ISBN 0-306-40615-2</a>\n<a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\n<a class=\"external\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc4321\">RFC 4321</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Special%3ABookSources%2F0306406152\">ISBN 0-306-40615-2</a>\n<a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\n<a class=\"external\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc4321\">RFC 4321</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">ISBN 0-306-40615-2</span>\n<span class=\"wpb-magic-link\">PMID 1234</span>\n<span class=\"wpb-magic-link\">RFC 4321</span></span>"
 	},
 	{
@@ -12623,7 +12623,7 @@
 		"desc": "Prefer PMID magic link, no interwiki and magic links enabled (T145590#8608455)",
 		"wikitext": "PMID 234",
 		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/234?dopt=Abstract\">PMID 234</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/234\">PMID 234</a>\n</p>",
+		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/234?dopt=Abstract\">PMID 234</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">PMID 234</span></span>"
 	},
 	{
@@ -14808,7 +14808,7 @@
 		"desc": "Magic links inside image captions (autolinked)",
 		"wikitext": "[[File:Foobar.jpg|thumb|http://example.com]]\n[[File:Foobar.jpg|thumb|RFC 1234]]\n[[File:Foobar.jpg|thumb|PMID 1234]]\n[[File:Foobar.jpg|thumb|ISBN 123456789x]]",
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc1234\">RFC 1234</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a href=\"/wiki/Special:BookSources/123456789X\" class=\"internal mw-magiclink-isbn\">ISBN 123456789x</a></figcaption></figure>",
-		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a class=\"external\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc1234\">RFC 1234</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Special%3ABookSources%2F123456789X\">ISBN 123456789x</a></figcaption></figure>",
+		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a class=\"external\" rel=\"nofollow\" href=\"https://datatracker.ietf.org/doc/html/rfc1234\">RFC 1234</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a class=\"external\" rel=\"nofollow\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Special%3ABookSources%2F123456789X\">ISBN 123456789x</a></figcaption></figure>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-free-ext-link\">http://example.com</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-magic-link\">RFC 1234</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-magic-link\">PMID 1234</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-magic-link\">ISBN 123456789x</span></span>]]</span></span>"
 	},
 	{
