@@ -694,7 +694,7 @@ export abstract class TableToken extends TrBaseToken {
 		 */
 		const filter = (token: TrBaseToken): Token[] => token.childNodes.filter(isToken('table-inter'));
 		const {childNodes} = this,
-			tr = childNodes.filter(isToken<TrToken>('tr')),
+			tr = childNodes.filter(isToken('tr')),
 			newOpt = {
 				...opt,
 				nowrap: true,

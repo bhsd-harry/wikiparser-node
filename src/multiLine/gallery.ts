@@ -49,7 +49,7 @@ export abstract class GalleryToken extends MultiLineToken {
 
 	/** all images / 所有图片 */
 	override get images(): GalleryImageToken[] {
-		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
+		return this.childNodes.filter(isToken('gallery-image'));
 	}
 
 	/* NOT FOR BROWSER END */
@@ -247,7 +247,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
-		return html(this.childNodes.filter(isToken<GalleryImageToken>('gallery-image')), '\n');
+		return html(this.childNodes.filter(isToken('gallery-image')), '\n');
 	}
 }
 

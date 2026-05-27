@@ -43,7 +43,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
-		return this.childNodes.find(isToken<GalleryImageToken>('imagemap-image'));
+		return this.childNodes.find(isToken('imagemap-image'));
 	}
 
 	/** @param inner 标签内部wikitext */

@@ -76,6 +76,7 @@ export interface ElementLike {
 	 * 类型选择器
 	 * @param types token types / 节点类型
 	 */
+	getElementByTypes<K extends keyof TokenTypeMap>(types: K): TokenTypeMap[K] | undefined;
 	getElementByTypes<T = Token>(types: string): T | undefined;
 
 	/**

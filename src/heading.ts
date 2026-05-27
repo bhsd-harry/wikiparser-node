@@ -19,7 +19,6 @@ import type {
 } from '../base';
 import type {
 	AstText,
-	QuoteToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -213,7 +212,7 @@ export abstract class HeadingToken extends Token {
 			}
 			if (severities[2]) {
 				const rootStr = this.getRootNode().toString(),
-					quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
+					quotes = firstChild.childNodes.filter(isToken('quote')),
 					boldQuotes = quotes.filter(({bold}) => bold),
 					italicQuotes = quotes.filter(({italic}) => italic);
 				if (boldQuotes.length % 2) {

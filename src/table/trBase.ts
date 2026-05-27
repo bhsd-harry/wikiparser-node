@@ -209,7 +209,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {childNodes, type} = this,
-			td = childNodes.filter(isToken<TdToken>('td'));
+			td = childNodes.filter(isToken('td'));
 		return td.some(({subtype}) => subtype !== 'caption')
 			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${html(td, '', opt)}</tr>`
 			: html(td, '', opt);

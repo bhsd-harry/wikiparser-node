@@ -1,11 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.42.0
 
-*2026-05-27*
+*2026-05-28*
 
 **Added**
 
 - HTML conversion with a table of contents (TOC)
+- [`AstNode#is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#is), [`AstElement#closest`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#closest), [`AstElement#matches`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#matches), [`AstElement#querySelector`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#queryselector), [`AstElement#querySelectorAll`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#queryselectorall) and [`AstElement#getElementByTypes`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#getelementbytypes) can now infer the return type if the selector argument is a single token type
 
 **Fixed**
 
