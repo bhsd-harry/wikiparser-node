@@ -13,7 +13,6 @@ import type {
 	LintError,
 	AST,
 } from '../base';
-import type {ExtToken} from '../internal';
 
 /**
  * argument wrapped in `{{{}}}`
@@ -127,7 +126,7 @@ export abstract class ArgToken extends Token {
 				}
 				errors.push(e);
 			}
-			const ext = this.closest<ExtToken>('ext');
+			const ext = this.closest('ext');
 			if (ext) {
 				const rule = 'arg-in-ext',
 					severity = lintConfig.getSeverity(rule, ext.name);
