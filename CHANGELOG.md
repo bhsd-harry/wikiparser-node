@@ -10,6 +10,7 @@
 **Fixed**
 
 - Lowered severity of a lonely `]` following a free external link and some plain text
+- Update PMID magic link URLs
 
 ## v1.41.0
 

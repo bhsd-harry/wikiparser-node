@@ -259,7 +259,7 @@ export abstract class MagicLinkToken extends Token {
 				: new URL(
 					link.startsWith('RFC')
 						? `https://datatracker.ietf.org/doc/html/rfc${link.slice(4)}`
-						: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`,
+						: `https://www.ncbi.nlm.nih.gov/pubmed/${link.slice(5)}?dopt=Abstract`,
 				);
 		}
 	}
