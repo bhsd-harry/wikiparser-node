@@ -9,8 +9,7 @@
 		"test/**/*",
 		"typings/**/*",
 		"util/**/*",
-		"index.ts",
-		"base.ts"
+		"*.ts"
 	],
 	"compilerOptions": {
 		"types": [

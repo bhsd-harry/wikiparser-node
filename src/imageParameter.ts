@@ -19,7 +19,6 @@ import type {Title} from '../lib/title';
 import type {
 	AtomToken,
 	FileToken,
-	GalleryImageToken,
 } from '../internal';
 
 const getUrlLikeRegex = getRegex(protocol => new RegExp(String.raw`^(?:${protocol}|//|\0\d+m\x7F)`, 'iu'));
@@ -216,7 +215,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.parentNode?.is<GalleryImageToken>('gallery-image') && !galleryParams.has(this.name)) {
+		if (this.parentNode?.is('gallery-image') && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
 		super.afterBuild();

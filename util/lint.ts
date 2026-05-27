@@ -4,7 +4,7 @@ import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import type {Position} from 'vscode-languageserver-types';
 import type {LintError} from '../base';
-import type {AstNodes, HtmlToken, ArgToken, TranscludeToken} from '../internal';
+import type {AstNodes} from '../internal';
 
 export type Cached<T> = [number, T];
 
@@ -28,21 +28,21 @@ export const isFostered = (token: AstNodes): 1 | 2 | false => {
 	if (
 		!first
 		|| first.type === 'text' && first.data.trim().startsWith('!')
-		|| first.is<TranscludeToken>('magic-word') && first.name === '!'
-		|| first.is<TranscludeToken>('template') && tableTemplates.has(first.name)
-		|| first.is<HtmlToken>('html') && tableTags.has(first.name)
+		|| first.is('magic-word') && first.name === '!'
+		|| first.is('template') && tableTemplates.has(first.name)
+		|| first.is('html') && tableTags.has(first.name)
 	) {
 		return false;
-	} else if (first.is<ArgToken>('arg')) {
+	} else if (first.is('arg')) {
 		return first.length > 1 && isFostered(first.childNodes[1]!);
-	} else if (first.is<TranscludeToken>('magic-word')) {
+	} else if (first.is('magic-word')) {
 		try {
 			const severity = first.getPossibleValues().map(isFostered);
 			return severity.includes(2) ? 2 : severity.includes(1) && 1;
 		} catch {}
 	}
-	return first.is<TranscludeToken>('template')
-		|| first.is<TranscludeToken>('magic-word') && first.name === 'invoke'
+	return first.is('template')
+		|| first.is('magic-word') && first.name === 'invoke'
 		? 1
 		: 2;
 };

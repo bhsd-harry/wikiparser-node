@@ -20,7 +20,7 @@ const isTr = (token: TableTokens): token is TrToken | TableToken =>
  * @param stack 表格栈
  */
 const pop = (top: TableTokens | undefined, stack: TableTokens[]): TrToken | TableToken =>
-	top!.is<TdToken>('td') ? stack.pop() as TrToken | TableToken : top!;
+	top!.is('td') ? stack.pop() as TrToken | TableToken : top!;
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
@@ -67,7 +67,7 @@ export const parseTable = (
 			matchesStart = /^(:*)((?:\s|\0\d+[cn]\x7F)*)(\{\||\{(?:\0\d+[cn]\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
 				.exec(line) as [string, string, string, string, string] | null;
 		if (matchesStart) {
-			while (top && !top.is<TdToken>('td')) {
+			while (top && !top.is('td')) {
 				top = stack.pop();
 			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
@@ -93,14 +93,14 @@ export const parseTable = (
 		}
 		const [, closing, row, cell, attr] = matches;
 		if (closing) {
-			while (!top!.is<TableToken>('table')) {
+			while (!top!.is('table')) {
 				top = stack.pop();
 			}
 			top.close(`\n${spaces}${closing}`, true);
 			push(attr, stack[stack.length - 1]);
 		} else if (row) {
 			top = pop(top, stack);
-			if (top.is<TrToken>('tr')) {
+			if (top.is('tr')) {
 				top = stack.pop() as TableToken; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
 			}
 			// @ts-expect-error abstract class
