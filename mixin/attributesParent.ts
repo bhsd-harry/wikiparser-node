@@ -17,7 +17,7 @@ export interface AttributesParentBase {
 	 * 获取指定属性
 	 * @param key attribute name / 属性键
 	 */
-	getAttr(key: string): string | true | undefined;
+	getAttr(key: string): string | undefined;
 }
 
 /**
@@ -36,7 +36,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 				LSP: return this.#getAttributesChild().hasAttr(key);
 			}
 
-			getAttr(key: string): string | true | undefined {
+			getAttr(key: string): string | undefined {
 				return this.#getAttributesChild().getAttr(key);
 			}
 		}
