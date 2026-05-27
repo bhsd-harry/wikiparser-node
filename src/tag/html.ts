@@ -8,7 +8,7 @@ import type {
 	LintError,
 } from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
-import type {Token, AttributesToken, TranscludeToken} from '../../internal';
+import type {Token, AttributesToken} from '../../internal';
 
 export interface HtmlToken extends AttributesParentBase {}
 
@@ -175,7 +175,7 @@ export abstract class HtmlToken extends TagToken {
 				}
 			} else if (!this.findMatchingTag()) {
 				const error = generateForSelf(this, rect, rule, closing ? 'unmatched-closing' : 'unclosed-tag'),
-					ancestor = this.closest<TranscludeToken>('magic-word');
+					ancestor = this.closest('magic-word');
 				if (ancestor && magicWords.has(ancestor.name)) {
 					s = lintConfig.getSeverity(rule, 'conditional');
 				} else if (closing) {
