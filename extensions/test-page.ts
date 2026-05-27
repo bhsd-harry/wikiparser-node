@@ -8,6 +8,18 @@ declare interface Test {
 	render?: string;
 }
 
+declare interface DiffPart {
+	value: string;
+	added: boolean;
+	removed: boolean;
+}
+declare interface DiffEngine {
+	diffWordsWithSpace(oldStr: string, newStr: string): DiffPart[];
+}
+declare global {
+	const Diff: DiffEngine | undefined;
+}
+
 const ignoredGroups = new Set([
 	// <imagemap>
 	'imageMapParserTests',
@@ -39,19 +51,25 @@ const removeClass = (ele: Element, ...cls: string[]): void => {
  * @param container 容器
  * @param container1 容器1
  * @param container2 容器2
+ * @param btn `Diff`按钮
  * @param e 事件对象
  */
 const dblClickHandler = (
 	container: HTMLElement,
 	container1: HTMLElement,
 	container2: HTMLElement,
+	btn?: HTMLButtonElement,
 	e?: MouseEvent,
 ): void => {
 	e?.preventDefault();
-	if (container.dataset['source']) {
+	const isSource = Boolean(container.dataset['source']);
+	if (btn) {
+		btn.disabled = isSource;
+	}
+	if (isSource) {
 		container.removeAttribute('data-source');
-		container1.innerHTML = container1.textContent!;
-		container2.innerHTML = container2.textContent!;
+		container1.innerHTML = container1.textContent;
+		container2.innerHTML = container2.textContent;
 	} else {
 		container.dataset['source'] = '1';
 		const pre1 = document.createElement('pre'),
@@ -108,7 +126,6 @@ const repaint = (
 				.querySelectorAll('#toctogglecheckbox, .toctogglespan') as unknown as Iterable<Element>,
 			tocTitles = container1.querySelectorAll('.toctitle') as unknown as Iterable<Element>,
 			anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
-		container2.querySelector('#catlinks')?.remove();
 		if (!isGH) {
 			for (const ele of withClasses) {
 				removeClass(ele, ...classes);
@@ -143,7 +160,17 @@ const repaint = (
 			ele.remove();
 		}
 		for (const ele of anchors) {
-			ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
+			ele.classList.remove(
+				'text',
+				'autonumber',
+				'internal',
+				'mw-magiclink-pmid',
+				'mw-magiclink-rfc',
+				'mw-magiclink-isbn',
+			);
+			if (ele.classList.length === 0) {
+				ele.removeAttribute('class');
+			}
 			try {
 				const url = new URL(ele.href);
 				if (ele.classList.contains('external')) {
@@ -163,7 +190,7 @@ const repaint = (
 				ele.removeAttribute('href');
 			}
 		}
-		if (isIframe && container1.innerHTML === container2.innerHTML) {
+		if (!isGH && container1.innerHTML === container2.innerHTML) {
 			dblClickHandler(container, container1, container2);
 		}
 	}
@@ -184,7 +211,10 @@ const repaint = (
 		dones = new Set(reviewed),
 		input = document.getElementById('search') as HTMLInputElement,
 		select = document.querySelector('select')!,
-		btn = document.querySelector('button')!,
+		btns = document.querySelectorAll('button'),
+		btnDone = btns[0]!,
+		btnDiff = btns[1]!,
+		diffFrame = document.getElementById('diffFrame')!,
 		pre = document.querySelector('pre')!,
 		container = document.getElementById('frame')!,
 		container1 = document.getElementById('frame1')!,
@@ -207,16 +237,42 @@ const repaint = (
 	select.addEventListener('change', () => {
 		const {html, render} = tests[Number(select.value)]!;
 		repaint(container, container1, container2, html, render, isGH);
-		changeHandler(pre, btn, select, tests);
+		changeHandler(pre, btnDone, select, tests);
+		btnDiff.disabled = true;
+		diffFrame.style.display = 'none';
 		dispatchEvent(new CustomEvent('casechange'));
 	});
 	container.addEventListener('click', e => {
 		e.preventDefault();
 	}, {capture: true});
 	container.addEventListener('dblclick', e => {
-		dblClickHandler(container, container1, container2, e);
+		dblClickHandler(container, container1, container2, btnDiff, e);
 	});
-	prepareDoneBtn(btn, select, tests, dones, key);
+	prepareDoneBtn(btnDone, select, tests, dones, key);
 	inputHandler(input, select, dones);
 	hashChangeHandler(select, tests);
+	if (!isGH) {
+		btnDiff.style.display = '';
+		btnDiff.addEventListener('click', () => {
+			(async () => {
+				if (typeof Diff === 'undefined') {
+					await import('https://cdn.jsdelivr.net/npm/diff');
+				}
+				diffFrame.innerHTML = '';
+				diffFrame.style.display = '';
+				for (const part of Diff!.diffWordsWithSpace(container1.textContent, container2.textContent)) {
+					const span = document.createElement('span');
+					span.textContent = part.value;
+					if (part.added || part.removed) {
+						span.classList.add(`diff-${part.added ? 'added' : 'removed'}`);
+						if (!/[^\n]/u.test(part.value)) {
+							span.classList.add('diff-empty');
+						}
+					}
+					diffFrame.append(span);
+				}
+				btnDiff.disabled = true;
+			})();
+		});
+	}
 })();

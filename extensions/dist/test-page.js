@@ -15,9 +15,13 @@ const removeClass = (ele, ...cls) => {
         ele.removeAttribute('class');
     }
 };
-const dblClickHandler = (container, container1, container2, e) => {
+const dblClickHandler = (container, container1, container2, btn, e) => {
     e === null || e === void 0 ? void 0 : e.preventDefault();
-    if (container.dataset['source']) {
+    const isSource = Boolean(container.dataset['source']);
+    if (btn) {
+        btn.disabled = isSource;
+    }
+    if (isSource) {
         container.removeAttribute('data-source');
         container1.innerHTML = container1.textContent;
         container2.innerHTML = container2.textContent;
@@ -37,7 +41,6 @@ const dblClickHandler = (container, container1, container2, e) => {
     }
 };
 const repaint = (container, container1, container2, html, render, isGH) => {
-    var _a;
     container.removeAttribute('data-source');
     if (html === undefined) {
         container.style.display = 'none';
@@ -51,7 +54,6 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             .querySelectorAll('[style="/* insecure input */"]'), typeofs = container1.querySelectorAll('span[typeof]'), edits = container1
             .querySelectorAll('.mw-editsection'), tocToggles = container1
             .querySelectorAll('#toctogglecheckbox, .toctogglespan'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
-        (_a = container2.querySelector('#catlinks')) === null || _a === void 0 ? void 0 : _a.remove();
         if (!isGH) {
             for (const ele of withClasses) {
                 removeClass(ele, ...classes);
@@ -84,7 +86,10 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             ele.remove();
         }
         for (const ele of anchors) {
-            ele.classList.remove('text', 'autonumber', 'mw-magiclink-pmid', 'mw-magiclink-rfc');
+            ele.classList.remove('text', 'autonumber', 'internal', 'mw-magiclink-pmid', 'mw-magiclink-rfc', 'mw-magiclink-isbn');
+            if (ele.classList.length === 0) {
+                ele.removeAttribute('class');
+            }
             try {
                 const url = new URL(ele.href);
                 if (ele.classList.contains('external')) {
@@ -102,7 +107,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 ele.removeAttribute('href');
             }
         }
-        if (isIframe && container1.innerHTML === container2.innerHTML) {
+        if (!isGH && container1.innerHTML === container2.innerHTML) {
             dblClickHandler(container, container1, container2);
         }
     }
@@ -117,7 +122,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             localStorage.setItem(key, JSON.stringify(reviewed));
         }
     }
-    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(), input = document.getElementById('search'), select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(reviewed), input = document.getElementById('search'), select = document.querySelector('select'), btns = document.querySelectorAll('button'), btnDone = btns[0], btnDiff = btns[1], diffFrame = document.getElementById('diffFrame'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     wikiparse.setConfig(await (await fetch('./config/default.json')).json());
     await wikiparse.highlight(pre, false, true);
     let optgroup;
@@ -128,16 +133,42 @@ const repaint = (container, container1, container2, html, render, isGH) => {
     select.addEventListener('change', () => {
         const { html, render } = tests[Number(select.value)];
         repaint(container, container1, container2, html, render, isGH);
-        changeHandler(pre, btn, select, tests);
+        changeHandler(pre, btnDone, select, tests);
+        btnDiff.disabled = true;
+        diffFrame.style.display = 'none';
         dispatchEvent(new CustomEvent('casechange'));
     });
     container.addEventListener('click', e => {
         e.preventDefault();
     }, { capture: true });
     container.addEventListener('dblclick', e => {
-        dblClickHandler(container, container1, container2, e);
+        dblClickHandler(container, container1, container2, btnDiff, e);
     });
-    prepareDoneBtn(btn, select, tests, dones, key);
+    prepareDoneBtn(btnDone, select, tests, dones, key);
     inputHandler(input, select, dones);
     hashChangeHandler(select, tests);
+    if (!isGH) {
+        btnDiff.style.display = '';
+        btnDiff.addEventListener('click', () => {
+            (async () => {
+                if (typeof Diff === 'undefined') {
+                    await import('https://cdn.jsdelivr.net/npm/diff');
+                }
+                diffFrame.innerHTML = '';
+                diffFrame.style.display = '';
+                for (const part of Diff.diffWordsWithSpace(container1.textContent, container2.textContent)) {
+                    const span = document.createElement('span');
+                    span.textContent = part.value;
+                    if (part.added || part.removed) {
+                        span.classList.add(`diff-${part.added ? 'added' : 'removed'}`);
+                        if (!/[^\n]/u.test(part.value)) {
+                            span.classList.add('diff-empty');
+                        }
+                    }
+                    diffFrame.append(span);
+                }
+                btnDiff.disabled = true;
+            })();
+        });
+    }
 })();
