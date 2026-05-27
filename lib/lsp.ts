@@ -68,7 +68,6 @@ import type {
 	HeadingToken,
 	ExtToken,
 	AttributesToken,
-	DoubleUnderscoreToken,
 	ArgToken,
 	LinkToken,
 	FileToken,
@@ -76,8 +75,6 @@ import type {
 	RedirectTargetToken,
 	ImageParameterToken,
 	TranscludeToken,
-	MagicLinkToken,
-	AtomToken,
 } from '../internal';
 
 /* NOT FOR BROWSER ONLY */
@@ -182,7 +179,7 @@ const isAttr = ({type, parentNode, length, firstChild}: Token, style?: boolean):
  * @param token
  */
 const isHtmlAttr = (token: Token): token is AttributeToken =>
-	token.is<AttributeToken>('html-attr') || token.is<AttributeToken>('table-attr');
+	token.is('html-attr') || token.is('table-attr');
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -1468,10 +1465,10 @@ export class LanguageService implements LanguageServiceBase {
 			.reverse()
 			.map((token): DocumentLink | false => {
 				let name: string | undefined;
-				if (token.is<TranscludeToken>('magic-word')) {
+				if (token.is('magic-word')) {
 					({name} = token);
 					token = (token.childNodes[1] as ParameterToken).lastChild;
-				} else if (token.is<ImageParameterToken>('image-parameter')) {
+				} else if (token.is('image-parameter')) {
 					({name} = token);
 				}
 				const {type, parentNode, firstChild, lastChild, childNodes, length} = token,
@@ -1498,16 +1495,16 @@ export class LanguageService implements LanguageServiceBase {
 				}
 				try {
 					if (
-						token.is<MagicLinkToken>('magic-link')
-						|| token.is<MagicLinkToken>('ext-link-url')
-						|| token.is<MagicLinkToken>('free-ext-link')
+						token.is('magic-link')
+						|| token.is('ext-link-url')
+						|| token.is('free-ext-link')
 					) {
 						target = token.getUrl(articlePath);
 					} else if (
 						type === 'link-target' && (
-							parentNode!.is<LinkToken>('link')
-							|| parentNode!.is<RedirectTargetToken>('redirect-target')
-							|| parentNode!.is<CategoryToken>('category')
+							parentNode!.is('link')
+							|| parentNode!.is('redirect-target')
+							|| parentNode!.is('category')
 						)
 					) {
 						if (/^(?:\.\.)?\//u.test(target)) {
@@ -1584,8 +1581,7 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, this.#text, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
-			node = offset === 0
-				&& (element.is<AtomToken>('ext-attr-dirty') || element.is<AtomToken>('html-attr-dirty'))
+			node = offset === 0 && (element.is('ext-attr-dirty') || element.is('html-attr-dirty'))
 				? element.parentNode!.parentNode!
 				: element,
 			{type} = node,
@@ -1618,7 +1614,7 @@ export class LanguageService implements LanguageServiceBase {
 		if (!node) {
 			return undefined;
 		}
-		const ext = node.is<ExtToken>('ext') && node.name === 'ref'
+		const ext = node.is('ext') && node.name === 'ref'
 				? node
 				: node.closest<ExtToken>('ext#ref'),
 			refName = ext?.getAttr('name');
@@ -1743,21 +1739,21 @@ export class LanguageService implements LanguageServiceBase {
 			f: string | undefined,
 			colon: string | undefined,
 			range: Range | undefined;
-		if (offsetNode.is<DoubleUnderscoreToken>('double-underscore') && offset > 0) {
+		if (offsetNode.is('double-underscore') && offset > 0) {
 			info = this.#getBehaviorSwitch(offsetNode.name);
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
 			f = offsetNode.text().trim();
 			colon = parentNode!.getAttribute('colon');
 		} else if (
-			offsetNode.is<TranscludeToken>('magic-word') && !offsetNode.modifier && length === 1
+			offsetNode.is('magic-word') && !offsetNode.modifier && length === 1
 			&& (offset > 0 || root.posFromIndex(offsetNode.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);
 			f = offsetNode.firstChild.text().trim();
 			colon = offsetNode.getAttribute('colon');
 		} else if (
-			(offsetNode.is<TranscludeToken>('magic-word') || offsetNode.is<TranscludeToken>('template'))
+			(offsetNode.is('magic-word') || offsetNode.is('template'))
 			&& offsetNode.modifier && offset >= 2 && offsetNode.getRelativeIndex(0) > offset
 		) {
 			f = offsetNode.modifier.trim().slice(0, -1);
@@ -1850,7 +1846,7 @@ export class LanguageService implements LanguageServiceBase {
 					curLine.slice(0, character + numLeadingSpaces(curLine.slice(character), /[{}<]|$/u))
 				}}}`,
 			);
-		if (!lastChild!.is<TranscludeToken>('magic-word') || lastChild.length === 1) {
+		if (!lastChild!.is('magic-word') || lastChild.length === 1) {
 			return undefined;
 		}
 		const {name, childNodes, firstChild} = lastChild,
