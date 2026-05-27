@@ -1016,7 +1016,7 @@ export class Token extends AstElement {
 	 * 获取全部分类
 	 */
 	getCategories(): [string, string | undefined][] {
-		return this.querySelectorAll<CategoryToken>('category').map(({name, sortkey}) => [name, sortkey]);
+		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
 	}
 
 	/**

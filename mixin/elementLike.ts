@@ -8,6 +8,7 @@ import type {
 	HtmlToken,
 	ExtToken,
 } from '../internal';
+import type {TokenTypeMap} from '../map';
 
 /* NOT FOR BROWSER */
 
@@ -55,6 +56,7 @@ export interface ElementLike {
 	 * 符合选择器的所有后代节点
 	 * @param selector selector / 选择器
 	 */
+	querySelectorAll<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K][];
 	querySelectorAll<T = Token>(selector: string): T[];
 
 	/**

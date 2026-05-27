@@ -11,7 +11,6 @@ import {classes} from '../../util/constants';
 import {trimLc} from '../../util/string';
 import {cached} from '../../mixin/cached';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
-import type {CommentToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -188,7 +187,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		if (lastChild?.type === 'text' && lastChild.data.endsWith('\n')) {
 			lastChild.deleteData(-1);
 		}
-		for (const {innerText, nextSibling} of this.querySelectorAll<CommentToken>('comment')) {
+		for (const {innerText, nextSibling} of this.querySelectorAll('comment')) {
 			if (
 				nextSibling?.type === 'text' && /^T:[^_/\n<>~]+$/u.test(innerText) && /^[\n ]/u.test(nextSibling.data)
 			) {
