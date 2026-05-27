@@ -232,7 +232,7 @@ export abstract class AttributeToken extends Token {
 					return e;
 				}
 			}
-		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
+		} else if (name === 'style' && insecureStyle.test(value)) {
 			/* PRINT ONLY */
 
 			if (start === undefined) {
@@ -246,7 +246,7 @@ export abstract class AttributeToken extends Token {
 				const s = lintConfig.getSeverity(rule);
 				return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
 			}
-		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
+		} else if (name === 'tabindex' && value !== '0') {
 			/* PRINT ONLY */
 
 			if (start === undefined) {
@@ -269,13 +269,11 @@ export abstract class AttributeToken extends Token {
 				}
 			}
 		} else if (
-			typeof value === 'string' && (
-				(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
-				|| simple
-				&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
-				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
-					.test(value)
-			)
+			(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
+			|| simple
+			&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
+			&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
+				.test(value)
 		) {
 			/* PRINT ONLY */
 
@@ -291,7 +289,7 @@ export abstract class AttributeToken extends Token {
 			}
 		} else if (simple && type !== 'ext-attr') {
 			const data = provideValues(tag, name),
-				v = String(value).toLowerCase();
+				v = value.toLowerCase();
 			if (data.length > 0 && data.every(n => n !== v)) {
 				/* PRINT ONLY */
 
@@ -344,8 +342,8 @@ export abstract class AttributeToken extends Token {
 	 *
 	 * 获取属性值
 	 */
-	getValue(): string | true {
-		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
+	getValue(): string {
+		return this.#equal ? this.lastChild.text().replace(/[\t\r\n ]+/gu, ' ').trim() : '';
 	}
 
 	/** @private */

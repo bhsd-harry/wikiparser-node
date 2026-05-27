@@ -194,7 +194,7 @@ export abstract class AttributesToken extends Token {
 	 * 获取指定属性
 	 * @param key attribute name / 属性键
 	 */
-	getAttr(key: string): string | true | undefined {
+	getAttr(key: string): string | undefined {
 		LINT: return this.getAttrToken(key)?.getValue();
 	}
 
@@ -253,12 +253,8 @@ export abstract class AttributesToken extends Token {
 				const severity = lintConfig.getSeverity(rules[1], tag);
 				if (severity) {
 					for (const key of required.get(tag)!) {
-						const keys = typeof key === 'string' ? [key] : key,
-							missing = keys.every(k => {
-								const value = this.getAttr(k);
-								return value === true || !value;
-							});
-						if (missing) {
+						const keys = typeof key === 'string' ? [key] : key;
+						if (!keys.some(k => this.getAttr(k))) {
 							errors.push(generateForSelf(
 								this,
 								rect,
@@ -273,10 +269,7 @@ export abstract class AttributesToken extends Token {
 			const severity = lintConfig.getSeverity(rules[2], 'attribute');
 			if (severity && duplicated.size > 0) {
 				for (const key of duplicated) {
-					const pairs = attrs.get(key)!.map(attr => {
-						const value = attr.getValue();
-						return [attr, value === true ? '' : value] as const;
-					});
+					const pairs = attrs.get(key)!.map(attr => [attr, attr.getValue()] as const);
 					Array.prototype.push.apply(
 						errors,
 						pairs.map(([attr, value], i) => {

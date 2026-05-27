@@ -252,16 +252,6 @@ const getRefName = (token: Token): string | number => getRefAttr(token, refTags,
 const getRefGroup = (token: Token): string | number => getRefAttr(token, referencesTags, groupAttrs);
 
 /**
- * Get the attribute of a `<ref>` tag.
- * @param token extension token
- * @param target attribute name
- */
-const getRefTagAttr = (token: ExtToken | AttributesToken | undefined, target: string): string | false => {
-	const attr = token?.getAttr(target);
-	return attr !== true && attr || false;
-};
-
-/**
  * Get the effective name of a token.
  * @param token
  */
@@ -1170,15 +1160,15 @@ export class LanguageService implements LanguageServiceBase {
 		const ext = node.is<ExtToken>('ext') && node.name === 'ref'
 				? node
 				: node.closest<ExtToken>('ext#ref'),
-			refName = getRefTagAttr(ext, 'name');
+			refName = ext?.getAttr('name');
 		if (!refName) {
 			return undefined;
 		}
-		const refGroup = getRefTagAttr(ext, 'group'),
+		const refGroup = ext!.getAttr('group'),
 			refs = root.querySelectorAll<ExtToken>('ext#ref').filter(
 				token => token.innerText
-					&& getRefTagAttr(token, 'name') === refName
-					&& getRefTagAttr(token, 'group') === refGroup,
+					&& token.getAttr('name') === refName
+					&& token.getAttr('group') === refGroup,
 			).reverse().map(({lastChild}): Omit<Location, 'uri'> => ({
 				range: createNodeRange(lastChild),
 			}));
@@ -1226,7 +1216,7 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		const {type} = node,
 			refName = getRefName(node),
-			refNameGroup = refName && getRefTagAttr(node.parentNode!.parentNode as AttributesToken, 'group'),
+			refNameGroup = refName && (node.parentNode!.parentNode as AttributesToken).getAttr('group'),
 			refGroup = getRefGroup(node),
 			name = getName(node),
 			refs = root.querySelectorAll(type).filter(token => {
@@ -1237,7 +1227,7 @@ export class LanguageService implements LanguageServiceBase {
 				return type === 'attr-value'
 					? getRefGroup(token) === refGroup
 					|| getRefName(token) === refName
-					&& getRefTagAttr(token.parentNode!.parentNode as AttributesToken, 'group') === refNameGroup
+					&& (token.parentNode!.parentNode as AttributesToken).getAttr('group') === refNameGroup
 					: getName(token) === name;
 			});
 		return refs.length === 0
