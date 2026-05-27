@@ -14,7 +14,6 @@ import type {
 	/* NOT FOR BROWSER */
 
 	AstNodes,
-	ParameterToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -316,7 +315,7 @@ export abstract class MagicLinkToken extends Token {
 	 * 是否是模板或魔术字参数
 	 */
 	isParamValue(): boolean {
-		return this.closest<ParameterToken>('parameter')?.getValue() === this.text();
+		return this.closest('parameter')?.getValue() === this.text();
 	}
 
 	/** @private */

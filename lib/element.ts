@@ -27,6 +27,7 @@ import type {
 	ImageParameterToken,
 	TranscludeToken,
 } from '../internal';
+import type {TokenTypeMap} from '../map';
 
 /* NOT FOR BROWSER */
 
@@ -176,6 +177,8 @@ export abstract class AstElement extends AstNode {
 	 * 最近的符合选择器的祖先节点
 	 * @param selector selector / 选择器
 	 */
+	closest<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K] | undefined;
+	closest<T = Token>(selector: string): T | undefined;
 	closest<T = Token>(selector: string): T | undefined {
 		const condition = getCondition<T>(selector, this);
 		let {parentNode} = this;

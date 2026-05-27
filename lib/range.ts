@@ -5,6 +5,7 @@ import type {NodeLike} from '../mixin/nodeLike';
 import type {ElementLike} from '../mixin/elementLike';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
+import type {TokenTypeMap} from '../map';
 
 export interface AstRange extends NodeLike, ElementLike {}
 
@@ -608,6 +609,8 @@ export class AstRange {
 	 * 最近的符合选择器的祖先节点
 	 * @param selector selector / 选择器
 	 */
+	closest<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K] | undefined;
+	closest<T = Token>(selector: string): T | undefined;
 	closest<T = Token>(selector: string): T | undefined {
 		const {commonAncestorContainer} = this;
 		if (commonAncestorContainer.type === 'text') {
