@@ -7,13 +7,9 @@ import {TranscludeToken} from '../src/transclude';
  */
 const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
-		isParameter = lastChild.type === 'parameter';
+		isParameter = lastChild.is('parameter');
 	if (
-		!(
-			type === 'template'
-				? isParameter && lastChild.anon
-				: lastChild.type === 'magic-word-name'
-		)
+		!(type === 'template' ? isParameter && lastChild.anon : lastChild.is('magic-word-name'))
 		&& !lastChild.toString().endsWith('\n')
 	) {
 		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');

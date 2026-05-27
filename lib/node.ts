@@ -4,10 +4,8 @@ import type {
 	TokenTypes,
 } from '../base';
 import type {NodeLike} from '../mixin/nodeLike';
-import type {
-	AstText,
-	Token,
-} from '../internal';
+import type {AstText, Token} from '../internal';
+import type {TokenTypeMap} from '../map';
 
 export type AstNodes = AstText | Token;
 
@@ -81,6 +79,19 @@ export abstract class AstNode implements AstNodeBase {
 			default:
 				this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
+	}
+
+	/**
+	 * Whether to be of a certain type
+	 *
+	 * 是否是某种类型的节点
+	 * @param type token type / 节点类型
+	 * @since v1.10.0
+	 */
+	is<K extends keyof TokenTypeMap>(type: K): this is TokenTypeMap[K];
+	is<T extends Token>(type: TokenTypes): this is T;
+	is(type: TokenTypes): this is Token {
+		return this.type === type;
 	}
 
 	/** @private */
