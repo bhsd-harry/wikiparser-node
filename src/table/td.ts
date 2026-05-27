@@ -24,7 +24,7 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
-declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
+declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | undefined;
 
 /**
  * `<td>`, `<th>` or `<caption>`
@@ -191,7 +191,7 @@ export abstract class TdToken extends TableBaseToken {
 		LINT: {
 			const value = super.getAttr(key);
 			return (
-				key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value
+				key === 'rowspan' || key === 'colspan' ? parseInt(value || '') || 1 : value
 			) as TdAttrGetter<T>;
 		}
 	}

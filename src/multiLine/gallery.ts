@@ -168,7 +168,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	#getSize(key: 'widths' | 'heights'): number {
 		LSP: {
 			const widths = this.parentNode?.getAttr(key),
-				mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
+				mt = widths && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
 			return mt && Number(mt) || 120;
 		}
 	}

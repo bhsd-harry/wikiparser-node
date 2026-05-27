@@ -504,7 +504,7 @@ export class Token extends AstElement {
 							key = cat.name;
 						} else {
 							const value = cat.getValue();
-							if (value && value !== true) {
+							if (value) {
 								key = `#${value}`;
 							}
 						}
