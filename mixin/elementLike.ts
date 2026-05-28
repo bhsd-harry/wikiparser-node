@@ -8,6 +8,7 @@ import type {
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
+	readonly parentNode: Token | undefined;
 	readonly childNodes: readonly AstNodes[];
 };
 
