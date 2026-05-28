@@ -3,7 +3,6 @@ import {
 	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
-import {getCondition} from '../util/selector';
 import {AstNode} from './node';
 import {elementLike} from '../mixin/elementLike';
 import type {
@@ -17,7 +16,6 @@ import type {
 	AstText,
 	Token,
 } from '../internal';
-import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 export interface CaretPosition {
 	readonly offsetNode: AstNodes;
@@ -67,26 +65,6 @@ export abstract class AstElement extends AstNode {
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		setChildNodes(this as AstElement as Token, i, 0, [node]);
 		return node;
-	}
-
-	/**
-	 * Get the closest ancestor node that matches the selector
-	 *
-	 * 最近的符合选择器的祖先节点
-	 * @param selector selector / 选择器
-	 */
-	closest<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
-	closest<T = Token>(selector: string): T | undefined;
-	closest(selector: string): Token | undefined {
-		const condition = getCondition(selector, this);
-		let {parentNode} = this;
-		while (parentNode) {
-			if (condition(parentNode)) {
-				return parentNode;
-			}
-			({parentNode} = parentNode);
-		}
-		return undefined;
 	}
 
 	/** @private */
