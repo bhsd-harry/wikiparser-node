@@ -17,7 +17,7 @@ import type {
 	AstText,
 	Token,
 } from '../internal';
-import type {TokenTypeMap} from '../map';
+import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 export interface CaretPosition {
 	readonly offsetNode: AstNodes;
@@ -75,10 +75,10 @@ export abstract class AstElement extends AstNode {
 	 * 最近的符合选择器的祖先节点
 	 * @param selector selector / 选择器
 	 */
-	closest<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K] | undefined;
+	closest<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
 	closest<T = Token>(selector: string): T | undefined;
-	closest<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector, this);
+	closest(selector: string): Token | undefined {
+		const condition = getCondition(selector, this);
 		let {parentNode} = this;
 		while (parentNode) {
 			if (condition(parentNode)) {
