@@ -5,7 +5,7 @@ import type {
 	AstNodes,
 	Token,
 } from '../internal';
-import type {TokenTypeMap} from '../map';
+import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly childNodes: readonly AstNodes[];
@@ -19,7 +19,7 @@ export interface ElementLike {
 	 * 符合选择器的第一个后代节点
 	 * @param selector selector / 选择器
 	 */
-	querySelector<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K] | undefined;
+	querySelector<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
 	querySelector<T = Token>(selector: string): T | undefined;
 
 	/**
@@ -28,7 +28,7 @@ export interface ElementLike {
 	 * 符合选择器的所有后代节点
 	 * @param selector selector / 选择器
 	 */
-	querySelectorAll<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K][];
+	querySelectorAll<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K][];
 	querySelectorAll<T = Token>(selector: string): T[];
 }
 

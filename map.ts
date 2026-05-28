@@ -30,7 +30,8 @@ export interface TokenTypeMap {
 	parameter: ParameterToken;
 	heading: HeadingToken;
 }
+export type SelectedTokenTypes = keyof TokenTypeMap;
 
 // Ensure all keys in TokenTypeMap are valid token types
 declare type AssertTrue<T extends TokenTypes> = T;
-declare type TokenTypeMapKeyCheck = AssertTrue<keyof TokenTypeMap>;
+declare type TokenTypeMapKeyCheck = AssertTrue<SelectedTokenTypes>;
