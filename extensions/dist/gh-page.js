@@ -5,10 +5,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
     Object.assign(globalThis, { CodeJar });
     await import('/wikiparser-node/extensions/dist/codejar.js');
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [
-        ...document
-            .getElementsByClassName('highlight'),
-    ];
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
     Parser.internal = true;
     Parser.config = config;

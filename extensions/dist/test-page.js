@@ -1,12 +1,7 @@
 import { prepareDoneBtn, addOption, changeHandler, hashChangeHandler, inputHandler } from './test-page-common.js';
 const ignoredGroups = new Set([
     'imageMapParserTests',
-    'citeParserTests',
-    'citeSmokeTests',
-    'parserFunctionTests',
-    'responsiveReferencesTests',
     'subReferencingTests',
-    'urlFragmentModeTests',
 ]);
 const isIframe = self !== top;
 const removeClass = (ele, ...cls) => {
@@ -49,11 +44,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
         container.style.display = '';
         container1.innerHTML = html;
         container2.innerHTML = render !== null && render !== void 0 ? render : '';
-        const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading'], withClasses = container1
-            .querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), styles = container1
-            .querySelectorAll('[style="/* insecure input */"]'), typeofs = container1.querySelectorAll('span[typeof]'), edits = container1
-            .querySelectorAll('.mw-editsection'), tocToggles = container1
-            .querySelectorAll('#toctogglecheckbox, .toctogglespan'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
+        const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading', 'mw-gallery-traditional'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), styles = container1.querySelectorAll('[style="/* insecure input */"]'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), toRemove = container1.querySelectorAll('.mw-editsection, .mw-ext-cite-error'), tocToggles = container1.querySelectorAll('#toctogglecheckbox, .toctogglespan'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
         if (!isGH) {
             for (const ele of withClasses) {
                 removeClass(ele, ...classes);
@@ -69,6 +60,9 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             for (const ele of typeofs) {
                 ele.removeAttribute('typeof');
             }
+            for (const ele of imgs) {
+                ele.removeAttribute('srcset');
+            }
             for (const ele of tocTitles) {
                 ele.removeAttribute('lang');
                 ele.removeAttribute('dir');
@@ -82,7 +76,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 ele.remove();
             }
         }
-        for (const ele of edits) {
+        for (const ele of toRemove) {
             ele.remove();
         }
         for (const ele of anchors) {

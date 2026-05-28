@@ -653,6 +653,41 @@ pre {
 	border: 0;
 }
 
+.frame sup.reference {
+	unicode-bidi: isolate;
+	white-space: nowrap;
+	font-weight: normal;
+	font-style: normal;
+}
+.frame .mw-references-columns {
+	column-width: 27em;
+	margin-top: .3em;
+}
+.frame ol.references {
+	counter-reset: mw-references list-item; /* stylelint-disable-line plugin/use-baseline */
+}
+.frame .mw-references-columns .references {
+	margin-top: 0;
+}
+.frame .mw-references-columns li {
+	break-inside: avoid-column;
+}
+.frame ol.references > li {
+	counter-increment: mw-references;
+}
+.frame .mw-cite-backlink {
+	-webkit-user-select: none;
+	user-select: none;
+}
+.frame .mw-cite-dir-ltr .reference-text {
+	direction: ltr;
+	unicode-bidi: embed;
+}
+.frame .mw-cite-dir-rtl .reference-text {
+	direction: rtl;
+	unicode-bidi: embed;
+}
+
 @media screen and (max-width: 720px) {
 	main {
 		width: 100%;

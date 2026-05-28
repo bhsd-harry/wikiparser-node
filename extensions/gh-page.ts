@@ -34,14 +34,11 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		api = document.querySelector<HTMLInputElement>('#wpAPI')!,
 		fetchBtn = document.querySelector<HTMLButtonElement>('#wpFetch')!,
 		h2 = document.querySelector('h2')!,
-		buttons = [...document.querySelectorAll('.tab > button') as unknown as Iterable<HTMLButtonElement>],
+		buttons = [...document.querySelectorAll('.tab > button')] as HTMLButtonElement[],
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		astContainer = document.getElementById('ast')!,
 		highlighters = document.getElementById('highlighter')!.children as HTMLCollectionOf<HTMLDivElement>,
-		pres = [
-			...document
-				.getElementsByClassName('highlight') as unknown as Iterable<HTMLPreElement>,
-		] as [HTMLPreElement, HTMLPreElement];
+		pres = [...document.getElementsByClassName('highlight')] as [HTMLPreElement, HTMLPreElement];
 
 	// Parser初始化
 	const config: ConfigData = await (await fetch('./config/default.json')).json();
@@ -310,7 +307,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		h2.textContent = `Please input wikitext into the text box ${
 			value === 'highlighter' ? 'under the first tab' : 'below'
 		}.`;
-		for (const tabcontent of tabcontents as unknown as Iterable<HTMLDivElement>) {
+		for (const tabcontent of tabcontents) {
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}
 		const text1 = jar.toString(),

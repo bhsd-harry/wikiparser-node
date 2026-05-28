@@ -148,7 +148,7 @@ class Printer implements PrinterBase {
 			start = 0,
 			end = this.#root.length;
 		if (scrollHeight > parentHeight) {
-			const childNodes = [...children[0]!.childNodes as unknown as Iterable<HTMLElement>],
+			const childNodes = [...children[0]!.childNodes] as HTMLElement[],
 				headings = childNodes.filter(({className}) => className === 'wpb-heading'),
 				{length} = headings;
 			if (length > 0) {

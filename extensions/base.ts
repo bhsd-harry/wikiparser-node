@@ -412,8 +412,8 @@ const splitNewLine = (html: HTMLElement): HTMLElement[] => {
 	let cur = html.cloneNode() as HTMLElement;
 	cur.style.padding = '';
 	const result = [cur];
-	for (const child of html.childNodes as unknown as Iterable<HTMLElement | Text>) {
-		const {textContent} = child;
+	for (const child of html.childNodes) {
+		const {textContent} = child as HTMLElement | Text;
 		if (!textContent.includes('\n')) {
 			cur.append(child.cloneNode(true));
 			continue;

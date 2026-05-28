@@ -842,9 +842,9 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (type === 'param-line') {
 			// parameter line of `<dynamicpagelist>` or `<inputbox>`
 			const key = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
-			return /^[a-z]+$/iu.test(key)
-				? getCompletion(extParams[cur!.name!]!, 'Property', key, position)
-				: undefined;
+			return /[^a-z]/iu.test(key)
+				? undefined
+				: getCompletion(extParams[cur!.name!]!, 'Property', key, position);
 		} else if (isAttr(cur!) && isHtmlAttr(parentNode!)) {
 			const data = provideValues(parentNode.tag, parentNode.name);
 			if (data.length === 0) {

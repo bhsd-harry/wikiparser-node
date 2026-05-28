@@ -24,12 +24,7 @@ const ignoredGroups = new Set([
 	// <imagemap>
 	'imageMapParserTests',
 	// <ref>
-	'citeParserTests',
-	'citeSmokeTests',
-	'parserFunctionTests',
-	'responsiveReferencesTests',
 	'subReferencingTests',
-	'urlFragmentModeTests',
 ]);
 
 const isIframe = self !== top; // eslint-disable-line no-restricted-globals
@@ -113,19 +108,16 @@ const repaint = (
 		container.style.display = '';
 		container1.innerHTML = html!;
 		container2.innerHTML = render ?? '';
-		const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading'],
-			withClasses = container1
-				.querySelectorAll(classes.map(c => `.${c}`).join()) as unknown as Iterable<Element>,
-			empty = container1.querySelectorAll('.mw-empty-elt') as unknown as Iterable<Element>,
-			styles = container1
-				.querySelectorAll('[style="/* insecure input */"]') as unknown as Iterable<Element>,
-			typeofs = container1.querySelectorAll('span[typeof]') as unknown as Iterable<Element>,
-			edits = container1
-				.querySelectorAll('.mw-editsection') as unknown as Iterable<Element>,
-			tocToggles = container1
-				.querySelectorAll('#toctogglecheckbox, .toctogglespan') as unknown as Iterable<Element>,
-			tocTitles = container1.querySelectorAll('.toctitle') as unknown as Iterable<Element>,
-			anchors = container1.querySelectorAll('a[href]') as unknown as Iterable<HTMLAnchorElement>;
+		const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading', 'mw-gallery-traditional'],
+			withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()),
+			empty = container1.querySelectorAll('.mw-empty-elt'),
+			styles = container1.querySelectorAll('[style="/* insecure input */"]'),
+			typeofs = container1.querySelectorAll('span[typeof]'),
+			imgs = container1.querySelectorAll('img'),
+			toRemove = container1.querySelectorAll('.mw-editsection, .mw-ext-cite-error'),
+			tocToggles = container1.querySelectorAll('#toctogglecheckbox, .toctogglespan'),
+			tocTitles = container1.querySelectorAll('.toctitle'),
+			anchors = container1.querySelectorAll('a[href]') as Iterable<HTMLAnchorElement>;
 		if (!isGH) {
 			for (const ele of withClasses) {
 				removeClass(ele, ...classes);
@@ -140,6 +132,9 @@ const repaint = (
 			}
 			for (const ele of typeofs) {
 				ele.removeAttribute('typeof');
+			}
+			for (const ele of imgs) {
+				ele.removeAttribute('srcset');
 			}
 			for (const ele of tocTitles) {
 				ele.removeAttribute('lang');
@@ -156,7 +151,7 @@ const repaint = (
 				ele.remove();
 			}
 		}
-		for (const ele of edits) {
+		for (const ele of toRemove) {
 			ele.remove();
 		}
 		for (const ele of anchors) {
