@@ -13,7 +13,7 @@ import type {
 import type {Cached} from '../util/lint';
 import type {NodeLike} from '../mixin/nodeLike';
 import type {AstText, Token} from '../internal';
-import type {TokenTypeMap} from '../map';
+import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 /* PRINT ONLY */
 
@@ -274,7 +274,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param type token type / 节点类型
 	 * @since v1.10.0
 	 */
-	is<K extends keyof TokenTypeMap>(type: K): this is TokenTypeMap[K];
+	is<K extends SelectedTokenTypes>(type: K): this is TokenTypeMap[K];
 	is<T extends Token>(type: TokenTypes): this is T;
 	is(type: TokenTypes): this is Token {
 		return this.type === type;

@@ -75,7 +75,7 @@ import type {
 	ImageParameterToken,
 	TranscludeToken,
 } from '../internal';
-import type {TokenTypeMap} from '../map';
+import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 /* NOT FOR BROWSER ONLY */
 
@@ -1915,10 +1915,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @private */
-	querySelectorAll<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K][];
+	querySelectorAll<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K][];
 	querySelectorAll<T = Token>(selector: string): T[];
-	querySelectorAll<T = Token>(selector: string): T[] {
-		return this.#done.querySelectorAll<T>(selector);
+	querySelectorAll(selector: string): Token[] {
+		return this.#done.querySelectorAll(selector);
 	}
 
 	/** @private */
