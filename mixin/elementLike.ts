@@ -10,6 +10,8 @@ import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly parentNode: Token | undefined;
 	readonly childNodes: readonly AstNodes[];
+
+	lspError(method: string): never;
 };
 
 export interface ElementLike {
@@ -52,28 +54,28 @@ export interface ElementLike {
 
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
-	LINT: {
-		abstract class ElementLike extends constructor implements ElementLike {
-			#getCondition<T>(selector: string): TokenPredicate<T> {
-				return getCondition<T>(
-					selector,
-					this as unknown as AstElement,
-				);
-			}
+	abstract class ElementLike extends constructor implements ElementLike {
+		#getCondition<T>(selector: string): TokenPredicate<T> {
+			return getCondition<T>(
+				selector,
+				this as unknown as AstElement,
+			);
+		}
 
-			closest(selector: string): Token | undefined {
-				const condition = this.#getCondition(selector);
-				let {parentNode} = this;
-				while (parentNode) {
-					if (condition(parentNode)) {
-						return parentNode;
-					}
-					({parentNode} = parentNode);
+		closest(selector: string): Token | undefined {
+			const condition = this.#getCondition(selector);
+			let {parentNode} = this;
+			while (parentNode) {
+				if (condition(parentNode)) {
+					return parentNode;
 				}
-				return undefined;
+				({parentNode} = parentNode);
 			}
+			return undefined;
+		}
 
-			getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
+		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
+			LINT: {
 				const stack = [...this.childNodes].reverse();
 				while (stack.length > 0) {
 					const child = stack.pop()!,
@@ -89,12 +91,15 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				}
 				return undefined;
 			}
+		}
 
-			querySelector(selector: string): Token | undefined {
-				return this.getElementBy(this.#getCondition(selector));
-			}
+		querySelector(selector: string): Token | undefined {
+			LINT: return this.getElementBy(this.#getCondition(selector));
+			this.lspError('AstElement.querySelector');
+		}
 
-			getElementsBy<T>(condition: TokenPredicate<T>): T[] {
+		getElementsBy<T>(condition: TokenPredicate<T>): T[] {
+			LINT: {
 				const stack = [...this.childNodes].reverse(),
 					descendants: T[] = [];
 				while (stack.length > 0) {
@@ -111,19 +116,20 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				}
 				return descendants;
 			}
+		}
 
-			querySelectorAll(selector: string): Token[] {
-				return this.getElementsBy(this.#getCondition(selector));
-			}
+		querySelectorAll(selector: string): Token[] {
+			LINT: return this.getElementsBy(this.#getCondition(selector));
+			this.lspError('AstElement.querySelectorAll');
+		}
 
-			escape(): void {
-				LSP: {
-					for (const child of this.childNodes) {
-						child.escape();
-					}
+		escape(): void {
+			LSP: {
+				for (const child of this.childNodes) {
+					child.escape();
 				}
 			}
 		}
-		return ElementLike;
 	}
+	return ElementLike;
 };
