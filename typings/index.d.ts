@@ -61,10 +61,17 @@ declare global {
 		readonly page?: string;
 	}
 
+	interface RefState {
+		name?: string;
+		content?: Token;
+		dir?: 'ltr' | 'rtl' | undefined;
+		count: number;
+		id: number;
+	}
 	interface State {
 		headings: Set<string>;
 		categories: Set<string>;
-		refs: Map<string, {name?: string, content?: Token, count: number}[]>;
+		refs: Map<string, RefState[]> & {id: number};
 	}
 
 	/** 注意`nocc`只用于`HeadingToken.id` */

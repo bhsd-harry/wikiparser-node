@@ -73,6 +73,20 @@ const required = new Map([
 	['templatestyles', ['src']],
 ]);
 
+/* NOT FOR BROWSER */
+
+/**
+ * 处理不显示的`<ref>`
+ * @param token 不显示的节点
+ */
+const renderRefs = (token: Token): void => {
+	for (const ref of token.querySelectorAll<ExtToken>('ext#ref')) {
+		ref.toHtmlInternal();
+	}
+};
+
+/* NOT FOR BROWSER END */
+
 /**
  * attributes of extension and HTML tags
  *
@@ -590,10 +604,19 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
-		const map = new Map(
-				this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
-			),
-			output = map.size === 0 ? '' : html([...map.values()], ' ', {removeBlank: true});
+		const map = new Map<string, AttributeToken>();
+		for (const child of this.childNodes) {
+			if (child instanceof AttributeToken) {
+				const last = map.get(child.name);
+				if (last) {
+					renderRefs(last);
+				}
+				map.set(child.name, child);
+			} else {
+				renderRefs(child);
+			}
+		}
+		const output = map.size === 0 ? '' : html([...map.values()], ' ', {removeBlank: true});
 		return output && ` ${output}`;
 	}
 

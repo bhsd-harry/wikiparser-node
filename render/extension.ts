@@ -1,12 +1,18 @@
 import {parsers, states} from '../util/constants';
-import {newline, sanitizeId} from '../util/string';
-import type {ExtToken, GalleryToken} from '../internal';
+import {newline, sanitizeId, sanitizeAttr} from '../util/string';
+import type {ExtToken, GalleryToken, Token} from '../internal';
 
 /** @ignore */
 const getCiteNoteId = (i: number, refName?: string): string =>
-		`cite_note${refName ? `-${sanitizeId(refName)}` : ''}-${i + 1}`,
+		`cite_note${refName ? `-${sanitizeAttr(refName, true)}` : ''}-${i}`,
 	getCiteRefId = (i: number, count: number, refName?: string): string =>
-		`cite_ref-${refName ? `${sanitizeId(refName)}_${i + 1}-${count - 1}` : i + 1}`;
+		`cite_ref-${refName ? `${sanitizeAttr(refName, true)}_${i}-${count - 1}` : i}`,
+	updateRef = (ref: RefState, content: Token, dir?: 'ltr' | 'rtl'): void => {
+		if (!ref.content) {
+			ref.content = content;
+			ref.dir = dir;
+		}
+	};
 
 /**
  * 将扩展标签渲染为HTML
@@ -197,16 +203,20 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}
 			const text = token.innerText?.trim(),
 				references = token.closest<ExtToken>('ext#references');
-			let refName = firstChild.getAttr('name') || '';
+			let refName = firstChild.getAttr('name') || '',
+				dir = firstChild.getAttr('dir')?.toLowerCase();
 			if (!/\D/u.test(refName)) {
 				refName = '';
+			}
+			if (dir !== 'ltr' && dir !== 'rtl') {
+				dir = undefined;
 			}
 			if (references) {
 				const referencesGroup = refs.get(references.getAttr('group') || '')!;
 				if (refName && text) {
 					const ref = referencesGroup.find(({name: n}) => n === refName);
 					if (ref) {
-						ref.content ??= lastChild;
+						updateRef(ref, lastChild, dir);
 					}
 				}
 				return '';
@@ -219,25 +229,32 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}
 			const referencesGroup = refs.get(group)!;
 			let i = refName ? referencesGroup.findIndex(({name: n}) => n === refName) : -1,
-				count = 1;
+				count = 1,
+				ref: RefState;
 			if (i === -1) {
 				i = referencesGroup.length;
-				referencesGroup.push({
+				ref = {
 					...refName && {name: refName},
 					...text && {content: lastChild},
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+					dir: dir as 'ltr' | 'rtl' | undefined,
 					count,
-				});
+					id: ++refs.id,
+				};
+				referencesGroup.push(ref);
 			} else {
-				const ref = referencesGroup[i]!;
+				ref = referencesGroup[i]!;
 				ref.count++;
 				({count} = ref);
 				if (text) {
-					ref.content ??= lastChild;
+					updateRef(ref, lastChild, dir);
 				}
 			}
-			return `<sup id="${getCiteRefId(i, count, refName)}" class="reference"><a href="#${
-				getCiteNoteId(i, refName)
-			}"><span class="cite-bracket">[</span>${i + 1}<span class="cite-bracket">]</span></a></sup>`;
+			return `<sup id="${getCiteRefId(ref.id, count, refName)}" class="reference"><a href="#${
+				getCiteNoteId(ref.id, refName)
+			}"><span class="cite-bracket">[</span>${group}${group && ' '}${
+				i + 1
+			}<span class="cite-bracket">]</span></a></sup>`;
 		}
 		case 'references': {
 			const refs = states.get(token.getRootNode())?.refs;
@@ -257,17 +274,20 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (referencesGroup.length === 0) {
 				return '';
 			}
-			const ol = `<ol class="references">${
+			const ol = `<ol class="references"${group && ` data-mw-group="${group}"`}>${
 				referencesGroup.map(
-					({content, count, name: refName}, i) =>
-						`\n<li id="${getCiteNoteId(i, refName)}"><span class="mw-cite-backlink">${
+					({content, count, dir, name: refName, id}, i) =>
+						`\n<li id="${getCiteNoteId(id, refName)}"${
+							dir ? ` class="mw-cite-dir-${dir}"` : ''
+						}><span class="mw-cite-backlink">${
 							count === 1
-								? `<a href="#${getCiteRefId(i, 1, refName)}">↑</a>`
+								? `<a href="#${getCiteRefId(id, 1, refName)}">↑</a>`
 								: `↑${
 									Array.from(
 										{length: count},
-										(_, j) =>
-											` <sup><a href="#${getCiteRefId(i, j + 1, refName)}">${i}.${j}</a></sup>`,
+										(_, j) => ` <sup><a href="#${
+											getCiteRefId(id, j + 1, refName)
+										}">${i + 1}.${j}</a></sup>`,
 									).join('')
 								}`
 						}</span> <span class="reference-text">${content?.toHtmlInternal() ?? ''}</span>\n</li>`,

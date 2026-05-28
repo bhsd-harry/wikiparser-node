@@ -24,7 +24,11 @@ const closeRegex = new RegExp(
  * @param token 展开后的节点
  */
 export const toHtml = (token: Token): string => {
-	states.set(token, {headings: new Set(), categories: new Set(), refs: new Map()});
+	states.set(token, {
+		headings: new Set(),
+		categories: new Set(),
+		refs: Object.assign(new Map(), {id: 0}),
+	});
 
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
