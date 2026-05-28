@@ -113,7 +113,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 				(child.length > 0 || /\s$/u.test(innerText))
 				&& previousSibling.is('list')
 				&& !/[;#*]/u.test(innerText)
-				&& child.closest('ext-inner#poem,list-range')?.type === 'ext-inner'
+				&& child.closest('ext#poem,list-range')?.type === 'ext'
 			) {
 				lastPrefix = '';
 				result = `<span style="display: inline-block; margin-inline-start: ${

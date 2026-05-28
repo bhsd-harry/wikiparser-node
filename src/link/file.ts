@@ -27,7 +27,7 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {sanitizeAlt} from '../../util/string';
+import {sanitizeAlt, sanitizeId} from '../../util/string';
 import {Shadow} from '../../util/debug';
 import {Title} from '../../lib/title';
 import {cached} from '../../mixin/cached';
@@ -646,9 +646,9 @@ export abstract class FileToken extends LinkBaseToken {
 					const lang = this.getValue('lang') as string | undefined,
 						page = this.getValue('page') as string | undefined;
 					if (lang) {
-						href += `?lang=${lang}`;
+						href += `?lang=${sanitizeId(lang)}`;
 					} else if (page) {
-						href += `?page=${page}`;
+						href += `?page=${sanitizeId(page)}`;
 					}
 				}
 			} catch {}

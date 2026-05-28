@@ -24,7 +24,13 @@ const closeRegex = new RegExp(
  * @param token 展开后的节点
  */
 export const toHtml = (token: Token): string => {
-	states.set(token, {headings: new Set(), categories: new Set()});
+	states.set(token, {headings: new Set(), categories: new Set(), refs: new Map()});
+
+	// 前处理引用
+	const hasCite = token.getAttribute('config').ext.includes('references');
+	if (hasCite) {
+		token.append('\n', token.createElement('references', {selfClosing: true}));
+	}
 
 	// 处理目录
 	const tocSwitch = token.querySelector<DoubleUnderscoreToken>('double-underscore#toc'),
@@ -86,8 +92,13 @@ export const toHtml = (token: Token): string => {
 		}
 	}
 
-	// 处理正文
+	// 后处理引用
 	const lines = token.toHtmlInternal().split('\n');
+	if (hasCite && lines.at(-1) === '') {
+		lines.pop();
+	}
+
+	// 处理正文
 	let output = '',
 		inBlockElem = false,
 		pendingPTag: string | false = false,

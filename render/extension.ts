@@ -1,6 +1,12 @@
-import {parsers} from '../util/constants';
-import {newline} from '../util/string';
+import {parsers, states} from '../util/constants';
+import {newline, sanitizeId} from '../util/string';
 import type {ExtToken, GalleryToken} from '../internal';
+
+/** @ignore */
+const getCiteNoteId = (i: number, refName?: string): string =>
+		`cite_note${refName ? `-${sanitizeId(refName)}` : ''}-${i + 1}`,
+	getCiteRefId = (i: number, count: number, refName?: string): string =>
+		`cite_ref-${refName ? `${sanitizeId(refName)}_${i + 1}-${count - 1}` : i + 1}`;
 
 /**
  * 将扩展标签渲染为HTML
@@ -119,7 +125,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 							}
 						}
 						if (linelinks) {
-							lineReplace = `<a href="#${linelinks}-$1">${lineReplace}</a>`;
+							lineReplace = `<a href="#${sanitizeId(linelinks)}-$1">${lineReplace}</a>`;
 							begin = `${linelinks}-`;
 							end = '</span>';
 						}
@@ -183,6 +189,95 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					html.trim().replaceAll('\n', ' ')
 				}</code>`
 				: `<div${firstChild.toHtmlInternal()}>${html && `<pre>${newline(html)}</pre>`}</div>`;
+		}
+		case 'ref': {
+			const refs = states.get(token.getRootNode())?.refs;
+			if (!refs) {
+				return '';
+			}
+			const text = token.innerText?.trim(),
+				references = token.closest<ExtToken>('ext#references');
+			let refName = firstChild.getAttr('name') || '';
+			if (!/\D/u.test(refName)) {
+				refName = '';
+			}
+			if (references) {
+				const referencesGroup = refs.get(references.getAttr('group') || '')!;
+				if (refName && text) {
+					const ref = referencesGroup.find(({name: n}) => n === refName);
+					if (ref) {
+						ref.content ??= lastChild;
+					}
+				}
+				return '';
+			} else if (!refName && !text || text && /<ref(?:erences)?\b[^>]*>/iu.test(text)) {
+				return '';
+			}
+			const group = firstChild.getAttr('group') || '';
+			if (!refs.has(group)) {
+				refs.set(group, []);
+			}
+			const referencesGroup = refs.get(group)!;
+			let i = refName ? referencesGroup.findIndex(({name: n}) => n === refName) : -1,
+				count = 1;
+			if (i === -1) {
+				i = referencesGroup.length;
+				referencesGroup.push({
+					...refName && {name: refName},
+					...text && {content: lastChild},
+					count,
+				});
+			} else {
+				const ref = referencesGroup[i]!;
+				ref.count++;
+				({count} = ref);
+				if (text) {
+					ref.content ??= lastChild;
+				}
+			}
+			return `<sup id="${getCiteRefId(i, count, refName)}" class="reference"><a href="#${
+				getCiteNoteId(i, refName)
+			}"><span class="cite-bracket">[</span>${i + 1}<span class="cite-bracket">]</span></a></sup>`;
+		}
+		case 'references': {
+			const refs = states.get(token.getRootNode())?.refs;
+			if (!refs) {
+				return '';
+			}
+			const group = firstChild.getAttr('group') || '';
+			if (!refs.has(group)) {
+				return '';
+			}
+			const html = lastChild.toHtmlInternal(),
+				referencesGroup = refs.get(group);
+			if (!referencesGroup) {
+				return html;
+			}
+			refs.delete(group);
+			if (referencesGroup.length === 0) {
+				return '';
+			}
+			const ol = `<ol class="references">${
+				referencesGroup.map(
+					({content, count, name: refName}, i) =>
+						`\n<li id="${getCiteNoteId(i, refName)}"><span class="mw-cite-backlink">${
+							count === 1
+								? `<a href="#${getCiteRefId(i, 1, refName)}">↑</a>`
+								: `↑${
+									Array.from(
+										{length: count},
+										(_, j) =>
+											` <sup><a href="#${getCiteRefId(i, j + 1, refName)}">${i}.${j}</a></sup>`,
+									).join('')
+								}`
+						}</span> <span class="reference-text">${content?.toHtmlInternal() ?? ''}</span>\n</li>`,
+				).join('')
+			}\n</ol>`;
+			return firstChild.getAttr('responsive') === '0'
+				? ol
+				: `<div class="mw-references-wrap${
+					referencesGroup.length > 10 ? ' mw-references-columns' : ''
+				}">${ol}</div>`;
 		}
 		default:
 			return '';

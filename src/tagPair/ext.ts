@@ -108,7 +108,9 @@ export abstract class ExtToken extends TagPairToken {
 					case 'tab':
 						newConfig.ext = newConfig.ext.filter(e => e !== 'tabs');
 						break;
-					// No default
+					case 'ref':
+						newConfig.ext = newConfig.ext.filter(e => e !== 'references');
+					// no default
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
