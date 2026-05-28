@@ -60,7 +60,7 @@ export abstract class ExtToken extends TagPairToken {
 				switch (lcName) {
 					case 'poem':
 						newConfig.excludes.push('heading');
-					// No default
+					// no default
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
