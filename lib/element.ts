@@ -27,7 +27,7 @@ import type {
 	ImageParameterToken,
 	TranscludeToken,
 } from '../internal';
-import type {TokenTypeMap} from '../map';
+import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 /* NOT FOR BROWSER */
 
@@ -177,10 +177,10 @@ export abstract class AstElement extends AstNode {
 	 * 最近的符合选择器的祖先节点
 	 * @param selector selector / 选择器
 	 */
-	closest<K extends keyof TokenTypeMap>(selector: K): TokenTypeMap[K] | undefined;
+	closest<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
 	closest<T = Token>(selector: string): T | undefined;
-	closest<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector, this);
+	closest(selector: string): Token | undefined {
+		const condition = getCondition(selector, this);
 		let {parentNode} = this;
 		while (parentNode) {
 			if (condition(parentNode)) {
@@ -467,10 +467,10 @@ export abstract class AstElement extends AstNode {
 	 * 检查是否符合选择器
 	 * @param selector selector / 选择器
 	 */
-	matches<K extends keyof TokenTypeMap>(selector: K): this is TokenTypeMap[K];
-	matches<T>(selector: string): this is T;
-	matches<T>(selector: string): this is T {
-		return getCondition<T>(selector, this)(this);
+	matches<K extends SelectedTokenTypes>(selector: K): this is TokenTypeMap[K];
+	matches<T extends Token>(selector: string): this is T;
+	matches(selector: string): this is Token {
+		return getCondition(selector, this)(this);
 	}
 
 	/**

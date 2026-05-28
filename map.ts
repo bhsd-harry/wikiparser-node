@@ -111,8 +111,9 @@ export interface TokenTypeMap {
 
 	'list-range': ListRangeToken;
 }
+export type SelectedTokenTypes = keyof TokenTypeMap;
 
 // Ensure all keys in TokenTypeMap are valid token types
 declare type AssertTrue<T extends TokenTypes> = T;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-declare type TokenTypeMapKeyCheck = AssertTrue<keyof TokenTypeMap>;
+declare type TokenTypeMapKeyCheck = AssertTrue<SelectedTokenTypes>;
