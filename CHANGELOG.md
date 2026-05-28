@@ -14,6 +14,10 @@
 - Update PMID magic link URLs
 - [`AttributeToken#getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#getvalue) should always return a string and normalize whitespace characters to a single space
 
+**Changed**
+
+- [`AstRange#closest`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#closest) may now return the [common ancestor container](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#commonancestorcontainer) itself if it matches the selector
+
 ## v1.41.0
 
 *2026-05-25*

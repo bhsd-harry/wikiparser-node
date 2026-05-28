@@ -17,6 +17,7 @@ import {mixins} from '../util/constants';
 /* NOT FOR BROWSER END */
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
+	readonly parentNode: Token | undefined;
 	readonly childNodes: readonly AstNodes[];
 
 	/* NOT FOR BROWSER */
@@ -41,6 +42,15 @@ export interface ElementLike {
 	readonly childElementCount: number;
 
 	/* NOT FOR BROWSER END */
+
+	/**
+	 * Get the closest ancestor node that matches the selector
+	 *
+	 * 最近的符合选择器的祖先节点
+	 * @param selector selector / 选择器
+	 */
+	closest<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
+	closest<T = Token>(selector: string): T | undefined;
 
 	/**
 	 * Get the first descendant that matches the selector
@@ -136,6 +146,18 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 						undefined :
 						this as unknown as AstElement,
 				);
+			}
+
+			closest(selector: string): Token | undefined {
+				const condition = this.#getCondition(selector);
+				let {parentNode} = this;
+				while (parentNode) {
+					if (condition(parentNode)) {
+						return parentNode;
+					}
+					({parentNode} = parentNode);
+				}
+				return undefined;
 			}
 
 			getElementBy<T>(condition: TokenPredicate<T>): T | undefined {

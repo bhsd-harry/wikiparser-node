@@ -5,7 +5,6 @@ import type {NodeLike} from '../mixin/nodeLike';
 import type {ElementLike} from '../mixin/elementLike';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
-import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
 export interface AstRange extends NodeLike, ElementLike {}
 
@@ -118,6 +117,12 @@ export class AstRange {
 	 */
 	get childNodes(): AstNodes[] {
 		return this.extractContents();
+	}
+
+	/** @private */
+	get parentNode(): Token | undefined {
+		const {commonAncestorContainer} = this;
+		return commonAncestorContainer.type === 'text' ? commonAncestorContainer.parentNode : commonAncestorContainer;
 	}
 
 	/**
@@ -601,23 +606,6 @@ export class AstRange {
 	 */
 	getRootNode(): AstNodes {
 		return (this.#endContainer ?? this.startContainer).getRootNode();
-	}
-
-	/**
-	 * Get the closest ancestor node that matches the selector
-	 *
-	 * 最近的符合选择器的祖先节点
-	 * @param selector selector / 选择器
-	 */
-	closest<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
-	closest<T = Token>(selector: string): T | undefined;
-	closest(selector: string): Token | undefined {
-		const {commonAncestorContainer} = this;
-		if (commonAncestorContainer.type === 'text') {
-			const {parentNode} = commonAncestorContainer;
-			return parentNode?.matches(selector) ? parentNode : parentNode?.closest(selector);
-		}
-		return commonAncestorContainer.closest(selector);
 	}
 
 	/**
