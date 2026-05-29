@@ -92,8 +92,12 @@ export abstract class ParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string {
-		const value = removeCommentLine(this.lastChild.text());
-		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
+		const {parentNode, lastChild, anon, name} = this,
+			value = removeCommentLine(lastChild.text());
+		return anon && parentNode?.isTemplate() !== false
+			|| name === '2' && parentNode?.type === 'magic-word' && parentNode.name === 'tag'
+			? value
+			: value.trim();
 	}
 
 	/**
