@@ -220,8 +220,16 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					}
 				}
 				return '';
-			} else if (!refName && !text || text && /<ref(?:erences)?\b[^>]*>/iu.test(text)) {
+			} else if (!refName && !text || text && /<references\b[^>]*>/iu.test(text)) {
 				return '';
+			} else if (text && /<ref\b[^>]*>/iu.test(text)) {
+				const inner = lastChild.cloneNode();
+				for (const ref of inner.querySelectorAll<ExtToken>('ext#ref')) {
+					ref.remove();
+				}
+				if (/<ref\b[^>]*>/iu.test(inner.toString())) {
+					return '';
+				}
 			}
 			const group = firstChild.getAttr('group') || '';
 			if (!refs.has(group)) {
@@ -270,29 +278,29 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (!referencesGroup) {
 				return html;
 			}
-			refs.delete(group);
 			if (referencesGroup.length === 0) {
 				return '';
 			}
-			const ol = `<ol class="references"${group && ` data-mw-group="${group}"`}>${
-				referencesGroup.map(
-					({content, count, dir, name: refName, id}, i) =>
-						`\n<li id="${getCiteNoteId(id, refName)}"${
-							dir ? ` class="mw-cite-dir-${dir}"` : ''
-						}><span class="mw-cite-backlink">${
-							count === 1
-								? `<a href="#${getCiteRefId(id, 1, refName)}">↑</a>`
-								: `↑${
-									Array.from(
-										{length: count},
-										(_, j) => ` <sup><a href="#${
-											getCiteRefId(id, j + 1, refName)
-										}">${i + 1}.${j}</a></sup>`,
-									).join('')
-								}`
-						}</span> <span class="reference-text">${content?.toHtmlInternal() ?? ''}</span>\n</li>`,
-				).join('')
-			}\n</ol>`;
+			let ol = `<ol class="references"${group && ` data-mw-group="${group}"`}>`;
+			for (let i = 0; i < referencesGroup.length; i++) {
+				const {content, count, dir, name: refName, id} = referencesGroup[i]!;
+				ol += `\n<li id="${getCiteNoteId(id, refName)}"${
+					dir ? ` class="mw-cite-dir-${dir}"` : ''
+				}><span class="mw-cite-backlink">${
+					count === 1
+						? `<a href="#${getCiteRefId(id, 1, refName)}">↑</a>`
+						: `↑${
+							Array.from(
+								{length: count},
+								(_, j) => ` <sup><a href="#${
+									getCiteRefId(id, j + 1, refName)
+								}">${i + 1}.${j}</a></sup>`,
+							).join('')
+						}`
+				}</span> <span class="reference-text">${content?.toHtmlInternal() ?? ''}</span>\n</li>`;
+			}
+			ol += '\n</ol>';
+			refs.delete(group);
 			return firstChild.getAttr('responsive') === '0'
 				? ol
 				: `<div class="mw-references-wrap${
