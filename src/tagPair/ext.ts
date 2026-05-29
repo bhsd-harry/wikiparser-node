@@ -71,6 +71,7 @@ export abstract class ExtToken extends TagPairToken {
 					innerToken = new PreToken(inner, newConfig, accum);
 					break;
 				}
+				newConfig.excludes.push('list');
 				// fall through
 			case 'indicator':
 			case 'poem':

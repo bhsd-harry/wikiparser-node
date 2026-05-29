@@ -15465,28 +15465,28 @@
 		"desc": "Template pre: Pwrap",
 		"wikitext": "<pre>\nfoo\n\nbar\n</pre>\n\n{{pre|\nfoo\n\nbar\n}}",
 		"html": "<pre>foo\n\nbar\n</pre>\n<pre>foo\n\nbar\n</pre>",
-		"render": "<pre>&#10;foo&#10;&#10;bar&#10;</pre>\n<pre>foo&#10;&#10;bar</pre>",
+		"render": "<pre>&#10;foo&#10;&#10;bar&#10;</pre>\n<pre>&#10;foo&#10;&#10;bar&#10;</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nfoo\n\nbar\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nfoo\n\nbar\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: List",
 		"wikitext": "<pre>\n*list\n*item\n</pre>\n\n{{pre|\n*list\n*item\n}}",
 		"html": "<pre>*list\n*item\n</pre>\n<pre>*list\n*item\n</pre>",
-		"render": "<pre>&#10;*list&#10;*item&#10;</pre>\n<pre>*list&#10;<ul><li>item</li></ul></pre>",
+		"render": "<pre>&#10;*list&#10;*item&#10;</pre>\n<pre>&#10;*list&#10;*item&#10;</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n*list\n*item\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-list\">*</span>list\n<span class=\"wpb-list\">*</span>item\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Table",
 		"wikitext": "<pre>\n{|\n|test\n|}\n</pre>\n\n{{pre|\n{{{!}}\n{{!}}test\n{{!}}}\n}}",
 		"html": "<pre>{|\n|test\n|}\n</pre>\n<pre><table>\n<tbody><tr>\n<td>test\n</td></tr></tbody></table>\n</pre>",
-		"render": "<pre>&#10;{|&#10;|test&#10;|}&#10;</pre>\n<pre>{|&#10;|test&#10;|}</pre>",
+		"render": "<pre>&#10;{|&#10;|test&#10;|}&#10;</pre>\n<pre>&#10;<table>&#10;<tbody><tr>&#10;<td>test&#10;</td></tr></tbody></table>&#10;</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n{|\n|test\n|}\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td-inner\">test</span></span><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>}</span></span>\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template pre: Link",
 		"wikitext": "<pre>\n[[Test]]\n[https://google.com 123]\n</pre>\n\n{{pre|\n[[Test]]\n[https://google.com 123]\n}}",
 		"html": "<pre>[[Test]]\n[https://google.com 123]\n</pre>\n<pre><a href=\"/index.php?title=Test&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Test (page does not exist)\">Test</a>\n<a rel=\"nofollow\" class=\"external text\" href=\"https://google.com\">123</a>\n</pre>",
-		"render": "<pre>&#10;[[Test]]&#10;[https://google.com 123]&#10;</pre>\n<pre><a href=\"/wiki/Test\" title=\"Test\">Test</a>&#10;<a rel=\"nofollow\" class=\"external\" href=\"https://google.com/\">123</a></pre>",
+		"render": "<pre>&#10;[[Test]]&#10;[https://google.com 123]&#10;</pre>\n<pre>&#10;<a href=\"/wiki/Test\" title=\"Test\">Test</a>&#10;<a rel=\"nofollow\" class=\"external\" href=\"https://google.com/\">123</a>&#10;</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n[[Test]]\n[https://google.com 123]\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test</span>]]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://google.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span>\n</span></span>}}</span></span>"
 	},
 	{
@@ -15507,7 +15507,7 @@
 		"desc": "Template pre: Nowiki",
 		"wikitext": "<pre>\n<nowiki>test</nowiki>\n</pre>\n\n{{pre|\n<nowiki>test</nowiki>\n}}",
 		"html": "<pre>test\n</pre>\n<pre>test\n</pre>",
-		"render": "<pre>&#10;test&#10;</pre>\n<pre>test</pre>",
+		"render": "<pre>&#10;test&#10;</pre>\n<pre>&#10;test&#10;</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-noinclude\">&lt;nowiki&gt;</span>test<span class=\"wpb-noinclude\">&lt;/nowiki&gt;</span>\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">test</span>&lt;/nowiki&gt;</span>\n</span></span>}}</span></span>"
 	},
 	{
