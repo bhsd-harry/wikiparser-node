@@ -1,5 +1,6 @@
 import {parsers, states} from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr} from '../util/string';
+import {extAttrs} from '../util/sharable';
 import type {ExtToken, GalleryToken, Token} from '../internal';
 
 /** @ignore */
@@ -201,18 +202,24 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (!refs) {
 				return '';
 			}
-			const text = token.innerText?.trim(),
-				references = token.closest<ExtToken>('ext#references');
-			let refName = firstChild.getAttr('name') || '',
-				dir = firstChild.getAttr('dir')?.toLowerCase();
+			const follow = firstChild.getAttr('follow') || '';
+			if (/^\d+$/u.test(follow)) {
+				return '';
+			}
+			let refName = firstChild.getAttr('name') || '';
 			if (!/\D/u.test(refName)) {
 				refName = '';
+			} else if (refName && follow) {
+				return '';
 			}
+			let dir = firstChild.getAttr('dir')?.toLowerCase() as 'ltr' | 'rtl' | undefined;
 			if (dir !== 'ltr' && dir !== 'rtl') {
 				dir = undefined;
 			}
+			const text = token.innerText?.trim(),
+				references = token.closest<ExtToken>('ext#references');
 			if (references) {
-				const referencesGroup = refs.get(references.getAttr('group') || '')!;
+				const {referencesGroup} = refs.get(references.getAttr('group') || '')!;
 				if (refName && text) {
 					const ref = referencesGroup.find(({name: n}) => n === refName);
 					if (ref) {
@@ -233,9 +240,23 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}
 			const group = firstChild.getAttr('group') || '';
 			if (!refs.has(group)) {
-				refs.set(group, []);
+				refs.set(group, {referencesGroup: [], follows: []});
 			}
-			const referencesGroup = refs.get(group)!;
+			const {referencesGroup, follows} = refs.get(group)!;
+			if (follow) {
+				const ref = referencesGroup.find(({name: n}) => n === follow);
+				if (ref) {
+					if (ref.content) {
+						ref.content.safeAppend([' ', ...lastChild.childNodes]);
+					} else {
+						ref.content = lastChild;
+					}
+				} else {
+					refs.id++;
+					follows.push({content: lastChild});
+				}
+				return '';
+			}
 			let i = refName ? referencesGroup.findIndex(({name: n}) => n === refName) : -1,
 				count = 1,
 				ref: RefState;
@@ -244,8 +265,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				ref = {
 					...refName && {name: refName},
 					...text && {content: lastChild},
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-					dir: dir as 'ltr' | 'rtl' | undefined,
+					dir,
 					count,
 					id: ++refs.id,
 				};
@@ -266,22 +286,29 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		}
 		case 'references': {
 			const refs = states.get(token.getRootNode())?.refs;
-			if (!refs) {
+			if (
+				!refs
+				|| firstChild.childNodes.filter(node => node.is('ext-attr'))
+					.some(({name: key}) => !extAttrs['references']!.has(key))
+			) {
 				return '';
 			}
 			const group = firstChild.getAttr('group') || '';
 			if (!refs.has(group)) {
 				return '';
 			}
-			const html = lastChild.toHtmlInternal(),
-				referencesGroup = refs.get(group);
-			if (!referencesGroup) {
+			const html = lastChild.toHtmlInternal();
+			if (!refs.has(group)) { // 嵌套的`<ref>`
 				return html;
 			}
-			if (referencesGroup.length === 0) {
+			const {referencesGroup, follows} = refs.get(group)!;
+			if (referencesGroup.length === 0 && follows.length === 0) {
 				return '';
 			}
 			let ol = `<ol class="references"${group && ` data-mw-group="${group}"`}>`;
+			for (const {content} of follows) {
+				ol += `\n<p><span class="reference-text">${content.toHtmlInternal()}</span>\n</p>`;
+			}
 			for (let i = 0; i < referencesGroup.length; i++) {
 				const {content, count, dir, name: refName, id} = referencesGroup[i]!;
 				ol += `\n<li id="${getCiteNoteId(id, refName)}"${

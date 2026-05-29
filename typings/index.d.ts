@@ -71,7 +71,7 @@ declare global {
 	interface State {
 		headings: Set<string>;
 		categories: Set<string>;
-		refs: Map<string, RefState[]> & {id: number};
+		refs: Map<string, {referencesGroup: RefState[], follows: {content: Token}[]}> & {id: number};
 	}
 
 	/** 注意`nocc`只用于`HeadingToken.id` */
