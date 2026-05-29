@@ -14,6 +14,7 @@
 - Lowered severity of a lonely `]` following a free external link and some plain text
 - Update PMID magic link URLs
 - [`AttributeToken#getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29#getvalue) should always return a string and normalize whitespace characters to a single space
+- Wikitext lists should not be parsed inside `<pre format="wikitext">` tags
 
 **Changed**
 

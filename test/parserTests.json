@@ -15472,7 +15472,7 @@
 		"desc": "Template pre: List",
 		"wikitext": "<pre>\n*list\n*item\n</pre>\n\n{{pre|\n*list\n*item\n}}",
 		"html": "<pre>*list\n*item\n</pre>\n<pre>*list\n*item\n</pre>",
-		"render": "<pre>&#10;*list&#10;*item&#10;</pre>\n<pre>*list&#10;<ul><li>item</li></ul></pre>",
+		"render": "<pre>&#10;*list&#10;*item&#10;</pre>\n<pre>*list&#10;*item</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n*list\n*item\n</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pre</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-list\">*</span>list\n<span class=\"wpb-list\">*</span>item\n</span></span>}}</span></span>"
 	},
 	{
