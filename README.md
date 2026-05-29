@@ -155,7 +155,6 @@ The following limitations are documented for transparency.
 
 1. Many extensions are not supported.
 1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing) is not supported.
-1. `&` needs to be escaped in `<syntaxhighlight>` ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#XSS%20is%20escaped)).
 
 #### Transclusion
 
