@@ -179,13 +179,15 @@ export abstract class AttributeToken extends Token {
 	 * @param start 起始位置
 	 * @param rect 位置
 	 */
-	#lint(): boolean;
+	#lint(): false | 1 | 2;
 	#lint(start: number, rect: BoundingRect): LintError | false;
 	#lint(
 		start?: number,
 		rect?: BoundingRect,
 	): LintError
-		| boolean {
+		| 2
+		| 1
+		| false {
 		const {firstChild, lastChild, type, name, tag, parentNode} = this,
 			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),
@@ -217,7 +219,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY */
 
 			if (start === undefined) {
-				return true;
+				return 2;
 			}
 
 			/* PRINT ONLY END */
@@ -236,7 +238,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY */
 
 			if (start === undefined) {
-				return true;
+				return 1;
 			}
 
 			/* PRINT ONLY END */
@@ -250,7 +252,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY */
 
 			if (start === undefined) {
-				return true;
+				return 2;
 			}
 
 			/* PRINT ONLY END */
@@ -278,7 +280,7 @@ export abstract class AttributeToken extends Token {
 			/* PRINT ONLY */
 
 			if (start === undefined) {
-				return true;
+				return 2;
 			}
 
 			/* PRINT ONLY END */
@@ -294,7 +296,7 @@ export abstract class AttributeToken extends Token {
 				/* PRINT ONLY */
 
 				if (start === undefined) {
-					return true;
+					return 2;
 				}
 
 				/* PRINT ONLY END */
@@ -358,7 +360,7 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+		return key === 'invalid' ? Boolean(this.#lint()) as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
