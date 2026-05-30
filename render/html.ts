@@ -3,9 +3,13 @@ import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken} from '../int
 
 const blockElems = 'table|h[1-6]|pre|p|[uod]l',
 	antiBlockElems = 't[dh]',
-	allowed = new Set(['sup', 'sub', 'bdi', 'i', 'b', 's', 'strike', 'q']),
-	tocContainer = '<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">'
-		+ '<div class="toctitle"><h2 id="mw-toc-heading">Contents</h2></div>';
+	allowed = new Set(['sup', 'sub', 'bdi', 'i', 'b', 's', 'strike', 'q']);
+const tocContainer = '<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">'
+	+ '<input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none" />'
+	+ '<div class="toctitle">'
+	+ '<h2 id="mw-toc-heading">Contents</h2>'
+	+ '<span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span>'
+	+ '</div>';
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:table|\/t[dh]|\/?(?:tr|caption|d[td]|li))\b/iu;
 const openRegex = new RegExp(

@@ -608,7 +608,8 @@ export abstract class FileToken extends LinkBaseToken {
 			file = this.getAttribute('title'),
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
-			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed' || type === 'gallery-image',
+			framed = fr === 'framed',
+			visibleCaption = manual || framed || fr === 'thumbnail' || type === 'gallery-image',
 			caption = this.getArg('caption')?.toHtmlInternal({
 				...opt,
 				nowrap: true,
@@ -623,12 +624,14 @@ export abstract class FileToken extends LinkBaseToken {
 			})) ?? titleFromCaption,
 			horiz = this.getHorizAlign() ?? '',
 			vert = this.getVertAlign() ?? '',
-			className = `${horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`}${
-				this.getValue('border') ? ' mw-image-border' : ''
-			} ${sanitizeAlt(this.getValue('class') as string | undefined) ?? ''}`.trim(),
-			classAttr = className && ` class="${className}"`,
 			hasWidth = isInteger(width),
-			hasHeight = isInteger(height);
+			hasHeight = isInteger(height),
+			className = `${manual || framed || hasWidth || hasHeight ? '' : 'mw-default-size '}${
+				horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`
+			}${this.getValue('border') ? ' mw-image-border' : ''} ${
+				sanitizeAlt(this.getValue('class') as string | undefined) ?? ''
+			}`.trim(),
+			classAttr = className && ` class="${className}"`;
 		let src: string;
 		try {
 			src = manual ? fr.getFileUrl() : file.getFileUrl(hasWidth && Number(width), hasHeight && Number(height));

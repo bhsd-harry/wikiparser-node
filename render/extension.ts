@@ -52,11 +52,14 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			const caption = firstChild.getAttrToken('caption'),
 				perrow = parseInt(firstChild.getAttr('perrow') || ''),
 				{classList} = firstChild,
-				nolines = firstChild.getAttr('mode')?.toLowerCase() === 'nolines',
+				mode = firstChild.getAttr('mode')?.toLowerCase(),
+				nolines = mode === 'nolines',
 				padding = nolines ? 9 : 43;
 			classList.add('gallery');
 			if (nolines) {
 				classList.add('mw-gallery-nolines');
+			} else if (!mode || mode === 'traditional') {
+				classList.add('mw-gallery-traditional');
 			}
 			if (perrow > 0) {
 				firstChild.setAttr(

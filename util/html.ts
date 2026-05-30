@@ -116,7 +116,7 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 				&& child.closest('ext#poem,list-range')?.type === 'ext'
 			) {
 				lastPrefix = '';
-				result = `<span style="display: inline-block; margin-inline-start: ${
+				result = `<span class="mw-poem-indented" style="display: inline-block; margin-inline-start: ${
 					previousSibling.indent
 				}em;">${result}</span>`;
 			} else {

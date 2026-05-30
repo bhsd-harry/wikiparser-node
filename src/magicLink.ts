@@ -326,12 +326,12 @@ export abstract class MagicLinkToken extends Token {
 		try {
 			url = this.getUrl();
 		} catch {}
-		const attrs = type === 'free-ext-link' || type === 'ext-link-url'
-			? ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"${
-				typeof url === 'object' ? ` href="${url.href}"` : ''
-			}`
-			: (protocol === 'ISBN' ? '' : ' class="external" rel="nofollow"')
-				+ (url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`);
+		const isISBN = protocol === 'ISBN',
+			attrs = type === 'free-ext-link' || type === 'ext-link-url'
+				? ` rel="nofollow" class="external free"${typeof url === 'object' ? ` href="${url.href}"` : ''}`
+				: (isISBN ? '' : ` class="external mw-magiclink-${protocol!.toLowerCase()}" rel="nofollow"`)
+					+ (url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`)
+					+ (isISBN ? ' class="internal mw-magiclink-isbn"' : '');
 		return `<a${attrs}>${innerText}</a>`;
 	}
 }

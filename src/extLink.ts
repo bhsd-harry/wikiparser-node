@@ -225,6 +225,7 @@ export abstract class ExtLinkToken extends Token {
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		const {length, lastChild} = this;
 		let innerText: string,
+			linkType: string,
 			href: string | undefined;
 		if (length > 1) {
 			lastChild.normalize();
@@ -238,13 +239,15 @@ export abstract class ExtLinkToken extends Token {
 				this.insertAdjacent(after, 1);
 			}
 			innerText = lastChild.toHtmlInternal(opt);
+			linkType = 'text';
 		} else {
 			({innerText} = this);
+			linkType = 'autonumber';
 		}
 		try {
 			({href} = this.getUrl());
 		} catch {}
-		return `<a rel="nofollow" class="external"${
+		return `<a rel="nofollow" class="external ${linkType}"${
 			href === undefined ? '' : ` href="${href}"`
 		}>${innerText}</a>`;
 	}
