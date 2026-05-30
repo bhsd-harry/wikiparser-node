@@ -782,3 +782,11 @@ type=search
 prefix={{FULLPAGENAME}}/Archive
 </inputbox>
 !! end
+
+!! test
+HTML attribute XSS
+!! wikitext
+<p itemscope itemtype="javascript:alert('XSS')">XSS</p>
+!! html
+<p itemscope="">XSS</p>
+!! end
