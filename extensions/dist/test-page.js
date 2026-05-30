@@ -44,7 +44,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
         container.style.display = '';
         container1.innerHTML = html;
         container2.innerHTML = render !== null && render !== void 0 ? render : '';
-        const classes = ['mw-default-size', 'mw-poem-indented', 'mw-html-heading', 'mw-gallery-traditional'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), styles = container1.querySelectorAll('[style="/* insecure input */"]'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), toRemove = container1.querySelectorAll('.mw-editsection, .mw-ext-cite-error'), tocToggles = container1.querySelectorAll('#toctogglecheckbox, .toctogglespan'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
+        const classes = ['mw-html-heading'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), toRemove = container1.querySelectorAll('.mw-editsection, .mw-ext-cite-error'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
         if (!isGH) {
             for (const ele of withClasses) {
                 removeClass(ele, ...classes);
@@ -53,9 +53,6 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 if (ele.childElementCount === 0 && !ele.textContent.trim()) {
                     removeClass(ele, 'mw-empty-elt');
                 }
-            }
-            for (const ele of styles) {
-                ele.removeAttribute('style');
             }
             for (const ele of typeofs) {
                 ele.removeAttribute('typeof');
@@ -66,14 +63,6 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             for (const ele of tocTitles) {
                 ele.removeAttribute('lang');
                 ele.removeAttribute('dir');
-            }
-            for (const ele of tocToggles) {
-                const { nextSibling } = ele;
-                if ((nextSibling === null || nextSibling === void 0 ? void 0 : nextSibling.nodeType) === Node.TEXT_NODE
-                    && nextSibling.textContent.startsWith('\n\n')) {
-                    nextSibling.deleteData(0, 2);
-                }
-                ele.remove();
             }
         }
         for (const ele of toRemove) {
@@ -99,10 +88,6 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             catch {
                 ele.removeAttribute('href');
             }
-            ele.classList.remove('text', 'autonumber', 'internal', 'mw-magiclink-pmid', 'mw-magiclink-rfc', 'mw-magiclink-isbn');
-            if (ele.classList.length === 0) {
-                ele.removeAttribute('class');
-            }
         }
         if (!isGH && container1.innerHTML === container2.innerHTML) {
             dblClickHandler(container, container1, container2);
@@ -119,7 +104,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             localStorage.setItem(key, JSON.stringify(reviewed));
         }
     }
-    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(reviewed), input = document.getElementById('search'), select = document.querySelector('select'), btns = document.querySelectorAll('button'), btnDone = btns[0], btnDiff = btns[1], diffFrame = document.getElementById('diffFrame'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(reviewed), toctoggle = 'label[for=toctogglecheckbox]', input = document.getElementById('search'), select = document.querySelector('select'), btns = document.querySelectorAll('button'), btnDone = btns[0], btnDiff = btns[1], diffFrame = document.getElementById('diffFrame'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     wikiparse.setConfig(await (await fetch('./config/default.json')).json());
     await wikiparse.highlight(pre, false, true);
     let optgroup;
@@ -137,9 +122,16 @@ const repaint = (container, container1, container2, html, render, isGH) => {
     });
     container.addEventListener('click', e => {
         e.preventDefault();
+        const target = e.target;
+        if (target.matches(toctoggle)) {
+            const checkbox = target.closest('#toc').querySelector('input');
+            checkbox.checked = !checkbox.checked;
+        }
     }, { capture: true });
     container.addEventListener('dblclick', e => {
-        dblClickHandler(container, container1, container2, btnDiff, e);
+        if (!e.target.matches(toctoggle)) {
+            dblClickHandler(container, container1, container2, btnDiff, e);
+        }
     });
     prepareDoneBtn(btnDone, select, tests, dones, key);
     inputHandler(input, select, dones);
