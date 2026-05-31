@@ -1,4 +1,4 @@
-import { prepareDoneBtn, addOption, changeHandler, hashChangeHandler, inputHandler } from './test-page-common.js';
+import { prepareDoneBtn, hideOptGroup, addOption, changeHandler, hashChangeHandler, inputHandler, } from './test-page-common.js';
 const isIframe = self !== top;
 const removeClass = (ele, ...cls) => {
     ele.classList.remove(...cls);
@@ -80,6 +80,12 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                     url.searchParams.delete('title');
                     ele.setAttribute('href', url.pathname + url.search);
                 }
+                else if (url.origin === location.origin
+                    && url.pathname.startsWith('/wiki/')
+                    && !url.search) {
+                    url.pathname = `/wiki/${url.pathname.slice(6).replaceAll(':', '%3A')}`;
+                    ele.setAttribute('href', url.pathname);
+                }
             }
             catch {
                 ele.removeAttribute('href');
@@ -107,6 +113,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
     for (let i = 0; i < tests.length; i++) {
         optgroup = addOption(optgroup, select, tests, dones, i, isIframe || tests[i].html !== undefined);
     }
+    hideOptGroup(optgroup);
     select.addEventListener('change', () => {
         const { html, render } = tests[Number(select.value)];
         repaint(container, container1, container2, html, render, isGH);

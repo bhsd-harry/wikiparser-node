@@ -1,9 +1,11 @@
 const isGH = location.hostname.endsWith('.github.io');
-const hideOptGroup = optgroup => {
-    optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
-        .every(({ style }) => style.display === 'none')
-        ? 'none'
-        : '';
+export const hideOptGroup = optgroup => {
+    if (optgroup) {
+        optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
+            .every(({ style }) => style.display === 'none')
+            ? 'none'
+            : '';
+    }
 };
 export const prepareDoneBtn = (btn, select, tests, dones, key) => {
     btn.disabled = !select.value;
@@ -22,9 +24,7 @@ export const prepareDoneBtn = (btn, select, tests, dones, key) => {
 export const addOption = (optgroup, select, tests, dones, i, appendOption = true) => {
     const { desc, wikitext } = tests[i];
     if (wikitext === undefined) {
-        if (optgroup) {
-            hideOptGroup(optgroup);
-        }
+        hideOptGroup(optgroup);
         const ele = document.createElement('optgroup');
         ele.label = desc;
         select.append(ele);

@@ -1,4 +1,11 @@
-import {prepareDoneBtn, addOption, changeHandler, hashChangeHandler, inputHandler} from './test-page-common.js';
+import {
+	prepareDoneBtn,
+	hideOptGroup,
+	addOption,
+	changeHandler,
+	hashChangeHandler,
+	inputHandler,
+} from './test-page-common.js';
 import type {} from 'prismjs'; // eslint-disable-line n/no-extraneous-import
 
 declare interface Test {
@@ -150,6 +157,15 @@ const repaint = (
 					}`;
 					url.searchParams.delete('title');
 					ele.setAttribute('href', url.pathname + url.search);
+				} else if (
+					url.origin === location.origin
+					&& url.pathname.startsWith('/wiki/')
+					&& !url.search
+				) {
+					url.pathname = `/wiki/${
+						url.pathname.slice(6).replaceAll(':', '%3A')
+					}`;
+					ele.setAttribute('href', url.pathname);
 				}
 			} catch {
 				ele.removeAttribute('href');
@@ -198,6 +214,7 @@ const repaint = (
 			isIframe || tests[i]!.html !== undefined,
 		);
 	}
+	hideOptGroup(optgroup);
 	select.addEventListener('change', () => {
 		const {html, render} = tests[Number(select.value)]!;
 		repaint(container, container1, container2, html, render, isGH);

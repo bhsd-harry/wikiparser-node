@@ -4,12 +4,14 @@ const isGH = location.hostname.endsWith('.github.io');
  * 隐藏全部子项被禁用的选项组
  * @param optgroup 选项组
  */
-const hideOptGroup: HideOptGroup = optgroup => {
-	// eslint-disable-next-line unicorn/prefer-spread
-	optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
-		.every(({style}) => style.display === 'none')
-		? 'none'
-		: '';
+export const hideOptGroup: HideOptGroup = optgroup => {
+	if (optgroup) {
+		// eslint-disable-next-line unicorn/prefer-spread
+		optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
+			.every(({style}) => style.display === 'none')
+			? 'none'
+			: '';
+	}
 };
 
 /**
@@ -54,9 +56,7 @@ export const addOption: AddOption = (
 ) => {
 	const {desc, wikitext} = tests[i]!;
 	if (wikitext === undefined) {
-		if (optgroup) {
-			hideOptGroup(optgroup);
-		}
+		hideOptGroup(optgroup);
 		const ele = document.createElement('optgroup');
 		ele.label = desc;
 		select.append(ele);
