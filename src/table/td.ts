@@ -458,8 +458,8 @@ export abstract class TdToken extends TableBaseToken {
 			html = html.replace(/(?<=[\S\n])[^\S\n]*$/u, '');
 		}
 		return `${lf}<${subtype}${attr.toHtmlInternal()}>${
-			subtype === 'caption' ? newline(html) : html + (notEOL ? '' : lf)
-		}</${subtype}>`;
+			subtype === 'caption' ? newline(html) : html
+		}${notEOL ? '' : lf}</${subtype}>`;
 	}
 }
 

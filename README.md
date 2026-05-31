@@ -175,6 +175,7 @@ The following limitations are documented for transparency.
 1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
 1. Unclosed HTML tags in the table fostered content ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
 1. `<tr>` elements should not be fostered ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
+1. Link text containing `!!` in a table header ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Exclamation%20points%20in%20wikilink%20content%20in%20table%20precedence)).
 
 #### Link
 

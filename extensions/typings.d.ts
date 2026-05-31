@@ -78,7 +78,7 @@ declare global {
 		dones: Set<string>,
 		key: string,
 	) => void;
-	type HideOptGroup = (optgroup: HTMLOptGroupElement) => void;
+	type HideOptGroup = (optgroup?: HTMLOptGroupElement) => void;
 	type AddOption = (
 		optgroup: HTMLOptGroupElement | undefined,
 		select: HTMLSelectElement,

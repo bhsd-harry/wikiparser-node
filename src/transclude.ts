@@ -676,7 +676,7 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 不是可接受的魔术字
 	 */
 	getPossibleValues(): Token[] {
-		const {type, name, childNodes} = this;
+		const {type, name, childNodes, length: l} = this;
 		if (type === 'template') {
 			throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
 		}
@@ -686,11 +686,13 @@ export abstract class TranscludeToken extends Token {
 			case 'if':
 			case 'ifexist':
 			case 'ifexpr':
-			case 'iferror':
 				start = 2;
 				break;
 			case 'ifeq':
 				start = 3;
+				break;
+			case 'iferror':
+				start = l > 3 ? 2 : 1;
 				break;
 			case 'switch': {
 				const parameters = childNodes.slice(2) as ParameterToken[],
