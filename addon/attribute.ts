@@ -45,8 +45,7 @@ AttributeToken.prototype.setValue =
 		if (value.includes('"') && value.includes(`'`)) {
 			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
 		}
-		const {childNodes} = Parser.parseWithRef(value, this, stages[type] + 1);
-		lastChild.safeReplaceChildren(childNodes);
+		lastChild.safeReplaceChildren(Parser.parseWithRef(value, lastChild, stages[type] + 1).childNodes);
 		this.setAttribute('equal', this.isInside('parameter') ? '{{=}}' : '=');
 		if (value.includes('"')) {
 			this.setAttribute('quotes', [`'`, `'`] as const);
@@ -60,13 +59,12 @@ AttributeToken.prototype.setValue =
 AttributeToken.prototype.rename =
 	/** @implements */
 	function(key): void {
-		const {type, name, tag, firstChild} = this;
+		const {type, name, firstChild, lastChild} = this;
 		/* c8 ignore next 3 */
-		if (name === 'title' || name === 'alt' && tag === 'img') {
+		if (!(lastChild instanceof AtomToken)) {
 			throw new Error(`${name} attribute cannot be renamed!`);
 		}
-		const {childNodes} = Parser.parseWithRef(key, this, stages[type] + 1);
-		firstChild.safeReplaceChildren(childNodes);
+		firstChild.safeReplaceChildren(Parser.parseWithRef(key, this, stages[type] + 1).childNodes);
 	};
 
 AttributeToken.prototype.css =

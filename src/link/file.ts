@@ -437,7 +437,7 @@ export abstract class FileToken extends LinkBaseToken {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 		if (args.length > 1) {
 			Parser.warn(
-				`The image ${this.name} has ${args.length} ${type} parameters. Only the last ${
+				`The image ${JSON.stringify(this.name)} has ${args.length} ${type} parameters. Only the last ${
 					args[0]!.name
 				} will take effect!`,
 			);
@@ -585,8 +585,7 @@ export abstract class FileToken extends LinkBaseToken {
 				),
 		);
 		if (free) {
-			const {childNodes} = Parser.parseWithRef(value as string, this);
-			parameter.safeReplaceChildren(childNodes);
+			parameter.safeReplaceChildren(Parser.parseWithRef(value as string, this).childNodes);
 		}
 		this.insertAt(parameter);
 	}

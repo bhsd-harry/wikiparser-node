@@ -537,8 +537,7 @@ export abstract class ImageParameterToken extends Token {
 		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof
 			this.typeError('setValue', type);
 		} else if (value !== true) {
-			const {childNodes} = Parser.parseWithRef(value, this, name === 'caption' ? undefined : 5);
-			this.safeReplaceChildren(childNodes);
+			this.safeReplaceChildren(Parser.parseWithRef(value, this, name === 'caption' ? undefined : 5).childNodes);
 		}
 	}
 

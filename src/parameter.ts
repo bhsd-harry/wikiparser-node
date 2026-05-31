@@ -289,9 +289,8 @@ export abstract class ParameterToken extends Token {
 	 * @param value parameter value / 参数值
 	 */
 	setValue(value: string): void {
-		const {childNodes} = Parser.parseWithRef(value, this);
 		this.lastChild
-			.safeReplaceChildren(childNodes);
+			.safeReplaceChildren(Parser.parseWithRef(value, this).childNodes);
 	}
 
 	/**

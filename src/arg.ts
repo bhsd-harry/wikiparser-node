@@ -256,8 +256,7 @@ export abstract class ArgToken extends Token {
 	 * @param name new argument name / 新参数名
 	 */
 	setName(name: string): void {
-		const {childNodes} = Parser.parseWithRef(name, this, 2);
-		this.firstChild.safeReplaceChildren(childNodes);
+		this.firstChild.safeReplaceChildren(Parser.parseWithRef(name, this, 2).childNodes);
 	}
 
 	/**

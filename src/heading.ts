@@ -84,8 +84,7 @@ export abstract class HeadingToken extends Token {
 		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
 			throw new Error('Please use HeadingToken.setLevel method to change the level of the heading!');
 		}
-		const {childNodes} = Parser.parseWithRef(text, this);
-		this.firstChild.safeReplaceChildren(childNodes);
+		this.firstChild.safeReplaceChildren(Parser.parseWithRef(text, this).childNodes);
 	}
 
 	/**

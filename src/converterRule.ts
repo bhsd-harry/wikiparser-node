@@ -270,8 +270,7 @@ export abstract class ConverterRuleToken extends Token {
 	 * @param to target of language conversion / 转换目标
 	 */
 	setTo(to: string): void {
-		const {childNodes} = Parser.parseWithRef(to, this);
-		this.lastChild.safeReplaceChildren(childNodes);
+		this.lastChild.safeReplaceChildren(Parser.parseWithRef(to, this).childNodes);
 	}
 
 	/**
@@ -304,15 +303,13 @@ export abstract class ConverterRuleToken extends Token {
 		const {variant, unidirectional} = this;
 		if (!variant) {
 			throw new Error('Please specify the language variant first!');
-		}
-		const {childNodes} = Parser.parseWithRef(from, this);
-		if (!unidirectional) {
+		} else if (!unidirectional) {
 			super.insertAt(
 				Shadow.run(() => getRuleFromTo(undefined, 'from', this.getAttribute('config'))),
 				0,
 			);
 		}
-		this.firstChild.safeReplaceChildren(childNodes);
+		this.firstChild.safeReplaceChildren(Parser.parseWithRef(from, this).childNodes);
 	}
 
 	/**

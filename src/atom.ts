@@ -48,7 +48,7 @@ export class AtomToken extends Token {
 
 		/* c8 ignore next 3 */
 		if (!atomTypes.includes(value)) {
-			throw new RangeError(`"${value}" is not a valid type for AtomToken!`);
+			throw new RangeError(`${JSON.stringify(value)} is not a valid type for AtomToken!`);
 		}
 
 		/* NOT FOR BROWSER END */

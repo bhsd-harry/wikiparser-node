@@ -27,12 +27,11 @@ const format = (token: TranscludeToken): void => {
 TranscludeToken.prototype.newAnonArg =
 	/** @implements */
 	function(val, newline): ParameterToken {
-		const {childNodes} = Parser.parseWithRef(val, this),
-			token = Shadow.run(
-				// @ts-expect-error abstract class
-				(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
-			);
-		token.lastChild.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
+		const token = Shadow.run(
+			// @ts-expect-error abstract class
+			(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
+		);
+		token.lastChild.concat(Parser.parseWithRef(val, this).childNodes); // eslint-disable-line unicorn/prefer-spread
 		if (newline) {
 			format(this);
 		}
@@ -51,14 +50,13 @@ TranscludeToken.prototype.setValue =
 			arg.setValue(value);
 			return;
 		}
-		const k = Parser.parseWithRef(key, this),
-			v = Parser.parseWithRef(value, this),
-			token = Shadow.run(
-				// @ts-expect-error abstract class
-				(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
-			);
-		token.firstChild.safeAppend([...k.childNodes]);
-		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
+		const token = Shadow.run(
+			// @ts-expect-error abstract class
+			(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
+		);
+		token.firstChild.safeAppend(Parser.parseWithRef(key, this).childNodes);
+		// eslint-disable-next-line unicorn/prefer-spread
+		token.lastChild.concat(Parser.parseWithRef(value, this).childNodes);
 		if (newline) {
 			format(this);
 		}
@@ -73,47 +71,28 @@ TranscludeToken.prototype.replaceTemplate =
 		if (type === 'magic-word') {
 			throw new Error('TranscludeToken.replaceTemplate method is only for templates!');
 		}
-		const {childNodes} = Parser.parseWithRef(title, this, 2);
-		firstChild.safeReplaceChildren(childNodes);
+		firstChild.safeReplaceChildren(Parser.parseWithRef(title, this, 2).childNodes);
 	};
 
 TranscludeToken.prototype.replaceModule =
 	/** @implements */
 	function(title): void {
-		const {type, name, length, childNodes: [, mod]} = this;
+		const {type, name, childNodes: [, mod]} = this;
 		/* c8 ignore next 3 */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
 		}
-		if (length === 1) {
-			Token.prototype.insertAt.call(
-				this,
-				Shadow.run(() => new AtomToken(
-					undefined,
-					'invoke-module',
-					this.getAttribute('config'),
-					[],
-					{'Stage-1': ':', '!ExtToken': ''},
-				)),
-			);
-			return;
-		}
-		const {childNodes} = Parser.parseWithRef(title, this, 2);
-		mod.safeReplaceChildren(childNodes);
+		mod.safeReplaceChildren(Parser.parseWithRef(title, this, 2).childNodes);
 	};
 
 TranscludeToken.prototype.replaceFunction =
 	/** @implements */
 	function(func): void {
-		const {type, name, length, childNodes: [,, fun]} = this;
+		const {type, name, length} = this;
 		/* c8 ignore next 6 */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
-		}
-		if (length < 2) {
-			throw new Error('No module name specified!');
-		}
-		if (length === 2) {
+		} else if (length === 2) {
 			Token.prototype.insertAt.call(
 				this,
 				Shadow.run(() => new AtomToken(
@@ -121,13 +100,11 @@ TranscludeToken.prototype.replaceFunction =
 					'invoke-function',
 					this.getAttribute('config'),
 					[],
-					{'Stage-1': ':', '!ExtToken': ''},
+					{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 				)),
 			);
-			return;
 		}
-		const {childNodes} = Parser.parseWithRef(func, this, 2);
-		fun.safeReplaceChildren(childNodes);
+		this.childNodes[2].safeReplaceChildren(Parser.parseWithRef(func, this, 2).childNodes);
 	};
 
 TranscludeToken.prototype.fixDuplication =
@@ -201,17 +178,20 @@ TranscludeToken.prototype.fixDuplication =
 				}
 			}
 			if (remaining > 1) {
-				Parser.error(`${this.type === 'template'
-					? this.name
-					: this.normalizeTitle(
-						`Module:${this.childNodes[1].text()}`,
-						828,
-						{temporary: true, page: ''},
-					).title
-				} still has ${remaining} duplicated ${key} parameters:\n${[...this.getArgs(key)].map(arg => {
-					const {top, left} = arg.getBoundingClientRect();
-					return `Line ${String(top)} Column ${String(left)}`;
-				}).join('\n')}`);
+				Parser.error(`${JSON.stringify(
+					this.type === 'template'
+						? this.name
+						: this.normalizeTitle(
+							`Module:${this.childNodes[1].text()}`,
+							828,
+							{temporary: true, page: ''},
+						).title,
+				)} still has ${remaining} duplicated ${JSON.stringify(key)} parameters:\n${
+					[...this.getArgs(key)].map(arg => {
+						const {top, left} = arg.getBoundingClientRect();
+						return `Line ${top} Column ${left}`;
+					}).join('\n')
+				}`);
 				duplicatedKeys.push(key);
 			}
 		}

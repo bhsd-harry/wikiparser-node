@@ -12,15 +12,15 @@ import {AtomToken} from '../src/atom';
 LinkBaseToken.prototype.setTarget =
 	/** @implements */
 	function(link): void {
-		const {childNodes} = Parser.parseWithRef(link, this, 2),
-			token = Shadow.run(() => new AtomToken(
-				undefined,
-				'link-target',
-				this.getAttribute('config'),
-				[],
-				{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
-			));
-		token.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
+		const token = Shadow.run(() => new AtomToken(
+			undefined,
+			'link-target',
+			this.getAttribute('config'),
+			[],
+			{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
+		));
+		// eslint-disable-next-line unicorn/prefer-spread
+		token.concat(Parser.parseWithRef(link, this, 2).childNodes);
 		this.firstChild.safeReplaceWith(token);
 	};
 

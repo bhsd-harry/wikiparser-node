@@ -202,7 +202,7 @@ export class Token extends AstElement {
 		];
 		/* c8 ignore next 3 */
 		if (!plainTypes.includes(value)) {
-			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);
+			throw new RangeError(`${JSON.stringify(value)} is not a valid type for ${this.constructor.name}!`);
 		}
 
 		/* NOT FOR BROWSER END */

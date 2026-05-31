@@ -110,7 +110,7 @@ export abstract class LinkBaseToken extends Token {
 				link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
 			/* c8 ignore next 3 */
 			if (interwiki && !this.isInterwiki(link)) {
-				throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
+				throw new RangeError(`${JSON.stringify(interwiki)} is not a valid interwiki prefix!`);
 			}
 			this.setTarget(link);
 		}

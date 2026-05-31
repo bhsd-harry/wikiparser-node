@@ -44,16 +44,18 @@ export class Range {
 				| null;
 			/* c8 ignore next 3 */
 			if (!mt) {
-				throw new RangeError(`The argument \`${
-					str
-				}\` should be either in the form of "an+b" as in CSS selectors or Python slices!`);
+				throw new RangeError(`The argument ${
+					JSON.stringify(str)
+				} should be either in the form of "an+b" as in CSS selectors or Python slices!`);
 			}
 			const [, sgnA = '+', a = 1, sgnB = '+'] = mt,
 				b = Number(mt[4] ?? 0);
 			this.step = Number(a);
 			/* c8 ignore next 3 */
 			if (this.step === 0) {
-				throw new RangeError(`In the argument \`${str}\`, the coefficient of "n" must not be 0!`);
+				throw new RangeError(`In the argument ${
+					JSON.stringify(str)
+				}, the coefficient of "n" must not be 0!`);
 			} else if (sgnA === '+') { // `an+b` or `an-b`
 				this.start = sgnB === '+' || b === 0 ? b : this.step - 1 - (b - 1) % this.step;
 				this.end = Infinity;

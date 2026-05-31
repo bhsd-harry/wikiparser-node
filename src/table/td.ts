@@ -116,8 +116,9 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	set innerText(text) {
-		const {childNodes} = Parser.parseWithRef(text, this, undefined, true);
-		this.lastChild.safeReplaceChildren(childNodes);
+		this.lastChild.safeReplaceChildren(
+			Parser.parseWithRef(text, this, undefined, true).childNodes,
+		);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -477,11 +478,10 @@ export const createTd = (
 	subtype: TdSubtypes = 'td',
 	attr: TdAttrs = {},
 ): TdToken => {
-	const innerToken = typeof inner === 'string' ? Parser.parseWithRef(inner, ref) : inner,
-		// @ts-expect-error abstract class
-		token = Shadow.run((): TdToken => new TdToken('\n|', undefined, ref.getAttribute('config')));
+	// @ts-expect-error abstract class
+	const token = Shadow.run((): TdToken => new TdToken('\n|', undefined, ref.getAttribute('config')));
 	token.setSyntax(subtype);
-	token.lastChild.safeReplaceWith(innerToken);
+	token.lastChild.safeReplaceWith(typeof inner === 'string' ? Parser.parseWithRef(inner, ref) : inner);
 	token.setAttr(attr);
 	return token;
 };
