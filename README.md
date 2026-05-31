@@ -16,6 +16,25 @@ You can also directly lint Wikitext articles in the command line using this pack
 npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 ```
 
+## Installation
+
+```sh
+npm i wikilint
+```
+
+### Optional dependencies
+
+You can install any of the following optional packages to enable advanced features:
+
+| Package | Purpose |
+| :-: | --- |
+| `mathoid-texvcjs` | Linting `<math>` and `<chem>` extension tags |
+| `vscode-css-languageservice` | Linting `style` attributes |
+
+```sh
+npm i mathoid-texvcjs vscode-css-languageservice
+```
+
 ## CLI Options
 
 | Option | Argument | Description | Default |
