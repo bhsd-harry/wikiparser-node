@@ -142,7 +142,7 @@ The following limitations are documented for transparency.
 ### Parser
 
 1. Memory leaks may occur in rare cases.
-1. Invalid page names with unicode characters are treated like valid ones ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
+1. Invalid page names with unicode characters are treated like valid ones ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 1. Preformatted text with a leading space is only processed by [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
 1. BCP 47 language codes are not supported in language conversion ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20definition%20of%20language%20variant%20alternatives%20(BCP%2047%20codes))).
 
@@ -153,45 +153,45 @@ The following limitations are documented for transparency.
 
 #### Extension
 
-1. Many extensions are not supported.
+1. Many [extensions](https://github.com/bhsd-harry/wikiparser-node/wiki/Extensions-%28EN%29#support) are not supported.
 1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing) is not supported.
 
 #### Transclusion
 
-1. Some parser functions are not supported.
-1. New lines in `{{localurl:}}` are not handled correctly ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Basic%20%7B%7Blocalurle%3A%7D%7D%20test)).
+1. Some parser functions are not supported, notably [`#formatdate`](https://bhsd-harry.github.io/wikiparser-node/tests.html#formatdate%20parser%20function), [`#time`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Input%20times%20are%20UTC%2C%20not%20local%20time) and [`#invoke`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Scribunto%3A%20hello%20world).
+1. New lines in `{{localurl:}}` are not handled correctly ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Basic%20%7B%7Blocalurle%3A%7D%7D%20test)).
 
 #### Heading
 
-1. RTL support in the table of contents (TOC) ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#span%20tags%20with%20directionality%20in%20TOC)).
+1. RTL support in the table of contents (TOC) ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#span%20tags%20with%20directionality%20in%20TOC)).
 
 #### HTML tag
 
-1. Style sanitization is sometimes different ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
-1. Table fostered content from `<table>` HTML tags ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#6.%20Encapsulate%20foster-parented%20transclusion%20content)).
+1. Style sanitization is sometimes different ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
+1. Table fostered content from `<table>` HTML tags ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#6.%20Encapsulate%20foster-parented%20transclusion%20content)).
 
 #### Table
 
-1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
-1. Unclosed HTML tags in the table fostered content ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
-1. `<tr>` elements should not be fostered ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
+1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
+1. Unclosed HTML tags in the table fostered content ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
+1. `<tr>` elements should not be fostered ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
 
 #### Link
 
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
-1. Block elements inside a link should break it into multiple links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
+1. Block elements inside a link should break it into multiple links ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
 1. Invalid or missing images (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20image%20with%20bogus%20manual%20thumbnail), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20line%20not%20in%20the%20file%20namespace)).
-1. Link starting with `../` on a subpage ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parent%20directory%20in%20redirect)).
+1. Link starting with `../` on a subpage ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Parent%20directory%20in%20redirect)).
 
 #### External link
 
-1. External images are not supported (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#External%20links%3A%20Clickable%20images)).
-1. No percent-encoding in displayed free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
+1. External images are not supported (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#External%20links%3A%20Clickable%20images)).
+1. No percent-encoding in displayed free external links ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
 
 #### Block element
 
-1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [`<div>`](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily) or even [closing tags](http://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
-1. Mixed lists ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Mixed%20Lists%3A%20Test%204)).
+1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [`<div>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily) or even [closing tags](https://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
+1. Mixed lists ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Mixed%20Lists%3A%20Test%204)).
 
 #### Language conversion
 
@@ -201,6 +201,6 @@ The following limitations are documented for transparency.
 
 #### Miscellaneous
 
-1. Illegal HTML entities ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Illegal%20character%20references%20(T106578%2C%20T113194))).
+1. Illegal HTML entities ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Illegal%20character%20references%20(T106578%2C%20T113194))).
 
 </details>

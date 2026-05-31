@@ -1,4 +1,17 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.42.1
+
+*2026-05-31*
+
+**Added**
+
+- [`Token#expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now supports parser functions `#expr` and `#ifexpr`
+
+**Fixed**
+
+- [`TranscludeToken#replaceFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#replacefunction) when there was no function specified
+- Parser function `#iferror` when there is no third argument and the first argument is not an error
+
 ## v1.42.0
 
 *2026-05-30*

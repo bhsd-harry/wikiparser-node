@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {posix} from 'path';
+import {evaluateExpr} from 'mediawiki-expr';
 import {escape, replaceEntities, sanitizeId, decodeHtml} from '../util/string';
 import {parsers} from '../util/constants';
 import {getId} from '../util/html';
@@ -134,6 +135,7 @@ const magicWords = [
 	'switch',
 	'plural',
 	'expr',
+	'ifexpr',
 	'!',
 	'=',
 	'filepath',
@@ -778,11 +780,12 @@ export const expandMagicWord = (
 				? ''
 				: isKnown(arg0) && isKnown(args[1]!) && (args[cmp(arg0, args[1]!, true) ? 2 : 3] ?? '');
 		case 'if':
-		case 'iferror':
 			if (args.length === 1) {
 				return '';
 			}
-			return (name === 'if' ? strip : isError)(decodeHtml(arg0)) ? args[1]! : isKnown(arg0) && (args[2] ?? '');
+			return strip(decodeHtml(arg0)) ? args[1]! : isKnown(arg0) && (args[2] ?? '');
+		case 'iferror':
+			return isError(decodeHtml(arg0)) ? args[1] ?? '' : isKnown(arg0) && (args[2] ?? arg0);
 		case 'ifexist': {
 			if (args.length === 1) {
 				return '';
@@ -849,7 +852,17 @@ export const expandMagicWord = (
 			return args[n === 1 || n === -1 ? 1 : 2] ?? '';
 		}
 		case 'expr':
-			return !Number.isNaN(Number(arg0)) && arg0;
+			return arg0 && isKnown(arg0) && String(evaluateExpr(arg0));
+		case 'ifexpr': {
+			if (!isKnown(arg0)) {
+				return false;
+			}
+			const evaluated = arg0 && evaluateExpr(arg0);
+			if (evaluated && typeof evaluated === 'string') {
+				return evaluated;
+			}
+			return evaluated ? args[1] ?? '' : args[2] ?? '';
+		}
 		case '!':
 			return '|';
 		case '=':
