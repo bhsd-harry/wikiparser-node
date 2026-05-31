@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {posix} from 'path';
-import {evaluateExpr} from 'mediawiki-expr';
 import {escape, replaceEntities, sanitizeId, decodeHtml} from '../util/string';
 import {parsers} from '../util/constants';
 import {getId} from '../util/html';
@@ -369,7 +368,15 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
 		const i = arg.indexOf('=');
 		return i !== -1 && [arg.slice(0, i).trim(), arg.slice(i + 1).trim()];
 	},
-	isKnown = (s: string): boolean => !/\0\d+[tm]\x7F/u.test(s);
+	isKnown = (s: string): boolean => !/\0\d+[tm]\x7F/u.test(s),
+	expr = (s: string): number | string => {
+		try {
+			const {evaluateExpr}: typeof import('mediawiki-expr') = require('mediawiki-expr');
+			return evaluateExpr(s);
+		} catch {
+			throw new Error('Magic words "#expr" and "#ifexpr" require NPM package mediawiki-expr');
+		}
+	};
 
 /**
  * 展开魔术字
@@ -852,12 +859,12 @@ export const expandMagicWord = (
 			return args[n === 1 || n === -1 ? 1 : 2] ?? '';
 		}
 		case 'expr':
-			return arg0 && isKnown(arg0) && String(evaluateExpr(arg0));
+			return arg0 && isKnown(arg0) && String(expr(arg0));
 		case 'ifexpr': {
 			if (!isKnown(arg0)) {
 				return false;
 			}
-			const evaluated = arg0 && evaluateExpr(arg0);
+			const evaluated = arg0 && expr(arg0);
 			if (evaluated && typeof evaluated === 'string') {
 				return evaluated;
 			}

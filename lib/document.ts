@@ -41,18 +41,18 @@ declare interface Texvcjs {
 	};
 }
 
-let texcvjs: Texvcjs | undefined | null;
+let texvcjs: Texvcjs | undefined | null;
 export const loadTexvcjs = /** @ignore */ (): Texvcjs | null => {
 	NPM: {
-		if (texcvjs === undefined) {
+		if (texvcjs === undefined) {
 			try {
-				texcvjs = require('mathoid-texvcjs') as Texvcjs;
+				texvcjs = require('mathoid-texvcjs') as Texvcjs;
 			} catch /* c8 ignore start */ {
-				texcvjs = null;
+				texvcjs = null;
 			}
 			/* c8 ignore stop */
 		}
-		return texcvjs;
+		return texvcjs;
 	}
 };
 

@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.42.1
+## v1.43.0
 
-*2026-05-31*
+*2026-06-01*
 
 **Added**
 
@@ -11,6 +11,10 @@
 
 - [`TranscludeToken#replaceFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#replacefunction) when there was no function specified
 - Parser function `#iferror` when there is no third argument and the first argument is not an error
+
+**Changed**
+
+- Previous optional dependencies are now optional peer dependencies, so they need to be installed manually if the [corresponding features](https://github.com/bhsd-harry/wikiparser-node#optional-dependencies) are needed
 
 ## v1.42.0
 

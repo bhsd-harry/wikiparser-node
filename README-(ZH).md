@@ -71,6 +71,28 @@ npm i wikiparser-node
 npm i wikilint
 ```
 
+#### 可选依赖
+
+你可以安装以下任意可选库来启用高级功能：
+
+| 库 | 功能 |
+| :-: | --- |
+| `mathoid-texvcjs` | 诊断 `<math>` 和 `<chem>` 扩展标签 |
+| `stylelint` | 诊断 `style` 属性 |
+| `vscode-css-languageservice` | `style` 属性的 CSS 语言服务 |
+| `vscode-html-languageservice` | HTML 标签的语言服务 |
+| `vscode-json-languageservice` | `<templatedata>`、`<mapframe>` 和 `<maplink>` 标签的语言服务 |
+| `mediawiki-expr` | 计算解析器函数 `#expr` 和 `#ifexpr` |
+| `prismjs` + `prism-wiki` | 渲染 `<syntaxhighlight>` 扩展标签时的语法高亮 |
+
+```sh
+# 完整的语言服务特性（用于 `Parser.createLanguageService()`）
+npm i mathoid-texvcjs stylelint vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
+
+# 完整的 HTML 渲染特性（用于 `Parser.toHtml()`）
+npm i mediawiki-expr prismjs prism-wiki
+```
+
 ### 浏览器
 
 可以通过 CDN 下载代码，如：

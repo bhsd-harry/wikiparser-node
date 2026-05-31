@@ -71,6 +71,28 @@ or
 npm i wikilint
 ```
 
+#### Optional dependencies
+
+You can install any of the following optional packages to enable advanced features:
+
+| Package | Purpose |
+| :-: | --- |
+| `mathoid-texvcjs` | Diagnostics for `<math>` and `<chem>` extension tags |
+| `stylelint` | Diagnostics for `style` attributes |
+| `vscode-css-languageservice` | CSS language support for `style` attributes |
+| `vscode-html-languageservice` | Language support for HTML tags |
+| `vscode-json-languageservice` | JSON language support for `<templatedata>`, `<mapframe>`, `<maplink>` tags |
+| `mediawiki-expr` | Evaluation of parser functions `#expr` and `#ifexpr` |
+| `prismjs` + `prism-wiki` | Syntax highlighting of `<syntaxhighlight>` extension tags |
+
+```sh
+# Full LanguageService features for `Parser.createLanguageService()`
+npm i mathoid-texvcjs stylelint vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
+
+# Full HTML conversion support for `Parser.toHtml()`
+npm i mediawiki-expr prismjs prism-wiki
+```
+
 ### Browser
 
 You can download the code via CDN, for example:
