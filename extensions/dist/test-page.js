@@ -1,8 +1,4 @@
 import { prepareDoneBtn, addOption, changeHandler, hashChangeHandler, inputHandler } from './test-page-common.js';
-const ignoredGroups = new Set([
-    'imageMapParserTests',
-    'subReferencingTests',
-]);
 const isIframe = self !== top;
 const removeClass = (ele, ...cls) => {
     ele.classList.remove(...cls);
@@ -109,8 +105,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
     await wikiparse.highlight(pre, false, true);
     let optgroup;
     for (let i = 0; i < tests.length; i++) {
-        const { desc, html } = tests[i];
-        optgroup = addOption(optgroup, select, tests, dones, i, !ignoredGroups.has(desc), isIframe || html !== undefined);
+        optgroup = addOption(optgroup, select, tests, dones, i, isIframe || tests[i].html !== undefined);
     }
     select.addEventListener('change', () => {
         const { html, render } = tests[Number(select.value)];

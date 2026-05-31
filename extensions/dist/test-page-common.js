@@ -19,7 +19,7 @@ export const prepareDoneBtn = (btn, select, tests, dones, key) => {
         });
     }
 };
-export const addOption = (optgroup, select, tests, dones, i, appendOptgroup = true, appendOption = true) => {
+export const addOption = (optgroup, select, tests, dones, i, appendOption = true) => {
     const { desc, wikitext } = tests[i];
     if (wikitext === undefined) {
         if (optgroup) {
@@ -27,9 +27,7 @@ export const addOption = (optgroup, select, tests, dones, i, appendOptgroup = tr
         }
         const ele = document.createElement('optgroup');
         ele.label = desc;
-        if (appendOptgroup) {
-            select.append(ele);
-        }
+        select.append(ele);
         return ele;
     }
     else if (appendOption) {

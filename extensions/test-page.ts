@@ -20,13 +20,6 @@ declare global {
 	const Diff: DiffEngine | undefined;
 }
 
-const ignoredGroups = new Set([
-	// <imagemap>
-	'imageMapParserTests',
-	// <ref>
-	'subReferencingTests',
-]);
-
 const isIframe = self !== top; // eslint-disable-line no-restricted-globals
 
 /**
@@ -196,15 +189,13 @@ const repaint = (
 	await wikiparse.highlight!(pre, false, true);
 	let optgroup: HTMLOptGroupElement | undefined;
 	for (let i = 0; i < tests.length; i++) {
-		const {desc, html} = tests[i]!;
 		optgroup = addOption(
 			optgroup,
 			select,
 			tests,
 			dones,
 			i,
-			!ignoredGroups.has(desc),
-			isIframe || html !== undefined,
+			isIframe || tests[i]!.html !== undefined,
 		);
 	}
 	select.addEventListener('change', () => {

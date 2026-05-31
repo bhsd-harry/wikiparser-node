@@ -42,7 +42,6 @@ export const prepareDoneBtn: PrepareDoneBtn = (btn, select, tests, dones, key) =
  * @param tests 测试用例数组
  * @param dones 已完成测试的描述集合
  * @param i 序号
- * @param appendOptgroup 是否添加选项组
  * @param appendOption 是否添加选项
  */
 export const addOption: AddOption = (
@@ -51,7 +50,6 @@ export const addOption: AddOption = (
 	tests,
 	dones,
 	i,
-	appendOptgroup = true,
 	appendOption = true,
 ) => {
 	const {desc, wikitext} = tests[i]!;
@@ -61,9 +59,7 @@ export const addOption: AddOption = (
 		}
 		const ele = document.createElement('optgroup');
 		ele.label = desc;
-		if (appendOptgroup) {
-			select.append(ele);
-		}
+		select.append(ele);
 		return ele;
 	} else if (appendOption) {
 		const option = document.createElement('option');

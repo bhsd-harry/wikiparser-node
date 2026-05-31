@@ -78,7 +78,10 @@ h3 {
 	content: "";
 	display: inline-block;
 }
-#frame[data-source] > .frame {
+#frame > div {
+	break-inside: avoid;
+}
+#frame[data-source] > div > .frame {
 	padding: 0;
 }
 #buttons {
@@ -732,7 +735,7 @@ h3 {
 		width: calc(100% - 27px);
 		margin-top: 0;
 	}
-	#frame[data-source] > .frame:not(:empty) {
+	#frame[data-source] > div > .frame:not(:empty) {
 		width: calc(100% - 3px);
 	}
 }
