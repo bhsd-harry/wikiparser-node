@@ -1,4 +1,5 @@
 import {generateForChild, fixByRemove, fixByUpper} from '../util/lint';
+import {toLowerCase} from '../util/string';
 import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
 import {noEscape} from '../mixin/noEscape';
@@ -108,14 +109,19 @@ export abstract class ConverterFlagsToken extends Token {
 		return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
+	/** 从解析设置中获取语言变体 */
+	#getVariants(): Set<string> {
+		return new Set(toLowerCase(this.getAttribute('config').variants));
+	}
+
 	/**
 	 * Get language coversion flags that specify a language variant
 	 *
 	 * 获取指定语言变体的转换标记
 	 */
 	getVariantFlags(): Set<string> {
-		const variants = new Set(this.getAttribute('config').variants);
-		return new Set(this.#flags!.filter(flag => variants.has(flag)));
+		const variants = this.#getVariants();
+		return new Set(toLowerCase(this.#flags!).filter(flag => variants.has(flag)));
 	}
 
 	/** @private */
@@ -131,16 +137,16 @@ export abstract class ConverterFlagsToken extends Token {
 		/* PRINT ONLY */
 
 		PRINT: if (typeof flag === 'object') {
-			const variants = new Set(this.getAttribute('config').variants);
+			const variants = this.#getVariants();
 			flag = flag.text().trim();
-			variant = this.#flags!.some(f => variants.has(f)) ? variants : new Set();
+			variant = this.#flags!.some(f => variants.has(f.toLowerCase())) ? variants : new Set();
 			unknown = this.getUnknownFlags();
 		}
 
 		/* PRINT ONLY END */
 
 		return Boolean(flag)
-			&& !variant!.has(flag)
+			&& !variant!.has(flag.toLowerCase())
 			&& !unknown!.has(flag)
 			&& (variant!.size > 0 || !definedFlags.has(flag));
 	}

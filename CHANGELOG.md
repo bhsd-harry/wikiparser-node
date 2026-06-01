@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.43.1
+
+*2026-06-03*
+
+**Fixed**
+
+- Support BCP 47 language tags in language conversion syntax
+
 ## v1.43.0
 
 *2026-06-01*

@@ -765,7 +765,7 @@ export const expandMagicWord = (
 			if (height) {
 				query.set('height', height);
 			}
-			return localurl(config, [redirect, query.toString()]);
+			return localurl(config, [redirect, String(query)]);
 		}
 		default:
 			throw new RangeError(`Unsupported magic word: ${name}`);

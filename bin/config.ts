@@ -6,6 +6,7 @@ import {execSync, spawnSync} from 'child_process';
 import assert from 'assert/strict';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/cm-util';
 import {error} from '../util/diff';
+import {toLowerCase} from '../util/string';
 import type {MwConfig, MagicWord} from '@bhsd/cm-util';
 import type {ConfigData} from '../base';
 
@@ -154,7 +155,7 @@ export default async (
 			namespacealiases,
 			functionhooks,
 		} = (await (
-			await fetch(`${url}/api.php?${new URLSearchParams(params).toString()}`, headers)
+			await fetch(`${url}/api.php?${String(new URLSearchParams(params))}`, headers)
 		).json() as Response).query,
 		ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
 			.flatMap(([id, {name, canonical = ''}]): (readonly [string, string])[] => [
@@ -180,16 +181,16 @@ export default async (
 	parserFunction[2] = getAliases(magicwords, new Set(['msg', 'raw']));
 	parserFunction[3] = getAliases(magicwords, new Set(['subst', 'safesubst']));
 	if (!mwConfig.functionHooks) {
-		Object.assign(config, {functionHook: [...functionhooks!.map(s => s.toLowerCase()), 'msgnw']});
+		config.functionHook = [...toLowerCase(functionhooks!), 'msgnw'];
 	}
 	if (!mwConfig.variableIDs) {
 		const {variables} = (await (
 			await fetch(
-				`${url}/api.php?${new URLSearchParams({...params, siprop: 'variables'}).toString()}`,
+				`${url}/api.php?${String(new URLSearchParams({...params, siprop: 'variables'}))}`,
 				headers,
 			)
 		).json() as Response).query;
-		Object.assign(config, {variable: [...new Set([...variables, '='])]});
+		config.variable = [...new Set([...variables, '='])];
 	}
 	if ('#choose' in parserFunction[0]) {
 		delete parserFunction[0]['choose'];
