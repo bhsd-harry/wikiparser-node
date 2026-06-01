@@ -4,11 +4,10 @@ import {parsers, functionHooks} from '../util/constants';
 import {Shadow} from '../util/debug';
 import {removeComment, removeCommentLine, tidy} from '../util/string';
 import {parseRedirect} from '../parser/redirect';
-import {expandedMagicWords, expandMagicWord} from './magicWords';
+import {expandMagicWord} from './magicWords';
 import Parser from '../index';
 import {Token} from '../src/index';
 import type {Config} from '../base';
-import type {MagicWord} from './magicWords';
 import type {
 	CommentToken,
 	IncludeToken,
@@ -226,9 +225,10 @@ const expand = (
 				} else if (functionHooks.has(name)) {
 					clean(accum, args);
 					return implicitNewLine(functionHooks.get(name)!(target, context || undefined), prev);
-				} else if (expandedMagicWords.has(name)) {
+				}
+				try {
 					const result = expandMagicWord(
-						name as MagicWord,
+						name,
 						args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
 						callPage,
 						config,
@@ -240,8 +240,9 @@ const expand = (
 					}
 					clean(accum, args);
 					return implicitNewLine(result, prev);
+				} catch {
+					return m;
 				}
-				return m;
 			},
 		);
 		plain.setText(expanded);

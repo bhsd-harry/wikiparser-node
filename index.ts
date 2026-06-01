@@ -54,7 +54,6 @@ import type {
 import {yellow, blue} from '@bhsd/nodejs';
 import {RedirectMap} from './lib/redirectMap';
 import type {log} from './util/diff';
-import type {MagicWord} from './render/magicWords';
 
 /* NOT FOR BROWSER END */
 
@@ -733,7 +732,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			result = length === 1 && firstChild!.is('magic-word') && functionHooks.get(lcName)!(firstChild);
 		} else {
 			const {expandMagicWord}: typeof import('./render/magicWords') = require('./render/magicWords');
-			result = expandMagicWord(lcName as MagicWord, args);
+			result = expandMagicWord(lcName, args);
 		}
 		/* c8 ignore next 3 */
 		if (result === false) {
