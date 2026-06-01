@@ -48,7 +48,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** language variant / 语言变体 */
 	get variant(): string {
-		LSP: return this.childNodes[this.length - 2]?.text().trim().toLowerCase() ?? '';
+		LSP: return this.childNodes[this.length - 2]?.text().trim() ?? '';
 	}
 
 	/* PRINT ONLY END */
@@ -63,7 +63,7 @@ export abstract class ConverterRuleToken extends Token {
 		const i = rule.indexOf(':'),
 			j = rule.slice(0, i).indexOf('=>'),
 			v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
-		if (hasColon && config.variants.includes(v.trim().toLowerCase())) {
+		if (hasColon && config.variants.includes(v.trim())) {
 			super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 			super.insertAt(getRuleFromTo(rule.slice(i + 1), 'to', config, accum));
 			if (j !== -1) {

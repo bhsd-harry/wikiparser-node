@@ -88,6 +88,17 @@ declare interface Parser extends ParserBase {
 let viewOnly =
 	true;
 
+const variantMap: Record<string, string> = {
+	'sr-ec': 'sr-Cyrl',
+	'sr-el': 'sr-Latn',
+	'zh-cn': 'zh-Hans-CN',
+	'zh-sg': 'zh-Hans-SG',
+	'zh-my': 'zh-Hans-MY',
+	'zh-tw': 'zh-Hant-TW',
+	'zh-hk': 'zh-Hant-HK',
+	'zh-mo': 'zh-Hant-MO',
+};
+
 let lintConfig = (() => {
 		LINT: return new LintConfiguration();
 	})(),
@@ -157,14 +168,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	getConfig(config?: ConfigData) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-		const parserConfig = config ?? this.config as ConfigData,
-			{
-				doubleUnderscore,
-				ext,
-				parserFunction,
-				variable,
-			} = parserConfig;
+		const parserConfig = config ?? this.config as ConfigData;
+		const {
+			doubleUnderscore,
+			ext,
+			parserFunction,
+			variable,
+			variants,
+		} = parserConfig;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore[i]!.length === 0) {
 				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
@@ -173,6 +184,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (ext.includes('translate') && !variable.includes('translationlanguage')) {
 			variable.push('translationlanguage');
 			parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
+		}
+		if (variants.length > 0 && variants.every(v => v.toLowerCase() === v)) {
+			const variantSet = new Set(variants);
+			for (const v of variants) {
+				variantSet.add(variantMap[v] ?? String(new Intl.Locale(v)));
+			}
+			parserConfig.variants = [...variantSet];
 		}
 		return {
 			...minConfig,
