@@ -1,3 +1,4 @@
+import {getBCP47Variants} from '@bhsd/cm-util';
 import {rules, stages} from './base';
 import {
 	Shadow,
@@ -88,17 +89,6 @@ declare interface Parser extends ParserBase {
 let viewOnly =
 	true;
 
-const variantMap: Record<string, string> = {
-	'sr-ec': 'sr-Cyrl',
-	'sr-el': 'sr-Latn',
-	'zh-cn': 'zh-Hans-CN',
-	'zh-sg': 'zh-Hans-SG',
-	'zh-my': 'zh-Hans-MY',
-	'zh-tw': 'zh-Hant-TW',
-	'zh-hk': 'zh-Hant-HK',
-	'zh-mo': 'zh-Hant-MO',
-};
-
 let lintConfig = (() => {
 		LINT: return new LintConfiguration();
 	})(),
@@ -185,13 +175,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			variable.push('translationlanguage');
 			parserFunction[1]['TRANSLATIONLANGUAGE'] = 'translationlanguage';
 		}
-		if (variants.length > 0 && variants.every(v => v.toLowerCase() === v)) {
-			const variantSet = new Set(variants);
-			for (const v of variants) {
-				variantSet.add(variantMap[v] ?? String(new Intl.Locale(v)));
-			}
-			parserConfig.variants = [...variantSet];
-		}
+		parserConfig.variants = getBCP47Variants(variants);
 		return {
 			...minConfig,
 			...parserConfig,

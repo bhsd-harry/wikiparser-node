@@ -524,6 +524,12 @@ h3 {
 	background-color: transparent;
 	border: 0;
 }
+.frame .mw-gallery-traditional .gallerybox > .thumb::before {
+	content: "";
+	vertical-align: middle;
+	display: inline-block;
+	height: 100%;
+}
 .frame .mw-gallery-traditional .gallerybox > .thumb > * {
 	vertical-align: middle;
 	display: inline-block;

@@ -113,6 +113,7 @@ const repaint = (
 			empty = container1.querySelectorAll('.mw-empty-elt'),
 			typeofs = container1.querySelectorAll('span[typeof]'),
 			imgs = container1.querySelectorAll('img'),
+			imgs2 = container2.querySelectorAll('img'),
 			toRemove = container1.querySelectorAll('.mw-editsection, .mw-ext-cite-error'),
 			tocTitles = container1.querySelectorAll('.toctitle'),
 			anchors = container1.querySelectorAll('a[href]') as Iterable<HTMLAnchorElement>;
@@ -130,6 +131,35 @@ const repaint = (
 			}
 			for (const ele of imgs) {
 				ele.removeAttribute('srcset');
+				try {
+					const src = new URL(ele.src);
+					if (src.origin === 'http://example.com') {
+						const mt = /^\/images\/[\da-f]\/[\da-f]{2}\/([^/?]+)$/u.exec(src.pathname)
+							|| /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(\d+)px-[^/?]+$/u.exec(src.pathname);
+						if (mt) {
+							ele.src = `https://commons.wikimedia.org/wiki/Special%3ARedirect%2Ffile%2F${
+								encodeURIComponent(mt[1]!)
+							}${mt[2] ? `?width=${mt[2]}` : ''}`;
+						}
+					}
+				} catch {}
+				if (ele.hasAttribute('resource')) {
+					ele.setAttribute(
+						'resource',
+						ele.getAttribute('resource')!.replaceAll(':', '%3A'),
+					);
+				}
+			}
+			for (const ele of imgs2) {
+				try {
+					const src = new URL(ele.src);
+					if (src.origin === location.origin) {
+						src.protocol = 'https:';
+						src.host = 'commons.wikimedia.org';
+						src.port = '';
+						ele.src = String(src);
+					}
+				} catch {}
 			}
 			for (const ele of tocTitles) {
 				ele.removeAttribute('lang');
