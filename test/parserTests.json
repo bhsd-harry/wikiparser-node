@@ -11472,15 +11472,15 @@
 		"desc": "Explicit definition of language variant alternatives (BCP 47 codes)",
 		"wikitext": "-{zh:China;zh-Hant-TW:Taiwan}-, is China",
 		"html": "<p>Taiwan, is China\n</p>",
-		"render": "<p>China;zh-Hant-TW:Taiwan, is China\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China;zh-Hant-TW:Taiwan</span></span>}-</span>, is China</span>"
+		"render": "<p>China, is China\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh</span>:<span class=\"wpb-converter-rule-to\">China</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-Hant-TW</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>}-</span>, is China</span>"
 	},
 	{
 		"desc": "Filter rules with BCP 47 codes",
 		"wikitext": "-{zh-Hant-TW;|-{zh-tw:Taiwan;zh-hk:Hong Kong;zh-cn:China}-}-",
 		"html": "<p>Taiwan\n</p>",
 		"render": "<p>Taiwan\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag wpb-invalid\">zh-Hant-TW</span>;</span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">Hong Kong</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">China</span></span>}-</span></span></span>}-</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-Hant-TW</span>;</span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">Taiwan</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-hk</span>:<span class=\"wpb-converter-rule-to\">Hong Kong</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">China</span></span>}-</span></span></span>}-</span></span>"
 	},
 	{
 		"desc": "html2wt support for edited wildcard rule (strip trailing semi where needed)",

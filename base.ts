@@ -25,14 +25,14 @@ export interface Config {
 	readonly html: [string[], string[], string[]];
 	readonly namespaces: Record<string, string>;
 	readonly nsid: Record<string, number>;
-	readonly variable: string[];
-	readonly functionHook: string[];
 	readonly parserFunction: [Record<string, string>, Record<string, string>, string[], string[]];
 	readonly doubleUnderscore: [string[], string[], Record<string, string>, Record<string, string>];
 	readonly protocol: string;
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
-	readonly variants: string[];
+	variable: string[];
+	functionHook: string[];
+	variants: string[];
 	articlePath?: string;
 
 	/** @private */
