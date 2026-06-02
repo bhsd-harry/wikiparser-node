@@ -607,8 +607,9 @@ export abstract class FileToken extends LinkBaseToken {
 			file = this.getAttribute('title'),
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
+			isThumb = manual || fr === 'thumbnail',
 			framed = fr === 'framed',
-			visibleCaption = manual || framed || fr === 'thumbnail' || type === 'gallery-image',
+			visibleCaption = isThumb || framed || type === 'gallery-image',
 			caption = this.getArg('caption')?.toHtmlInternal({
 				...opt,
 				nowrap: true,
@@ -637,9 +638,11 @@ export abstract class FileToken extends LinkBaseToken {
 		} catch {
 			return '';
 		}
-		const img = `<img${alt && ` alt="${alt}"`} src="${src}" decoding="async" class="mw-file-element"${
+		const img = `<img${alt && ` alt="${alt}"`}${
+			isThumb && hasLink ? ` resource="${file.getUrl()}"` : ''
+		} src="${src}" decoding="async"${
 			hasWidth ? ` width="${width}"` : ''
-		}${hasHeight ? ` height="${height}"` : ''}>`;
+		}${hasHeight ? ` height="${height}"` : ''} class="mw-file-element">`;
 		let href = '';
 		if (link) {
 			try {

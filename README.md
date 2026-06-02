@@ -220,6 +220,7 @@ The following limitations are documented for transparency.
 
 1. Automatic language conversion is not supported.
 1. Support for manual language conversion is minimal ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20session-wise%20one-way%20language%20variant%20mapping%20(A%20flag%20and%20-%20flag))).
+1. Language conversion should prevent `<p>` wrapping (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Code%20coverage%3A%20rules%20with%20no%20variants), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Language%20converter%20markup%20with%20block%20content)).
 
 #### Miscellaneous
 
