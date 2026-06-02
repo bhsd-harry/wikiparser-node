@@ -102,3 +102,9 @@ export const decodeNumber = factory(
 	/&#(\d+|x[\da-f]+);/giu,
 	(_, code: string) => String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code)),
 );
+
+/**
+ * Convert an array of strings to lowercase
+ * @param str array of strings
+ */
+export const toLowerCase = (str: string[]): string[] => str.map(s => s.toLowerCase());

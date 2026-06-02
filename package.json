@@ -39,7 +39,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --omit=dev",
+		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --include=peer --omit=dev",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = $(npm pkg get name)/; s/version = \\$VERSION/version = $(npm pkg get version)/\" dist/bin/config.js",
@@ -76,7 +76,7 @@
 	"dependencies": {
 		"@bhsd/cm-util": "^2.1.0",
 		"@bhsd/common": "^2.2.1",
-		"@bhsd/stylelint-util": "^1.0.3",
+		"@bhsd/stylelint-util": "^1.1.0",
 		"binary-search": "^1.3.6",
 		"entities": "^8.0.0",
 		"vscode-languageserver-types": "^3.17.5"
