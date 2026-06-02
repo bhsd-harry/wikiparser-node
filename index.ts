@@ -50,10 +50,7 @@ declare interface Parser extends ParserBase {
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getConfig(config?: ConfigData) {
-		const parserConfig = config ?? this.config as ConfigData,
-			// eslint-disable-next-line no-empty-pattern
-			{
-			} = parserConfig;
+		const parserConfig = config ?? this.config as ConfigData;
 		return {
 			...minConfig,
 			...parserConfig,
