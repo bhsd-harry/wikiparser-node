@@ -177,6 +177,7 @@ The following limitations are documented for transparency.
 
 1. Many [extensions](https://github.com/bhsd-harry/wikiparser-node/wiki/Extensions-%28EN%29#support) are not supported.
 1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing) is not supported.
+1. Special cases involving templates inside the `link` parameter of a gallery image ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Link%20media%20option%20with%20template%20with%20arguments)).
 
 #### Transclusion
 
