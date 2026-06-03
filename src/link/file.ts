@@ -163,9 +163,13 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** image height / 图片高度 */
 	get height(): string | undefined {
-		return this.is('gallery-image')
-			? (this.parentNode as GalleryToken | undefined)?.heights.toString()
-			: this.size?.height;
+		if (this.is('gallery-image')) {
+			const parent = this.parentNode as GalleryToken | undefined;
+			if (parent?.parentNode?.getAttr('mode') !== 'nolines') {
+				return parent?.heights.toString();
+			}
+		}
+		return this.size?.height;
 	}
 
 	set height(height) {
@@ -646,7 +650,7 @@ export abstract class FileToken extends LinkBaseToken {
 		} catch {
 			return '';
 		}
-		const img = `<img${alt && ` alt="${alt}"`}${
+		const img = `<img${alt || this.hasArg('alt') ? ` alt="${alt}"` : ''}${
 			isThumb && hasLink ? ` resource="${file.getUrl()}"` : ''
 		} src="${src}" decoding="async"${
 			hasWidth ? ` width="${width}"` : ''
@@ -681,17 +685,17 @@ export abstract class FileToken extends LinkBaseToken {
 		const parent = this.parentNode as GalleryToken | undefined,
 			nolines = parent?.parentNode?.getAttr('mode')?.toLowerCase() === 'nolines',
 			padding = nolines ? 0 : 30;
-		return `\t<li class="gallerybox" style="width: ${
+		return `\t\t<li class="gallerybox" style="width: ${
 			Number(width) + padding + 5
-		}px">\n\t\t<div class="thumb" style="width: ${Number(width) + padding}px${
-			nolines ? '' : `; height: ${Number(height) + padding}px`
-		}"><span>${a}</span></div>\n\t\t<div class="gallerytext">${
+		}px">\n\t\t\t<div class="thumb" style="width: ${Number(width) + padding}px;${
+			nolines ? '' : ` height: ${Number(height) + padding}px;`
+		}"><span>${a}</span></div>\n\t\t\t<div class="gallerytext">${
 			parent?.parentNode?.hasAttr('showfilename')
 				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
 					file.title
 				}">${file.main}</a>\n`
 				: ''
-		}${caption}</div>\n\t</li>`;
+		}${caption}</div>\n\t\t</li>`;
 	}
 }
 

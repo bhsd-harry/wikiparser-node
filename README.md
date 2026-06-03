@@ -166,7 +166,6 @@ The following limitations are documented for transparency.
 1. Memory leaks may occur in rare cases.
 1. Invalid page names with unicode characters are treated like valid ones ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 1. Preformatted text with a leading space is only processed by [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
-1. BCP 47 language codes are not supported in language conversion ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20definition%20of%20language%20variant%20alternatives%20(BCP%2047%20codes))).
 
 ### HTML conversion
 
@@ -178,6 +177,7 @@ The following limitations are documented for transparency.
 1. Many [extensions](https://github.com/bhsd-harry/wikiparser-node/wiki/Extensions-%28EN%29#support) are not supported.
 1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing) is not supported.
 1. Special cases involving templates inside the `link` parameter of a gallery image ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Link%20media%20option%20with%20template%20with%20arguments)).
+1. Gallery packed modes (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20in%20packed%20mode), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20in%20packed-overlay%20mode), [3](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20in%20packed-hover%20mode)).
 
 #### Transclusion
 
@@ -206,6 +206,10 @@ The following limitations are documented for transparency.
 1. Block elements inside a link should break it into multiple links ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
 1. Invalid or missing images (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20image%20with%20bogus%20manual%20thumbnail), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20line%20not%20in%20the%20file%20namespace)).
 1. Link starting with `../` on a subpage ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Parent%20directory%20in%20redirect)).
+1. Duplicate file namespace prefixes should be invalid ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20valid%20attributes)).
+1. File redirects ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20(with%20showfilename%20option))).
+1. Figure caption should not be nested inside inline elements ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#File%20in%20formatting%20element%20violating%20content%20model%2C%20figcaption%20content)).
+1. Seemingly broken file link syntax in a table ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#File%20in%20table%20pipe%20precedence)).
 
 #### External link
 

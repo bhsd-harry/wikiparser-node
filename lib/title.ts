@@ -9,6 +9,10 @@ import {
 	isInterwiki,
 } from '../util/string';
 import type {Config} from '../base';
+import type {
+	Token,
+	ExtToken,
+} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -22,6 +26,7 @@ export interface TitleOptions {
 	selfLink?: boolean | undefined;
 	halfParsed?: boolean | undefined;
 	page?: string | undefined;
+	nowiki?: boolean;
 }
 
 /**
@@ -160,14 +165,22 @@ export class Title {
 	 * @param opt.decode 是否需要解码
 	 * @param opt.selfLink 是否允许selfLink
 	 * @param opt.page 当前页面标题
+	 * @param opt.nowiki 是否剥离nowiki标签
 	 */
 	constructor(
 		title: string,
 		defaultNs: number,
 		config: Config,
-		{temporary, decode, selfLink, page}: TitleOptions = {},
+		{temporary, decode, selfLink, page, nowiki}: TitleOptions = {},
+		accum: Token[] = [],
 	) {
 		this.page = page;
+		if (nowiki) {
+			title = title.replace(
+				/\0(\d+)e\x7F/gu,
+				(_, p1: number) => (accum[p1] as ExtToken).innerText ?? '',
+			);
+		}
 		const trimmed = title.trim(),
 			subpage = trimmed.startsWith('../');
 		if (decode && title.includes('%')) {

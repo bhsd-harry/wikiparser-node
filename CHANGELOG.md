@@ -6,6 +6,7 @@
 **Fixed**
 
 - Support BCP 47 language tags in language conversion syntax
+- File links containing `<nowiki>` tags
 
 ## v1.43.0
 

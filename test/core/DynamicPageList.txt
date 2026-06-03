@@ -683,3 +683,12 @@ category={{PAGENAME:DPLtest}}
 <li><a href="/wiki/Talk:DPLTest2" title="Talk:DPLTest2">Talk:DPLTest2</a></li> 
 <li><a href="/wiki/DPLTest1" title="DPLTest1">DPLTest1</a></li></ul>
 !! end
+
+!! test
+Self-closed DynamicPageList
+!! wikitext
+<DynamicPageList />
+!! html
+<p>Error: You need to include at least one category, or specify a namespace!
+</p>
+!! end

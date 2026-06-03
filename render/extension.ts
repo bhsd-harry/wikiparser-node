@@ -3,6 +3,8 @@ import {newline, sanitizeId, sanitizeAttr} from '../util/string';
 import {extAttrs} from '../util/sharable';
 import type {ExtToken, GalleryToken, Token} from '../internal';
 
+const galleryModes = new Set<string | undefined>(['nolines', 'packed', 'packed-hover', 'packed-overlay', 'slideshow']);
+
 /** @ignore */
 const getCiteNoteId = (i: number, refName?: string): string =>
 		`cite_note${refName ? `-${sanitizeAttr(refName, true)}` : ''}-${i}`,
@@ -53,14 +55,12 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				perrow = parseInt(firstChild.getAttr('perrow') || ''),
 				{classList} = firstChild,
 				mode = firstChild.getAttr('mode')?.toLowerCase(),
-				nolines = mode === 'nolines',
-				padding = nolines ? 9 : 43;
-			classList.add('gallery');
-			if (nolines) {
-				classList.add('mw-gallery-nolines');
-			} else if (!mode || mode === 'traditional') {
-				classList.add('mw-gallery-traditional');
+				padding = mode === 'nolines' ? 9 : 43;
+			if (mode === 'slideshow' && firstChild.hasAttr('showthumbnails')) {
+				firstChild.setAttr('data-showthumbnails', '1');
 			}
+			classList.add('gallery');
+			classList.add(`mw-gallery-${galleryModes.has(mode) ? mode : 'traditional'}`);
 			if (perrow > 0) {
 				firstChild.setAttr(
 					'style',
