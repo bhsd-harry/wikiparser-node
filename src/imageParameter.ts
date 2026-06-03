@@ -4,6 +4,8 @@ import type {
 	FileToken,
 } from '../internal';
 
+export type GalleryImageTypes = 'gallery-image' | 'imagemap-image';
+
 /**
  * image parameter
  *

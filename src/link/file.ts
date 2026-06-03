@@ -4,6 +4,7 @@ import type {
 	TokenTypes,
 	Config,
 } from '../../base';
+import type {GalleryImageTypes} from '../imageParameter';
 import type {
 	AstText as AtomToken,
 	Token,
@@ -22,9 +23,16 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param link 文件名
 	 * @param text 图片参数
 	 * @param delimiter `|`
-	 * @param type 节点类型
+	 * @param type 图库节点类型
 	 */
-	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|', type?: TokenTypes) {
+	constructor(
+		link: string,
+		text?: string,
+		config?: Config,
+		accum: Token[] = [],
+		delimiter = '|',
+		type?: GalleryImageTypes,
+	) {
 		super(link, undefined, config, accum, delimiter);
 		if (text !== undefined) {
 			this.append(
