@@ -85,6 +85,19 @@ const dblClickHandler = (
 };
 
 /**
+ * 添加图片加载错误处理
+ * @param img 图片元素
+ */
+const addImgLoadHandler = (img: HTMLImageElement): void => {
+	img.addEventListener('error', () => {
+		img.classList.add('mw-broken-media');
+	});
+	img.addEventListener('loadstart', () => {
+		img.classList.remove('mw-broken-media');
+	});
+};
+
+/**
  * 重绘内容
  * @param container 容器
  * @param container1 容器1
@@ -137,12 +150,16 @@ const repaint = (
 						const mt = /^\/images\/[\da-f]\/[\da-f]{2}\/([^/?]+)$/u.exec(src.pathname)
 							|| /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(\d+)px-[^/?]+$/u.exec(src.pathname);
 						if (mt) {
+							addImgLoadHandler(ele);
 							ele.src = `https://commons.wikimedia.org/wiki/Special%3ARedirect%2Ffile%2F${
 								encodeURIComponent(mt[1]!)
 							}${mt[2] ? `?width=${mt[2]}` : ''}`;
 						}
 					}
 				} catch {}
+				if (ele.hasAttribute('width')) {
+					ele.removeAttribute('height');
+				}
 				if (ele.hasAttribute('resource')) {
 					ele.setAttribute(
 						'resource',
@@ -154,6 +171,7 @@ const repaint = (
 				try {
 					const src = new URL(ele.src);
 					if (src.origin === location.origin) {
+						addImgLoadHandler(ele);
 						src.protocol = 'https:';
 						src.host = 'commons.wikimedia.org';
 						src.port = '';

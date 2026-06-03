@@ -31,6 +31,14 @@ const dblClickHandler = (container, container1, container2, btn, e) => {
         Prism.highlightAllUnder(container);
     }
 };
+const addImgLoadHandler = (img) => {
+    img.addEventListener('error', () => {
+        img.classList.add('mw-broken-media');
+    });
+    img.addEventListener('loadstart', () => {
+        img.classList.remove('mw-broken-media');
+    });
+};
 const repaint = (container, container1, container2, html, render, isGH) => {
     container.removeAttribute('data-source');
     if (html === undefined) {
@@ -61,11 +69,15 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                         const mt = /^\/images\/[\da-f]\/[\da-f]{2}\/([^/?]+)$/u.exec(src.pathname)
                             || /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(\d+)px-[^/?]+$/u.exec(src.pathname);
                         if (mt) {
+                            addImgLoadHandler(ele);
                             ele.src = `https://commons.wikimedia.org/wiki/Special%3ARedirect%2Ffile%2F${encodeURIComponent(mt[1])}${mt[2] ? `?width=${mt[2]}` : ''}`;
                         }
                     }
                 }
                 catch { }
+                if (ele.hasAttribute('width')) {
+                    ele.removeAttribute('height');
+                }
                 if (ele.hasAttribute('resource')) {
                     ele.setAttribute('resource', ele.getAttribute('resource').replaceAll(':', '%3A'));
                 }
@@ -74,6 +86,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 try {
                     const src = new URL(ele.src);
                     if (src.origin === location.origin) {
+                        addImgLoadHandler(ele);
                         src.protocol = 'https:';
                         src.host = 'commons.wikimedia.org';
                         src.port = '';

@@ -369,6 +369,8 @@ h3 {
 	vertical-align: middle;
 	max-width: 100%;
 	min-width: 50px;
+}
+.frame img.mw-broken-media {
 	background: url(/wikiparser-node/assets/bad-image.svg) center/contain no-repeat;
 }
 .frame .mw-image-border .mw-file-element {
@@ -537,6 +539,7 @@ h3 {
 .frame li.gallerybox div.thumb img {
 	display: block;
 	margin: 0 auto;
+	object-fit: contain;
 }
 .frame .CategoryTreeTag {
 	margin-top: .5ex;
