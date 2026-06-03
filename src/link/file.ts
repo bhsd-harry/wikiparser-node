@@ -12,6 +12,7 @@ import type {
 	LintError,
 	AST,
 } from '../../base';
+import type {GalleryImageTypes} from '../imageParameter';
 import type {
 	Token,
 	AtomToken,
@@ -75,7 +76,7 @@ export abstract class FileToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
-	override get type(): 'file' | 'gallery-image' | 'imagemap-image' {
+	override get type(): 'file' | GalleryImageTypes {
 		return 'file';
 	}
 
@@ -93,9 +94,16 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param link 文件名
 	 * @param text 图片参数
 	 * @param delimiter `|`
-	 * @param type 节点类型
+	 * @param type 图库节点类型
 	 */
-	constructor(link: string, text?: string, config?: Config, accum: Token[] = [], delimiter = '|', type?: TokenTypes) {
+	constructor(
+		link: string,
+		text?: string,
+		config?: Config,
+		accum: Token[] = [],
+		delimiter = '|',
+		type?: GalleryImageTypes,
+	) {
 		super(link, undefined, config, accum, delimiter);
 		const {extension} = this.getTitle(true, true);
 		this.safeAppend(explode(text).map(
