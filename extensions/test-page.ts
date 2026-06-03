@@ -143,20 +143,26 @@ const repaint = (
 				ele.removeAttribute('typeof');
 			}
 			for (const ele of imgs) {
+				let loading = false;
 				ele.removeAttribute('srcset');
 				try {
 					const src = new URL(ele.src);
 					if (src.origin === 'http://example.com') {
 						const mt = /^\/images\/[\da-f]\/[\da-f]{2}\/([^/?]+)$/u.exec(src.pathname)
-							|| /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(\d+)px-[^/?]+$/u.exec(src.pathname);
+							|| /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(?:lang[-a-z]+-)?(\d+)px-[^/?]+$/u
+								.exec(src.pathname);
 						if (mt) {
 							addImgLoadHandler(ele);
 							ele.src = `https://commons.wikimedia.org/wiki/Special%3ARedirect%2Ffile%2F${
 								encodeURIComponent(mt[1]!)
 							}${mt[2] ? `?width=${mt[2]}` : ''}`;
+							loading = true;
 						}
 					}
 				} catch {}
+				if (!loading) {
+					ele.classList.add('mw-broken-media');
+				}
 				if (ele.hasAttribute('width')) {
 					ele.removeAttribute('height');
 				}
@@ -168,6 +174,7 @@ const repaint = (
 				}
 			}
 			for (const ele of imgs2) {
+				let loading = false;
 				try {
 					const src = new URL(ele.src);
 					if (src.origin === location.origin) {
@@ -176,8 +183,12 @@ const repaint = (
 						src.host = 'commons.wikimedia.org';
 						src.port = '';
 						ele.src = String(src);
+						loading = true;
 					}
 				} catch {}
+				if (!loading) {
+					ele.classList.add('mw-broken-media');
+				}
 			}
 			for (const ele of tocTitles) {
 				ele.removeAttribute('lang');
@@ -237,7 +248,7 @@ const repaint = (
 		}
 	}
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
-		dones = new Set(reviewed),
+		dones = new Set(isIframe ? reviewed : []),
 		toctoggle = 'label[for=toctogglecheckbox]',
 		input = document.getElementById('search') as HTMLInputElement,
 		select = document.querySelector('select')!,

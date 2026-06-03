@@ -467,7 +467,7 @@ h3 {
 .frame figure[typeof~="mw:File/Thumb"] > :not(figcaption) .mw-file-element,
 .frame figure[typeof~="mw:File/Frame"] > :not(figcaption) .mw-file-element {
 	border: 1px solid #c8ccd1;
-	background: #f8f9fa;
+	background-color: #f8f9fa;
 	margin: 3px;
 }
 .frame figure[typeof~="mw:File"] > figcaption,
@@ -492,6 +492,9 @@ h3 {
 	padding: 2px;
 	display: block;
 }
+.frame ul.mw-gallery-packed, .frame ul.mw-gallery-packed-hover, .frame ul.mw-gallery-packed-overlay {
+	text-align: center;
+}
 .frame .galleryfilename-truncate {
 	white-space: nowrap;
 	overflow: hidden;
@@ -510,6 +513,38 @@ h3 {
 	vertical-align: top;
 	display: inline-block;
 }
+.frame .mw-gallery-packed li.gallerybox,
+.frame .mw-gallery-packed-hover li.gallerybox,
+.frame .mw-gallery-packed-overlay li.gallerybox {
+	width: min-content;
+}
+.frame ul.mw-gallery-packed-hover li.gallerybox,
+.frame ul.mw-gallery-packed-overlay li.gallerybox {
+	position: relative;
+}
+.frame ul.mw-gallery-packed-hover div.gallerytextwrapper {
+	overflow: hidden;
+	height: 0;
+}
+.frame ul.mw-gallery-packed-overlay li.gallerybox div.gallerytextwrapper,
+.frame ul.mw-gallery-packed-hover li.gallerybox:hover div.gallerytextwrapper {
+	position: absolute;
+	background: rgb(255, 255, 255, .65);
+	padding: 5px 10px;
+	bottom: 0;
+	left: 0;
+	width: calc(100% - 24px);
+	height: auto;
+	max-height: 40%;
+	overflow: hidden;
+	font-weight: bold;
+	margin: 2px;
+}
+.frame ul.mw-gallery-packed-overlay li.gallerybox:hover div.gallerytextwrapper,
+.frame ul.mw-gallery-packed-hover li.gallerybox:hover div.gallerytextwrapper {
+	overflow: visible;
+	max-height: none;
+}
 .frame div.gallerytext {
 	overflow: hidden;
 	font-size: 94%;
@@ -522,7 +557,10 @@ h3 {
 	text-align: center;
 	margin: 2px;
 }
-.frame ul.mw-gallery-nolines li.gallerybox div.thumb {
+.frame ul.mw-gallery-nolines li.gallerybox div.thumb,
+.frame ul.mw-gallery-packed li.gallerybox div.thumb,
+.frame ul.mw-gallery-packed-hover li.gallerybox div.thumb,
+.frame ul.mw-gallery-packed-overlay li.gallerybox div.thumb {
 	background-color: transparent;
 	border: 0;
 }
@@ -540,6 +578,11 @@ h3 {
 	display: block;
 	margin: 0 auto;
 	object-fit: contain;
+}
+.frame .mw-gallery-packed li.gallerybox div.thumb img,
+.frame .mw-gallery-packed-hover li.gallerybox div.thumb img,
+.frame .mw-gallery-packed-overlay li.gallerybox div.thumb img {
+	max-width: none;
 }
 .frame .CategoryTreeTag {
 	margin-top: .5ex;

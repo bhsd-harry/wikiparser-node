@@ -62,19 +62,25 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 ele.removeAttribute('typeof');
             }
             for (const ele of imgs) {
+                let loading = false;
                 ele.removeAttribute('srcset');
                 try {
                     const src = new URL(ele.src);
                     if (src.origin === 'http://example.com') {
                         const mt = /^\/images\/[\da-f]\/[\da-f]{2}\/([^/?]+)$/u.exec(src.pathname)
-                            || /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(\d+)px-[^/?]+$/u.exec(src.pathname);
+                            || /^\/images\/thumb\/[\da-f]\/[\da-f]{2}\/([^/?]+)\/(?:lang[-a-z]+-)?(\d+)px-[^/?]+$/u
+                                .exec(src.pathname);
                         if (mt) {
                             addImgLoadHandler(ele);
                             ele.src = `https://commons.wikimedia.org/wiki/Special%3ARedirect%2Ffile%2F${encodeURIComponent(mt[1])}${mt[2] ? `?width=${mt[2]}` : ''}`;
+                            loading = true;
                         }
                     }
                 }
                 catch { }
+                if (!loading) {
+                    ele.classList.add('mw-broken-media');
+                }
                 if (ele.hasAttribute('width')) {
                     ele.removeAttribute('height');
                 }
@@ -83,6 +89,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 }
             }
             for (const ele of imgs2) {
+                let loading = false;
                 try {
                     const src = new URL(ele.src);
                     if (src.origin === location.origin) {
@@ -91,9 +98,13 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                         src.host = 'commons.wikimedia.org';
                         src.port = '';
                         ele.src = String(src);
+                        loading = true;
                     }
                 }
                 catch { }
+                if (!loading) {
+                    ele.classList.add('mw-broken-media');
+                }
             }
             for (const ele of tocTitles) {
                 ele.removeAttribute('lang');
@@ -145,7 +156,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             localStorage.setItem(key, JSON.stringify(reviewed));
         }
     }
-    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(reviewed), toctoggle = 'label[for=toctogglecheckbox]', input = document.getElementById('search'), select = document.querySelector('select'), btns = document.querySelectorAll('button'), btnDone = btns[0], btnDiff = btns[1], diffFrame = document.getElementById('diffFrame'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const tests = await (await fetch('./test/parserTests.json')).json(), dones = new Set(isIframe ? reviewed : []), toctoggle = 'label[for=toctogglecheckbox]', input = document.getElementById('search'), select = document.querySelector('select'), btns = document.querySelectorAll('button'), btnDone = btns[0], btnDiff = btns[1], diffFrame = document.getElementById('diffFrame'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     wikiparse.setConfig(await (await fetch('./config/default.json')).json());
     await wikiparse.highlight(pre, false, true);
     let optgroup;

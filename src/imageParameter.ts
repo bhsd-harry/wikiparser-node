@@ -3,6 +3,7 @@ import {
 	extUrlChar,
 	extUrlCharFirst,
 	removeComment,
+	text,
 	print,
 } from '../util/string';
 import {generateForSelf, fixByRemove, fixByDecode, fixBySpace} from '../util/lint';
@@ -63,6 +64,7 @@ function validate(
 	config: Config,
 	type?: TokenTypes,
 	halfParsed?: boolean,
+	accum?: Token[],
 ): string | Title | boolean;
 function validate(
 	key: string,
@@ -70,6 +72,7 @@ function validate(
 	config: Config,
 	extOrType?: string,
 	halfParsed?: boolean,
+	accum?: Token[],
 ): string | Title | boolean {
 	val = removeComment(val).trim();
 	let value = val.replace(key === 'link' ? /\0\d+[tq]\x7F/gu : /\0\d+t\x7F/gu, '').trim();
@@ -78,19 +81,22 @@ function validate(
 			return !value && Boolean(val) || /^(?:\d+x?|\d*x\d+)(?:\s*px)?$/u.test(value);
 		case 'link': {
 			const isGalleryImage = extOrType === 'gallery-image';
+			let nowiki = true;
 			if (!value) {
 				return val;
 			} else if (getUrlLikeRegex(config.protocol).test(value)) {
 				return getUrlRegex(config.protocol).test(value) ? val : isGalleryImage;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
+				nowiki = false;
 			}
 			const title = Parser.normalizeTitle(
 				value,
 				0,
 				false,
 				config,
-				{halfParsed, decode: true, selfLink: true, page: ''},
+				{halfParsed, decode: true, selfLink: true, page: '', nowiki},
+				accum,
 			);
 			return title.valid ? title : isGalleryImage;
 		}
@@ -146,12 +152,13 @@ export abstract class ImageParameterToken extends Token {
 			const value = super.text().trim();
 			return Shadow.run((): string | Title | undefined => {
 				const config = this.getAttribute('config'),
-					token = new Token(value, config);
+					accum: Token[] = [],
+					token = new Token(value, config, accum);
 				token.parseOnce(0, this.getAttribute('include')).parseOnce();
 				if (/^\0\d+m\x7F/u.test(token.firstChild!.toString())) {
 					return value;
 				}
-				const link = validate('link', value, config, this.parentNode?.type);
+				const link = validate('link', value, config, this.parentNode?.type, undefined, accum);
 				return link === true ? undefined : link as string | Title;
 			}, Parser);
 		}
@@ -178,12 +185,13 @@ export abstract class ImageParameterToken extends Token {
 					&& (
 						mt.length !== 4
 						|| validate(
-							key,
+							key as 'link',
 							mt[2],
 							config,
-							key === 'link' ? type : extension,
+							key === 'link' ? type : extension as GalleryImageTypes | undefined,
 							true,
-						) as string | Title | boolean !== false
+							accum,
+						) !== false
 					);
 			});
 		// @ts-expect-error mt already assigned
@@ -349,7 +357,15 @@ export abstract class ImageParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string | true {
-		LINT: return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+		LINT: {
+			const {name, childNodes} = this;
+			if (name === 'link') {
+				return text(childNodes.map(
+					child => child.is('ext') && child.name === 'nowiki' ? child.innerText ?? '' : child,
+				));
+			}
+			return name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+		}
 	}
 
 	/** @private */
