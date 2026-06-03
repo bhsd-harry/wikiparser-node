@@ -21,6 +21,8 @@ import type {
 	FileToken,
 } from '../internal';
 
+export type GalleryImageTypes = 'gallery-image' | 'imagemap-image';
+
 const getUrlLikeRegex = getRegex(protocol => new RegExp(String.raw`^(?:${protocol}|//|\0\d+m\x7F)`, 'iu'));
 const getUrlRegex = getRegex(
 	protocol => new RegExp(String.raw`^(?:(?:${protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`, 'iu'),
@@ -157,12 +159,12 @@ export abstract class ImageParameterToken extends Token {
 	/**
 	 * @param str 图片参数
 	 * @param extension 文件扩展名
-	 * @param type 父节点类型
+	 * @param type 图库节点类型
 	 */
 	constructor(
 		str: string,
 		extension: string | undefined,
-		type: TokenTypes | undefined,
+		type: GalleryImageTypes | undefined,
 		config: Config,
 		accum?: Token[],
 	) {
