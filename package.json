@@ -73,14 +73,6 @@
 			"json-summary"
 		]
 	},
-	"dependencies": {
-		"@bhsd/cm-util": "^2.1.0",
-		"@bhsd/common": "^2.2.1",
-		"@bhsd/stylelint-util": "^1.1.0",
-		"binary-search": "^1.3.6",
-		"entities": "^8.0.0",
-		"vscode-languageserver-types": "^3.17.5"
-	},
 	"peerDependencies": {
 		"color-name": ">=2.0.0",
 		"mathoid-texvcjs": ">=0.4.0",
@@ -108,6 +100,14 @@
 		"vscode-json-languageservice": {
 			"optional": true
 		}
+	},
+	"dependencies": {
+		"@bhsd/cm-util": "^2.1.0",
+		"@bhsd/common": "^2.2.1",
+		"@bhsd/stylelint-util": "^1.1.0",
+		"binary-search": "^1.3.6",
+		"entities": "^8.0.0",
+		"vscode-languageserver-types": "^3.17.5"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^2.6.2",

@@ -72,7 +72,8 @@ declare interface Parser extends ParserBase {
 		defaultNs?: number,
 		include?: boolean,
 		config?: Config,
-		opt?: TitleOptions, // eslint-disable-line @typescript-eslint/unified-signatures
+		opt?: TitleOptions,
+		accum?: Token[], // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
@@ -283,18 +284,25 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	normalizeTitle(title, defaultNs = 0, include?: boolean, config = Parser.getConfig(), opt?: TitleOptions) {
+	normalizeTitle(
+		title,
+		defaultNs = 0,
+		include?: boolean,
+		config = Parser.getConfig(),
+		opt?: TitleOptions,
+		accum: Token[] = [],
+	) {
 		let titleObj: Title;
 		if (opt?.halfParsed) {
-			titleObj = new Title(title, defaultNs, config, opt);
+			titleObj = new Title(title, defaultNs, config, opt, accum);
 		} else {
 			const {Token}: typeof import('./src/index') = require('./src/index');
 			titleObj = Shadow.run(() => {
-				const root = new Token(title, config);
+				const root = new Token(title, config, accum);
 				root.type = 'root';
 				root.pageName = opt?.page;
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt);
+				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt, accum);
 				root.build();
 				const keys = [
 					'main',
