@@ -3,7 +3,8 @@ import {newline, sanitizeId, sanitizeAttr} from '../util/string';
 import {extAttrs} from '../util/sharable';
 import type {ExtToken, GalleryToken, Token} from '../internal';
 
-const galleryModes = new Set<string | undefined>(['nolines', 'packed', 'packed-hover', 'packed-overlay', 'slideshow']);
+export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
+const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']);
 
 /** @ignore */
 const getCiteNoteId = (i: number, refName?: string): string =>

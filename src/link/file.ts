@@ -24,6 +24,7 @@ import type {
 	/* NOT FOR BROWSER */
 
 	GalleryToken,
+	ExtToken,
 } from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -32,6 +33,7 @@ import {sanitizeAlt, sanitizeId} from '../../util/string';
 import {Shadow} from '../../util/debug';
 import {Title} from '../../lib/title';
 import {cached} from '../../mixin/cached';
+import {packedModes} from '../../render/extension';
 
 /* NOT FOR BROWSER END */
 
@@ -163,13 +165,9 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** image height / 图片高度 */
 	get height(): string | undefined {
-		if (this.is('gallery-image')) {
-			const parent = this.parentNode as GalleryToken | undefined;
-			if (parent?.parentNode?.getAttr('mode') !== 'nolines') {
-				return parent?.heights.toString();
-			}
-		}
-		return this.size?.height;
+		return this.is('gallery-image')
+			? (this.parentNode as GalleryToken | undefined)?.heights.toString()
+			: this.size?.height;
 	}
 
 	set height(height) {
@@ -615,7 +613,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		const {link, width, height, type} = this,
+		const {link, width, height, type, parentNode} = this,
 			file = this.getAttribute('title'),
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
@@ -636,8 +634,12 @@ export abstract class FileToken extends LinkBaseToken {
 			})) ?? titleFromCaption,
 			horiz = this.getHorizAlign() ?? '',
 			vert = this.getVertAlign() ?? '',
-			hasWidth = isInteger(width),
-			hasHeight = isInteger(height),
+			gallery = type === 'gallery-image' && parentNode?.parentNode as ExtToken | undefined,
+			mode = gallery && gallery.getAttr('mode')?.toLowerCase(),
+			nolines = mode === 'nolines',
+			packed = packedModes.has(mode as string),
+			hasWidth = isInteger(width) && !packed,
+			hasHeight = !nolines && isInteger(height),
 			className = `${manual || framed || hasWidth || hasHeight ? '' : 'mw-default-size '}${
 				horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`
 			}${this.getValue('border') ? ' mw-image-border' : ''} ${
@@ -654,7 +656,9 @@ export abstract class FileToken extends LinkBaseToken {
 			isThumb && hasLink ? ` resource="${file.getUrl()}"` : ''
 		} src="${src}" decoding="async"${
 			hasWidth ? ` width="${width}"` : ''
-		}${hasHeight ? ` height="${height}"` : ''} class="mw-file-element">`;
+		}${hasHeight ? ` height="${height}"` : ''} class="mw-file-element"${
+			nolines ? ` style="max-height: ${height}px"` : ''
+		}>`;
 		let href = '';
 		if (link) {
 			try {
@@ -675,27 +679,30 @@ export abstract class FileToken extends LinkBaseToken {
 				typeof link === 'string' ? ' rel="nofollow"' : ''
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
-		if (type !== 'gallery-image') {
+		if (gallery === false) {
 			return horiz || visibleCaption
 				? `<figure${classAttr} typeof="mw:File${
 					fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
 				}">${a}<figcaption>${caption}</figcaption></figure>`
 				: `<span${classAttr}>${a}</span>`;
 		}
-		const parent = this.parentNode as GalleryToken | undefined,
-			nolines = parent?.parentNode?.getAttr('mode')?.toLowerCase() === 'nolines',
-			padding = nolines ? 0 : 30;
-		return `\t\t<li class="gallerybox" style="width: ${
-			Number(width) + padding + 5
-		}px">\n\t\t\t<div class="thumb" style="width: ${Number(width) + padding}px;${
-			nolines ? '' : ` height: ${Number(height) + padding}px;`
-		}"><span>${a}</span></div>\n\t\t\t<div class="gallerytext">${
-			parent?.parentNode?.hasAttr('showfilename')
+		const padding = nolines ? 0 : 30,
+			overlay = packed && mode !== 'packed';
+		return `\t\t<li class="gallerybox"${
+			packed ? '' : ` style="width: ${Number(width) + padding + 5}px"`
+		}>\n\t\t\t<div class="thumb"${
+			packed
+				? ''
+				: ` style="width: ${Number(width) + padding}px;${
+					nolines ? '' : ` height: ${Number(height) + padding}px;`
+				}"`
+		}><span>${a}</span></div>\n\t\t\t${overlay ? '<div class="gallerytextwrapper">' : ''}<div class="gallerytext">${
+			gallery?.hasAttr('showfilename')
 				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
 					file.title
 				}">${file.main}</a>\n`
 				: ''
-		}${caption}</div>\n\t\t</li>`;
+		}${caption}</div>${overlay ? '\n\t\t\t</div>' : ''}\n\t\t</li>`;
 	}
 }
 
