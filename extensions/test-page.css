@@ -760,6 +760,10 @@ h3 {
 	direction: rtl;
 	unicode-bidi: embed;
 }
+.frame .mwe-math-element-block {
+	display: block;
+	text-align: center;
+}
 
 @media screen and (max-width: 720px) {
 	main {
