@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.43.1
+## v1.44.0
 
-*2026-06-03*
+*2026-06-07*
+
+**Added**
+
+- HTML conversion of `<math>`, `<chem>` and `<ce>` tags with [KaTeX](https://katex.org/)
 
 **Fixed**
 

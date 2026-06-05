@@ -83,6 +83,7 @@
 	},
 	"peerDependencies": {
 		"color-name": ">=2.0.0",
+		"katex": ">=0.14.0",
 		"mathoid-texvcjs": ">=0.4.0",
 		"mediawiki-expr": "*",
 		"prism-wiki": ">=1.0.0",
@@ -94,6 +95,9 @@
 	},
 	"peerDependenciesMeta": {
 		"color-name": {
+			"optional": true
+		},
+		"katex": {
 			"optional": true
 		},
 		"mathoid-texvcjs": {
@@ -145,6 +149,7 @@
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.0",
 		"eslint": "^10.4.1",
+		"katex": "^0.17.0",
 		"markdownlint-cli2": "^0.22.1",
 		"mathoid-texvcjs": "^0.6.0",
 		"mediawiki-expr": "^0.0.2",

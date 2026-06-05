@@ -699,7 +699,7 @@ export abstract class FileToken extends LinkBaseToken {
 		}><span>${a}</span></div>\n\t\t\t${overlay ? '<div class="gallerytextwrapper">' : ''}<div class="gallerytext">${
 			gallery?.hasAttr('showfilename')
 				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
-					file.title
+					sanitizeId(file.title)
 				}">${file.main}</a>\n`
 				: ''
 		}${caption}</div>${overlay ? '\n\t\t\t</div>' : ''}\n\t\t</li>`;

@@ -81,7 +81,8 @@ You can install any of the following optional packages to enable advanced featur
 | `stylelint` | Diagnostics for `style` attributes |
 | `vscode-css-languageservice` | CSS language support for `style` attributes |
 | `vscode-html-languageservice` | Language support for HTML tags |
-| `vscode-json-languageservice` | JSON language support for `<templatedata>`, `<mapframe>`, `<maplink>` tags |
+| `vscode-json-languageservice` | JSON language support for `<templatedata>`, `<mapframe>` and `<maplink>` tags |
+| `katex` | HTML conversion support for `<math>` and `<chem>` extension tags |
 | `mediawiki-expr` | Evaluation of parser functions `#expr` and `#ifexpr` |
 | `prismjs` + `prism-wiki` | Syntax highlighting of `<syntaxhighlight>` extension tags |
 
@@ -90,7 +91,7 @@ You can install any of the following optional packages to enable advanced featur
 npm i mathoid-texvcjs stylelint vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
 
 # Full HTML conversion support for `Parser.toHtml()`
-npm i mediawiki-expr prismjs prism-wiki
+npm i katex mediawiki-expr prismjs prism-wiki
 ```
 
 ### Browser

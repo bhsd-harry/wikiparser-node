@@ -8,6 +8,7 @@ import {
 	/* NOT FOR BROWSER */
 
 	noWrap,
+	sanitizeId,
 } from '../util/string';
 import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
 import {
@@ -1084,7 +1085,7 @@ export abstract class TranscludeToken extends Token {
 			if (this.normalizeTitle(name, 0, {halfParsed: true, temporary: true}).valid) {
 				const title = name.replaceAll('_', ' ');
 				return `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
-					title
+					sanitizeId(title)
 				} (page does not exist)">${title}</a>`;
 			}
 			const str = this.text();

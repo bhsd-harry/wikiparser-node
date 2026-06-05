@@ -25,8 +25,9 @@ export interface TexvcLocation {
 	column: number;
 }
 declare interface Texvcjs {
-	check(input: string, options?: {usemhchem?: boolean}): {
+	check(input: string, options?: {usemathrm?: boolean, usemhchem?: boolean}): {
 		status: '+';
+		output: string;
 	} | {
 		status: 'C';
 	} | {

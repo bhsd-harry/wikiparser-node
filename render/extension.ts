@@ -1,7 +1,7 @@
 import {parsers, states} from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr} from '../util/string';
 import {extAttrs} from '../util/sharable';
-import type {ExtToken, GalleryToken, Token} from '../internal';
+import type {ExtToken, GalleryToken, Token, NowikiToken} from '../internal';
 
 export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
 const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']);
@@ -160,7 +160,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 						 * 是否添加id属性
 						 * @param i 行号
 						 */
-						g = (i: number): string => begin && `<span id="${begin}${i}">`;
+						g = (i: number): string => begin && `<span id="${sanitizeId(begin)}${i}">`;
 					let mt = re.exec(html),
 						i = 1,
 						lastIndex = 0,
@@ -309,7 +309,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (referencesGroup.length === 0 && follows.length === 0) {
 				return '';
 			}
-			let ol = `<ol class="references"${group && ` data-mw-group="${group}"`}>`;
+			let ol = `<ol class="references"${group && ` data-mw-group="${sanitizeId(group)}"`}>`;
 			for (const {content} of follows) {
 				ol += `\n<p><span class="reference-text">${content.toHtmlInternal()}</span>\n</p>`;
 			}
@@ -337,6 +337,20 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				: `<div class="mw-references-wrap${
 					referencesGroup.length > 10 ? ' mw-references-columns' : ''
 				}">${ol}</div>`;
+		}
+		case 'math':
+		case 'chem':
+		case 'ce': {
+			const {texToSvg}: typeof import('./math') = require('./math');
+			const id = firstChild.getAttr('id');
+			return `<span class="mwe-math-element mwe-math-element-${
+				firstChild.getAttr('display') === 'block' ? 'block' : 'inline'
+			}"${id ? ` id="${sanitizeId(id)}"` : ''}>${
+				texToSvg?.(
+					(lastChild as NowikiToken).getTex()[0],
+					name !== 'math' || firstChild.hasAttr('chem'),
+				) ?? ''
+			}</span>`;
 		}
 		default:
 			return '';

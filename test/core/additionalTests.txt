@@ -916,3 +916,1017 @@ File:Georgia Aquarium - Giant Grouper.jpg|''Epinephelus lanceolatus'' (Giant gro
 		</li>
 </ul>
 !! end
+
+!! test
+Math display
+!! wikitext
+<math>test</math>
+
+<math display>test</math>
+
+<math display=inline>test</math>
+
+<math display=block>test</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>t</mi><mi>e</mi><mi>s</mi><mi>t</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mi>t</mi><mi>e</mi><mi>s</mi><mi>t</mi></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mi>t</mi><mi>e</mi><mi>s</mi><mi>t</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-block" display="block"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>t</mi><mi>e</mi><mi>s</mi><mi>t</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math text
+!! wikitext
+<math>\text{abc}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mtext>abc</mtext></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math special characters
+!! wikitext
+<math>\# \$ \% \& \_ \{ \} </math>
+
+<math> \hat{} \quad \tilde{} \quad \backslash </math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi mathvariant="normal">&#x0023;</mi><mi mathvariant="normal">&#x0024;</mi><mi mathvariant="normal">&#x0025;</mi><mi mathvariant="normal">&#x0026;</mi><mi mathvariant="normal">&#x005F;</mi><mo fence="false" stretchy="false">{</mo><mo fence="false" stretchy="false">}</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mover><mrow data-mjx-texclass="ORD"></mrow><mo stretchy="false">̂</mo></mover><mspace width="1em"></mspace><mover><mrow data-mjx-texclass="ORD"></mrow><mo>~</mo></mover><mspace width="1em"></mspace><mi mathvariant="normal">∖</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math accents/diacritics
+!! wikitext
+<math>\acute{a} \grave{a} \hat{a} \tilde{a} \breve{a}</math>
+
+<math>\check{a} \bar{a} \ddot{a} \dot{a}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mover><mi>a</mi><mo data-mjx-pseudoscript="true">´</mo></mover><mover><mi>a</mi><mo data-mjx-pseudoscript="true">`</mo></mover><mover><mi>a</mi><mo stretchy="false">̂</mo></mover><mover><mi>a</mi><mo>~</mo></mover><mover><mi>a</mi><mo>˘</mo></mover></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mover><mi>a</mi><mo>ˇ</mo></mover><mover><mi>a</mi><mo>¯</mo></mover><mover><mi>a</mi><mo>¨</mo></mover><mover><mi>a</mi><mo>˙</mo></mover></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math standard functions
+!! wikitext
+<math>\sin a \cos b \tan c</math>
+
+<math>\sec d \csc e \cot f</math>
+
+<math>\arcsin h \arccos i \arctan j</math>
+
+<math>\sinh k \cosh l \tanh m \coth n</math>
+
+<math>\operatorname{sh}o\,\operatorname{ch}p\,\operatorname{th}q</math>
+
+<math>\operatorname{arsinh}r\,\operatorname{arcosh}s\,\operatorname{artanh}t</math>
+
+<math>\lim u \limsup v \liminf w \min x \max y</math>
+
+<math>\inf z \sup a \exp b \ln c \lg d \log e \log_{10} f \ker g</math>
+
+<math>\deg h \gcd i \Pr j \det k \hom l \arg m \dim n</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>sin</mi><mo>&#x2061;</mo><mi>a</mi><mi>cos</mi><mo>&#x2061;</mo><mi>b</mi><mi>tan</mi><mo>&#x2061;</mo><mi>c</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>sec</mi><mo>&#x2061;</mo><mi>d</mi><mi>csc</mi><mo>&#x2061;</mo><mi>e</mi><mi>cot</mi><mo>&#x2061;</mo><mi>f</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>arcsin</mi><mo>&#x2061;</mo><mi>h</mi><mi>arccos</mi><mo>&#x2061;</mo><mi>i</mi><mi>arctan</mi><mo>&#x2061;</mo><mi>j</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>sinh</mi><mo>&#x2061;</mo><mi>k</mi><mi>cosh</mi><mo>&#x2061;</mo><mi>l</mi><mi>tanh</mi><mo>&#x2061;</mo><mi>m</mi><mi>coth</mi><mo>&#x2061;</mo><mi>n</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo data-mjx-texclass="OP" mathvariant="normal">sh</mo><mo>&#x2061;</mo><mi>o</mi><mspace width="0.167em"></mspace><mo data-mjx-texclass="OP" mathvariant="normal">ch</mo><mo>&#x2061;</mo><mi>p</mi><mspace width="0.167em"></mspace><mo data-mjx-texclass="OP" mathvariant="normal">th</mo><mo>&#x2061;</mo><mi>q</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo data-mjx-texclass="OP" mathvariant="normal">arsinh</mo><mo>&#x2061;</mo><mi>r</mi><mspace width="0.167em"></mspace><mo data-mjx-texclass="OP" mathvariant="normal">arcosh</mo><mo>&#x2061;</mo><mi>s</mi><mspace width="0.167em"></mspace><mo data-mjx-texclass="OP" mathvariant="normal">artanh</mo><mo>&#x2061;</mo><mi>t</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo>lim</mo><mo>&#x2061;</mo><mi>u</mi><mo>lim sup</mo><mo>&#x2061;</mo><mi>v</mi><mo>lim inf</mo><mo>&#x2061;</mo><mi>w</mi><mo>min</mo><mo>&#x2061;</mo><mi>x</mi><mo>max</mo><mo>&#x2061;</mo><mi>y</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo>inf</mo><mo>&#x2061;</mo><mi>z</mi><mo>sup</mo><mo>&#x2061;</mo><mi>a</mi><mi>exp</mi><mo>&#x2061;</mo><mi>b</mi><mi>ln</mi><mo>&#x2061;</mo><mi>c</mi><mi>lg</mi><mo>&#x2061;</mo><mi>d</mi><mi>log</mi><mo>&#x2061;</mo><mi>e</mi><msub><mi>log</mi><mrow data-mjx-texclass="ORD"><mn>10</mn></mrow></msub><mi>f</mi><mi>ker</mi><mo>&#x2061;</mo><mi>g</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>deg</mi><mo>&#x2061;</mo><mi>h</mi><mo>gcd</mo><mo>&#x2061;</mo><mi>i</mi><mo>Pr</mo><mo>&#x2061;</mo><mi>j</mi><mo>det</mo><mo>&#x2061;</mo><mi>k</mi><mi>hom</mi><mo>&#x2061;</mo><mi>l</mi><mi>arg</mi><mo>&#x2061;</mo><mi>m</mi><mi>dim</mi><mo>&#x2061;</mo><mi>n</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math modular arithmetic
+!! wikitext
+<math>s_k \equiv 0 \pmod{m}</math>
+
+<math>a\,\bmod\,b</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>s</mi><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow></msub><mo stretchy="false">≡</mo><mn>0</mn><mrow data-mjx-texclass="ORD"><mspace width="0.444em"></mspace><mo stretchy="false">(</mo><mi>mod</mi><mspace width="0.333em"></mspace><mi>m</mi><mo stretchy="false">)</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mspace width="0.167em"></mspace><mrow data-mjx-texclass="ORD"><mo lspace="0.27777777777778em" rspace="0.27777777777778em">mod</mo><mrow data-mjx-texclass="ORD"><mspace width="0.167em"></mspace></mrow><mrow data-mjx-texclass="ORD"><mspace width="0.167em"></mspace></mrow></mrow><mi>b</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math derivatives
+!! wikitext
+<math>\nabla \, \partial x \, dx \, \dot x \, \ddot y\, dy/dx\, \frac{dy}{dx}\, \frac{\partial^2 y}{\partial x_1\,\partial x_2}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi mathvariant="normal">∇</mi><mspace width="0.167em"></mspace><mi>∂</mi><mi>x</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mspace width="0.167em"></mspace><mover><mi>x</mi><mo>˙</mo></mover><mspace width="0.167em"></mspace><mover><mi>y</mi><mo>¨</mo></mover><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mo lspace="0" rspace="0">/</mo><mi>d</mi><mi>x</mi><mspace width="0.167em"></mspace><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>d</mi><mi>y</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>d</mi><mi>x</mi></mrow></mrow></mfrac></mrow><mspace width="0.167em"></mspace><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><msup><mi>∂</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mi>y</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>∂</mi><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></msub><mspace width="0.167em"></mspace><mi>∂</mi><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msub></mrow></mrow></mfrac></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math sets
+!! wikitext
+<math>\forall \exists \empty \emptyset \varnothing</math>
+
+<math>\in \ni \not\in \notin \not\ni \subset \subseteq \supset \supseteq</math>
+
+<math>\cap \bigcap \cup \bigcup \biguplus \setminus \smallsetminus</math>
+
+<math>\sqsubset \sqsubseteq \sqsupset \sqsupseteq \sqcap \sqcup \bigsqcup</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi mathvariant="normal">∀</mi><mi mathvariant="normal">∃</mi><mi mathvariant="normal">∅</mi><mi mathvariant="normal">∅</mi><mi variantform="true">∅</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">∈</mo><mo stretchy="false">∋</mo><mo stretchy="false">∈&#x338;</mo><mo stretchy="false">∉</mo><mo stretchy="false">∋&#x338;</mo><mo stretchy="false">⊂</mo><mo stretchy="false">⊆</mo><mo stretchy="false">⊃</mo><mo stretchy="false">⊇</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">∩</mo><mo stretchy="false">⋂</mo><mo stretchy="false">∪</mo><mo stretchy="false">⋃</mo><mo stretchy="false">⨄</mo><mo stretchy="false">∖</mo><mo stretchy="false" variantform="True">∖</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊏</mo><mo stretchy="false">⊑</mo><mo stretchy="false">⊐</mo><mo stretchy="false">⊒</mo><mo stretchy="false">⊓</mo><mo stretchy="false">⊔</mo><mo stretchy="false">⨆</mo></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math operators
+!! wikitext
+<math>+ \oplus \bigoplus \pm \mp -</math>
+
+<math>\times \otimes \bigotimes \cdot \circ \bullet \bigodot</math>
+
+<math>\star * / \div \frac{1}{2}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">+</mo><mo stretchy="false">⊕</mo><mo stretchy="false">⨁</mo><mo stretchy="false">±</mo><mo stretchy="false">∓</mo><mo stretchy="false">−</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">×</mo><mo stretchy="false">⊗</mo><mo stretchy="false">⨂</mo><mo stretchy="false">⋅</mo><mo stretchy="false">∘</mo><mo stretchy="false">∙</mo><mo stretchy="false">⨀</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⋆</mo><mo stretchy="false">∗</mo><mo lspace="0" rspace="0">/</mo><mo stretchy="false">÷</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math logic
+!! wikitext
+<math>\land (or \and) \wedge \bigwedge \bar{q} \to p</math>
+
+<math>\lor \vee \bigvee \lnot \neg q \And</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">∧</mo><mo stretchy="false">(</mo><mi>o</mi><mi>r</mi><mo stretchy="false">∧</mo><mo stretchy="false">)</mo><mo stretchy="false">∧</mo><mo stretchy="false">⋀</mo><mover><mi>q</mi><mo>¯</mo></mover><mo stretchy="false" accent="false">→</mo><mi>p</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">∨</mo><mo stretchy="false">∨</mo><mo stretchy="false">⋁</mo><mi mathvariant="normal">¬</mi><mi mathvariant="normal">¬</mi><mi>q</mi><mi mathvariant="normal">&#x0026;</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math root
+!! wikitext
+<math>\sqrt{2} \sqrt[n]{x}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><msqrt><mn>2</mn></msqrt></mrow><mrow data-mjx-texclass="ORD"><mroot><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></mroot></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math relations
+!! wikitext
+<math>\sim \approx \simeq \cong \dot=  \overset{\underset{\mathrm{def}}{}}{=}</math>
+
+<math>< \le \ll \gg \ge > \equiv \not\equiv \ne \mbox{or} \neq \propto</math>
+
+<math>\lessapprox \lesssim \eqslantless \leqslant \leqq \geqq \geqslant \eqslantgtr \gtrsim \gtrapprox</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">∼</mo><mo stretchy="false">≈</mo><mo stretchy="false">≃</mo><mo stretchy="false">≅</mo><mover><mo stretchy="false">=</mo><mo>˙</mo></mover><mrow data-mjx-texclass="ORD"><mover><mrow><mo stretchy="false" lspace="0" rspace="0">=</mo></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></mrow></mover></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo>&lt;</mo><mo stretchy="false">≤</mo><mo stretchy="false">≪</mo><mo stretchy="false">≫</mo><mo stretchy="false">≥</mo><mo>&gt;</mo><mo stretchy="false">≡</mo><mo stretchy="false">≡&#x338;</mo><mo stretchy="false">≠</mo><mrow data-mjx-texclass="ORD"><mtext>or</mtext></mrow><mo stretchy="false">≠</mo><mo stretchy="false">∝</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⪅</mo><mo stretchy="false">≲</mo><mo stretchy="false">⪕</mo><mo stretchy="false">⩽</mo><mo stretchy="false">≦</mo><mo stretchy="false">≧</mo><mo stretchy="false">⩾</mo><mo stretchy="false">⪖</mo><mo stretchy="false">≳</mo><mo stretchy="false">⪆</mo></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math geometric
+!! wikitext
+<math>\Diamond \Box \triangle \angle \perp \mid \nmid \| 45^\circ</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>◊</mi><mi>◻</mi><mi mathvariant="normal">△</mi><mi mathvariant="normal">∠</mi><mo stretchy="false">⊥</mo><mo stretchy="false">∣</mo><mo stretchy="false">∤</mo><mo stretchy="false">‖</mo><mn>4</mn><msup><mn>5</mn><mrow data-mjx-texclass="ORD"><mo stretchy="false">∘</mo></mrow></msup></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math arrows
+!! wikitext
+<math>\leftarrow (or \gets) \rightarrow (or \to) \nleftarrow \nrightarrow \leftrightarrow \nleftrightarrow \longleftarrow \longrightarrow \longleftrightarrow</math>
+
+<math>\Leftarrow \Rightarrow \nLeftarrow \nRightarrow \Leftrightarrow \nLeftrightarrow \Longleftarrow \Longrightarrow (or \implies) \Longleftrightarrow (or \iff)</math>
+
+<math>\uparrow \downarrow \updownarrow \Uparrow \Downarrow \Updownarrow  \nearrow \searrow \swarrow \nwarrow</math>
+
+<math>\rightharpoonup \rightharpoondown \leftharpoonup \leftharpoondown \upharpoonleft \upharpoonright \downharpoonleft \downharpoonright \rightleftharpoons \leftrightharpoons</math>
+
+<math>\curvearrowleft \circlearrowleft \Lsh \upuparrows \rightrightarrows \rightleftarrows \Rrightarrow \rightarrowtail \looparrowright</math>
+
+<math>\curvearrowright \circlearrowright \Rsh \downdownarrows \leftleftarrows \leftrightarrows \Lleftarrow \leftarrowtail \looparrowleft</math>
+
+<math>\mapsto \longmapsto \hookrightarrow \hookleftarrow \multimap \leftrightsquigarrow \rightsquigarrow</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">←</mo><mo stretchy="false">(</mo><mi>o</mi><mi>r</mi><mo stretchy="false">←</mo><mo stretchy="false">)</mo><mo stretchy="false">→</mo><mo stretchy="false">(</mo><mi>o</mi><mi>r</mi><mo stretchy="false" accent="false">→</mo><mo stretchy="false">)</mo><mo stretchy="false">↚</mo><mo stretchy="false">↛</mo><mo stretchy="false">↔</mo><mo stretchy="false">↮</mo><mo stretchy="false">⟵</mo><mo stretchy="false">⟶</mo><mo stretchy="false">⟷</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⇐</mo><mo stretchy="false">⇒</mo><mo stretchy="false">⇍</mo><mo stretchy="false">⇏</mo><mo stretchy="false">⇔</mo><mo stretchy="false">⇎</mo><mo stretchy="false">⟸</mo><mo stretchy="false">⟹</mo><mo stretchy="false">(</mo><mi>o</mi><mi>r</mi><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo>&#x27F9;</mo><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo stretchy="false">)</mo><mo stretchy="false">⟺</mo><mo stretchy="false">(</mo><mi>o</mi><mi>r</mi><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo>&#x27FA;</mo><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo stretchy="false">)</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">↑</mo><mo stretchy="false">↓</mo><mo stretchy="false">↕</mo><mo stretchy="false">⇑</mo><mo stretchy="false">⇓</mo><mo stretchy="false">⇕</mo><mo stretchy="false">↗</mo><mo stretchy="false">↘</mo><mo stretchy="false">↙</mo><mo stretchy="false">↖</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⇀</mo><mo stretchy="false">⇁</mo><mo stretchy="false">↼</mo><mo stretchy="false">↽</mo><mo stretchy="false">↿</mo><mo stretchy="false">↾</mo><mo stretchy="false">⇃</mo><mo stretchy="false">⇂</mo><mo stretchy="false">⇌</mo><mo stretchy="false">⇋</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">↶</mo><mo stretchy="false">↺</mo><mo stretchy="false">↰</mo><mo stretchy="false">⇈</mo><mo stretchy="false">⇉</mo><mo stretchy="false">⇄</mo><mo stretchy="false">⇛</mo><mo stretchy="false">↣</mo><mo stretchy="false">↬</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">↷</mo><mo stretchy="false">↻</mo><mo stretchy="false">↱</mo><mo stretchy="false">⇊</mo><mo stretchy="false">⇇</mo><mo stretchy="false">⇆</mo><mo stretchy="false">⇚</mo><mo stretchy="false">↢</mo><mo stretchy="false">↫</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">↦</mo><mo stretchy="false">⟼</mo><mo stretchy="false">↪</mo><mo stretchy="false">↩</mo><mo stretchy="false">⊸</mo><mo stretchy="false">↭</mo><mo stretchy="false">⇝</mo></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math special
+!! wikitext
+<math>\And \eth \S \P \% \dagger \ddagger \ldots \cdots \colon</math>
+
+<math>\smile \frown \wr \triangleleft \triangleright \infty \bot \top</math>
+
+<math>\vdash \vDash \Vdash \models \lVert \rVert \imath \hbar</math>
+
+<math>\ell \mho \Finv \Re \Im \wp \complement</math>
+
+<math>\diamondsuit \heartsuit \clubsuit \spadesuit \Game \flat \natural \sharp</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi mathvariant="normal">&#x0026;</mi><mi mathvariant="normal">ð</mi><mi mathvariant="normal">§</mi><mo>&#x00B6;</mo><mi mathvariant="normal">&#x0025;</mi><mo stretchy="false">†</mo><mo stretchy="false">‡</mo><mo stretchy="false">…</mo><mo stretchy="false">⋯</mo><mo stretchy="false" data-mjx-texclass="PUNCT">:</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⌣</mo><mo stretchy="false">⌢</mo><mo stretchy="false">≀</mo><mo stretchy="false">◃</mo><mo stretchy="false">▹</mo><mi mathvariant="normal">∞</mi><mi mathvariant="normal">⊥</mi><mi mathvariant="normal">⊤</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊢</mo><mo stretchy="false" variantform="1">⊨</mo><mo stretchy="false">⊩</mo><mo stretchy="false">⊨</mo><mo stretchy="false">‖</mo><mo stretchy="false">‖</mo><mi>ı</mi><mi alternate="1">ℏ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>ℓ</mi><mi>℧</mi><mi>Ⅎ</mi><mi mathvariant="normal">ℜ</mi><mi mathvariant="normal">ℑ</mi><mi mathvariant="normal">℘</mi><mi>∁</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi mathvariant="normal">♢</mi><mi mathvariant="normal">♡</mi><mi mathvariant="normal">♣</mi><mi mathvariant="normal">♠</mi><mi>⅁</mi><mi mathvariant="normal">♭</mi><mi mathvariant="normal">♮</mi><mi mathvariant="normal">♯</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math new stuff
+!! wikitext
+<math>\vartriangle \triangledown \lozenge \circledS \measuredangle \nexists \Bbbk \backprime \blacktriangle \blacktriangledown</math>
+
+<math>\square \blacksquare \blacklozenge \bigstar \sphericalangle \diagup \diagdown \dotplus \Cap \Cup \barwedge</math>
+
+<math>\veebar \doublebarwedge \boxminus \boxtimes \boxdot \boxplus \divideontimes \ltimes \rtimes \leftthreetimes</math>
+
+<math>\rightthreetimes \curlywedge \curlyvee \circleddash \circledast \circledcirc \centerdot \intercal \leqq \leqslant</math>
+
+<math>\eqslantless \lessapprox \approxeq \lessdot \lll \lessgtr \lesseqgtr \lesseqqgtr \doteqdot \risingdotseq</math>
+
+<math>\fallingdotseq \backsim \backsimeq \subseteqq \Subset \preccurlyeq \curlyeqprec \precsim \precapprox \vartriangleleft</math>
+
+<math>\Vvdash \bumpeq \Bumpeq \eqsim \gtrdot</math>
+
+<math>\ggg \gtrless \gtreqless \gtreqqless \eqcirc \circeq \triangleq \thicksim \thickapprox \supseteqq</math>
+
+<math>\Supset \succcurlyeq \curlyeqsucc \succsim \succapprox \vartriangleright \shortmid \between \shortparallel \pitchfork</math>
+
+<math>\varpropto \blacktriangleleft \therefore \backepsilon \blacktriangleright \because \nleqslant \nleqq \lneq \lneqq</math>
+
+<math>\lvertneqq \lnsim \lnapprox \nprec \npreceq \precneqq \precnsim \precnapprox \nsim \nshortmid</math>
+
+<math>\nvdash \nVdash \ntriangleleft \ntrianglelefteq \nsubseteq \nsubseteqq \varsubsetneq \subsetneqq \varsubsetneqq \ngtr</math>
+
+<math>\subsetneq</math>
+
+<math>\ngeqslant \ngeqq \gneq \gneqq \gvertneqq \gnsim \gnapprox \nsucc \nsucceq \succneqq</math>
+
+<math>\succnsim \succnapprox \ncong \nshortparallel \nparallel \nvDash \nVDash \ntriangleright \ntrianglerighteq \nsupseteq</math>
+
+<math>\nsupseteqq \varsupsetneq \supsetneqq \varsupsetneqq</math>
+
+<math>\jmath \surd \ast \uplus \diamond \bigtriangleup \bigtriangledown \ominus</math>
+
+<math>\oslash \odot \bigcirc \amalg \prec \succ \preceq \succeq</math>
+
+<math>\dashv \asymp \doteq \parallel</math>
+
+<math>\ulcorner \urcorner \llcorner \lrcorner</math>
+
+<math>\Coppa\coppa\Digamma\Koppa\koppa\Sampi\sampi\Stigma\stigma\varstigma</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false" variantform="1">△</mo><mi variantform="true">▽</mi><mi>◊</mi><mi mathvariant="normal">Ⓢ</mi><mi>∡</mi><mi>∄</mi><mi>𝕜</mi><mi variantform="True">‵</mi><mi>▴</mi><mi>▾</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>◻</mi><mi>◼</mi><mi>⧫</mi><mi>★</mi><mi>∢</mi><mi>╱</mi><mi>╲</mi><mo stretchy="false">∔</mo><mo stretchy="false">⋒</mo><mo stretchy="false">⋓</mo><mo stretchy="false">⊼</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊻</mo><mo stretchy="false">⩞</mo><mo stretchy="false">⊟</mo><mo stretchy="false">⊠</mo><mo stretchy="false">⊡</mo><mo stretchy="false">⊞</mo><mo stretchy="false">⋇</mo><mo stretchy="false">⋉</mo><mo stretchy="false">⋊</mo><mo stretchy="false">⋋</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⋌</mo><mo stretchy="false">⋏</mo><mo stretchy="false">⋎</mo><mo stretchy="false">⊝</mo><mo stretchy="false">⊛</mo><mo stretchy="false">⊚</mo><mo stretchy="false" variantform="True">⋅</mo><mo stretchy="false">⊺</mo><mo stretchy="false">≦</mo><mo stretchy="false">⩽</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⪕</mo><mo stretchy="false">⪅</mo><mo stretchy="false">≊</mo><mo stretchy="false">⋖</mo><mo stretchy="false">⋘</mo><mo stretchy="false">≶</mo><mo stretchy="false">⋚</mo><mo stretchy="false">⪋</mo><mo stretchy="false">≑</mo><mo stretchy="false">≓</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">≒</mo><mo stretchy="false">∽</mo><mo stretchy="false">⋍</mo><mo stretchy="false">⫅</mo><mo stretchy="false">⋐</mo><mo stretchy="false">≼</mo><mo stretchy="false">⋞</mo><mo stretchy="false">≾</mo><mo stretchy="false">⪷</mo><mo stretchy="false">⊲</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊪</mo><mo stretchy="false">≏</mo><mo stretchy="false">≎</mo><mo stretchy="false">≂</mo><mo stretchy="false">⋗</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⋙</mo><mo stretchy="false">≷</mo><mo stretchy="false">⋛</mo><mo stretchy="false">⪌</mo><mo stretchy="false">≖</mo><mo stretchy="false">≗</mo><mo stretchy="false">≜</mo><mo stretchy="false" variantform="true">∼</mo><mo stretchy="false" variantform="true">≈</mo><mo stretchy="false">⫆</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⋑</mo><mo stretchy="false">≽</mo><mo stretchy="false">⋟</mo><mo stretchy="false">≿</mo><mo stretchy="false">⪸</mo><mo stretchy="false">⊳</mo><mo stretchy="false" variantform="1">∣</mo><mo stretchy="false">≬</mo><mo stretchy="false" variantform="1">∥</mo><mo stretchy="false">⋔</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false" variantform="1">∝</mo><mo stretchy="false">◂</mo><mo stretchy="false">∴</mo><mo stretchy="false">∍</mo><mo stretchy="false">▸</mo><mo stretchy="false">∵</mo><mo stretchy="false" variantform="1">⪇</mo><mo stretchy="false" variantform="1">≰</mo><mo stretchy="false">⪇</mo><mo stretchy="false">≨</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false" variantform="1">≨</mo><mo stretchy="false">⋦</mo><mo stretchy="false">⪉</mo><mo stretchy="false">⊀</mo><mo stretchy="false" variantform="1">⋠</mo><mo stretchy="false">⪵</mo><mo stretchy="false">⋨</mo><mo stretchy="false">⪹</mo><mo stretchy="false">≁</mo><mo stretchy="false" variantform="1">∤</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊬</mo><mo stretchy="false">⊮</mo><mo stretchy="false">⋪</mo><mo stretchy="false">⋬</mo><mo stretchy="false">⊈</mo><mo stretchy="false" variantform="1">⊈</mo><mo stretchy="false" variantform="1">⊊</mo><mo stretchy="false">⫋</mo><mo stretchy="false" variantform="1">⫋</mo><mo stretchy="false">≯</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊊</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false" variantform="1">⪈</mo><mo stretchy="false" variantform="1">≱</mo><mo stretchy="false">⪈</mo><mo stretchy="false">≩</mo><mo stretchy="false" variantform="1">≩</mo><mo stretchy="false">⋧</mo><mo stretchy="false">⪊</mo><mo stretchy="false">⊁</mo><mo stretchy="false" variantform="1">⋡</mo><mo stretchy="false">⪶</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⋩</mo><mo stretchy="false">⪺</mo><mo stretchy="false">≆</mo><mo stretchy="false" variantform="1">∦</mo><mo stretchy="false">∦</mo><mo stretchy="false">⊭</mo><mo stretchy="false">⊯</mo><mo stretchy="false">⋫</mo><mo stretchy="false">⋭</mo><mo stretchy="false">⊉</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false" variantform="1">⊉</mo><mo stretchy="false" variantform="1">⊋</mo><mo stretchy="false">⫌</mo><mo stretchy="false" variantform="1">⫌</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>ȷ</mi><mo stretchy="false" symmetric="true">√</mo><mo stretchy="false">∗</mo><mo stretchy="false">⊎</mo><mo stretchy="false">⋄</mo><mo stretchy="false">△</mo><mo stretchy="false">▽</mo><mo stretchy="false">⊖</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊘</mo><mo stretchy="false">⊙</mo><mo stretchy="false">◯</mo><mo stretchy="false">⨿</mo><mo stretchy="false">≺</mo><mo stretchy="false">≻</mo><mo stretchy="false">⪯</mo><mo stretchy="false">⪰</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⊣</mo><mo stretchy="false">≍</mo><mo stretchy="false">≐</mo><mo stretchy="false">∥</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">⌜</mo><mo stretchy="false">⌝</mo><mo stretchy="false">⌞</mo><mo stretchy="false">⌟</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo>Ϙ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>ϙ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>Ϝ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>Ϟ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>ϟ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>Ϡ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>ϡ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>Ϛ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>ϛ</mo></mrow><mrow data-mjx-texclass="ORD"><mo>ϛ</mo></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math subscripts, superscripts, integrals
+!! wikitext
+<math>a^2</math>
+
+<math>a_2</math>
+
+<math>a^{2+2}</math>
+
+<math>a_{i,j}</math>
+
+<math>x_2^3</math>
+
+<math>{x_2}^3</math>
+
+<math>10^{10^{8}}</math>
+
+<math>_nP_k</math>
+
+<math>\sideset{_1^2}{_3^4}\prod_a^b</math>
+
+<math>{}_1^2\!\Omega_3^4</math>
+
+<math>\overset{\alpha}{\omega}</math>
+
+<math>\underset{\alpha}{\omega}</math>
+
+<math>\overset{\alpha}{\underset{\gamma}{\omega}}</math>
+
+<math>\stackrel{\alpha}{\omega}</math>
+
+<math>x', y'', f', f''</math>
+
+<math>x^\prime, y^{\prime\prime}</math>
+
+<math>\dot{x}, \ddot{x}</math>
+
+<math>\hat a \ \bar b \ \vec c</math>
+
+<math>\overrightarrow{a b} \ \overleftarrow{c d} \ \widehat{d e f}</math>
+
+<math>\overline{g h i} \ \underline{j k l}</math>
+
+<math>\not 1 \ \cancel{123}</math>
+
+<math>A \xleftarrow{n+\mu-1} B \xrightarrow[T]{n\pm i-1} C</math>
+
+<math>\overbrace{ 1+2+\cdots+100 }^{\text{sum}\,=\,5050}</math>
+
+<math>\underbrace{ a+b+\cdots+z }_{26\text{ terms}}</math>
+
+<math>\sum_{k=1}^N k^2</math>
+
+<math>\textstyle \sum_{k=1}^N k^2</math>
+
+<math>\prod_{i=1}^N x_i</math>
+
+<math>\textstyle \prod_{i=1}^N x_i</math>
+
+<math>\coprod_{i=1}^N x_i</math>
+
+<math>\textstyle \coprod_{i=1}^N x_i</math>
+
+<math>\lim_{n \to \infty}x_n</math>
+
+<math>\textstyle \lim_{n \to \infty}x_n</math>
+
+<math>\int\limits_{1}^{3}\frac{e^3/x}{x^2}\, dx</math>
+
+<math>\int_{1}^{3}\frac{e^3/x}{x^2}\, dx</math>
+
+<math>\textstyle \int\limits_{-N}^{N} e^x\, dx</math>
+
+<math>\textstyle \int_{-N}^{N} e^x\, dx</math>
+
+<math>\iint\limits_D \, dx\,dy</math>
+
+<math>\iiint\limits_E \, dx\,dy\,dz</math>
+
+<math>\iiiint\limits_F \, dx\,dy\,dz\,dt</math>
+
+<math>\int_C x^3\, dx + 4y^2\, dy</math>
+
+<math>\oint_C x^3\, dx + 4y^2\, dy</math>
+
+<math>\bigcap_1^n p</math>
+
+<math>\bigcup_1^k p</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msup><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msub></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msup><mi>a</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mo stretchy="false">+</mo><mn>2</mn></mrow></mrow></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>i</mi><mo>,</mo><mi>j</mi></mrow></mrow></msub></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msubsup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msubsup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msup><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msub><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mn>1</mn><msup><mn>0</mn><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>1</mn><msup><mn>0</mn><mrow data-mjx-texclass="ORD"><mn>8</mn></mrow></msup></mrow></mrow></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><msub><mrow data-mjx-texclass="ORD"></mrow><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><msub><mi>P</mi><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow></msub></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="OP"><munderover><mstyle displaystyle="true"><mmultiscripts><mo largeop="true" movablelimits="false" symmetric="true">∏</mo><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow><mrow data-mjx-texclass="ORD"><mn>4</mn></mrow><mprescripts></mprescripts><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mmultiscripts></mstyle><mrow><mi>a</mi></mrow><mrow><mi>b</mi></mrow></munderover></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msubsup><mrow data-mjx-texclass="ORD"></mrow><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msubsup><mspace width="-0.167em"></mspace><msubsup><mi>Ω</mi><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow><mrow data-mjx-texclass="ORD"><mn>4</mn></mrow></msubsup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mover><mrow><mi>ω</mi></mrow><mi>α</mi></mover></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><munder><mi>ω</mi><mi>α</mi></munder></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mover><mrow><mrow data-mjx-texclass="ORD"><munder><mi>ω</mi><mi>γ</mi></munder></mrow></mrow><mi>α</mi></mover></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="REL"><mover><mrow data-mjx-texclass="OP"><mi>ω</mi></mrow><mrow data-mjx-texclass="ORD"><mi>α</mi></mrow></mover></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msup><mi>x</mi><mo>&#x2032;</mo></msup><mo>,</mo><msup><mi>y</mi><mo>&#x2033;</mo></msup><mo>,</mo><msup><mi>f</mi><mo>&#x2032;</mo></msup><mo>,</mo><msup><mi>f</mi><mo>&#x2033;</mo></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">′</mo></mrow></msup><mo>,</mo><msup><mi>y</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">′</mo><mo stretchy="false">′</mo></mrow></mrow></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mover><mi>x</mi><mo>˙</mo></mover><mo>,</mo><mover><mi>x</mi><mo>¨</mo></mover></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mover><mi>a</mi><mo stretchy="false">̂</mo></mover><mtext>&#160;</mtext><mover><mi>b</mi><mo>¯</mo></mover><mtext>&#160;</mtext><mover><mi>c</mi><mo class="mwe-math-vec" stretchy="false">→</mo></mover></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mover><mrow data-mjx-texclass="ORD"><mi>a</mi><mi>b</mi></mrow><mo>→</mo></mover></mrow><mtext>&#160;</mtext><mrow data-mjx-texclass="ORD"><mover><mrow data-mjx-texclass="ORD"><mi>c</mi><mi>d</mi></mrow><mo>←</mo></mover></mrow><mtext>&#160;</mtext><mover><mrow data-mjx-texclass="ORD"><mi>d</mi><mi>e</mi><mi>f</mi></mrow><mo stretchy="true">^</mo></mover></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mover><mrow data-mjx-texclass="ORD"><mi>g</mi><mi>h</mi><mi>i</mi></mrow><mo>‾</mo></mover></mrow><mtext>&#160;</mtext><mrow data-mjx-texclass="ORD"><munder><mrow data-mjx-texclass="ORD"><mi>j</mi><mi>k</mi><mi>l</mi></mrow><mo>_</mo></munder></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mn>1</mn><mtext>&#160;</mtext><menclose notation="updiagonalstrike" class="menclose"><mn>123</mn><mrow class="menclose-updiagonalstrike"></mrow></menclose></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>A</mi><mover><mstyle scriptlevel="0"><mo data-mjx-texclass="REL">←</mo></mstyle><mpadded height="-.2em" lspace="0.556em" voffset="-.2em" width="+0.833em"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false">+</mo><mi>μ</mi><mo stretchy="false">−</mo><mn>1</mn></mrow><mspace depth=".25em"></mspace></mpadded></mover><mi>B</mi><mrow data-mjx-texclass="ORD"><munderover><mstyle scriptlevel="0"><mo data-mjx-texclass="REL">→</mo></mstyle><mpadded height="-.2em" lspace="0.278em" voffset="-.2em" width="+0.833em"><mrow data-mjx-texclass="ORD"><mi>T</mi></mrow><mspace depth=".25em"></mspace></mpadded><mpadded height="-.2em" lspace="0.278em" voffset="-.2em" width="+0.833em"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false">±</mo><mi>i</mi><mo stretchy="false">−</mo><mn>1</mn></mrow></mpadded></munderover></mrow><mi>C</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mover><mrow data-mjx-texclass="OP"><mover><mrow data-mjx-texclass="ORD"><mn>1</mn><mo stretchy="false">+</mo><mn>2</mn><mo stretchy="false">+</mo><mo stretchy="false">⋯</mo><mo stretchy="false">+</mo><mn>100</mn></mrow><mo>⏞</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mtext>sum</mtext></mrow><mspace width="0.167em"></mspace><mo stretchy="false">=</mo><mspace width="0.167em"></mspace><mn>5050</mn></mrow></mrow></mover></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munder><mrow data-mjx-texclass="OP"><munder><mrow data-mjx-texclass="ORD"><mi>a</mi><mo stretchy="false">+</mo><mi>b</mi><mo stretchy="false">+</mo><mo stretchy="false">⋯</mo><mo stretchy="false">+</mo><mi>z</mi></mrow><mo>⏟</mo></munder></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>26</mn><mrow data-mjx-texclass="ORD"><mtext>&#xA0;terms</mtext></mrow></mrow></mrow></munder></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo movablelimits="false" stretchy="false">∑</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>k</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></munderover><msup><mi>k</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mstyle displaystyle="false" scriptlevel="0"><msubsup><mo stretchy="false">∑</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>k</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></msubsup><msup><mi>k</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mstyle></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo movablelimits="false" stretchy="false">∏</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>i</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></munderover><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>i</mi></mrow></msub></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mstyle displaystyle="false" scriptlevel="0"><msubsup><mo stretchy="false">∏</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>i</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></msubsup><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>i</mi></mrow></msub></mstyle></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo movablelimits="false" stretchy="false">∐</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>i</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></munderover><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>i</mi></mrow></msub></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mstyle displaystyle="false" scriptlevel="0"><msubsup><mo stretchy="false">∐</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>i</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></msubsup><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>i</mi></mrow></msub></mstyle></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munder><mo form="prefix">lim</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false" accent="false">→</mo><mi mathvariant="normal">∞</mi></mrow></mrow></munder><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mstyle displaystyle="false" scriptlevel="0"><munder><mo form="prefix" movablelimits="true">lim</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false" accent="false">→</mo><mi mathvariant="normal">∞</mi></mrow></mrow></munder><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub></mstyle></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo form="prefix" stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></munderover><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><msup><mi>e</mi><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msup><mo lspace="0" rspace="0">/</mo><mi>x</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mrow></mfrac></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msubsup><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msubsup><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><msup><mi>e</mi><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msup><mo lspace="0" rspace="0">/</mo><mi>x</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mrow></mfrac></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mstyle displaystyle="false" scriptlevel="0"><munderover><mo form="prefix" stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">−</mo><mi>N</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></munderover><msup><mi>e</mi><mrow data-mjx-texclass="ORD"><mi>x</mi></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi></mstyle></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mstyle displaystyle="false" scriptlevel="0"><msubsup><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">−</mo><mi>N</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>N</mi></mrow></msubsup><msup><mi>e</mi><mrow data-mjx-texclass="ORD"><mi>x</mi></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi></mstyle></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munder><mo form="prefix" stretchy="false">∬</mo><mrow data-mjx-texclass="ORD"><mi>D</mi></mrow></munder><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munder><mo form="prefix" stretchy="false">∭</mo><mrow data-mjx-texclass="ORD"><mi>E</mi></mrow></munder><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>z</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munder><mo form="prefix" stretchy="false">⨌</mo><mrow data-mjx-texclass="ORD"><mi>F</mi></mrow></munder><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>z</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>t</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mi>C</mi></mrow></msub><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo stretchy="false">+</mo><mn>4</mn><msup><mi>y</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mo>&#x222E;</mo><mrow data-mjx-texclass="ORD"><mi>C</mi></mrow></msub><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo stretchy="false">+</mo><mn>4</mn><msup><mi>y</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo movablelimits="false" stretchy="false">⋂</mo><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></munderover><mi>p</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo movablelimits="false" stretchy="false">⋃</mo><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow></munderover><mi>p</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math fractions, matrices, multilines
+!! wikitext
+<math>\frac{1}{2}=0.5</math>
+
+<math>\tfrac{1}{2} = 0.5</math>
+
+<math>\dfrac{k}{k-1} = 0.5</math>
+
+<math>\dfrac{ \tfrac{1}{2}[1-(\tfrac{1}{2})^n] }{ 1-\tfrac{1}{2} } = s_n</math>
+
+<math>\cfrac{2}{ c + \cfrac{2}{ d + \cfrac{1}{2} } } = a
+\qquad
+\dfrac{2}{ c + \dfrac{2}{ d + \dfrac{1}{2} } } = a</math>
+
+<math>\binom{n}{k}</math>
+
+<math>\tbinom{n}{k}</math>
+
+<math>\dbinom{n}{k}</math>
+
+<math>\begin{matrix}
+x & y \\
+z & v 
+\end{matrix}</math>
+
+<math>\begin{vmatrix}
+x & y \\
+z & v 
+\end{vmatrix}</math>
+
+<math>\begin{Vmatrix}
+x & y \\
+z & v
+\end{Vmatrix}</math>
+
+<math>\begin{bmatrix}
+0      & \cdots & 0      \\
+\vdots & \ddots & \vdots \\ 
+0      & \cdots & 0
+\end{bmatrix}</math>
+
+<math>\begin{Bmatrix}
+x & y \\
+z & v
+\end{Bmatrix}</math>
+
+<math>\begin{pmatrix}
+x & y \\
+z & v 
+\end{pmatrix}</math>
+
+<math>\bigl( \begin{smallmatrix}
+a&b\\ c&d
+\end{smallmatrix} \bigr)</math>
+
+<math>\begin{array}{|c|c||c|} a & b & S \\
+\hline
+0&0&1\\
+0&1&1\\
+1&0&1\\
+1&1&0
+\end{array}</math>
+
+<math>f(n) = 
+\begin{cases} 
+n/2,  & \mbox{if }n\mbox{ is even} \\
+3n+1, & \mbox{if }n\mbox{ is odd} 
+\end{cases}</math>
+
+<math>\begin{cases}
+3x + 5y +  z &= 1 \\
+7x - 2y + 4z &= 2 \\
+-6x + 3y + 2z &= 3
+\end{cases}</math>
+
+<math><math>f(x) = \sum_{n=0}^\infty a_n x^n</math>
+<math>= a_0 + a_1x + a_2x^2 + \cdots</math></math>
+
+<math>\begin{align}
+f(x) & = (a+b)^2 \\
+& = a^2+2ab+b^2
+\end{align}</math>
+
+<math>\begin{alignat}{2}
+f(x) & = (a-b)^2 \\
+& = a^2-2ab+b^2
+\end{alignat}</math>
+
+<math>\begin{array}{lcl}
+z        & = & a \\
+f(x,y,z) & = & x + y + z  
+\end{array}</math>
+
+<math>\begin{array}{lcr}
+z        & = & a \\
+f(x,y,z) & = & x + y + z     
+\end{array}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow><mo stretchy="false">=</mo><mn>0.5</mn></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow><mo stretchy="false">=</mo><mn>0.5</mn></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>k</mi><mo stretchy="false">−</mo><mn>1</mn></mrow></mrow></mfrac></mrow></mstyle></mrow><mo stretchy="false">=</mo><mn>0.5</mn></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow><mo stretchy="false">[</mo><mn>1</mn><mo stretchy="false">−</mo><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow><msup><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup><mo stretchy="false">]</mo></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>1</mn><mo stretchy="false">−</mo><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow></mrow></mrow></mfrac></mrow></mstyle></mrow><mo stretchy="false">=</mo><msub><mi>s</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="3pt" height="8.6pt" width="0"></mpadded></mrow><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mstyle></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="3pt" height="8.6pt" width="0"></mpadded></mrow><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>c</mi><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="3pt" height="8.6pt" width="0"></mpadded></mrow><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mstyle></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="3pt" height="8.6pt" width="0"></mpadded></mrow><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>d</mi><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="3pt" height="8.6pt" width="0"></mpadded></mrow><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></mstyle></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="3pt" height="8.6pt" width="0"></mpadded></mrow><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mstyle></mrow></mfrac></mrow></mrow></mrow></mstyle></mrow></mfrac></mrow></mrow></mrow></mstyle></mrow></mfrac></mrow><mo stretchy="false">=</mo><mi>a</mi><mspace width="2em"></mspace><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>c</mi><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>d</mi><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow></mrow></mrow></mfrac></mrow></mstyle></mrow></mrow></mrow></mfrac></mrow></mstyle></mrow><mo stretchy="false">=</mo><mi>a</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em">)</mo></mrow></mrow></mstyle></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="1.2em">(</mo></mrow><mfrac linethickness="0"><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="1.2em">)</mo></mrow></mrow></mstyle></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow><mrow data-mjx-texclass="ORD"><mi>k</mi></mrow></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em">)</mo></mrow></mrow></mstyle></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN"></mo><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mi>y</mi></mtd></mtr><mtr><mtd><mi>z</mi></mtd><mtd><mi>v</mi></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE"></mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">|</mo><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mi>y</mi></mtd></mtr><mtr><mtd><mi>z</mi></mtd><mtd><mi>v</mi></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE">|</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">‖</mo><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mi>y</mi></mtd></mtr><mtr><mtd><mi>z</mi></mtd><mtd><mi>v</mi></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE">‖</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">[</mo><mtable><mtr><mtd><mn>0</mn></mtd><mtd><mo stretchy="false">⋯</mo></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mo stretchy="false">⋮</mo></mtd><mtd><mo stretchy="false">⋱</mo></mtd><mtd><mo stretchy="false">⋮</mo></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mo stretchy="false">⋯</mo></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE">]</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">{</mo><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mi>y</mi></mtd></mtr><mtr><mtd><mi>z</mi></mtd><mtd><mi>v</mi></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE">}</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">(</mo><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mi>y</mi></mtd></mtr><mtr><mtd><mi>z</mi></mtd><mtd><mi>v</mi></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE">)</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo maxsize="1.2em" minsize="1.2em" data-mjx-texclass="OPEN">(</mo><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN"></mo><mtable class="mwe-math-smallmatrix"><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE"></mo></mrow><mo maxsize="1.2em" minsize="1.2em" data-mjx-texclass="CLOSE">)</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mtable displaystyle="true"><mtr><mtd class="mwe-math-matrix-bottom mwe-math-matrix-left mwe-math-matrix-right"><mi>a</mi></mtd><mtd class="mwe-math-matrix-bottom mwe-math-matrix-left mwe-math-matrix-right"><mi>b</mi></mtd><mtd class="mwe-math-matrix-bottom mwe-math-matrix-left mwe-math-matrix-right"><mi>S</mi></mtd></mtr><mtr><mtd class="mwe-math-matrix-top mwe-math-matrix-left mwe-math-matrix-right"><mn>0</mn></mtd><mtd class="mwe-math-matrix-top mwe-math-matrix-left mwe-math-matrix-right"><mn>0</mn></mtd><mtd class="mwe-math-matrix-top mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd></mtr><mtr><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>0</mn></mtd><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd></mtr><mtr><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>0</mn></mtd><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd></mtr><mtr><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>1</mn></mtd><mtd class="mwe-math-matrix-left mwe-math-matrix-right"><mn>0</mn></mtd></mtr></mtable></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">{</mo><mtable><mtr><mtd class="mwe-math-columnalign-l"><mi>n</mi><mo lspace="0" rspace="0">/</mo><mn>2</mn><mo>,</mo></mtd><mtd class="mwe-math-columnalign-l"><mrow data-mjx-texclass="ORD"><mtext>if&#xA0;</mtext></mrow><mi>n</mi><mrow data-mjx-texclass="ORD"><mtext>&#xA0;is even</mtext></mrow></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mn>3</mn><mi>n</mi><mo stretchy="false">+</mo><mn>1</mn><mo>,</mo></mtd><mtd class="mwe-math-columnalign-l"><mrow data-mjx-texclass="ORD"><mtext>if&#xA0;</mtext></mrow><mi>n</mi><mrow data-mjx-texclass="ORD"><mtext>&#xA0;is odd</mtext></mrow></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE"></mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">{</mo><mtable><mtr><mtd class="mwe-math-columnalign-l"><mn>3</mn><mi>x</mi><mo stretchy="false">+</mo><mn>5</mn><mi>y</mi><mo stretchy="false">+</mo><mi>z</mi></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><mn>1</mn></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mn>7</mn><mi>x</mi><mo stretchy="false">−</mo><mn>2</mn><mi>y</mi><mo stretchy="false">+</mo><mn>4</mn><mi>z</mi></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><mn>2</mn></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mo stretchy="false">−</mo><mn>6</mn><mi>x</mi><mo stretchy="false">+</mo><mn>3</mn><mi>y</mi><mo stretchy="false">+</mo><mn>2</mn><mi>z</mi></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><mn>3</mn></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE"></mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo>&lt;</mo><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mo>&gt;</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><munderover><mo movablelimits="false" stretchy="false">∑</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false">=</mo><mn>0</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">∞</mi></mrow></munderover><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup></mstyle></mrow></math>
+<math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">=</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow></msub><mo stretchy="false">+</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></msub><mi>x</mi><mo stretchy="false">+</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msub><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mo stretchy="false">+</mo><mo stretchy="false">⋯</mo></mstyle></mrow></math>&lt;/math&gt;
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mtable displaystyle="true"><mtr><mtd class="mwe-math-columnalign-r"><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">+</mo><mi>b</mi><msup><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mtd></mtr><mtr><mtd class="mwe-math-columnalign-r"></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><msup><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mo stretchy="false">+</mo><mn>2</mn><mi>a</mi><mi>b</mi><mo stretchy="false">+</mo><msup><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mtd></mtr></mtable></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mtable displaystyle="true"><mtr><mtd class="mwe-math-columnalign-r"><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">−</mo><mi>b</mi><msup><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mtd></mtr><mtr><mtd class="mwe-math-columnalign-r"></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">=</mo><msup><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mo stretchy="false">−</mo><mn>2</mn><mi>a</mi><mi>b</mi><mo stretchy="false">+</mo><msup><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mtd></mtr></mtable></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mtable displaystyle="true"><mtr><mtd class="mwe-math-columnalign-l"><mi>z</mi></mtd><mtd><mo stretchy="false">=</mo></mtd><mtd class="mwe-math-columnalign-l"><mi>a</mi></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>z</mi><mo stretchy="false">)</mo></mtd><mtd><mo stretchy="false">=</mo></mtd><mtd class="mwe-math-columnalign-l"><mi>x</mi><mo stretchy="false">+</mo><mi>y</mi><mo stretchy="false">+</mo><mi>z</mi></mtd></mtr></mtable></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mtable displaystyle="true"><mtr><mtd class="mwe-math-columnalign-l"><mi>z</mi></mtd><mtd><mo stretchy="false">=</mo></mtd><mtd class="mwe-math-columnalign-r"><mi>a</mi></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>z</mi><mo stretchy="false">)</mo></mtd><mtd><mo stretchy="false">=</mo></mtd><mtd class="mwe-math-columnalign-r"><mi>x</mi><mo stretchy="false">+</mo><mi>y</mi><mo stretchy="false">+</mo><mi>z</mi></mtd></mtr></mtable></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math parenthesizing big expressions, brackets, bars
+!! wikitext
+<math>( \frac{1}{2} )</math>
+
+<math>\left ( \frac{1}{2} \right )</math>
+
+<math>\left ( \frac{a}{b} \right )</math>
+
+<math>\left [ \frac{a}{b} \right ] \quad \left \lbrack \frac{a}{b} \right \rbrack</math>
+
+<math>\left \{ \frac{a}{b} \right \} \quad \left \lbrace \frac{a}{b} \right \rbrace</math>
+
+<math>\left \langle \frac{a}{b} \right \rangle</math>
+
+<math>\left | \frac{a}{b} \right \vert \left \Vert \frac{c}{d} \right \|</math>
+
+<math>\left \lfloor \frac{a}{b} \right \rfloor \left \lceil \frac{c}{d} \right \rceil</math>
+
+<math>\left / \frac{a}{b} \right \backslash</math>
+
+<math>\left \uparrow \frac{a}{b} \right \downarrow \quad \left \Uparrow \frac{a}{b} \right \Downarrow \quad \left \updownarrow \frac{a}{b} \right \Updownarrow</math>
+
+<math>\left [ 0,1 \right )  \left \langle \psi \right |</math>
+
+<math>\left . \frac{A}{B} \right \} \to X</math>
+
+<math>\big( \Big( \bigg( \Bigg( \dots \Bigg] \bigg] \Big] \big]</math>
+
+<math>\big\{ \Big\{ \bigg\{ \Bigg\{ \dots \Bigg\rangle \bigg\rangle \Big\rangle \big\rangle</math>
+
+<math>\big| \Big| \bigg| \Bigg| \dots \Bigg\| \bigg\| \Big\| \big\|</math>
+
+<math>\big\lfloor \Big\lfloor \bigg\lfloor \Bigg\lfloor \dots \Bigg\rceil \bigg\rceil \Big\rceil \big\rceil</math>
+
+<math>\big\uparrow \Big\uparrow \bigg\uparrow \Bigg\uparrow \dots \Bigg\Downarrow \bigg\Downarrow \Big\Downarrow \big\Downarrow</math>
+
+<math>\big\updownarrow \Big\updownarrow \bigg\updownarrow \Bigg\updownarrow \dots \Bigg\Updownarrow \bigg\Updownarrow \Big\Updownarrow \big\Updownarrow</math>
+
+<math>\big / \Big / \bigg / \Bigg / \dots \Bigg\backslash \bigg\backslash \Big\backslash \big\backslash</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow><mo stretchy="false">)</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">)</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">)</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">]</mo></mrow><mspace width="1em"></mspace><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">]</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">{</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">}</mo></mrow><mspace width="1em"></mspace><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">{</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">}</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">⟨</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">⟩</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">|</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">|</mo></mrow><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">‖</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>c</mi></mrow><mrow data-mjx-texclass="ORD"><mi>d</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">‖</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">⌊</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">⌋</mo></mrow><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">⌈</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>c</mi></mrow><mrow data-mjx-texclass="ORD"><mi>d</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">⌉</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">/</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">\</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">↑</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">↓</mo></mrow><mspace width="1em"></mspace><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">⇑</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">⇓</mo></mrow><mspace width="1em"></mspace><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">↕</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">⇕</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo data-mjx-texclass="CLOSE">)</mo></mrow><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">⟨</mo><mi>ψ</mi><mo data-mjx-texclass="CLOSE">|</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN"></mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>A</mi></mrow><mrow data-mjx-texclass="ORD"><mi>B</mi></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">}</mo></mrow><mo stretchy="false" accent="false">→</mo><mi>X</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo maxsize="1.2em" minsize="1.2em">(</mo><mo maxsize="1.623em" minsize="1.623em">(</mo><mo maxsize="2.047em" minsize="2.047em">(</mo><mo maxsize="2.470em" minsize="2.470em">(</mo><mo>&#x2026;</mo><mo maxsize="2.470em" minsize="2.470em">]</mo><mo maxsize="2.047em" minsize="2.047em">]</mo><mo maxsize="1.623em" minsize="1.623em">]</mo><mo maxsize="1.2em" minsize="1.2em">]</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo maxsize="1.2em" minsize="1.2em">{</mo><mo maxsize="1.623em" minsize="1.623em">{</mo><mo maxsize="2.047em" minsize="2.047em">{</mo><mo maxsize="2.470em" minsize="2.470em">{</mo><mo>&#x2026;</mo><mo maxsize="2.470em" minsize="2.470em">⟩</mo><mo maxsize="2.047em" minsize="2.047em">⟩</mo><mo maxsize="1.623em" minsize="1.623em">⟩</mo><mo maxsize="1.2em" minsize="1.2em">⟩</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">|</mo><mo maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">|</mo><mo maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">|</mo><mo maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">|</mo><mo>&#x2026;</mo><mo maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">‖</mo><mo maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">‖</mo><mo maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">‖</mo><mo maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">‖</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo maxsize="1.2em" minsize="1.2em">⌊</mo><mo maxsize="1.623em" minsize="1.623em">⌊</mo><mo maxsize="2.047em" minsize="2.047em">⌊</mo><mo maxsize="2.470em" minsize="2.470em">⌊</mo><mo>&#x2026;</mo><mo maxsize="2.470em" minsize="2.470em">⌉</mo><mo maxsize="2.047em" minsize="2.047em">⌉</mo><mo maxsize="1.623em" minsize="1.623em">⌉</mo><mo maxsize="1.2em" minsize="1.2em">⌉</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo fence="true" maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">↑</mo><mo fence="true" maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">↑</mo><mo fence="true" maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">↑</mo><mo fence="true" maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">↑</mo><mo>&#x2026;</mo><mo fence="true" maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">⇓</mo><mo fence="true" maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">⇓</mo><mo fence="true" maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">⇓</mo><mo fence="true" maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">⇓</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo fence="true" maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">↕</mo><mo fence="true" maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">↕</mo><mo fence="true" maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">↕</mo><mo fence="true" maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">↕</mo><mo>&#x2026;</mo><mo fence="true" maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">⇕</mo><mo fence="true" maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">⇕</mo><mo fence="true" maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">⇕</mo><mo fence="true" maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">⇕</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo fence="true" maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">/</mo><mo fence="true" maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">/</mo><mo fence="true" maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">/</mo><mo fence="true" maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">/</mo><mo>&#x2026;</mo><mo fence="true" maxsize="2.470em" minsize="2.470em" stretchy="true" symmetric="true">\</mo><mo fence="true" maxsize="2.047em" minsize="2.047em" stretchy="true" symmetric="true">\</mo><mo fence="true" maxsize="1.623em" minsize="1.623em" stretchy="true" symmetric="true">\</mo><mo fence="true" maxsize="1.2em" minsize="1.2em" stretchy="true" symmetric="true">\</mo></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math alphabets and typefaces
+!! wikitext
+<math>\Alpha \Beta \Gamma \Delta \Epsilon \Zeta</math>
+
+<math>\Eta \Theta \Iota \Kappa \Lambda \Mu</math>
+
+<math>\Nu \Xi \Omicron \Pi \Rho \Sigma \Tau</math>
+
+<math>\Upsilon \Phi \Chi \Psi \Omega</math>
+
+<math>\alpha \beta \gamma \delta \epsilon \zeta</math>
+
+<math>\eta \theta \iota \kappa \lambda \mu</math>
+
+<math>\nu \xi \omicron \pi \rho \sigma \tau</math>
+
+<math>\upsilon \phi \chi \psi \omega</math>
+
+<math>\varepsilon \digamma \vartheta \varkappa</math>
+
+<math>\varpi \varrho \varsigma \varphi</math>
+
+<math>\mathbb{A} \mathbb{B} \mathbb{C} \mathbb{D} \mathbb{E} \mathbb{F} \mathbb{G}</math>
+
+<math>\mathbb{H} \mathbb{I} \mathbb{J} \mathbb{K} \mathbb{L} \mathbb{M}</math>
+
+<math>\mathbb{N} \mathbb{O} \mathbb{P} \mathbb{Q} \mathbb{R} \mathbb{S} \mathbb{T}</math>
+
+<math>\mathbb{U} \mathbb{V} \mathbb{W} \mathbb{X} \mathbb{Y} \mathbb{Z}</math>
+
+<math>\C \N \Q \R \Z</math>
+
+<math>\mathbf{A} \mathbf{B} \mathbf{C} \mathbf{D} \mathbf{E} \mathbf{F} \mathbf{G}</math>
+
+<math>\mathbf{H} \mathbf{I} \mathbf{J} \mathbf{K} \mathbf{L} \mathbf{M}</math>
+
+<math>\mathbf{N} \mathbf{O} \mathbf{P} \mathbf{Q} \mathbf{R} \mathbf{S} \mathbf{T}</math>
+
+<math>\mathbf{U} \mathbf{V} \mathbf{W} \mathbf{X} \mathbf{Y} \mathbf{Z}</math>
+
+<math>\mathbf{a} \mathbf{b} \mathbf{c} \mathbf{d} \mathbf{e} \mathbf{f} \mathbf{g}</math>
+
+<math>\mathbf{h} \mathbf{i} \mathbf{j} \mathbf{k} \mathbf{l} \mathbf{m}</math>
+
+<math>\mathbf{n} \mathbf{o} \mathbf{p} \mathbf{q} \mathbf{r} \mathbf{s} \mathbf{t}</math>
+
+<math>\mathbf{u} \mathbf{v} \mathbf{w} \mathbf{x} \mathbf{y} \mathbf{z}</math>
+
+<math>\mathbf{0} \mathbf{1} \mathbf{2} \mathbf{3} \mathbf{4}</math>
+
+<math>\mathbf{5} \mathbf{6} \mathbf{7} \mathbf{8} \mathbf{9}</math>
+
+<math>\boldsymbol{\Alpha} \boldsymbol{\Beta} \boldsymbol{\Gamma} \boldsymbol{\Delta} \boldsymbol{\Epsilon} \boldsymbol{\Zeta}</math>
+
+<math>\boldsymbol{\Eta} \boldsymbol{\Theta} \boldsymbol{\Iota} \boldsymbol{\Kappa} \boldsymbol{\Lambda} \boldsymbol{\Mu}</math>
+
+<math>\boldsymbol{\Nu} \boldsymbol{\Xi} \boldsymbol{\Omicron} \boldsymbol{\Pi} \boldsymbol{\Rho} \boldsymbol{\Sigma} \boldsymbol{\Tau}</math>
+
+<math>\boldsymbol{\Upsilon} \boldsymbol{\Phi} \boldsymbol{\Chi} \boldsymbol{\Psi} \boldsymbol{\Omega}</math>
+
+<math>\boldsymbol{\alpha} \boldsymbol{\beta} \boldsymbol{\gamma} \boldsymbol{\delta} \boldsymbol{\epsilon} \boldsymbol{\zeta}</math>
+
+<math>\boldsymbol{\eta} \boldsymbol{\theta} \boldsymbol{\iota} \boldsymbol{\kappa} \boldsymbol{\lambda} \boldsymbol{\mu}</math>
+
+<math>\boldsymbol{\nu} \boldsymbol{\xi} \boldsymbol{\omicron} \boldsymbol{\pi} \boldsymbol{\rho} \boldsymbol{\sigma} \boldsymbol{\tau}</math>
+
+<math>\boldsymbol{\upsilon} \boldsymbol{\phi} \boldsymbol{\chi} \boldsymbol{\psi} \boldsymbol{\omega}</math>
+
+<math>\boldsymbol{\varepsilon} \boldsymbol{\digamma} \boldsymbol{\vartheta} \boldsymbol{\varkappa}</math>
+
+<math>\boldsymbol{\varpi} \boldsymbol{\varrho} \boldsymbol{\varsigma} \boldsymbol{\varphi}</math>
+
+<math>\mathit{A} \mathit{B} \mathit{C} \mathit{D} \mathit{E} \mathit{F} \mathit{G}</math>
+
+<math>\mathit{H} \mathit{I} \mathit{J} \mathit{K} \mathit{L} \mathit{M}</math>
+
+<math>\mathit{N} \mathit{O} \mathit{P} \mathit{Q} \mathit{R} \mathit{S} \mathit{T}</math>
+
+<math>\mathit{U} \mathit{V} \mathit{W} \mathit{X} \mathit{Y} \mathit{Z}</math>
+
+<math>\mathit{a} \mathit{b} \mathit{c} \mathit{d} \mathit{e} \mathit{f} \mathit{g}</math>
+
+<math>\mathit{h} \mathit{i} \mathit{j} \mathit{k} \mathit{l} \mathit{m}</math>
+
+<math>\mathit{n} \mathit{o} \mathit{p} \mathit{q} \mathit{r} \mathit{s} \mathit{t}</math>
+
+<math>\mathit{u} \mathit{v} \mathit{w} \mathit{x} \mathit{y} \mathit{z}</math>
+
+<math>\mathit{0} \mathit{1} \mathit{2} \mathit{3} \mathit{4}</math>
+
+<math>\mathit{5} \mathit{6} \mathit{7} \mathit{8} \mathit{9}</math>
+
+<math>\mathrm{A} \mathrm{B} \mathrm{C} \mathrm{D} \mathrm{E} \mathrm{F} \mathrm{G}</math>
+
+<math>\mathrm{H} \mathrm{I} \mathrm{J} \mathrm{K} \mathrm{L} \mathrm{M}</math>
+
+<math>\mathrm{N} \mathrm{O} \mathrm{P} \mathrm{Q} \mathrm{R} \mathrm{S} \mathrm{T}</math>
+
+<math>\mathrm{U} \mathrm{V} \mathrm{W} \mathrm{X} \mathrm{Y} \mathrm{Z}</math>
+
+<math>\mathrm{a} \mathrm{b} \mathrm{c} \mathrm{d} \mathrm{e} \mathrm{f} \mathrm{g}</math>
+
+<math>\mathrm{h} \mathrm{i} \mathrm{j} \mathrm{k} \mathrm{l} \mathrm{m}</math>
+
+<math>\mathrm{n} \mathrm{o} \mathrm{p} \mathrm{q} \mathrm{r} \mathrm{s} \mathrm{t}</math>
+
+<math>\mathrm{u} \mathrm{v} \mathrm{w} \mathrm{x} \mathrm{y} \mathrm{z}</math>
+
+<math>\mathrm{0} \mathrm{1} \mathrm{2} \mathrm{3} \mathrm{4}</math>
+
+<math>\mathrm{5} \mathrm{6} \mathrm{7} \mathrm{8} \mathrm{9}</math>
+
+<math>\mathfrak{A} \mathfrak{B} \mathfrak{C} \mathfrak{D} \mathfrak{E} \mathfrak{F} \mathfrak{G}</math>
+
+<math>\mathfrak{H} \mathfrak{I} \mathfrak{J} \mathfrak{K} \mathfrak{L} \mathfrak{M}</math>
+
+<math>\mathfrak{N} \mathfrak{O} \mathfrak{P} \mathfrak{Q} \mathfrak{R} \mathfrak{S} \mathfrak{T}</math>
+
+<math>\mathfrak{U} \mathfrak{V} \mathfrak{W} \mathfrak{X} \mathfrak{Y} \mathfrak{Z}</math>
+
+<math>\mathfrak{a} \mathfrak{b} \mathfrak{c} \mathfrak{d} \mathfrak{e} \mathfrak{f} \mathfrak{g}</math>
+
+<math>\mathfrak{h} \mathfrak{i} \mathfrak{j} \mathfrak{k} \mathfrak{l} \mathfrak{m}</math>
+
+<math>\mathfrak{n} \mathfrak{o} \mathfrak{p} \mathfrak{q} \mathfrak{r} \mathfrak{s} \mathfrak{t}</math>
+
+<math>\mathfrak{u} \mathfrak{v} \mathfrak{w} \mathfrak{x} \mathfrak{y} \mathfrak{z}</math>
+
+<math>\mathfrak{0} \mathfrak{1} \mathfrak{2} \mathfrak{3} \mathfrak{4}</math>
+
+<math>\mathfrak{5} \mathfrak{6} \mathfrak{7} \mathfrak{8} \mathfrak{9}</math>
+
+<math>\mathcal{A} \mathcal{B} \mathcal{C} \mathcal{D} \mathcal{E} \mathcal{F} \mathcal{G}</math>
+
+<math>\mathcal{H} \mathcal{I} \mathcal{J} \mathcal{K} \mathcal{L} \mathcal{M}</math>
+
+<math>\mathcal{N} \mathcal{O} \mathcal{P} \mathcal{Q} \mathcal{R} \mathcal{S} \mathcal{T}</math>
+
+<math>\mathcal{U} \mathcal{V} \mathcal{W} \mathcal{X} \mathcal{Y} \mathcal{Z}</math>
+
+<math>\aleph \beth \gimel \daleth</math>
+
+<math>\mbox{abc}</math>
+
+<math>\mbox{if} n \mbox{is even}</math>
+
+<math>\mbox{if }n\mbox{ is even}</math>
+
+<math>\mbox{if}~n\ \mbox{is even}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">A</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">B</mi></mrow><mi>Γ</mi><mi>Δ</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">E</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">Z</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><mi>Θ</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">I</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">K</mi></mrow><mi>Λ</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">M</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi></mrow><mi>Ξ</mi><mi>O</mi><mi>Π</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">P</mi></mrow><mi>Σ</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">T</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>Υ</mi><mi>Φ</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">X</mi></mrow><mi>Ψ</mi><mi>Ω</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>α</mi><mi>β</mi><mi>γ</mi><mi>δ</mi><mi>ϵ</mi><mi>ζ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>η</mi><mi>θ</mi><mi>ι</mi><mi>κ</mi><mi>λ</mi><mi>μ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>ν</mi><mi>ξ</mi><mi>o</mi><mi>π</mi><mi>ρ</mi><mi>σ</mi><mi>τ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>υ</mi><mi>ϕ</mi><mi>χ</mi><mi>ψ</mi><mi>ω</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>ε</mi><mi>ϝ</mi><mi>ϑ</mi><mi>ϰ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>ϖ</mi><mi>ϱ</mi><mi>ς</mi><mi>φ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔸</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔹</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℂ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔻</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔼</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔽</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔾</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>ℍ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕀</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕁</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕂</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕃</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕄</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>ℕ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕆</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℙ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℚ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℝ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕊</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕋</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝕌</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕍</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕎</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕏</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝕐</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℤ</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>ℂ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℕ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℚ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℝ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℤ</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐀</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐁</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐂</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐃</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐄</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐅</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐆</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐇</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐈</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐉</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐊</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐋</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐌</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐍</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐎</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐏</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐐</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐑</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐒</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐓</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐔</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐕</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐖</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐗</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐘</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐙</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐚</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐛</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐜</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐝</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐞</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐟</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐠</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐡</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐢</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐣</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐤</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐥</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐦</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐧</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐨</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐩</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐪</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐫</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐬</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐭</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝐮</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐯</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐰</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐱</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐲</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝐳</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>𝟎</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟏</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟐</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟑</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟒</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>𝟓</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟔</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟕</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟖</mn></mrow><mrow data-mjx-texclass="ORD"><mn>𝟗</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑨</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑩</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>𝜞</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜟</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑬</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝒁</mi></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑯</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>𝜣</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑰</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑲</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>𝜦</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑴</mi></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑵</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>𝜩</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝑶</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜫</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑷</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>𝜮</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑻</mi></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝜰</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜱</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>𝑿</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mi>𝜳</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜴</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝜶</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜷</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜸</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜹</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝐</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜻</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝜼</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜽</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜾</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝜿</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝀</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝁</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝝂</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝃</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝒐</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝅</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝆</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝈</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝉</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝝊</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝓</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝌</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝍</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝎</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝜺</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ϝ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝑</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝒</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝝕</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝔</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝇</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝝋</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐴</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐵</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐶</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐷</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐸</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐹</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐺</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐻</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐼</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐽</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐾</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐿</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑀</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑁</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑂</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑃</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑄</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑅</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑆</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑇</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑈</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑉</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑊</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑋</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑌</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑍</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑎</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑏</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑐</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑑</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑒</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑓</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑔</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">ℎ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑖</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑗</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑘</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑙</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑚</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑛</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑜</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑝</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑞</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑟</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑠</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑡</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑢</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑣</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑤</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑥</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑦</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝑧</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">0</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">1</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">2</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">3</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">4</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">5</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">6</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">7</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">8</mn></mrow><mrow data-mjx-texclass="ORD"><mn data-mjx-variant="-tex-mathit" style="font-style: italic">9</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">A</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">B</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">C</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">D</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">E</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">F</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">G</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">I</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">J</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">K</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">L</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">M</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">O</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">P</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">Q</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">R</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">S</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">T</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">U</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">V</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">W</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">X</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">Y</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">Z</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">a</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">b</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">c</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">d</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">e</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">f</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">g</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">h</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">i</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">j</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">k</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">l</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">m</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">n</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">o</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">p</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">q</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">r</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">s</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">t</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">u</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">v</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">w</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">x</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">y</mi></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">z</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">0</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">1</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">2</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">3</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">4</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">5</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">6</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">7</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">8</mn></mrow><mrow data-mjx-texclass="ORD"><mn mathvariant="normal">9</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔄</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔅</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℭ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔇</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔈</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔉</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔊</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>ℌ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℑ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔍</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔎</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔏</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔐</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔑</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔒</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔓</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔔</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℜ</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔖</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔗</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔘</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔙</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔚</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔛</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔜</mi></mrow><mrow data-mjx-texclass="ORD"><mi>ℨ</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔞</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔟</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔠</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔡</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔢</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔣</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔤</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔥</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔦</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔧</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔨</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔩</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔪</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔫</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔬</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔭</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔮</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔯</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔰</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔱</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi>𝔲</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔳</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔴</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔵</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔶</mi></mrow><mrow data-mjx-texclass="ORD"><mi>𝔷</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow><mrow data-mjx-texclass="ORD"><mn>4</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mn>5</mn></mrow><mrow data-mjx-texclass="ORD"><mn>6</mn></mrow><mrow data-mjx-texclass="ORD"><mn>7</mn></mrow><mrow data-mjx-texclass="ORD"><mn>8</mn></mrow><mrow data-mjx-texclass="ORD"><mn>9</mn></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒜</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℬ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒞</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒟</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℰ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℱ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒢</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℋ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℐ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒥</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒦</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℒ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℳ</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒩</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒪</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒫</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒬</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">ℛ</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒮</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒯</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒰</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒱</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒲</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒳</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒴</mi></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic">𝒵</mi></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi mathvariant="normal">ℵ</mi><mi>ℶ</mi><mi>ℷ</mi><mi>ℸ</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mtext>abc</mtext></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mtext>if</mtext></mrow><mi>n</mi><mrow data-mjx-texclass="ORD"><mtext>is even</mtext></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mtext>if&#xA0;</mtext></mrow><mi>n</mi><mrow data-mjx-texclass="ORD"><mtext>&#xA0;is even</mtext></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mtext>if</mtext></mrow><mspace width="0.5em"></mspace><mi>n</mi><mtext>&#160;</mtext><mrow data-mjx-texclass="ORD"><mtext>is even</mtext></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math color
+!! wikitext
+<math>{\color{Blue}x^2}+{\color{YellowOrange}2x}-{\color{OliveGreen}1}</math>
+
+<math>x_{1,2}=\frac{-b\pm\sqrt{\color{Red}b^2-4ac}}{2a}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mstyle mathcolor="#2D2F92"><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mstyle></mrow><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mstyle mathcolor="#FAA21A"><mn>2</mn></mstyle><mstyle mathcolor="#FAA21A"><mi>x</mi></mstyle></mrow><mo stretchy="false">−</mo><mrow data-mjx-texclass="ORD"><mstyle mathcolor="#3C8031"><mn>1</mn></mstyle></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>1</mn><mo>,</mo><mn>2</mn></mrow></mrow></msub><mo stretchy="false">=</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">−</mo><mi>b</mi><mo stretchy="false">±</mo><mrow data-mjx-texclass="ORD"><msqrt><mrow data-mjx-texclass="ORD"><mstyle mathcolor="#ED1B23"><msup><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mstyle><mstyle mathcolor="#ED1B23"><mo stretchy="false">−</mo></mstyle><mstyle mathcolor="#ED1B23"><mn>4</mn></mstyle><mstyle mathcolor="#ED1B23"><mi>a</mi></mstyle><mstyle mathcolor="#ED1B23"><mi>c</mi></mstyle></mrow></msqrt></mrow></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mi>a</mi></mrow></mrow></mfrac></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math spacing
+!! wikitext
+<math>a \qquad b</math>
+
+<math>a \quad b</math>
+
+<math>a\ b</math>
+
+<math>a \mbox{ } b</math>
+
+<math>a\;b</math>
+
+<math>a\,b</math>
+
+<math>ab</math>
+
+<math>a\!b</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mspace width="2em"></mspace><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mspace width="1em"></mspace><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mtext>&#160;</mtext><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mrow data-mjx-texclass="ORD"><mtext>&#xA0;</mtext></mrow><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mspace width="0.167em"></mspace><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mi>b</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mspace width="-0.167em"></mspace><mi>b</mi></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Math empty horizontal or vertical spacing
+!! wikitext
+<math>\Gamma^{\phantom{i}j}_{i\phantom{j}k}</math>
+
+<math>-e\sqrt{\vphantom{p'}p},\; -e'\sqrt{p'},\; \ldots</math>
+
+<math>\int u^2\,du=\underline{\hphantom{(2/3)u^3+C}}</math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msubsup><mi>Γ</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>i</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded><mphantom><mi>j</mi></mphantom></mpadded></mrow></mrow><mi>k</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded><mphantom><mi>i</mi></mphantom></mpadded></mrow></mrow><mi>j</mi></mrow></mrow></msubsup></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">−</mo><mi>e</mi><mrow data-mjx-texclass="ORD"><msqrt><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mrow data-mjx-texclass="ORD"><msup><mi>p</mi><mo>&#x2032;</mo></msup></mrow></mphantom></mpadded></mrow></mrow><mi>p</mi></mrow></msqrt></mrow><mo>,</mo><mspace width="0.278em"></mspace><mo stretchy="false">−</mo><msup><mi>e</mi><mo>&#x2032;</mo></msup><mrow data-mjx-texclass="ORD"><msqrt><mrow data-mjx-texclass="ORD"><msup><mi>p</mi><mo>&#x2032;</mo></msup></mrow></msqrt></mrow><mo>,</mo><mspace width="0.278em"></mspace><mo stretchy="false">…</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">∫</mo><msup><mi>u</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>u</mi><mo stretchy="false">=</mo><mrow data-mjx-texclass="ORD"><munder><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded depth="0" height="0"><mphantom><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>2</mn><mo lspace="0" rspace="0">/</mo><mn>3</mn><mo stretchy="false">)</mo><msup><mi>u</mi><mrow data-mjx-texclass="ORD"><mn>3</mn></mrow></msup><mo stretchy="false">+</mo><mi>C</mi></mrow></mphantom></mpadded></mrow></mrow><mo>_</mo></munder></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Chemistry using <chem>
+!! wikitext
+<chem>C6H5-CHO</chem>
+
+<chem>\mathit{A} ->[\ce{+H2O}] \mathit{B}</chem>
+
+<math chem>A \ce{->[\ce{+H2O}]} B</math>
+
+<chem>SO4^2- + Ba^2+ -> BaSO4 v</chem>
+
+<chem>H2NCO2- + H2O <=> NH4+ + CO3^2-</chem>
+
+<chem>H2O</chem>
+
+<chem>Sb2O3</chem>
+
+<chem>H+</chem>
+
+<chem>CrO4^2-</chem>
+
+<chem>AgCl2-</chem>
+
+<chem>[AgCl2]-</chem>
+
+<chem>Y^{99}+</chem>
+
+<chem>Y^{99+}</chem>
+
+<chem>H2_{(aq)}</chem>
+
+<chem>NO3-</chem>
+
+<chem>(NH4)2S</chem>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">C</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>6</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>5</mn></mpadded></mrow></mrow></msub><mo stretchy="false" lspace="0" rspace="0">−</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">C</mi><mi mathvariant="normal">H</mi><mi mathvariant="normal">O</mi></mrow></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐴</mi></mrow><mrow data-mjx-texclass="REL"><mover><mstyle scriptlevel="0"><mo data-mjx-texclass="REL">→</mo></mstyle><mpadded height="-.2em" lspace="0.278em" voffset="-.2em" width="+0.833em"><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">+</mo><mspace width="0.167em"></mspace><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">O</mi></mrow></mrow><mspace depth=".25em"></mspace></mpadded></mover></mrow><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-mathit">𝐵</mi></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>A</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="REL"><mover><mstyle scriptlevel="0"><mo data-mjx-texclass="REL">→</mo></mstyle><mpadded height="-.2em" lspace="0.278em" voffset="-.2em" width="+0.833em"><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">+</mo><mspace width="0.167em"></mspace><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">O</mi></mrow></mrow><mspace depth=".25em"></mspace></mpadded></mover></mrow></mrow><mi>B</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">S</mi><mi mathvariant="normal">O</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>4</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mo stretchy="false">−</mo></mrow></mrow></msup><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">B</mi><mi mathvariant="normal">a</mi></mrow></mrow><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mo stretchy="false">+</mo></mrow></mrow></msup><mrow data-mjx-texclass="REL"><mo stretchy="false" lspace="0" rspace="0">⟶</mo></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">B</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">O</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>4</mn></mpadded></mrow></mrow></msub><mo stretchy="false">↓</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">O</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">−</mo></mrow></msup><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">O</mi></mrow><mrow data-mjx-texclass="REL"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="REL"><mover><mrow data-mjx-texclass="OP"><mrow data-mjx-texclass="ORD"><mpadded height="0" depth="0"><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">↽</mo><mspace width="-0.167em"></mspace><mspace width="-0.167em"></mspace><mo stretchy="false" lspace="0" rspace="0">−</mo></mrow></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mo stretchy="false" lspace="0" rspace="0">−</mo><mspace width="-0.167em"></mspace><mspace width="-0.167em"></mspace><mo stretchy="false" lspace="0" rspace="0">⇀</mo></mstyle></mrow></mrow></mover></mrow></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi><mi mathvariant="normal">H</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>4</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">+</mo></mrow></msup><mo stretchy="false">+</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">C</mi><mi mathvariant="normal">O</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>3</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mo stretchy="false">−</mo></mrow></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">O</mi></mrow></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">S</mi><mi mathvariant="normal">b</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">O</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>3</mn></mpadded></mrow></mrow></msub></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">+</mo></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">C</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">O</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>4</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mo stretchy="false">−</mo></mrow></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">A</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">l</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">−</mo></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo stretchy="false">[</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">A</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">l</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mo stretchy="false">]</mo><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">−</mo></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">Y</mi></mrow><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>99</mn><mo stretchy="false">+</mo></mrow></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">Y</mi></mrow><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>99</mn><mo stretchy="false">+</mo></mrow></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">H</mi></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mrow data-mjx-texclass="ORD"><mspace width="0.055em"></mspace><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">a</mi><mi mathvariant="normal">q</mi></mrow></mrow><mo stretchy="false">)</mo></mrow></mpadded></mrow></mrow></msub></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi><mi mathvariant="normal">O</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>3</mn></mpadded></mrow></mrow></msub><msup><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mo stretchy="false" lspace="0" rspace="0">−</mo></mrow></msup></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi><mi mathvariant="normal">H</mi></mrow></mrow><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>4</mn></mpadded></mrow></mrow></msub><mo stretchy="false">)</mo><msub><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mi>A</mi></mphantom></mpadded></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mpadded height="0"><mn>2</mn></mpadded></mrow></mrow></msub><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">S</mi></mrow></mrow></mstyle></mrow></math>
+</p>
+!! end
+
+!! test
+Maths using <math>
+!! wikitext
+<math>ax^2 + bx + c = 0</math>
+
+<math>ax^2 + bx + c = 0\,</math>
+
+<math>x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}</math>
+
+<math>2 = \left(\frac{\left(3-x\right) \times 2}{3-x}\right)</math>
+
+<math>S_{\text{new}} = S_{\text{old}} - \frac{ \left( 5-T \right) ^2} {2}</math>
+
+<math>\int_a^x \!\!\!\int_a^s f(y)\,dy\,ds = \int_a^x f(y)(x-y)\,dy</math>
+
+<math>\sum_{m=1}^\infty\sum_{n=1}^\infty\frac{m^2\,n}{3^m\left(m\,3^n+n\,3^m\right)}</math>
+
+<math>u'' + p(x)u' + q(x)u=f(x),\quad x>a</math>
+
+<math>|\bar{z}| = |z|, |(\bar{z})^n| = |z|^n, \arg(z^n) = n \arg(z)</math>
+
+<math>\lim_{z\rightarrow z_0} f(z)=f(z_0)</math>
+
+<math>\phi_n(\kappa) = \frac{1}{4\pi^2\kappa^2} \int_0^\infty \frac{\sin(\kappa R)}{\kappa R} \frac{\partial}{\partial R} \left[R^2\frac{\partial D_n(R)}{\partial R}\right]\,dR</math>
+
+<math>\phi_n(\kappa) = 0.033C_n^2\kappa^{-11/3},\quad \frac{1}{L_0}\ll\kappa\ll\frac{1}{l_0}</math>
+
+<math> f(x) = \begin{cases} 1 & -1 \le x < 0 \\ \frac{1}{2} & x = 0 \\ 1 - x^2 & \mbox{otherwise} \end{cases} </math> 
+
+<math>{}_pF_q(a_1,\dots,a_p;c_1,\dots,c_q;z) = \sum_{n=0}^\infty \frac{(a_1)_n\cdots(a_p)_n}{(c_1)_n\cdots(c_q)_n} \frac{z^n}{n!}</math>
+
+<math> \frac {a}{b}\ \tfrac {a}{b} </math>
+!! html
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mo stretchy="false">+</mo><mi>b</mi><mi>x</mi><mo stretchy="false">+</mo><mi>c</mi><mo stretchy="false">=</mo><mn>0</mn></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mo stretchy="false">+</mo><mi>b</mi><mi>x</mi><mo stretchy="false">+</mo><mi>c</mi><mo stretchy="false">=</mo><mn>0</mn><mspace width="0.167em"></mspace></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>x</mi><mo stretchy="false">=</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">−</mo><mi>b</mi><mo stretchy="false">±</mo><mrow data-mjx-texclass="ORD"><msqrt><mrow data-mjx-texclass="ORD"><msup><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mo stretchy="false">−</mo><mn>4</mn><mi>a</mi><mi>c</mi></mrow></msqrt></mrow></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>2</mn><mi>a</mi></mrow></mrow></mfrac></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mn>2</mn><mo stretchy="false">=</mo><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mn>3</mn><mo stretchy="false">−</mo><mi>x</mi><mo data-mjx-texclass="CLOSE">)</mo></mrow><mo stretchy="false">×</mo><mn>2</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>3</mn><mo stretchy="false">−</mo><mi>x</mi></mrow></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">)</mo></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>S</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mtext>new</mtext></mrow></mrow></msub><mo stretchy="false">=</mo><msub><mi>S</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mtext>old</mtext></mrow></mrow></msub><mo stretchy="false">−</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><msup><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mn>5</mn><mo stretchy="false">−</mo><mi>T</mi><mo data-mjx-texclass="CLOSE">)</mo></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msubsup><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>x</mi></mrow></msubsup><mspace width="-0.167em"></mspace><mspace width="-0.167em"></mspace><mspace width="-0.167em"></mspace><msubsup><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>s</mi></mrow></msubsup><mi>f</mi><mo stretchy="false">(</mo><mi>y</mi><mo stretchy="false">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>s</mi><mo stretchy="false">=</mo><msubsup><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>x</mi></mrow></msubsup><mi>f</mi><mo stretchy="false">(</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">−</mo><mi>y</mi><mo stretchy="false">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munderover><mo movablelimits="false" stretchy="false">∑</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>m</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">∞</mi></mrow></munderover><munderover><mo movablelimits="false" stretchy="false">∑</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false">=</mo><mn>1</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">∞</mi></mrow></munderover><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><msup><mi>m</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mspace width="0.167em"></mspace><mi>n</mi></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><msup><mn>3</mn><mrow data-mjx-texclass="ORD"><mi>m</mi></mrow></msup><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mi>m</mi><mspace width="0.167em"></mspace><msup><mn>3</mn><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup><mo stretchy="false">+</mo><mi>n</mi><mspace width="0.167em"></mspace><msup><mn>3</mn><mrow data-mjx-texclass="ORD"><mi>m</mi></mrow></msup><mo data-mjx-texclass="CLOSE">)</mo></mrow></mrow></mrow></mfrac></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msup><mi>u</mi><mo>&#x2033;</mo></msup><mo stretchy="false">+</mo><mi>p</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><msup><mi>u</mi><mo>&#x2032;</mo></msup><mo stretchy="false">+</mo><mi>q</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>u</mi><mo stretchy="false">=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"></mspace><mi>x</mi><mo>&gt;</mo><mi>a</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mo stretchy="false">|</mo><mover><mi>z</mi><mo>¯</mo></mover><mo stretchy="false">|</mo><mo stretchy="false">=</mo><mo stretchy="false">|</mo><mi>z</mi><mo stretchy="false">|</mo><mo>,</mo><mo stretchy="false">|</mo><mo stretchy="false">(</mo><mover><mi>z</mi><mo>¯</mo></mover><msup><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup><mo stretchy="false">|</mo><mo stretchy="false">=</mo><mo stretchy="false">|</mo><mi>z</mi><msup><mo stretchy="false">|</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup><mo>,</mo><mi>arg</mi><mo>&#x2061;</mo><mo stretchy="false">(</mo><msup><mi>z</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup><mo stretchy="false">)</mo><mo stretchy="false">=</mo><mi>n</mi><mi>arg</mi><mo>&#x2061;</mo><mo stretchy="false">(</mo><mi>z</mi><mo stretchy="false">)</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><munder><mo form="prefix">lim</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>z</mi><mo stretchy="false">→</mo><msub><mi>z</mi><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow></msub></mrow></mrow></munder><mi>f</mi><mo stretchy="false">(</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><mi>f</mi><mo stretchy="false">(</mo><msub><mi>z</mi><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow></msub><mo stretchy="false">)</mo></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>ϕ</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><mo stretchy="false">(</mo><mi>κ</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mn>4</mn><msup><mi>π</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><msup><mi>κ</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mrow></mrow></mfrac></mrow><msubsup><mo stretchy="false">∫</mo><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">∞</mi></mrow></msubsup><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>sin</mi><mo>&#x2061;</mo><mo stretchy="false">(</mo><mi>κ</mi><mi>R</mi><mo stretchy="false">)</mo></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>κ</mi><mi>R</mi></mrow></mrow></mfrac></mrow><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>∂</mi></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>∂</mi><mi>R</mi></mrow></mrow></mfrac></mrow><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><msup><mi>R</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>∂</mi><msub><mi>D</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><mo stretchy="false">(</mo><mi>R</mi><mo stretchy="false">)</mo></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>∂</mi><mi>R</mi></mrow></mrow></mfrac></mrow><mo data-mjx-texclass="CLOSE">]</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>R</mi></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mi>ϕ</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><mo stretchy="false">(</mo><mi>κ</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><mn>0.033</mn><msubsup><mi>C</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msubsup><msup><mi>κ</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">−</mo><mn>11</mn><mo lspace="0" rspace="0">/</mo><mn>3</mn></mrow></mrow></msup><mo>,</mo><mspace width="1em"></mspace><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><msub><mi>L</mi><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow></msub></mrow></mfrac></mrow><mo stretchy="false">≪</mo><mi>κ</mi><mo stretchy="false">≪</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><msub><mi>l</mi><mrow data-mjx-texclass="ORD"><mn>0</mn></mrow></msub></mrow></mfrac></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OPEN">{</mo><mtable><mtr><mtd class="mwe-math-columnalign-l"><mn>1</mn></mtd><mtd class="mwe-math-columnalign-l"><mo stretchy="false">−</mo><mn>1</mn><mo stretchy="false">≤</mo><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></mfrac></mrow></mtd><mtd class="mwe-math-columnalign-l"><mi>x</mi><mo stretchy="false">=</mo><mn>0</mn></mtd></mtr><mtr><mtd class="mwe-math-columnalign-l"><mn>1</mn><mo stretchy="false">−</mo><msup><mi>x</mi><mrow data-mjx-texclass="ORD"><mn>2</mn></mrow></msup></mtd><mtd class="mwe-math-columnalign-l"><mrow data-mjx-texclass="ORD"><mtext>otherwise</mtext></mrow></mtd></mtr></mtable><mo fence="true" stretchy="true" symmetric="true" data-mjx-texclass="CLOSE"></mo></mrow></mstyle></mrow></math> 
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><msub><mrow data-mjx-texclass="ORD"></mrow><mrow data-mjx-texclass="ORD"><mi>p</mi></mrow></msub><msub><mi>F</mi><mrow data-mjx-texclass="ORD"><mi>q</mi></mrow></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></msub><mo>,</mo><mo>&#x2026;</mo><mo>,</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mi>p</mi></mrow></msub><mo>;</mo><msub><mi>c</mi><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></msub><mo>,</mo><mo>&#x2026;</mo><mo>,</mo><msub><mi>c</mi><mrow data-mjx-texclass="ORD"><mi>q</mi></mrow></msub><mo>;</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">=</mo><munderover><mo movablelimits="false" stretchy="false">∑</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false">=</mo><mn>0</mn></mrow></mrow><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">∞</mi></mrow></munderover><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></msub><msub><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><mo stretchy="false">⋯</mo><mo stretchy="false">(</mo><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mi>p</mi></mrow></msub><msub><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub></mrow></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><msub><mi>c</mi><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></msub><msub><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub><mo stretchy="false">⋯</mo><mo stretchy="false">(</mo><msub><mi>c</mi><mrow data-mjx-texclass="ORD"><mi>q</mi></mrow></msub><msub><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msub></mrow></mrow></mfrac></mrow><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><msup><mi>z</mi><mrow data-mjx-texclass="ORD"><mi>n</mi></mrow></msup></mrow><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi>n</mi><mo stretchy="false">!</mo></mrow></mrow></mfrac></mrow></mstyle></mrow></math>
+</p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mtext>&#160;</mtext><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow></mstyle></mrow></mstyle></mrow></math>
+</p>
+!! end

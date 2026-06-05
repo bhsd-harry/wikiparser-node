@@ -142,31 +142,11 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				if (s && mathTags.has(name)) {
 					const texvcjs = loadTexvcjs();
 					if (texvcjs) {
-						const isChem = name !== 'math',
-							display = previousSibling?.getAttr('display') ?? 'block';
-						let tex = innerText,
-							n = 0;
-						if (isChem) {
-							tex = String.raw`\ce{${tex}}`;
-							n = 4;
-						}
-						switch (display) {
-							case 'block':
-								tex = String.raw`{\displaystyle ${tex}}`;
-								n += 15;
-								break;
-							case 'inline':
-								tex = String.raw`{\textstyle ${tex}}`;
-								n += 12;
-								break;
-							case 'linebreak':
-								tex = String.raw`\[ ${tex} \]`;
-								n += 3;
-								// no default
-						}
-						const result = texvcjs.check(tex, {
-							usemhchem: isChem || Boolean(previousSibling?.hasAttr('chem')),
-						});
+						const [tex, n] = this.getTex(),
+							result = texvcjs.check(tex, {
+								usemathrm: true,
+								usemhchem: name !== 'math' || Boolean(previousSibling?.hasAttr('chem')),
+							});
 						if (result.status === '+') {
 							return [];
 						}
@@ -197,6 +177,35 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	}
 
 	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER ONLY */
+
+	/** @private */
+	getTex(): [string, number] {
+		let tex = this.innerText,
+			n = 0;
+		if (this.name !== 'math') {
+			tex = String.raw`\ce{${tex}}`;
+			n = 4;
+		}
+		switch (this.previousSibling?.getAttr('display') ?? 'block') {
+			case 'block':
+				tex = String.raw`{\displaystyle ${tex}}`;
+				n += 15;
+				break;
+			case 'inline':
+				tex = String.raw`{\textstyle ${tex}}`;
+				n += 12;
+				break;
+			case 'linebreak':
+				tex = String.raw`\[ ${tex} \]`;
+				n += 3;
+				// no default
+		}
+		return [tex, n];
+	}
+
+	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
 
