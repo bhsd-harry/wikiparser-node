@@ -13,6 +13,8 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 export interface ExtToken extends AttributesParentBase {}
 
+const nonVoidExt = new Set(['dynamicpagelist', 'templatedata', 'rss']);
+
 /**
  * extension tag
  *
@@ -199,9 +201,10 @@ export abstract class ExtToken extends TagPairToken {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
+				{name} = this,
 				{lintConfig} = Parser,
 				rect = new BoundingRect(this, start);
-			if (this.name !== 'nowiki') {
+			if (name !== 'nowiki') {
 				const s = this.inHtmlAttrs(),
 					rule = 'parsing-order',
 					severity = s && lintConfig.getSeverity(rule, s === 2 ? 'ext' : 'templateInTable');
@@ -209,7 +212,7 @@ export abstract class ExtToken extends TagPairToken {
 					errors.push(generateForSelf(this, rect, rule, 'ext-in-html', severity));
 				}
 			}
-			if (this.name === 'ref') {
+			if (name === 'ref') {
 				let rule: LintError.Rule = 'var-anchor',
 					s = lintConfig.getSeverity(rule, 'ref');
 				if (s && this.closest('heading-title')) {
