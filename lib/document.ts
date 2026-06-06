@@ -18,22 +18,23 @@ export interface TexvcLocation {
 	line: number;
 	column: number;
 }
-declare interface Texvcjs {
-	check(input: string, options?: {usemathrm?: boolean, usemhchem?: boolean}): {
-		status: '+';
-		output: string;
-	} | {
-		status: 'C';
-	} | {
-		status: 'F' | 'S';
-		error: {
-			message: string;
-			location: {
-				start: TexvcLocation;
-				end: TexvcLocation;
-			};
+export type TexvcReport = {
+	status: '+';
+	output: string;
+} | {
+	status: 'C';
+} | {
+	status: 'F' | 'S';
+	error: {
+		message: string;
+		location: {
+			start: TexvcLocation;
+			end: TexvcLocation;
 		};
 	};
+};
+declare interface Texvcjs {
+	check(input: string, options?: {usemathrm?: boolean, usemhchem?: boolean}): TexvcReport;
 }
 
 let texvcjs: Texvcjs | undefined | null;
