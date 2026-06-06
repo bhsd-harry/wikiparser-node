@@ -95,6 +95,7 @@ const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
 			duplicate: 1,
 		},
 	],
+	'invalid-ref': [2],
 	'invalid-url': [1],
 	'lonely-apos': [
 		1,

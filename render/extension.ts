@@ -1,6 +1,7 @@
 import {parsers, states} from '../util/constants';
-import {newline, sanitizeId, sanitizeAttr} from '../util/string';
+import {newline, sanitizeId, sanitizeAttr, sanitize} from '../util/string';
 import {extAttrs} from '../util/sharable';
+import Parser from '../index';
 import type {ExtToken, GalleryToken, Token, NowikiToken} from '../internal';
 
 export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
@@ -208,13 +209,17 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}
 			const follow = firstChild.getAttr('follow') || '';
 			if (/^\d+$/u.test(follow)) {
-				return '';
+				return `<span class="error mw-ext-cite-error">Cite error: ${
+					sanitize(Parser.msg('int-name'))
+				}</span>`;
 			}
 			let refName = firstChild.getAttr('name') || '';
 			if (!/\D/u.test(refName)) {
 				refName = '';
 			} else if (refName && follow) {
-				return '';
+				return `<span class="error mw-ext-cite-error">Cite error: ${
+					sanitize(Parser.msg('not-named'))
+				}</span>`;
 			}
 			let dir = firstChild.getAttr('dir')?.toLowerCase() as 'ltr' | 'rtl' | undefined;
 			if (dir !== 'ltr' && dir !== 'rtl') {
@@ -229,9 +234,16 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					if (ref) {
 						updateRef(ref, lastChild, dir);
 					}
+					return '';
 				}
-				return '';
-			} else if (!refName && !text || text && /<references\b[^>]*>/iu.test(text)) {
+				return `<span class="error mw-ext-cite-error">Cite error: ${
+					sanitize(Parser.msg(`not-${refName ? 'empty' : 'named'}-in-references`))
+				}</span>`;
+			} else if (!refName && !text) {
+				return `<span class="error mw-ext-cite-error">Cite error: ${
+					sanitize(Parser.msg('bad-ref'))
+				}</span>`;
+			} else if (text && /<references\b[^>]*>/iu.test(text)) {
 				return '';
 			} else if (text && /<ref\b[^>]*>/iu.test(text)) {
 				const inner = lastChild.cloneNode();
