@@ -334,8 +334,8 @@ export abstract class AttributesToken extends Token {
 			if (follow && !/\D/u.test(follow)) {
 				const msg = 'int-name';
 				return rect ? generateForChild(followAttr!, rect, rule, msg, severity) : msg;
-			} else if (follow && name && /\D/u.test(name)) {
-				const msg = 'not-named';
+			} else if (follow && (this.hasAttr('details') || name && /\D/u.test(name))) {
+				const msg = 'ref-follow';
 				return rect ? generateForSelf(this, rect, rule, msg, severity) : msg;
 			}
 			return '';
