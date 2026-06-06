@@ -395,6 +395,9 @@ export const loadLanguage = (lang: string): string => {
 			const {default: registerWiki}: typeof import('prism-wiki') = require('prism-wiki');
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
 			registerWiki(Prism!, Parser as any);
+			loadLanguage('json');
+			loadLanguage('latex');
+			loadLanguage('lilypond');
 			return lang;
 		} catch {}
 	}

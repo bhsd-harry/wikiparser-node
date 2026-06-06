@@ -321,6 +321,28 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @private */
+	lintRef(): string;
+	/** @private */
+	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
+	/** @private */
+	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
+		LINT: {
+			const followAttr = this.getAttrToken('follow'),
+				follow = followAttr?.getValue(),
+				name = this.getAttr('name'),
+				rule = 'invalid-ref';
+			if (follow && !/\D/u.test(follow)) {
+				const msg = 'int-name';
+				return rect ? generateForChild(followAttr!, rect, rule, msg, severity) : msg;
+			} else if (follow && name && /\D/u.test(name)) {
+				const msg = 'not-named';
+				return rect ? generateForSelf(this, rect, rule, msg, severity) : msg;
+			}
+			return '';
+		}
+	}
+
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
@@ -385,13 +407,9 @@ export abstract class AttributesToken extends Token {
 			if (tag === 'ref') {
 				const severity = lintConfig.getSeverity(rules[2]);
 				if (severity) {
-					const followAttr = this.getAttrToken('follow'),
-						follow = followAttr?.getValue(),
-						name = this.getAttr('name');
-					if (follow && !/\D/u.test(follow)) {
-						errors.push(generateForChild(followAttr!, rect, rules[2], 'int-name', severity));
-					} else if (follow && name && /\D/u.test(name)) {
-						errors.push(generateForSelf(this, rect, rules[2], 'not-named', severity));
+					const e = this.lintRef(rect, severity);
+					if (e) {
+						errors.push(e);
 					}
 				}
 			}

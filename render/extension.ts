@@ -207,19 +207,13 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (!refs) {
 				return '';
 			}
-			const follow = firstChild.getAttr('follow') || '';
-			if (/^\d+$/u.test(follow)) {
-				return `<span class="error mw-ext-cite-error">Cite error: ${
-					sanitize(Parser.msg('int-name'))
-				}</span>`;
+			const linted = firstChild.lintRef() || token.lintRef();
+			if (linted) {
+				return `<span class="error mw-ext-cite-error">Cite error: ${sanitize(Parser.msg(linted))}</span>`;
 			}
 			let refName = firstChild.getAttr('name') || '';
 			if (!/\D/u.test(refName)) {
 				refName = '';
-			} else if (refName && follow) {
-				return `<span class="error mw-ext-cite-error">Cite error: ${
-					sanitize(Parser.msg('not-named'))
-				}</span>`;
 			}
 			let dir = firstChild.getAttr('dir')?.toLowerCase() as 'ltr' | 'rtl' | undefined;
 			if (dir !== 'ltr' && dir !== 'rtl') {
@@ -228,21 +222,12 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			const text = token.innerText?.trim(),
 				references = token.closest<ExtToken>('ext#references');
 			if (references) {
-				const {referencesGroup} = refs.get(references.getAttr('group') || '')!;
-				if (refName && text) {
-					const ref = referencesGroup.find(({name: n}) => n === refName);
-					if (ref) {
-						updateRef(ref, lastChild, dir);
-					}
-					return '';
+				const ref = refs.get(references.getAttr('group') || '')!.referencesGroup
+					.find(({name: n}) => n === refName);
+				if (ref) {
+					updateRef(ref, lastChild, dir);
 				}
-				return `<span class="error mw-ext-cite-error">Cite error: ${
-					sanitize(Parser.msg(`not-${refName ? 'empty' : 'named'}-in-references`))
-				}</span>`;
-			} else if (!refName && !text) {
-				return `<span class="error mw-ext-cite-error">Cite error: ${
-					sanitize(Parser.msg('bad-ref'))
-				}</span>`;
+				return '';
 			} else if (text && /<references\b[^>]*>/iu.test(text)) {
 				return '';
 			} else if (text && /<ref\b[^>]*>/iu.test(text)) {
@@ -258,7 +243,8 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (!refs.has(group)) {
 				refs.set(group, {referencesGroup: [], follows: []});
 			}
-			const {referencesGroup, follows} = refs.get(group)!;
+			const {referencesGroup, follows} = refs.get(group)!,
+				follow = firstChild.getAttr('follow') || '';
 			if (follow) {
 				const ref = referencesGroup.find(({name: n}) => n === follow);
 				if (ref) {

@@ -178,7 +178,6 @@ The following limitations are documented for transparency.
 1. Many [extensions](https://github.com/bhsd-harry/wikiparser-node/wiki/Extensions-%28EN%29#support) are not supported.
 1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing) is not supported.
 1. Special cases involving templates inside the `link` parameter of a gallery image ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Link%20media%20option%20with%20template%20with%20arguments)).
-1. Gallery packed modes (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20in%20packed%20mode), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20in%20packed-overlay%20mode), [3](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20in%20packed-hover%20mode)).
 
 #### Transclusion
 
@@ -192,7 +191,6 @@ The following limitations are documented for transparency.
 #### HTML tag
 
 1. Style sanitization is sometimes different ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#CSS%20safety%20test%20(all%20browsers)%3A%20vertical%20tab%20(T57332%20%2F%20CVE-2013-4567))).
-1. Table fostered content from `<table>` HTML tags ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#6.%20Encapsulate%20foster-parented%20transclusion%20content)).
 
 #### Table
 
@@ -214,7 +212,6 @@ The following limitations are documented for transparency.
 
 #### External link
 
-1. External images are not supported (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#External%20image), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#External%20links%3A%20Clickable%20images)).
 1. No percent-encoding in displayed free external links ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
 
 #### Block element
