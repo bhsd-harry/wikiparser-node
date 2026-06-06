@@ -209,12 +209,12 @@ export abstract class ExtToken extends TagPairToken {
 			let msg = '';
 			if (this.closest('ext#references')) {
 				if (!refName) {
-					msg = 'not-named-in-references';
+					msg = 'no-named-in-references';
 				} else if (!text) {
-					msg = 'not-empty-in-references';
+					msg = 'no-empty-in-references';
 				}
 			} else if (!refName && !text) {
-				msg = 'bad-ref';
+				msg = this.hasAttr('details') ? 'ref-details' : 'ref-no-name';
 			}
 			return msg && (rect ? generateForSelf(this, rect, 'invalid-ref', msg, severity) : msg);
 		}
@@ -257,7 +257,7 @@ export abstract class ExtToken extends TagPairToken {
 				const rule = 'void-ext',
 					s = lintConfig.getSeverity(rule, name);
 				if (s && nonVoidExt.has(name) && !this.innerText) {
-					errors.push(generateForSelf(this, {start}, rule, Parser.msg('not-empty', name), s));
+					errors.push(generateForSelf(this, {start}, rule, Parser.msg('no-empty', name), s));
 				}
 			}
 			return errors;
