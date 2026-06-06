@@ -127,7 +127,7 @@ const repaint = (
 			typeofs = container1.querySelectorAll('span[typeof]'),
 			imgs = container1.querySelectorAll('img'),
 			imgs2 = container2.querySelectorAll('img'),
-			toRemove = container1.querySelectorAll('.mw-editsection, .mw-ext-cite-error'),
+			toRemove = container1.querySelectorAll('.mw-editsection'),
 			tocTitles = container1.querySelectorAll('.toctitle'),
 			anchors = container1.querySelectorAll('a[href]') as Iterable<HTMLAnchorElement>;
 		if (!isGH) {

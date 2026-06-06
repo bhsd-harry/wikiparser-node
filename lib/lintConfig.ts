@@ -246,9 +246,11 @@ const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
 	'void-ext': [
 		2,
 		{
-			// img: 2,
+			// dynamicpagelist: 2,
 			// languages: 2,
+			// rss: 2,
 			// section: 2,
+			// templatedata: 2,
 			// templatestyles: 2,
 		},
 	],
