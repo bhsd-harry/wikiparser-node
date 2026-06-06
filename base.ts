@@ -187,6 +187,7 @@ export const rules = /* #__PURE__ */ (() => {
 		'invalid-invoke',
 		'invalid-isbn',
 		'invalid-json',
+		'invalid-ref',
 		'invalid-url',
 		'lonely-apos',
 		'lonely-bracket',
