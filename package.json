@@ -124,7 +124,7 @@
 		"markdownlint-cli2": "^0.22.1",
 		"mathoid-texvcjs": "^0.6.0",
 		"mocha": "^11.7.6",
-		"stylelint": "^17.12.0",
+		"stylelint": "^17.13.0",
 		"typescript": "^6.0.3",
 		"v8r": "^6.1.0",
 		"vscode-css-languageservice": "^6.3.10",
