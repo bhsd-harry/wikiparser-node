@@ -198,6 +198,29 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @private */
+	lintRef(): string;
+	/** @private */
+	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
+	/** @private */
+	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
+		LINT: {
+			const refName = this.getAttr('name'),
+				text = this.innerText?.trim();
+			let msg = '';
+			if (this.closest('ext#references')) {
+				if (!refName) {
+					msg = 'not-named-in-references';
+				} else if (!text) {
+					msg = 'not-empty-in-references';
+				}
+			} else if (!refName && !text) {
+				msg = 'bad-ref';
+			}
+			return msg && (rect ? generateForSelf(this, rect, 'invalid-ref', msg, severity) : msg);
+		}
+	}
+
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
@@ -223,19 +246,11 @@ export abstract class ExtToken extends TagPairToken {
 				if (s && this.closest('link-text,ext-link-text')) {
 					errors.push(generateForSelf(this, rect, rule, 'ref-in-link', s));
 				}
-				rule = 'invalid-ref';
-				s = lintConfig.getSeverity(rule);
+				s = lintConfig.getSeverity('invalid-ref');
 				if (s) {
-					const refName = this.getAttr('name'),
-						text = this.innerText?.trim();
-					if (this.closest('ext#references')) {
-						if (!refName) {
-							errors.push(generateForSelf(this, rect, rule, 'not-named-in-references', s));
-						} else if (!text) {
-							errors.push(generateForSelf(this, rect, rule, 'not-empty-in-references', s));
-						}
-					} else if (!refName && !text) {
-						errors.push(generateForSelf(this, rect, rule, 'bad-ref', s));
+					const e = this.lintRef(rect, s);
+					if (e) {
+						errors.push(e);
 					}
 				}
 			} else {
