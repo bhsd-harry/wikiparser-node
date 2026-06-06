@@ -3,12 +3,16 @@
 	"namespaces": {
 		"0": "",
 		"6": "File",
-		"10": "Template"
+		"10": "Template",
+		"14": "Category",
+		"828": "Module"
 	},
 	"nsid": {
 		"": 0,
 		"file": 6,
-		"template": 10
+		"template": 10,
+		"category": 14,
+		"module": 828
 	},
 	"functionHook": [],
 	"variable": [
