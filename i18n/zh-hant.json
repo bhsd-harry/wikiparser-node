@@ -57,6 +57,7 @@
 	"newline": "換行",
 	"no-self-closing": "移除自封閉",
 	"nonzero-tabindex": "非零的tabindex",
+	"not-empty": "<$1>不應為空",
 	"nothing-in": "<$1>不應有任何內容",
 	"obsolete-attribute": "過時的屬性",
 	"obsolete-tag": "過時的HTML標籤",

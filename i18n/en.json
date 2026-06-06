@@ -57,6 +57,7 @@
 	"newline": null,
 	"no-self-closing": "no self-closing",
 	"nonzero-tabindex": "nonzero tabindex",
+	"not-empty": "<$1> should not be empty",
 	"nothing-in": "nothing should be in <$1>",
 	"obsolete-attribute": "obsolete attribute",
 	"obsolete-tag": "obsolete HTML tag",

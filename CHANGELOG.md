@@ -6,6 +6,7 @@
 **Added**
 
 - HTML conversion of `<math>`, `<chem>` and `<ce>` tags with [KaTeX](https://katex.org/)
+- The [void-ext](https://github.com/bhsd-harry/wikiparser-node/wiki/void-ext) rule now also reports void extension tags that must not be empty, such as `<templatedata>` and `<dynamicpagelist>`
 
 **Fixed**
 
