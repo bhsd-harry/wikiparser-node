@@ -220,6 +220,27 @@ export abstract class ExtToken extends TagPairToken {
 				if (s && this.closest('link-text,ext-link-text')) {
 					errors.push(generateForSelf(this, rect, rule, 'ref-in-link', s));
 				}
+				rule = 'invalid-ref';
+				s = lintConfig.getSeverity(rule);
+				if (s) {
+					const refName = this.getAttr('name'),
+						text = this.innerText?.trim();
+					if (this.closest('ext#references')) {
+						if (!refName) {
+							errors.push(generateForSelf(this, rect, rule, 'not-named-in-references', s));
+						} else if (!text) {
+							errors.push(generateForSelf(this, rect, rule, 'not-empty-in-references', s));
+						}
+					} else if (!refName && !text) {
+						errors.push(generateForSelf(this, rect, rule, 'bad-ref', s));
+					}
+				}
+			} else {
+				const rule = 'void-ext',
+					s = lintConfig.getSeverity(rule, name);
+				if (s && nonVoidExt.has(name) && !this.innerText) {
+					errors.push(generateForSelf(this, {start}, rule, Parser.msg('not-empty', name), s));
+				}
 			}
 			return errors;
 		}
