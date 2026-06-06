@@ -557,10 +557,14 @@ h3 {
 	text-align: center;
 	margin: 2px;
 }
+.frame .mw-gallery-slideshow .gallerybox > div { /* stylelint-disable-line no-descending-specificity */
+	max-width: 120px;
+}
 .frame ul.mw-gallery-nolines li.gallerybox div.thumb,
 .frame ul.mw-gallery-packed li.gallerybox div.thumb,
 .frame ul.mw-gallery-packed-hover li.gallerybox div.thumb,
-.frame ul.mw-gallery-packed-overlay li.gallerybox div.thumb {
+.frame ul.mw-gallery-packed-overlay li.gallerybox div.thumb,
+.frame ul.mw-gallery-slideshow li.gallerybox div.thumb {
 	background-color: transparent;
 	border: 0;
 }

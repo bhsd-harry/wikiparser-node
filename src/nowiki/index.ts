@@ -40,10 +40,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
-			const {
-					name,
-					innerText,
-				} = this,
+			const {name, innerText} = this,
 				{lintConfig} = Parser;
 			let rule: LintError.Rule = 'void-ext',
 				s = lintConfig.getSeverity(rule, name);

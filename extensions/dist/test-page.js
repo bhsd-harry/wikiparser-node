@@ -35,7 +35,7 @@ const addImgLoadHandler = (img) => {
     img.addEventListener('error', () => {
         img.classList.add('mw-broken-media');
     });
-    img.addEventListener('loadstart', () => {
+    img.addEventListener('load', () => {
         img.classList.remove('mw-broken-media');
     });
 };
