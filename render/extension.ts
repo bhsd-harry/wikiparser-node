@@ -346,10 +346,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			return `<span class="mwe-math-element mwe-math-element-${
 				firstChild.getAttr('display') === 'block' ? 'block' : 'inline'
 			}"${id ? ` id="${sanitizeId(id)}"` : ''}>${
-				texToSvg?.(
-					(lastChild as NowikiToken).getTex()[0],
-					name !== 'math' || firstChild.hasAttr('chem'),
-				) ?? ''
+				texToSvg?.((lastChild as NowikiToken).texvcCheck()!) ?? ''
 			}</span>`;
 		}
 		default:

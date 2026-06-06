@@ -637,9 +637,10 @@ export abstract class FileToken extends LinkBaseToken {
 			gallery = type === 'gallery-image' && parentNode?.parentNode as ExtToken | undefined,
 			mode = gallery && gallery.getAttr('mode')?.toLowerCase(),
 			nolines = mode === 'nolines',
+			slideshow = mode === 'slideshow',
 			packed = packedModes.has(mode as string),
 			hasWidth = isInteger(width) && !packed,
-			hasHeight = !nolines && isInteger(height),
+			hasHeight = !nolines && !slideshow && isInteger(height),
 			className = `${manual || framed || hasWidth || hasHeight ? '' : 'mw-default-size '}${
 				horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`
 			}${this.getValue('border') ? ' mw-image-border' : ''} ${
@@ -657,7 +658,7 @@ export abstract class FileToken extends LinkBaseToken {
 		} src="${src}" decoding="async"${
 			hasWidth ? ` width="${width}"` : ''
 		}${hasHeight ? ` height="${height}"` : ''} class="mw-file-element"${
-			nolines ? ` style="max-height: ${height}px"` : ''
+			nolines || slideshow ? ` style="max-height: ${height}px"` : ''
 		}>`;
 		let href = '';
 		if (link) {
@@ -694,7 +695,7 @@ export abstract class FileToken extends LinkBaseToken {
 			packed
 				? ''
 				: ` style="width: ${Number(width) + padding}px;${
-					nolines ? '' : ` height: ${Number(height) + padding}px;`
+					nolines || slideshow ? '' : ` height: ${Number(height) + padding}px;`
 				}"`
 		}><span>${a}</span></div>\n\t\t\t${overlay ? '<div class="gallerytextwrapper">' : ''}<div class="gallerytext">${
 			gallery?.hasAttr('showfilename')

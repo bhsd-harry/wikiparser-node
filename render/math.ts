@@ -1,5 +1,6 @@
 import {newline} from '../util/string';
 import {loadTexvcjs} from '../lib/document';
+import type {TexvcReport} from '../lib/document';
 
 export const texToSvg = (() => {
 	const texvcjs = loadTexvcjs();
@@ -9,8 +10,7 @@ export const texToSvg = (() => {
 	try {
 		const katex: typeof import('katex') = require('katex');
 		require('katex/contrib/mhchem');
-		return (tex: string, usemhchem: boolean): string => {
-			const result = texvcjs.check(tex, {usemathrm: true, usemhchem});
+		return ([result,, tex]: [TexvcReport, number, string]): string => {
 			if (result.status === '+') {
 				tex = result.output;
 				try {

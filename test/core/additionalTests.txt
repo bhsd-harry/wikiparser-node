@@ -828,6 +828,13 @@ File:Astronotus_ocellatus.jpg|''Astronotus ocellatus'' (Oscar)
 File:Salmonlarvakils.jpg|''Salmo salar'' (Salmon Larva)
 File:Georgia Aquarium - Giant Grouper.jpg|''Epinephelus lanceolatus'' (Giant grouper)
 </gallery>
+
+<code>mode="slideshow"</code>
+<gallery mode="slideshow">
+File:Astronotus_ocellatus.jpg|''Astronotus ocellatus'' (Oscar)
+File:Salmonlarvakils.jpg|''Salmo salar'' (Salmon Larva)
+File:Georgia Aquarium - Giant Grouper.jpg|''Epinephelus lanceolatus'' (Giant grouper)
+</gallery>
 !! html
 <p><code>mode="traditional"</code>
 </p>
@@ -913,6 +920,22 @@ File:Georgia Aquarium - Giant Grouper.jpg|''Epinephelus lanceolatus'' (Giant gro
 			<div class="thumb" style="width: 108px;"><span typeof="mw:File"><a href="/wiki/File:Georgia_Aquarium_-_Giant_Grouper.jpg" class="mw-file-description" title="Epinephelus lanceolatus (Giant grouper)"><img alt="Epinephelus lanceolatus (Giant grouper)" src="http://example.com/images/thumb/7/7e/Georgia_Aquarium_-_Giant_Grouper.jpg/250px-Georgia_Aquarium_-_Giant_Grouper.jpg" decoding="async" width="108" height="120" class="mw-file-element" srcset="http://example.com/images/thumb/7/7e/Georgia_Aquarium_-_Giant_Grouper.jpg/330px-Georgia_Aquarium_-_Giant_Grouper.jpg 2x" /></a></span></div>
 			<div class="gallerytextwrapper" style="width: 88px"><div class="gallerytext"><i>Epinephelus lanceolatus</i> (Giant grouper)</div>
 			</div>
+		</li>
+</ul>
+<p><code>mode="slideshow"</code>
+</p>
+<ul class="gallery mw-gallery-slideshow">
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="width: 150px;"><span typeof="mw:File"><a href="/wiki/File:Astronotus_ocellatus.jpg" class="mw-file-description" title="Astronotus ocellatus (Oscar)"><img alt="Astronotus ocellatus (Oscar)" src="http://example.com/images/thumb/0/08/Astronotus_ocellatus.jpg/120px-Astronotus_ocellatus.jpg" decoding="async" width="120" height="80" class="mw-file-element" /></a></span></div>
+			<div class="gallerytext"><i>Astronotus ocellatus</i> (Oscar)</div>
+		</li>
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="width: 150px;"><span typeof="mw:File"><a href="/wiki/File:Salmonlarvakils.jpg" class="mw-file-description" title="Salmo salar (Salmon Larva)"><img alt="Salmo salar (Salmon Larva)" src="http://example.com/images/thumb/e/e2/Salmonlarvakils.jpg/120px-Salmonlarvakils.jpg" decoding="async" width="82" height="120" class="mw-file-element" /></a></span></div>
+			<div class="gallerytext"><i>Salmo salar</i> (Salmon Larva)</div>
+		</li>
+		<li class="gallerybox" style="width: 155px">
+			<div class="thumb" style="width: 150px;"><span typeof="mw:File"><a href="/wiki/File:Georgia_Aquarium_-_Giant_Grouper.jpg" class="mw-file-description" title="Epinephelus lanceolatus (Giant grouper)"><img alt="Epinephelus lanceolatus (Giant grouper)" src="http://example.com/images/thumb/7/7e/Georgia_Aquarium_-_Giant_Grouper.jpg/120px-Georgia_Aquarium_-_Giant_Grouper.jpg" decoding="async" width="108" height="120" class="mw-file-element" /></a></span></div>
+			<div class="gallerytext"><i>Epinephelus lanceolatus</i> (Giant grouper)</div>
 		</li>
 </ul>
 !! end
