@@ -16,7 +16,7 @@ import {
 	mathTags,
 } from '../../util/constants';
 import {loadTexvcjs} from '../../lib/document';
-import type {TexvcLocation} from '../../lib/document';
+import type {TexvcLocation, TexvcReport} from '../../lib/document';
 
 /** @ignore */
 const updateLocation = (
@@ -65,14 +65,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
-			const {
-					name,
-					innerText,
-
-					/* NOT FOR BROWSER ONLY */
-
-					previousSibling,
-				} = this,
+			const {name, innerText} = this,
 				{lintConfig} = Parser;
 			let rule: LintError.Rule = 'void-ext',
 				s = lintConfig.getSeverity(rule, name);
@@ -123,13 +116,9 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				rule = 'invalid-math';
 				s = lintConfig.getSeverity(rule);
 				if (s && mathTags.has(name)) {
-					const texvcjs = loadTexvcjs();
-					if (texvcjs) {
-						const [tex, n] = this.getTex(),
-							result = texvcjs.check(tex, {
-								usemathrm: true,
-								usemhchem: name !== 'math' || Boolean(previousSibling?.hasAttr('chem')),
-							});
+					const report = this.texvcCheck();
+					if (report) {
+						const [result, n] = report;
 						if (result.status === '+') {
 							return [];
 						}
@@ -155,7 +144,11 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER ONLY */
 
 	/** @private */
-	getTex(): [string, number] {
+	texvcCheck(): [TexvcReport, number, string] | undefined {
+		const texvcjs = loadTexvcjs();
+		if (!texvcjs) {
+			return undefined;
+		}
 		let tex = this.innerText,
 			n = 0;
 		if (this.name !== 'math') {
@@ -176,6 +169,13 @@ export abstract class NowikiToken extends NowikiBaseToken {
 				n += 3;
 				// no default
 		}
-		return [tex, n];
+		return [
+			texvcjs.check(tex, {
+				usemathrm: true,
+				usemhchem: this.name !== 'math' || Boolean(this.previousSibling?.hasAttr('chem')),
+			}),
+			n,
+			tex,
+		];
 	}
 }
