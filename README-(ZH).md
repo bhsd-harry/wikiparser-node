@@ -77,7 +77,7 @@ npm i wikilint
 
 | 库 | 功能 |
 | :-: | --- |
-| `mathoid-texvcjs` | 诊断 `<math>` 和 `<chem>` 扩展标签 |
+| `mathoid-texvcjs` | 诊断和渲染 `<math>` 和 `<chem>` 扩展标签 |
 | `stylelint` | 诊断 `style` 属性 |
 | `vscode-css-languageservice` | `style` 属性的 CSS 语言服务 |
 | `vscode-html-languageservice` | HTML 标签的语言服务 |
@@ -91,7 +91,7 @@ npm i wikilint
 npm i mathoid-texvcjs stylelint vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
 
 # 完整的 HTML 渲染特性（用于 `Parser.toHtml()`）
-npm i katex mediawiki-expr prismjs prism-wiki
+npm i katex mathoid-texvcjs mediawiki-expr prismjs prism-wiki
 ```
 
 ### 浏览器
