@@ -2,7 +2,7 @@
 import type {CodeJar as Jar, CodeJarAsync, codejar as f} from './typings';
 
 const codejar = (async (): Promise<f> => {
-	const {CodeJar}: {CodeJar: typeof Jar} = 'CodeJar' in globalThis
+	const {CodeJar}: {CodeJar: typeof Jar} = Object.hasOwn(globalThis, 'CodeJar')
 		? globalThis
 		: await import('https://fastly.jsdelivr.net/npm/codejar-async');
 
