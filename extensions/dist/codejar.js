@@ -1,6 +1,6 @@
 (() => {
 const codejar = (async () => {
-    const { CodeJar } = 'CodeJar' in globalThis
+    const { CodeJar } = Object.hasOwn(globalThis, 'CodeJar')
         ? globalThis
         : await import('https://fastly.jsdelivr.net/npm/codejar-async');
     return (textbox, include, linenums) => {
