@@ -686,7 +686,8 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param hsl whether HSL colors are treated / 是否允许HSL颜色
 	 */
 	async provideDocumentColors(
-		rgba: (s: string) => [number, number, number, number] | [],
+		rgba: (s: string) => [number, number, number, number] | [] // color-rgba
+			| {r: number, g: number, b: number, a: number} | false, // colord
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
@@ -754,13 +755,26 @@ export class LanguageService implements LanguageServiceBase {
 				}
 				const start = child.getAbsoluteIndex();
 				return parts.map(([s, from, to]): ColorInformation | false => {
-					const color = rgba(s);
-					return color.length === 4 && {
+					const color = rgba(s),
+						legacy = Array.isArray(color);
+					if (!color || legacy && color.length === 0) {
+						return false;
+					}
+					let r: number,
+						g: number,
+						b: number,
+						alpha: number;
+					if (legacy) {
+						[r, g, b, alpha] = color;
+					} else {
+						({r, g, b, a: alpha} = color);
+					}
+					return {
 						color: {
-							red: color[0] / 255,
-							green: color[1] / 255,
-							blue: color[2] / 255,
-							alpha: color[3],
+							red: r / 255,
+							green: g / 255,
+							blue: b / 255,
+							alpha,
 						},
 						range: createRange(root, start + from, start + to),
 					};
