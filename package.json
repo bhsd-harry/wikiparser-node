@@ -52,11 +52,11 @@
 	"dependencies": {
 		"@bhsd/cm-util": "^2.2.0",
 		"@bhsd/common": "^2.2.1",
-		"vscode-languageserver-types": "^3.17.5"
+		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^2.6.2",
-		"@bhsd/codemirror-mediawiki": "^3.19.1",
+		"@bhsd/codemirror-mediawiki": "^3.20.0",
 		"@bhsd/test-util": "^1.5.0",
 		"@codemirror/lint": "^6.9.6",
 		"@types/prismjs": "^1.26.6",
