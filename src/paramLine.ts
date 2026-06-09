@@ -5,6 +5,8 @@ import {Token} from './index';
 import type {Config, LintError} from '../base';
 import type {ParamTagToken} from '../internal';
 
+const skipTypes = new Set(['comment', 'include', 'noinclude']);
+
 /**
  * parameter of certain extension tags
  *
@@ -45,8 +47,7 @@ export abstract class ParamLineToken extends Token {
 			if (childNodes.some(({type}) => type === 'ext')) {
 				return [generateForSelf(this, {start}, rule, msg, s)];
 			}
-			const children = childNodes
-					.filter(({type}) => type !== 'comment' && type !== 'include' && type !== 'noinclude'),
+			const children = childNodes.filter(({type}) => !skipTypes.has(type)),
 				isInputbox = name === 'inputbox',
 				i = isInputbox ? children.findIndex(({type}) => type !== 'text') : -1;
 			let str = children.slice(0, i === -1 ? undefined : i).map(String).join('').trim();
