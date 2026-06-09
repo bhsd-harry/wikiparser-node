@@ -1,6 +1,8 @@
 import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 
+const inputboxChild = new Set(['comment', 'include', 'ext']);
+
 /**
  * 不可包含换行符的类
  * @ignore
@@ -12,7 +14,7 @@ export const singleLine = <T extends AstConstructor>(constructor: T): T => {
 				return this.childNodes.map(child => {
 					const str = child.toString(skip),
 						{type} = child;
-					return type === 'comment' || type === 'include' || type === 'ext'
+					return inputboxChild.has(type)
 						? str
 						: str.replaceAll('\n', ' ');
 				}).join('');

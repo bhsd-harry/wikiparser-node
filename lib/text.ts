@@ -42,6 +42,7 @@ const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 		']': /[[\]](?=[^[\]]*$)/u,
 		'}': /[{}](?=[^{}]*$)/u,
 	},
+	magic = new Set(['rfc', 'pmid', 'isbn']),
 	disallowedTags = new Set([
 		'html',
 		'head',
@@ -237,7 +238,7 @@ export class AstText extends AstNode {
 				}
 				error = error.toLowerCase();
 				const [char] = error,
-					magicLink = error === 'rfc' || error === 'pmid' || error === 'isbn',
+					magicLink = magic.has(error),
 					lbrace = char === '{',
 					rbrace = char === '}',
 					lbrack = char === '[',
@@ -455,7 +456,7 @@ export class AstText extends AstNode {
 			/* NOT FOR BROWSER */
 
 			/* c8 ignore next 3 */
-			if (offset > this.length || offset < -this.length) {
+			if (Math.abs(offset) > this.length) {
 				throw new RangeError(`Wrong offset to split: ${offset}`);
 			}
 

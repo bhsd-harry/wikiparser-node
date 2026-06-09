@@ -39,6 +39,8 @@ import type {
 import {sanitize} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
+const fileTypes = new Set(['file', 'gallery-image', 'imagemap-image']);
+
 /* NOT FOR BROWSER END */
 
 /**
@@ -187,8 +189,7 @@ export abstract class LinkBaseToken extends Token {
 					throw new Error(`Invalid link target: ${name}`);
 				} else if (
 					(type === 'category' || type === 'ext-inner') && (interwiki || ns !== 14)
-					|| (type === 'file' || type === 'gallery-image' || type === 'imagemap-image')
-					&& (interwiki || ns !== 6)
+					|| fileTypes.has(type) && (interwiki || ns !== 6)
 				) {
 					undo(e, data);
 					throw new Error(

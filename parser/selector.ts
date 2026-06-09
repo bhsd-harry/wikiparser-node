@@ -154,14 +154,10 @@ const matches = (
 				case ':only-whitespace':
 					return !token.text().trim();
 				case ':any-link':
-					return type === 'link'
-						|| type === 'redirect-target'
-						|| type === 'free-ext-link'
-						|| type === 'magic-link'
-						|| type === 'ext-link'
+					return ['link', 'redirect-target', 'free-ext-link', 'magic-link', 'ext-link'].includes(type)
 						|| (type === 'file' || type === 'gallery-image') && attributes.link;
 				case ':local-link':
-					return (type === 'link' || type === 'file' || type === 'gallery-image')
+					return ['link', 'file', 'gallery-image'].includes(type)
 						&& attributes.link instanceof Title
 						&& !attributes.link.title;
 				case ':invalid':
