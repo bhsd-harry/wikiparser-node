@@ -7,6 +7,7 @@ import {
 	/* NOT FOR BROWSER ONLY */
 
 	sanitizeInlineStyle,
+	namedColors,
 } from '@bhsd/common';
 import {isUnderscore} from '@bhsd/cm-util';
 import {rules} from '../base';
@@ -433,10 +434,10 @@ const partialParse = async (
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
 const cssRules = {'block-no-empty': null},
+	colors = new RegExp(String.raw`\b(?:${[...namedColors.keys()].join('|')})\b`, 'giu'),
 	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
-let colors: RegExp | false | undefined;
 
 /**
  * Correct the position of an error.
@@ -703,21 +704,6 @@ export class LanguageService implements LanguageServiceBase {
 		hsl = true,
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
-
-		/* NOT FOR BROWSER ONLY */
-
-		if (colors === undefined) {
-			try {
-				const {default: colorName}: typeof import('color-name') = require('color-name');
-				colors = new RegExp(String.raw`\b${Object.keys(colorName).join('|')}\b`, 'giu');
-			} catch {
-				/* c8 ignore next */
-				colors = false;
-			}
-		}
-
-		/* NOT FOR BROWSER ONLY END */
-
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse().flatMap(token => {
 			const {
 				type,
@@ -740,7 +726,7 @@ export class LanguageService implements LanguageServiceBase {
 
 			/* NOT FOR BROWSER ONLY */
 
-			const isStyle = colors && type === 'attr-value' && parentNode!.name === 'style';
+			const isStyle = type === 'attr-value' && parentNode!.name === 'style';
 
 			/* NOT FOR BROWSER ONLY END */
 
@@ -752,7 +738,7 @@ export class LanguageService implements LanguageServiceBase {
 
 				if (isStyle) {
 					parts.push(
-						...[...data.matchAll(colors as RegExp)].map(
+						...[...data.matchAll(colors)].map(
 							({index, 0: s}): [string, number, number, true] =>
 								[s, index, index + s.length, true],
 						),
