@@ -14,13 +14,22 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import {execSync} from 'child_process';
-import rgba from 'color-rgba';
-import {numLeadingSpaces} from '@bhsd/common';
+import {numLeadingSpaces, rgba} from '@bhsd/common';
 import Parser from '../index';
+import type {RgbaColor} from 'colord';
 import type {
 	Token,
 	AtomToken,
 } from '../internal';
+
+/**
+ * 解析颜色
+ * @param s 颜色字符串
+ */
+const parseColor = (s: string): RgbaColor | false => {
+	const result = rgba(s);
+	return result && result.toRgb();
+};
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -163,7 +172,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 					method,
 					title,
 					() => lsp.provideDocumentColors(
-						rgba,
+						parseColor,
 						content,
 					),
 					summary,
