@@ -49,6 +49,8 @@ const getUrl = (link: string): string => {
 	return new URL(link).href;
 };
 
+const pdfExtensions = new Set<string | undefined>(['djvu', 'djv', 'pdf']);
+
 /**
  * 检查图片参数是否合法
  * @param key 参数名
@@ -107,7 +109,7 @@ function validate(
 		case 'manualthumb':
 			return true;
 		case 'page':
-			return (extOrType === 'djvu' || extOrType === 'djv' || extOrType === 'pdf') && Number(value) > 0;
+			return pdfExtensions.has(extOrType) && Number(value) > 0;
 		default:
 			return Boolean(value) && !isNaN(value as unknown as number);
 	}

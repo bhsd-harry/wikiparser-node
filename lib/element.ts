@@ -131,7 +131,7 @@ export abstract class AstElement extends AstNode {
 				return undefined;
 			}
 			const {length} = this.toString();
-			if (index > length || index < -length) {
+			if (Math.abs(index) > length) {
 				return undefined;
 			}
 			index += index < 0 ? length : 0;

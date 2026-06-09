@@ -6,7 +6,7 @@ import {
 	hashChangeHandler,
 	inputHandler,
 } from './test-page-common.js';
-import type {} from 'prismjs'; // eslint-disable-line n/no-extraneous-import
+import type {} from 'prismjs';
 
 declare interface Test {
 	desc: string;
