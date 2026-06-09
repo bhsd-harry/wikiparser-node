@@ -32,8 +32,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			}
 
 			hasAttr(key: string): boolean {
-				LSP: return this.#getAttributesChild().hasAttr(key);
-				this.lspError('AttributesParent.hasAttr');
+				return this.#getAttributesChild().hasAttr(key);
 			}
 
 			getAttr(key: string): string | undefined {
