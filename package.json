@@ -42,8 +42,8 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.6.2",
-		"@bhsd/common": "^2.2.1",
+		"@bhsd/code-standard": "^2.7.0",
+		"@bhsd/common": "^3.0.0",
 		"@bhsd/test-util": "^1.5.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.0",
