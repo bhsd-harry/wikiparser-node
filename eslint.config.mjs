@@ -171,6 +171,7 @@ export default extend(
 		rules: {
 			'unicorn/no-array-reverse': 0,
 			'unicorn/no-array-sort': 0,
+			'unicorn/prefer-array-last-methods': 0,
 			'unicorn/prefer-at': 0,
 			'unicorn/prefer-string-replace-all': 0,
 			'unicorn/prefer-structured-clone': 0,

@@ -35,6 +35,7 @@ const insecureStyle =
 		/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
 	evil = /(?:^|\s|\*\/)(?:java|vb)script(?:\W|$)/iu,
 	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']),
+	itemAttrs = new Set(['itemtype', 'itemid', 'itemref']),
 	urlAttrs = new Set([
 		'about',
 		'property',
@@ -219,8 +220,7 @@ export abstract class AttributeToken extends Token {
 				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:_]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
-			|| (name === 'itemtype' || name === 'itemid' || name === 'itemref')
-			&& !parentNode?.hasAttr('itemscope')
+			|| itemAttrs.has(name) && !parentNode?.hasAttr('itemscope')
 		) {
 			/* PRINT ONLY */
 
