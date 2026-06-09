@@ -159,6 +159,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	getConfig(config?: ConfigData) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 		const parserConfig = config ?? this.config as ConfigData;
 		const {
 			doubleUnderscore,
