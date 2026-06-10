@@ -702,12 +702,10 @@ export class LanguageService implements LanguageServiceBase {
 	 * 提供颜色指示
 	 * @param rgba color parser / 颜色解析函数
 	 * @param text source Wikitext / 源代码
-	 * @param hsl whether HSL colors are treated / 是否允许HSL颜色
 	 */
 	async provideDocumentColors(
 		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
-		hsl = true,
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse().flatMap(token => {
@@ -738,7 +736,7 @@ export class LanguageService implements LanguageServiceBase {
 
 			return childNodes.filter((child): child is AstText => child.type === 'text').reverse().flatMap(child => {
 				const {data} = child,
-					parts = splitColors(data, hsl).filter(([,,, isColor]) => isColor);
+					parts = splitColors(data).filter(([,,, isColor]) => isColor);
 
 				/* NOT FOR BROWSER ONLY */
 
