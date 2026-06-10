@@ -123,14 +123,14 @@
 	},
 	"dependencies": {
 		"@bhsd/cm-util": "^2.2.0",
-		"@bhsd/common": "^2.2.1",
+		"@bhsd/common": "^3.0.0",
 		"@bhsd/nodejs": "^1.0.1",
 		"@bhsd/stylelint-util": "^1.1.0",
 		"entities": "^8.0.0",
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.6.2",
+		"@bhsd/code-standard": "^2.7.0",
 		"@bhsd/test-util": "^1.5.0",
 		"@codemirror/lint": "^6.9.6",
 		"@eslint/markdown": "^8.0.2",

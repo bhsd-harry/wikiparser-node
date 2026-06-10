@@ -36,6 +36,7 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 <a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
 <a href="https://helix-editor.com/"><img src="https://helix-editor.com/logo.svg" width="50" height="50" alt="Helix"></a>
 <a href="https://lsp.sublimetext.io/"><img src="https://avatars.githubusercontent.com/u/48095564?s=100" width="50" height="50" alt="LSP for Sublime Text"></a>
+<a href="https://euporie.readthedocs.io/en/latest/"><img src="https://avatars.githubusercontent.com/u/12154190?s=100" width="50" height="50" alt="euporie"></a>
 <a href="http://www.qbittorrent.org/"><img src="https://avatars.githubusercontent.com/u/2131270?s=100" width="50" height="50" alt="qBittorrent"></a>
 </div>
 
@@ -43,7 +44,7 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 ### [WikiLint](https://www.npmjs.com/package/wikilint)
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能，解析生成的语法树不能修改。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能。虽然牺牲了语法树的修改能力，但换来了 [2.4 倍](#性能)的执行速度提升。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 
 可用的语法检查规则列表请见[这里](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules)。
 
@@ -150,6 +151,13 @@ assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
 ## 性能
 
 在一台个人的 MacBook Air 上对英文维基百科约 1900 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 5 小时。
+
+*WikiParser-Node 与 [WikiLint](#wikilint) 的性能比较*
+
+| 版本 | 条目平均用时 | 条目最大用时 |
+| :-: | :-: | :-: |
+| WikiParser-Node | 3.6ms | 2.8s |
+| WikiLint | 1.5ms | 0.75s |
 
 ## 最佳适用场景
 

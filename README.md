@@ -36,6 +36,7 @@ WikiParser-Node has been extensively tested against the official [MediaWiki PHP 
 <a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
 <a href="https://helix-editor.com/"><img src="https://helix-editor.com/logo.svg" width="50" height="50" alt="Helix"></a>
 <a href="https://lsp.sublimetext.io/"><img src="https://avatars.githubusercontent.com/u/48095564?s=100" width="50" height="50" alt="LSP for Sublime Text"></a>
+<a href="https://euporie.readthedocs.io/en/latest/"><img src="https://avatars.githubusercontent.com/u/12154190?s=100" width="50" height="50" alt="euporie"></a>
 <a href="http://www.qbittorrent.org/"><img src="https://avatars.githubusercontent.com/u/2131270?s=100" width="50" height="50" alt="qBittorrent"></a>
 </div>
 
@@ -43,7 +44,7 @@ WikiParser-Node has been extensively tested against the official [MediaWiki PHP 
 
 ### [WikiLint](https://www.npmjs.com/package/wikilint)
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing and linting functionality. The parsed AST cannot be modified. It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing and linting functionality. At the cost of losing AST modification capabilities, it executes [2.4x faster](#performance). It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 
 A list of available linting rules can be found [here](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules).
 
@@ -150,6 +151,13 @@ assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
 ## Performance
 
 A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps) of English Wikipedia's ~19 million articles (parsing and linting) on a personal MacBook Air takes about 5 hours.
+
+*Performance comparison between WikiParser-Node and [WikiLint](#wikilint)*
+
+| Version | Average time per article | Max time per article |
+| :-: | :-: | :-: |
+| WikiParser-Node | 3.6ms | 2.8s |
+| WikiLint | 1.5ms | 0.75s |
 
 ## Best fit
 
