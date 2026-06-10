@@ -434,7 +434,7 @@ const partialParse = async (
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
 const cssRules = {'block-no-empty': null},
-	colors = new RegExp(String.raw`\b(?:${Object.keys(colorsNamed).join('|')})\b`, 'giu'),
+	colors = Object.keys(colorsNamed),
 	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
@@ -729,21 +729,10 @@ export class LanguageService implements LanguageServiceBase {
 
 			return childNodes.filter((child): child is AstText => child.type === 'text').reverse().flatMap(child => {
 				const {data} = child,
-					parts = splitColors(data).filter(([,,, isColor]) => isColor);
-
-				/* NOT FOR BROWSER ONLY */
-
-				if (isStyle) {
-					parts.push(
-						...[...data.matchAll(colors)].map(
-							({index, 0: s}): [string, number, number, true] =>
-								[s, index, index + s.length, true],
-						),
-					);
-				}
-
-				/* NOT FOR BROWSER ONLY END */
-
+					parts = splitColors(
+						data,
+						isStyle && colors,
+					).filter(([,,, isColor]) => isColor);
 				if (parts.length === 0) {
 					return [];
 				}
