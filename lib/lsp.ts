@@ -7,7 +7,7 @@ import {
 	/* NOT FOR BROWSER ONLY */
 
 	sanitizeInlineStyle,
-	namedColors,
+	colorsNamed,
 } from '@bhsd/common';
 import {isUnderscore} from '@bhsd/cm-util';
 import {rules} from '../base';
@@ -423,7 +423,7 @@ const partialParse = async (
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
 const cssRules = {'block-no-empty': null},
-	colors = new RegExp(String.raw`\b(?:${[...namedColors.keys()].join('|')})\b`, 'giu'),
+	colors = new RegExp(String.raw`\b(?:${Object.keys(colorsNamed).join('|')})\b`, 'giu'),
 	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[]>();
@@ -687,8 +687,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param hsl whether HSL colors are treated / 是否允许HSL颜色
 	 */
 	async provideDocumentColors(
-		rgba: (s: string) => [number, number, number, number] | [] // color-rgba
-			| {r: number, g: number, b: number, a: number} | false, // colord
+		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
@@ -741,26 +740,13 @@ export class LanguageService implements LanguageServiceBase {
 				}
 				const start = child.getAbsoluteIndex();
 				return parts.map(([s, from, to]): ColorInformation | false => {
-					const color = rgba(s),
-						legacy = Array.isArray(color);
-					if (!color || legacy && color.length === 0) {
-						return false;
-					}
-					let r: number,
-						g: number,
-						b: number,
-						alpha: number;
-					if (legacy) {
-						[r, g, b, alpha] = color;
-					} else {
-						({r, g, b, a: alpha} = color);
-					}
-					return {
+					const color = rgba(s);
+					return color.length === 4 && {
 						color: {
-							red: r / 255,
-							green: g / 255,
-							blue: b / 255,
-							alpha,
+							red: color[0] / 255,
+							green: color[1] / 255,
+							blue: color[2] / 255,
+							alpha: color[3],
 						},
 						range: createRange(root, start + from, start + to),
 					};
