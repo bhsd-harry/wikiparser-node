@@ -1,12 +1,4 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.44.1
-
-*2026-06-10*
-
-**Added**
-
-- [`LanguageService#provideDocumentColors](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedocumentcolors) now supports color parsers that return an object with RGBA components in addition to those that return an array of RGBA values
-
 ## v1.44.0
 
 *2026-06-09*
@@ -723,7 +715,7 @@
 
 **Fixed**
 
-- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) if [Stylelint](https://www.npmjs.com/package/stylelint) is unavailable
+- Unhandled promise rejection in [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29) if [Stylelint](https://stylelint.io/) is unavailable
 - Manual upright parameters (e.g., `upright=$1`) of images are not treated as upright parameters
 - The magic words `#section`, `#section-x` and `#section-h` are recognized as aliases of `#lst`, `#lstx` and `#lsth`, respectively
 
