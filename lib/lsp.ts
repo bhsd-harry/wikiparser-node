@@ -531,7 +531,9 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			return childNodes.filter((child): child is AstText => child.type === 'text').reverse().flatMap(child => {
 				const {data} = child,
-					parts = splitColors(data).filter(([,,, isColor]) => isColor);
+					parts = splitColors(
+						data,
+					).filter(([,,, isColor]) => isColor);
 				if (parts.length === 0) {
 					return [];
 				}
