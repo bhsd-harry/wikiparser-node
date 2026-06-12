@@ -21,7 +21,9 @@ const [,, site = ''] = process.argv,
 		try {
 			const pages = await getPages(
 				`${url}/api.php`,
-				name,
+				{
+					site: name,
+				},
 			);
 			for (const page of pages) {
 				// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
