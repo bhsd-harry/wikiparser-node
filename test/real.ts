@@ -35,8 +35,10 @@ const [,, site = ''] = process.argv,
 			let failed = 0;
 			const pages = await getPages(
 				`${url}/api.php`,
-				name,
-				'10',
+				{
+					site: name,
+					grcnamespace: '10',
+				},
 			);
 			for (const page of pages) {
 				const {pageid, title, content} = page;
