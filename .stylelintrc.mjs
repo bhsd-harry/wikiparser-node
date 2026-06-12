@@ -1,8 +1,6 @@
-'use strict';
+import config from '@bhsd/code-standard/stylelint';
 
-const config = require('@bhsd/code-standard/stylelintrc.cjs');
-
-module.exports = {
+export default {
 	...config,
 	ignoreFiles: [
 		'extensions/ui.css',
