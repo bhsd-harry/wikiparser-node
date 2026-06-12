@@ -108,7 +108,6 @@ export default extend(
 	},
 	{
 		files: [
-			'*.cjs',
 			'*.mjs',
 		],
 		rules: {
