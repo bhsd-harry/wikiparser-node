@@ -1,10 +1,7 @@
 const isGH = location.hostname.endsWith('.github.io');
 export const hideOptGroup = optgroup => {
-    if (optgroup) {
-        optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
-            .every(({ style }) => style.display === 'none')
-            ? 'none'
-            : '';
+    if (optgroup && !optgroup.childElementCount) {
+        optgroup.remove();
     }
 };
 export const prepareDoneBtn = (btn, select, tests, dones, key) => {
@@ -12,9 +9,10 @@ export const prepareDoneBtn = (btn, select, tests, dones, key) => {
     if (!isGH) {
         btn.style.display = '';
         btn.addEventListener('click', () => {
+            var _a;
             dones.add(tests[Number(select.value)].desc);
             localStorage.setItem(key, JSON.stringify([...dones]));
-            while (select.selectedOptions[0].disabled) {
+            while ((_a = select.selectedOptions[0]) === null || _a === void 0 ? void 0 : _a.disabled) {
                 select.selectedIndex++;
             }
             select.dispatchEvent(new Event('change'));
@@ -30,15 +28,11 @@ export const addOption = (optgroup, select, tests, dones, i, appendOption = true
         select.append(ele);
         return ele;
     }
-    else if (appendOption) {
+    else if (appendOption && (isGH || !dones.has(desc))) {
         const option = document.createElement('option');
         option.value = String(i);
         option.textContent = desc;
         optgroup.append(option);
-        if (!isGH && dones.has(desc)) {
-            option.disabled = true;
-            option.style.display = 'none';
-        }
     }
     return optgroup;
 };
@@ -47,7 +41,10 @@ export const changeHandler = (pre, btn, select, tests) => {
     pre.textContent = wikitext;
     pre.classList.remove('wikiparser');
     wikiparse.highlight(pre, false, true);
-    select.selectedOptions[0].disabled = true;
+    const [cur] = select.selectedOptions;
+    if (cur) {
+        cur.disabled = true;
+    }
     btn.disabled = false;
     history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
 };
@@ -61,9 +58,9 @@ export const hashChangeHandler = (select, tests) => {
     });
     dispatchEvent(new HashChangeEvent('hashchange'));
 };
-export const inputHandler = (input, select, dones) => {
-    const options = Array.from(select.options), optgroups = Array.from(select.querySelectorAll('optgroup'));
-    input.addEventListener('input', () => {
+export const inputHandler = (input, select) => {
+    const optgroups = Array.from(select.querySelectorAll('optgroup')), options = optgroups.map(group => group.querySelectorAll('option'));
+    input.addEventListener('change', () => {
         const { value } = input, lower = value.toLowerCase();
         let re;
         try {
@@ -75,15 +72,21 @@ export const inputHandler = (input, select, dones) => {
             }
             catch { }
         }
-        for (const option of options) {
-            const { textContent, value: v } = option;
-            option.style.display = !isGH && dones.has(textContent)
-                || v && !textContent.toLowerCase().includes(lower) && !(re && re.test(textContent))
-                ? 'none'
-                : '';
+        const selected = select.value;
+        select.innerHTML = '';
+        for (let i = 0; i < optgroups.length; i++) {
+            const group = optgroups[i];
+            group.innerHTML = '';
+            for (const option of options[i]) {
+                const { textContent } = option;
+                if (textContent.toLowerCase().includes(lower) || re && re.test(textContent)) {
+                    group.append(option);
+                }
+            }
+            if (group.childElementCount) {
+                select.append(group);
+            }
         }
-        for (const group of optgroups) {
-            hideOptGroup(group);
-        }
+        select.value = selected;
     });
 };

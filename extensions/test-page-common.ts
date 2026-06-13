@@ -5,12 +5,8 @@ const isGH = location.hostname.endsWith('.github.io');
  * @param optgroup 选项组
  */
 export const hideOptGroup: HideOptGroup = optgroup => {
-	if (optgroup) {
-		// eslint-disable-next-line unicorn/prefer-spread
-		optgroup.style.display = Array.from(optgroup.querySelectorAll('option'))
-			.every(({style}) => style.display === 'none')
-			? 'none'
-			: '';
+	if (optgroup && !optgroup.childElementCount) {
+		optgroup.remove();
 	}
 };
 
@@ -29,7 +25,7 @@ export const prepareDoneBtn: PrepareDoneBtn = (btn, select, tests, dones, key) =
 		btn.addEventListener('click', () => {
 			dones.add(tests[Number(select.value)]!.desc);
 			localStorage.setItem(key, JSON.stringify([...dones]));
-			while (select.selectedOptions[0]!.disabled) {
+			while (select.selectedOptions[0]?.disabled) {
 				select.selectedIndex++;
 			}
 			select.dispatchEvent(new Event('change'));
@@ -61,15 +57,11 @@ export const addOption: AddOption = (
 		ele.label = desc;
 		select.append(ele);
 		return ele;
-	} else if (appendOption) {
+	} else if (appendOption && (isGH || !dones.has(desc))) {
 		const option = document.createElement('option');
 		option.value = String(i);
 		option.textContent = desc;
 		optgroup!.append(option);
-		if (!isGH && dones.has(desc)) {
-			option.disabled = true;
-			option.style.display = 'none';
-		}
 	}
 	return optgroup;
 };
@@ -86,7 +78,10 @@ export const changeHandler: ChangeHandler = (pre, btn, select, tests) => {
 	pre.textContent = wikitext!;
 	pre.classList.remove('wikiparser');
 	wikiparse.highlight!(pre, false, true);
-	select.selectedOptions[0]!.disabled = true;
+	const [cur] = select.selectedOptions;
+	if (cur) {
+		cur.disabled = true;
+	}
 	btn.disabled = false;
 	history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
 };
@@ -112,14 +107,13 @@ export const hashChangeHandler: HashChangeHandler = (select, tests) => {
  * 搜索框输入处理程序
  * @param input 搜索框
  * @param select 选择框
- * @param dones 已完成测试的描述集合
  */
-export const inputHandler: InputHandler = (input, select, dones) => {
+export const inputHandler: InputHandler = (input, select) => {
 	/* eslint-disable unicorn/prefer-spread */
-	const options = Array.from(select.options),
-		optgroups = Array.from(select.querySelectorAll('optgroup'));
+	const optgroups = Array.from(select.querySelectorAll('optgroup')),
+		options = optgroups.map(group => group.querySelectorAll('option'));
 	/* eslint-enable unicorn/prefer-spread */
-	input.addEventListener('input', () => {
+	input.addEventListener('change', () => {
 		const {value} = input,
 			lower = value.toLowerCase();
 		let re: RegExp | undefined;
@@ -130,15 +124,21 @@ export const inputHandler: InputHandler = (input, select, dones) => {
 				re = new RegExp(value, 'i'); // eslint-disable-line require-unicode-regexp
 			} catch {}
 		}
-		for (const option of options) {
-			const {textContent, value: v} = option;
-			option.style.display = !isGH && dones.has(textContent)
-				|| v && !textContent.toLowerCase().includes(lower) && !(re && re.test(textContent))
-				? 'none'
-				: '';
+		const selected = select.value;
+		select.innerHTML = '';
+		for (let i = 0; i < optgroups.length; i++) {
+			const group = optgroups[i]!;
+			group.innerHTML = '';
+			for (const option of options[i]!) {
+				const {textContent} = option;
+				if (textContent.toLowerCase().includes(lower) || re && re.test(textContent)) {
+					group.append(option);
+				}
+			}
+			if (group.childElementCount) {
+				select.append(group);
+			}
 		}
-		for (const group of optgroups) {
-			hideOptGroup(group);
-		}
+		select.value = selected;
 	});
 };

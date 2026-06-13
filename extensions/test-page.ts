@@ -296,7 +296,7 @@ const repaint = (
 		}
 	});
 	prepareDoneBtn(btnDone, select, tests, dones, key);
-	inputHandler(input, select, dones);
+	inputHandler(input, select);
 	hashChangeHandler(select, tests);
 	if (!isGH) {
 		btnDiff.style.display = '';

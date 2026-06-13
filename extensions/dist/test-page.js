@@ -186,7 +186,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
         }
     });
     prepareDoneBtn(btnDone, select, tests, dones, key);
-    inputHandler(input, select, dones);
+    inputHandler(input, select);
     hashChangeHandler(select, tests);
     if (!isGH) {
         btnDiff.style.display = '';
