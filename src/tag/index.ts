@@ -5,7 +5,10 @@ import type {Cached} from '../../util/lint';
 import type {
 	Config,
 } from '../../base';
-import type {AttributesToken, SyntaxToken} from '../../internal';
+import type {
+	AttributesToken,
+	SyntaxToken,
+} from '../../internal';
 
 /**
  * HTML tag
@@ -71,11 +74,12 @@ export abstract class TagToken extends Token {
 				const {
 					type,
 					name,
-					parentNode,
 					closing,
 					selfClosing,
 				} = this;
-				let isVoid = false,
+				// eslint-disable-next-line prefer-const
+				let {parentNode} = this,
+					isVoid = false,
 					isFlexible = false;
 				if (type === 'html') {
 					const [, flexibleTags, voidTags] = this.getAttribute('config').html;
@@ -91,29 +95,35 @@ export abstract class TagToken extends Token {
 				}
 				const {childNodes} = parentNode,
 					i = childNodes.indexOf(this),
-					siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1),
+					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
 					{rev} = Shadow;
-				for (const token of siblings) {
-					if (
-						!token.is<this>(type)
-						|| type === 'html' && (token.name !== name || isFlexible && token.selfClosing)
+				let cur = siblings.pop();
+				while (
+					cur
+				) {
+					// eslint-disable-next-line no-empty, @typescript-eslint/no-unnecessary-condition
+					if (!cur) {
+					} else if (
+						!cur.is<this>(type)
+						|| type === 'html' && (cur.name !== name || isFlexible && cur.selfClosing)
 					) {
-						continue;
-					} else if (token.#closing === closing) {
+						//
+					} else if (cur.#closing === closing) {
 						/* c8 ignore next 3 */
 						if (type === 'tvar') {
 							return undefined;
 						}
-						stack.push(token);
+						stack.push(cur);
 					} else {
 						const top = stack.pop()!;
 						if (top === this) {
-							return token;
+							return cur;
 						}
-						top.#match = [rev, token];
-						token.#match = [rev, top];
+						top.#match = [rev, cur];
+						cur.#match = [rev, top];
 					}
+					cur = siblings.pop();
 				}
 				for (const token of stack) {
 					token.#match = [rev, undefined];
