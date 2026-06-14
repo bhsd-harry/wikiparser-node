@@ -101,13 +101,13 @@ export const setChildNodes = (
 	parent: Token,
 	position: number,
 	deleteCount: number,
-	inserted: readonly AstNodes[] = [],
+	inserted: AstNodes[] = [],
 ): AstNodes[] => {
 	let nodes = parent.getChildNodes(),
 		removed: AstNodes[];
 	if (nodes.length === deleteCount) {
 		removed = nodes;
-		nodes = inserted as AstNodes[];
+		nodes = inserted;
 	} else {
 		removed = Array.prototype.splice.apply(nodes, [position, deleteCount, ...inserted]);
 	}
