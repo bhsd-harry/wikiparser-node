@@ -1649,7 +1649,7 @@ export class LanguageService implements LanguageServiceBase {
 			refGroup = getRefGroup(node),
 			name = getName(node),
 			refs = root.querySelectorAll(type).filter(token => {
-				const {type: t} = token.parentNode!;
+				const t = token.parentNode!.type;
 				if (type === 'link-target' && t !== 'link' && t !== 'redirect-target') {
 					return false;
 				}

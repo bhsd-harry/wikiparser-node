@@ -95,7 +95,7 @@ declare global {
 		tests: Test[],
 	) => void;
 	type HashChangeHandler = (select: HTMLSelectElement, tests: Test[]) => void;
-	type InputHandler = (input: HTMLInputElement, select: HTMLSelectElement, dones: Set<string>) => void;
+	type InputHandler = (input: HTMLInputElement, select: HTMLSelectElement) => void;
 
 	module '/wikiparser-node/extensions/*' {
 		export const prepareDoneBtn: PrepareDoneBtn;
