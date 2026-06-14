@@ -6,7 +6,15 @@ import type {
 	Config,
 	AST,
 } from '../../base';
-import type {AttributesToken, SyntaxToken} from '../../internal';
+import type {
+	AttributesToken,
+	SyntaxToken,
+
+	/* NOT FOR BROWSER */
+
+	ListRangeToken,
+	AstNodes,
+} from '../../internal';
 
 /* PRINT ONLY */
 
@@ -114,7 +122,6 @@ export abstract class TagToken extends Token {
 				const {
 					type,
 					name,
-					parentNode,
 					closing,
 					selfClosing,
 
@@ -122,7 +129,8 @@ export abstract class TagToken extends Token {
 
 					legacy,
 				} = this;
-				let isVoid = false,
+				let {parentNode} = this,
+					isVoid = false,
 					isFlexible = false;
 				if (type === 'html') {
 					const [, flexibleTags, voidTags] = this.getAttribute('config').html;
@@ -138,32 +146,53 @@ export abstract class TagToken extends Token {
 				}
 				const {childNodes} = parentNode,
 					i = childNodes.indexOf(this),
-					siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1),
+					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
 					{rev} = Shadow;
-				for (const token of siblings) {
-					if (
-						!token.is<this>(type)
-						|| type === 'html' && (token.name !== name || isFlexible && token.selfClosing)
-						|| type === 'tvar' && token.legacy !== legacy
+				let cur = siblings.pop();
+				while (
+					cur
+					|| parentNode.is<ListRangeToken>('list-range') && parentNode.parentNode
+				) {
+					if (!cur) {
+						/* NOT FOR BROWSER */
+
+						const parent: Token = parentNode.parentNode!,
+							ch = parent.childNodes,
+							j = ch.indexOf(parentNode);
+						Array.prototype.push.apply(
+							siblings,
+							closing ? ch.slice(0, j) : ch.slice(j + 1).reverse(),
+						);
+						parentNode = parent;
+					} else if (cur.is<ListRangeToken>('list-range')) {
+						const ch = cur.childNodes;
+						Array.prototype.push.apply(siblings, closing ? ch as AstNodes[] : [...ch].reverse());
+
+						/* NOT FOR BROWSER END */
+					} else if (
+						!cur.is<this>(type)
+						|| type === 'html' && (cur.name !== name || isFlexible && cur.selfClosing)
+						|| type === 'tvar' && cur.legacy !== legacy
 					) {
-						continue;
-					} else if (token.#closing === closing) {
+						//
+					} else if (cur.#closing === closing) {
 						/* c8 ignore next 3 */
 						if (type === 'tvar') {
 							return undefined;
 						}
-						stack.push(token);
+						stack.push(cur);
 					} else {
 						const top = stack.pop()!;
 						if (top === this) {
-							return token;
+							return cur;
 						}
 						if (Parser.viewOnly) {
-							top.#match = [rev, token];
-							token.#match = [rev, top];
+							top.#match = [rev, cur];
+							cur.#match = [rev, top];
 						}
 					}
+					cur = siblings.pop();
 				}
 				if (Parser.viewOnly) {
 					for (const token of stack) {

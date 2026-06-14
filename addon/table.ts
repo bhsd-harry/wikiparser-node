@@ -443,7 +443,7 @@ TableToken.prototype.insertTableCol =
 				coords = rowLayout[x],
 				prevCoords = x === 0 ? true : rowLayout[x - 1];
 			if (!prevCoords) {
-				continue;
+				//
 			} else if (prevCoords !== coords) {
 				const rowToken = this.getNthRow(i)!;
 				rowToken.insertBefore(token.cloneNode(), rowToken.getNthCol(coords!.column, true));
