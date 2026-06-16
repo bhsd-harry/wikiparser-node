@@ -48,7 +48,10 @@ const repaint = (container, container1, container2, html, render, isGH) => {
         container.style.display = '';
         container1.innerHTML = html;
         container2.innerHTML = render !== null && render !== void 0 ? render : '';
-        const classes = ['mw-html-heading'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), imgs2 = container2.querySelectorAll('img'), toRemove = container1.querySelectorAll('.mw-editsection'), tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
+        const classes = ['mw-html-heading'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), imgs2 = container2.querySelectorAll('img'), toRemove = [
+            ...container1.querySelectorAll('.mw-editsection'),
+            ...container1.getElementsByTagName('mw:edittemplatedata'),
+        ], tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
         if (!isGH) {
             for (const ele of withClasses) {
                 removeClass(ele, ...classes);

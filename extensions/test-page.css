@@ -355,6 +355,9 @@ h3 {
 	border: 1px solid #a2a9b1;
 	border-collapse: collapse;
 }
+.frame .wikitable > caption {
+	font-weight: bold;
+}
 .frame .wikitable > * > tr > th {
 	background-color: #eaecf0;
 	color: #202122;
@@ -767,6 +770,23 @@ h3 {
 .frame .mwe-math-element-block {
 	display: block;
 	text-align: center;
+}
+.frame .mw-templatedata-doc-muted {
+	font-style: italic;
+	color: #404244;
+}
+.frame .mw-templatedata-doc-params caption {
+	text-align: left;
+}
+.frame .mw-templatedata-doc-params .mw-templatedata-caption {
+	font-size: 1.2em;
+}
+.frame .mw-templatedata-doc-params tbody > tr > th {
+	text-align: left;
+	font-weight: normal;
+}
+.frame .mw-templatedata-doc-param-alias {
+	color: #404244;
 }
 
 @media screen and (max-width: 720px) {
