@@ -1,0 +1,37 @@
+!! Version 2
+
+!! test
+Empty parser function
+!! wikitext
+Phonos<phonos />END
+!! html
+<p>Phonos<span class="ext-phonos"><span data-nosnippet="" id="ooui-php-1" class="noexcerpt ext-phonos-PhonosButton ext-phonos-error ext-phonos-PhonosButton-emptylabel oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-buttonWidget" data-ooui="{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;data&quot;:{&quot;ipa&quot;:&quot;&quot;,&quot;text&quot;:&quot;&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;error&quot;:[&quot;phonos-param-error&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;,&quot;ext-phonos-PhonosButton-emptylabel&quot;]}"><a role="button" tabindex="0" rel="nofollow" aria-label="Unable to play audio" title="Unable to play audio" class="oo-ui-buttonElement-button"><span class="oo-ui-iconElement-icon oo-ui-icon-volumeOff"></span><span class="oo-ui-labelElement-label"></span><span class="oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator"></span></a></span></span>END
+</p>
+!! end
+
+!! test
+Given the ipa, file and text parameters
+!! wikitext
+Phonos<phonos ipa="hɛˈloʊ" text="Hello" file="does-not-exist.ogg" />END
+!! html
+<p>Phonos<span class="ext-phonos"><span data-nosnippet="" id="ooui-php-1" class="noexcerpt ext-phonos-PhonosButton ext-phonos-error oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-labelElement oo-ui-buttonWidget" data-ooui="{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;label&quot;:&quot;h\u025b\u02c8lo\u028a&quot;,&quot;data&quot;:{&quot;ipa&quot;:&quot;h\u025b\u02c8lo\u028a&quot;,&quot;text&quot;:&quot;Hello&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;file&quot;:&quot;does-not-exist.ogg&quot;,&quot;error&quot;:[&quot;phonos-file-not-found&quot;,&quot;\/index.php?title=Special:Upload&amp;wpDestFile=Does-not-exist.ogg&quot;,&quot;Does-not-exist.ogg&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;]}"><a role="button" tabindex="0" rel="nofollow" aria-label="Unable to play audio" title="Unable to play audio" class="oo-ui-buttonElement-button"><span class="oo-ui-iconElement-icon oo-ui-icon-volumeOff"></span><span class="oo-ui-labelElement-label">hɛˈloʊ</span><span class="oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator"></span></a></span><sup class="ext-phonos-attribution noexcerpt navigation-not-searchable"><a href="/index.php?title=Special:Upload&amp;wpDestFile=does-not-exist.ogg" class="new" title="File:does-not-exist.ogg"><span class="mw-file-element mw-broken-media">ⓘ</span></a></sup></span>END
+</p>
+!! end
+
+!! test
+Given the ipa, file, text and label parameters, with label having a leading space
+!! wikitext
+Phonos<phonos ipa="hɛˈloʊ" text="Hello" file="does-not-exist.ogg"> Foo'''bar'''</phonos>END
+!! html
+<p>Phonos<span class="ext-phonos"><span data-nosnippet="" id="ooui-php-1" class="noexcerpt ext-phonos-PhonosButton ext-phonos-error oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-labelElement oo-ui-buttonWidget" data-ooui="{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;label&quot;:{&quot;html&quot;:&quot;Foo&lt;b&gt;bar&lt;\/b&gt;&quot;},&quot;data&quot;:{&quot;ipa&quot;:&quot;h\u025b\u02c8lo\u028a&quot;,&quot;text&quot;:&quot;Hello&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;file&quot;:&quot;does-not-exist.ogg&quot;,&quot;error&quot;:[&quot;phonos-file-not-found&quot;,&quot;\/index.php?title=Special:Upload&amp;wpDestFile=Does-not-exist.ogg&quot;,&quot;Does-not-exist.ogg&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;]}"><a role="button" tabindex="0" rel="nofollow" aria-label="Unable to play audio" title="Unable to play audio" class="oo-ui-buttonElement-button"><span class="oo-ui-iconElement-icon oo-ui-icon-volumeOff"></span><span class="oo-ui-labelElement-label">Foo<b>bar</b></span><span class="oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator"></span></a></span><sup class="ext-phonos-attribution noexcerpt navigation-not-searchable"><a href="/index.php?title=Special:Upload&amp;wpDestFile=does-not-exist.ogg" class="new" title="File:does-not-exist.ogg"><span class="mw-file-element mw-broken-media">ⓘ</span></a></sup></span>END
+</p>
+!! end
+
+!! test
+Given a file and a blank label
+!! wikitext
+Phonos<phonos file="does-not-exist.ogg"></phonos>END
+!! html
+<p>Phonos<span class="ext-phonos"><span data-nosnippet="" id="ooui-php-1" class="noexcerpt ext-phonos-PhonosButton ext-phonos-error ext-phonos-PhonosButton-emptylabel oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-buttonWidget" data-ooui="{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;data&quot;:{&quot;ipa&quot;:&quot;&quot;,&quot;text&quot;:&quot;&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;file&quot;:&quot;does-not-exist.ogg&quot;,&quot;error&quot;:[&quot;phonos-file-not-found&quot;,&quot;\/index.php?title=Special:Upload&amp;wpDestFile=Does-not-exist.ogg&quot;,&quot;Does-not-exist.ogg&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;,&quot;ext-phonos-PhonosButton-emptylabel&quot;]}"><a role="button" tabindex="0" rel="nofollow" aria-label="Unable to play audio" title="Unable to play audio" class="oo-ui-buttonElement-button"><span class="oo-ui-iconElement-icon oo-ui-icon-volumeOff"></span><span class="oo-ui-labelElement-label"></span><span class="oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator"></span></a></span><sup class="ext-phonos-attribution noexcerpt navigation-not-searchable"><a href="/index.php?title=Special:Upload&amp;wpDestFile=does-not-exist.ogg" class="new" title="File:does-not-exist.ogg"><span class="mw-file-element mw-broken-media">ⓘ</span></a></sup></span>END
+</p>
+!! end
