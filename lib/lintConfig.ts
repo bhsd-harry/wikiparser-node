@@ -77,8 +77,10 @@ const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
 	'invalid-imagemap': [
 		2,
 		{
+			// coord: 2,
 			// image: 2,
 			// link: 2,
+			// shape: 2,
 		},
 	],
 	'invalid-invoke': [

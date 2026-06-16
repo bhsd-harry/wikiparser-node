@@ -3,6 +3,10 @@
 
 *2026-06-16*
 
+**Added**
+
+- New category of linting errors: [invalid area specified in an image map link](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-imagemap)
+
 **Fixed**
 
 - [`TagToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagToken-%28EN%29#findmatchingtag) after [`Token#buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) is executed
