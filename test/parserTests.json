@@ -6685,6 +6685,37 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
+		"desc": "PhonosParserTests"
+	},
+	{
+		"desc": "Empty parser function",
+		"wikitext": "Phonos<phonos />END",
+		"html": "<p>Phonos<span class=\"ext-phonos\"><span data-nosnippet=\"\" id=\"ooui-php-1\" class=\"noexcerpt ext-phonos-PhonosButton ext-phonos-error ext-phonos-PhonosButton-emptylabel oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-buttonWidget\" data-ooui=\"{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;data&quot;:{&quot;ipa&quot;:&quot;&quot;,&quot;text&quot;:&quot;&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;error&quot;:[&quot;phonos-param-error&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;,&quot;ext-phonos-PhonosButton-emptylabel&quot;]}\"><a role=\"button\" tabindex=\"0\" rel=\"nofollow\" aria-label=\"Unable to play audio\" title=\"Unable to play audio\" class=\"oo-ui-buttonElement-button\"><span class=\"oo-ui-iconElement-icon oo-ui-icon-volumeOff\"></span><span class=\"oo-ui-labelElement-label\"></span><span class=\"oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator\"></span></a></span></span>END\n</p>",
+		"render": "<p>PhonosEND\n</p>",
+		"print": "<span class=\"wpb-root\">Phonos<span class=\"wpb-ext\">&lt;phonos<span class=\"wpb-ext-attrs\"> </span>/&gt;</span>END</span>"
+	},
+	{
+		"desc": "Given the ipa, file and text parameters",
+		"wikitext": "Phonos<phonos ipa=\"hɛˈloʊ\" text=\"Hello\" file=\"does-not-exist.ogg\" />END",
+		"html": "<p>Phonos<span class=\"ext-phonos\"><span data-nosnippet=\"\" id=\"ooui-php-1\" class=\"noexcerpt ext-phonos-PhonosButton ext-phonos-error oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-labelElement oo-ui-buttonWidget\" data-ooui=\"{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;label&quot;:&quot;h\\u025b\\u02c8lo\\u028a&quot;,&quot;data&quot;:{&quot;ipa&quot;:&quot;h\\u025b\\u02c8lo\\u028a&quot;,&quot;text&quot;:&quot;Hello&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;file&quot;:&quot;does-not-exist.ogg&quot;,&quot;error&quot;:[&quot;phonos-file-not-found&quot;,&quot;\\/index.php?title=Special:Upload&amp;wpDestFile=Does-not-exist.ogg&quot;,&quot;Does-not-exist.ogg&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;]}\"><a role=\"button\" tabindex=\"0\" rel=\"nofollow\" aria-label=\"Unable to play audio\" title=\"Unable to play audio\" class=\"oo-ui-buttonElement-button\"><span class=\"oo-ui-iconElement-icon oo-ui-icon-volumeOff\"></span><span class=\"oo-ui-labelElement-label\">hɛˈloʊ</span><span class=\"oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator\"></span></a></span><sup class=\"ext-phonos-attribution noexcerpt navigation-not-searchable\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=does-not-exist.ogg\" class=\"new\" title=\"File:does-not-exist.ogg\"><span class=\"mw-file-element mw-broken-media\">ⓘ</span></a></sup></span>END\n</p>",
+		"render": "<p>PhonosEND\n</p>",
+		"print": "<span class=\"wpb-root\">Phonos<span class=\"wpb-ext\">&lt;phonos<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">ipa</span>=\"<span class=\"wpb-attr-value\">hɛˈloʊ</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">text</span>=\"<span class=\"wpb-attr-value\">Hello</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">file</span>=\"<span class=\"wpb-attr-value\">does-not-exist.ogg</span>\"</span> </span>/&gt;</span>END</span>"
+	},
+	{
+		"desc": "Given the ipa, file, text and label parameters, with label having a leading space",
+		"wikitext": "Phonos<phonos ipa=\"hɛˈloʊ\" text=\"Hello\" file=\"does-not-exist.ogg\"> Foo'''bar'''</phonos>END",
+		"html": "<p>Phonos<span class=\"ext-phonos\"><span data-nosnippet=\"\" id=\"ooui-php-1\" class=\"noexcerpt ext-phonos-PhonosButton ext-phonos-error oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-labelElement oo-ui-buttonWidget\" data-ooui=\"{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;label&quot;:{&quot;html&quot;:&quot;Foo&lt;b&gt;bar&lt;\\/b&gt;&quot;},&quot;data&quot;:{&quot;ipa&quot;:&quot;h\\u025b\\u02c8lo\\u028a&quot;,&quot;text&quot;:&quot;Hello&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;file&quot;:&quot;does-not-exist.ogg&quot;,&quot;error&quot;:[&quot;phonos-file-not-found&quot;,&quot;\\/index.php?title=Special:Upload&amp;wpDestFile=Does-not-exist.ogg&quot;,&quot;Does-not-exist.ogg&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;]}\"><a role=\"button\" tabindex=\"0\" rel=\"nofollow\" aria-label=\"Unable to play audio\" title=\"Unable to play audio\" class=\"oo-ui-buttonElement-button\"><span class=\"oo-ui-iconElement-icon oo-ui-icon-volumeOff\"></span><span class=\"oo-ui-labelElement-label\">Foo<b>bar</b></span><span class=\"oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator\"></span></a></span><sup class=\"ext-phonos-attribution noexcerpt navigation-not-searchable\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=does-not-exist.ogg\" class=\"new\" title=\"File:does-not-exist.ogg\"><span class=\"mw-file-element mw-broken-media\">ⓘ</span></a></sup></span>END\n</p>",
+		"render": "<p>PhonosEND\n</p>",
+		"print": "<span class=\"wpb-root\">Phonos<span class=\"wpb-ext\">&lt;phonos<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">ipa</span>=\"<span class=\"wpb-attr-value\">hɛˈloʊ</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">text</span>=\"<span class=\"wpb-attr-value\">Hello</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">file</span>=\"<span class=\"wpb-attr-value\">does-not-exist.ogg</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\"> Foo<span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">'''</span></span>&lt;/phonos&gt;</span>END</span>"
+	},
+	{
+		"desc": "Given a file and a blank label",
+		"wikitext": "Phonos<phonos file=\"does-not-exist.ogg\"></phonos>END",
+		"html": "<p>Phonos<span class=\"ext-phonos\"><span data-nosnippet=\"\" id=\"ooui-php-1\" class=\"noexcerpt ext-phonos-PhonosButton ext-phonos-error ext-phonos-PhonosButton-emptylabel oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-buttonElement-size-medium oo-ui-iconElement oo-ui-buttonWidget\" data-ooui=\"{&quot;_&quot;:&quot;mw.Phonos.PhonosButton&quot;,&quot;rel&quot;:[&quot;nofollow&quot;],&quot;framed&quot;:false,&quot;icon&quot;:&quot;volumeOff&quot;,&quot;data&quot;:{&quot;ipa&quot;:&quot;&quot;,&quot;text&quot;:&quot;&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;wikibase&quot;:&quot;&quot;,&quot;file&quot;:&quot;does-not-exist.ogg&quot;,&quot;error&quot;:[&quot;phonos-file-not-found&quot;,&quot;\\/index.php?title=Special:Upload&amp;wpDestFile=Does-not-exist.ogg&quot;,&quot;Does-not-exist.ogg&quot;]},&quot;classes&quot;:[&quot;noexcerpt&quot;,&quot;ext-phonos-PhonosButton&quot;,&quot;ext-phonos-error&quot;,&quot;ext-phonos-PhonosButton-emptylabel&quot;]}\"><a role=\"button\" tabindex=\"0\" rel=\"nofollow\" aria-label=\"Unable to play audio\" title=\"Unable to play audio\" class=\"oo-ui-buttonElement-button\"><span class=\"oo-ui-iconElement-icon oo-ui-icon-volumeOff\"></span><span class=\"oo-ui-labelElement-label\"></span><span class=\"oo-ui-indicatorElement-indicator oo-ui-indicatorElement-noIndicator\"></span></a></span><sup class=\"ext-phonos-attribution noexcerpt navigation-not-searchable\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=does-not-exist.ogg\" class=\"new\" title=\"File:does-not-exist.ogg\"><span class=\"mw-file-element mw-broken-media\">ⓘ</span></a></sup></span>END\n</p>",
+		"render": "<p>PhonosEND\n</p>",
+		"print": "<span class=\"wpb-root\">Phonos<span class=\"wpb-ext\">&lt;phonos<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">file</span>=\"<span class=\"wpb-attr-value\">does-not-exist.ogg</span>\"</span></span>&gt;&lt;/phonos&gt;</span>END</span>"
+	},
+	{
 		"desc": "additionalTests"
 	},
 	{
@@ -7548,14 +7579,14 @@
 		"desc": "Can't have name=\"…\" and follow=\"…\" the same time",
 		"wikitext": "<ref name=\"theName\" follow=\"theFollows\">theValue</ref>\n<references />",
 		"html": "<p><span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: A <code>&lt;ref follow=\"…\"&gt;</code> tag that is the continuation of a previous one cannot be named individually or have details.</span>\n</p>",
-		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: A &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually</span>\n</p>",
+		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: a &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually or have details</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">theName</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">follow</span>=\"<span class=\"wpb-attr-value\">theFollows</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">theValue</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
 		"desc": "Conflicting name=\"…\" and follow=\"…\" together with another invalid parameter",
 		"wikitext": "<ref name=\"theName\" follow=\"theFollows\" dummy=\"dummy\">theValue</ref>\n<references />",
 		"html": "<p><span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: Invalid parameter \"dummy\" in <code>&lt;ref&gt;</code> tag. The supported parameters are: dir, follow, group, name.</span>\n</p>",
-		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: A &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually</span>\n</p>",
+		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: a &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually or have details</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">theName</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">follow</span>=\"<span class=\"wpb-attr-value\">theFollows</span>\"</span> <span class=\"wpb-ext-attr wpb-invalid\"><span class=\"wpb-attr-key\">dummy</span>=\"<span class=\"wpb-attr-value\">dummy</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">theValue</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -16922,14 +16953,14 @@
 		"desc": "No main content due to missing name or empty content",
 		"wikitext": "<ref details=\"page 1\" />\n<references />",
 		"html": "<p><span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: A <code>&lt;ref&gt;</code> tag with details must contain content or point to a parent reference by name.</span>\n</p>",
-		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: &lt;ref&gt; with no name must have content</span>\n</p>",
+		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: a &lt;ref&gt; tag with details must contain content or point to a parent reference by name</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">details</span>=\"<span class=\"wpb-attr-value\">page 1</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
 		"desc": "Empty content and no name",
 		"wikitext": "<ref details=\"page 1\"></ref>\n<references />",
 		"html": "<p><span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: A <code>&lt;ref&gt;</code> tag with details must contain content or point to a parent reference by name.</span>\n</p>",
-		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: &lt;ref&gt; with no name must have content</span>\n</p>",
+		"render": "<p><span class=\"error mw-ext-cite-error\">Cite error: a &lt;ref&gt; tag with details must contain content or point to a parent reference by name</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">details</span>=\"<span class=\"wpb-attr-value\">page 1</span>\"</span></span>&gt;&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -17083,7 +17114,7 @@
 		"desc": "Merging sub-refs should not suppress error message for misplaced follow",
 		"wikitext": "<ref name=\"a\" details=\"p1\">Book</ref>\n<ref name=\"a\" details=\"p1\" follow=\"b\" />\n<references />",
 		"html": "<p><sup id=\"cite&#95;ref-2\" class=\"reference\"><a href=\"#cite_note-2\"><span class=\"cite-bracket\">&#91;</span>1.1<span class=\"cite-bracket\">&#93;</span></a></sup>\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: A <code>&lt;ref follow=\"…\"&gt;</code> tag that is the continuation of a previous one cannot be named individually or have details.</span>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li><span class=\"mw-cite-backlink\">↑</span> <span class=\"reference-text\">Book</span>\n<ol class=\"mw-subreference-list\"><li id=\"cite&#95;note-2\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-2\">↑</a></span> <span class=\"reference-text\">p1</span>\n</li>\n</ol></li>\n</ol></div>",
-		"render": "<p><sup id=\"cite_ref-a_1-0\" class=\"reference\"><a href=\"#cite_note-a-1\"><span class=\"cite-bracket\">[</span>1<span class=\"cite-bracket\">]</span></a></sup>\n<span class=\"error mw-ext-cite-error\">Cite error: A &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually</span>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-a-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-a_1-0\">↑</a></span> <span class=\"reference-text\">Book</span>\n</li>\n</ol></div>",
+		"render": "<p><sup id=\"cite_ref-a_1-0\" class=\"reference\"><a href=\"#cite_note-a-1\"><span class=\"cite-bracket\">[</span>1<span class=\"cite-bracket\">]</span></a></sup>\n<span class=\"error mw-ext-cite-error\">Cite error: a &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually or have details</span>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-a-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-a_1-0\">↑</a></span> <span class=\"reference-text\">Book</span>\n</li>\n</ol></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">details</span>=\"<span class=\"wpb-attr-value\">p1</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">Book</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">details</span>=\"<span class=\"wpb-attr-value\">p1</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">follow</span>=\"<span class=\"wpb-attr-value\">b</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -17104,7 +17135,7 @@
 		"desc": "Using `follow` with details on the \"follow\" part",
 		"wikitext": "<ref name=\"book\">Book</ref> <ref details=\"page 1\" follow=\"book\">continued</ref>\n<references />",
 		"html": "<p><sup id=\"cite&#95;ref-book&#95;1-0\" class=\"reference\"><a href=\"#cite_note-book-1\"><span class=\"cite-bracket\">&#91;</span>1<span class=\"cite-bracket\">&#93;</span></a></sup> <span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: A <code>&lt;ref follow=\"…\"&gt;</code> tag that is the continuation of a previous one cannot be named individually or have details.</span>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite&#95;note-book-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-book_1-0\">↑</a></span> <span class=\"reference-text\">Book</span>\n</li>\n</ol></div>",
-		"render": "<p><sup id=\"cite_ref-book_1-0\" class=\"reference\"><a href=\"#cite_note-book-1\"><span class=\"cite-bracket\">[</span>1<span class=\"cite-bracket\">]</span></a></sup> \n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-book-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-book_1-0\">↑</a></span> <span class=\"reference-text\">Book continued</span>\n</li>\n</ol></div>",
+		"render": "<p><sup id=\"cite_ref-book_1-0\" class=\"reference\"><a href=\"#cite_note-book-1\"><span class=\"cite-bracket\">[</span>1<span class=\"cite-bracket\">]</span></a></sup> <span class=\"error mw-ext-cite-error\">Cite error: a &lt;ref follow&gt; tag that is the continuation of a previous one cannot be named individually or have details</span>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-book-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-book_1-0\">↑</a></span> <span class=\"reference-text\">Book</span>\n</li>\n</ol></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">book</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">Book</span>&lt;/ref&gt;</span> <span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">details</span>=\"<span class=\"wpb-attr-value\">page 1</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">follow</span>=\"<span class=\"wpb-attr-value\">book</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">continued</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -17920,6 +17951,21 @@
 		"desc": "Asciiart template should display the right number of spaces",
 		"wikitext": "{{Asciiart}}",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Asciiart</span>}}</span></span>"
+	},
+	{
+		"desc": "templatedata"
+	},
+	{
+		"desc": "Empty",
+		"wikitext": "<templatedata />",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;templatedata<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
+	},
+	{
+		"desc": "Minimal JSON",
+		"wikitext": "<templatedata>{\"params\":{}}</templatedata>",
+		"html": "<section class=\"mw-templatedata-doc-wrap\"><header><p class=\"mw-templatedata-doc-desc mw-templatedata-doc-muted\">No description.</p></header><table class=\"wikitable mw-templatedata-doc-params\"><caption><p class=\"mw-templatedata-caption\">Template parameters<mw:edittemplatedata page=\"Parser test\"></mw:edittemplatedata></p></caption><thead><tr><th colspan=\"2\">Parameter</th><th>Description</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td class=\"mw-templatedata-doc-muted\" colspan=\"7\">No parameters specified</td></tr></tbody></table></section>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;templatedata&gt;<span class=\"wpb-ext-inner\">{\"params\":{}}</span>&lt;/templatedata&gt;</span></span>"
 	},
 	{
 		"desc": "translateParserTests"
