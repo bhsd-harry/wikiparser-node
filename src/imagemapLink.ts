@@ -10,6 +10,7 @@ import type {AstText, ImagemapToken, GalleryImageToken} from '../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
+import {Shadow} from '../util/debug';
 import {fixedToken} from '../mixin/fixed';
 import {singleLine} from '../mixin/singleLine';
 import type {Title} from '../lib/title';
@@ -99,12 +100,14 @@ export abstract class ImagemapLinkToken extends Token {
 	 * @param isPoly 是否为多边形
 	 */
 	#lint(errors: LintError[], coords: string, start: number, minCount: number, isPoly?: boolean): void {
-		const parts = coords.split(/[ \t]+/u).map(s => s.trim()).filter(Boolean),
-			{length} = parts,
-			rule = 'invalid-imagemap',
-			s = Parser.lintConfig.getSeverity(rule, 'coord');
-		if (s && (length < minCount || isPoly && length % 2 || parts.some(part => notNumeric(part, isPoly)))) {
-			errors.push(generateForChild(this.firstChild, {start}, rule, 'invalid-coord', s));
+		LINT: {
+			const parts = coords.split(/[ \t]+/u).map(s => s.trim()).filter(Boolean),
+				{length} = parts,
+				rule = 'invalid-imagemap',
+				s = Parser.lintConfig.getSeverity(rule, 'coord');
+			if (s && (length < minCount || isPoly && length % 2 || parts.some(part => notNumeric(part, isPoly)))) {
+				errors.push(generateForChild(this.firstChild, {start}, rule, 'invalid-coord', s));
+			}
 		}
 	}
 
@@ -139,6 +142,23 @@ export abstract class ImagemapLinkToken extends Token {
 			}
 			return errors;
 		}
+	}
+
+	/* NOT FOR BROWSER */
+
+	override cloneNode(): this {
+		const link = this.childNodes[1].cloneNode();
+		return Shadow.run(() => {
+			// @ts-expect-error abstract class
+			const token: this = new ImagemapLinkToken(
+				this.firstChild.data,
+				link.type === 'link' ? ['', undefined] : ['', undefined, undefined],
+				this.lastChild.toString(),
+				this.getAttribute('config'),
+			);
+			(token.childNodes[1] as LinkToken).safeReplaceWith(link as LinkToken);
+			return token;
+		});
 	}
 }
 

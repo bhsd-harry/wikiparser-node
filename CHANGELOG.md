@@ -10,6 +10,7 @@
 **Fixed**
 
 - [`TagToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagToken-%28EN%29#findmatchingtag) after [`Token#buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) is executed
+- Missing `ImagemapLinkToken#cloneNode` method
 
 ## v1.44.0
 
