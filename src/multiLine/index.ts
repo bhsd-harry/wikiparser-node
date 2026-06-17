@@ -1,4 +1,5 @@
 import {Token} from '../index';
+import {gapped} from '../../mixin/gapped';
 import type {AttributesToken, ExtToken} from '../../internal';
 
 /**
@@ -6,6 +7,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
  *
  * 逐行解析的扩展标签
  */
+@gapped()
 export abstract class MultiLineToken extends Token {
 	declare readonly name: string;
 
@@ -25,11 +27,6 @@ export abstract class MultiLineToken extends Token {
 	/** @private */
 	override text(): string {
 		return super.text('\n').replace(/\n\s*\n/gu, '\n');
-	}
-
-	/** @private */
-	override getGaps(): number {
-		return 1;
 	}
 
 	/** @private */

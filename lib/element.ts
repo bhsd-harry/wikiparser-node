@@ -198,9 +198,10 @@ export abstract class AstElement extends AstNode {
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
 		LINT: {
-			const errors: LintError[] = [];
-			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-				const child = this.childNodes[i]!;
+			const errors: LintError[] = [],
+				{length, childNodes} = this;
+			for (let i = 0, cur = start + this.getAttribute('padding'); i < length; i++) {
+				const child = childNodes[i]!;
 				child.setAttribute('aIndex', cur);
 				const childErrors = child.lint(cur, re);
 				if (childErrors.length > 0) {
@@ -241,15 +242,16 @@ export abstract class AstElement extends AstNode {
 	 */
 	json(file?: string, depth = Infinity, start = this.getAbsoluteIndex()): AST {
 		LSP: {
-			const json = {
-				...this, // eslint-disable-line @typescript-eslint/no-misused-spread
-				type: this.type,
-				range: [start, start + this.toString().length],
-				childNodes: [],
-			} as unknown as AST;
+			const {type, length: l, childNodes} = this,
+				json = {
+					...this, // eslint-disable-line @typescript-eslint/no-misused-spread
+					type,
+					range: [start, start + this.toString().length],
+					childNodes: [],
+				} as unknown as AST;
 			if (depth >= 1) {
-				for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-					const child = this.childNodes[i]!,
+				for (let i = 0, cur = start + this.getAttribute('padding'); i < l; i++) {
+					const child = childNodes[i]!,
 						{length} = child.toString();
 					child.setAttribute('aIndex', cur);
 					json.childNodes!.push(

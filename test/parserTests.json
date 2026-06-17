@@ -6716,6 +6716,72 @@
 		"print": "<span class=\"wpb-root\">Phonos<span class=\"wpb-ext\">&lt;phonos<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">file</span>=\"<span class=\"wpb-attr-value\">does-not-exist.ogg</span>\"</span></span>&gt;&lt;/phonos&gt;</span>END</span>"
 	},
 	{
+		"desc": "WikiSEOParserTests"
+	},
+	{
+		"desc": "Tag only title",
+		"wikitext": "<seo>\n|title=SeoWiki\n</seo>",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;<span class=\"wpb-ext-inner\">\n|title=SeoWiki\n</span>&lt;/seo&gt;</span></span>"
+	},
+	{
+		"desc": "Tag only title internal",
+		"wikitext": "<seo title=\"SeoWiki\"></seo>",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span></span>&gt;&lt;/seo&gt;</span></span>"
+	},
+	{
+		"desc": "Tag only title internal self-closing",
+		"wikitext": "<seo title=\"SeoWiki\" />",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span> </span>/&gt;</span></span>"
+	},
+	{
+		"desc": "Tag empty",
+		"wikitext": "<seo></seo>",
+		"html": "<div class=\"errorbox\">Error: &lt;seo&gt; tag must contain at least one non-empty attribute.</div>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;&lt;/seo&gt;</span></span>"
+	},
+	{
+		"desc": "Tag empty self-closing",
+		"wikitext": "<seo />",
+		"html": "<div class=\"errorbox\">Error: &lt;seo&gt; tag must contain at least one non-empty attribute.</div>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
+	},
+	{
+		"desc": "Parser empty",
+		"wikitext": "{{#seo:}}",
+		"html": "<div class=\"errorbox\">Error: {{#seo:}} must contain at least one non-empty attribute.</div>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#seo</span>:}}</span></span>"
+	},
+	{
+		"desc": "Tag internal a lot of args",
+		"wikitext": "<seo>\n|title=SeoWiki\n|title_mode=append\n|keywords=SEO, Wiki, MediaWiki, Extension\n|description=Allows per page meta settings (keywords, description), changing the title and various site verifications.\n|image_alt=SeoWiki Logo\n|site_name=SeoWiki\n|type=WebPage\n|locale=en_EN\n|published_time=2012-01-01\n</seo>",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;<span class=\"wpb-ext-inner\">\n|title=SeoWiki\n|title_mode=append\n|keywords=SEO, Wiki, MediaWiki, Extension\n|description=Allows per page meta settings (keywords, description), changing the title and various site verifications.\n|image_alt=SeoWiki Logo\n|site_name=SeoWiki\n|type=WebPage\n|locale=en_EN\n|published_time=2012-01-01\n</span>&lt;/seo&gt;</span></span>"
+	},
+	{
+		"desc": "Tag attributes a lot of args",
+		"wikitext": "<seo\ntitle=\"SeoWiki\"\ntitle_mode=\"append\"\nkeywords=\"SEO, Wiki, MediaWiki, Extension\"\ndescription=\"Allows per page meta settings (keywords, description), changing the title and various site verifications.\"\nimage_alt=\"SeoWiki Logo\"\nsite_name=\"SeoWiki\"\ntype=\"WebPage\"\nlocale=\"en_EN\"\npublished_time=\"2012-01-01\">\n</seo>",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\">\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title_mode</span>=\"<span class=\"wpb-attr-value\">append</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">keywords</span>=\"<span class=\"wpb-attr-value\">SEO, Wiki, MediaWiki, Extension</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">description</span>=\"<span class=\"wpb-attr-value\">Allows per page meta settings (keywords, description), changing the title and various site verifications.</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">image_alt</span>=\"<span class=\"wpb-attr-value\">SeoWiki Logo</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">site_name</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">type</span>=\"<span class=\"wpb-attr-value\">WebPage</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">locale</span>=\"<span class=\"wpb-attr-value\">en_EN</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">published_time</span>=\"<span class=\"wpb-attr-value\">2012-01-01</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\n</span>&lt;/seo&gt;</span></span>"
+	},
+	{
+		"desc": "Tag attributes a lot of args self-closing",
+		"wikitext": "<seo\ntitle=\"SeoWiki\"\ntitle_mode=\"append\"\nkeywords=\"SEO, Wiki, MediaWiki, Extension\"\ndescription=\"Allows per page meta settings (keywords, description), changing the title and various site verifications.\"\nimage_alt=\"SeoWiki Logo\"\nsite_name=\"SeoWiki\"\ntype=\"WebPage \"\nlocale=\"en_EN\"\npublished_time=\"2012-01-01\"\n/>",
+		"html": "",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\">\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title_mode</span>=\"<span class=\"wpb-attr-value\">append</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">keywords</span>=\"<span class=\"wpb-attr-value\">SEO, Wiki, MediaWiki, Extension</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">description</span>=\"<span class=\"wpb-attr-value\">Allows per page meta settings (keywords, description), changing the title and various site verifications.</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">image_alt</span>=\"<span class=\"wpb-attr-value\">SeoWiki Logo</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">site_name</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">type</span>=\"<span class=\"wpb-attr-value\">WebPage </span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">locale</span>=\"<span class=\"wpb-attr-value\">en_EN</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">published_time</span>=\"<span class=\"wpb-attr-value\">2012-01-01</span>\"</span>\n</span>/&gt;</span></span>"
+	},
+	{
 		"desc": "additionalTests"
 	},
 	{
