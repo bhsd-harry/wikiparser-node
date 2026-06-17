@@ -82,6 +82,8 @@
 		]
 	},
 	"peerDependencies": {
+		"ajv": ">=8.0.0",
+		"ajv-errors": ">=3.0.0",
 		"katex": ">=0.14.0",
 		"mathoid-texvcjs": ">=0.4.0",
 		"mediawiki-expr": "*",
@@ -93,6 +95,12 @@
 		"vscode-json-languageservice": ">=3.2.0"
 	},
 	"peerDependenciesMeta": {
+		"ajv": {
+			"optional": true
+		},
+		"ajv-errors": {
+			"optional": true
+		},
 		"katex": {
 			"optional": true
 		},
@@ -136,6 +144,8 @@
 		"@eslint/markdown": "^8.0.2",
 		"@types/jsdom": "^28.0.3",
 		"@types/prismjs": "^1.26.6",
+		"ajv": "^8.20.0",
+		"ajv-errors": "^3.0.0",
 		"c8": "^11.0.0",
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",

@@ -1,16 +1,18 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.44.1
+## v1.45.0
 
-*2026-06-16*
+*2026-06-17*
 
 **Added**
 
 - New category of linting errors: [invalid area specified in an image map link](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-imagemap)
+- HTML conversion of `<templatedata>` extension tags
 
 **Fixed**
 
 - [`TagToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagToken-%28EN%29#findmatchingtag) after [`Token#buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) is executed
 - Missing `ImagemapLinkToken#cloneNode` method
+- JSON schema for `<templatedata>`
 
 ## v1.44.0
 
