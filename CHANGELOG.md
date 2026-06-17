@@ -1,12 +1,13 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.45.0
 
-*2026-06-17*
+*2026-06-18*
 
 **Added**
 
 - New category of linting errors: [invalid area specified in an image map link](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-imagemap)
 - HTML conversion of `<templatedata>` extension tags
+- Parse and report `<seo>` extension tags
 
 **Fixed**
 

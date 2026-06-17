@@ -1,0 +1,107 @@
+!! Version 2
+
+!! test
+Tag only title
+!! wikitext
+<seo>
+|title=SeoWiki
+</seo>
+!! html
+!! end
+
+
+!! test
+Tag only title internal
+!! wikitext
+<seo title="SeoWiki"></seo>
+!! html
+!! end
+
+
+!! test
+Tag only title internal self-closing
+!! wikitext
+<seo title="SeoWiki" />
+!! html
+!! end
+
+
+!! test
+Tag empty
+!! wikitext
+<seo></seo>
+!! html
+<div class="errorbox">Error: &lt;seo&gt; tag must contain at least one non-empty attribute.</div>
+!! end
+
+
+!! test
+Tag empty self-closing
+!! wikitext
+<seo />
+!! html
+<div class="errorbox">Error: &lt;seo&gt; tag must contain at least one non-empty attribute.</div>
+!! end
+
+
+!! test
+Parser empty
+!! wikitext
+{{#seo:}}
+!! html
+<div class="errorbox">Error: {{#seo:}} must contain at least one non-empty attribute.</div>
+!! end
+
+
+!! test
+Tag internal a lot of args
+!! wikitext
+<seo>
+|title=SeoWiki
+|title_mode=append
+|keywords=SEO, Wiki, MediaWiki, Extension
+|description=Allows per page meta settings (keywords, description), changing the title and various site verifications.
+|image_alt=SeoWiki Logo
+|site_name=SeoWiki
+|type=WebPage
+|locale=en_EN
+|published_time=2012-01-01
+</seo>
+!! html
+!! end
+
+
+!! test
+Tag attributes a lot of args
+!! wikitext
+<seo
+title="SeoWiki"
+title_mode="append"
+keywords="SEO, Wiki, MediaWiki, Extension"
+description="Allows per page meta settings (keywords, description), changing the title and various site verifications."
+image_alt="SeoWiki Logo"
+site_name="SeoWiki"
+type="WebPage"
+locale="en_EN"
+published_time="2012-01-01">
+</seo>
+!! html
+!! end
+
+
+!! test
+Tag attributes a lot of args self-closing
+!! wikitext
+<seo
+title="SeoWiki"
+title_mode="append"
+keywords="SEO, Wiki, MediaWiki, Extension"
+description="Allows per page meta settings (keywords, description), changing the title and various site verifications."
+image_alt="SeoWiki Logo"
+site_name="SeoWiki"
+type="WebPage "
+locale="en_EN"
+published_time="2012-01-01"
+/>
+!! html
+!! end
