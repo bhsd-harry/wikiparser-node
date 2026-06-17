@@ -196,9 +196,10 @@ export abstract class AstElement extends AstNode {
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
 		LINT: {
-			const errors: LintError[] = [];
-			for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-				const child = this.childNodes[i]!;
+			const errors: LintError[] = [],
+				{length, childNodes} = this;
+			for (let i = 0, cur = start + this.getAttribute('padding'); i < length; i++) {
+				const child = childNodes[i]!;
 				child.setAttribute('aIndex', cur);
 				const childErrors = child.lint(cur, re);
 				if (childErrors.length > 0) {

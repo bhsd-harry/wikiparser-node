@@ -111,9 +111,10 @@ export abstract class ConverterFlagsToken extends Token {
 			const rule = 'no-ignored',
 				s = lintConfig.getSeverity(rule, 'conversionFlag');
 			if (s) {
-				const rect = new BoundingRect(this, start);
-				for (let i = 0; i < this.length; i++) {
-					const child = this.childNodes[i]!,
+				const rect = new BoundingRect(this, start),
+					{childNodes, length} = this;
+				for (let i = 0; i < length; i++) {
+					const child = childNodes[i]!,
 						flag = child.text().trim();
 					if (this.isInvalidFlag(flag, variantFlags, unknownFlags)) {
 						const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);

@@ -156,6 +156,7 @@ const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
 			// dynamicpagelist: 2,
 			// inputbox: 2,
 			// references: 2,
+			// seo: 2,
 		},
 	],
 	'obsolete-attr': [1],

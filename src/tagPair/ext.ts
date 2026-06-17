@@ -83,7 +83,6 @@ export abstract class ExtToken extends TagPairToken {
 			case 'tab':
 			case 'tabs':
 			case 'poll':
-			case 'seo':
 			case 'langconvert':
 			case 'phonos':
 				switch (lcName) {
@@ -170,6 +169,12 @@ export abstract class ExtToken extends TagPairToken {
 				const {CategorytreeToken}: typeof import('../link/categorytree') = require('../link/categorytree');
 				// @ts-expect-error abstract class
 				innerToken = new CategorytreeToken(inner, undefined, newConfig, accum);
+				break;
+			}
+			case 'seo': {
+				const {SeoToken}: typeof import('../seo') = require('../seo');
+				// @ts-expect-error abstract class
+				innerToken = new SeoToken(inner, newConfig, accum);
 				break;
 			}
 			// 更多定制扩展的代码示例：
