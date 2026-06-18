@@ -15,6 +15,7 @@ import {AtomToken} from './atom';
 import type {
 	LintError,
 	Config,
+	TokenTypes,
 } from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
 import type {AttributesToken} from '../internal';
@@ -32,7 +33,7 @@ export type AttributeTypes = 'ext-attr'
 const insecureStyle =
 		/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
 	evil = /(?:^|\s|\*\/)(?:java|vb)script(?:\W|$)/iu,
-	complexTypes = new Set(['ext', 'arg', 'magic-word', 'template']),
+	complexTypes = new Set<TokenTypes | 'text'>(['ext', 'arg', 'magic-word', 'template']),
 	itemAttrs = new Set(['itemtype', 'itemid', 'itemref']),
 	urlAttrs = new Set([
 		'about',

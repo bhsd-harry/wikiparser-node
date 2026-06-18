@@ -22,7 +22,6 @@ export abstract class CommentedToken extends Token {
 	/** @class */
 	constructor(wikitext?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', CommentToken: ':',
 		});
 		if (wikitext) {
 			let i = wikitext.indexOf('<!--'),

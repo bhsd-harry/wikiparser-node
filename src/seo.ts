@@ -25,7 +25,6 @@ export abstract class SeoToken extends Token {
 	/** @class */
 	constructor(wikitext: string | undefined, config: Config, accum: Token[]) {
 		super(undefined, config, accum, {
-			AstText: ':',
 		});
 		if (wikitext) {
 			for (const parameter of wikitext.split('|')) {

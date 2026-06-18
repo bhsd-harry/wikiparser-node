@@ -2,19 +2,25 @@ import {generateForSelf, fixByRemove} from '../util/lint';
 import {extParams} from '../util/sharable';
 import Parser from '../index';
 import {Token} from './index';
-import type {Config, LintError} from '../base';
+import {AtomToken} from './atom';
+import type {Config, LintError, TokenTypes} from '../base';
 import type {ParamTagToken, SeoToken} from '../internal';
 
-const skipTypes = new Set(['comment', 'include', 'noinclude']);
+const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude']),
+	transcludedTypes = new Set<TokenTypes | 'text'>(['arg', 'template', 'magic-word']);
 
 /**
  * parameter of certain extension tags
  *
  * 某些扩展标签的参数
+ * @classdesc `{childNodes: [AtomToken] | [AtomToken, AtomToken]}`
  */
 export abstract class ParamLineToken extends Token {
 	#delimiter;
 
+	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, AtomToken];
+	abstract override get firstChild(): AtomToken;
+	abstract override get lastChild(): AtomToken;
 	abstract override get parentNode(): ParamTagToken | SeoToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): this | undefined;
@@ -26,15 +32,56 @@ export abstract class ParamLineToken extends Token {
 	/** @param name 扩展标签名 */
 	constructor(
 		name: string,
-		wikitext: string | undefined,
+		wikitext: string,
 		delimiter: '\n' | '|',
 		config: Config,
 		accum: Token[],
-		acceptable: WikiParserAcceptable = {AstText: ':'}, // eslint-disable-line unicorn/no-object-as-default-parameter
+		acceptable: WikiParserAcceptable = {
+		},
 	) {
-		super(wikitext, config, accum, acceptable);
+		super(undefined, config, accum, {
+		});
 		this.#delimiter = delimiter;
 		this.setAttribute('name', name);
+		const equal = wikitext.indexOf('=');
+		if (equal === -1) {
+			this.insertAt(new AtomToken(wikitext, 'param-line-key', config, accum, acceptable));
+		} else {
+			this.append(
+				new AtomToken(wikitext.slice(0, equal), 'param-line-key', config, accum, acceptable),
+				new AtomToken(wikitext.slice(equal + 1), 'param-line-value', config, accum, acceptable),
+			);
+		}
+	}
+
+	/**
+	 * 转义字符串以规避参数分隔符
+	 * @param str 待转义的字符串
+	 */
+	#escape(str: string): string {
+		return this.#delimiter === '\n'
+			? str.replace(/\n/gu, ' ')
+			: str.replace(/\|/gu, '{{!}}');
+	}
+
+	/** @private */
+	override toString(skip?: boolean): string {
+		return this.childNodes.map(
+			({childNodes}) => childNodes.map(child => {
+				const str = child.toString(skip);
+				return child.type === 'text' ? this.#escape(str) : str;
+			}).join(''),
+		).join('=');
+	}
+
+	/** @private */
+	override text(): string {
+		return this.childNodes.map(
+			({childNodes}) => childNodes.map(child => {
+				const str = child.text();
+				return child.type === 'text' ? this.#escape(str) : str;
+			}).join(''),
+		).join('=');
 	}
 
 	/** @private */
@@ -42,39 +89,42 @@ export abstract class ParamLineToken extends Token {
 		LINT: {
 			const rule = 'no-ignored',
 				{lintConfig} = Parser,
-				{name, childNodes, previousSibling} = this,
+				{name, length, firstChild: {childNodes}, previousSibling} = this,
 				s = lintConfig.getSeverity(rule, name);
 			if (!s) {
 				return [];
 			}
-			const msg = Parser.msg('invalid-parameter', name);
-			if (childNodes.some(({type}) => type === 'ext')) {
-				return [generateForSelf(this, {start}, rule, msg, s)];
-			}
 			const children = childNodes.filter(({type}) => !skipTypes.has(type)),
 				i = children.findIndex(({type}) => type !== 'text');
-			let str = children.slice(0, i === -1 ? undefined : i).map(String).join('').trim();
-			if (str) {
+			let key = children.slice(0, i === -1 ? undefined : i).map(String).join('').trim(),
+				wrong = false;
+			if (
+				childNodes.some(({type}) => type === 'ext')
+				|| length === 1 && key && !childNodes.some(({type}) => transcludedTypes.has(type))
+			) {
+				wrong = true;
+			} else if (key || length === 2) {
 				if (name === 'inputbox') {
-					str = str.toLowerCase();
+					key = key.toLowerCase();
 				}
-				const j = str.indexOf('='),
-					key = str.slice(0, j === -1 ? undefined : j).trim(),
-					params = extParams[name!]!;
+				const params = extParams[name!]!;
 				if (
-					j === -1
-						? i === -1 || !params.some(p => p.startsWith(key))
-						: !params.some(
+					i === -1
+						? !params.some(
 							p => p === key
 								|| p.endsWith('$1') && key.startsWith(p.slice(0, -2)),
 						)
+						: !params.some(p => p.startsWith(key))
 				) {
-					const e = generateForSelf(this, {start}, rule, msg, s);
-					if (lintConfig.computeEditInfo) {
-						e.suggestions = [fixByRemove(e, previousSibling ? -1 : 0)];
-					}
-					return [e];
+					wrong = true;
 				}
+			}
+			if (wrong) {
+				const e = generateForSelf(this, {start}, rule, Parser.msg('invalid-parameter', name), s);
+				if (lintConfig.computeEditInfo) {
+					e.suggestions = [fixByRemove(e, previousSibling ? -1 : 0)];
+				}
+				return [e];
 			}
 			return super.lint(start, false);
 		}

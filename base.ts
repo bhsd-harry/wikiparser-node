@@ -136,6 +136,8 @@ export type TokenTypes = 'root'
 	| 'converter-rule-to'
 	| 'converter-rule-from'
 	| 'param-line'
+	| 'param-line-key'
+	| 'param-line-value'
 	| 'imagemap-link'
 	;
 
