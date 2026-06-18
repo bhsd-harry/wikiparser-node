@@ -1,13 +1,14 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.45.0
 
-*2026-06-18*
+*2026-06-19*
 
 **Added**
 
 - New category of linting errors: [invalid area specified in an image map link](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-imagemap)
 - HTML conversion of `<templatedata>` extension tags
 - Parse and report `<seo>` extension tags
+- [`ParamLineToken#key`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#key), [`ParamLineToken#value`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#value), [`ParamLineToken#getKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getkey), [`ParamLineToken#getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getvalue), [`ParamLineToken#setKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setkey) and [`ParamLineToken#setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setvalue)
 
 **Fixed**
 

@@ -24,6 +24,10 @@ import {AtomToken} from '../atom';
 import type {
 	LintError,
 	AST,
+
+	/* NOT FOR BROWSER */
+
+	TokenTypes,
 } from '../../base';
 import type {Title} from '../../lib/title';
 import type {
@@ -39,7 +43,7 @@ import type {
 import {sanitize} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
-const fileTypes = new Set(['file', 'gallery-image', 'imagemap-image']);
+const fileTypes = new Set<TokenTypes>(['file', 'gallery-image', 'imagemap-image']);
 
 /* NOT FOR BROWSER END */
 
