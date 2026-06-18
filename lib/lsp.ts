@@ -1038,11 +1038,11 @@ export class LanguageService implements LanguageServiceBase {
 					type === 'parameter-value' ? '=' : '',
 				)
 				: undefined;
-		} else if (type === 'param-line') {
+		} else if (type === 'param-line-key') {
 			// parameter line of `<dynamicpagelist>`, `<inputbox>` or `<seo>`
 			const key = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
 			return /^[a-z]+$/iu.test(key)
-				? getCompletion(extParams[cur!.name!]!, 'Property', key, position)
+				? getCompletion(extParams[parentNode!.name!]!, 'Property', key, position)
 				: undefined;
 
 			/* NOT FOR BROWSER ONLY */

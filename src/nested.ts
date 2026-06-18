@@ -9,12 +9,13 @@ import {NoincludeToken} from './nowiki/noinclude';
 import type {
 	Config,
 	LintError,
+	TokenTypes,
 } from '../base';
 import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 
-const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']),
+const childTypes = new Set<TokenTypes>(['comment', 'include', 'arg', 'template', 'magic-word']),
 	lintRegex = /* #__PURE__ */ (() => [false, true].map(article => {
 		const noinclude = article ? 'includeonly' : 'noinclude';
 		return new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu');
