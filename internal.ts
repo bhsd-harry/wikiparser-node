@@ -50,3 +50,4 @@ export type {ParamLineToken} from './src/paramLine';
 export type {CommentLineToken} from './src/nowiki/commentLine';
 export type {TranslateToken} from './src/tagPair/translate';
 export type {TvarToken} from './src/tag/tvar';
+export type {SeoToken} from './src/seo';

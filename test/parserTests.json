@@ -6486,196 +6486,196 @@
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "basic, single category list, but ascending",
 		"wikitext": "<DynamicPageList>\norder =   ascending\ncategory=DPLtest\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">order =   ascending</span>\n<span class=\"wpb-param-line\">category=DPLtest</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">order </span>=<span class=\"wpb-param-line-value\">   ascending</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "nofollow",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nnofollow=true\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\" rel=\"nofollow\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\" rel=\"nofollow\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\" rel=\"nofollow\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">nofollow=true</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">nofollow</span>=<span class=\"wpb-param-line-value\">true</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "supresserrors",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\ncategory=DPLtest1\ncategory=DPLtest2\ncategory=DPLtest3\ncategory=DPLtest4\ncategory=DPLtest5\ncategory=DPLtest7\ncategory=DPLtest6\ncategory=DPLtest8\ncategory=DPLtest9\ncategory=DPLtest10\nsuppresserrors=true\n</DynamicPageList>",
 		"html": "",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">category=DPLtest1</span>\n<span class=\"wpb-param-line\">category=DPLtest2</span>\n<span class=\"wpb-param-line\">category=DPLtest3</span>\n<span class=\"wpb-param-line\">category=DPLtest4</span>\n<span class=\"wpb-param-line\">category=DPLtest5</span>\n<span class=\"wpb-param-line\">category=DPLtest7</span>\n<span class=\"wpb-param-line\">category=DPLtest6</span>\n<span class=\"wpb-param-line\">category=DPLtest8</span>\n<span class=\"wpb-param-line\">category=DPLtest9</span>\n<span class=\"wpb-param-line\">category=DPLtest10</span>\n<span class=\"wpb-param-line\">suppresserrors=true</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest1</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest2</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest3</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest4</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest5</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest7</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest6</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest8</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest9</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest10</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">suppresserrors</span>=<span class=\"wpb-param-line-value\">true</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Negation with namespace.",
 		"wikitext": "<DynamicPageList>\nnamespace=talk\nnotcategory=DPLtest3\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Talk:No_Categories\" title=\"Talk:No Categories\">Talk:No Categories</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">namespace=talk</span>\n<span class=\"wpb-param-line\">notcategory=DPLtest3</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">namespace</span>=<span class=\"wpb-param-line-value\">talk</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">notcategory</span>=<span class=\"wpb-param-line-value\">DPLtest3</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Namespace limited to category.",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nnamespace=talk\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">namespace=talk</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">namespace</span>=<span class=\"wpb-param-line-value\">talk</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Namespace no category.",
 		"wikitext": "<DynamicPageList>\nnamespace=help\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Help:DPLTest3\" title=\"Help:DPLTest3\">Help:DPLTest3</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">namespace=help</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">namespace</span>=<span class=\"wpb-param-line-value\">help</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Don't show namespace name. (shownamespace=false)",
 		"wikitext": "<DynamicPageList>\nnamespace=help\nshownamespace=false\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Help:DPLTest3\" title=\"Help:DPLTest3\">DPLTest3</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">namespace=help</span>\n<span class=\"wpb-param-line\">shownamespace=false</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">namespace</span>=<span class=\"wpb-param-line-value\">help</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">shownamespace</span>=<span class=\"wpb-param-line-value\">false</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Invalid ns treated as main namespace",
 		"wikitext": "<DynamicPageList>\nnamespace=Look mummy, this totally isn't a namespace\ncount=2\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">namespace=Look mummy, this totally isn't a namespace</span>\n<span class=\"wpb-param-line\">count=2</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">namespace</span>=<span class=\"wpb-param-line-value\">Look mummy, this totally isn't a namespace</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">count</span>=<span class=\"wpb-param-line-value\">2</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "count and offset combined.",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\ncount=1\noffset=1\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">count=1</span>\n<span class=\"wpb-param-line\">offset=1</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">count</span>=<span class=\"wpb-param-line-value\">1</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">offset</span>=<span class=\"wpb-param-line-value\">1</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "include redirects",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nredirects=include\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/DPLRedir\" class=\"mw-redirect\" title=\"DPLRedir\">DPLRedir</a></li> \n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">redirects=include</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">redirects</span>=<span class=\"wpb-param-line-value\">include</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "only redirect",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nredirects=only\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/DPLRedir\" class=\"mw-redirect\" title=\"DPLRedir\">DPLRedir</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">redirects=only</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">redirects</span>=<span class=\"wpb-param-line-value\">only</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "addfirstcategorydate=INVALID",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\naddfirstcategorydate=INVALID\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">addfirstcategorydate=INVALID</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">addfirstcategorydate</span>=<span class=\"wpb-param-line-value\">INVALID</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "addfirstcategorydate=false",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\naddfirstcategorydate=false\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">addfirstcategorydate=false</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">addfirstcategorydate</span>=<span class=\"wpb-param-line-value\">false</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=unordered (default)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=unordered\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=unordered</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">unordered</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=INVALID",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=INVALID\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=INVALID</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">INVALID</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=ordered",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=ordered\n</DynamicPageList>",
 		"html": "<ol>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ol>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=ordered</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">ordered</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=none (line breaks)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=none\n</DynamicPageList>",
 		"html": "<p><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a><br /> \n<a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a><br /> \n<a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a><br />\n</p>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=none</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">none</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=inline (comma list)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=inline\n</DynamicPageList>",
 		"html": "<p><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a>, <a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a>, <a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a>\n</p>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=inline</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">inline</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=gallery (complex, no image)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nimagewidth=70\ngalleryshowfilesize=yes\ngalleryshowfilename=yes\nimagesperrow=7\ngallerycaption=Look at my pretty gallery. {{SERVER}}\nmode=gallery\n</DynamicPageList>",
 		"html": "<ul class=\"gallery mw-gallery-traditional\" style=\"max-width: 791px;\">\n\t<li class=\"gallerycaption\">Look at my pretty gallery. http://example.org</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=Yet_another_DPL_test_page!\" class=\"new\" title=\"Yet another DPL test page!\"><span class=\"mw-file-element mw-broken-media\" data-width=\"70\" data-height=\"120\">Yet another DPL test page!</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/Yet_another_DPL_test_page!\" class=\"galleryfilename galleryfilename-truncate\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a>\n<p>File missing<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=DPLTest2\" class=\"new\" title=\"Talk:DPLTest2\"><span class=\"mw-file-element mw-broken-media\" data-width=\"70\" data-height=\"120\">DPLTest2</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/Talk:DPLTest2\" class=\"galleryfilename galleryfilename-truncate\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a>\n<p>File missing<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=DPLTest1\" class=\"new\" title=\"DPLTest1\"><span class=\"mw-file-element mw-broken-media\" data-width=\"70\" data-height=\"120\">DPLTest1</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/DPLTest1\" class=\"galleryfilename galleryfilename-truncate\" title=\"DPLTest1\">DPLTest1</a>\n<p>File missing<br />\n</p>\n</div>\n\t\t</li>\n</ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">imagewidth=70</span>\n<span class=\"wpb-param-line\">galleryshowfilesize=yes</span>\n<span class=\"wpb-param-line\">galleryshowfilename=yes</span>\n<span class=\"wpb-param-line\">imagesperrow=7</span>\n<span class=\"wpb-param-line\">gallerycaption=Look at my pretty gallery. {{SERVER}}</span>\n<span class=\"wpb-param-line\">mode=gallery</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">imagewidth</span>=<span class=\"wpb-param-line-value\">70</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">galleryshowfilesize</span>=<span class=\"wpb-param-line-value\">yes</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">galleryshowfilename</span>=<span class=\"wpb-param-line-value\">yes</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">imagesperrow</span>=<span class=\"wpb-param-line-value\">7</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">gallerycaption</span>=<span class=\"wpb-param-line-value\">Look at my pretty gallery. {{SERVER}}</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">gallery</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=gallery (simple, no image)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=gallery\n</DynamicPageList>",
 		"html": "<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=Yet_another_DPL_test_page!\" class=\"new\" title=\"Yet another DPL test page!\"><span class=\"mw-file-element mw-broken-media\" data-width=\"120\" data-height=\"120\">Yet another DPL test page!</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/Yet_another_DPL_test_page!\" class=\"galleryfilename galleryfilename-truncate\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a>\n<p>File missing<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=DPLTest2\" class=\"new\" title=\"Talk:DPLTest2\"><span class=\"mw-file-element mw-broken-media\" data-width=\"120\" data-height=\"120\">DPLTest2</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/Talk:DPLTest2\" class=\"galleryfilename galleryfilename-truncate\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a>\n<p>File missing<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=DPLTest1\" class=\"new\" title=\"DPLTest1\"><span class=\"mw-file-element mw-broken-media\" data-width=\"120\" data-height=\"120\">DPLTest1</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/DPLTest1\" class=\"galleryfilename galleryfilename-truncate\" title=\"DPLTest1\">DPLTest1</a>\n<p>File missing<br />\n</p>\n</div>\n\t\t</li>\n</ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=gallery</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">gallery</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=gallery (complex, with image + bad image)",
 		"wikitext": "<DynamicPageList>\nmode=gallery\nnamespace=file\naddfirstcategorydate=ymd\nimagewidth=70\ngalleryshowfilesize=yes\ngalleryshowfilename=yes\nimagesperrow=7\ngallerycaption=I love Captions\nordermethod=sortkey\norder=descending\n</DynamicPageList>",
 		"html": "<ul class=\"gallery mw-gallery-traditional\" style=\"max-width: 791px;\">\n\t<li class=\"gallerycaption\">I love Captions</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:LoremIpsum.djvu\" class=\"mw-file-description\"><img alt=\"LoremIpsum.djvu\" src=\"http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-70px-LoremIpsum.djvu.jpg\" decoding=\"async\" width=\"70\" height=\"99\" srcset=\"http://example.com/images/thumb/5/5f/LoremIpsum.djvu/page1-140px-LoremIpsum.djvu.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:LoremIpsum.djvu\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:LoremIpsum.djvu\">File:LoremIpsum.djvu</a>\n<p>2,480 × 3,508, 5 pages; 3 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Audio.oga\" class=\"mw-file-description\"><img alt=\"Audio.oga\" src=\"/resources/assets/file-type-icons/fileicon.png\" decoding=\"async\" width=\"120\" height=\"120\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Audio.oga\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Audio.oga\">File:Audio.oga</a>\n<dl><dt>12 KB<br /></dt></dl>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Video.ogv\" class=\"mw-file-description\"><img alt=\"Video.ogv\" src=\"/resources/assets/file-type-icons/fileicon-ogg.png\" decoding=\"async\" width=\"120\" height=\"120\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Video.ogv\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Video.ogv\">File:Video.ogv</a>\n<dl><dt>12 KB<br /></dt></dl>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Tall.jpg\" class=\"mw-file-description\"><img alt=\"Tall.jpg\" src=\"http://example.com/images/thumb/8/88/Tall.jpg/70px-Tall.jpg\" decoding=\"async\" width=\"70\" height=\"105\" srcset=\"http://example.com/images/thumb/8/88/Tall.jpg/140px-Tall.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Tall.jpg\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Tall.jpg\">File:Tall.jpg</a>\n<p>400 × 600; 9 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Hi-ho.jpg\" class=\"mw-file-description\"><img alt=\"Hi-ho.jpg\" src=\"http://example.com/images/thumb/9/9d/Hi-ho.jpg/70px-Hi-ho.jpg\" decoding=\"async\" width=\"70\" height=\"8\" srcset=\"http://example.com/images/thumb/9/9d/Hi-ho.jpg/140px-Hi-ho.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Hi-ho.jpg\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Hi-ho.jpg\">File:Hi-ho.jpg</a>\n<p>1,941 × 220; 8 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/wiki/File:Bad.jpg\" title=\"File:Bad.jpg\"><span class=\"mw-file-element mw-broken-media\" data-width=\"70\" data-height=\"120\">Bad.jpg</span></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Bad.jpg\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Bad.jpg\">File:Bad.jpg</a>\n<p>320 × 240; 12 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.svg\" class=\"mw-file-description\"><img alt=\"Foobar.svg\" src=\"http://example.com/images/f/ff/Foobar.svg\" decoding=\"async\" width=\"70\" height=\"53\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Foobar.svg\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Foobar.svg\">File:Foobar.svg</a>\n<p>240 × 180; 12 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Thumb.png\" class=\"mw-file-description\"><img alt=\"Thumb.png\" src=\"http://example.com/images/thumb/e/ea/Thumb.png/70px-Thumb.png\" decoding=\"async\" width=\"70\" height=\"70\" srcset=\"http://example.com/images/e/ea/Thumb.png 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Thumb.png\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Thumb.png\">File:Thumb.png</a>\n<p>135 × 135; 22 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:File_%26_file.jpg\" class=\"mw-file-description\"><img alt=\"File &amp; file.jpg\" src=\"http://example.com/images/thumb/1/1f/File_%26_file.jpg/70px-File_%26_file.jpg\" decoding=\"async\" width=\"70\" height=\"8\" srcset=\"http://example.com/images/thumb/1/1f/File_%26_file.jpg/140px-File_%26_file.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:File_%26_file.jpg\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:File &amp; file.jpg\">File:File &amp; file.jpg</a>\n<p>1,941 × 220; 8 KB<br />\n</p>\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 105px\">\n\t\t\t<div class=\"thumb\" style=\"width: 100px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img alt=\"Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/70px-Foobar.jpg\" decoding=\"async\" width=\"70\" height=\"8\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/140px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"><a href=\"/wiki/File:Foobar.jpg\" class=\"galleryfilename galleryfilename-truncate\" title=\"File:Foobar.jpg\">File:Foobar.jpg</a>\n<p>1,941 × 220; 8 KB<br />\n</p>\n</div>\n\t\t</li>\n</ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">mode=gallery</span>\n<span class=\"wpb-param-line\">namespace=file</span>\n<span class=\"wpb-param-line\">addfirstcategorydate=ymd</span>\n<span class=\"wpb-param-line\">imagewidth=70</span>\n<span class=\"wpb-param-line\">galleryshowfilesize=yes</span>\n<span class=\"wpb-param-line\">galleryshowfilename=yes</span>\n<span class=\"wpb-param-line\">imagesperrow=7</span>\n<span class=\"wpb-param-line\">gallerycaption=I love Captions</span>\n<span class=\"wpb-param-line\">ordermethod=sortkey</span>\n<span class=\"wpb-param-line\">order=descending</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">gallery</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">namespace</span>=<span class=\"wpb-param-line-value\">file</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">addfirstcategorydate</span>=<span class=\"wpb-param-line-value\">ymd</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">imagewidth</span>=<span class=\"wpb-param-line-value\">70</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">galleryshowfilesize</span>=<span class=\"wpb-param-line-value\">yes</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">galleryshowfilename</span>=<span class=\"wpb-param-line-value\">yes</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">imagesperrow</span>=<span class=\"wpb-param-line-value\">7</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">gallerycaption</span>=<span class=\"wpb-param-line-value\">I love Captions</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">ordermethod</span>=<span class=\"wpb-param-line-value\">sortkey</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">order</span>=<span class=\"wpb-param-line-value\">descending</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "mode=gallery (simple showfilesize, no image)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nmode=gallery\ngalleryshowfilesize=yes\ngalleryshowfilename=no\n</DynamicPageList>",
 		"html": "<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=Yet_another_DPL_test_page!\" class=\"new\" title=\"Yet another DPL test page!\"><span class=\"mw-file-element mw-broken-media\" data-width=\"120\" data-height=\"120\">Yet another DPL test page!</span></a></span></div>\n\t\t\t<div class=\"gallerytext\">File missing<br />\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=DPLTest2\" class=\"new\" title=\"Talk:DPLTest2\"><span class=\"mw-file-element mw-broken-media\" data-width=\"120\" data-height=\"120\">DPLTest2</span></a></span></div>\n\t\t\t<div class=\"gallerytext\">File missing<br />\n</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"height: 150px;\"><span typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=DPLTest1\" class=\"new\" title=\"DPLTest1\"><span class=\"mw-file-element mw-broken-media\" data-width=\"120\" data-height=\"120\">DPLTest1</span></a></span></div>\n\t\t\t<div class=\"gallerytext\">File missing<br />\n</div>\n\t\t</li>\n</ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">mode=gallery</span>\n<span class=\"wpb-param-line\">galleryshowfilesize=yes</span>\n<span class=\"wpb-param-line\">galleryshowfilename=no</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">mode</span>=<span class=\"wpb-param-line-value\">gallery</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">galleryshowfilesize</span>=<span class=\"wpb-param-line-value\">yes</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">galleryshowfilename</span>=<span class=\"wpb-param-line-value\">no</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "ordermethod=created (by article id)",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nordermethod=created\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">ordermethod=created</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">ordermethod</span>=<span class=\"wpb-param-line-value\">created</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "ordermethod=length",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nordermethod=length\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">ordermethod=length</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">ordermethod</span>=<span class=\"wpb-param-line-value\">length</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "ordermethod=sortkey",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nordermethod=sortkey\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">ordermethod=sortkey</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">ordermethod</span>=<span class=\"wpb-param-line-value\">sortkey</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "ordermethod=categorysortkey",
 		"wikitext": "<DynamicPageList>\ncategory=DPLtest\nordermethod=categorysortkey\norder=ascending\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category=DPLtest</span>\n<span class=\"wpb-param-line\">ordermethod=categorysortkey</span>\n<span class=\"wpb-param-line\">order=ascending</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">DPLtest</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">ordermethod</span>=<span class=\"wpb-param-line-value\">categorysortkey</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">order</span>=<span class=\"wpb-param-line-value\">ascending</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Magic word in category clause",
 		"wikitext": "<DynamicPageList>\ncategory={{PAGENAME:DPLtest}}\n</DynamicPageList>",
 		"html": "<ul>\n<li><a href=\"/wiki/Yet_another_DPL_test_page!\" title=\"Yet another DPL test page!\">Yet another DPL test page!</a></li> \n<li><a href=\"/wiki/Talk:DPLTest2\" title=\"Talk:DPLTest2\">Talk:DPLTest2</a></li> \n<li><a href=\"/wiki/DPLTest1\" title=\"DPLTest1\">DPLTest1</a></li></ul>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">category={{PAGENAME:DPLtest}}</span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;DynamicPageList&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">category</span>=<span class=\"wpb-param-line-value\">{{PAGENAME:DPLtest}}</span></span>\n</span>&lt;/DynamicPageList&gt;</span></span>"
 	},
 	{
 		"desc": "Self-closed DynamicPageList",
@@ -6723,7 +6723,7 @@
 		"wikitext": "<seo>\n|title=SeoWiki\n</seo>",
 		"html": "",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;<span class=\"wpb-ext-inner\">\n|title=SeoWiki\n</span>&lt;/seo&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">title</span>=<span class=\"wpb-param-line-value\">SeoWiki\n</span></span></span>&lt;/seo&gt;</span></span>"
 	},
 	{
 		"desc": "Tag only title internal",
@@ -6765,14 +6765,14 @@
 		"wikitext": "<seo>\n|title=SeoWiki\n|title_mode=append\n|keywords=SEO, Wiki, MediaWiki, Extension\n|description=Allows per page meta settings (keywords, description), changing the title and various site verifications.\n|image_alt=SeoWiki Logo\n|site_name=SeoWiki\n|type=WebPage\n|locale=en_EN\n|published_time=2012-01-01\n</seo>",
 		"html": "",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;<span class=\"wpb-ext-inner\">\n|title=SeoWiki\n|title_mode=append\n|keywords=SEO, Wiki, MediaWiki, Extension\n|description=Allows per page meta settings (keywords, description), changing the title and various site verifications.\n|image_alt=SeoWiki Logo\n|site_name=SeoWiki\n|type=WebPage\n|locale=en_EN\n|published_time=2012-01-01\n</span>&lt;/seo&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">title</span>=<span class=\"wpb-param-line-value\">SeoWiki\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">title_mode</span>=<span class=\"wpb-param-line-value\">append\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">keywords</span>=<span class=\"wpb-param-line-value\">SEO, Wiki, MediaWiki, Extension\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">description</span>=<span class=\"wpb-param-line-value\">Allows per page meta settings (keywords, description), changing the title and various site verifications.\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">image_alt</span>=<span class=\"wpb-param-line-value\">SeoWiki Logo\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">site_name</span>=<span class=\"wpb-param-line-value\">SeoWiki\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">WebPage\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">locale</span>=<span class=\"wpb-param-line-value\">en_EN\n</span></span>|<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">published_time</span>=<span class=\"wpb-param-line-value\">2012-01-01\n</span></span></span>&lt;/seo&gt;</span></span>"
 	},
 	{
 		"desc": "Tag attributes a lot of args",
 		"wikitext": "<seo\ntitle=\"SeoWiki\"\ntitle_mode=\"append\"\nkeywords=\"SEO, Wiki, MediaWiki, Extension\"\ndescription=\"Allows per page meta settings (keywords, description), changing the title and various site verifications.\"\nimage_alt=\"SeoWiki Logo\"\nsite_name=\"SeoWiki\"\ntype=\"WebPage\"\nlocale=\"en_EN\"\npublished_time=\"2012-01-01\">\n</seo>",
 		"html": "",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\">\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title_mode</span>=\"<span class=\"wpb-attr-value\">append</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">keywords</span>=\"<span class=\"wpb-attr-value\">SEO, Wiki, MediaWiki, Extension</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">description</span>=\"<span class=\"wpb-attr-value\">Allows per page meta settings (keywords, description), changing the title and various site verifications.</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">image_alt</span>=\"<span class=\"wpb-attr-value\">SeoWiki Logo</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">site_name</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">type</span>=\"<span class=\"wpb-attr-value\">WebPage</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">locale</span>=\"<span class=\"wpb-attr-value\">en_EN</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">published_time</span>=\"<span class=\"wpb-attr-value\">2012-01-01</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\n</span>&lt;/seo&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;seo<span class=\"wpb-ext-attrs\">\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">title_mode</span>=\"<span class=\"wpb-attr-value\">append</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">keywords</span>=\"<span class=\"wpb-attr-value\">SEO, Wiki, MediaWiki, Extension</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">description</span>=\"<span class=\"wpb-attr-value\">Allows per page meta settings (keywords, description), changing the title and various site verifications.</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">image_alt</span>=\"<span class=\"wpb-attr-value\">SeoWiki Logo</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">site_name</span>=\"<span class=\"wpb-attr-value\">SeoWiki</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">type</span>=\"<span class=\"wpb-attr-value\">WebPage</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">locale</span>=\"<span class=\"wpb-attr-value\">en_EN</span>\"</span>\n<span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">published_time</span>=\"<span class=\"wpb-attr-value\">2012-01-01</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">\n</span></span></span>&lt;/seo&gt;</span></span>"
 	},
 	{
 		"desc": "Tag attributes a lot of args self-closing",
@@ -7175,7 +7175,7 @@
 	{
 		"desc": "Template inside <inputbox>",
 		"wikitext": "<inputbox>\ntype=search\nprefix={{FULLPAGENAME}}/Archive\n</inputbox>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n<span class=\"wpb-param-line\">prefix=<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span>/Archive</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">search</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">prefix</span>=<span class=\"wpb-param-line-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span>/Archive</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "HTML attribute XSS",
@@ -11361,182 +11361,182 @@
 		"wikitext": "<inputbox>\ntype=search\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"searchbox\" class=\"searchbox mw-inputbox-form inputbox-searchengine-not-set\" action=\"/wiki/Special:Search\"><div class=\"cdx-text-input\"><input class=\"mw-inputbox-input mw-searchInput searchboxInput cdx-text-input__input\" name=\"search\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"go\" value=\"Try exact match\" class=\"cdx-button\" />&#160;<input type=\"submit\" name=\"fulltext\" value=\"Search full text\" class=\"cdx-button\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">search</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create",
 		"wikitext": "<inputbox>\ntype=create\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with minor",
 		"wikitext": "<inputbox>\ntype=create\nminor=1\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"1\" name=\"minor\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">minor=1</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">minor</span>=<span class=\"wpb-param-line-value\">1</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with minor=0",
 		"wikitext": "<inputbox>\ntype=create\nminor=0\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"0\" name=\"minor\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">minor=0</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">minor</span>=<span class=\"wpb-param-line-value\">0</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with preloadparams",
 		"wikitext": "<inputbox>\ntype=create\npreloadparams[]=param1\npreloadparams[]=param2\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"param1\" name=\"preloadparams[]\" /><input type=\"hidden\" value=\"param2\" name=\"preloadparams[]\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">preloadparams[]=param1</span>\n<span class=\"wpb-param-line\">preloadparams[]=param2</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preloadparams[]</span>=<span class=\"wpb-param-line-value\">param1</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preloadparams[]</span>=<span class=\"wpb-param-line-value\">param2</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with empty preloadparams",
 		"wikitext": "<inputbox>\ntype=create\npreloadparams[]=\npreloadparams[]=\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" name=\"preloadparams[]\" /><input type=\"hidden\" name=\"preloadparams[]\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">preloadparams[]=</span>\n<span class=\"wpb-param-line\">preloadparams[]=</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preloadparams[]</span>=</span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preloadparams[]</span>=</span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with editintro",
 		"wikitext": "<inputbox>\ntype=create\neditintro=MediaWiki:Test\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"MediaWiki:Test\" name=\"editintro\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">editintro=MediaWiki:Test</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">editintro</span>=<span class=\"wpb-param-line-value\">MediaWiki:Test</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with empty editintro",
 		"wikitext": "<inputbox>\ntype=create\neditintro=\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" name=\"editintro\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">editintro=</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">editintro</span>=</span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with summary",
 		"wikitext": "<inputbox>\ntype=create\nsummary=Summary test\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"Summary test\" name=\"summary\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">summary=Summary test</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">summary</span>=<span class=\"wpb-param-line-value\">Summary test</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with empty summary",
 		"wikitext": "<inputbox>\ntype=create\nsummary=\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" name=\"summary\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">summary=</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">summary</span>=</span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with nosummary",
 		"wikitext": "<inputbox>\ntype=create\nnosummary=true\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"true\" name=\"nosummary\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">nosummary=true</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">nosummary</span>=<span class=\"wpb-param-line-value\">true</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with empty nosummary",
 		"wikitext": "<inputbox>\ntype=create\nnosummary=\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" name=\"nosummary\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">nosummary=</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">nosummary</span>=</span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with prefix",
 		"wikitext": "<inputbox>\ntype=create\nprefix=Test/\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"Test/\" name=\"prefix\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">prefix=Test/</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">prefix</span>=<span class=\"wpb-param-line-value\">Test/</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with empty prefix",
 		"wikitext": "<inputbox>\ntype=create\nprefix=\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">prefix=</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">prefix</span>=</span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with preload",
 		"wikitext": "<inputbox>\ntype=create\npreload=test\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"test\" name=\"preload\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">preload=test</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preload</span>=<span class=\"wpb-param-line-value\">test</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=create with empty preload",
 		"wikitext": "<inputbox>\ntype=create\npreload=\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" name=\"preload\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"Create page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=create</span>\n<span class=\"wpb-param-line\">preload=</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">create</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preload</span>=</span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=comment",
 		"wikitext": "<inputbox>\ntype=comment\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"new\" name=\"section\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"New section\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=comment</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">comment</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=comment with preloadtitle",
 		"wikitext": "<inputbox>\ntype=comment\npreloadtitle=My title\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"createbox\" class=\"createbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><input type=\"hidden\" value=\"My title\" name=\"preloadtitle\" /><input type=\"hidden\" value=\"new\" name=\"section\" /><div class=\"cdx-text-input\"><input name=\"title\" class=\"mw-inputbox-input mw-inputbox-createbox cdx-text-input__input\" placeholder=\"\" required=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"create\" value=\"New section\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=comment</span>\n<span class=\"wpb-param-line\">preloadtitle=My title</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">comment</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preloadtitle</span>=<span class=\"wpb-param-line-value\">My title</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=commenttitle",
 		"wikitext": "<inputbox>\ntype=commenttitle\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"commentbox\" class=\"commentbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><div class=\"cdx-text-input\"><input name=\"preloadtitle\" class=\"mw-inputbox-input commentboxInput cdx-text-input__input\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><input type=\"hidden\" value=\"new\" name=\"section\" /><input type=\"hidden\" name=\"title\" /><br /><input type=\"submit\" name=\"create\" value=\"New section\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=commenttitle</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">commenttitle</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=commenttitle with preloadtitle",
 		"wikitext": "<inputbox>\ntype=commenttitle\npreloadtitle=This should be ignored\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"commentbox\" class=\"commentbox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"edit\" name=\"action\" /><div class=\"cdx-text-input\"><input name=\"preloadtitle\" class=\"mw-inputbox-input commentboxInput cdx-text-input__input\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><input type=\"hidden\" value=\"new\" name=\"section\" /><input type=\"hidden\" name=\"title\" /><br /><input type=\"submit\" name=\"create\" value=\"New section\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=commenttitle</span>\n<span class=\"wpb-param-line\">preloadtitle=This should be ignored</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">commenttitle</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">preloadtitle</span>=<span class=\"wpb-param-line-value\">This should be ignored</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=fulltext",
 		"wikitext": "<inputbox>\ntype=fulltext\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"searchbox\" class=\"searchbox mw-inputbox-form inputbox-searchengine-not-set\" action=\"/wiki/Special:Search\"><div class=\"cdx-text-input\"><input class=\"mw-inputbox-input mw-searchInput searchboxInput cdx-text-input__input\" name=\"search\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"fulltext\" value=\"Search full text\" class=\"cdx-button\" /><input type=\"hidden\" value=\"Search\" name=\"fulltext\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=fulltext</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">fulltext</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=move",
 		"wikitext": "<inputbox>\ntype=move\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"movebox\" class=\"mw-movebox mw-inputbox-form\" action=\"/index.php\" method=\"get\"><input type=\"hidden\" value=\"Special:MovePage/\" name=\"title\" /><input type=\"hidden\" name=\"wpReason\" /><input type=\"hidden\" name=\"prefix\" /><div class=\"cdx-text-input\"><input name=\"wpNewTitle\" class=\"mw-inputbox-input mw-moveboxInput cdx-text-input__input\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" value=\"Move page\" class=\"cdx-button cdx-button--action-progressive cdx-button--weight-primary\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=move</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">move</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=search with tour",
 		"wikitext": "<inputbox>\ntype=search\ntour=test\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"searchbox\" class=\"searchbox mw-inputbox-form inputbox-searchengine-not-set\" action=\"/wiki/Special:Search\"><div class=\"cdx-text-input\"><input class=\"mw-inputbox-input mw-searchInput searchboxInput cdx-text-input__input\" name=\"search\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><input type=\"hidden\" value=\"test\" name=\"tour\" /><br /><input type=\"submit\" name=\"go\" value=\"Try exact match\" class=\"cdx-button\" />&#160;<input type=\"submit\" name=\"fulltext\" value=\"Search full text\" class=\"cdx-button\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n<span class=\"wpb-param-line\">tour=test</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">search</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">tour</span>=<span class=\"wpb-param-line-value\">test</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox type=search with aria label",
 		"wikitext": "<inputbox>\ntype=search\narialabel=Search this wiki\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"searchbox\" class=\"searchbox mw-inputbox-form inputbox-searchengine-not-set\" action=\"/wiki/Special:Search\"><div class=\"cdx-text-input\"><input class=\"mw-inputbox-input mw-searchInput searchboxInput cdx-text-input__input\" name=\"search\" placeholder=\"\" size=\"50\" dir=\"ltr\" aria-label=\"Search this wiki\" /></div><br /><input type=\"submit\" name=\"go\" value=\"Try exact match\" class=\"cdx-button\" />&#160;<input type=\"submit\" name=\"fulltext\" value=\"Search full text\" class=\"cdx-button\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n<span class=\"wpb-param-line\">arialabel=Search this wiki</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">search</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">arialabel</span>=<span class=\"wpb-param-line-value\">Search this wiki</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox with different search-special-page preference value",
 		"wikitext": "<inputbox>\ntype=search\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"searchbox\" class=\"searchbox mw-inputbox-form inputbox-searchengine-not-set\" action=\"/wiki/Special:MediaSearch\"><div class=\"cdx-text-input\"><input class=\"mw-inputbox-input mw-searchInput searchboxInput cdx-text-input__input\" name=\"search\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"go\" value=\"Try exact match\" class=\"cdx-button\" />&#160;<input type=\"submit\" name=\"fulltext\" value=\"Search full text\" class=\"cdx-button\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">search</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "InputBox searchengine",
 		"wikitext": "<inputbox>\ntype=search\nsearchengine=MediaSearch\n</inputbox>",
 		"html": "<div class=\"mw-inputbox-centered\" style=\"\"><form name=\"searchbox\" class=\"searchbox mw-inputbox-form inputbox-searchengine-set\" action=\"/wiki/Special:MediaSearch\"><div class=\"cdx-text-input\"><input class=\"mw-inputbox-input mw-searchInput searchboxInput cdx-text-input__input\" name=\"search\" placeholder=\"\" size=\"50\" dir=\"ltr\" /></div><br /><input type=\"submit\" name=\"go\" value=\"Try exact match\" class=\"cdx-button\" />&#160;<input type=\"submit\" name=\"fulltext\" value=\"Search full text\" class=\"cdx-button\" /></form></div>",
 		"render": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\">type=search</span>\n<span class=\"wpb-param-line\">searchengine=MediaSearch</span>\n</span>&lt;/inputbox&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;inputbox&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">type</span>=<span class=\"wpb-param-line-value\">search</span></span>\n<span class=\"wpb-param-line\"><span class=\"wpb-param-line-key\">searchengine</span>=<span class=\"wpb-param-line-value\">MediaSearch</span></span>\n</span>&lt;/inputbox&gt;</span></span>"
 	},
 	{
 		"desc": "interlanguageLinks"

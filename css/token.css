@@ -50,10 +50,12 @@
 .wpb-parameter {
 	font-weight: normal;
 }
+.wpb-param-line,
 .wpb-template > .wpb-parameter,
 .wpb-invoke-function ~ .wpb-parameter {
 	color: #b0c;
 }
+.wpb-param-line-value,
 .wpb-parameter-value {
 	color: initial;
 }
