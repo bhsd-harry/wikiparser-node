@@ -3,7 +3,7 @@ import {extParams} from '../util/sharable';
 import Parser from '../index';
 import {Token} from './index';
 import type {Config, LintError} from '../base';
-import type {ParamTagToken} from '../internal';
+import type {ParamTagToken, SeoToken} from '../internal';
 
 const skipTypes = new Set(['comment', 'include', 'noinclude']);
 
@@ -13,7 +13,9 @@ const skipTypes = new Set(['comment', 'include', 'noinclude']);
  * 某些扩展标签的参数
  */
 export abstract class ParamLineToken extends Token {
-	abstract override get parentNode(): ParamTagToken | undefined;
+	#delimiter;
+
+	abstract override get parentNode(): ParamTagToken | SeoToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): this | undefined;
 
@@ -25,11 +27,13 @@ export abstract class ParamLineToken extends Token {
 	constructor(
 		name: string,
 		wikitext: string | undefined,
+		delimiter: '\n' | '|',
 		config: Config,
 		accum: Token[],
-		acceptable: WikiParserAcceptable,
+		acceptable: WikiParserAcceptable = {AstText: ':'}, // eslint-disable-line unicorn/no-object-as-default-parameter
 	) {
 		super(wikitext, config, accum, acceptable);
+		this.#delimiter = delimiter;
 		this.setAttribute('name', name);
 	}
 
@@ -38,7 +42,7 @@ export abstract class ParamLineToken extends Token {
 		LINT: {
 			const rule = 'no-ignored',
 				{lintConfig} = Parser,
-				{name, childNodes} = this,
+				{name, childNodes, previousSibling} = this,
 				s = lintConfig.getSeverity(rule, name);
 			if (!s) {
 				return [];
@@ -48,20 +52,26 @@ export abstract class ParamLineToken extends Token {
 				return [generateForSelf(this, {start}, rule, msg, s)];
 			}
 			const children = childNodes.filter(({type}) => !skipTypes.has(type)),
-				isInputbox = name === 'inputbox',
-				i = isInputbox ? children.findIndex(({type}) => type !== 'text') : -1;
+				i = children.findIndex(({type}) => type !== 'text');
 			let str = children.slice(0, i === -1 ? undefined : i).map(String).join('').trim();
 			if (str) {
-				if (isInputbox) {
+				if (name === 'inputbox') {
 					str = str.toLowerCase();
 				}
 				const j = str.indexOf('='),
 					key = str.slice(0, j === -1 ? undefined : j).trim(),
 					params = extParams[name!]!;
-				if (j === -1 ? i === -1 || !params.some(p => p.startsWith(key)) : !params.includes(key)) {
+				if (
+					j === -1
+						? i === -1 || !params.some(p => p.startsWith(key))
+						: !params.some(
+							p => p === key
+								|| p.endsWith('$1') && key.startsWith(p.slice(0, -2)),
+						)
+				) {
 					const e = generateForSelf(this, {start}, rule, msg, s);
 					if (lintConfig.computeEditInfo) {
-						e.suggestions = [fixByRemove(e)];
+						e.suggestions = [fixByRemove(e, previousSibling ? -1 : 0)];
 					}
 					return [e];
 				}

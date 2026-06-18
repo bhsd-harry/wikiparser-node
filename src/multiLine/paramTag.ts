@@ -1,4 +1,3 @@
-import {parseCommentAndExt} from '../../parser/commentAndExt';
 import {MultiLineToken} from './index';
 import {ParamLineToken} from '../paramLine';
 import type {Config} from '../../base';
@@ -27,10 +26,14 @@ export abstract class ParamTagToken extends MultiLineToken {
 		if (wikitext) {
 			this.safeAppend(
 				wikitext.split('\n')
-					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))
 					// @ts-expect-error abstract class
-					.map((line): ParamLineToken => new ParamLineToken(name, line, config, accum, {
-					})),
+					.map((line): ParamLineToken => new ParamLineToken(
+						name,
+						line,
+						'\n',
+						config,
+						accum,
+					)),
 			);
 		}
 		accum.splice(accum.indexOf(this), 1);
