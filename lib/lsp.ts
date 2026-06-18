@@ -244,7 +244,7 @@ const getCompletion = (
 	kind: keyof typeof CompletionItemKind,
 	mt: string,
 	{line, character}: Position,
-	extra?: string,
+	extra = '',
 	getDoc?: (name: string) => SignatureInfo | undefined,
 ): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => {
 	const doc = getDoc?.(w)?.description;
@@ -256,7 +256,7 @@ const getCompletion = (
 				start: {line, character: character - mt.length},
 				end: {line, character},
 			},
-			newText: w + (extra ?? ''),
+			newText: w + extra,
 		},
 		...doc && {
 			documentation: {
@@ -1048,7 +1048,7 @@ export class LanguageService implements LanguageServiceBase {
 				)
 				: undefined;
 		} else if (type === 'param-line') {
-			// parameter line of `<dynamicpagelist>` or `<inputbox>`
+			// parameter line of `<dynamicpagelist>`, `<inputbox>` or `<seo>`
 			const key = this.#text.slice(cur!.getAbsoluteIndex(), root.indexFromPos(line, character)).trimStart();
 			return /^[a-z]+$/iu.test(key)
 				? getCompletion(extParams[cur!.name!]!, 'Property', key, position)

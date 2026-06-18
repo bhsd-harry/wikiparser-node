@@ -1,8 +1,6 @@
 import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 
-const inputboxChild = new Set(['comment', 'include', 'ext']);
-
 /**
  * 不可包含换行符的类
  * @ignore
@@ -10,15 +8,6 @@ const inputboxChild = new Set(['comment', 'include', 'ext']);
 export const singleLine = <T extends AstConstructor>(constructor: T): T => {
 	abstract class SingleLineToken extends constructor {
 		override toString(skip?: boolean): string {
-			if (this.parentNode?.name === 'inputbox') {
-				return this.childNodes.map(child => {
-					const str = child.toString(skip),
-						{type} = child;
-					return inputboxChild.has(type)
-						? str
-						: str.replaceAll('\n', ' ');
-				}).join('');
-			}
 			return super.toString(skip).replaceAll('\n', ' ');
 		}
 

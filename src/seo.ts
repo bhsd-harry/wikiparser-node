@@ -1,10 +1,8 @@
-import {generateForChild, fixByRemove} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
 import {Token} from './index';
+import {ParamLineToken} from './paramLine';
 import {gapped} from '../mixin/gapped';
-import type {Config, LintError} from '../base';
-import type {AstText, AttributesToken, ExtToken} from '../internal';
+import type {Config} from '../base';
+import type {AttributesToken, ExtToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -15,23 +13,23 @@ import {clone} from '../mixin/clone';
 
 /**
  * `<seo>`
- * @classdesc `{childNodes: AstText[]}`
+ * @classdesc `{childNodes: ParamLineToken[]}`
  */
 @gapped()
 export abstract class SeoToken extends Token {
 	declare readonly name: 'seo';
-	declare readonly childNodes: readonly AstText[];
-	abstract override get firstChild(): AstText | undefined;
-	abstract override get lastChild(): AstText | undefined;
+	declare readonly childNodes: readonly ParamLineToken[];
+	abstract override get firstChild(): ParamLineToken | undefined;
+	abstract override get lastChild(): ParamLineToken | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): [];
-	abstract override get firstElementChild(): undefined;
-	abstract override get lastElementChild(): undefined;
+	abstract override get children(): ParamLineToken[];
+	abstract override get firstElementChild(): ParamLineToken | undefined;
+	abstract override get lastElementChild(): ParamLineToken | undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get parentElement(): ExtToken | undefined;
@@ -49,7 +47,8 @@ export abstract class SeoToken extends Token {
 		});
 		if (wikitext) {
 			for (const parameter of wikitext.split('|')) {
-				this.insertAt(parameter);
+				// @ts-expect-error abstract class
+				this.insertAt(new ParamLineToken('seo', parameter, '|', config, accum));
 			}
 		}
 	}
@@ -62,39 +61,6 @@ export abstract class SeoToken extends Token {
 	/** @private */
 	override text(): string {
 		return super.text('|');
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: {
-			const errors: LintError[] = [],
-				{name, childNodes, length} = this,
-				{lintConfig} = Parser,
-				rule = 'no-ignored',
-				s = lintConfig.getSeverity(rule, name);
-			if (s) {
-				const rect = new BoundingRect(this, start);
-				for (let i = 0; i < length; i++) {
-					const child = childNodes[i]!,
-						{data} = child;
-					if (
-						!data.includes('=')
-						&& data.replace(/<!--[\s\S]*?-->/gu, '').trim()
-					) {
-						const e = generateForChild(child, rect, rule, Parser.msg('invalid-parameter', name), s);
-						if (i) {
-							e.startIndex--;
-							e.startCol--;
-						}
-						if (lintConfig.computeEditInfo) {
-							e.suggestions = [fixByRemove(e)];
-						}
-						errors.push(e);
-					}
-				}
-			}
-			return errors;
-		}
 	}
 
 	/** @private */

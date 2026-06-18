@@ -97,7 +97,6 @@ export abstract class ExtToken extends TagPairToken {
 			case 'combooption':
 			case 'tab':
 			case 'tabs':
-			case 'poll':
 			case 'langconvert':
 			case 'phonos':
 				switch (lcName) {
