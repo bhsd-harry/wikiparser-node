@@ -147,11 +147,17 @@ export abstract class HtmlToken extends TagToken {
 	/** @private */
 	override text(): string {
 		const {closing, selfClosing, name} = this,
-			[,, voidTags] = this.getAttribute('config').html;
+			[normalTags,, voidTags] = this.getAttribute('config').html;
+		let slash: string;
 		if (voidTags.includes(name)) {
-			return closing && name !== 'br' ? '' : super.text('/');
+			if (closing && name !== 'br') {
+				return '';
+			}
+			slash = '/';
+		} else {
+			slash = selfClosing && !closing && !normalTags.includes(name) ? '/' : '';
 		}
-		return super.text(selfClosing && !closing ? '/' : '');
+		return `<${closing && !slash ? '/' : ''}${name}${closing ? '' : super.text()}${slash}>`;
 	}
 
 	/** @private */

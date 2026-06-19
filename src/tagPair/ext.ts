@@ -240,6 +240,12 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @private */
+	override text(): string {
+		const {name, firstChild, lastChild, selfClosing} = this;
+		return `<${name}${firstChild.text()}${selfClosing ? '/>' : `>${lastChild.text()}</${name}>`}`;
+	}
+
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),

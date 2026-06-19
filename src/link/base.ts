@@ -15,6 +15,13 @@ import {
 	undo,
 	Shadow,
 } from '../../util/debug';
+import {
+	text,
+
+	/* NOT FOR BROWSER */
+
+	sanitize,
+} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
 import {noEscape} from '../../mixin/noEscape';
@@ -40,7 +47,6 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {sanitize} from '../../util/string';
 import {cached} from '../../mixin/cached';
 
 const fileTypes = new Set<TokenTypes>(['file', 'gallery-image', 'imagemap-image']);
@@ -240,7 +246,31 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const str = super.text('|');
+		const {
+				length,
+				firstChild,
+				childNodes,
+
+				/* NOT FOR BROWSER ONLY */
+
+				type,
+			} = this,
+			target = firstChild.text();
+		let str: string;
+		if (length === 1) {
+			str =
+				type === 'link' ?
+					target.trimStart() :
+					target.trim();
+		} else {
+			str = `${target.trim()}|${
+				text(
+					childNodes.slice(1)
+						.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
+					'|',
+				)
+			}`;
+		}
 		if (this.#bracket) {
 			return `[[${str}]]`;
 		}
