@@ -1,7 +1,6 @@
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {
-	TokenTypes,
 	Config,
 } from '../../base';
 import type {GalleryImageTypes} from '../imageParameter';

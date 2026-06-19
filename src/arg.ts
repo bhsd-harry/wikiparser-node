@@ -1,4 +1,3 @@
-import {text} from '../util/string';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
@@ -49,6 +48,12 @@ export abstract class ArgToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
+		const {length, childNodes, name = this.#getName()} = this;
+		return length === 1 ? `{{{${name}}}}` : `{{{${name}|${childNodes[1]!.text()}}}}`;
+	}
+
+	/** 获取name */
+	#getName(): string {
+		return this.firstChild.text().trim();
 	}
 }

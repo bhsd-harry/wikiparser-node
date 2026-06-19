@@ -62,6 +62,6 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	override text(): string {
 		const equals = this.#getEquals();
-		return equals + this.firstChild.text() + equals;
+		return equals + this.firstChild.text().trim() + equals;
 	}
 }

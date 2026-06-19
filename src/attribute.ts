@@ -1,4 +1,6 @@
-import Parser from '../index';
+import {
+	trimLc,
+} from '../util/string';
 import {Token} from './index';
 import type {
 	Config,
@@ -80,6 +82,11 @@ export abstract class AttributeToken extends Token {
 		this.#quotes = [...quotes];
 	}
 
+	/** 获取name */
+	#getName(): string {
+		return trimLc(this.firstChild.text());
+	}
+
 	/** @private */
 	override toString(skip?: boolean): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
@@ -88,6 +95,7 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
+		const {lastChild, name = this.#getName()} = this;
+		return this.#equal ? `${name}${this.#equal.trim()}"${lastChild.text()}"` : name;
 	}
 }

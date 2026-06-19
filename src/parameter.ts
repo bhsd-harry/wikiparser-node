@@ -83,7 +83,9 @@ export abstract class ParameterToken extends Token {
 	}
 
 	override text(): string {
-		return this.anon ? this.lastChild.text() : super.text('=');
+		return this.anon
+			? this.getValue()
+			: this.childNodes.map(child => child.text().trim()).join('=');
 	}
 
 	/**
@@ -94,8 +96,10 @@ export abstract class ParameterToken extends Token {
 	getValue(): string {
 		const {parentNode, lastChild, anon, name} = this,
 			value = removeCommentLine(lastChild.text());
-		return anon && parentNode?.isTemplate() !== false
-			|| name === '2' && parentNode?.type === 'magic-word' && parentNode.name === 'tag'
+		return anon && (
+			parentNode?.isTemplate() !== false
+			|| name === '2' && parentNode.type === 'magic-word' && parentNode.name === 'tag'
+		)
 			? value
 			: value.trim();
 	}
