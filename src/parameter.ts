@@ -1,5 +1,5 @@
 import {
-	removeComment as removeCommentLine,
+	removeCommentLine,
 } from '../util/string';
 import {Token} from './index';
 import type {

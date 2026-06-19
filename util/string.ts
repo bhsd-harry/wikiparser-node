@@ -37,6 +37,28 @@ export const tidy = factory(/[\0\x7F]|\r$/gmu, '');
 export const removeComment = factory(/\0\d+[cn]\x7F/gu, '');
 
 /**
+ * remove lines that only contain comments
+ * @param str
+ * @param standalone whether for a standalone document
+ */
+export const removeCommentLine = (str: string, standalone?: boolean): string => {
+	const lines = str.split('\n'),
+		{length} = lines;
+	if (!standalone && length < 3) {
+		return removeComment(str);
+	}
+	const offset = standalone ? 0 : 1,
+		end = length - offset;
+	return removeComment(
+		[
+			...lines.slice(0, offset),
+			...lines.slice(offset, end).filter(line => !/^(?!\s*$)(?:\s|\0\d+c\x7F)*$/u.test(line)),
+			...lines.slice(end),
+		].join('\n'),
+	);
+};
+
+/**
  * extract effective wikitext
  * @param childNodes a Token's contents
  * @param separator delimiter between nodes
