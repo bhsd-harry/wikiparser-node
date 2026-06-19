@@ -1,9 +1,6 @@
 import {
 	extUrlChar,
 	extUrlCharFirst,
-
-	/* NOT FOR BROWSER */
-
 	removeCommentLine,
 } from '../util/string';
 import {generateForChild, fixByEscape} from '../util/lint';
