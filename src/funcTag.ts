@@ -41,7 +41,7 @@ export abstract class FuncTagToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return super.text('|');
+		return this.childNodes.map(child => child.text()).filter(Boolean).join('|');
 	}
 
 	/** @private */
