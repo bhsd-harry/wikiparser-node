@@ -6,6 +6,9 @@ import {
 import {
 	isLink,
 } from '../../util/debug';
+import {
+	text,
+} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
 import {noEscape} from '../../mixin/noEscape';
@@ -119,7 +122,31 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const str = super.text('|');
+		const {
+				length,
+				firstChild,
+				childNodes,
+
+				/* NOT FOR BROWSER ONLY */
+
+				type,
+			} = this,
+			target = firstChild.text();
+		let str: string;
+		if (length === 1) {
+			str =
+				type === 'link' ?
+					target.trimStart() :
+					target.trim();
+		} else {
+			str = `${target.trim()}|${
+				text(
+					childNodes.slice(1)
+						.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
+					'|',
+				)
+			}`;
+		}
 		if (this.#bracket) {
 			return `[[${str}]]`;
 		}

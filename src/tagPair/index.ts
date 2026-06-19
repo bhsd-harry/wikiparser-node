@@ -66,19 +66,9 @@ export abstract class TagPairToken extends Token {
 				lastChild,
 			} = this,
 			[opening, closing] = this.#tags;
-		return this.#selfClosing
-			? `<${opening}${firstChild.toString(skip)}/>`
-			: `<${opening}${firstChild.toString(skip)}>${lastChild.toString(skip)}${
-				this.closed ? `</${closing}>` : ''
-			}`;
-	}
-
-	/** @private */
-	override text(): string {
-		const [opening, closing] = this.#tags;
-		return this.#selfClosing
-			? `<${opening}${this.firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
+		return `<${opening}${firstChild.toString(skip)}${
+			this.#selfClosing ? '/>' : `>${lastChild.toString(skip)}${this.closed ? `</${closing}>` : ''}`
+		}`;
 	}
 
 	/** @private */

@@ -240,8 +240,15 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const str = super.text().trim();
-		return this.#syntax ? this.#syntax.replace('$1', str) : str;
+		const {name} = this;
+		if (name === 'invalid') {
+			return '';
+		}
+		let str = super.text();
+		if (name !== 'caption') {
+			str = str.trim();
+		}
+		return this.#syntax ? this.#syntax.replace('$1', str).trim() : str;
 	}
 
 	/** @private */
@@ -357,8 +364,10 @@ export abstract class ImageParameterToken extends Token {
 				return text(childNodes.map(
 					child => child.is('ext') && child.name === 'nowiki' ? child.innerText ?? '' : child,
 				)).trim();
+			} else if (name === 'invalid') {
+				return '';
 			}
-			return name === 'invalid' ? this.text() : this.#isVoid() || super.text().trim();
+			return name === 'caption' ? super.text() : this.#isVoid() || super.text().trim();
 		}
 	}
 }
