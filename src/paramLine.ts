@@ -1,5 +1,6 @@
 import {generateForSelf, fixByRemove} from '../util/lint';
 import {extParams} from '../util/sharable';
+import {gapped} from '../mixin/gapped';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -21,6 +22,7 @@ const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude
  * 某些扩展标签的参数
  * @classdesc `{childNodes: [AtomToken] | [AtomToken, AtomToken]}`
  */
+@gapped()
 export abstract class ParamLineToken extends Token {
 	#delimiter;
 
