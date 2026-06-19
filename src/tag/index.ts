@@ -57,12 +57,6 @@ export abstract class TagToken extends Token {
 	}
 
 	/** @private */
-	override text(separator = ''): string {
-		const {closing} = this;
-		return `<${closing && !separator ? '/' : ''}${this.#tag}${closing ? '' : super.text()}${separator}>`;
-	}
-
-	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		return key === 'padding'
 			? this.#tag.length + (this.#closing ? 2 : 1) as TokenAttribute<T>
