@@ -19,7 +19,7 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 	/;(?=(?:[^;]*?=>)?\s*zh\s*:|(?:\s|\0\d+[cn]\x7F)*$)/u;
 	config.regexConverter ??= new RegExp(
 		String.raw`;(?=(?:[^;]*?=>)?\s*(?:${config.variants.join('|')})\s*:|(?:\s|\0\d+[cn]\x7F)*$)`,
-		'u',
+		'iu',
 	);
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,

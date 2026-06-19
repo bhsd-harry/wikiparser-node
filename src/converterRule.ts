@@ -141,7 +141,7 @@ export abstract class ConverterRuleToken extends Token {
 		const i = rule.indexOf(':'),
 			j = rule.slice(0, i).indexOf('=>'),
 			v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
-		if (hasColon && config.variants.includes(v.trim())) {
+		if (hasColon && config.variants.some(variant => variant.toLowerCase() === v.trim().toLowerCase())) {
 			super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 			super.insertAt(getRuleFromTo(rule.slice(i + 1), 'to', config, accum));
 			if (j !== -1) {
@@ -168,8 +168,8 @@ export abstract class ConverterRuleToken extends Token {
 	override text(): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3
-			? `${firstChild.text()}=>${childNodes[1].text()}:${lastChild.text()}`
-			: super.text(':');
+			? `${firstChild.text().trim()}=>${childNodes[1].text().trim()}:${lastChild.text().trim()}`
+			: childNodes.map(child => child.text().trim()).join(':');
 	}
 
 	/** @private */

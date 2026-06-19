@@ -75,9 +75,14 @@ export abstract class ConverterFlagsToken extends Token {
 		this.safeAppend(flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
+	/** 获取全部转换类型标记 */
+	#getFlags(): string[] {
+		return this.childNodes.map(child => child.text().trim());
+	}
+
 	/** @private */
 	override afterBuild(): void {
-		this.#flags = this.childNodes.map(child => child.text().trim());
+		this.#flags = this.#getFlags();
 		super.afterBuild();
 
 		/* NOT FOR BROWSER */
@@ -97,7 +102,7 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return super.text(';');
+		return (this.#flags ?? this.#getFlags()).join(';');
 	}
 
 	/**
