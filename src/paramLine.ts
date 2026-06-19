@@ -79,7 +79,7 @@ export abstract class ParamLineToken extends Token {
 			({childNodes}) => childNodes.map(child => {
 				const str = child.text();
 				return child.type === 'text' ? this.#escape(str) : str;
-			}).join(''),
+			}).join('').trim(),
 		).join('=');
 	}
 
