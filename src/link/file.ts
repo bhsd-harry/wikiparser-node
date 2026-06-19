@@ -144,7 +144,7 @@ export abstract class FileToken extends LinkBaseToken {
 				s
 				&& extensions.has(extension!)
 				&& this.isInside('ext-link-text')
-				&& (this.getValue('link') as string | undefined)?.trim() !== ''
+				&& this.getValue('link') !== ''
 			) {
 				const e = generateForSelf(this, rect, rule, 'link-in-extlink', s);
 				if (computeEditInfo || fix) {

@@ -55,7 +55,6 @@ import type {
 	FileToken,
 	CategoryToken,
 	RedirectTargetToken,
-	ImageParameterToken,
 	TranscludeToken,
 } from '../internal';
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
@@ -774,18 +773,8 @@ export class LanguageService implements LanguageServiceBase {
 				match = mt?.[7]?.trimStart()
 					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
 				equal = this.#text[index] === '=';
-			return [
-				...getCompletion(params, 'Property', match, position)
-					.filter(({label}) => !equal || !/[= ]$/u.test(label)),
-				...getCompletion(
-					root.querySelectorAll<ImageParameterToken>('image-parameter#width')
-						.filter(token => token !== cur)
-						.map(width => width.text()),
-					'Unit',
-					match,
-					position,
-				),
-			];
+			return getCompletion(params, 'Property', match, position)
+				.filter(({label}) => !equal || !/[= ]$/u.test(label));
 		} else if (mt?.[8] !== undefined || type === 'attr-key') { // attribute key
 			const tag = mt?.[8]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
 				key = mt?.[10]
