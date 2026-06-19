@@ -1,4 +1,3 @@
-import {text} from '../util/string';
 import {generateForSelf, generateForChild, fixBy, fixByRemove, fixByEscape} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
@@ -59,12 +58,19 @@ export abstract class ArgToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
+		// eslint-disable-next-line @typescript-eslint/no-useless-default-assignment
+		const {length, childNodes, name = this.#getName()} = this;
+		return length === 1 ? `{{{${name}}}}` : `{{{${name}|${childNodes[1]!.text()}}}}`;
+	}
+
+	/** 获取name */
+	#getName(): string {
+		return this.firstChild.text().trim();
 	}
 
 	/** 更新name */
 	#setName(): void {
-		LSP: this.setAttribute('name', this.firstChild.text().trim());
+		LSP: this.setAttribute('name', this.#getName());
 	}
 
 	/** @private */

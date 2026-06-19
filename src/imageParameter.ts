@@ -240,7 +240,8 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
+		const str = super.text().trim();
+		return this.#syntax ? this.#syntax.replace('$1', str) : str;
 	}
 
 	/** @private */
@@ -340,7 +341,7 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** 是否是不可变参数 */
-	#isVoid(): string | boolean {
+	#isVoid(): '' | boolean {
 		LINT: return this.#syntax && !this.#syntax.includes('$1');
 	}
 
@@ -355,9 +356,9 @@ export abstract class ImageParameterToken extends Token {
 			if (name === 'link') {
 				return text(childNodes.map(
 					child => child.is('ext') && child.name === 'nowiki' ? child.innerText ?? '' : child,
-				));
+				)).trim();
 			}
-			return name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+			return name === 'invalid' ? this.text() : this.#isVoid() || super.text().trim();
 		}
 	}
 }

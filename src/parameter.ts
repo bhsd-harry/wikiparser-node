@@ -1,6 +1,7 @@
 import {
 	extUrlChar,
 	extUrlCharFirst,
+	removeCommentLine,
 } from '../util/string';
 import {generateForChild, fixByEscape} from '../util/lint';
 import Parser from '../index';
@@ -99,7 +100,9 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return this.anon ? this.lastChild.text() : super.text('=');
+		return this.anon
+			? this.getValue()
+			: this.childNodes.map(child => child.text().trim()).join('=');
 	}
 
 	/** @private */
@@ -134,5 +137,21 @@ export abstract class ParameterToken extends Token {
 			}
 			return errors;
 		}
+	}
+
+	/**
+	 * Get the parameter value
+	 *
+	 * 获取参数值
+	 */
+	getValue(): string {
+		const {parentNode, lastChild, anon, name} = this,
+			value = removeCommentLine(lastChild.text());
+		return anon && (
+			parentNode?.isTemplate() !== false
+			|| name === '2' && parentNode.type === 'magic-word' && parentNode.name === 'tag'
+		)
+			? value
+			: value.trim();
 	}
 }
