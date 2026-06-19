@@ -1,3 +1,6 @@
+import {
+	text,
+} from '../../util/string';
 import Parser from '../../index';
 import {Token} from '../index';
 import type {
@@ -38,7 +41,26 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override text(): string {
-		const str = super.text('|');
+		const {
+				length,
+				firstChild,
+				childNodes,
+			} = this,
+			target = firstChild.text();
+		let str: string;
+		// eslint-disable-next-line unicorn/prefer-ternary
+		if (length === 1) {
+			str =
+				target.trim();
+		} else {
+			str = `${target.trim()}|${
+				text(
+					childNodes.slice(1)
+						.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
+					'|',
+				)
+			}`;
+		}
 		return str;
 	}
 }

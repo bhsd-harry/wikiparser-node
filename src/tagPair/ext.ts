@@ -90,4 +90,10 @@ export abstract class ExtToken extends TagPairToken {
 		}
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
+
+	/** @private */
+	override text(): string {
+		const {name, firstChild, lastChild, selfClosing} = this;
+		return `<${name}${firstChild.text()}${selfClosing ? '/>' : `>${lastChild.text()}</${name}>`}`;
+	}
 }

@@ -1,6 +1,5 @@
 import {
 	removeComment,
-	text,
 } from '../util/string';
 import {
 	getMagicWordInfo,
@@ -225,12 +224,12 @@ export abstract class TranscludeToken extends Token {
 			modifier,
 			type,
 		} = this;
-		return `{{${modifier}${
-			type === 'magic-word'
-				? firstChild.text()
-				+ (length === 1 ? '' : this.#colon)
-				+ text(childNodes.slice(1), '|')
-				: super.text('|')
+		const delimiter = type === 'magic-word' ? this.#colon : '|';
+		return `{{${modifier.trim().toLowerCase()}${firstChild.text().trim()}${length === 1 ? '' : delimiter}${
+			childNodes.slice(1).map(child => {
+				const str = child.text();
+				return child.type === 'parameter' ? str : str.trim();
+			}).join('|')
 		}}}`;
 	}
 
