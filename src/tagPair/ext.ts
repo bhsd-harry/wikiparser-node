@@ -171,9 +171,9 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'seo': {
-				const {SeoToken}: typeof import('../seo') = require('../seo');
+				const {FuncTagToken}: typeof import('../funcTag') = require('../funcTag');
 				// @ts-expect-error abstract class
-				innerToken = new SeoToken(inner, newConfig, accum);
+				innerToken = new FuncTagToken(inner, newConfig, accum);
 				break;
 			}
 			// 更多定制扩展的代码示例：

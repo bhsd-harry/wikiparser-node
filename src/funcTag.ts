@@ -9,7 +9,7 @@ import type {AttributesToken, ExtToken} from '../internal';
  * @classdesc `{childNodes: ParamLineToken[]}`
  */
 @gapped()
-export abstract class SeoToken extends Token {
+export abstract class FuncTagToken extends Token {
 	declare readonly name: 'seo';
 	declare readonly childNodes: readonly ParamLineToken[];
 	abstract override get firstChild(): ParamLineToken | undefined;
