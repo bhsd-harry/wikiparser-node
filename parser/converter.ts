@@ -11,7 +11,7 @@ import type {Token} from '../internal';
 export const parseConverter = (text: string, config: Config, accum: Token[]): string => {
 	config.regexConverter ??= new RegExp(
 		String.raw`;(?=(?:[^;]*?=>)?\s*(?:${config.variants.join('|')})\s*:|(?:\s|\0\d+[cn]\x7F)*$)`,
-		'u',
+		'iu',
 	);
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,

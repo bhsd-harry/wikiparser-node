@@ -149,9 +149,14 @@ export abstract class AttributeToken extends Token {
 		this.setAttribute('name', trimLc(removeComment(key)));
 	}
 
+	/** 获取name */
+	#getName(): string {
+		return trimLc(this.firstChild.text());
+	}
+
 	/** 更新name */
 	#setName(): void {
-		this.setAttribute('name', trimLc(this.firstChild.text()));
+		this.setAttribute('name', this.#getName());
 	}
 
 	/** @private */
@@ -174,7 +179,9 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override text(): string {
-		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
+		// eslint-disable-next-line @typescript-eslint/no-useless-default-assignment
+		const {lastChild, name = this.#getName()} = this;
+		return this.#equal ? `${name}${this.#equal.trim()}"${lastChild.text()}"` : name;
 	}
 
 	/** @private */
