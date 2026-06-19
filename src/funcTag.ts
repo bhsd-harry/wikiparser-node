@@ -16,7 +16,7 @@ import {clone} from '../mixin/clone';
  * @classdesc `{childNodes: ParamLineToken[]}`
  */
 @gapped()
-export abstract class SeoToken extends Token {
+export abstract class FuncTagToken extends Token {
 	declare readonly name: 'seo';
 	declare readonly childNodes: readonly ParamLineToken[];
 	abstract override get firstChild(): ParamLineToken | undefined;
@@ -73,8 +73,8 @@ export abstract class SeoToken extends Token {
 	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return new SeoToken(undefined, this.getAttribute('config'));
+		return new FuncTagToken(undefined, this.getAttribute('config'));
 	}
 }
 
-classes['SeoToken'] = __filename;
+classes['FuncTagToken'] = __filename;

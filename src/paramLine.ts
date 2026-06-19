@@ -4,7 +4,7 @@ import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {Config, LintError, TokenTypes} from '../base';
-import type {ParamTagToken, SeoToken} from '../internal';
+import type {ParamTagToken, FuncTagToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -13,8 +13,7 @@ import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
-const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude']),
-	transcludedTypes = new Set<TokenTypes | 'text'>(['arg', 'template', 'magic-word']);
+const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude']);
 
 /**
  * parameter of certain extension tags
@@ -28,7 +27,7 @@ export abstract class ParamLineToken extends Token {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, AtomToken];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): AtomToken;
-	abstract override get parentNode(): ParamTagToken | SeoToken | undefined;
+	abstract override get parentNode(): ParamTagToken | FuncTagToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): this | undefined;
 
@@ -37,7 +36,7 @@ export abstract class ParamLineToken extends Token {
 	abstract override get children(): [AtomToken] | [AtomToken, AtomToken];
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastElementChild(): AtomToken;
-	abstract override get parentElement(): ParamTagToken | SeoToken | undefined;
+	abstract override get parentElement(): ParamTagToken | FuncTagToken | undefined;
 	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousElementSibling(): this | undefined;
 
@@ -141,10 +140,7 @@ export abstract class ParamLineToken extends Token {
 				i = children.findIndex(({type}) => type !== 'text');
 			let key = children.slice(0, i === -1 ? undefined : i).map(String).join('').trim(),
 				wrong = false;
-			if (
-				childNodes.some(({type}) => type === 'ext')
-				|| length === 1 && key && !childNodes.some(({type}) => transcludedTypes.has(type))
-			) {
+			if (childNodes.some(({type}) => type === 'ext') || length === 1 && i === -1 && key) {
 				wrong = true;
 			} else if (key || length === 2) {
 				if (name === 'inputbox') {
