@@ -149,7 +149,7 @@
 		"c8": "^11.0.0",
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",
-		"dompurify": "^3.4.10",
+		"dompurify": "^3.4.11",
 		"esbuild": "^0.28.1",
 		"eslint": "^10.5.0",
 		"jsdom": "^29.1.1",
