@@ -56,7 +56,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^3.0.0",
-		"@bhsd/codemirror-mediawiki": "^3.21.0",
+		"@bhsd/codemirror-mediawiki": "^4.0.0",
 		"@bhsd/test-util": "^2.0.0",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
