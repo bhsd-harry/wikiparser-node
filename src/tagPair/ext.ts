@@ -100,6 +100,12 @@ export abstract class ExtToken extends TagPairToken {
 				}
 				innerToken = new Token(inner, newConfig, accum);
 				break;
+			case 'poll': {
+				const {MultiLineToken}: typeof import('../multiLine/index') = require('../multiLine/index');
+				// @ts-expect-error abstract class
+				innerToken = new MultiLineToken(inner, newConfig, accum);
+				break;
+			}
 			case 'dynamicpagelist': {
 				const {ParamTagToken}: typeof import('../multiLine/paramTag') = require('../multiLine/paramTag');
 				// @ts-expect-error abstract class

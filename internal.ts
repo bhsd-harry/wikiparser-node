@@ -38,6 +38,7 @@ export type {ConverterRuleToken} from './src/converterRule';
 export type {ConverterToken} from './src/converter';
 export type {NowikiToken} from './src/nowiki/index';
 export type {PreToken} from './src/pre';
+export type {MultiLineToken} from './src/multiLine/index';
 export type {ParamTagToken} from './src/multiLine/paramTag';
 export type {InputboxToken} from './src/multiLine/inputbox';
 export type {NestedToken} from './src/nested';
