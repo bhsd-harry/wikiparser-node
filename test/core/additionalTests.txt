@@ -1953,3 +1953,15 @@ Maths using <math>
 </p><p><math xmlns="http://www.w3.org/1998/Math/MathML" class="mwe-math-element mwe-math-element-inline"><mrow data-mjx-texclass="ORD"><mstyle displaystyle="true" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow><mtext>&#160;</mtext><mrow data-mjx-texclass="ORD"><mstyle displaystyle="false" scriptlevel="0"><mrow data-mjx-texclass="ORD"><mfrac><mrow data-mjx-texclass="ORD"><mi>a</mi></mrow><mrow data-mjx-texclass="ORD"><mi>b</mi></mrow></mfrac></mrow></mstyle></mrow></mstyle></mrow></math>
 </p>
 !! end
+
+!! test
+Simple AJAX poll
+!! wikitext
+<poll>
+Do you like this poll ?
+Yes, it is awesome.
+Yes.
+No, I do not like polls.
+I have no idea, what this means.
+</poll>
+!! end
