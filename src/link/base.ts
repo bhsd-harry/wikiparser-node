@@ -8,6 +8,7 @@ import {
 } from '../../util/debug';
 import {
 	text,
+	trimStart,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
@@ -136,9 +137,6 @@ export abstract class LinkBaseToken extends Token {
 				length,
 				firstChild,
 				childNodes,
-
-				/* NOT FOR BROWSER ONLY */
-
 				type,
 			} = this,
 			target = firstChild.text();
@@ -146,7 +144,7 @@ export abstract class LinkBaseToken extends Token {
 		if (length === 1) {
 			str =
 				type === 'link' ?
-					target.trimStart() :
+					trimStart(target) :
 					target.trim();
 		} else {
 			str = `${target.trim()}|${
