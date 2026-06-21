@@ -17,6 +17,7 @@ import {
 } from '../../util/debug';
 import {
 	text,
+	trimStart,
 
 	/* NOT FOR BROWSER */
 
@@ -250,9 +251,6 @@ export abstract class LinkBaseToken extends Token {
 				length,
 				firstChild,
 				childNodes,
-
-				/* NOT FOR BROWSER ONLY */
-
 				type,
 			} = this,
 			target = firstChild.text();
@@ -260,7 +258,7 @@ export abstract class LinkBaseToken extends Token {
 		if (length === 1) {
 			str =
 				type === 'link' ?
-					target.trimStart() :
+					trimStart(target) :
 					target.trim();
 		} else {
 			str = `${target.trim()}|${
