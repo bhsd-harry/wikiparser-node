@@ -8,6 +8,7 @@ import {
 } from '../../util/debug';
 import {
 	text,
+	trimStart,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
@@ -136,13 +137,15 @@ export abstract class LinkBaseToken extends Token {
 				length,
 				firstChild,
 				childNodes,
+				type,
 			} = this,
 			target = firstChild.text();
 		let str: string;
-		// eslint-disable-next-line unicorn/prefer-ternary
 		if (length === 1) {
 			str =
-				target.trim();
+				type === 'link' ?
+					trimStart(target) :
+					target.trim();
 		} else {
 			str = `${target.trim()}|${
 				text(
