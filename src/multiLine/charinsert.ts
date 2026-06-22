@@ -21,7 +21,6 @@ export abstract class CharinsertToken extends MultiLineToken {
 	/** @class */
 	constructor(wikitext: string | undefined, config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			SingleLineToken: ':',
 		});
 		if (wikitext) {
 			this.safeAppend(

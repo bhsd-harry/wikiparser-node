@@ -3,8 +3,6 @@ import {ExtToken} from '../tagPair/ext';
 import type {Config} from '../../base';
 import type {Token, CharinsertToken, AstText} from '../../internal';
 
-const reNowiki = /<(nowiki)>(.*?)<\/(nowiki)>/giu;
-
 /**
  * lines in `<charinsert>`
  *
@@ -25,25 +23,14 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 
 	/** @class */
 	constructor(wikitext: string | undefined, config: Config, accum: Token[]) {
-		super(undefined, config, accum, {
-			AstText: ':', ExtToken: ':',
-		});
-		if (wikitext) {
-			reNowiki.lastIndex = 0;
-			let i = 0,
-				mt = reNowiki.exec(wikitext);
-			while (mt) {
-				if (mt.index > i) {
-					this.insertAt(wikitext.slice(i, mt.index));
-				}
+		super(
+			wikitext?.replace(/<(nowiki)>(.*?)<\/(nowiki)>/giu, (_, opening, content, closing) => {
 				// @ts-expect-error abstract class
-				this.insertAt(new ExtToken(mt[1]!, undefined, mt[2]!, mt[3]!, config, false, accum));
-				i = reNowiki.lastIndex;
-				mt = reNowiki.exec(wikitext);
-			}
-			if (i < wikitext.length) {
-				this.insertAt(wikitext.slice(i));
-			}
-		}
+				new ExtToken(opening, undefined, content, closing, config, false, accum);
+				return `\0${accum.length - 2}e\x7F`;
+			}),
+			config,
+			accum,
+		);
 	}
 }
