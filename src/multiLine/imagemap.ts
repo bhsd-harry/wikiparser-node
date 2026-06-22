@@ -5,7 +5,7 @@ import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {CommentLineToken} from '../nowiki/commentLine';
 import {GalleryImageToken} from '../link/galleryImage';
-import {ImagemapLinkToken} from '../imagemapLink';
+import {ImagemapLinkToken} from '../singleLine/imagemapLink';
 import type {LintError} from '../../base';
 import type {
 	AstText,

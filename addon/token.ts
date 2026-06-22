@@ -33,7 +33,14 @@ Token.prototype.createElement = /** @implements */ function(
 	} else if (config.ext.includes(tagName)) {
 		return Shadow.run(
 			// @ts-expect-error abstract class
-			(): ExtToken => new ExtToken(tagName, '', undefined, selfClosing ? undefined : tagName, config, include),
+			(): ExtToken => new ExtToken(
+				tagName,
+				undefined,
+				undefined,
+				selfClosing ? undefined : tagName,
+				config,
+				include,
+			),
 		);
 	} else if (config.html.some(tags => tags.includes(tagName))) {
 		return Shadow.run((): HtmlToken => {

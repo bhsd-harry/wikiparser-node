@@ -42,16 +42,15 @@ export abstract class ParamTagToken extends MultiLineToken {
 		});
 		if (wikitext) {
 			this.safeAppend(
-				wikitext.split('\n')
-					// @ts-expect-error abstract class
-					.map((line): ParamLineToken => new ParamLineToken(
-						name,
-						line,
-						'\n',
-						config,
-						accum,
-						acceptable,
-					)),
+				// @ts-expect-error abstract class
+				wikitext.split('\n').map((line): ParamLineToken => new ParamLineToken(
+					name,
+					line,
+					'\n',
+					config,
+					accum,
+					acceptable,
+				)),
 			);
 		}
 		accum.splice(accum.indexOf(this), 1);

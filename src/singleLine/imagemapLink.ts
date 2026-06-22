@@ -1,19 +1,18 @@
-import {generateForChild} from '../util/lint';
-import Parser from '../index';
-import {Token} from './index';
-import {NoincludeToken} from './nowiki/noinclude';
-import {LinkToken} from './link/index';
-import {ExtLinkToken} from './extLink';
-import type {Config, LintError} from '../base';
-import type {AstText, ImagemapToken, GalleryImageToken} from '../internal';
+import {generateForChild} from '../../util/lint';
+import Parser from '../../index';
+import {SingleLineToken} from './index';
+import {NoincludeToken} from '../nowiki/noinclude';
+import {LinkToken} from '../link/index';
+import {ExtLinkToken} from '../extLink';
+import type {Config, LintError} from '../../base';
+import type {AstText, ImagemapToken, GalleryImageToken, Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
-import {Shadow} from '../util/debug';
-import {fixedToken} from '../mixin/fixed';
-import {singleLine} from '../mixin/singleLine';
-import type {Title} from '../lib/title';
+import {classes} from '../../util/constants';
+import {Shadow} from '../../util/debug';
+import {fixedToken} from '../../mixin/fixed';
+import type {Title} from '../../lib/title';
 
 /* NOT FOR BROWSER END */
 
@@ -29,8 +28,8 @@ const notNumeric = (s: string, allowNegative?: boolean): boolean => {
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-@fixedToken @singleLine
-export abstract class ImagemapLinkToken extends Token {
+@fixedToken
+export abstract class ImagemapLinkToken extends SingleLineToken {
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): NoincludeToken;

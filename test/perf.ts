@@ -244,7 +244,7 @@ describe('Performance test', () => {
 		complex(content, 'converter', 'converter-flags', 'converter-rule', N + 2);
 	});
 	it('extension parameter line', () => {
-		const content = `<inputbox>${'\ntype'.repeat(N)}</inputbox>`;
+		const content = `<inputbox>${'\ntype = create'.repeat(N)}</inputbox>`;
 		complex(content, 'ext', 'param-line', undefined, N + 1, 'lastChild');
 	});
 	it('imagemap internal link', () => {

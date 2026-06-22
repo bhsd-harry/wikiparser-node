@@ -12,6 +12,8 @@ import {classes} from '../../util/constants';
 
 /** `<inputbox>` */
 export abstract class InputboxToken extends ParamTagToken {
+	declare readonly name: 'inputbox';
+
 	/** @param name 扩展标签名 */
 	constructor(name: string, include: boolean, wikitext: string | undefined, config: Config, accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken'),
