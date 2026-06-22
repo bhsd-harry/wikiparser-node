@@ -98,6 +98,8 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		}
 	}
 
+	/* PRINT ONLY */
+
 	/** @private */
 	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
