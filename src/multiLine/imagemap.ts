@@ -123,6 +123,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 				{childNodes, image} = this,
 				rule = 'invalid-imagemap',
 				{lintConfig} = Parser,
+				{computeEditInfo} = lintConfig,
 				s = lintConfig.getSeverity(rule, image ? 'link' : 'image');
 			if (s) {
 				if (image) {
@@ -134,7 +135,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 								&& str && !str.startsWith('#');
 						}).map(child => {
 							const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
-							if (lintConfig.computeEditInfo) {
+							if (computeEditInfo) {
 								e.suggestions = [
 									fixByRemove(e, -1),
 									fixBy(e, 'comment', '# '),

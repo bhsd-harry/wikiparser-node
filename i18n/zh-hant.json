@@ -46,6 +46,7 @@
 	"invalid-isbn": "無效的ISBN",
 	"invalid-parameter": "無效的<$1>參數",
 	"invalid-self-closing": "無效自封閉標籤",
+	"invalid-space": "<$1>裡有無效空白字元",
 	"invalid-thumb": "無效的縮略圖檔名",
 	"invalid-url": "無效的URL",
 	"invisible-triple-braces": "三重括號內有不可見內容",
