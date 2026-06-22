@@ -1,3 +1,4 @@
+import type {TokenTypes} from './base';
 import type {
 	OnlyincludeToken,
 	IncludeToken,
@@ -10,6 +11,7 @@ import type {
 	TranscludeToken,
 	ParameterToken,
 	HeadingToken,
+	ImageParameterToken,
 	HiddenToken,
 } from './internal';
 
@@ -28,5 +30,10 @@ export interface TokenTypeMap {
 	'template-name': AtomToken;
 	parameter: ParameterToken;
 	heading: HeadingToken;
+	'image-parameter': ImageParameterToken;
 }
 export type SelectedTokenTypes = keyof TokenTypeMap;
+
+// Ensure all keys in TokenTypeMap are valid token types
+declare type AssertTrue<T extends TokenTypes> = T;
+declare type TokenTypeMapKeyCheck = AssertTrue<SelectedTokenTypes>;
