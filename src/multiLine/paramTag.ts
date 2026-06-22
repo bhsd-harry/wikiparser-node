@@ -53,8 +53,6 @@ export abstract class ParamTagToken extends MultiLineToken {
 				)),
 			);
 		}
-		accum.splice(accum.indexOf(this), 1);
-		accum.push(this);
 	}
 
 	/* NOT FOR BROWSER */

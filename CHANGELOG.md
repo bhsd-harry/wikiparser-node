@@ -6,7 +6,7 @@
 **Added**
 
 - New category of linting errors: [invalid area specified in an image map link](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-imagemap)
-- HTML conversion of `<templatedata>` extension tags
+- HTML conversion of `<templatedata>` and `<charinsert>` extension tags
 - Parse and report `<seo>` and `<charinsert>` extension tags
 - [`ParamLineToken#key`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#key), [`ParamLineToken#value`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#value), [`ParamLineToken#getKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getkey), [`ParamLineToken#getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getvalue), [`ParamLineToken#setKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setkey) and [`ParamLineToken#setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setvalue)
 

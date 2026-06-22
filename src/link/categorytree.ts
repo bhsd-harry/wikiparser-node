@@ -18,7 +18,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import {cached} from '../../mixin/cached';
 import {fixedToken} from '../../mixin/fixed';
 
 /* NOT FOR BROWSER END */
@@ -97,7 +96,6 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	@cached()
 	override toHtmlInternal(): '' {
 		return '';
 	}

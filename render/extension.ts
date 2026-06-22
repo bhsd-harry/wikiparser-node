@@ -434,6 +434,8 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				+ '</table>'
 				+ '</section>';
 		}
+		case 'charinsert':
+			return lastChild.toHtmlInternal();
 		default:
 			return '';
 	}

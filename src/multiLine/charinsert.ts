@@ -16,6 +16,8 @@ import {text} from '../../util/string';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
+import {html} from '../../util/html';
+import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -113,6 +115,17 @@ export abstract class CharinsertToken extends MultiLineToken {
 	/** @private */
 	override text(): string {
 		return text(this.childNodes, '\n').trim();
+	}
+
+	/* NOT FOR BROWSER ONLY END */
+
+	/* NOT FOR BROWSER */
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(): string {
+		return html(this.childNodes, '<br>')
+			.replaceAll(/^(?:<br>)+|(?<!<br>)(?:<br>)+$/gu, '');
 	}
 }
 

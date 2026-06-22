@@ -1965,3 +1965,18 @@ No, I do not like polls.
 I have no idea, what this means.
 </poll>
 !! end
+
+!! test
+CharInsert with nowiki
+!! wikitext
+<charinsert>
+<nowiki>== + ==</nowiki><nowiki></nowiki>
+== + ==
+</charinsert>
+!! html
+<p><a data-mw-charinsert-start="== " data-mw-charinsert-end=" ==" class="mw-charinsert-item">==  ==</a><br />
+<a data-mw-charinsert-start="==" data-mw-charinsert-end="" class="mw-charinsert-item">==</a>
+<a data-mw-charinsert-start="+" data-mw-charinsert-end="" class="mw-charinsert-item">+</a>
+<a data-mw-charinsert-start="==" data-mw-charinsert-end="" class="mw-charinsert-item">==</a>
+</p>
+!! end

@@ -6,10 +6,14 @@ import type {Token, CharinsertToken, AstText} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
+import {decodeHtml} from '../../util/string';
+import {cached} from '../../mixin/cached';
+
+/** @ignore */
+const getInsertAttribute = (text: string): string =>
+	decodeHtml(text.replaceAll(/&(?=(?:nbsp|#160);)/gu, '&amp;'));
 
 /* NOT FOR BROWSER END */
-
-const reNowiki = /<(nowiki)>(.*?)<\/(nowiki)>/giu;
 
 /**
  * lines in `<charinsert>`
@@ -42,26 +46,16 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 
 	/** @class */
 	constructor(wikitext: string | undefined, config: Config, accum: Token[]) {
-		super(undefined, config, accum, {
-			AstText: ':', ExtToken: ':',
-		});
-		if (wikitext) {
-			reNowiki.lastIndex = 0;
-			let i = 0,
-				mt = reNowiki.exec(wikitext);
-			while (mt) {
-				if (mt.index > i) {
-					this.insertAt(wikitext.slice(i, mt.index));
-				}
+		super(
+			wikitext?.replace(/<(nowiki)>(.*?)<\/(nowiki)>/giu, (_, opening, content, closing) => {
 				// @ts-expect-error abstract class
-				this.insertAt(new ExtToken(mt[1]!, undefined, mt[2]!, mt[3]!, config, false, accum));
-				i = reNowiki.lastIndex;
-				mt = reNowiki.exec(wikitext);
-			}
-			if (i < wikitext.length) {
-				this.insertAt(wikitext.slice(i));
-			}
-		}
+				new ExtToken(opening, undefined, content, closing, config, false, accum);
+				return `\0${accum.length - 2}e\x7F`;
+			}),
+			config,
+			accum,
+			{AstText: ':', ExtToken: ':'},
+		);
 	}
 
 	/* NOT FOR BROWSER ONLY */
@@ -85,14 +79,30 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 	 *
 	 * 获取此行的所有插入项
 	 */
-	getItems(): (string | [string, string])[] {
-		return this.text().split(/\s+/u).map(item => {
-			const parts = item.split('+', 2) as [string] | [string, string];
-			if (parts.length === 1) {
-				return parts[0];
-			}
-			return parts[0] ? parts : '+';
-		});
+	getItems(): [string, string?][] {
+		const str = this.text();
+		return str
+			? str.split(/\s+/u).map(item => {
+				const parts = item.split('+', 2) as [string, string?];
+				if (parts.length === 1) {
+					return parts;
+				}
+				return parts[0] ? parts : ['+'];
+			})
+			: [];
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(): string {
+		const label = this.parentNode?.parentNode?.getAttr('label');
+		return this.getItems().map(([start, end = '']) => {
+			const estart = getInsertAttribute(start),
+				eend = getInsertAttribute(end);
+			return `<a data-mw-charinsert-start="${estart}" data-mw-charinsert-end="${
+				eend
+			}" class="mw-charinsert-item">${label ?? estart + eend}</a>`;
+		}).join('\n');
 	}
 }
 
