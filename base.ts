@@ -146,6 +146,7 @@ export type TokenTypes = 'root'
 	| 'param-line-key'
 	| 'param-line-value'
 	| 'imagemap-link'
+	| 'charinsert-line'
 
 	/* NOT FOR BROWSER */
 

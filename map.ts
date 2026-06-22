@@ -38,6 +38,7 @@ import type {
 	GalleryImageToken,
 	ParamLineToken,
 	ImagemapLinkToken,
+	CharinsertLineToken,
 
 	/* NOT FOR BROWSER */
 
@@ -105,7 +106,10 @@ export interface TokenTypeMap {
 	'converter-rule': ConverterRuleToken;
 	'converter-rule-variant': AtomToken;
 	'param-line': ParamLineToken;
+	'param-line-key': AtomToken;
+	'param-line-value': AtomToken;
 	'imagemap-link': ImagemapLinkToken;
+	'charinsert-line': CharinsertLineToken;
 
 	/* NOT FOR BROWSER */
 

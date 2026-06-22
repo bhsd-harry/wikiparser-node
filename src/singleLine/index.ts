@@ -1,11 +1,11 @@
 import {Token} from '../index';
+import type {MultiLineToken} from '../multiLine/index';
 
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
 import {clone} from '../../mixin/clone';
-import type {MultiLineToken} from '../multiLine/index';
 
 /* NOT FOR BROWSER END */
 

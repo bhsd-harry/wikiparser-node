@@ -1,0 +1,61 @@
+!! Version 2
+
+!! hooks
+charinsert
+!! endhooks
+
+!! test
+basic charinsert usage
+!! wikitext
+<charinsert>Σ</charinsert>
+!! html
+<p><a data-mw-charinsert-start="Σ" data-mw-charinsert-end="" class="mw-charinsert-item">Σ</a>
+</p>
+!! end
+
+!! test
+Escaped character sequences
+!! wikitext
+<charinsert>\0 \n \r \t</charinsert>
+!! html
+<p><a data-mw-charinsert-start="\0" data-mw-charinsert-end="" class="mw-charinsert-item">\0</a>
+<a data-mw-charinsert-start="\n" data-mw-charinsert-end="" class="mw-charinsert-item">\n</a>
+<a data-mw-charinsert-start="\r" data-mw-charinsert-end="" class="mw-charinsert-item">\r</a>
+<a data-mw-charinsert-start="\t" data-mw-charinsert-end="" class="mw-charinsert-item">\t</a>
+</p>
+!! end
+
+!! test
+Code snippet with a line break
+!! wikitext
+<charinsert>==H2==
+===H3===</charinsert>
+!! html
+<p><a data-mw-charinsert-start="==H2==" data-mw-charinsert-end="" class="mw-charinsert-item">==H2==</a><br />
+<a data-mw-charinsert-start="===H3===" data-mw-charinsert-end="" class="mw-charinsert-item">===H3===</a>
+</p>
+!! end
+
+!! test
+Several uses of the plus sign
+!! wikitext
+<charinsert>foo+bar foo+ +bar +</charinsert>
+!! html
+<p><a data-mw-charinsert-start="foo" data-mw-charinsert-end="bar" class="mw-charinsert-item">foobar</a>
+<a data-mw-charinsert-start="foo" data-mw-charinsert-end="" class="mw-charinsert-item">foo</a>
+<a data-mw-charinsert-start="+" data-mw-charinsert-end="" class="mw-charinsert-item">+</a>
+<a data-mw-charinsert-start="+" data-mw-charinsert-end="" class="mw-charinsert-item">+</a>
+</p>
+!! end
+
+!! test
+Overriding labels
+!! wikitext
+<charinsert label="Upper case sigma">Σ</charinsert>
+<charinsert label="Lower case sigma">σ ς</charinsert><!-- having multiple charinserts with the same label is a terrible UX, but there is no obvious way to syntactically prevent this -->
+!! html
+<p><a data-mw-charinsert-start="Σ" data-mw-charinsert-end="" class="mw-charinsert-item">Upper case sigma</a>
+<a data-mw-charinsert-start="σ" data-mw-charinsert-end="" class="mw-charinsert-item">Lower case sigma</a>
+<a data-mw-charinsert-start="ς" data-mw-charinsert-end="" class="mw-charinsert-item">Lower case sigma</a>
+</p>
+!! end
