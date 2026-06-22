@@ -49,6 +49,11 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 
 	/** @private */
 	override text(): string {
-		return super.text().trim();
+		const entities = {'\t': '&#9;', '\r': '&#12;', ' ': '&#32;'};
+		return this.childNodes.map(
+			child => child.type === 'text'
+				? child.data
+				: child.innerText!.replace(/[\t\r ]/gu, c => entities[c as '\t' | '\r' | ' ']),
+		).join('').trim().replace(/\n+/gu, ' ');
 	}
 }
