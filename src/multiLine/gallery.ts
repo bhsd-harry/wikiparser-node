@@ -132,9 +132,10 @@ export abstract class GalleryToken extends MultiLineToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const {length: l, childNodes} = this,
+			const {length: l, childNodes, name} = this,
 				{top, left} = this.getRootNode().posFromIndex(start)!,
 				errors: LintError[] = [],
+				message = Parser.msg('invalid-content', name),
 				rule = 'no-ignored',
 				{lintConfig} = Parser,
 				s = ['Image', 'NoImage', 'Comment'].map(k => lintConfig.getSeverity(rule, `gallery${k}`));
@@ -158,7 +159,7 @@ export abstract class GalleryToken extends MultiLineToken {
 						const endIndex = start + length,
 							e: LintError = {
 								rule,
-								message: Parser.msg('invalid-content', 'gallery'),
+								message,
 								severity,
 								startIndex: start,
 								endIndex,

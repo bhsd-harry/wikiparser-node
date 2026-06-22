@@ -157,6 +157,7 @@ const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
 			redirect: 1,
 
 			// categorytree: 2,
+			// charinsert: 2,
 			// choose: 2,
 			// combobox: 2,
 			// dynamicpagelist: 2,
