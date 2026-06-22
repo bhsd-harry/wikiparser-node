@@ -1,5 +1,6 @@
 import path from 'path';
 import {sanitize} from '../util/string';
+import {parsers} from '../util/constants';
 
 declare type InterfaceText = string | Record<string, string>;
 declare interface TemplateDataParam {
@@ -109,3 +110,5 @@ export const validateTemplateData = (s: string): string | TemplateData => {
 	}
 	return data;
 };
+
+parsers['validateTemplateData'] = __filename;

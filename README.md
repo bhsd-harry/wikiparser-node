@@ -35,9 +35,9 @@ WikiParser-Node has been extensively tested against the official [MediaWiki PHP 
 <div align="center">
 <a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
 <a href="https://helix-editor.com/"><img src="https://helix-editor.com/logo.svg" width="50" height="50" alt="Helix"></a>
-<a href="https://lsp.sublimetext.io/"><img src="https://avatars.githubusercontent.com/u/48095564?s=100" width="50" height="50" alt="LSP for Sublime Text"></a>
+<a href="https://lsp.sublimetext.io/"><img src="https://raw.githubusercontent.com/sublimelsp/LSP/main/icons/lsp_logo.svg" width="50" height="50" alt="LSP for Sublime Text"></a>
 <a href="https://euporie.readthedocs.io/en/latest/"><img src="https://avatars.githubusercontent.com/u/12154190?s=100" width="50" height="50" alt="euporie"></a>
-<a href="http://www.qbittorrent.org/"><img src="https://avatars.githubusercontent.com/u/2131270?s=100" width="50" height="50" alt="qBittorrent"></a>
+<a href="http://www.qbittorrent.org/"><img src="https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg" width="50" height="50" alt="qBittorrent"></a>
 </div>
 
 ## Other Versions

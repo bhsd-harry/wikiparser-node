@@ -1,4 +1,5 @@
 import {newline} from '../util/string';
+import {parsers} from '../util/constants';
 import {loadTexvcjs} from '../lib/document';
 import type {TexvcReport} from '../lib/document';
 
@@ -28,3 +29,5 @@ export const texToSvg = (() => {
 		return undefined;
 	}
 })();
+
+parsers['texToSvg'] = __filename;
