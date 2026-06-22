@@ -24,24 +24,26 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 	}
 
 	/** @class */
-	constructor(wikitext: string, config: Config, accum: Token[]) {
+	constructor(wikitext: string | undefined, config: Config, accum: Token[]) {
 		super(undefined, config, accum, {
 			AstText: ':', ExtToken: ':',
 		});
-		reNowiki.lastIndex = 0;
-		let i = 0,
-			mt = reNowiki.exec(wikitext);
-		while (mt) {
-			if (mt.index > i) {
-				this.insertAt(wikitext.slice(i, mt.index));
+		if (wikitext) {
+			reNowiki.lastIndex = 0;
+			let i = 0,
+				mt = reNowiki.exec(wikitext);
+			while (mt) {
+				if (mt.index > i) {
+					this.insertAt(wikitext.slice(i, mt.index));
+				}
+				// @ts-expect-error abstract class
+				this.insertAt(new ExtToken(mt[1]!, undefined, mt[2]!, mt[3]!, config, false, accum));
+				i = reNowiki.lastIndex;
+				mt = reNowiki.exec(wikitext);
 			}
-			// @ts-expect-error abstract class
-			this.insertAt(new ExtToken(mt[1]!, undefined, mt[2]!, mt[3]!, config, false, accum));
-			i = reNowiki.lastIndex;
-			mt = reNowiki.exec(wikitext);
-		}
-		if (i < wikitext.length) {
-			this.insertAt(wikitext.slice(i));
+			if (i < wikitext.length) {
+				this.insertAt(wikitext.slice(i));
+			}
 		}
 	}
 
