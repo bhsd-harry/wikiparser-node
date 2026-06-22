@@ -47,6 +47,8 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 		}
 	}
 
+	/* NOT FOR BROWSER ONLY */
+
 	/** @private */
 	override text(): string {
 		const entities = {'\t': '&#9;', '\r': '&#12;', ' ': '&#32;'};
