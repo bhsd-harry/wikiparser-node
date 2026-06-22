@@ -51,12 +51,6 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override text(): string {
-		const {parentNode, innerText} = this;
-		return parentNode?.is('image-parameter') && parentNode.name !== 'caption' ? '' : innerText;
-	}
-
-	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
 			const {previousSibling, bold, closing} = this,
@@ -101,5 +95,13 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			}
 			return errors;
 		}
+	}
+
+	/* NOT FOR BROWSER ONLY */
+
+	/** @private */
+	override text(): string {
+		const {parentNode, innerText} = this;
+		return parentNode?.is('image-parameter') && parentNode.name !== 'caption' ? '' : innerText;
 	}
 }

@@ -1,5 +1,4 @@
 import {numLeadingSpaces} from '@bhsd/common';
-import {text} from '../../util/string';
 import {generateForChild, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -7,6 +6,12 @@ import {MultiLineToken} from './index';
 import {CharinsertLineToken} from '../singleLine/charinsertLine';
 import type {Config, LintError} from '../../base';
 import type {Token} from '../../internal';
+
+/* NOT FOR BROWSER ONLY */
+
+import {text} from '../../util/string';
+
+/* NOT FOR BROWSER ONLY END */
 
 /**
  * `<charinsert>`
@@ -31,11 +36,6 @@ export abstract class CharinsertToken extends MultiLineToken {
 					.map((line): CharinsertLineToken => new CharinsertLineToken(line, config, accum)),
 			);
 		}
-	}
-
-	/** @private */
-	override text(): string {
-		return text(this.childNodes, '\n').trim();
 	}
 
 	/** @private */
@@ -92,5 +92,12 @@ export abstract class CharinsertToken extends MultiLineToken {
 			}
 			return errors;
 		}
+	}
+
+	/* NOT FOR BROWSER ONLY */
+
+	/** @private */
+	override text(): string {
+		return text(this.childNodes, '\n').trim();
 	}
 }
