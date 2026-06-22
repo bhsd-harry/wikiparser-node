@@ -1,6 +1,7 @@
+import {gapped} from '../../mixin/gapped';
 import Parser from '../../index';
 import {Token} from '../index';
-import {gapped} from '../../mixin/gapped';
+import {SingleLineToken} from '../singleLine/index';
 import type {AttributesToken, ExtToken} from '../../internal';
 
 /**
@@ -30,7 +31,8 @@ export abstract class MultiLineToken extends Token {
 		super(undefined, config, accum, acceptable);
 		if (wikitext) {
 			const newConfig = {...config, excludes: [...config.excludes, 'list']};
-			this.safeAppend(wikitext.split('\n').map(line => new Token(line, newConfig, accum)));
+			// @ts-expect-error abstract class
+			this.safeAppend(wikitext.split('\n').map(line => new SingleLineToken(line, newConfig, accum)));
 		}
 	}
 

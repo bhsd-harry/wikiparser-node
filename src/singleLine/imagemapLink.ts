@@ -1,11 +1,11 @@
-import {generateForChild} from '../util/lint';
-import Parser from '../index';
-import {Token} from './index';
-import {NoincludeToken} from './nowiki/noinclude';
-import {LinkToken} from './link/index';
-import {ExtLinkToken} from './extLink';
-import type {Config, LintError} from '../base';
-import type {AstText, ImagemapToken, GalleryImageToken} from '../internal';
+import {generateForChild} from '../../util/lint';
+import Parser from '../../index';
+import {SingleLineToken} from './index';
+import {NoincludeToken} from '../nowiki/noinclude';
+import {LinkToken} from '../link/index';
+import {ExtLinkToken} from '../extLink';
+import type {Config, LintError} from '../../base';
+import type {AstText, ImagemapToken, GalleryImageToken, Token} from '../../internal';
 
 /** @ignore */
 const notNumeric = (s: string, allowNegative?: boolean): boolean => {
@@ -19,7 +19,7 @@ const notNumeric = (s: string, allowNegative?: boolean): boolean => {
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export abstract class ImagemapLinkToken extends Token {
+export abstract class ImagemapLinkToken extends SingleLineToken {
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): NoincludeToken;
