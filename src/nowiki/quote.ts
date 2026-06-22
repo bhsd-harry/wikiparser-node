@@ -81,12 +81,6 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override text(): string {
-		const {parentNode, innerText} = this;
-		return parentNode?.is('image-parameter') && parentNode.name !== 'caption' ? '' : innerText;
-	}
-
-	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
 			const {previousSibling, bold, closing} = this,
@@ -133,6 +127,8 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		}
 	}
 
+	/* PRINT ONLY */
+
 	/** @private */
 	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
@@ -141,6 +137,18 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			return json;
 		}
 	}
+
+	/* PRINT ONLY END */
+
+	/* NOT FOR BROWSER ONLY */
+
+	/** @private */
+	override text(): string {
+		const {parentNode, innerText} = this;
+		return parentNode?.is('image-parameter') && parentNode.name !== 'caption' ? '' : innerText;
+	}
+
+	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
 

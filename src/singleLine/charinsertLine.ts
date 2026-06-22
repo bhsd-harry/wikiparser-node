@@ -64,6 +64,8 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 		}
 	}
 
+	/* NOT FOR BROWSER ONLY */
+
 	/** @private */
 	override text(): string {
 		const entities = {'\t': '&#9;', '\r': '&#12;', ' ': '&#32;'};
@@ -73,6 +75,8 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 				: child.innerText!.replace(/[\t\r ]/gu, c => entities[c as '\t' | '\r' | ' ']),
 		).join('').trim().replace(/\n+/gu, ' ');
 	}
+
+	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
 
