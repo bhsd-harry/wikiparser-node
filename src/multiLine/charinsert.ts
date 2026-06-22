@@ -1,5 +1,4 @@
 import {numLeadingSpaces} from '@bhsd/common';
-import {text} from '../../util/string';
 import {generateForChild, fixByRemove} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -31,11 +30,6 @@ export abstract class CharinsertToken extends MultiLineToken {
 					.map((line): CharinsertLineToken => new CharinsertLineToken(line, config, accum)),
 			);
 		}
-	}
-
-	/** @private */
-	override text(): string {
-		return text(this.childNodes, '\n').trim();
 	}
 
 	/** @private */
