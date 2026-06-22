@@ -66,7 +66,29 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 
 	/** @private */
 	override text(): string {
-		return super.text().trim();
+		const entities = {'\t': '&#9;', '\r': '&#12;', ' ': '&#32;'};
+		return this.childNodes.map(
+			child => child.type === 'text'
+				? child.data
+				: child.innerText!.replace(/[\t\r ]/gu, c => entities[c as '\t' | '\r' | ' ']),
+		).join('').trim().replace(/\n+/gu, ' ');
+	}
+
+	/* NOT FOR BROWSER */
+
+	/**
+	 * Get all insertion items in this line
+	 *
+	 * 获取此行的所有插入项
+	 */
+	getItems(): (string | [string, string])[] {
+		return this.text().split(/\s+/u).map(item => {
+			const parts = item.split('+', 2) as [string] | [string, string];
+			if (parts.length === 1) {
+				return parts[0];
+			}
+			return parts[0] ? parts : '+';
+		});
 	}
 }
 
