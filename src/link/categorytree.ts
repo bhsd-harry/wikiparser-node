@@ -17,6 +17,8 @@ import type {
  */
 @padded('')
 export abstract class CategorytreeToken extends LinkBaseToken {
+	declare readonly name: 'categorytree';
+
 	declare readonly childNodes: readonly [AtomToken];
 	abstract override get lastChild(): AtomToken;
 	abstract override get nextSibling(): undefined;
