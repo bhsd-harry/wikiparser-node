@@ -38,6 +38,7 @@ import type {
 	GalleryImageToken,
 	ParamLineToken,
 	ImagemapLinkToken,
+	CharinsertLineToken,
 } from './internal';
 
 export interface TokenTypeMap {
@@ -101,7 +102,10 @@ export interface TokenTypeMap {
 	'converter-rule': ConverterRuleToken;
 	'converter-rule-variant': AtomToken;
 	'param-line': ParamLineToken;
+	'param-line-key': AtomToken;
+	'param-line-value': AtomToken;
 	'imagemap-link': ImagemapLinkToken;
+	'charinsert-line': CharinsertLineToken;
 }
 export type SelectedTokenTypes = keyof TokenTypeMap;
 

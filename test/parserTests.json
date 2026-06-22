@@ -7504,6 +7504,44 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;categorytree<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">depth</span>=<span class=\"wpb-attr-value\">0</span></span></span>&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-link-target\">CategoryTree root</span></span>&lt;/categorytree&gt;</span></span>"
 	},
 	{
+		"desc": "charinsert"
+	},
+	{
+		"desc": "basic charinsert usage",
+		"wikitext": "<charinsert>Σ</charinsert>",
+		"html": "<p><a data-mw-charinsert-start=\"Σ\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">Σ</a>\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;charinsert&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-charinsert-line\">Σ</span></span>&lt;/charinsert&gt;</span></span>"
+	},
+	{
+		"desc": "Escaped character sequences",
+		"wikitext": "<charinsert>\\0 \\n \\r \\t</charinsert>",
+		"html": "<p><a data-mw-charinsert-start=\"\\0\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">\\0</a>\n<a data-mw-charinsert-start=\"\\n\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">\\n</a>\n<a data-mw-charinsert-start=\"\\r\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">\\r</a>\n<a data-mw-charinsert-start=\"\\t\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">\\t</a>\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;charinsert&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-charinsert-line\">\\0 \\n \\r \\t</span></span>&lt;/charinsert&gt;</span></span>"
+	},
+	{
+		"desc": "Code snippet with a line break",
+		"wikitext": "<charinsert>==H2==\n===H3===</charinsert>",
+		"html": "<p><a data-mw-charinsert-start=\"==H2==\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">==H2==</a><br />\n<a data-mw-charinsert-start=\"===H3===\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">===H3===</a>\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;charinsert&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-charinsert-line\">==H2==</span>\n<span class=\"wpb-charinsert-line\">===H3===</span></span>&lt;/charinsert&gt;</span></span>"
+	},
+	{
+		"desc": "Several uses of the plus sign",
+		"wikitext": "<charinsert>foo+bar foo+ +bar +</charinsert>",
+		"html": "<p><a data-mw-charinsert-start=\"foo\" data-mw-charinsert-end=\"bar\" class=\"mw-charinsert-item\">foobar</a>\n<a data-mw-charinsert-start=\"foo\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">foo</a>\n<a data-mw-charinsert-start=\"+\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">+</a>\n<a data-mw-charinsert-start=\"+\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">+</a>\n</p>",
+		"render": "",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;charinsert&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-charinsert-line\">foo+bar foo+ +bar +</span></span>&lt;/charinsert&gt;</span></span>"
+	},
+	{
+		"desc": "Overriding labels",
+		"wikitext": "<charinsert label=\"Upper case sigma\">Σ</charinsert>\n<charinsert label=\"Lower case sigma\">σ ς</charinsert><!-- having multiple charinserts with the same label is a terrible UX, but there is no obvious way to syntactically prevent this -->",
+		"html": "<p><a data-mw-charinsert-start=\"Σ\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">Upper case sigma</a>\n<a data-mw-charinsert-start=\"σ\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">Lower case sigma</a>\n<a data-mw-charinsert-start=\"ς\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">Lower case sigma</a>\n</p>",
+		"render": "<p><br>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;charinsert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">label</span>=\"<span class=\"wpb-attr-value\">Upper case sigma</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-charinsert-line\">Σ</span></span>&lt;/charinsert&gt;</span>\n<span class=\"wpb-ext\">&lt;charinsert<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">label</span>=\"<span class=\"wpb-attr-value\">Lower case sigma</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-charinsert-line\">σ ς</span></span>&lt;/charinsert&gt;</span><span class=\"wpb-comment\">&lt;!-- having multiple charinserts with the same label is a terrible UX, but there is no obvious way to syntactically prevent this --&gt;</span></span>"
+	},
+	{
 		"desc": "citeParserTests"
 	},
 	{
