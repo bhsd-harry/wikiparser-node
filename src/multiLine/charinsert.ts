@@ -51,7 +51,7 @@ export abstract class CharinsertToken extends MultiLineToken {
 			const rect = new BoundingRect(this, start),
 				msg = Parser.msg('invalid-space', name),
 				trailing: LintError[] = [];
-			let errors: LintError[] = [],
+			let errors = super.lint(start),
 				begin = false;
 			for (const child of childNodes) {
 				const str = String(child),
