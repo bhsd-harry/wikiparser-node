@@ -139,6 +139,7 @@ export type TokenTypes = 'root'
 	| 'param-line-key'
 	| 'param-line-value'
 	| 'imagemap-link'
+	| 'charinsert-line'
 	;
 
 export const stages = /* #__PURE__ */ (() => {

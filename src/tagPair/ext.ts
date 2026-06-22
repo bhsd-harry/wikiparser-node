@@ -182,6 +182,13 @@ export abstract class ExtToken extends TagPairToken {
 				innerToken = new FuncTagToken(inner, newConfig, accum);
 				break;
 			}
+			case 'charinsert': {
+				const {CharinsertToken}: typeof import('../multiLine/charinsert') =
+					require('../multiLine/charinsert');
+				// @ts-expect-error abstract class
+				innerToken = new CharinsertToken(inner, newConfig, accum);
+				break;
+			}
 			// 更多定制扩展的代码示例：
 			// ```
 			// case 'extensionName': {
