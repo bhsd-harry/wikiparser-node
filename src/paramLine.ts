@@ -31,6 +31,11 @@ export abstract class ParamLineToken extends Token {
 		return 'param-line';
 	}
 
+	/** A reasonable parameter name / 合理的参数名 */
+	get key(): string | undefined {
+		LINT: return this.getKey();
+	}
+
 	/** @param name 扩展标签名 */
 	constructor(
 		name: string,
@@ -126,6 +131,23 @@ export abstract class ParamLineToken extends Token {
 				return [e];
 			}
 			return super.lint(start, false);
+		}
+	}
+
+	/**
+	 * Get a reasonable parameter name
+	 *
+	 * 获取合理的参数名
+	 */
+	getKey(): string | undefined {
+		LINT: {
+			const {length, firstChild: {childNodes}, name} = this,
+				isInputbox = name === 'inputbox';
+			return length === 1 || childNodes.some(({type}) => type === 'ext')
+				? undefined
+				: childNodes.map(child => isInputbox && child.type === 'text' ? child.data.toLowerCase() : child.text())
+					.join('')
+					.trim();
 		}
 	}
 }
