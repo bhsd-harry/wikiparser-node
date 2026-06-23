@@ -26,6 +26,7 @@ const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude
 export abstract class ParamLineToken extends Token {
 	#delimiter;
 
+	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, AtomToken];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): AtomToken;
@@ -148,7 +149,7 @@ export abstract class ParamLineToken extends Token {
 				if (name === 'inputbox') {
 					key = key.toLowerCase();
 				}
-				const params = extParams[name!]!;
+				const params = extParams[name]!;
 				if (
 					i === -1
 						? !params.some(

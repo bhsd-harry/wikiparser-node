@@ -14,6 +14,7 @@
 	"delink": null,
 	"duplicate-attribute": "duplicate $1 attribute",
 	"duplicate-category": "duplicate category",
+	"duplicate-ext-parameter": "duplicate parameter of <$1>",
 	"duplicate-id": "duplicate HTML id",
 	"duplicate-image-parameter": "duplicate image $1 parameter",
 	"duplicate-parameter": "duplicate template parameter",

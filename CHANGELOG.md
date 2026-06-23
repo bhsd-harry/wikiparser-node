@@ -1,14 +1,15 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.45.0
 
-*2026-06-23*
+*2026-06-24*
 
 **Added**
 
 - New category of linting errors: [invalid area specified in an image map link](https://github.com/bhsd-harry/wikiparser-node/wiki/invalid-imagemap)
 - HTML conversion of `<templatedata>` and `<charinsert>` extension tags
 - Parse and report `<seo>` and `<charinsert>` extension tags
-- [`ParamLineToken#key`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#key), [`ParamLineToken#value`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#value), [`ParamLineToken#getKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getkey), [`ParamLineToken#getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getvalue), [`ParamLineToken#setKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setkey) and [`ParamLineToken#setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setvalue)
+- New getters and methods of [`ParamLineToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29): [`key`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#key), [`value`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#value), [`getKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getkey), [`getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getvalue), [`setKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setkey) and [`setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setvalue)
+- New methods of [`ParamTagToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29): [`getDuplicatedParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getduplicatedparams), [`getKeys`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getkeys), [`getParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getparams), [`getValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getvalues), [`hasDuplicatedParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#hasduplicatedparams), [`hasParam`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#hasparam), [`newParam`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#newparam), [`removeParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#removeparams) and [`setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#setvalue)
 
 **Fixed**
 
@@ -252,7 +253,7 @@
 - [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction) now supports custom parser functions defined via [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook)
 - [`Title#getFileUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getfileurl) that internally calls the `filepath` parser function to generate a `Special:Redirect/file/` URL
-- [`Parser.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lint), [`Parser.print`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#print) and [`Parser.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#tohtml)
+- New methods of [`Parser`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29): [`lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lint), [`print`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#print) and [`toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#tohtml)
 
 **Fixed**
 
@@ -294,7 +295,7 @@
 **Added**
 
 - [`HeadingToken#section`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29#section)
-- [`QuoteToken#findMatchingQuote`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#findmatchingquote) and [`QuoteToken#getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#getrange)
+- New methods of [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29): [`findMatchingQuote`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#findmatchingquote) and [`getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken-%28EN%29#getrange)
 - [`NoincludeToken#lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken-%28EN%29#lint) now reports useless attributes like [`IncludeToken#lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken-%28EN%29#lint)
 - New category of linting errors: [redirect-like text in list items and header-like text in plain text](https://github.com/bhsd-harry/wikiparser-node/wiki/syntax-like)
 
@@ -461,7 +462,7 @@
 **Added**
 
 - [`HtmlToken#getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#getrange) that returns the range of the HTML tag pair
-- New properties and methods of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29): [`childNodes`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#childnodes), [`firstChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#firstchild), [`lastChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#lastchild), [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#children), [`firstElementChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#firstelementchild), [`lastElementChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#lastelementchild), [`childElementCount`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#childelementcount), [`offsetHeight`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#offsetheight), [`offsetWidth`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#offsetwidth), [`getClientRects`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getclientrects), [`remove`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#remove), [`before`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#before), [`after`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#after), [`replaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#replacewith), [`append`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#append), [`prepend`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#prepend), [`removeChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#removeChild), [`getRootNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getrootnode), [`closest`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#closest), [`querySelector`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#queryselector), [`querySelectorAll`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#queryselectorall), [`getElementByTypes`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementbytypes), [`getElementById`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementbyid), [`getElementsByClassName`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementsbyclassname), [`getElementsByTagName`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementsbytagname), [`escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#escape)
+- New properties and methods of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29): [`childNodes`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#childnodes), [`firstChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#firstchild), [`lastChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#lastchild), [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#children), [`firstElementChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#firstelementchild), [`lastElementChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#lastelementchild), [`childElementCount`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#childelementcount), [`offsetHeight`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#offsetheight), [`offsetWidth`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#offsetwidth), [`getClientRects`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getclientrects), [`remove`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#remove), [`before`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#before), [`after`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#after), [`replaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#replacewith), [`append`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#append), [`prepend`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#prepend), [`removeChild`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#removeChild), [`getRootNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getrootnode), [`closest`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#closest), [`querySelector`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#queryselector), [`querySelectorAll`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#queryselectorall), [`getElementByTypes`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementbytypes), [`getElementById`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementbyid), [`getElementsByClassName`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementsbyclassname), [`getElementsByTagName`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#getelementsbytagname) and [`escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#escape)
 
 **Fixed**
 
@@ -1017,8 +1018,7 @@
 
 **Added**
 
-- [`GalleryToken#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#tohtml)
-- [`GalleryToken.widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#widths) and [`GalleryToken.heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#heights)
+- New getters and methods of [`GalleryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29): [`toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#tohtml), [`widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#widths) and [`heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken-%28EN%29#heights)
 
 **Fixed**
 
@@ -1103,7 +1103,7 @@
 - `<p>` wrapping for [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml)
 - Conversion from Wikitext lists to HTML
 - [`ConverterToken#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterToken-%28EN%29#tohtml) when there are variant flags
-- [`FileToken#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#tohtml), [`FileToken#getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#getframe), [`FileToken#getHorizAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#gethorizalign) and [`FileToken#getVertAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#getvertalign)
+- New methods of [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29): [`toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#tohtml), [`getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#getframe), [`getHorizAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#gethorizalign) and [`getVertAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#getvertalign)
 - [`ImageParameterToken#getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#geturl)
 
 **Fixed**
@@ -1237,7 +1237,7 @@
 
 **Added**
 
-- New getters [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#italic)
+- New getters of [`AstNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29): [`font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#font), [`bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#bold) and [`italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode-%28EN%29#italic)
 
 **Fixed**
 
@@ -1608,7 +1608,7 @@
 
 **Added**
 
-- New methods [`AstText#escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#escape), `ParameterToken#escape` and `MagicLinkToken#escape`
+- New methods [`AstText#escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText-%28EN%29#escape), [`ParameterToken#escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#escape) and [`MagicLinkToken#escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken-%28EN%29#escape)
 
 **Fixed**
 
