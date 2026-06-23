@@ -115,6 +115,12 @@
 				"notalk"
 			],
 			"description": "Makes a page in a talk namespace not be treated like a talk page."
+		},
+		{
+			"aliases": [
+				"nomediaviewercarousel"
+			],
+			"description": "Disables the [image carousel](https://www.mediawiki.org/wiki/Readers/Reader_Growth/Image_Browsing) on an article page."
 		}
 	],
 	"parserFunctions": [
@@ -179,7 +185,7 @@
 					}
 				]
 			],
-			"description": "A protocol-relative path to the title, which depends on the configuration setting for the local wiki (and so may or may not start with `http(s)://`). This will also resolve [interwiki](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Interwiki) prefixes. **Note:** Unbracketed (plain) protocol-relative links are not automagically linked."
+			"description": "A protocol-relative path to the title, which depends on the configuration setting for the local wiki (and so may or may not start with `http(s)://`). This will also resolve [interwiki](https://www.mediawiki.org/wiki/Manual:Interwiki) prefixes. **Note:** Unbracketed (plain) protocol-relative links are not automagically linked."
 		},
 		{
 			"aliases": [
@@ -200,7 +206,7 @@
 					}
 				]
 			],
-			"description": "A percent-encoded protocol-relative path to the title, which depends on the configuration setting for the local wiki (and so may or may not start with `http(s)://`). This will also resolve [interwiki](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Interwiki) prefixes. **Note:** Unbracketed (plain) protocol-relative links are not automagically linked."
+			"description": "A percent-encoded protocol-relative path to the title, which depends on the configuration setting for the local wiki (and so may or may not start with `http(s)://`). This will also resolve [interwiki](https://www.mediawiki.org/wiki/Manual:Interwiki) prefixes. **Note:** Unbracketed (plain) protocol-relative links are not automagically linked."
 		},
 		{
 			"aliases": [
@@ -221,7 +227,7 @@
 					}
 				]
 			],
-			"description": "The absolute path to the title, using the canonical URL. This will also resolve [interwiki](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Interwiki) prefixes."
+			"description": "The absolute path to the title, using the canonical URL. This will also resolve [interwiki](https://www.mediawiki.org/wiki/Manual:Interwiki) prefixes."
 		},
 		{
 			"aliases": [
@@ -242,7 +248,7 @@
 					}
 				]
 			],
-			"description": "The percent-encoded absolute path to the title, using the canonical URL. This will also resolve [interwiki](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Interwiki) prefixes."
+			"description": "The percent-encoded absolute path to the title, using the canonical URL. This will also resolve [interwiki](https://www.mediawiki.org/wiki/Manual:Interwiki) prefixes."
 		},
 		{
 			"aliases": [
@@ -343,7 +349,7 @@
 					}
 				]
 			],
-			"description": "The current localized name for the [namespace](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Namespace).\n\nThe main namespace has no name, i.e. `{{ns:0}}` returns an empty string."
+			"description": "The current localized name for the [namespace](https://www.mediawiki.org/wiki/Help:Namespace).\n\nThe main namespace has no name, i.e. `{{ns:0}}` returns an empty string."
 		},
 		{
 			"aliases": [
@@ -361,7 +367,7 @@
 					}
 				]
 			],
-			"description": "It returns the current localized name for the [namespace](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Namespace), but it replaces spaces with underscores, making it usable in external links."
+			"description": "It returns the current localized name for the [namespace](https://www.mediawiki.org/wiki/Help:Namespace), but it replaces spaces with underscores, making it usable in external links."
 		},
 		{
 			"aliases": [
@@ -564,7 +570,7 @@
 					}
 				]
 			],
-			"description": "The full name of the language for the given [language code](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Language#Language_code): native name (language autonym) by default, name translated in target language if a target language code is specified. [Extension:CLDR](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:CLDR) must be installed for the translation to work. If no argument is given, returns the name of the *target language* (for articles, the content language; for messages, the user language)."
+			"description": "The full name of the language for the given [language code](https://www.mediawiki.org/wiki/Manual:Language#Language_code): native name (language autonym) by default, name translated in target language if a target language code is specified. [Extension:CLDR](https://www.mediawiki.org/wiki/Extension:CLDR) must be installed for the translation to work. If no argument is given, returns the name of the *target language* (for articles, the content language; for messages, the user language)."
 		},
 		{
 			"aliases": [
@@ -578,7 +584,7 @@
 					}
 				]
 			],
-			"description": "The [IETF BCP-47](https://en.wikipedia.org/wiki/IETF_language_tag) language tag for the given [language code](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Language#Language_code). If no argument is given, returns the tag of the *target language* (for articles, the content language; for messages, the user language)."
+			"description": "The [IETF BCP-47](https://en.wikipedia.org/wiki/IETF_language_tag) language tag for the given [language code](https://www.mediawiki.org/wiki/Manual:Language#Language_code). If no argument is given, returns the tag of the *target language* (for articles, the content language; for messages, the user language)."
 		},
 		{
 			"aliases": [
@@ -601,7 +607,7 @@
 					}
 				]
 			],
-			"description": "The directionality for the given [language code](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Language#Language_code), either `rtl` or `ltr`. If the optional second argument is `bcp47`, then the first argument is interpreted as a [BCP-47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag). If no argument is given, returns the directionality of the *target language* (for articles, the content language; for messages, the user language)."
+			"description": "The directionality for the given [language code](https://www.mediawiki.org/wiki/Manual:Language#Language_code), either `rtl` or `ltr`. If the optional second argument is `bcp47`, then the first argument is interpreted as a [BCP-47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag). If no argument is given, returns the directionality of the *target language* (for articles, the content language; for messages, the user language)."
 		},
 		{
 			"aliases": [
@@ -747,7 +753,7 @@
 					}
 				]
 			],
-			"description": "The unexpanded wikitext is rendered (more or less, for details see [help](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage))."
+			"description": "The unexpanded wikitext is rendered (more or less, for details see [help](https://www.mediawiki.org/wiki/Help:Templates#Usage))."
 		},
 		{
 			"aliases": [
@@ -841,7 +847,7 @@
 					}
 				]
 			],
-			"description": "Alias for XML-style MediaWiki parser tags or extension tags. It allows a [pre-save transform of wiki code](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension?) and parser functions within tags before the tag is processed. It also prevents parsing of tags in conditional paths that aren't executed (like in `#if` statements). Content between tags is passed as the first parameter, and any attributes for the tags can be passed as subsequent parameters."
+			"description": "Alias for XML-style MediaWiki parser tags or extension tags. It allows a [pre-save transform of wiki code](https://www.mediawiki.org/wiki/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension?) and parser functions within tags before the tag is processed. It also prevents parsing of tags in conditional paths that aren't executed (like in `#if` statements). Content between tags is passed as the first parameter, and any attributes for the tags can be passed as subsequent parameters."
 		},
 		{
 			"aliases": [
@@ -952,7 +958,7 @@
 					}
 				]
 			],
-			"description": "**[Expensive]** This function takes an input string, interprets it as a page title, and returns one of two values depending on whether or not the page exists on the local wiki.\n\nThe function evaluates to `true` for [system messages](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:System_message) that have been customized, and for [special pages](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Special_pages) that are defined by the software.\n\nIf a page checks a target using `#ifexist:`, then that page will appear in the Special:WhatLinksHere list for the target page.\n\n`#ifexist:` does not work with interwiki links.\n\nA page that does not exist and is tested for using #ifexist will end up on the [Wanted Pages](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:WantedPages)."
+			"description": "**[Expensive]** This function takes an input string, interprets it as a page title, and returns one of two values depending on whether or not the page exists on the local wiki.\n\nThe function evaluates to `true` for [system messages](https://www.mediawiki.org/wiki/Help:System_message) that have been customized, and for [special pages](https://www.mediawiki.org/wiki/Help:Special_pages) that are defined by the software.\n\nIf a page checks a target using `#ifexist:`, then that page will appear in the Special:WhatLinksHere list for the target page.\n\n`#ifexist:` does not work with interwiki links.\n\nA page that does not exist and is tested for using #ifexist will end up on the [Wanted Pages](https://www.mediawiki.org/wiki/Manual:WantedPages)."
 		},
 		{
 			"aliases": [
@@ -1370,7 +1376,7 @@
 					}
 				]
 			],
-			"description": "`{{#loop}}` repeatedly parses and displays `block statement` a number of times equal to the absolute value of `number of loops to be performed`. `Starting value` is placed in a variable (accessible by [Variables](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Variables) extension's `{{#var:}}` parser function) using the name `variable name`. After each loop, the variable is incremented by one if `number of loops to be performed` is positive, or decremented by one if `number of loops to be performed` is negative."
+			"description": "`{{#loop}}` repeatedly parses and displays `block statement` a number of times equal to the absolute value of `number of loops to be performed`. `Starting value` is placed in a variable (accessible by [Variables](https://www.mediawiki.org/wiki/Extension:Variables) extension's `{{#var:}}` parser function) using the name `variable name`. After each loop, the variable is incremented by one if `number of loops to be performed` is positive, or decremented by one if `number of loops to be performed` is negative."
 		},
 		{
 			"aliases": [
@@ -1392,7 +1398,7 @@
 					}
 				]
 			],
-			"description": "`{{#forargs}}` is to be used in templates.\n\nIt takes arguments that are passed to the template and puts them in variables accessible by [Variables](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Variables) extension's `{{#var:}}` parser function.\n\nThis function iterates through each argument whose name begins with `prefix`.\n\nWith each iteration it puts the argument name minus `prefix` into `key` as if calling `{{#vardefine: <key> }}`.\n\nIt then takes the value of the argument and puts it into `value` in a similar method.\n\nThe block statement is then expanded.\n\nThe block statement may contain `{{#var: <key> }}` and `{{#var: <value> }}` to access the stored arguments."
+			"description": "`{{#forargs}}` is to be used in templates.\n\nIt takes arguments that are passed to the template and puts them in variables accessible by [Variables](https://www.mediawiki.org/wiki/Extension:Variables) extension's `{{#var:}}` parser function.\n\nThis function iterates through each argument whose name begins with `prefix`.\n\nWith each iteration it puts the argument name minus `prefix` into `key` as if calling `{{#vardefine: <key> }}`.\n\nIt then takes the value of the argument and puts it into `value` in a similar method.\n\nThe block statement is then expanded.\n\nThe block statement may contain `{{#var: <key> }}` and `{{#var: <value> }}` to access the stored arguments."
 		},
 		{
 			"aliases": [
@@ -1618,7 +1624,7 @@
 					}
 				]
 			],
-			"description": "In the wikitext, the tag is substituted by the content (single-level evaluation only), see [Help:Templates](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage)."
+			"description": "In the wikitext, the tag is substituted by the content (single-level evaluation only), see [Help:Templates](https://www.mediawiki.org/wiki/Help:Templates#Usage)."
 		},
 		{
 			"aliases": [
@@ -1633,7 +1639,7 @@
 					}
 				]
 			],
-			"description": "See [Help:Templates](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage)."
+			"description": "See [Help:Templates](https://www.mediawiki.org/wiki/Help:Templates#Usage)."
 		},
 		{
 			"aliases": [
@@ -1828,7 +1834,7 @@
 				"dirmark",
 				"directionmark"
 			],
-			"description": "Outputs a Unicode directional mark that matches the wiki's default language's direction (`&lrm`; on left-to-right wikis, `&rlm`; on right-to-left wikis), useful in text with multi-directional text. Since 1.19, it depends on the [page content language](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Language#page-content-lang)."
+			"description": "Outputs a Unicode directional mark that matches the wiki's default language's direction (`&lrm`; on left-to-right wikis, `&rlm`; on right-to-left wikis), useful in text with multi-directional text. Since 1.19, it depends on the [page content language](https://www.mediawiki.org/wiki/Manual:Language#page-content-lang)."
 		},
 		{
 			"aliases": [
@@ -1873,7 +1879,7 @@
 					}
 				]
 			],
-			"description": "Returns the [page identifier (page ID)](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Page_ID).\n\n**[Expensive]** Returns the page identifier of the specified page."
+			"description": "Returns the [page identifier (page ID)](https://www.mediawiki.org/wiki/Help:Page_ID).\n\n**[Expensive]** Returns the page identifier of the specified page."
 		},
 		{
 			"aliases": [
@@ -1976,7 +1982,7 @@
 					}
 				]
 			],
-			"description": "Unique revision ID.\n\nIt is always empty in preview, thus one can show an error message only in preview. May be disabled in [miser mode (all WMF wikis)](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgMiserMode) returning `-` instead when not in preview.\n\n**Warning**: This variable **cannot** be [substituted](https://www.mediawiki.org/wiki/Help:Substitution).\n\n**[Expensive]** Unique revision ID of the last revision on the specified page."
+			"description": "**[Expensive unless in miser mode]** Unique revision ID.\n\nIt is always empty in preview, thus one can show an error message only in preview. May be disabled in [miser mode (all WMF wikis)](https://www.mediawiki.org/wiki/Manual:$wgMiserMode) returning `-` instead when not in preview.\n\n**Warning**: This variable **cannot** be [substituted](https://www.mediawiki.org/wiki/Help:Substitution).\n\n**[Expensive]** Unique revision ID of the last revision on the specified page."
 		},
 		{
 			"aliases": [
@@ -2111,7 +2117,7 @@
 					}
 				]
 			],
-			"description": "Format the [display title](https://www.mediawiki.org/wiki/Special:MyLanguage/Display_title) of the current page, which is what is typically shown in a page's title header. The value must be equivalent to the default title: only capitalization changes to certain parts of the title (not all) and replacing spaces with underscores are allowed.\n\nIt can take a second argument of *noerror* or *noreplace* to suppress error messages when multiple displaytitles are used on one page or to make this `displaytitle` do nothing if a `displaytitle` was already specified earlier in the page."
+			"description": "Format the [display title](https://www.mediawiki.org/wiki/Display_title) of the current page, which is what is typically shown in a page's title header. The value must be equivalent to the default title: only capitalization changes to certain parts of the title (not all) and replacing spaces with underscores are allowed.\n\nIt can take a second argument of *noerror* or *noreplace* to suppress error messages when multiple displaytitles are used on one page or to make this `displaytitle` do nothing if a `displaytitle` was already specified earlier in the page."
 		},
 		{
 			"aliases": [
@@ -2144,7 +2150,7 @@
 					}
 				]
 			],
-			"description": "Used for categorizing pages, sets a default [category sort key](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories). It can take a second argument of *noerror* or *noreplace* to suppress error messages when multiple defaultsortkeys are used on one page or to make this `defaultsort` do nothing if a `defaultsort` was already specified earlier in the page."
+			"description": "Used for categorizing pages, sets a default [category sort key](https://www.mediawiki.org/wiki/Help:Categories). It can take a second argument of *noerror* or *noreplace* to suppress error messages when multiple defaultsortkeys are used on one page or to make this `defaultsort` do nothing if a `defaultsort` was already specified earlier in the page."
 		},
 		{
 			"aliases": [
@@ -2174,7 +2180,7 @@
 					}
 				]
 			],
-			"description": "Number of pages in [content namespaces](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Using_custom_namespaces#content-ns) that qualify as articles."
+			"description": "Number of pages in [content namespaces](https://www.mediawiki.org/wiki/Manual:Using_custom_namespaces#content-ns) that qualify as articles."
 		},
 		{
 			"aliases": [
@@ -2234,7 +2240,7 @@
 					}
 				]
 			],
-			"description": "Number of users in the *sysop* [group](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:User_rights)."
+			"description": "Number of users in the *sysop* [group](https://www.mediawiki.org/wiki/Manual:User_rights)."
 		},
 		{
 			"aliases": [
@@ -2299,7 +2305,7 @@
 					}
 				]
 			],
-			"description": "**[Expensive]** Number of pages (including subcategories and files if no second argument is provided) in the given [category](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories)."
+			"description": "**[Expensive]** Number of pages (including subcategories and files if no second argument is provided) in the given [category](https://www.mediawiki.org/wiki/Help:Categories)."
 		},
 		{
 			"aliases": [
@@ -2322,7 +2328,7 @@
 					}
 				]
 			],
-			"description": "Number of users in a specific [group](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:User_rights)."
+			"description": "Number of users in a specific [group](https://www.mediawiki.org/wiki/Manual:User_rights)."
 		},
 		{
 			"aliases": [
@@ -2392,7 +2398,7 @@
 					}
 				]
 			],
-			"description": "Page name of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) level without the namespace."
+			"description": "Page name of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Help:Subpages) level without the namespace."
 		},
 		{
 			"aliases": [
@@ -2406,7 +2412,7 @@
 					}
 				]
 			],
-			"description": "URL encoded page name of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) level without the namespace."
+			"description": "URL encoded page name of the page in the immediately superior [subpage](https://www.mediawiki.org/wiki/Help:Subpages) level without the namespace."
 		},
 		{
 			"aliases": [
@@ -2448,7 +2454,7 @@
 					}
 				]
 			],
-			"description": "The [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) title. If no subpage exists, the value of `{{PAGENAME}}` is returned."
+			"description": "The [subpage](https://www.mediawiki.org/wiki/Help:Subpages) title. If no subpage exists, the value of `{{PAGENAME}}` is returned."
 		},
 		{
 			"aliases": [
@@ -2462,7 +2468,7 @@
 					}
 				]
 			],
-			"description": "The URL encoded [subpage](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages) title. If no subpage exists, the value of `{{PAGENAME}}` is returned."
+			"description": "The URL encoded [subpage](https://www.mediawiki.org/wiki/Help:Subpages) title. If no subpage exists, the value of `{{PAGENAME}}` is returned."
 		},
 		{
 			"aliases": [
@@ -2562,7 +2568,7 @@
 					}
 				]
 			],
-			"description": "[ID](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Namespace#Built-in_namespaces) of the page's namespace"
+			"description": "[ID](https://www.mediawiki.org/wiki/Manual:Namespace#Built-in_namespaces) of the page's namespace"
 		},
 		{
 			"aliases": [
@@ -2626,13 +2632,13 @@
 			"aliases": [
 				"!"
 			],
-			"description": "Used to include a vertical bar (pipe).\n\nSee [help](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Extension:ParserFunctions#Escaping_pipe_characters_in_tables) for further explanation."
+			"description": "Used to include a vertical bar (pipe).\n\nSee [help](https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#Escaping_pipe_characters_in_tables) for further explanation."
 		},
 		{
 			"aliases": [
 				"="
 			],
-			"description": "Used to include an equal sign.\n\nSee [help](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Extension:ParserFunctions#Raw_equal_signs) for further explanation."
+			"description": "Used to include an equal sign.\n\nSee [help](https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#Raw_equal_signs) for further explanation."
 		},
 		{
 			"aliases": [
