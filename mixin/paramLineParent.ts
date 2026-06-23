@@ -1,4 +1,3 @@
-import {mixin} from '../util/debug';
 import {generateForChild, fixByRemove} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -80,7 +79,6 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 				return errors;
 			}
 		}
-		mixin(ParamLineParent, constructor);
 		return ParamLineParent;
 	}
 };
