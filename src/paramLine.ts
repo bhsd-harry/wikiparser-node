@@ -49,12 +49,12 @@ export abstract class ParamLineToken extends Token {
 		return 'param-line';
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** A reasonable parameter name / 合理的参数名 */
 	get key(): string | undefined {
-		return this.getKey();
+		LINT: return this.getKey();
 	}
+
+	/* NOT FOR BROWSER */
 
 	set key(key: string) {
 		this.setKey(key);
@@ -172,6 +172,23 @@ export abstract class ParamLineToken extends Token {
 		}
 	}
 
+	/**
+	 * Get a reasonable parameter name
+	 *
+	 * 获取合理的参数名
+	 */
+	getKey(): string | undefined {
+		LINT: {
+			const {length, firstChild: {childNodes}, name} = this,
+				isInputbox = name === 'inputbox';
+			return length === 1 || childNodes.some(({type}) => type === 'ext')
+				? undefined
+				: childNodes.map(child => isInputbox && child.type === 'text' ? child.data.toLowerCase() : child.text())
+					.join('')
+					.trim();
+		}
+	}
+
 	/** @private */
 	override print(): string {
 		PRINT: return super.print({sep: '='});
@@ -190,21 +207,6 @@ export abstract class ParamLineToken extends Token {
 		);
 		token.removeAt(0);
 		return token;
-	}
-
-	/**
-	 * Get a reasonable parameter name
-	 *
-	 * 获取合理的参数名
-	 */
-	getKey(): string | undefined {
-		const {length, firstChild: {childNodes}, name} = this,
-			isInputbox = name === 'inputbox';
-		return length === 1 || childNodes.some(({type}) => type === 'ext')
-			? undefined
-			: childNodes.map(child => isInputbox && child.type === 'text' ? child.data.toLowerCase() : child.text())
-				.join('')
-				.trim();
 	}
 
 	/**
