@@ -1,12 +1,17 @@
+import {paramLineParent} from '../../mixin/paramLineParent';
 import {MultiLineToken} from './index';
 import {ParamLineToken} from '../paramLine';
 import type {Config} from '../../base';
 import type {Token} from '../../internal';
+import type {ParamLineParentBase} from '../../mixin/paramLineParent';
+
+export interface ParamTagToken extends ParamLineParentBase {}
 
 /**
  * `<dynamicpagelist>`
  * @classdesc `{childNodes: ParamLineToken[]}`
  */
+@paramLineParent
 export abstract class ParamTagToken extends MultiLineToken {
 	declare readonly childNodes: readonly ParamLineToken[];
 	abstract override get firstChild(): ParamLineToken | undefined;

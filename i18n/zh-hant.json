@@ -13,6 +13,7 @@
 	"delink": "解除連結",
 	"duplicate-attribute": "重複的$1屬性",
 	"duplicate-category": "重複的分類",
+	"duplicate-ext-parameter": "重複的<$1>參數",
 	"duplicate-id": "重複的HTML id屬性",
 	"duplicate-image-parameter": "重複的圖片$1參數",
 	"duplicate-parameter": "重複的模板參數",

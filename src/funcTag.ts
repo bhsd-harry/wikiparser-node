@@ -1,14 +1,18 @@
+import {paramLineParent} from '../mixin/paramLineParent';
 import {Token} from './index';
 import {ParamLineToken} from './paramLine';
 import {gapped} from '../mixin/gapped';
 import type {Config} from '../base';
 import type {AttributesToken, ExtToken} from '../internal';
+import type {ParamLineParentBase} from '../mixin/paramLineParent';
+
+export interface FuncTagToken extends ParamLineParentBase {}
 
 /**
  * `<seo>`
  * @classdesc `{childNodes: ParamLineToken[]}`
  */
-@gapped()
+@gapped() @paramLineParent
 export abstract class FuncTagToken extends Token {
 	declare readonly name: 'seo';
 	declare readonly childNodes: readonly ParamLineToken[];
