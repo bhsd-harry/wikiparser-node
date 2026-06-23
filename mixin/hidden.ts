@@ -13,7 +13,6 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 		}
 
 		override lint(start?: number): LintError[] {
-			// @ts-expect-error private argument
 			LINT: return linter ? [] : super.lint(start);
 		}
 	}

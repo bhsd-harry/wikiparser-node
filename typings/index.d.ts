@@ -10,11 +10,14 @@ declare global {
 		unknown;
 
 	type AstConstructor = abstract new (...args: any[]) => {
+		readonly name?: string | undefined;
 		readonly childNodes: readonly AstNodes[];
+		readonly firstChild: AstNodes | undefined;
 		getAttribute<T extends string>(key: T): TokenAttribute<T>;
 		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
-		lint(): LintError[];
+		lint(start?: number): LintError[];
+		getAbsoluteIndex(): number;
 	};
 
 	interface PrintOpt {

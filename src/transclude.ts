@@ -365,13 +365,12 @@ export abstract class TranscludeToken extends Token {
 			s = lintConfig.getSeverity(rule, 'parameter');
 			if (s) {
 				const duplicatedArgs = this.getDuplicatedArgs()
-						.filter(([, parameter]) => !parameter[0]!.querySelector('ext')),
-					msg = 'duplicate-parameter';
+					.filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 				for (const [, args] of duplicatedArgs) {
 					Array.prototype.push.apply(
 						errors,
 						args.map(arg => {
-							const e = generateForChild(arg, rect, rule, msg, s);
+							const e = generateForChild(arg, rect, rule, 'duplicate-parameter', s);
 							if (computeEditInfo) {
 								e.suggestions = [fixByRemove(e, -1)];
 							}
