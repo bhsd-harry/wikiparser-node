@@ -39,7 +39,7 @@
 	"invalid-category": "invalid category name",
 	"invalid-content": "invalid content in <$1>",
 	"invalid-conversion-flag": "invalid conversion flag",
-	"invalid-coord": "invalid coordinate",
+	"invalid-coord": "invalid coordinates",
 	"invalid-gallery": "invalid gallery image",
 	"invalid-gallery-link": "invalid link in gallery image",
 	"invalid-image-parameter": "invalid image parameter",
