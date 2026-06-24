@@ -7372,6 +7372,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poll&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-plain\">Do you like this poll ?</span>\n<span class=\"wpb-plain\">Yes, it is awesome.</span>\n<span class=\"wpb-plain\">Yes.</span>\n<span class=\"wpb-plain\">No, I do not like polls.</span>\n<span class=\"wpb-plain\">I have no idea, what this means.</span>\n</span>&lt;/poll&gt;</span></span>"
 	},
 	{
+		"desc": "Lists are not parsed in a poll",
+		"wikitext": "<poll>\n; dt\n: dd\n* ul\n# ol\n</poll>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poll&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-plain\">; dt</span>\n<span class=\"wpb-plain\">: dd</span>\n<span class=\"wpb-plain\">* ul</span>\n<span class=\"wpb-plain\"># ol</span>\n</span>&lt;/poll&gt;</span></span>"
+	},
+	{
 		"desc": "CharInsert with nowiki",
 		"wikitext": "<charinsert>\n<nowiki>== + ==</nowiki><nowiki></nowiki>\n== + ==\n</charinsert>",
 		"html": "<p><a data-mw-charinsert-start=\"== \" data-mw-charinsert-end=\" ==\" class=\"mw-charinsert-item\">==  ==</a><br />\n<a data-mw-charinsert-start=\"==\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">==</a>\n<a data-mw-charinsert-start=\"+\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">+</a>\n<a data-mw-charinsert-start=\"==\" data-mw-charinsert-end=\"\" class=\"mw-charinsert-item\">==</a>\n</p>",
