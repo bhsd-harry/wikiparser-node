@@ -118,7 +118,7 @@ export const decodeHtml = (str: string): string => {
 		/* NOT FOR BROWSER ONLY */
 
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (typeof process === 'object' && typeof process.versions?.node === 'string') {
+		NPM: if (typeof process === 'object' && typeof process.versions?.node === 'string') {
 			try {
 				const {decodeHTMLStrict}: typeof import('entities') = require('entities');
 				return (s): string => decodeHTMLStrict(s).replaceAll('\xA0', ' ');

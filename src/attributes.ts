@@ -298,10 +298,8 @@ export abstract class AttributesToken extends Token {
 	 * @param key attribute name / 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
-		LINT: {
-			const tokens = this.getAttrTokens(key);
-			return tokens[tokens.length - 1];
-		}
+		const tokens = this.getAttrTokens(key);
+		return tokens[tokens.length - 1];
 	}
 
 	/**
@@ -311,7 +309,7 @@ export abstract class AttributesToken extends Token {
 	 * @param key attribute name / 属性键
 	 */
 	getAttr(key: string): string | undefined {
-		LINT: return this.getAttrToken(key)?.getValue();
+		return this.getAttrToken(key)?.getValue();
 	}
 
 	/** 是否位于闭合标签内 */
@@ -463,7 +461,10 @@ export abstract class AttributesToken extends Token {
 
 		/* NOT FOR BROWSER END */
 
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+		PRINT: if (key === 'invalid') {
+			return this.#lint() as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/** @private */

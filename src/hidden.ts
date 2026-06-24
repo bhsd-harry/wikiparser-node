@@ -25,7 +25,10 @@ export class HiddenToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return (key === 'invalid') as TokenAttribute<T> || super.getAttribute(key);
+		PRINT: if (key === 'invalid') {
+			return true as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/* PRINT ONLY END */

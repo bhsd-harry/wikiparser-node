@@ -141,7 +141,7 @@ export abstract class HeadingToken extends Token {
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* PRINT ONLY */
 
-		if (key === 'invalid') {
+		PRINT: if (key === 'invalid') {
 			return (this.inHtmlAttrs() === 2) as TokenAttribute<T>;
 		}
 

@@ -557,7 +557,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		maxStage ??= MAX_STAGE;
 		config ??= this.getConfig();
 		let types: Stage[] | undefined;
-		LINT: if (typeof maxStage !== 'number') {
+		LSP: if (typeof maxStage !== 'number') {
 			types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
