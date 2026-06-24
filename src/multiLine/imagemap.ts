@@ -70,8 +70,9 @@ export abstract class ImagemapToken extends MultiLineToken {
 			} else if (line.includes('[')) {
 				const i = line.indexOf('['),
 					substr = line.slice(i),
+					trimmedSubstr = substr.trim(),
 					mtIn = /^\[\[([^|]+)(?:\|([^\]]*))?\]\]\w*$/u
-						.exec(substr) as [string, string, string | undefined] | null;
+						.exec(trimmedSubstr) as [string, string, string | undefined] | null;
 				if (mtIn) {
 					if (
 						this.normalizeTitle(
@@ -96,7 +97,7 @@ export abstract class ImagemapToken extends MultiLineToken {
 					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
 				) {
 					const mtEx = /^\[([^\]\s]+)(?:(\s+(?!\s))([^\]]*))?\]\w*$/u
-						.exec(substr) as [string, string, string | undefined, string | undefined] | null;
+						.exec(trimmedSubstr) as [string, string, string | undefined, string | undefined] | null;
 					if (mtEx) {
 						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
