@@ -62,4 +62,9 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 			return super.lint(start, false);
 		}
 	}
+
+	/** @private */
+	override print(): string {
+		PRINT: return super.print({class: this.link.valid ? 'category' : 'invalid'});
+	}
 }
