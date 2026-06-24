@@ -22,6 +22,15 @@ export abstract class SingleLineToken extends Token {
 
 	abstract override get parentElement(): MultiLineToken | undefined;
 
+	/* NOT FOR BROWSER END */
+
+	/** @private */
+	override isPlain(): boolean {
+		return this.type === 'plain';
+	}
+
+	/* NOT FOR BROWSER */
+
 	@clone
 	override cloneNode(): this {
 		const C = this.constructor as new (...args: any[]) => this;

@@ -1967,6 +1967,17 @@ I have no idea, what this means.
 !! end
 
 !! test
+Lists are not parsed in a poll
+!! wikitext
+<poll>
+; dt
+: dd
+* ul
+# ol
+</poll>
+!! end
+
+!! test
 CharInsert with nowiki
 !! wikitext
 <charinsert>
