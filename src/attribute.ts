@@ -232,7 +232,7 @@ export abstract class AttributeToken extends Token {
 		) {
 			/* PRINT ONLY */
 
-			if (start === undefined) {
+			PRINT: if (start === undefined) {
 				return 2;
 			}
 
@@ -251,7 +251,7 @@ export abstract class AttributeToken extends Token {
 		} else if (name === 'style' && insecureStyle.test(value)) {
 			/* PRINT ONLY */
 
-			if (start === undefined) {
+			PRINT: if (start === undefined) {
 				return 1;
 			}
 
@@ -265,7 +265,7 @@ export abstract class AttributeToken extends Token {
 		} else if (name === 'tabindex' && value !== '0') {
 			/* PRINT ONLY */
 
-			if (start === undefined) {
+			PRINT: if (start === undefined) {
 				return 2;
 			}
 
@@ -293,7 +293,7 @@ export abstract class AttributeToken extends Token {
 		) {
 			/* PRINT ONLY */
 
-			if (start === undefined) {
+			PRINT: if (start === undefined) {
 				return 2;
 			}
 
@@ -309,7 +309,7 @@ export abstract class AttributeToken extends Token {
 			if (data.length > 0 && data.every(n => n !== v)) {
 				/* PRINT ONLY */
 
-				if (start === undefined) {
+				PRINT: if (start === undefined) {
 					return 2;
 				}
 
@@ -414,7 +414,10 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? Boolean(this.#lint()) as TokenAttribute<T> : super.getAttribute(key);
+		PRINT: if (key === 'invalid') {
+			return Boolean(this.#lint()) as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/** @private */

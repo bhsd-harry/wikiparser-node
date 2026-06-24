@@ -152,7 +152,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param left column number / 列号
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
-		LINT: {
+		LSP: {
 			if (top < 0 || left < 0) {
 				return undefined;
 			}

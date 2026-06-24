@@ -145,7 +145,10 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? this.#lint() as TokenAttribute<T> : super.getAttribute(key);
+		PRINT: if (key === 'invalid') {
+			return this.#lint() as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/* PRINT ONLY END */

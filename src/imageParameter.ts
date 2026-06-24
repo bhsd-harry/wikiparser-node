@@ -261,7 +261,7 @@ export abstract class ImageParameterToken extends Token {
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* PRINT ONLY */
 
-		if (key === 'invalid') {
+		PRINT: if (key === 'invalid') {
 			return (this.name === 'invalid') as TokenAttribute<T>;
 		}
 
