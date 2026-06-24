@@ -52,7 +52,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** full link / 完整链接 */
 	get link(): string | Title {
-		LINT: return this.#title;
+		return this.#title;
 	}
 
 	/* PRINT ONLY */
@@ -235,9 +235,11 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override print(): string {
+	override print(opt?: Pick<PrintOpt, 'class'>): string {
 		PRINT: return super.print(
-			this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter},
+			this.#bracket
+				? {pre: '[[', post: ']]', sep: this.#delimiter}
+				: {sep: this.#delimiter, class: this.type + (opt?.class ? ` wpb-${opt.class}` : '')},
 		);
 	}
 
