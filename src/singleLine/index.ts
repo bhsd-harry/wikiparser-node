@@ -8,4 +8,9 @@ import type {MultiLineToken} from '../multiLine/index';
  */
 export abstract class SingleLineToken extends Token {
 	abstract override get parentNode(): MultiLineToken | undefined;
+
+	/** @private */
+	override isPlain(): boolean {
+		return this.type === 'plain';
+	}
 }
