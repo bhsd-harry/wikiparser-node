@@ -59,11 +59,12 @@ export class AtomToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid'
-			? (
+		PRINT: if (key === 'invalid') {
+			return (
 				this.type === 'converter-flag'
 				&& Boolean((this.parentNode as ConverterFlagsToken | undefined)?.isInvalidFlag(this))
-			) as TokenAttribute<T>
-			: super.getAttribute(key);
+			) as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 }

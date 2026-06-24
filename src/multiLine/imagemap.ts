@@ -157,6 +157,9 @@ export abstract class ImagemapToken extends MultiLineToken {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? !this.image as TokenAttribute<T> : super.getAttribute(key);
+		PRINT: if (key === 'invalid') {
+			return !this.image as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 }

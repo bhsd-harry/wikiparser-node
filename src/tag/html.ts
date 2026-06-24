@@ -218,7 +218,10 @@ export abstract class HtmlToken extends TagToken {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'invalid' ? (this.inTableAttrs() === 2) as TokenAttribute<T> : super.getAttribute(key);
+		PRINT: if (key === 'invalid') {
+			return (this.inTableAttrs() === 2) as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/** @private */
