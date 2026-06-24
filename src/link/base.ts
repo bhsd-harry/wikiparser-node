@@ -51,7 +51,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** full link / 完整链接 */
 	get link(): string | Title {
-		LINT: return this.#title;
+		return this.#title;
 	}
 
 	/**
