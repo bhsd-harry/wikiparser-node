@@ -86,14 +86,20 @@ export abstract class HeadingToken extends Token {
 		return this.level;
 	}
 
+	/** 是否包含未成对的`=` */
+	#lint(): boolean | 1 {
+		const innerStr = this.firstChild.toString(),
+			unbalancedStart = innerStr.startsWith('=');
+		return unbalancedStart ? 1 : innerStr.endsWith('=');
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
 				{firstChild, level} = this,
 				innerStr = firstChild.toString(),
-				unbalancedStart = innerStr.startsWith('='),
-				unbalanced = unbalancedStart || innerStr.endsWith('='),
+				unbalanced = this.#lint(),
 				rect = new BoundingRect(this, start),
 				s = this.inHtmlAttrs(),
 				rules = ['h1', 'unbalanced-header', 'format-leakage'] as const,
@@ -112,7 +118,7 @@ export abstract class HeadingToken extends Token {
 					e = generateForChild(firstChild, rect, rules[1], msg, severities[1]);
 				if (!computeEditInfo || innerStr === '=') {
 					//
-				} else if (unbalancedStart) {
+				} else if (unbalanced === 1) {
 					const extra = numLeadingSpaces(innerStr, /[^=]|$/u),
 						newLevel = level + extra;
 					e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra], text: ''}];
