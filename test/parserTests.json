@@ -1148,14 +1148,14 @@
 		"wikitext": "</br>",
 		"html": "<p><br />\n</p>",
 		"render": "<p><br>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;/br&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html wpb-invalid\">&lt;/br&gt;</span></span>"
 	},
 	{
 		"desc": "Parsoid: Broken br tag recognition",
 		"wikitext": "</br>\n\n<br/ >",
 		"html": "<p><br />\n</p><p><br />\n</p>",
 		"render": "<p><br>\n</p><p><br>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;/br&gt;</span>\n\n<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\">/ </span></span>&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html wpb-invalid\">&lt;/br&gt;</span>\n\n<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\">/ </span></span>&gt;</span></span>"
 	},
 	{
 		"desc": "Incorrectly removing closing slashes from correctly formed XHTML",
@@ -1176,7 +1176,7 @@
 		"wikitext": "<div title />\n<div title/>\n<div title/ >\n<div title=bar />\n<div title=bar/>\n<div title=bar/ >",
 		"html": "<div title=\"\">\n<div title=\"\">\n<div title=\"\">\n<div title=\"bar\">\n<div title=\"bar\">\n<div title=\"bar/\"></div></div></div></div></div></div>",
 		"render": "<div title=\"\">\n<div title=\"\">\n<div title=\"\">\n<div title=\"bar\">\n<div title=\"bar\">\n<div title=\"bar/\">",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span> </span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span><span class=\"wpb-attr-dirty\">/ </span></span>&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar</span></span> </span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar</span></span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar/</span></span> </span>&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html wpb-invalid\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span> </span>/&gt;</span>\n<span class=\"wpb-html wpb-invalid\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span><span class=\"wpb-attr-dirty\">/ </span></span>&gt;</span>\n<span class=\"wpb-html wpb-invalid\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar</span></span> </span>/&gt;</span>\n<span class=\"wpb-html wpb-invalid\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar</span></span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar/</span></span> </span>&gt;</span></span>"
 	},
 	{
 		"desc": "Elements with solidus in various attribute positions",
@@ -3731,7 +3731,7 @@
 		"wikitext": "<center><font id=\"bug\" />Centered text</center>\n<div><font id=\"bug2\" />In div text</div>",
 		"html": "<center><font id=\"bug\">Centered text</font></center><font id=\"bug\"><div><font id=\"bug2\">In div text</font></div></font>",
 		"render": "<center><font id=\"bug\">Centered text</center>\n<div><font id=\"bug2\">In div text</div>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;center&gt;</span><span class=\"wpb-html\">&lt;font<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">bug</span>\"</span> </span>/&gt;</span>Centered text<span class=\"wpb-html\">&lt;/center&gt;</span>\n<span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;font<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">bug2</span>\"</span> </span>/&gt;</span>In div text<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;center&gt;</span><span class=\"wpb-html wpb-invalid\">&lt;font<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">bug</span>\"</span> </span>/&gt;</span>Centered text<span class=\"wpb-html\">&lt;/center&gt;</span>\n<span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html wpb-invalid\">&lt;font<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">bug2</span>\"</span> </span>/&gt;</span>In div text<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "Punctuation: nbsp before exclamation",
@@ -4424,7 +4424,7 @@
 		"wikitext": "<div>hello world</div/>",
 		"html": "<div>hello world</div>",
 		"render": "<div>hello world</div>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>hello world<span class=\"wpb-html\">&lt;/div/&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>hello world<span class=\"wpb-html wpb-invalid\">&lt;/div/&gt;</span></span>"
 	},
 	{
 		"desc": "MSGNW magic word",
@@ -5326,7 +5326,7 @@
 		"wikitext": "<div title=\"Hello world />Foo",
 		"html": "<div title=\"Hello world\">Foo</div>",
 		"render": "<div title=\"Hello world\">Foo",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">Hello world </span></span></span>/&gt;</span>Foo</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html wpb-invalid\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">Hello world </span></span></span>/&gt;</span>Foo</span>"
 	},
 	{
 		"desc": "Table with broken attribute value quoting",
@@ -8161,7 +8161,7 @@
 		"wikitext": "<ref name=\"bar\" />\n{{1x|1=<div class=\"usr0\"/><div class=\"usr1\"><references><ref name=\"bar\">Foo</ref></references></div>}}",
 		"html": "<p><sup id=\"cite&#95;ref-bar&#95;1-0\" class=\"reference\"><a href=\"#cite_note-bar-1\"><span class=\"cite-bracket\">&#91;</span>1<span class=\"cite-bracket\">&#93;</span></a></sup>\n</p>\n<div class=\"usr0\"><div class=\"usr1\"><div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite&#95;note-bar-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-bar_1-0\">↑</a></span> <span class=\"reference-text\">Foo</span>\n</li>\n</ol></div></div></div>",
 		"render": "<p><sup id=\"cite_ref-bar_1-0\" class=\"reference\"><a href=\"#cite_note-bar-1\"><span class=\"cite-bracket\">[</span>1<span class=\"cite-bracket\">]</span></a></sup>\n</p>\n<div class=\"usr0\"><div class=\"usr1\"><div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-bar-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-bar_1-0\">↑</a></span> <span class=\"reference-text\">Foo</span>\n</li>\n</ol></div></div>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">usr0</span>\"</span></span>/&gt;</span><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">usr1</span>\"</span></span>&gt;</span><span class=\"wpb-ext\">&lt;references&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">Foo</span>&lt;/ref&gt;</span></span>&lt;/references&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-html wpb-invalid\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">usr0</span>\"</span></span>/&gt;</span><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">usr1</span>\"</span></span>&gt;</span><span class=\"wpb-ext\">&lt;references&gt;<span class=\"wpb-ext-inner\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">bar</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">Foo</span>&lt;/ref&gt;</span></span>&lt;/references&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
 	},
 	{
 		"desc": "References: 7. Multiple references tags (one without and one with nested refs) should be correctly handled",
