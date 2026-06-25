@@ -102,11 +102,26 @@ export abstract class HtmlToken extends TagToken {
 		return `<${closing && !slash ? '/' : ''}${name}${closing ? '' : super.text()}${slash}>`;
 	}
 
+	/** 是否是无效自封闭标签 */
+	#lint(): false | 0 | 1 | 2 {
+		const {name, closing, selfClosing} = this,
+			[, flexibleTags, voidTags] = this.getAttribute('config').html,
+			isVoid = voidTags.includes(name),
+			isFlexible = flexibleTags.includes(name),
+			isNormal = !isVoid && !isFlexible;
+		if (!(closing && (selfClosing || isVoid) || selfClosing && isNormal)) {
+			return false;
+		} else if (isVoid) {
+			return 2;
+		}
+		return isFlexible ? 1 : 0;
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
-				{name, parentNode, closing, selfClosing} = this,
+				{name, parentNode, closing} = this,
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
@@ -143,12 +158,9 @@ export abstract class HtmlToken extends TagToken {
 				}
 				errors.push(e);
 			}
-			const [, flexibleTags, voidTags] = this.getAttribute('config').html,
-				isVoid = voidTags.includes(name),
-				isFlexible = flexibleTags.includes(name),
-				isNormal = !isVoid && !isFlexible;
+			const tagType = this.#lint();
 			rule = 'unmatched-tag';
-			if (closing && (selfClosing || isVoid) || selfClosing && isNormal) {
+			if (tagType !== false) {
 				s = lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
 				if (s) {
 					const e = generateForSelf(
@@ -165,12 +177,12 @@ export abstract class HtmlToken extends TagToken {
 								range: [e.endIndex - 2, e.endIndex - 1],
 								text: '',
 							};
-						if (isFlexible) {
+						if (tagType === 1) {
 							if (computeEditInfo) {
 								e.suggestions = [open, noSelfClosing];
 							}
 						} else if (closing) {
-							e.fix = isVoid ? open : noSelfClosing;
+							e.fix = tagType === 2 ? open : noSelfClosing;
 						} else if (computeEditInfo) {
 							e.suggestions = [
 								noSelfClosing,
@@ -212,6 +224,16 @@ export abstract class HtmlToken extends TagToken {
 			}
 			return errors;
 		}
+	}
+
+	/* PRINT ONLY */
+
+	/** @private */
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		PRINT: if (key === 'invalid') {
+			return (this.#lint() !== false) as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/** @private */
