@@ -58,7 +58,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 		}
 	}
 
-	/** @ignore */
+	/** 无效的分类名 */
 	#lint(): boolean {
 		const {link} = this;
 		return !link.valid
