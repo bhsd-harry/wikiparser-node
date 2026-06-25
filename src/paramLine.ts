@@ -61,34 +61,14 @@ export abstract class ParamLineToken extends Token {
 		}
 	}
 
-	/**
-	 * 转义字符串以规避参数分隔符
-	 * @param str 待转义的字符串
-	 */
-	#escape(str: string): string {
-		return this.#delimiter === '\n'
-			? str.replace(/\n/gu, ' ')
-			: str.replace(/\|/gu, '{{!}}');
-	}
-
 	/** @private */
 	override toString(skip?: boolean): string {
-		return this.childNodes.map(
-			({childNodes}) => childNodes.map(child => {
-				const str = child.toString(skip);
-				return child.type === 'text' ? this.#escape(str) : str;
-			}).join(''),
-		).join('=');
+		return super.toString(skip, '=');
 	}
 
 	/** @private */
 	override text(): string {
-		return this.childNodes.map(
-			({childNodes}) => childNodes.map(child => {
-				const str = child.text();
-				return child.type === 'text' ? this.#escape(str) : str;
-			}).join('').trim(),
-		).join('=');
+		return this.childNodes.map(child => child.text().trim()).join('=');
 	}
 
 	/** @private */
