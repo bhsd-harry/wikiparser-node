@@ -1,4 +1,4 @@
-import {generateForSelf, generateForChild, fixBy, fixByRemove, fixByEscape} from '../util/lint';
+import {generateForSelf, fixBy} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
 import {gapped} from '../mixin/gapped';
@@ -92,52 +92,25 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const [argName, argDefault, ...rest] = this.childNodes;
-			argName.setAttribute('aIndex', start + 3);
-			const errors = argName.lint(start + 3, re);
-			if (argDefault) {
-				const index = start + 4 + argName.toString().length;
-				argDefault.setAttribute('aIndex', index);
-				const childErrors = argDefault.lint(index, re);
-				if (childErrors.length > 0) {
-					Array.prototype.push.apply(errors, childErrors);
-				}
-			}
-			const rules = ['no-ignored', 'no-arg'] as const,
+			const errors = super.lint(start, re),
 				{lintConfig} = Parser,
-				{computeEditInfo} = lintConfig,
-				rect = new BoundingRect(this, start),
-				s = rules.map(rule => lintConfig.getSeverity(rule, 'arg') as LintError.Severity);
-			if (s[0] && rest.length > 0) {
-				Array.prototype.push.apply(
-					errors,
-					rest.map(child => {
-						const e = generateForChild(child, rect, rules[0], 'invisible-triple-braces', s[0]);
-						e.startIndex--;
-						e.startCol--;
-						if (computeEditInfo) {
-							e.suggestions = [
-								fixByRemove(e),
-								fixByEscape(e.startIndex, '{{!}}'),
-							];
-						}
-						return e;
-					}),
-				);
-			}
-			if (s[1] && !this.getAttribute('include')) {
-				const e = generateForSelf(this, rect, rules[1], 'unexpected-argument', s[1]);
-				if (computeEditInfo && argDefault) {
+				rect = new BoundingRect(this, start);
+			let rule: LintError.Rule = 'no-arg',
+				s = lintConfig.getSeverity(rule);
+			if (s && !this.getAttribute('include')) {
+				const e = generateForSelf(this, rect, rule, 'unexpected-argument', s),
+					[, argDefault] = this.childNodes;
+				if (lintConfig.computeEditInfo && argDefault) {
 					e.suggestions = [fixBy(e, 'expand', argDefault.text())];
 				}
 				errors.push(e);
 			}
 			const ext = this.closest('ext');
 			if (ext) {
-				const rule = 'arg-in-ext',
-					severity = lintConfig.getSeverity(rule, ext.name);
-				if (severity) {
-					errors.push(generateForSelf(this, rect, rule, 'argument-in-ext', severity));
+				rule = 'arg-in-ext';
+				s = lintConfig.getSeverity(rule, ext.name);
+				if (s) {
+					errors.push(generateForSelf(this, rect, rule, 'argument-in-ext', s));
 				}
 			}
 			return errors;
