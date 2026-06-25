@@ -68,7 +68,7 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	isInside(type: TokenTypes): boolean {
-		return this.closest(`${type},ext`)?.type === type;
+		LINT: return this.closest(`${type},ext`)?.type === type;
 	}
 
 	/**
