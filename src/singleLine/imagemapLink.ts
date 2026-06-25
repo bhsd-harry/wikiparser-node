@@ -7,6 +7,8 @@ import {ExtLinkToken} from '../extLink';
 import type {Config, LintError} from '../../base';
 import type {AstText, ImagemapToken, GalleryImageToken, Token} from '../../internal';
 
+const shapes = new Set(['default', 'rect', 'circle', 'poly']);
+
 /** @ignore */
 const notNumeric = (s: string, allowNegative?: boolean): boolean => {
 	const n = Number(s);
@@ -64,7 +66,7 @@ export abstract class ImagemapLinkToken extends SingleLineToken {
 	 * @param minCount 最少需要的坐标数量
 	 * @param isPoly 是否为多边形
 	 */
-	#lint(errors: LintError[], coords: string, start: number, minCount: number, isPoly?: boolean): void {
+	#lintCoords(errors: LintError[], coords: string, start: number, minCount: number, isPoly?: boolean): void {
 		LINT: {
 			const parts = coords.split(/[ \t]+/u).map(s => s.trim()).filter(Boolean),
 				{length} = parts,
@@ -76,33 +78,40 @@ export abstract class ImagemapLinkToken extends SingleLineToken {
 		}
 	}
 
+	/** 获取链接区域图形和坐标 */
+	#getShape(): [string, string] | false {
+		const area = this.firstChild.data.trim(),
+			i = area.search(/[ \t]/u),
+			shape = i === -1 ? area : area.slice(0, i);
+		return shapes.has(shape) && [shape, area.slice(i).trim()];
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
 				{firstChild} = this,
-				area = firstChild.data.trim(),
-				i = area.search(/[ \t]/u),
-				shape = i === -1 ? area : area.slice(0, i),
-				coords = area.slice(i).trim(),
-				rule = 'invalid-imagemap';
-			switch (shape) {
-				case 'default':
-					break;
-				case 'rect':
-					this.#lint(errors, coords, start, 4);
-					break;
-				case 'circle':
-					this.#lint(errors, coords, start, 3);
-					break;
-				case 'poly':
-					this.#lint(errors, coords, start, 1, true);
-					break;
-				default: {
-					const s = Parser.lintConfig.getSeverity(rule, 'shape');
-					if (s) {
-						errors.push(generateForChild(firstChild, {start}, rule, 'unrecognized-shape', s));
-					}
+				shapeAndCoords = this.#getShape();
+			if (shapeAndCoords) {
+				const [shape, coords] = shapeAndCoords;
+				switch (shape) {
+					case 'default':
+						break;
+					case 'rect':
+						this.#lintCoords(errors, coords, start, 4);
+						break;
+					case 'circle':
+						this.#lintCoords(errors, coords, start, 3);
+						break;
+					case 'poly':
+						this.#lintCoords(errors, coords, start, 1, true);
+					// no default
+				}
+			} else {
+				const rule = 'invalid-imagemap',
+					s = Parser.lintConfig.getSeverity(rule, 'shape');
+				if (s) {
+					errors.push(generateForChild(firstChild, {start}, rule, 'unrecognized-shape', s));
 				}
 			}
 			return errors;
