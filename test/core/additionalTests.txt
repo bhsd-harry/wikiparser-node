@@ -1991,3 +1991,81 @@ CharInsert with nowiki
 <a data-mw-charinsert-start="==" data-mw-charinsert-end="" class="mw-charinsert-item">==</a>
 </p>
 !! end
+
+!! test
+Invalid categorytree target
+!! wikitext
+<categorytree>category|text</categorytree>
+!! html
+!! end
+
+!! test
+Invalid imagemap area shape
+!! wikitext
+<imagemap>
+file:foobar.jpg
+shape [[foobar]]
+</imagemap>
+!! end
+
+!! test
+Pre tag with format="wikitext"
+!! wikitext
+<pre format=wikitext>
+<!-- -->
+<ref>ref</ref>
+<noinclude/>
+{{{1|default}}}
+{{1x|template}}
+{{uc:lowercase}}
+==heading==
+foo<br>bar
+{|class=wikitable
+!th
+|td
+|}
+----
+__notoc__
+[[link]]
+[[file:foobar.jpg|200px]]
+''italic''
+[//example.com]
+;dt
+:dd
+*ul
+#ol
+https://example.com
+-{raw}-
+</pre>
+!! html
+<pre><sup id="cite&#95;ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">&#91;</span>1<span class="cite-bracket">&#93;</span></a></sup>
+
+default
+template
+LOWERCASE
+<div class="mw-heading mw-heading2"><h2 id="heading">heading</h2></div>
+foo<br />bar
+<table class="wikitable">
+<tbody><tr>
+<th>th
+</th>
+<td>td
+</td></tr></tbody></table>
+<hr />
+
+<a href="/w/index.php?title=Link&amp;action=edit&amp;redlink=1" class="new" title="Link（页面不存在）">link</a>
+<span typeof="mw:File"><a href="/wiki/File:Foobar.jpg" class="mw-file-description"><img src="http://example.com/images/3/3a/Foobar.jpg" decoding="async" width="200" height="23" class="mw-file-element" /></a></span>
+<i>italic</i>
+<a rel="nofollow" class="external autonumber" href="//example.com">[1]</a>
+;dt
+:dd
+*ul
+#ol
+<a rel="nofollow" class="external free" href="https://example.com">https://example.com</a>
+raw
+</pre>
+<ol class="references">
+<li id="cite&#95;note-1"><span class="mw-cite-backlink"><b><a href="#cite_ref-1">^</a></b></span> <span class="reference-text">ref</span>
+</li>
+</ol>
+!! end

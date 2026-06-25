@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.45.0
 
-*2026-06-24*
+*2026-06-25*
 
 **Added**
 
@@ -10,6 +10,7 @@
 - Parse and report `<seo>` and `<charinsert>` extension tags
 - New getters and methods of [`ParamLineToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29): [`key`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#key), [`value`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#value), [`getKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getkey), [`getValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#getvalue), [`setKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setkey) and [`setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamLineToken-%28EN%29#setvalue)
 - New methods of [`ParamTagToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29): [`getDuplicatedParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getduplicatedparams), [`getKeys`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getkeys), [`getParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getparams), [`getValues`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#getvalues), [`hasDuplicatedParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#hasduplicatedparams), [`hasParam`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#hasparam), [`newParam`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#newparam), [`removeParams`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#removeparams) and [`setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParamTagToken-%28EN%29#setvalue)
+- [`AstElement#print`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement-%28EN%29#print) now highlights more invalid syntax
 
 **Fixed**
 
