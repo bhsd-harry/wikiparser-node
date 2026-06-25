@@ -272,16 +272,6 @@ export abstract class HtmlToken extends TagToken {
 		}
 	}
 
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		PRINT: if (key === 'invalid') {
-			return (this.inTableAttrs() === 2) as TokenAttribute<T>;
-		}
-		return super.getAttribute(key);
-	}
-
 	/** @private */
 	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
 		LSP: {
@@ -290,8 +280,6 @@ export abstract class HtmlToken extends TagToken {
 			return json;
 		}
 	}
-
-	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 

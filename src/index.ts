@@ -640,13 +640,13 @@ export class Token extends AstElement {
 
 	/** @private */
 	inTableAttrs(): 1 | 2 | false {
-		return this.isInside('table-attrs')
-			&& (this.closest('table-attrs,arg,parameter')?.is('table-attrs') ? 2 : 1);
+		LINT: return this.isInside('table-attrs')
+		&& (this.closest('table-attrs,arg,parameter')?.is('table-attrs') ? 2 : 1);
 	}
 
 	/** @private */
 	inHtmlAttrs(): 1 | 2 | false {
-		return this.isInside('html-attrs') ? 2 : this.inTableAttrs();
+		LINT: return this.isInside('html-attrs') ? 2 : this.inTableAttrs();
 	}
 
 	/** @private */

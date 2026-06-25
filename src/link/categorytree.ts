@@ -80,22 +80,24 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 		LINT: {
 			const rule = 'no-ignored',
 				s = Parser.lintConfig.getSeverity(rule, 'categorytree');
-			if (s) {
-				const {link} = this;
-				if (
-					!link.valid || link.ns !== 14
-					|| link.interwiki
-				) {
-					return [generateForSelf(this, {start}, rule, 'invalid-category', s)];
-				}
+			if (s && this.#lint()) {
+				return [generateForSelf(this, {start}, rule, 'invalid-category', s)];
 			}
 			return super.lint(start, false);
 		}
 	}
 
+	/** @ignore */
+	#lint(): boolean {
+		const {link} = this;
+		return !link.valid
+			|| link.interwiki !== ''
+			|| link.ns !== 14;
+	}
+
 	/** @private */
 	override print(): string {
-		PRINT: return super.print({class: this.link.valid ? 'category' : 'invalid'});
+		PRINT: return super.print({class: this.#lint() ? 'invalid' : 'category'});
 	}
 
 	/* NOT FOR BROWSER */
