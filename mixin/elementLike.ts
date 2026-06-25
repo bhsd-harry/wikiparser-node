@@ -53,28 +53,28 @@ export interface ElementLike {
 
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
-	abstract class ElementLike extends constructor implements ElementLike {
-		#getCondition<T>(selector: string): TokenPredicate<T> {
-			return getCondition<T>(
-				selector,
-				this as unknown as AstElement,
-			);
-		}
-
-		closest(selector: string): Token | undefined {
-			const condition = this.#getCondition(selector);
-			let {parentNode} = this;
-			while (parentNode) {
-				if (condition(parentNode)) {
-					return parentNode;
-				}
-				({parentNode} = parentNode);
+	LINT: {
+		abstract class ElementLike extends constructor implements ElementLike {
+			#getCondition<T>(selector: string): TokenPredicate<T> {
+				return getCondition<T>(
+					selector,
+					this as unknown as AstElement,
+				);
 			}
-			return undefined;
-		}
 
-		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-			LINT: {
+			closest(selector: string): Token | undefined {
+				const condition = this.#getCondition(selector);
+				let {parentNode} = this;
+				while (parentNode) {
+					if (condition(parentNode)) {
+						return parentNode;
+					}
+					({parentNode} = parentNode);
+				}
+				return undefined;
+			}
+
+			getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
 				const stack = [...this.childNodes].reverse();
 				while (stack.length > 0) {
 					const child = stack.pop()!,
@@ -90,14 +90,12 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				}
 				return undefined;
 			}
-		}
 
-		querySelector(selector: string): Token | undefined {
-			LINT: return this.getElementBy(this.#getCondition(selector));
-		}
+			querySelector(selector: string): Token | undefined {
+				return this.getElementBy(this.#getCondition(selector));
+			}
 
-		getElementsBy<T>(condition: TokenPredicate<T>): T[] {
-			LINT: {
+			getElementsBy<T>(condition: TokenPredicate<T>): T[] {
 				const stack = [...this.childNodes].reverse(),
 					descendants: T[] = [];
 				while (stack.length > 0) {
@@ -114,20 +112,20 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				}
 				return descendants;
 			}
-		}
 
-		querySelectorAll(selector: string): Token[] {
-			LINT: return this.getElementsBy(this.#getCondition(selector));
-		}
+			querySelectorAll(selector: string): Token[] {
+				return this.getElementsBy(this.#getCondition(selector));
+			}
 
-		escape(): void {
-			LSP: {
-				for (const child of this.childNodes) {
-					child.escape();
+			escape(): void {
+				LSP: {
+					for (const child of this.childNodes) {
+						child.escape();
+					}
 				}
 			}
 		}
+		mixin(ElementLike, constructor);
+		return ElementLike;
 	}
-	mixin(ElementLike, constructor);
-	return ElementLike;
 };
