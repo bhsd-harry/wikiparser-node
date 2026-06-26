@@ -86,7 +86,6 @@
 		"ajv-errors": ">=3.0.0",
 		"katex": ">=0.14.0",
 		"mathoid-texvcjs": ">=0.4.0",
-		"mediawiki-expr": "*",
 		"prism-wiki": ">=1.0.0",
 		"prismjs": "^1.0.0",
 		"stylelint": ">=16.0.0",
@@ -105,9 +104,6 @@
 			"optional": true
 		},
 		"mathoid-texvcjs": {
-			"optional": true
-		},
-		"mediawiki-expr": {
 			"optional": true
 		},
 		"prism-wiki": {
@@ -132,16 +128,16 @@
 	"dependencies": {
 		"@bhsd/cm-util": "^2.2.0",
 		"@bhsd/common": "^3.0.0",
-		"@bhsd/nodejs": "^1.0.1",
+		"@bhsd/nodejs": "^1.1.0",
 		"@bhsd/stylelint-util": "^1.1.0",
 		"entities": "^8.0.0",
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^3.0.0",
+		"@bhsd/code-standard": "^3.1.0",
 		"@bhsd/test-util": "^2.0.0",
 		"@codemirror/lint": "^6.9.7",
-		"@eslint/markdown": "^8.0.2",
+		"@eslint/markdown": "^8.0.3",
 		"@types/jsdom": "^28.0.3",
 		"@types/prismjs": "^1.26.6",
 		"ajv": "^8.20.0",
@@ -151,18 +147,17 @@
 		"diff2html-cli": "^5.2.15",
 		"dompurify": "^3.4.11",
 		"esbuild": "^0.28.1",
-		"eslint": "^10.5.0",
+		"eslint": "^10.6.0",
 		"jsdom": "^29.1.1",
 		"katex": "^0.17.0",
-		"markdownlint-cli2": "^0.22.1",
+		"markdownlint-cli2": "^0.23.0",
 		"mathoid-texvcjs": "^0.6.0",
-		"mediawiki-expr": "^0.0.2",
 		"mocha": "^11.7.6",
 		"monaco-editor": "~0.53.0",
 		"prism-wiki": "^2.2.1",
 		"prismjs": "^1.30.0",
-		"stylelint": "^17.13.0",
-		"tsx": "^4.22.4",
+		"stylelint": "^17.14.0",
+		"tsx": "^4.23.0",
 		"typescript": "^6.0.3",
 		"v8r": "^6.1.0",
 		"vscode-css-languageservice": "^6.3.10",

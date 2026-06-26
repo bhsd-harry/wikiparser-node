@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {posix} from 'path';
+import {expr} from '../vendor/expr';
 import {escape, replaceEntities, sanitizeId, decodeHtml} from '../util/string';
 import {parsers} from '../util/constants';
 import {getId} from '../util/html';
@@ -239,15 +240,7 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
 		const i = arg.indexOf('=');
 		return i !== -1 && [arg.slice(0, i).trim(), arg.slice(i + 1).trim()];
 	},
-	isKnown = (s: string): boolean => !/\0\d+[tm]\x7F/u.test(s),
-	expr = (s: string): number | string => {
-		try {
-			const {evaluateExpr}: typeof import('mediawiki-expr') = require('mediawiki-expr');
-			return evaluateExpr(s);
-		} catch {
-			throw new Error('Magic words "#expr" and "#ifexpr" require NPM package mediawiki-expr');
-		}
-	};
+	isKnown = (s: string): boolean => !/\0\d+[tm]\x7F/u.test(s);
 
 /**
  * 展开魔术字

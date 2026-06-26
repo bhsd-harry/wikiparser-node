@@ -85,7 +85,6 @@ You can install any of the following optional packages to enable advanced featur
 | `vscode-json-languageservice` | JSON language support for `<templatedata>`, `<mapframe>` and `<maplink>` tags |
 | `ajv` + `ajv-errors` | HTML conversion support for `<templatedata>` extension tags |
 | `katex` | HTML conversion support for `<math>` and `<chem>` extension tags |
-| `mediawiki-expr` | Evaluation of parser functions `#expr` and `#ifexpr` |
 | `prismjs` + `prism-wiki` | Syntax highlighting of `<syntaxhighlight>` extension tags |
 
 ```sh
@@ -93,7 +92,7 @@ You can install any of the following optional packages to enable advanced featur
 npm i mathoid-texvcjs stylelint vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
 
 # Full HTML conversion support for `Parser.toHtml()`
-npm i ajv ajv-errors katex mathoid-texvcjs mediawiki-expr prismjs prism-wiki
+npm i ajv ajv-errors katex mathoid-texvcjs prismjs prism-wiki
 ```
 
 ### Browser
