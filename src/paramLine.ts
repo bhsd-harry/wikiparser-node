@@ -24,8 +24,6 @@ const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude
  */
 @gapped()
 export abstract class ParamLineToken extends Token {
-	#delimiter;
-
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, AtomToken];
 	abstract override get firstChild(): AtomToken;
@@ -75,7 +73,6 @@ export abstract class ParamLineToken extends Token {
 	constructor(
 		name: string,
 		wikitext: string,
-		delimiter: '\n' | '|',
 		config: Config,
 		accum: Token[],
 		// eslint-disable-next-line unicorn/no-object-as-default-parameter
@@ -86,7 +83,6 @@ export abstract class ParamLineToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: '0:2',
 		});
-		this.#delimiter = delimiter;
 		this.setAttribute('name', name);
 		const equal = wikitext.indexOf('=');
 		if (equal === -1) {
@@ -179,12 +175,7 @@ export abstract class ParamLineToken extends Token {
 	@clone
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		const token: this = new ParamLineToken(
-			this.name,
-			'',
-			this.#delimiter,
-			this.getAttribute('config'),
-		);
+		const token: this = new ParamLineToken(this.name, '', this.getAttribute('config'));
 		token.removeAt(0);
 		return token;
 	}

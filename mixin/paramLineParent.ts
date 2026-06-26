@@ -154,13 +154,11 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 			}
 
 			newParam(key: string, value: string): ParamLineToken {
-				const {FuncTagToken}: typeof import('../src/funcTag') = require('../src/funcTag');
 				return this.insertAt(
 					// @ts-expect-error abstract class
 					Shadow.run(() => new ParamLineToken(
 						this.name,
 						`${key}=${value}`,
-						this instanceof FuncTagToken ? '|' : '\n',
 						this.getAttribute('config'),
 					)),
 				) as ParamLineToken;

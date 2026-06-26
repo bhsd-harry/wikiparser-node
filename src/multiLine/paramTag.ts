@@ -51,7 +51,6 @@ export abstract class ParamTagToken extends MultiLineToken {
 				wikitext.split('\n').map((line): ParamLineToken => new ParamLineToken(
 					name,
 					line,
-					'\n',
 					config,
 					accum,
 					acceptable,

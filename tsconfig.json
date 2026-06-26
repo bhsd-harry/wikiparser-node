@@ -11,6 +11,7 @@
 		"test/**/*",
 		"typings/**/*",
 		"util/**/*",
+		"vendor/**/*",
 		"*.ts"
 	],
 	"compilerOptions": {

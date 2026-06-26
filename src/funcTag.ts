@@ -52,7 +52,7 @@ export abstract class FuncTagToken extends Token {
 		if (wikitext) {
 			for (const parameter of wikitext.split('|')) {
 				// @ts-expect-error abstract class
-				this.insertAt(new ParamLineToken('seo', parameter, '|', config, accum));
+				this.insertAt(new ParamLineToken('seo', parameter, config, accum));
 			}
 		}
 	}
