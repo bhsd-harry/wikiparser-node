@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {splitLines} from '@bhsd/common';
-import findIndex from '../util/search';
+import findIndex from '../vendor/search';
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {cached} from '../mixin/cached';
