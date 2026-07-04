@@ -410,8 +410,14 @@ const emit = (node: ExprNode): number => {
 				return left && right ? 1 : 0;
 			case 'or':
 				return left || right ? 1 : 0;
-			case 'e':
-				return left * 10 ** right;
+			case 'e': {
+				if (!Number.isFinite(left) || !Number.isFinite(right) || !Number.isInteger(right)) {
+					return left * 10 ** right;
+				}
+				const [coefficient, exponent = 0] = String(left).split('e'),
+					result = Number(`${coefficient}e${Number(exponent) + right}`);
+				return result === 0 ? 0 : result;
+			}
 			// no default
 		}
 	}
