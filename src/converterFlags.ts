@@ -66,12 +66,7 @@ export abstract class ConverterFlagsToken extends Token {
 	 * 获取未知的转换类型标记
 	 */
 	getUnknownFlags(): Set<string> {
-		return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
-	}
-
-	/** 从解析设置中获取语言变体 */
-	#getVariants(): Set<string> {
-		return new Set(toLowerCase(this.getAttribute('config').variants));
+		LINT: return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
 	/**
@@ -80,21 +75,10 @@ export abstract class ConverterFlagsToken extends Token {
 	 * 获取指定语言变体的转换标记
 	 */
 	getVariantFlags(): Set<string> {
-		const variants = this.#getVariants();
-		return new Set(toLowerCase(this.#flags!).filter(flag => variants.has(flag)));
-	}
-
-	/** @private */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	isInvalidFlag(
-		flag: string,
-		variant?: Set<string>,
-		unknown?: Set<string>,
-	): boolean {
-		return Boolean(flag)
-			&& !variant!.has(flag.toLowerCase())
-			&& !unknown!.has(flag)
-			&& (variant!.size > 0 || !definedFlags.has(flag));
+		LINT: {
+			const variants = new Set(toLowerCase(this.getAttribute('config').variants));
+			return new Set(toLowerCase(this.#flags!).filter(flag => variants.has(flag)));
+		}
 	}
 
 	/** @private */
@@ -121,7 +105,12 @@ export abstract class ConverterFlagsToken extends Token {
 				for (let i = length - 1; i >= 0; i--) {
 					const child = childNodes[i]!,
 						flag = child.text().trim();
-					if (this.isInvalidFlag(flag, variantFlags, unknownFlags)) {
+					if (
+						flag
+						&& !variantFlags.has(flag.toLowerCase())
+						&& !unknownFlags.has(flag)
+						&& (variantFlags.size > 0 || !definedFlags.has(flag))
+					) {
 						const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
 						if (computeEditInfo || fix) {
 							if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
