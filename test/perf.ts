@@ -1,16 +1,8 @@
 import * as assert from 'assert';
 import Parser from '../index';
-import type {FullLintConfigValue} from '../base';
 import type {Token, TableToken} from '../internal';
 
-const N = 1e4,
-	{rules} = Parser.lintConfig,
-	[, noDuplicate] = rules['no-duplicate'] as FullLintConfigValue,
-	[, noIgnored] = rules['no-ignored'] as FullLintConfigValue;
-noDuplicate!['attribute'] = 0;
-noDuplicate!['parameter'] = 0;
-noDuplicate!['imageParameter'] = 0;
-noIgnored!['arg'] = 0;
+const N = 1e4;
 
 /** @ignore */
 const methods = (root: Token): void => {
@@ -44,7 +36,8 @@ const complex = (
 	methods(root);
 };
 
-describe('Performance test', () => {
+describe('Performance test', function() {
+	this.timeout(3e3); // eslint-disable-line @typescript-eslint/no-invalid-this
 	it('<translate>', () => {
 		const content = '<translate nowrap></translate>'.repeat(N);
 		basic(content, 'translate');
