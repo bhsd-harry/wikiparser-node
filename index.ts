@@ -709,7 +709,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else if (Array.isArray(arg)) {
 			args = arg;
 		} else if (arg) {
-			for (let i = 1; i in arg; i++) {
+			args.length = 0;
+			for (let i = 1; Object.hasOwn(arg, i); i++) {
 				args.push(arg[i]!);
 				delete arg[i];
 			}
