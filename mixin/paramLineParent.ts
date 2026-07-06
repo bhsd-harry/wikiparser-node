@@ -64,8 +64,9 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 						rect = new BoundingRect(this as unknown as Token, start),
 						{computeEditInfo} = lintConfig;
 					for (const [, params] of this.getDuplicatedParams()) {
-						const duplication = Array.from<LintError>({length: params.length});
-						for (let i = params.length - 1; i >= 0; i--) {
+						const {length} = params,
+							duplication = Array.from<LintError>({length});
+						for (let i = length - 1; i >= 0; i--) {
 							const param = params[i]!,
 								e = generateForChild(param, rect, rule, msg, s);
 							if (computeEditInfo) {
