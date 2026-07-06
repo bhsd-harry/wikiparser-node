@@ -216,7 +216,7 @@ describe('Performance test', function() {
 		basic(content, 'converter');
 	});
 	it('language conversion flag', () => {
-		const content = `-{${'zh-cn;'.repeat(N)}|}-`;
+		const content = `-{${'a;'.repeat(N)}|}-`;
 		complex(
 			content,
 			'converter',
