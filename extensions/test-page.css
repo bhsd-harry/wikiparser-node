@@ -606,7 +606,6 @@ h3 {
 	min-width: 14px;
 	min-height: 14px;
 	vertical-align: text-top;
-	/* stylelint-disable plugin/use-baseline */
 	-webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"%23000\"><path d=\"M10 15 2 5h16z\"/></svg>");
 	mask-image: url("data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"%23000\"><path d=\"M10 15 2 5h16z\"/></svg>");
 	-webkit-mask-position: center;
@@ -615,7 +614,6 @@ h3 {
 	mask-repeat: no-repeat;
 	-webkit-mask-size: calc(max(14px, 14px));
 	mask-size: calc(max(14px, 14px));
-	/* stylelint-enable plugin/use-baseline */
 }
 .frame .CategoryTreeBullet,
 .frame .CategoryTreeEmptyBullet {

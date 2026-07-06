@@ -932,8 +932,8 @@ export class LanguageService implements LanguageServiceBase {
 			ranges: FoldingRange[] = [],
 			levels = Array.from<number | undefined>({length: 6}),
 			tokens = root.querySelectorAll('heading-title,table,template,magic-word');
-		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
-			token.getRelativeIndex();
+		for (let i = tokens.length - 1; i >= 0; i--) { // 提高 getBoundingClientRect 的性能
+			tokens[i]!.getRelativeIndex();
 		}
 		for (const token of tokens) {
 			const {offsetHeight} = token;
@@ -1382,10 +1382,11 @@ export class LanguageService implements LanguageServiceBase {
 	 * @since v1.16.3
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
-		const root = await this.#queue(text);
+		const root = await this.#queue(text),
+			templates = root.querySelectorAll<TranscludeToken>('template,magic-word#invoke');
 		let hints: InlayHint[] = [];
-		for (const token of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke').reverse()) {
-			const {type, childNodes} = token;
+		for (let i = templates.length - 1; i >= 0; i--) {
+			const {type, childNodes} = templates[i]!;
 			hints = [
 				...hints,
 				...(childNodes.slice(type === 'template' ? 1 : 3) as ParameterToken[]).filter(({anon}) => anon)
