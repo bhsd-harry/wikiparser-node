@@ -65,16 +65,16 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 						rect = new BoundingRect(this as unknown as Token, start),
 						{computeEditInfo} = lintConfig;
 					for (const [, params] of this.getDuplicatedParams()) {
-						Array.prototype.push.apply(
-							errors,
-							params.map(param => {
-								const e = generateForChild(param, rect, rule, msg, s);
-								if (computeEditInfo) {
-									e.suggestions = [fixByRemove(e, param === firstChild ? 0 : -1)];
-								}
-								return e;
-							}),
-						);
+						const duplication = Array.from<LintError>({length: params.length});
+						for (let i = params.length - 1; i >= 0; i--) {
+							const param = params[i]!,
+								e = generateForChild(param, rect, rule, msg, s);
+							if (computeEditInfo) {
+								e.suggestions = [fixByRemove(e, param === firstChild ? 0 : -1)];
+							}
+							duplication[i] = e;
+						}
+						Array.prototype.push.apply(errors, duplication);
 					}
 				}
 				return errors;
