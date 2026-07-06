@@ -37,7 +37,7 @@ const complex = (
 };
 
 describe('Performance test', function() {
-	this.timeout(1e3); // eslint-disable-line @typescript-eslint/no-invalid-this
+	this.timeout(3e2); // eslint-disable-line @typescript-eslint/no-invalid-this
 	it('<translate>', () => {
 		const content = '<translate nowrap></translate>'.repeat(N);
 		basic(content, 'translate');
