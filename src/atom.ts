@@ -1,12 +1,6 @@
 import {Token} from './index';
 import type {Config} from '../base';
 
-/* PRINT ONLY */
-
-import type {ConverterFlagsToken} from '../internal';
-
-/* PRINT ONLY END */
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const atomTypes = [
 	'arg-name',
@@ -53,18 +47,5 @@ export class AtomToken extends Token {
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.#type = type;
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		PRINT: if (key === 'invalid') {
-			return (
-				this.type === 'converter-flag'
-				&& Boolean((this.parentNode as ConverterFlagsToken | undefined)?.isInvalidFlag(this))
-			) as TokenAttribute<T>;
-		}
-		return super.getAttribute(key);
 	}
 }
