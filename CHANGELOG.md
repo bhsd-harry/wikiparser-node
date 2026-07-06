@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.45.1
+
+*2026-07-07*
+
+**Changed**
+
+- For performance reasons, `ConverterFlagsToken#print` no longer highlights invalid flags
+
 ## v1.45.0
 
 *2026-07-06*
