@@ -170,8 +170,9 @@ export abstract class FileToken extends LinkBaseToken {
 			}
 			s = lintConfig.getSeverity(rule, 'parameter');
 			if (s && unscaled) {
-				for (const arg of args.filter(({name}) => name === 'width')) {
-					const e = generateForChild(arg, rect, rule, 'invalid-image-parameter', s);
+				const widths = args.filter(({name}) => name === 'width');
+				for (let i = widths.length - 1; i >= 0; i--) {
+					const e = generateForChild(widths[i]!, rect, rule, 'invalid-image-parameter', s);
 					if (computeEditInfo || fix) {
 						e.fix = fixByRemove(e, -1);
 					}
@@ -214,8 +215,9 @@ export abstract class FileToken extends LinkBaseToken {
 				p1: string,
 				severity: SeverityPredicate = true,
 			): LintError[] => {
-				const duplication = Array.from<LintError | false>({length: tokens.length});
-				for (let i = tokens.length - 1; i >= 0; i--) {
+				const {length} = tokens,
+					duplication = Array.from<LintError | false>({length});
+				for (let i = length - 1; i >= 0; i--) {
 					const arg = tokens[i]!;
 					s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
 					if (!s) {

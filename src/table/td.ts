@@ -147,8 +147,11 @@ export abstract class TdToken extends TableBaseToken {
 				rule = 'pipe-like',
 				{lintConfig} = Parser,
 				{computeEditInfo, fix} = lintConfig,
-				severities = ['td', 'double'].map(key => lintConfig.getSeverity(rule, key));
-			for (const child of this.lastChild.childNodes) {
+				severities = ['td', 'double'].map(key => lintConfig.getSeverity(rule, key)),
+				{childNodes, length} = this.lastChild,
+				pipes: LintError[] = [];
+			for (let i = length - 1; i >= 0; i--) {
+				const child = childNodes[i]!;
 				if (child.type === 'text') {
 					const {data} = child;
 					if (data.includes('|')) {
@@ -168,12 +171,12 @@ export abstract class TdToken extends TableBaseToken {
 									e.suggestions = [fixByPipe(e.startIndex, data)];
 								}
 							}
-							errors.push(e);
+							pipes.push(e);
 						}
 					}
 				}
 			}
-			return errors;
+			return [...errors, ...pipes.reverse()];
 		}
 	}
 

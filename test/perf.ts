@@ -230,6 +230,10 @@ describe('Performance test', function() {
 		const content = `-{${'zh:a;'.repeat(N)}}-`;
 		complex(content, 'converter', 'converter-flags', 'converter-rule', N + 2);
 	});
+	it('nested extension', () => {
+		const content = `<references>${'<ref/>'.repeat(N)}</references>`;
+		complex(content, 'ext', 'ext', undefined, N, 'lastChild');
+	});
 	it('extension parameter line', () => {
 		const content = `<inputbox>${'\ntype = create'.repeat(N)}</inputbox>`;
 		complex(content, 'ext', 'param-line', undefined, N + 1, 'lastChild');
@@ -255,5 +259,9 @@ describe('Performance test', function() {
 			N + 1,
 			'lastChild',
 		);
+	});
+	it('charinsert line', () => {
+		const content = `<charinsert>${'a\n'.repeat(N)}</charinsert>`;
+		complex(content, 'ext', 'charinsert-line', undefined, N + 1, 'lastChild');
 	});
 });

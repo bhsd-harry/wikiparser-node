@@ -128,23 +128,21 @@ export abstract class ImagemapToken extends MultiLineToken {
 				s = lintConfig.getSeverity(rule, image ? 'link' : 'image');
 			if (s) {
 				if (image) {
-					Array.prototype.push.apply(
-						errors,
-						childNodes.filter(child => {
-							const str = child.toString().trim();
-							return child.is<CommentLineToken>('noinclude')
-								&& str && !str.startsWith('#');
-						}).map(child => {
-							const e = generateForChild(child, rect, rule, 'invalid-imagemap-link', s);
-							if (computeEditInfo) {
-								e.suggestions = [
-									fixByRemove(e, -1),
-									fixBy(e, 'comment', '# '),
-								];
-							}
-							return e;
-						}),
-					);
+					const comments = childNodes.filter(child => {
+						const str = child.toString().trim();
+						return child.is<CommentLineToken>('noinclude')
+							&& str && !str.startsWith('#');
+					});
+					for (let i = comments.length - 1; i >= 0; i--) {
+						const e = generateForChild(comments[i]!, rect, rule, 'invalid-imagemap-link', s);
+						if (computeEditInfo) {
+							e.suggestions = [
+								fixByRemove(e, -1),
+								fixBy(e, 'comment', '# '),
+							];
+						}
+						errors.push(e);
+					}
 				} else {
 					errors.push(generateForSelf(this, rect, rule, 'imagemap-without-image', s));
 				}
