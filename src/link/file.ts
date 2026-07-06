@@ -213,19 +213,25 @@ export abstract class FileToken extends LinkBaseToken {
 				msg: 'conflicting' | 'duplicate',
 				p1: string,
 				severity: SeverityPredicate = true,
-			): LintError[] => tokens.map(arg => {
-				s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
-				if (!s) {
-					return false;
-				}
+			): LintError[] => {
+				const duplication = Array.from<LintError | false>({length: tokens.length});
+				for (let i = tokens.length - 1; i >= 0; i--) {
+					const arg = tokens[i]!;
+					s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
+					if (!s) {
+						duplication[i] = false;
+						continue;
+					}
 
-				/** `conflicting-image-parameter`或`duplicate-image-parameter` */
-				const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
-				if (computeEditInfo) {
-					e.suggestions = [fixByRemove(e, -1)];
+					/** `conflicting-image-parameter`或`duplicate-image-parameter` */
+					const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
+					if (computeEditInfo) {
+						e.suggestions = [fixByRemove(e, -1)];
+					}
+					duplication[i] = e;
 				}
-				return e;
-			}).filter((e): e is LintError => e !== false);
+				return duplication.filter((e): e is LintError => e !== false);
+			};
 			for (const key of keys) {
 				if (key === 'invalid' || key === 'width' && unscaled) {
 					continue;

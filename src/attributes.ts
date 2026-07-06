@@ -297,28 +297,32 @@ export abstract class AttributesToken extends Token {
 			const severity = lintConfig.getSeverity(rules[3], 'attribute');
 			if (severity && duplicated.size > 0) {
 				for (const key of duplicated) {
-					const pairs = attrs.get(key)!.map(attr => [attr, attr.getValue()] as const);
-					Array.prototype.push.apply(
-						errors,
-						pairs.map(([attr, value], i) => {
-							const e = generateForChild(
+					const pairs = attrs.get(key)!.map(attr => [attr, attr.getValue()] as const),
+						duplication = Array.from<LintError>({length: pairs.length}),
+						values = new Set<string>();
+					for (let i = pairs.length - 1; i >= 0; i--) {
+						const [attr, value] = pairs[i]!,
+							e = generateForChild(
 								attr,
 								rect,
 								rules[3],
 								Parser.msg('duplicate-attribute', key),
 								severity,
 							);
-							if (computeEditInfo || fix) {
-								const remove = fixByRemove(e);
-								if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
-									e.fix = remove;
-								} else if (computeEditInfo) {
+						if (computeEditInfo || fix) {
+							const remove = fixByRemove(e);
+							if (!value || values.has(value)) {
+								e.fix = remove;
+							} else {
+								values.add(value);
+								if (computeEditInfo) {
 									e.suggestions = [remove];
 								}
 							}
-							return e;
-						}),
-					);
+						}
+						duplication[i] = e;
+					}
+					Array.prototype.push.apply(errors, duplication);
 				}
 			}
 			return errors;

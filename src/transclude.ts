@@ -194,7 +194,7 @@ export abstract class TranscludeToken extends Token {
 				i++;
 			}
 			// @ts-expect-error abstract class
-			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
+			this.insertAt(new ParameterToken(...part, config, accum) as ParameterToken);
 		}
 	}
 
@@ -367,16 +367,16 @@ export abstract class TranscludeToken extends Token {
 				const duplicatedArgs = this.getDuplicatedArgs()
 					.filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 				for (const [, args] of duplicatedArgs) {
-					Array.prototype.push.apply(
-						errors,
-						args.map(arg => {
-							const e = generateForChild(arg, rect, rule, 'duplicate-parameter', s);
-							if (computeEditInfo) {
-								e.suggestions = [fixByRemove(e, -1)];
-							}
-							return e;
-						}),
-					);
+					const duplication = Array.from<LintError>({length: args.length});
+					for (let i = args.length - 1; i >= 0; i--) {
+						const arg = args[i]!,
+							e = generateForChild(arg, rect, rule, 'duplicate-parameter', s);
+						if (computeEditInfo) {
+							e.suggestions = [fixByRemove(e, -1)];
+						}
+						duplication[i] = e;
+					}
+					Array.prototype.push.apply(errors, duplication);
 				}
 			}
 			return errors;
