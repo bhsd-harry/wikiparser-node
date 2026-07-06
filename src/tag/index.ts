@@ -98,13 +98,19 @@ export abstract class TagToken extends Token {
 					i = childNodes.indexOf(this),
 					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
+					{viewOnly} = Parser,
 					{rev} = Shadow;
-				let cur = siblings.pop();
+				let cur = siblings.pop(),
+					until: this | undefined;
 				while (
 					cur
 				) {
 					// eslint-disable-next-line no-empty, @typescript-eslint/no-unnecessary-condition
 					if (!cur) {
+					} else if (until) {
+						if (cur === until) {
+							until = undefined;
+						}
 					} else if (
 						!cur.is<this>(type)
 						|| type === 'html' && (cur.name !== name || isFlexible && cur.selfClosing)
@@ -114,6 +120,15 @@ export abstract class TagToken extends Token {
 						/* c8 ignore next 3 */
 						if (type === 'tvar') {
 							return undefined;
+						} else if (
+							cur.#match?.[0] === rev
+							&& viewOnly
+						) {
+							const [, matched] = cur.#match;
+							if (!matched) {
+								return undefined;
+							}
+							until = matched;
 						}
 						stack.push(cur);
 					} else {
@@ -121,14 +136,14 @@ export abstract class TagToken extends Token {
 						if (top === this) {
 							return cur;
 						}
-						if (Parser.viewOnly) {
+						if (viewOnly) {
 							top.#match = [rev, cur];
 							cur.#match = [rev, top];
 						}
 					}
 					cur = siblings.pop();
 				}
-				if (Parser.viewOnly) {
+				if (viewOnly) {
 					for (const token of stack) {
 						token.#match = [rev, undefined];
 					}
