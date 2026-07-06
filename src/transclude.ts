@@ -141,7 +141,7 @@ export abstract class TranscludeToken extends Token {
 				i++;
 			}
 			// @ts-expect-error abstract class
-			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
+			this.insertAt(new ParameterToken(...part, config, accum) as ParameterToken);
 		}
 	}
 
