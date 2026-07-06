@@ -344,7 +344,7 @@ export abstract class AttributesToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
 			const errors = super.lint(start, re),
-				{parentNode, childNodes, type, name: tag} = this,
+				{parentNode, childNodes, length: l, type, name: tag} = this,
 				attrs = new Map<string, AttributeToken[]>(),
 				duplicated = new Set<string>(),
 				rect = new BoundingRect(this, start),
@@ -364,7 +364,8 @@ export abstract class AttributesToken extends Token {
 				}
 				errors.push(e);
 			}
-			for (const attr of childNodes) {
+			for (let i = l - 1; i >= 0; i--) {
+				const attr = childNodes[i]!;
 				if (attr instanceof AttributeToken) {
 					const {name} = attr;
 					if (attrs.has(name)) {
@@ -415,9 +416,10 @@ export abstract class AttributesToken extends Token {
 			if (severity && duplicated.size > 0) {
 				for (const key of duplicated) {
 					const pairs = attrs.get(key)!.map(attr => [attr, attr.getValue()] as const),
-						duplication = Array.from<LintError>({length: pairs.length}),
+						{length} = pairs,
+						duplication = Array.from<LintError>({length}),
 						values = new Set<string>();
-					for (let i = pairs.length - 1; i >= 0; i--) {
+					for (let i = 0; i < length; i++) {
 						const [attr, value] = pairs[i]!,
 							e = generateForChild(
 								attr,
@@ -437,7 +439,7 @@ export abstract class AttributesToken extends Token {
 								}
 							}
 						}
-						duplication[i] = e;
+						duplication[length - i - 1] = e;
 					}
 					Array.prototype.push.apply(errors, duplication);
 				}
