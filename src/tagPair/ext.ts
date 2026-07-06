@@ -54,6 +54,15 @@ export abstract class ExtToken extends TagPairToken {
 			};
 		let innerToken: Token;
 		switch (lcName) {
+			case 'pre':
+				if (!attr || !/\sformat\s*=\s*(?:["']\s*)?wikitext(?:\s*["'])?(?=\s|$)/iu.test(attr)) {
+					const {NowikiToken: PreToken}: typeof import('../nowiki/index') = require('../nowiki/index');
+					// @ts-expect-error abstract class
+					innerToken = new PreToken(inner, newConfig, accum);
+					break;
+				}
+				newConfig.excludes.push('list');
+				// fall through
 			case 'indicator':
 			case 'poem':
 			case 'ref':
