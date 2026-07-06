@@ -127,10 +127,8 @@ export abstract class NestedToken extends Token {
 			}
 			const rect = new BoundingRect(this, start),
 				msg = Parser.msg('invalid-content', name),
-				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u;
-			return [
-				...errors,
-				...childNodes.filter(child => {
+				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u,
+				ignored = childNodes.filter(child => {
 					const {type, name: n} = child;
 					if (type === 'ext') {
 						return !this.#tags.includes(n);
@@ -139,17 +137,21 @@ export abstract class NestedToken extends Token {
 					}
 					const str = child.toString().trim();
 					return str && !regex.test(str);
-				}).map(child => {
-					const e = generateForChild(child, rect, rule, msg, s);
-					if (computeEditInfo) {
-						e.suggestions = [
-							fixByRemove(e),
-							fixByComment(e, child.toString()),
-						];
-					}
-					return e;
 				}),
-			];
+				{length} = ignored,
+				ignoredErrors = Array.from<LintError>({length});
+			for (let i = length - 1; i >= 0; i--) {
+				const child = ignored[i]!,
+					e = generateForChild(child, rect, rule, msg, s);
+				if (computeEditInfo) {
+					e.suggestions = [
+						fixByRemove(e),
+						fixByComment(e, child.toString()),
+					];
+				}
+				ignoredErrors[i] = e;
+			}
+			return [...errors, ...ignoredErrors];
 		}
 	}
 

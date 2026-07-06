@@ -469,7 +469,7 @@ export abstract class TranscludeToken extends Token {
 			if (!this.isTemplate()) {
 				return errors;
 			}
-			const {type, childNodes, length} = this,
+			const {type, childNodes, length: l} = this,
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
@@ -502,7 +502,7 @@ export abstract class TranscludeToken extends Token {
 			}
 			rule = 'invalid-invoke';
 			s = lintConfig.getSeverity(rule, 'function');
-			if (s && invoke && length === 2) {
+			if (s && invoke && l === 2) {
 				errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
 				return errors;
 			}
@@ -512,8 +512,9 @@ export abstract class TranscludeToken extends Token {
 				const duplicatedArgs = this.getDuplicatedArgs()
 					.filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 				for (const [, args] of duplicatedArgs) {
-					const duplication = Array.from<LintError>({length: args.length});
-					for (let i = args.length - 1; i >= 0; i--) {
+					const {length} = args,
+						duplication = Array.from<LintError>({length});
+					for (let i = length - 1; i >= 0; i--) {
 						const arg = args[i]!,
 							e = generateForChild(arg, rect, rule, 'duplicate-parameter', s);
 						if (computeEditInfo) {

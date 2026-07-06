@@ -57,7 +57,7 @@ export abstract class CharinsertToken extends MultiLineToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		LINT: {
-			const {name, childNodes} = this,
+			const {name, childNodes, length: l} = this,
 				rule = 'no-ignored',
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
@@ -67,19 +67,20 @@ export abstract class CharinsertToken extends MultiLineToken {
 			}
 			const rect = new BoundingRect(this, start),
 				msg = Parser.msg('invalid-space', name),
-				trailing: LintError[] = [];
-			let errors = super.lint(start),
-				begin = false;
-			for (const child of childNodes) {
-				const str = String(child),
+				leading: LintError[] = [],
+				errors = super.lint(start);
+			let begin = false;
+			for (let i = l - 1; i >= 0; i--) {
+				const child = childNodes[i]!,
+					str = child.toString(),
 					trimmed = str.trim();
 				if (trimmed) {
 					if (begin) {
-						const n = numLeadingSpaces(str);
-						if (n) {
+						const [, {length}] = /(?:^|\S)(\s*)$/u.exec(str) as string[] as [string, string];
+						if (length) {
 							const e = generateForChild(child, rect, rule, msg, s);
-							e.endIndex = e.startIndex + n;
-							e.endCol = e.startCol + n;
+							e.startIndex = e.endIndex - length;
+							e.startCol = e.endCol - length;
 							if (computeEditInfo) {
 								e.fix = fixByRemove(e);
 							}
@@ -88,21 +89,21 @@ export abstract class CharinsertToken extends MultiLineToken {
 					} else {
 						begin = true;
 					}
-					if (trailing.length > 0) {
-						errors = [...errors, ...trailing];
-						trailing.length = 0;
+					if (leading.length > 0) {
+						Array.prototype.push.apply(errors, leading);
+						leading.length = 0;
 					}
 				}
 				if (begin) {
-					const [, {length}] = /(?:^|\S)(\s*)$/u.exec(str) as string[] as [string, string];
-					if (length) {
+					const n = numLeadingSpaces(str);
+					if (n) {
 						const e = generateForChild(child, rect, rule, msg, s);
-						e.startIndex = e.endIndex - length;
-						e.startCol = e.endCol - length;
+						e.endIndex = e.startIndex + n;
+						e.endCol = e.startCol + n;
 						if (computeEditInfo) {
 							e.fix = fixByRemove(e);
 						}
-						trailing.push(e);
+						leading.push(e);
 					}
 				}
 			}
