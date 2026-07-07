@@ -13,6 +13,7 @@ export interface ParamLineParentBase {
 	 * Get all parameter keys
 	 *
 	 * 获取所有参数键
+	 * @since v1.45.0
 	 */
 	getKeys(): Set<string>;
 
@@ -21,6 +22,7 @@ export interface ParamLineParentBase {
 	 *
 	 * 获取指定参数
 	 * @param key parameter key / 参数键
+	 * @since v1.45.0
 	 */
 	getParams(key: string): ParamLineToken[];
 
@@ -28,6 +30,7 @@ export interface ParamLineParentBase {
 	 * Get duplicated parameters
 	 *
 	 * 获取重复参数
+	 * @since v1.45.0
 	 */
 	getDuplicatedParams(): [string, ParamLineToken[]][];
 }

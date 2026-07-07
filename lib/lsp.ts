@@ -1555,6 +1555,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * 提供文档高亮
 	 * @param text source Wikitext / 源代码
 	 * @param position position / 位置
+	 * @since v1.46.0
 	 */
 	async provideDocumentHighlights(text: string, position: Position): Promise<DocumentHighlight[] | undefined> {
 		const root = await this.#queue(text),
