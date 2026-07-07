@@ -42,6 +42,9 @@ class LanguageService {
     provideCompletionItems(text, position) {
         return wikiparse.provide('completionItems', __classPrivateFieldGet(this, _LanguageService_id, "f"), text, __classPrivateFieldGet(this, _LanguageService_include, "f"), position);
     }
+    provideDocumentHighlights(text, position) {
+        return wikiparse.provide('documentHighlights', __classPrivateFieldGet(this, _LanguageService_id, "f"), text, __classPrivateFieldGet(this, _LanguageService_include, "f"), position);
+    }
     provideReferences(text, position) {
         return wikiparse.provide('references', __classPrivateFieldGet(this, _LanguageService_id, "f"), text, __classPrivateFieldGet(this, _LanguageService_include, "f"), position);
     }

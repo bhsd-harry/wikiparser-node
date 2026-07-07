@@ -17,6 +17,7 @@ import type {
 	Position,
 	FoldingRange,
 	DocumentLink,
+	DocumentHighlight,
 	Location,
 	Range,
 	WorkspaceEdit,
@@ -50,6 +51,7 @@ export type {
 	DocumentLink,
 	CompletionItem,
 	ColorPresentation,
+	DocumentHighlight,
 	Location,
 	Range,
 	WorkspaceEdit,
@@ -79,6 +81,7 @@ export type Command = ['setI18N', Record<string, string>?]
 	| ['resolveCodeAction', number, string, boolean]
 	| [
 		'completionItems'
+		| 'documentHighlights'
 		| 'references'
 		| 'definition'
 		| 'renameLocation'

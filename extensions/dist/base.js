@@ -138,6 +138,16 @@ const workerJS = () => {
                     ]);
                 })();
                 break;
+            case 'documentHighlights':
+                (async () => {
+                    postMessage([
+                        command,
+                        qid,
+                        await getLSP(qid, include).provideDocumentHighlights(wikitext, stage),
+                        wikitext,
+                    ]);
+                })();
+                break;
             case 'references':
                 (async () => {
                     postMessage([

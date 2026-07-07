@@ -101,6 +101,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'provideColorPresentations':
 			case 'resolveCodeAction':
 			case 'provideDefinition':
+			case 'provideDocumentHighlights':
 			case 'provideReferences':
 			case 'resolveRenameLocation':
 			case 'provideRenameEdits':

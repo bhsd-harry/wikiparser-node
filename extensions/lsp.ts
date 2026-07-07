@@ -7,6 +7,7 @@ import type {
 	Position,
 	FoldingRange,
 	DocumentLink,
+	DocumentHighlight,
 	Location,
 	Range,
 	WorkspaceEdit,
@@ -82,6 +83,17 @@ class LanguageService implements LanguageServiceBase {
 			this.#include,
 			position,
 		) as Promise<CompletionItem[] | undefined>;
+	}
+
+	/** @implements */
+	provideDocumentHighlights(text: string, position: Position): Promise<DocumentHighlight[] | undefined> {
+		return wikiparse.provide(
+			'documentHighlights',
+			this.#id,
+			text,
+			this.#include,
+			position,
+		) as Promise<DocumentHighlight[] | undefined>;
 	}
 
 	/** @implements */
