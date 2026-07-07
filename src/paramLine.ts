@@ -29,7 +29,12 @@ export abstract class ParamLineToken extends Token {
 		return 'param-line';
 	}
 
-	/** A reasonable parameter name / 合理的参数名 */
+	/**
+	 * A reasonable parameter name
+	 *
+	 * 合理的参数名
+	 * @since v1.45.0
+	 */
 	get key(): string | undefined {
 		LINT: return this.getKey();
 	}
@@ -114,6 +119,7 @@ export abstract class ParamLineToken extends Token {
 	 * Get a reasonable parameter name
 	 *
 	 * 获取合理的参数名
+	 * @since v1.45.0
 	 */
 	getKey(): string | undefined {
 		LINT: {
