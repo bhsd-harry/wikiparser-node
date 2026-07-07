@@ -217,35 +217,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 
 				/* NOT FOR BROWSER ONLY */
 
-			case 'provideReferences': {
-				const tokens = [
-					// 不需要 +1
-					attrKey,
-					headingTitle,
-					// 需要 +1
-					ext,
-					html,
-					imageParameter?.name !== 'caption' && imageParameter,
-					argName,
-					templateName,
-					magicWordName,
-
-					/* NOT FOR BROWSER */
-
-					linkTarget,
-					parameterKey,
-				];
-				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
-					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
-				if (positions.length > 0) {
-					await wrap(method, title, async () => {
-						for (const pos of positions) {
-							check(await lsp.provideReferences(content, pos), title, pos, silent);
-						}
-					}, summary);
-				}
-				break;
-			}
 			case 'resolveRenameLocation':
 			case 'provideRenameEdits':
 				if (renamePositions.length > 0) {
@@ -284,10 +255,63 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 					await wrap(method, title, () => lsp.provideRefactoringAction(content, range), summary);
 				}
 				break;
+			case 'provideDocumentHighlights': {
+				const tokens = [
+					attrKey,
+					ext,
+					html,
+					argName,
+					templateName,
+					magicWordName,
 
-				/* NOT FOR BROWSER ONLY END */
+					/* NOT FOR BROWSER */
 
-				/* NOT FOR BROWSER */
+					linkTarget,
+					parameterKey,
+				];
+				const positions = tokens.filter(Boolean).map(token => indexToPos(root, token!.getAbsoluteIndex() + 1));
+				if (positions.length > 0) {
+					await wrap(method, title, async () => {
+						for (const pos of positions) {
+							check(await lsp.provideDocumentHighlights(content, pos), title, pos, silent);
+						}
+					}, summary);
+				}
+				break;
+			}
+			case 'provideReferences': {
+				const tokens = [
+					// 不需要 +1
+					attrKey,
+					headingTitle,
+					// 需要 +1
+					ext,
+					html,
+					imageParameter?.name !== 'caption' && imageParameter,
+					argName,
+					templateName,
+					magicWordName,
+
+					/* NOT FOR BROWSER */
+
+					linkTarget,
+					parameterKey,
+				];
+				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
+					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
+				if (positions.length > 0) {
+					await wrap(method, title, async () => {
+						for (const pos of positions) {
+							check(await lsp.provideReferences(content, pos), title, pos, silent);
+						}
+					}, summary);
+				}
+				break;
+			}
+
+			/* NOT FOR BROWSER ONLY END */
+
+			/* NOT FOR BROWSER */
 
 			case 'provideDefinition':
 				if (refName) {
