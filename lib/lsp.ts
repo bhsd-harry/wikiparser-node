@@ -33,6 +33,7 @@ import type {
 	FoldingRange,
 	DocumentLink,
 	Location,
+	DocumentHighlight,
 	WorkspaceEdit,
 	Diagnostic as DiagnosticBase,
 	TextEdit,
@@ -68,6 +69,7 @@ import type {
 	ParameterToken,
 	HeadingToken,
 	ExtToken,
+	HtmlToken,
 	AttributesToken,
 	LinkToken,
 	FileToken,
@@ -142,15 +144,18 @@ const refTags = new Set(['ref']),
 		'link-target',
 		'parameter-key',
 	]),
-	referenceTypes = new Set<TokenTypes>([
+	highlightTypes = new Set<TokenTypes>([
 		'ext',
 		'html',
 		'attr-key',
+		'magic-word-name',
+		...renameTypes,
+	]),
+	referenceTypes = new Set<TokenTypes>([
 		'image-parameter',
 		'heading-title',
 		'heading',
-		'magic-word-name',
-		...renameTypes,
+		...highlightTypes,
 	]),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']),
 	rawLilyPondCommands = new Set(['paper', 'book', 'bookpart', 'score', 'markuplist'].map(c => `\\${c}`)),
@@ -307,8 +312,10 @@ const getName = (token: Token): string | number | undefined => {
 			return (token as HeadingToken).level;
 		case 'heading-title':
 			return (parentNode as HeadingToken).level;
-		case 'parameter-key':
-			return `${parentNode!.parentNode!.name}|${parentNode!.name}`;
+		case 'parameter-key': {
+			const {type: t, name: n} = parentNode!.parentNode as TranscludeToken;
+			return n + (t === 'template' ? '|' : '#') + parentNode!.name;
+		}
 		case 'ext':
 		case 'html':
 		case 'image-parameter':
@@ -316,6 +323,28 @@ const getName = (token: Token): string | number | undefined => {
 		default:
 			return parentNode!.name;
 	}
+};
+
+/**
+ * Get the tokens that match the given token.
+ * @param root
+ * @param node the token to match
+ * @param types accepted token types
+ */
+const getMatchingTokens = (root: Token, node: Token, types: Set<TokenTypes>): Token[] | undefined => {
+	const {type} = node,
+		refName = getRefName(node),
+		refGroup = getRefGroup(node);
+	if (!refName && !refGroup && !types.has(type)) {
+		return undefined;
+	}
+	const name = getName(node),
+		refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(
+			token => type === 'attr-value'
+				? getRefName(token) === refName || getRefGroup(token) === refGroup
+				: getName(token) === name,
+		);
+	return refs.length === 0 ? undefined : refs.reverse();
 };
 
 /**
@@ -1532,6 +1561,40 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide document highlights
+	 *
+	 * 提供文档高亮
+	 * @param text source Wikitext / 源代码
+	 * @param position position / 位置
+	 */
+	async provideDocumentHighlights(text: string, position: Position): Promise<DocumentHighlight[] | undefined> {
+		const root = await this.#queue(text),
+			index = root.indexFromPos(position.line, position.character)!,
+			node = root.elementFromIndex(index),
+			type = node?.type;
+		if (!node || (type === 'ext' || type === 'html') && !/\w/u.test(text.charAt(index))) {
+			return undefined;
+		}
+		return getMatchingTokens(root, node, highlightTypes)?.map((token): DocumentHighlight => {
+			const range = createNodeRange(token);
+			if (type === 'ext' || type === 'html') {
+				const {start} = range;
+				start.character += (token as HtmlToken).closing ? 2 : 1;
+				return {
+					range: {
+						start,
+						end: {
+							line: start.line,
+							character: start.character + token.name!.length,
+						},
+					},
+				};
+			}
+			return {range};
+		});
+	}
+
+	/**
 	 * Provide references
 	 *
 	 * 提供引用
@@ -1544,22 +1607,21 @@ export class LanguageService implements LanguageServiceBase {
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			node = offset === 0 && (element.is('ext-attr-dirty') || element.is('html-attr-dirty'))
 				? element.parentNode!.parentNode!
-				: element,
-			{type} = node,
-			refName = getRefName(node),
-			refGroup = getRefGroup(node);
-		if (!refName && !refGroup && !referenceTypes.has(type)) {
-			return undefined;
-		}
-		const name = getName(node),
-			refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(
-				token => type === 'attr-value'
-					? getRefName(token) === refName || getRefGroup(token) === refGroup
-					: getName(token) === name,
-			).reverse().map((token): Omit<Location, 'uri'> => ({
-				range: createNodeRange(token.type === 'parameter-key' ? token.parentNode! : token),
-			}));
-		return refs.length === 0 ? undefined : refs;
+				: element;
+		return getMatchingTokens(root, node, referenceTypes)?.map((token): Omit<Location, 'uri'> => ({
+			range: createNodeRange(token.type === 'parameter-key' ? token.parentNode! : token),
+		}));
+	}
+
+	/**
+	 * 获取根节点和当前节点
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	async #getRootAndNode(text: string, position: Position): Promise<[Token, Token | undefined]> {
+		const root = await this.#queue(text),
+			node = root.elementFromPoint(position.character, position.line);
+		return [root, node];
 	}
 
 	/**
@@ -1570,8 +1632,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position position / 位置
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		const root = await this.#queue(text),
-			node = root.elementFromPoint(position.character, position.line);
+		const [root, node] = await this.#getRootAndNode(text, position);
 		if (!node) {
 			return undefined;
 		}
@@ -1601,8 +1662,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position position / 位置
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
-		const root = await this.#queue(text),
-			node = root.elementFromPoint(position.character, position.line);
+		const [, node] = await this.#getRootAndNode(text, position);
 		if (!node) {
 			return undefined;
 		}
@@ -1627,8 +1687,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param newName new name / 新名称
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
-		const root = await this.#queue(text),
-			node = root.elementFromPoint(position.character, position.line);
+		const [root, node] = await this.#getRootAndNode(text, position);
 		if (!node) {
 			return undefined;
 		}
