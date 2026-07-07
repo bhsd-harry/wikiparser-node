@@ -7,6 +7,7 @@ import type {
 	CompletionItemKind,
 	FoldingRange,
 	DocumentLink,
+	DocumentHighlight,
 	Location,
 	WorkspaceEdit,
 	Diagnostic,
@@ -421,6 +422,15 @@ export interface LanguageService {
 	 * @param text source Wikitext / 源代码
 	 */
 	provideLinks(text: string): Promise<DocumentLink[]>;
+
+	/**
+	 * Provide document highlights
+	 *
+	 * 提供文档高亮
+	 * @param text source Wikitext / 源代码
+	 * @param position position / 位置
+	 */
+	provideDocumentHighlights(text: string, position: Position): Promise<DocumentHighlight[] | undefined>;
 
 	/**
 	 * Provide references
