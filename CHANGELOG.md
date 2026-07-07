@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
-## v1.45.1
+## v1.46.0
 
 *2026-07-07*
+
+**Added**
+
+- [`LanguageService#provideDocumentHighlights`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedocumenthighlights)
 
 **Changed**
 
