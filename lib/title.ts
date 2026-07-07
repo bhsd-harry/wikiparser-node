@@ -385,7 +385,7 @@ export class Title {
 	 * Check if the title is a redirect
 	 *
 	 * 检测是否是重定向
-	 * @since v1.38.2
+	 * @since v1.39.1
 	 */
 	isRedirect(): boolean {
 		return this.getRedirection()[0];

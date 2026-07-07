@@ -19,6 +19,7 @@ export interface ParamLineParentBase {
 	 * Get all parameter keys
 	 *
 	 * 获取所有参数键
+	 * @since v1.45.0
 	 */
 	getKeys(): Set<string>;
 
@@ -27,6 +28,7 @@ export interface ParamLineParentBase {
 	 *
 	 * 获取指定参数
 	 * @param key parameter key / 参数键
+	 * @since v1.45.0
 	 */
 	getParams(key: string): ParamLineToken[];
 
@@ -34,6 +36,7 @@ export interface ParamLineParentBase {
 	 * Get duplicated parameters
 	 *
 	 * 获取重复参数
+	 * @since v1.45.0
 	 */
 	getDuplicatedParams(): [string, ParamLineToken[]][];
 
@@ -44,6 +47,7 @@ export interface ParamLineParentBase {
 	 *
 	 * 是否具有某参数
 	 * @param key parameter key / 参数键
+	 * @since v1.45.0
 	 */
 	hasParam(key: string): boolean;
 
@@ -52,6 +56,7 @@ export interface ParamLineParentBase {
 	 *
 	 * 移除指定参数
 	 * @param key parameter key / 参数键
+	 * @since v1.45.0
 	 */
 	removeParams(key: string): void;
 
@@ -60,6 +65,7 @@ export interface ParamLineParentBase {
 	 *
 	 * 获取参数值
 	 * @param key parameter key / 参数键
+	 * @since v1.45.0
 	 */
 	getValues(key: string): string[];
 
@@ -69,6 +75,7 @@ export interface ParamLineParentBase {
 	 * 插入参数
 	 * @param key parameter key / 参数键
 	 * @param value parameter value / 参数值
+	 * @since v1.45.0
 	 */
 	newParam(key: string, value: string): ParamLineToken;
 
@@ -78,6 +85,7 @@ export interface ParamLineParentBase {
 	 * 设置参数值
 	 * @param key parameter key / 参数键
 	 * @param value parameter value / 参数值
+	 * @since v1.45.0
 	 */
 	setValue(key: string, value: string): void;
 
@@ -85,6 +93,7 @@ export interface ParamLineParentBase {
 	 * Count duplicated parameters
 	 *
 	 * 重复参数计数
+	 * @since v1.45.0
 	 */
 	hasDuplicatedParams(): number;
 }

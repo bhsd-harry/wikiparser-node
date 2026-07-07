@@ -47,7 +47,12 @@ export abstract class ParamLineToken extends Token {
 		return 'param-line';
 	}
 
-	/** A reasonable parameter name / 合理的参数名 */
+	/**
+	 * A reasonable parameter name
+	 *
+	 * 合理的参数名
+	 * @since v1.45.0
+	 */
 	get key(): string | undefined {
 		LINT: return this.getKey();
 	}
@@ -58,7 +63,12 @@ export abstract class ParamLineToken extends Token {
 		this.setKey(key);
 	}
 
-	/** Parameter value / 参数值 */
+	/**
+	 * Parameter value
+	 *
+	 * 参数值
+	 * @since v1.45.0
+	 */
 	get value(): string | undefined {
 		return this.getValue();
 	}
@@ -152,6 +162,7 @@ export abstract class ParamLineToken extends Token {
 	 * Get a reasonable parameter name
 	 *
 	 * 获取合理的参数名
+	 * @since v1.45.0
 	 */
 	getKey(): string | undefined {
 		LINT: {
@@ -184,6 +195,7 @@ export abstract class ParamLineToken extends Token {
 	 * Get the parameter value
 	 *
 	 * 获取参数值
+	 * @since v1.45.0
 	 */
 	getValue(): string | undefined {
 		const {length, lastChild} = this;
@@ -195,6 +207,7 @@ export abstract class ParamLineToken extends Token {
 	 *
 	 * 设置参数名
 	 * @param key The parameter name / 参数名
+	 * @since v1.45.0
 	 */
 	setKey(key: string): void {
 		const {length, firstChild} = this;
@@ -217,6 +230,7 @@ export abstract class ParamLineToken extends Token {
 	 *
 	 * 设置参数值
 	 * @param value The parameter value / 参数值
+	 * @since v1.45.0
 	 */
 	setValue(value: string): void {
 		const {length, lastChild} = this;
