@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
+import {describe, it} from '@bhsd/test-util';
 import type {
 	ConfigData,
 } from '../base';
