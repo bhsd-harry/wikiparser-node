@@ -1313,15 +1313,21 @@ export class LanguageService implements LanguageServiceBase {
 						const {stderr} = e as ExecException;
 						if (stderr) {
 							const re = new RegExp(String.raw`^${file}:(\d+):(\d+): error: (.+)$`, 'gmu'),
-								lilypondErrors = [...stderr.matchAll(re)].map(([, line, col, msg]): LilyPondError => {
-									const {offsetHeight, offsetWidth} = token.lastChild,
-										pos = adjustPos(offsetHeight, offsetWidth, Number(line) - 1, Number(col) - 1);
-									return {
-										line: pos[0],
-										col: pos[1],
-										message: msg!,
-									};
-								});
+								lilypondErrors = [...(stderr as string).matchAll(re)]
+									.map(([, line, col, msg]): LilyPondError => {
+										const {offsetHeight, offsetWidth} = token.lastChild,
+											pos = adjustPos(
+												offsetHeight,
+												offsetWidth,
+												Number(line) - 1,
+												Number(col) - 1,
+											);
+										return {
+											line: pos[0],
+											col: pos[1],
+											message: msg!,
+										};
+									});
 							scores.set(score, lilypondErrors);
 							return getLilyPondDiagnostics(root, token, lilypondErrors);
 						}
