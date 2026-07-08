@@ -47,7 +47,7 @@
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
-		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && mocha dist/test/json.js",
+		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && npx testUtil dist/test/json.js",
 		"lint:md": "markdownlint-cli2 '*.md'",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:md",
 		"prof": "node dist/test/prof.js",
