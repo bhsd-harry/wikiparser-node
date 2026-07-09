@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import {describe, it} from '@bhsd/test-util';
+import {describe, it} from '@bhsd/test-util/mocha';
 import type {
 	ConfigData,
 } from '../base';
