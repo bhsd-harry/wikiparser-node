@@ -1,6 +1,6 @@
 import * as assert from 'assert';
+import {describe, test} from 'node:test';
 import Parser from '../index';
-import type {} from 'mocha';
 import type {Token, TableToken} from '../internal';
 
 const N = 1e4;
@@ -37,8 +37,12 @@ const complex = (
 	methods(root);
 };
 
-describe('Performance test', function() {
-	this.timeout(3e3); // eslint-disable-line @typescript-eslint/no-invalid-this
+/** @ignore */
+const it = (name: string, fn: () => void): void => {
+	void test(name, {timeout: 3e3}, fn);
+};
+
+void describe('Performance test', () => {
 	it('<translate>', () => {
 		const content = '<translate nowrap></translate>'.repeat(N);
 		basic(content, 'translate');
