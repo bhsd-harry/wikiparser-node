@@ -14,8 +14,7 @@
 	],
 	"compilerOptions": {
 		"types": [
-			"node",
-			"mocha"
+			"node"
 		],
 		"lib": [
 			"es2025"
