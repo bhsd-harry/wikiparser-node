@@ -1,5 +1,6 @@
 import path from 'path';
 import * as assert from 'assert';
+import {describe, it, prepare} from '@bhsd/test-util/mocha';
 import Parser = require('../index');
 import type {LintError} from '../base';
 
@@ -27,14 +28,19 @@ const texTest = <T>(
 ): void => {
 	describe(file, () => {
 		const tests: T = require(path.join('..', '..', 'test', 'math', `${file}.json`));
-		for (const [inputhash, input, chem = '', result = pass, tagOverride = tag] of callback(tests)) {
-			it(inputhash, () => {
-				assert.strictEqual(
-					Parser.lint(`<${tagOverride}${chem}>${input}</${tagOverride}>`).length === 0,
-					result,
-					`should ${result ? '' : 'not '}pass: ${input}`,
-				);
-			});
+		const inputTests = callback(tests);
+		if (process.argv[2] === 'skip') {
+			prepare(inputTests.length);
+		} else {
+			for (const [inputhash, input, chem = '', result = pass, tagOverride = tag] of inputTests) {
+				it(inputhash, () => {
+					assert.strictEqual(
+						Parser.lint(`<${tagOverride}${chem}>${input}</${tagOverride}>`).length === 0,
+						result,
+						`should ${result ? '' : 'not '}pass: ${input}`,
+					);
+				});
+			}
 		}
 	});
 };

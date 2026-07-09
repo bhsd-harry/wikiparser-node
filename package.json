@@ -59,8 +59,8 @@
 		"prof": "node dist/test/prof.js",
 		"coverage": "tsc --declaration false --target es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "npx testUtil dist/test/test.js",
-		"test:math": "mocha dist/test/math.js",
-		"test:clonenode": "CLONENODE=1 mocha --require dist/test/env.js dist/test/test.js",
+		"test:math": "npx testUtil dist/test/math.js",
+		"test:clonenode": "CLONENODE=1 npx testUtil --require=./dist/test/env.js dist/test/test.js",
 		"test:parser": "LC_ALL=en.UTF-8 npx testUtil dist/test/parserTests.js",
 		"test:perf": "mocha --reporter spec dist/test/perf.js",
 		"test": "npm run test:unit && npm run test:clonenode && npm run test:parser",
@@ -128,7 +128,7 @@
 	"dependencies": {
 		"@bhsd/cm-util": "^2.2.0",
 		"@bhsd/common": "^3.0.0",
-		"@bhsd/nodejs": "^1.1.0",
+		"@bhsd/nodejs": "^1.2.0",
 		"@bhsd/stylelint-util": "^1.1.0",
 		"entities": "^8.0.0",
 		"vscode-languageserver-types": "^3.18.0"
