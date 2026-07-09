@@ -1,8 +1,6 @@
 import assert from 'assert';
-import {describe, it} from '@bhsd/test-util';
-import type {
-	Test,
-} from '@bhsd/test-util';
+import {describe, it} from '@bhsd/test-util/mocha';
+import type {Test} from '@bhsd/test-util/parser';
 import Parser from '../../bundle/bundle.min.js'; // eslint-disable-line n/no-missing-import
 
 Parser.config = require('../../config/default');
