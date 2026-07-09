@@ -1,17 +1,12 @@
 import assert from 'assert';
-import {describe, it} from '@bhsd/test-util';
-import type {
-	Test,
-
-	/* NOT FOR BROWSER ONLY */
-
-	SimplePage,
-} from '@bhsd/test-util';
+import {describe, it} from '@bhsd/test-util/mocha';
+import type {Test} from '@bhsd/test-util/parser';
 
 /* NOT FOR BROWSER ONLY */
 
 import Parser from '../index';
 import lsp from './lsp';
+import type {SimplePage} from '@bhsd/test-util';
 
 /* NOT FOR BROWSER ONLY END */
 
