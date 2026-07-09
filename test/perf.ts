@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import Parser from '../index';
+import type {} from 'mocha';
 import type {Token, TableToken} from '../internal';
 
 const N = 1e4;
