@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import * as assert from 'assert';
-import {describe, it, beforeEach} from '@bhsd/test-util/mocha';
+import {
+	describe,
+	it,
+	beforeEach,
+} from '@bhsd/test-util/mocha';
 import Parser = require('../index');
 import type {
 	LintRuleConfig,
