@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import * as assert from 'assert';
 import {mock} from './wikiparse';
+import type {} from 'mocha';
 import type {
 	LintRuleConfig,
 	Parser as ParserBase,

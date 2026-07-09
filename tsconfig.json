@@ -12,8 +12,7 @@
 	],
 	"compilerOptions": {
 		"types": [
-			"node",
-			"mocha"
+			"node"
 		],
 		"lib": [
 			"dom",
