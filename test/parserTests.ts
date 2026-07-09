@@ -1,4 +1,5 @@
 import assert from 'assert';
+import {describe, it} from '@bhsd/test-util/mocha';
 import type {Test} from '@bhsd/test-util/parser';
 import type {Parser as ParserBase} from '../base';
 
