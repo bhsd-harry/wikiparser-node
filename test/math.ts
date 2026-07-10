@@ -1,10 +1,12 @@
 import path from 'path';
+import fs from 'fs';
 import * as assert from 'assert';
 import {describe, it, prepare} from '@bhsd/test-util/mocha';
 import Parser = require('../index');
 import type {LintError} from '../base';
 
-const {rules} = Parser.lintConfig;
+const {rules} = Parser.lintConfig,
+	isSkip = process.argv[2] === 'skip';
 for (const rule in rules) {
 	if (rule !== 'invalid-math') {
 		rules[rule as LintError.Rule] = 0;
@@ -27,9 +29,11 @@ const texTest = <T>(
 	pass = true,
 ): void => {
 	describe(file, () => {
-		const tests: T = require(path.join('..', '..', 'test', 'math', `${file}.json`));
+		const tests: T = JSON.parse(
+			fs.readFileSync(path.join('test', 'math', `${file}.json`), 'utf8'),
+		);
 		const inputTests = callback(tests);
-		if (process.argv[2] === 'skip') {
+		if (isSkip) {
 			prepare(inputTests.length);
 		} else {
 			for (const [inputhash, input, chem = '', result = pass, tagOverride = tag] of inputTests) {

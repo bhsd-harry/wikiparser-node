@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import {
 	describe,
 	it,
+	prepare,
 	beforeEach,
 } from '@bhsd/test-util/mocha';
 import Parser = require('../index');
@@ -28,6 +29,9 @@ const allCodes = new Map<string, string[]>();
 
 /* NOT FOR BROWSER END */
 
+const isSkip = process.argv[2] === 'skip';
+
+// eslint-disable-next-line regexp/no-unused-capturing-group
 const re = /\*\*((?:in)?correct)\*\* .+ `(\{[^`]+\})`:((?:\n+```wikitext\n[^`]+\n```)+)$/gmu;
 
 /**
@@ -39,8 +43,9 @@ const mockCRLF = (str: string): string => str.replaceAll('\n', '\\r\n');
 describe('API tests', () => {
 	for (const fullPath of fs.globSync(path.resolve('wiki', '*.md'))) {
 		const md = fs.readFileSync(fullPath, 'utf8');
-		const codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
-			.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''));
+		const wikicodes = md.matchAll(re),
+			codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
+				.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''));
 		const file = path.basename(fullPath, '.md'),
 			testCodes = file.startsWith('LanguageService')
 				? codes.flatMap(code => [
@@ -78,92 +83,100 @@ describe('API tests', () => {
 					Parser.config.interwiki.length = 0;
 				}
 			});
-			for (const code of testCodes) {
-				const lines = code.split('\n') as [string, ...string[]],
-					[first] = lines;
-				if (file.startsWith('Examples-')) {
-					if (clone) {
-						it.skip(first.slice(3));
+			if (isSkip) {
+				prepare(testCodes.length);
+			} else {
+				for (const code of testCodes) {
+					const lines = code.split('\n') as [string, ...string[]],
+						[first] = lines;
+					if (file.startsWith('Examples-')) {
+						if (clone) {
+							it.skip(first.slice(3));
 
-						/* NOT FOR BROWSER */
+							/* NOT FOR BROWSER */
+						} else {
+							it(first.slice(3), () => {
+								const {stderr} = spawnSync(
+									'tsx',
+									[
+										'--tsconfig',
+										'./tsconfig.json',
+										'-e',
+										`import * as assert from 'assert';
+										import Parser from './dist';
+										Parser.warning = false;
+										${code}`,
+									],
+									{encoding: 'utf8'},
+								);
+								if (stderr) {
+									throw new Error(`Failed to execute the example!\n${stderr}`, {
+										cause: {message: code},
+									});
+								}
+							});
+						}
+
+						/* NOT FOR BROWSER END */
+					} else if (
+						/ \(browser\)/u.test(first)
+						|| / \(self\)/u.test(first)
+						&& clone
+					) {
+						it.skip(first.slice(3));
 					} else {
-						it(first.slice(3), () => {
-							const {stderr} = spawnSync(
-								'tsx',
-								[
-									'--tsconfig',
-									'./tsconfig.json',
-									'-e',
-									`import * as assert from 'assert';
-									import Parser from './dist';
-									Parser.warning = false;
-									${code}`,
-								],
-								{encoding: 'utf8'},
-							);
-							if (stderr) {
-								throw new Error(`Failed to execute the example!\n${stderr}`, {
-									cause: {message: code},
-								});
+						it(first.slice(3), async () => {
+							try {
+								await eval(code); // eslint-disable-line no-eval
+								if (code.includes('Parser.config = ')) {
+									Parser.config =
+										'default';
+								}
+							} catch (e) {
+								if (e instanceof assert.AssertionError) {
+									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
+										end = lines
+											.findIndex((line, i) => i >= start && line.endsWith(';'));
+									e.cause = {
+										message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
+									};
+								}
+								throw e;
 							}
 						});
 					}
-
-					/* NOT FOR BROWSER END */
-				} else if (
-					/ \(browser\)/u.test(first)
-					|| / \(self\)/u.test(first)
-					&& clone
-				) {
-					it.skip(first.slice(3));
-				} else {
-					it(first.slice(3), async () => {
-						try {
-							await eval(code); // eslint-disable-line no-eval
-							if (code.includes('Parser.config = ')) {
-								Parser.config =
-									'default';
+				}
+			}
+			if (isSkip) {
+				prepare([...wikicodes].length);
+			} else {
+				for (const code of wikicodes) {
+					const [, state, config, wikitext] = code as string[] as [string, string, string, string];
+					it(config, () => {
+						const rules: LintRuleConfig = JSON.parse(config);
+						Parser.lintConfig = {
+							rules,
+							fix: false,
+							computeEditInfo: false,
+							ignoreDisables: true,
+						} as LintConfiguration;
+						for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
+							try {
+								assert.strictEqual(
+									state === 'incorrect',
+									Parser.lint(block)
+										.some(({rule, severity}) => rule === file && severity === 'error'),
+									`${state === 'incorrect' ? 'No' : 'An'} error found!`,
+								);
+							} catch (e) {
+								if (e instanceof assert.AssertionError) {
+									e.cause = {message: `\n${block}`};
+								}
+								throw e;
 							}
-						} catch (e) {
-							if (e instanceof assert.AssertionError) {
-								const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
-									end = lines
-										.findIndex((line, i) => i >= start && line.endsWith(';'));
-								e.cause = {
-									message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
-								};
-							}
-							throw e;
 						}
 					});
 				}
-			}
-			for (const code of md.matchAll(re)) {
-				const [, state, config, wikitext] = code as string[] as [string, string, string, string];
-				it(config, () => {
-					const rules: LintRuleConfig = JSON.parse(config);
-					Parser.lintConfig = {
-						rules,
-						fix: false,
-						computeEditInfo: false,
-						ignoreDisables: true,
-					} as LintConfiguration;
-					for (const [block] of wikitext.matchAll(/(?<=```wikitext\n)[^`]+(?=\n```)/gu)) {
-						try {
-							assert.strictEqual(
-								state === 'incorrect',
-								Parser.lint(block)
-									.some(({rule, severity}) => rule === file && severity === 'error'),
-								`${state === 'incorrect' ? 'No' : 'An'} error found!`,
-							);
-						} catch (e) {
-							if (e instanceof assert.AssertionError) {
-								e.cause = {message: `\n${block}`};
-							}
-							throw e;
-						}
-					}
-				});
 			}
 		});
 	}
@@ -178,15 +191,19 @@ if (clone) {
 				const zhFile = file.slice(0, -5);
 				describe(zhFile, () => {
 					const zhCodes = allCodes.get(zhFile)!;
-					for (let i = 0; i < zhCodes.length; i++) {
-						const code = zhCodes[i]!;
-						it(code.split('\n', 1)[0]!.slice(3), () => {
-							assert.strictEqual(
-								code,
-								enCodes[i],
-								`${zhFile} is different from its English version`,
-							);
-						});
+					if (isSkip) {
+						prepare(zhCodes.length);
+					} else {
+						for (let i = 0; i < zhCodes.length; i++) {
+							const code = zhCodes[i]!;
+							it(code.split('\n', 1)[0]!.slice(3), () => {
+								assert.strictEqual(
+									code,
+									enCodes[i],
+									`${zhFile} is different from its English version`,
+								);
+							});
+						}
 					}
 				});
 			}
