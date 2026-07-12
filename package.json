@@ -41,7 +41,7 @@
 		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --omit=dev",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
-		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = $(npm pkg get name)/; s/version = \\$VERSION/version = $(npm pkg get version)/\" dist/bin/config.js",
+		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = '$(npm pkg get name)'/; s/version = \\$VERSION/version = '$(npm pkg get version)'/\" dist/bin/config.js",
 		"build": "npm run build:core && LC_ALL=en.UTF-8 node dist/script/parserTests.js",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
@@ -105,7 +105,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^3.1.0",
-		"@bhsd/nodejs": "^1.2.0",
+		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/test-util": "^3.1.0",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
