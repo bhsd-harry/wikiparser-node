@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.45.0",
+	"version": "1.46.0",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -36,14 +36,14 @@
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:md": "markdownlint-cli2 '*.md'",
 		"lint": "npm run lint:ts && npm run lint:md",
-		"test:unit": "npx testUtil --enable-source-maps dist/test/test.js",
-		"test:parser": "npx testUtil --enable-source-maps dist/test/parserTests.js",
+		"test:unit": "testUtil --enable-source-maps dist/test/test.js",
+		"test:parser": "testUtil --enable-source-maps dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^3.1.0",
-		"@bhsd/common": "^3.0.0",
+		"@bhsd/common": "^4.0.0",
 		"@bhsd/test-util": "^3.1.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.1",
