@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.45.0",
+	"version": "1.46.0",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -37,21 +37,21 @@
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "npm run clean && tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
-		"lint:json": "v8r -s config/.schema.json config/*.json && npx testUtil dist/test/json.js",
+		"lint:json": "v8r -s config/.schema.json config/*.json && testUtil dist/test/json.js",
 		"lint:css": "stylelint --cache css/*.css extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"prof": "node dist/test/prof.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
-		"test:unit": "npx testUtil --test-timeout=5000 --require=./bundle/bundle-lsp.min.js --enable-source-maps dist/test/test.js",
-		"test:es8": "npx testUtil --require=./bundle/bundle-es8.min.js --enable-source-maps dist/test/test-es8.js",
-		"test:parser": "LC_ALL=en.UTF-8 npx testUtil --require=./bundle/bundle.min.js --enable-source-maps dist/test/parserTests.js",
+		"test:unit": "testUtil --test-timeout=5000 --require=./bundle/bundle-lsp.min.js --enable-source-maps dist/test/test.js",
+		"test:es8": "testUtil --require=./bundle/bundle-es8.min.js --enable-source-maps dist/test/test-es8.js",
+		"test:parser": "LC_ALL=en.UTF-8 testUtil --require=./bundle/bundle.min.js --enable-source-maps dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser && npm run test:es8",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
 		"@bhsd/cm-util": "^2.3.0",
-		"@bhsd/common": "^3.0.0",
+		"@bhsd/common": "^4.0.0",
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
