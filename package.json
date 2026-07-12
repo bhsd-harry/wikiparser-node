@@ -42,7 +42,7 @@
 		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --include=peer --omit=dev",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
-		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = $(npm pkg get name)/; s/version = \\$VERSION/version = $(npm pkg get version)/\" dist/bin/config.js",
+		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = '$(npm pkg get name)'/; s/version = \\$VERSION/version = '$(npm pkg get version)'/\" dist/bin/config.js",
 		"build": "npm run build:core",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
@@ -106,7 +106,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^3.1.0",
-		"@bhsd/nodejs": "^1.2.0",
+		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/test-util": "^3.1.0",
 		"c8": "^11.0.0",
 		"diff2html-cli": "^5.2.15",
