@@ -39,7 +39,7 @@ declare interface TemplateData {
  * @param text 界面文本
  */
 export const resolveInterfaceText = (text: InterfaceText): string =>
-	typeof sanitize(text === 'string' ? text : Object.values(text)[0]!);
+	sanitize(typeof text === 'string' ? text : Object.values(text)[0]!);
 
 /**
  * 将界面文本转化为安全的dl元素

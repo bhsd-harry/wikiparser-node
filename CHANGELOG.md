@@ -7,6 +7,10 @@
 
 - [`LanguageService#provideDocumentHighlights`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedocumenthighlights)
 
+**Fixed**
+
+- HTML conversion of `<templatedata>` extension tags
+
 **Changed**
 
 - For performance reasons, `ConverterFlagsToken#print` no longer highlights invalid flags
