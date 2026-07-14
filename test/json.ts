@@ -48,7 +48,7 @@ for (const fullPath of fs.globSync('config/*.json')) {
 		});
 		it('namespaces', () => {
 			for (const ns of new Set(Object.values(nsid))) {
-				assert.ok(ns in namespaces, `'${ns}' not in namespaces`);
+				assert.ok(Object.hasOwn(namespaces, ns), `'${ns}' not in namespaces`);
 			}
 		});
 
@@ -131,7 +131,10 @@ for (const file in configs) {
 					const val = config[key];
 					for (const k in val) {
 						if (file === 'jawiki' || file === 'mediawikiwiki') {
-							assert.ok(k in defaultConfig[key], `'${k}' not in defaultConfig.${key}`);
+							assert.ok(
+								Object.hasOwn(defaultConfig[key], k),
+								`'${k}' not in defaultConfig.${key}`,
+							);
 						} else {
 							assert.strictEqual(
 								defaultConfig[key][k],

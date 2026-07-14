@@ -119,7 +119,8 @@ export class AstText extends AstNode {
 				}
 			}
 			errorRegex ??= parentNode.isPlain() && !noLinkTypes.has(type) ? errorSyntax : errorSyntaxUrl;
-			if (data.search(errorRegex) === -1) {
+			errorRegex.lastIndex = 0;
+			if (!errorRegex.test(data)) {
 				return [];
 			}
 			errorRegex.lastIndex = 0;
@@ -184,9 +185,7 @@ export class AstText extends AstNode {
 				let startIndex = start + index,
 					endIndex = startIndex + length,
 					rule: LintError.Rule | undefined,
-					severity: LintError.Severity | false,
-					endLine: number | undefined,
-					endCol: number | undefined;
+					severity: LintError.Severity | false;
 				const nextChar = rootStr[endIndex],
 					previousChar = rootStr[startIndex - 1],
 					leftBracket = lbrace || lbrack,
@@ -265,6 +264,8 @@ export class AstText extends AstNode {
 				// LintError
 				const pos = this.posFromIndex(index)!,
 					{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left);
+				let endLine: number | undefined,
+					endCol: number | undefined;
 				if (char === '=') {
 					const lineEnd = data.indexOf('\n', index);
 					let sibling = nextSibling,

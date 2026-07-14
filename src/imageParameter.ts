@@ -236,6 +236,7 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
+		// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 		return this.#syntax ? this.#syntax.replace('$1', super.toString(skip)) : super.toString(skip);
 	}
 
@@ -249,6 +250,7 @@ export abstract class ImageParameterToken extends Token {
 		if (name !== 'caption') {
 			str = str.trim();
 		}
+		// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 		return this.#syntax ? this.#syntax.replace('$1', str).trim() : str;
 	}
 
@@ -387,6 +389,7 @@ export abstract class ImageParameterToken extends Token {
 				return `<span class="wpb-image-parameter${this.name === 'invalid' ? ' wpb-invalid' : ''}">${
 					this.#syntax.replace(
 						'$1',
+						// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 						`<span class="wpb-image-caption">${print(this.childNodes)}</span>`,
 					)
 				}</span>`;

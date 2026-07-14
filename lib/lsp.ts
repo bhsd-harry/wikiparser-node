@@ -522,6 +522,7 @@ function getStylelintPos(
 		return getEndPos(top, left, ...adjustPos(height, width, lineOrCode - start, columnOrOffset));
 	}
 	const lines = lineOrCode.slice(0, columnOrOffset).split(/\r?\n/u);
+	// eslint-disable-next-line unicorn/no-useless-recursion
 	return getStylelintPos(rect, bottom, lines.length, lines.at(-1)!.length);
 }
 
@@ -929,7 +930,6 @@ export class LanguageService implements LanguageServiceBase {
 				);
 			}
 			const [insensitive, sensitive] = this.config!.parserFunction,
-				next = curLine!.charAt(character),
 				colon = match.startsWith(':'),
 				str = colon ? match.slice(1).trimStart() : match;
 			if (mt[2] === '[[') { // link
@@ -943,6 +943,7 @@ export class LanguageService implements LanguageServiceBase {
 				);
 			}
 			// parser function or template
+			const next = curLine!.charAt(character);
 			let words = functions;
 			if (next === ':') {
 				words = functions.filter(s => !s.endsWith('：'));
@@ -1004,13 +1005,13 @@ export class LanguageService implements LanguageServiceBase {
 			return getCompletion(params, 'Property', match, position)
 				.filter(({label}) => !equal || !/[= ]$/u.test(label));
 		} else if (mt?.[8] !== undefined || type === 'attr-key') { // attribute key
-			const tag = mt?.[8]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[10]
-					?? cur!.toString().slice(0, character - root.posFromIndex(cur!.getAbsoluteIndex())!.left);
+			const tag = mt?.[8]?.toLowerCase() ?? (parentNode as AttributeToken).tag;
 			if (!tags.has(tag)) {
 				return undefined;
 			}
-			const thisHtmlAttrs = htmlAttrs[tag],
+			const key = mt?.[10]
+				?? cur!.toString().slice(0, character - root.posFromIndex(cur!.getAbsoluteIndex())!.left),
+				thisHtmlAttrs = htmlAttrs[tag],
 				thisExtAttrs = extAttrs[tag],
 				extCompletion = thisExtAttrs && getCompletion(thisExtAttrs, 'Field', key, position);
 			return ext.includes(tag) && !thisHtmlAttrs
