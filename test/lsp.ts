@@ -14,7 +14,8 @@ import type {
 /* NOT FOR BROWSER ONLY */
 
 import {execSync} from 'child_process';
-import {numLeadingSpaces, rgba} from '@bhsd/common';
+import {numLeadingSpaces} from '@bhsd/common';
+import {rgba} from '@bhsd/common/color';
 import Parser from '../index';
 import type {
 	Token,

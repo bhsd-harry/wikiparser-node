@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.46.0
 
-*2026-07-12*
+*2026-07-14*
 
 **Added**
 

@@ -127,7 +127,7 @@
 	},
 	"dependencies": {
 		"@bhsd/cm-util": "^2.3.0",
-		"@bhsd/common": "^3.0.0",
+		"@bhsd/common": "^4.0.0",
 		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/stylelint-util": "^1.1.0",
 		"entities": "^8.0.0",
@@ -144,6 +144,7 @@
 		"ajv-errors": "^3.0.0",
 		"c8": "^11.0.0",
 		"codejar-async": "^4.3.1",
+		"culori": "^4.0.2",
 		"diff2html-cli": "^5.2.15",
 		"dompurify": "^3.4.12",
 		"esbuild": "^0.28.1",

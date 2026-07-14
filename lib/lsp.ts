@@ -7,7 +7,6 @@ import {
 	/* NOT FOR BROWSER ONLY */
 
 	sanitizeInlineStyle,
-	colorsNamed,
 } from '@bhsd/common';
 import {isUnderscore} from '@bhsd/cm-util';
 import {rules} from '../base';
@@ -93,6 +92,7 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
+import {colorsNamed} from '@bhsd/common/color';
 import findIndex from '../vendor/search';
 import {jsonTags} from '../util/constants';
 import {
