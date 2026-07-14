@@ -250,15 +250,14 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				}
 				break;
 			case 'provideDocumentHighlights': {
-				const tokens = [
+				const positions = [
 					attrKey,
 					ext,
 					html,
 					argName,
 					templateName,
 					magicWordName,
-				];
-				const positions = tokens.filter(isSimpleToken)
+				].filter(isSimpleToken)
 					.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
@@ -270,20 +269,20 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				break;
 			}
 			case 'provideReferences': {
-				const tokens = [
-					// 不需要 +1
-					attrKey,
-					headingTitle,
-					// 需要 +1
-					ext,
-					html,
-					imageParameter?.name !== 'caption' && imageParameter,
-					argName,
-					templateName,
-					magicWordName,
-				];
-				const positions = [...tokens.entries()]
-					.filter((entry): entry is [number, Token] => isSimpleToken(entry[1]))
+				const positions = [
+					...[
+						// 不需要 +1
+						attrKey,
+						headingTitle,
+						// 需要 +1
+						ext,
+						html,
+						imageParameter?.name !== 'caption' && imageParameter,
+						argName,
+						templateName,
+						magicWordName,
+					].entries(),
+				].filter((entry): entry is [number, Token] => isSimpleToken(entry[1]))
 					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
