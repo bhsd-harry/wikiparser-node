@@ -24,15 +24,15 @@ import type {
 
 /* NOT FOR BROWSER ONLY END */
 
+declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose>
+	| 'constructor';
+
 /* NOT FOR BROWSER */
 
 Parser.viewOnly = true;
 Parser.internal = true;
 
 /* NOT FOR BROWSER END */
-
-declare type Key = Exclude<keyof LanguageService, typeof Symbol.dispose>
-	| 'constructor';
 
 /**
  * 测试单个指令
@@ -83,6 +83,22 @@ const indexToPos = (
 	return {line: top, character: left};
 };
 
+/* NOT FOR BROWSER ONLY */
+
+/**
+ * 判断是否为简单 Token
+ * @param token
+ */
+const isSimpleToken = <T extends Token>(token: T | false | undefined): token is T => {
+	if (!token) {
+		return false;
+	}
+	const {firstChild} = token;
+	return token.getAttribute('padding') > 0 || firstChild?.type === 'text' && firstChild.data.length > 1;
+};
+
+/* NOT FOR BROWSER ONLY END */
+
 /**
  * 测试单个页面
  * @param page 页面
@@ -127,8 +143,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			/* NOT FOR BROWSER */
 
 			linkTarget,
-		].filter(token => token !== undefined)
-			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
+		].filter(isSimpleToken).map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
 	/* NOT FOR BROWSER ONLY END */
 
@@ -181,7 +196,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 						/* NOT FOR BROWSER */
 
 						parameterKey,
-					].filter(token => token !== undefined)
+					].filter(isSimpleToken)
 						.map(token => token.getAbsoluteIndex() + numLeadingSpaces(token.toString()) + 1),
 
 					/* NOT FOR BROWSER ONLY END */
@@ -270,7 +285,8 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 					linkTarget,
 					parameterKey,
 				];
-				const positions = tokens.filter(Boolean).map(token => indexToPos(root, token!.getAbsoluteIndex() + 1));
+				const positions = tokens.filter(isSimpleToken)
+					.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
@@ -298,7 +314,8 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 					linkTarget,
 					parameterKey,
 				];
-				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
+				const positions = [...tokens.entries()]
+					.filter((entry): entry is [number, Token] => isSimpleToken(entry[1]))
 					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
