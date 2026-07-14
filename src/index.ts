@@ -148,7 +148,7 @@ export class Token extends AstElement {
 			const n = Number(s.slice(0, -1));
 			if (
 				isNaN(s.slice(-1) as unknown as number)
-				&& Number.isInteger(n) && n >= 0 && n < this.#accum.length
+				&& Number.isSafeInteger(n) && n >= 0 && n < this.#accum.length
 			) {
 				return this.#accum[n]!;
 			}

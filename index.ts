@@ -60,7 +60,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	/** @implements */
 	normalizeTitle(
 		title,
 		defaultNs = 0,

@@ -35,6 +35,7 @@ export function restore(
 const factory = (
 	regex: RegExp,
 	replace: string | ((str: string, ...args: any[]) => string),
+// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 ) => (str: string): string => str.replace(regex, replace as string);
 
 /** 清理解析专用的不可见字符 */
