@@ -26,7 +26,7 @@ export abstract class TagPairToken extends Token {
 	}
 
 	set selfClosing(value) {
-		this.#selfClosing = Boolean(value);
+		this.#selfClosing = Boolean(value); // eslint-disable-line unicorn/no-useless-coercion
 		if (value) {
 			const {lastChild} = this;
 			if (lastChild.type === 'text') {
