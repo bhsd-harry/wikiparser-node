@@ -185,7 +185,7 @@ const repaint = (
 						src.protocol = 'https:';
 						src.host = 'commons.wikimedia.org';
 						src.port = '';
-						ele.src = String(src);
+						ele.src = src.href;
 						loading = true;
 					}
 				} catch {}

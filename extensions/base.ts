@@ -286,6 +286,7 @@ const workerJS = (): void => {
 	};
 };
 
+// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
 	worker = new Worker(url); // same-origin policy

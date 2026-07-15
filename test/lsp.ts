@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-top-level-side-effects */
 import {error} from '../util/diff';
 import './wikiparse';
 import type {

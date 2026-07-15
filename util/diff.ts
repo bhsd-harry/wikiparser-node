@@ -6,7 +6,7 @@ import type {ChildProcessWithoutNullStreams} from 'child_process';
 export type log = (msg: string, ...args: unknown[]) => void;
 
 /* c8 ignore start */
-process.on('unhandledRejection', e => {
+process.on('unhandledRejection', e => { // eslint-disable-line unicorn/no-top-level-side-effects
 	console.error(e);
 });
 /* c8 ignore stop */

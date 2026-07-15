@@ -189,7 +189,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	msg(msg, arg = '') {
 		LINT: return msg
 		// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
+		&& ((this.i18n as Record<string, string>)[msg] ?? msg)
+			.replace('$1', this.msg(arg)); // eslint-disable-line unicorn/no-unsafe-string-replacement
 	},
 
 	/** @implements */
@@ -254,6 +255,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		maxStage ??= MAX_STAGE;
 		config ??= this.getConfig();
+		// eslint-disable-next-line unicorn/prefer-smaller-scope
 		let types: Stage[] | undefined;
 		LSP: if (typeof maxStage !== 'number') {
 			types = Array.isArray(maxStage) ? maxStage : [maxStage];
@@ -315,8 +317,8 @@ for (const key in Parser) {
 		def[key] = {enumerable: false};
 	}
 }
-Object.defineProperties(Parser, def);
-// eslint-disable-next-line no-restricted-globals
+Object.defineProperties(Parser, def); // eslint-disable-line unicorn/no-top-level-side-effects
+// eslint-disable-next-line no-restricted-globals, unicorn/no-top-level-side-effects
 Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
 
 export default Parser;
