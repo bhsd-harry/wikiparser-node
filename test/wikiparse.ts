@@ -1,4 +1,4 @@
-/* eslint-disable jsdoc/require-jsdoc, unicorn/no-top-level-side-effects */
+/* eslint-disable jsdoc/require-jsdoc */
 import {Worker} from 'worker_threads';
 import {EventEmitter} from 'events';
 import type {} from '../extensions/typings';

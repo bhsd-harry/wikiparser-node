@@ -317,8 +317,8 @@ for (const key in Parser) {
 		def[key] = {enumerable: false};
 	}
 }
-Object.defineProperties(Parser, def); // eslint-disable-line unicorn/no-top-level-side-effects
-// eslint-disable-next-line no-restricted-globals, unicorn/no-top-level-side-effects
+Object.defineProperties(Parser, def);
+// eslint-disable-next-line no-restricted-globals
 Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
 
 export default Parser;
