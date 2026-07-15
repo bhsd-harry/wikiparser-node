@@ -1426,9 +1426,9 @@ export class LanguageService implements LanguageServiceBase {
 				}}}`,
 				parameters: params.map(({label, const: c}): ParameterInformation => ({
 					label,
-					...c ? {documentation: 'Predefined parameter'} : undefined,
+					...c && {documentation: 'Predefined parameter'},
 				})),
-				...params.length < n ? {activeParameter: Math.min(j, params.length - 1)} : undefined,
+				...params.length < n && {activeParameter: Math.min(j, params.length - 1)},
 			})),
 			activeParameter: j,
 		};

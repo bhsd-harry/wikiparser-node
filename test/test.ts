@@ -66,6 +66,7 @@ describe('API tests', () => {
 					} else if (
 						/ \((?:main|Node\.js)\)/u.test(first)
 						|| / \(self\)/u.test(first)
+						// eslint-disable-next-line unicorn/no-duplicate-if-branches
 					) {
 						it.skip(first.slice(3));
 					} else {
