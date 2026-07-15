@@ -35,19 +35,18 @@ export abstract class ArgToken extends Token {
 		});
 		for (let i = 0; i < parts.length; i++) {
 			const part = parts[i]!;
+			let token: Token;
 			if (i === 0) {
-				const token = new AtomToken(part, 'arg-name', config, accum, {
+				token = new AtomToken(part, 'arg-name', config, accum, {
 				});
-				super.insertAt(token);
 			} else if (i > 1) {
-				const token = new HiddenToken(part, config, accum);
-				super.insertAt(token);
+				token = new HiddenToken(part, config, accum);
 			} else {
-				const token = new Token(part, config, accum);
+				token = new Token(part, config, accum);
 				token.type = 'arg-default';
 				token.setAttribute('stage', 2);
-				super.insertAt(token);
 			}
+			super.insertAt(token);
 		}
 	}
 

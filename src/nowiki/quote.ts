@@ -39,8 +39,8 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 */
 	get closing(): Partial<Font> {
 		LINT: return {
-			...this.bold ? {bold: this.#closing.bold} : undefined,
-			...this.italic ? {italic: this.#closing.italic} : undefined,
+			...this.bold && {bold: this.#closing.bold},
+			...this.italic && {italic: this.#closing.italic},
 		};
 	}
 
