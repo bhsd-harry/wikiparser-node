@@ -91,8 +91,9 @@ export default extend(
 			'@stylistic/operator-linebreak': 0,
 			'@stylistic/semi-style': 0,
 			'n/no-unpublished-bin': 0,
-			'unicorn/no-this-assignment': 0,
 			'unicorn/empty-brace-spaces': 0,
+			'unicorn/no-this-assignment': 0,
+			'unicorn/no-top-level-side-effects': 0,
 			'jsdoc/require-param-description': 0,
 			'jsdoc/require-param': [
 				1,
