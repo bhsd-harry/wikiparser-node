@@ -94,6 +94,7 @@ export default extend(
 			'@stylistic/semi-style': 0,
 			'n/no-unpublished-bin': 0,
 			'unicorn/no-this-assignment': 0,
+			'unicorn/no-top-level-side-effects': 0,
 			'jsdoc/require-param-description': 0,
 			'jsdoc/require-param': [
 				1,

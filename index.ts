@@ -878,7 +878,7 @@ for (const key in Parser) {
 		def[key] = {enumerable: false};
 	}
 }
-Object.defineProperties(Parser, def); // eslint-disable-line unicorn/no-top-level-side-effects
+Object.defineProperties(Parser, def);
 
 // @ts-expect-error mixed export styles
 export = Parser;
