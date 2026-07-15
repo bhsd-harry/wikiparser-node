@@ -43,13 +43,10 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 			const sep = url.includes('(') ? /[^,;\\.:!?][,;\\.:!?]+$/u : /[^,;\\.:!?)][,;\\.:!?)]+$/u,
 				sepChars = sep.exec(url);
 			if (sepChars) {
-				let correction = 1;
-				if (
-					sepChars[0][1] === ';'
+				const correction = sepChars[0][1] === ';'
 					&& /&(?:[a-z]+|#x[\da-f]+|#\d+)$/iu.test(url.slice(0, sepChars.index))
-				) {
-					correction = 2;
-				}
+					? 2
+					: 1;
 				trail = url.slice(sepChars.index + correction) + trail;
 				url = url.slice(0, sepChars.index + correction);
 			}

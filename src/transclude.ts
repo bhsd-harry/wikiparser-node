@@ -101,6 +101,7 @@ export abstract class TranscludeToken extends Token {
 			heading = Number(m[1]);
 			title = title.replace(
 				`\0${heading}h\x7F`,
+				// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 				accum[heading]!.toString().replace(/^\n/u, ''),
 			);
 		}

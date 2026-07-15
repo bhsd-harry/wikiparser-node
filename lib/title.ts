@@ -236,7 +236,7 @@ export class Title {
 			if (title) {
 				return this.#path.replace(
 					'$1',
-					encodeURIComponent(title)
+					encodeURIComponent(title) // eslint-disable-line unicorn/no-unsafe-string-replacement
 					+ (
 						fragment
 							? `#${encodeURIComponent(
