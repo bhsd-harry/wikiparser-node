@@ -1250,18 +1250,16 @@ export class LanguageService implements LanguageServiceBase {
 									source: 'Stylelint',
 									code: rule,
 									message: msg.slice(0, msg.lastIndexOf('(') - 1),
-									...fix
-										? {
-											data: [
-												{
-													range: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range),
-													newText: fix.text,
-													title: `Fix: ${rule}`,
-													fix: true,
-												} satisfies QuickFixData,
-											],
-										}
-										: {},
+									...fix && {
+										data: [
+											{
+												range: getStylelintPos(rects[i]!, bottoms[i]!, code, fix.range),
+												newText: fix.text,
+												title: `Fix: ${rule}`,
+												fix: true,
+											} satisfies QuickFixData,
+										],
+									},
 								};
 							});
 						}
@@ -1918,9 +1916,9 @@ export class LanguageService implements LanguageServiceBase {
 				}}}`,
 				parameters: params.map(({label, const: c}): ParameterInformation => ({
 					label,
-					...c ? {documentation: 'Predefined parameter'} : undefined,
+					...c && {documentation: 'Predefined parameter'},
 				})),
-				...params.length < n ? {activeParameter: Math.min(j, params.length - 1)} : undefined,
+				...params.length < n && {activeParameter: Math.min(j, params.length - 1)},
 			})),
 			activeParameter: j,
 		};
