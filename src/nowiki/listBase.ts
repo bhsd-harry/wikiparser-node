@@ -164,7 +164,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			t.type = 'list-range';
 			return t;
 		});
-		token.concat(contents); // eslint-disable-line unicorn/prefer-spread, unicorn/no-unused-array-method-return
+		token.concat(contents); // eslint-disable-line unicorn/no-unused-array-method-return
 		setChildNodes(parentNode, start, end - start, [token]);
 		return token as ListRangeToken;
 	}

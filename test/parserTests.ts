@@ -93,6 +93,7 @@ const deprint = (str: string): string => str.replaceAll(
  * @param str HTML字符串
  */
 const split = (str: string): string[] => str
+	// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 	.replaceAll(/(?:<span class="wpb-list">[^<]+<\/span>)+/gu, merge)
 	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
 

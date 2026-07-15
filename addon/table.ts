@@ -281,10 +281,7 @@ Layout.prototype.print =
 TableToken.prototype.getNthCell =
 	/** @implements */
 	function(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
-		let rawCoords: TableCoords | undefined = coords as TableCoords;
-		if (coords.row === undefined) {
-			rawCoords = this.toRawCoords(coords);
-		}
+		const rawCoords: TableCoords | undefined = coords.row === undefined ? this.toRawCoords(coords) : coords;
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	};
 
@@ -526,8 +523,8 @@ TableToken.prototype.mergeCells =
 		cornerCell.rowspan = ymax - ymin;
 		cornerCell.colspan = xmax - xmin;
 		set.delete(corner);
-		for (const token of [...set].map(({row, column}) => rows[row]!.getNthCol(column)!)) {
-			token.remove();
+		for (const {row, column} of set) {
+			rows[row]!.getNthCol(column)!.remove();
 		}
 		return cornerCell;
 	};

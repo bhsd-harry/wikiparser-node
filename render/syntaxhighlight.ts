@@ -385,7 +385,7 @@ const dependencies: Record<string, string | string[]> = {
  * @param lang 语言名称
  */
 export const loadLanguage = (lang: string): string => {
-	if (lang in Prism!.languages) {
+	if (Object.hasOwn(Prism!.languages, lang)) {
 		return lang;
 	} else if (Object.hasOwn(aliases, lang)) {
 		lang = aliases[lang]!;

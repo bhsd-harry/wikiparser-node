@@ -95,12 +95,12 @@ Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined
 Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange | undefined {
 	tag &&= tag.toLowerCase();
 	const {html} = this.getAttribute('config'),
-		normalTags = new Set(html[0]),
 		voidTags = new Set(html[2]);
 	/* c8 ignore next 6 */
 	if (voidTags.has(tag!)) {
 		throw new RangeError(`Void tag: ${tag}`);
 	}
+	const normalTags = new Set(html[0]);
 	if (tag && !normalTags.has(tag) && !html[1].includes(tag)) {
 		throw new RangeError(`Invalid tag name: ${tag}`);
 	}

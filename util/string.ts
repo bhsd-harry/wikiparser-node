@@ -59,6 +59,7 @@ export function restore(
 const factory = (
 	regex: RegExp,
 	replace: string | ((str: string, ...args: any[]) => string),
+// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 ) => (str: string): string => str.replace(regex, replace as string);
 
 /** 清理解析专用的不可见字符 */
@@ -222,6 +223,7 @@ const replaceAttrEntities = replaceEntities(/[<>"]/gu);
  * @param id 是否是`id`属性
  */
 export const sanitizeAttr = (attr: string, id?: boolean): string =>
+	// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 	replaceAttrEntities(attr.replace(/\s+|&#10;/gu, id ? '_' : ' '));
 
 /** escape HTML entities in heading id */

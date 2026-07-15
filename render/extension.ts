@@ -109,7 +109,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					lines = highlight && new Set(
 						highlight.split(',').flatMap((str): number | number[] => {
 							const num = Number(str);
-							if (Number.isInteger(num) && num > 0) {
+							if (Number.isSafeInteger(num) && num > 0) {
 								return num;
 							} else if (!str.includes('-')) {
 								return [];
@@ -133,7 +133,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 						lineReplace = '<span class="linenos" data-line="$1"></span>';
 						if (startAttr) {
 							start = Number(startAttr);
-							if (!Number.isInteger(start) || start < 0) {
+							if (!Number.isSafeInteger(start) || start < 0) {
 								start = 1;
 							}
 						}
@@ -166,12 +166,14 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					let mt = re.exec(html),
 						i = 1,
 						lastIndex = 0,
+						// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 						output = g(i) + f(1) + (lineReplace?.replaceAll('$1', String(start)) ?? '');
 					while (mt) {
 						if (mt[0] === '\n') {
 							output += `${html.slice(lastIndex, mt.index)}${'</span>'.repeat(stack.length)}\n${
 								f(i, true)
 							}${end}${g(i + 1)}${f(i + 1)}${
+								// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 								lineReplace?.replaceAll('$1', String(i + start)) ?? ''
 							}${stack.join('')}`;
 							i++;

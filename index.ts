@@ -483,7 +483,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	msg(msg, arg = '') {
 		LINT: return msg
-		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', this.msg(arg));
+		&& ((this.i18n as Record<string, string>)[msg] ?? msg)
+			.replace('$1', this.msg(arg)); // eslint-disable-line unicorn/no-unsafe-string-replacement
 	},
 
 	/** @implements */
@@ -800,7 +801,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			} catch {}
 		}
 		for (const [name, filePath] of entries) {
-			if (name in globalThis) {
+			if (Object.hasOwn(globalThis, name)) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				Object.assign(globalThis, {[name]: require(filePath)[name]});
 			}
@@ -877,7 +878,7 @@ for (const key in Parser) {
 		def[key] = {enumerable: false};
 	}
 }
-Object.defineProperties(Parser, def);
+Object.defineProperties(Parser, def); // eslint-disable-line unicorn/no-top-level-side-effects
 
 // @ts-expect-error mixed export styles
 export = Parser;

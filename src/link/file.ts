@@ -596,6 +596,7 @@ export abstract class FileToken extends LinkBaseToken {
 			(): ImageParameterToken =>
 				// @ts-expect-error abstract class
 				new ImageParameterToken(
+					// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 					syntax.replace('$1', key === 'width' ? '1' : ''),
 					this.extension,
 					this.type,

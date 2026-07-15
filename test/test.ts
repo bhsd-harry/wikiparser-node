@@ -50,6 +50,7 @@ describe('API tests', () => {
 			testCodes = file.startsWith('LanguageService')
 				? codes.flatMap(code => [
 					code,
+					// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 					code.replaceAll(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
 						.replace('\n', ' (CRLF)\n'),
 				])

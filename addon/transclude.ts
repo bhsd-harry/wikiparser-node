@@ -31,7 +31,7 @@ TranscludeToken.prototype.newAnonArg =
 			// @ts-expect-error abstract class
 			(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
 		);
-		token.lastChild.concat(Parser.parseWithRef(val, this).childNodes); // eslint-disable-line unicorn/prefer-spread
+		token.lastChild.concat(Parser.parseWithRef(val, this).childNodes);
 		if (newline) {
 			format(this);
 		}
@@ -55,7 +55,6 @@ TranscludeToken.prototype.setValue =
 			(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
 		);
 		token.firstChild.safeAppend(Parser.parseWithRef(key, this).childNodes);
-		// eslint-disable-next-line unicorn/prefer-spread
 		token.lastChild.concat(Parser.parseWithRef(value, this).childNodes);
 		if (newline) {
 			format(this);
@@ -128,7 +127,7 @@ TranscludeToken.prototype.fixDuplication =
 					values.set(val, [arg]);
 				}
 			}
-			let noMoreAnon = anonCount === 0 || !key.trim() || !Number.isInteger(Number(key));
+			let noMoreAnon = anonCount === 0 || !key.trim() || !Number.isSafeInteger(Number(key));
 			const emptyArgs = values.get('') ?? [],
 				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);

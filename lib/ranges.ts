@@ -29,13 +29,13 @@ export class Range {
 			this.end = Number(end?.trim() || Infinity);
 			this.step = Math.max(Number(step), 1);
 			/* c8 ignore next 9 */
-			if (!Number.isInteger(this.start)) {
+			if (!Number.isSafeInteger(this.start)) {
 				throw new RangeError(`The start of a range, \`${start}\`, should be an integer!`);
 			}
-			if (this.end !== Infinity && !Number.isInteger(this.end)) {
+			if (this.end !== Infinity && !Number.isSafeInteger(this.end)) {
 				throw new RangeError(`The end of a range, \`${end}\`, should be an integer!`);
 			}
-			if (!Number.isInteger(this.step)) {
+			if (!Number.isSafeInteger(this.step)) {
 				throw new RangeError(`The step of a range, \`${step}\`, should be an integer!`);
 			}
 		} else {
@@ -94,7 +94,7 @@ export class Ranges extends Array<number | Range> {
 				continue;
 			}
 			const number = Number(ele);
-			if (Number.isInteger(number)) {
+			if (Number.isSafeInteger(number)) {
 				this.push(number);
 			} else if (typeof ele === 'string' && Number.isNaN(number)) {
 				try {

@@ -33,7 +33,7 @@ const nextItem = (char: Prefix, {dt}: State): string => {
 		return '</li>\n<li>';
 	}
 	const {length} = dt,
-		close = dt[length - 1] ? '</dt>\n' : '</dd>\n';
+		close = dt.at(-1) ? '</dt>\n' : '</dd>\n';
 	if (char === ';') {
 		dt[length - 1] = true;
 		return `${close}<dt>`;

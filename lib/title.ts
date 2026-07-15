@@ -122,7 +122,7 @@ export class Title {
 	/** @throws `RangeError` undefined namespace */
 	set ns(ns) {
 		/* c8 ignore next 3 */
-		if (!(this.ns in this.#namespaces)) {
+		if (!Object.hasOwn(this.#namespaces, this.ns)) {
 			throw new RangeError('Undefined namespace!');
 		}
 		this.#ns = Number(ns);
@@ -363,7 +363,7 @@ export class Title {
 			if (title) {
 				return this.#path.replace(
 					'$1',
-					encodeURIComponent(title)
+					encodeURIComponent(title) // eslint-disable-line unicorn/no-unsafe-string-replacement
 					+ (
 						fragment
 						|| this.#redirectFragment
@@ -404,8 +404,8 @@ export class Title {
 	getFileUrl(width?: number | false, height?: number | false): string {
 		/* c8 ignore start */
 		if (
-			typeof width === 'number' && (width <= 0 || !Number.isInteger(width))
-			|| typeof height === 'number' && (height <= 0 || !Number.isInteger(height))
+			typeof width === 'number' && (width <= 0 || !Number.isSafeInteger(width))
+			|| typeof height === 'number' && (height <= 0 || !Number.isSafeInteger(height))
 		) {
 			throw new RangeError('Width and height must be positive integers or omitted!');
 		}

@@ -167,5 +167,5 @@ const dir = 'test/templates',
 		.filter(name => !Parser.templates.has(name));
 if (unused.length > 0) {
 	console.log('Unused templates');
-	console.log(unused.toSorted());
+	console.log(unused.toSorted()); // eslint-disable-line unicorn/require-array-sort-compare
 }

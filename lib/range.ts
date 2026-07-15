@@ -132,36 +132,36 @@ export class AstRange {
 	 */
 	#check(): void {
 		const {startContainer, startOffset, endContainer, endOffset} = this,
-			msg1 = 'The start and end positions are not siblings!',
-			msg2 = 'The start position cannot be after the end position!';
+			msg1 = 'The start position cannot be after the end position!';
 		if (startContainer === endContainer) {
 			/* c8 ignore next 3 */
 			if (startOffset > endOffset) {
-				throw new RangeError(msg2);
+				throw new RangeError(msg1);
 			}
 			return;
 		}
-		const {type: startType, parentNode: startParent} = startContainer,
+		const msg2 = 'The start and end positions are not siblings!',
+			{type: startType, parentNode: startParent} = startContainer,
 			{type: endType, parentNode: endParent} = endContainer;
 		/* c8 ignore start */
 		if (startType !== 'text') {
 			if (endType !== 'text' || startContainer !== endParent) {
-				throw new RangeError(msg1);
-			} else if (startOffset > endParent.childNodes.indexOf(endContainer)) {
 				throw new RangeError(msg2);
+			} else if (startOffset > endParent.childNodes.indexOf(endContainer)) {
+				throw new RangeError(msg1);
 			}
 		} else if (endType === 'text') {
 			if (!startParent || startParent !== endParent) {
-				throw new RangeError(msg1);
+				throw new RangeError(msg2);
 			}
 			const {childNodes} = startParent;
 			if (childNodes.indexOf(startContainer) > childNodes.indexOf(endContainer)) {
-				throw new RangeError(msg2);
+				throw new RangeError(msg1);
 			}
 		} else if (startParent !== endContainer) {
-			throw new RangeError(msg1);
-		} else if (endOffset <= startParent.childNodes.indexOf(startContainer)) {
 			throw new RangeError(msg2);
+		} else if (endOffset <= startParent.childNodes.indexOf(startContainer)) {
+			throw new RangeError(msg1);
 		}
 		/* c8 ignore stop */
 	}

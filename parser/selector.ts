@@ -182,11 +182,11 @@ const matches = (
 			if (!(key in token || typeof token.hasAttr === 'function' && token.hasAttr(key))) {
 				return equal === '!=';
 			}
-			const v = toCase(val, i),
-				thisVal = getAttr(token, key);
+			const thisVal = getAttr(token, key);
 			if (!equal) {
 				return thisVal !== undefined && thisVal !== false;
 			}
+			const v = toCase(val, i);
 			if (equal === '~=') {
 				const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
 				return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
@@ -320,7 +320,7 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstE
 const desanitize = (selector: string): string => {
 	if (selector.includes('&') && selector.includes(';')) {
 		for (const [c, entity] of specialChars) {
-			selector = selector.replaceAll(entity, c);
+			selector = selector.replaceAll(entity, c); // eslint-disable-line unicorn/no-unsafe-string-replacement
 		}
 	}
 	return selector.trim();
@@ -346,6 +346,7 @@ export const checkToken = (
 	let sanitized = selector.trim();
 	if (sanitized.includes('\\')) {
 		for (const [c, entity] of specialChars) {
+			// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 			sanitized = sanitized.replaceAll(`\\${c}`, entity);
 		}
 	}

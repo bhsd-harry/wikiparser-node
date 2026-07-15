@@ -241,7 +241,7 @@ class ExprParser {
 
 	getBinaryOp(): Op | null {
 		const {type, value} = this.current();
-		return type === 'op' && value in PRECEDENCE
+		return type === 'op' && Object.hasOwn(PRECEDENCE, value)
 			|| type === 'word' && ['mod', 'fmod', 'and', 'or', 'round', 'div', 'e'].includes(value)
 			? value as Op
 			: null;
@@ -411,7 +411,7 @@ const emit = (node: ExprNode): number => {
 			case 'or':
 				return left || right ? 1 : 0;
 			case 'e': {
-				if (!Number.isFinite(left) || !Number.isFinite(right) || !Number.isInteger(right)) {
+				if (!Number.isFinite(left) || !Number.isFinite(right) || !Number.isSafeInteger(right)) {
 					return left * 10 ** right;
 				}
 				const [coefficient, exponent = 0] = String(left).split('e'),
