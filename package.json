@@ -105,7 +105,7 @@
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^3.1.0",
+		"@bhsd/code-standard": "^3.2.0",
 		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/test-util": "^3.1.0",
 		"@codemirror/lint": "^6.9.7",
