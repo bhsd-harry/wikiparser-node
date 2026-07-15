@@ -65,7 +65,7 @@ export abstract class TagToken extends Token {
 	/* NOT FOR BROWSER */
 
 	set closing(value) {
-		this.#closing = Boolean(value);
+		this.#closing = Boolean(value); // eslint-disable-line unicorn/no-useless-coercion
 	}
 
 	/** @private */

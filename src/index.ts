@@ -727,7 +727,7 @@ export class Token extends AstElement {
 							if (line && line > startLine + 1) {
 								break;
 							} else if (rules && !rules.has(rule)) {
-								continue;
+								//
 							} else if (line === startLine) {
 								return false;
 							} else if (from! <= startIndex && from! > nearest.pos) {

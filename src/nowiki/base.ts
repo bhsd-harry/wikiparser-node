@@ -64,14 +64,6 @@ export abstract class NowikiBaseToken extends Token {
 			return token;
 		});
 	}
-
-	/**
-	 * @override
-	 * @param str new text / 新文本
-	 */
-	override setText(str: string): string {
-		return super.setText(str);
-	}
 }
 
 classes['NowikiBaseToken'] = __filename;

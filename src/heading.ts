@@ -345,7 +345,7 @@ export abstract class HeadingToken extends Token {
 			for (; headings.has(`${lcId}_${i}`); i++) {
 				//
 			}
-			id = `${id}_${i}`;
+			id += `_${i}`;
 			headings.add(`${lcId}_${i}`);
 		} else {
 			headings?.add(lcId);
