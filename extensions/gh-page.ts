@@ -150,6 +150,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			api.focus();
 		});
 		script.addEventListener('load', () => {
+			// eslint-disable-next-line unicorn/prefer-structured-clone
 			const configData: ConfigData = JSON.parse(JSON.stringify(
 				CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig!),
 			));
