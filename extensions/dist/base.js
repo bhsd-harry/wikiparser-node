@@ -246,7 +246,7 @@ const workerJS = () => {
         }
     };
 };
-const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
+const blob = new Blob([`(${String(workerJS).replace('$CDN', () => CDN)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
 URL.revokeObjectURL(url);
 const getListener = (command, qid, resolve, raw) => {
     const listener = ({ data: [cmd, rid, res, resRaw] }) => {
