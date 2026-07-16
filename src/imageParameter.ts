@@ -235,8 +235,8 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-		return this.#syntax ? this.#syntax.replace('$1', super.toString(skip)) : super.toString(skip);
+		const str = super.toString(skip);
+		return this.#syntax ? this.#syntax.replace('$1', () => str) : str;
 	}
 
 	/** @private */
@@ -249,8 +249,7 @@ export abstract class ImageParameterToken extends Token {
 		if (name !== 'caption') {
 			str = str.trim();
 		}
-		// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-		return this.#syntax ? this.#syntax.replace('$1', str).trim() : str;
+		return this.#syntax ? this.#syntax.replace('$1', () => str).trim() : str;
 	}
 
 	/** @private */

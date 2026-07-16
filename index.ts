@@ -280,8 +280,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	msg(msg, arg = '') {
 		LINT: return msg
-		&& ((this.i18n as Record<string, string>)[msg] ?? msg)
-			.replace('$1', this.msg(arg)); // eslint-disable-line unicorn/no-unsafe-string-replacement
+		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', () => this.msg(arg));
 	},
 
 	/** @implements */
