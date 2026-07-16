@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-unreadable-iife */
 const blockAttrs = new Set(['align']),
 	citeAttrs = new Set(['cite']),
 	citeAndAttrs = new Set(['cite', 'datetime']),

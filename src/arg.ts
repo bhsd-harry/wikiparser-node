@@ -89,7 +89,7 @@ export abstract class ArgToken extends Token {
 			if (s && !this.getAttribute('include')) {
 				const e = generateForSelf(this, rect, rule, 'unexpected-argument', s),
 					[, argDefault] = this.childNodes;
-				if (lintConfig.computeEditInfo && argDefault) {
+				if (argDefault && lintConfig.computeEditInfo) {
 					e.suggestions = [fixBy(e, 'expand', argDefault.text())];
 				}
 				errors.push(e);

@@ -113,7 +113,7 @@ export abstract class HeadingToken extends Token {
 				}
 				errors.push(e);
 			}
-			if (severities[1] && unbalanced) {
+			if (unbalanced && severities[1]) {
 				const msg = Parser.msg('unbalanced-in-section-header', '"="'),
 					e = generateForChild(firstChild, rect, rules[1], msg, severities[1]);
 				if (!computeEditInfo || innerStr === '=') {
