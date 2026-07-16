@@ -48,7 +48,7 @@
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.1",
 		"eslint": "^10.7.0",
-		"markdownlint-cli2": "^0.23.0",
+		"markdownlint-cli2": "^0.23.1",
 		"typescript": "^6.0.3"
 	}
 }
