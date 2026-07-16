@@ -124,7 +124,7 @@ export abstract class AttributeToken extends Token {
 		} else if (
 			tag === 'gallery' && key === 'caption'
 			|| tag === 'ref' && key === 'details'
-			|| (tag === 'mapframe' || tag === 'maplink') && key === 'text'
+			|| key === 'text' && (tag === 'mapframe' || tag === 'maplink')
 			|| tag === 'choose' && (key === 'before' || key === 'after')
 		) {
 			const newConfig: Config = {
@@ -333,7 +333,7 @@ export abstract class AttributeToken extends Token {
 				rules = ['unclosed-quote', 'obsolete-attr'] as const,
 				{lintConfig} = Parser,
 				s = rules.map(rule => lintConfig.getSeverity(rule, name));
-			if (s[0] && !balanced) {
+			if (!balanced && s[0]) {
 				const e = generateForChild(lastChild, rect, rules[0], 'unclosed-quotes', s[0]);
 				e.startIndex--;
 				e.startCol--;
@@ -356,8 +356,8 @@ export abstract class AttributeToken extends Token {
 				sError = lintConfig.getSeverity(rule),
 				sWarn = lintConfig.getSeverity(rule, 'warn');
 			if (
-				(sError || sWarn)
-				&& name === 'style'
+				name === 'style'
+				&& (sError || sWarn)
 				&& lastChild.length === 1 && lastChild.firstChild!.type === 'text'
 			) {
 				const cssLSP = loadCssLSP();
