@@ -57,7 +57,7 @@ const purify = (render: string): void => {
 				|| name.startsWith('xmlns:')
 				|| name === 'typeof' && /^mw:File(?:\/\w+)?$/u.test(value)
 				|| name === 'property' && !/^(?:(?:java|vb)script|data):|[<>]/iu.test(value)
-				|| name.startsWith('data-') && !value
+				|| !value && name.startsWith('data-')
 			) && {[name]: value};
 		}).filter(Boolean),
 		[],

@@ -1006,14 +1006,14 @@ export class LanguageService implements LanguageServiceBase {
 			}
 			({type, parentNode} = cur);
 		}
-		if (mt?.[7] !== undefined || type === 'image-parameter') { // image parameter
+		if (type === 'image-parameter' || mt?.[7] !== undefined) { // image parameter
 			const index = root.indexFromPos(line, character)!,
 				match = mt?.[7]?.trimStart()
 					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
 				equal = this.#text[index] === '=';
 			return getCompletion(params, 'Property', match, position)
 				.filter(({label}) => !equal || !/[= ]$/u.test(label));
-		} else if (mt?.[8] !== undefined || type === 'attr-key') { // attribute key
+		} else if (type === 'attr-key' || mt?.[8] !== undefined) { // attribute key
 			const tag = mt?.[8]?.toLowerCase() ?? (parentNode as AttributeToken).tag;
 			if (!tags.has(tag)) {
 				return undefined;
@@ -1023,7 +1023,7 @@ export class LanguageService implements LanguageServiceBase {
 				thisHtmlAttrs = htmlAttrs[tag],
 				thisExtAttrs = extAttrs[tag],
 				extCompletion = thisExtAttrs && getCompletion(thisExtAttrs, 'Field', key, position);
-			return ext.includes(tag) && !thisHtmlAttrs
+			return !thisHtmlAttrs && ext.includes(tag)
 				? extCompletion
 				: [
 					...extCompletion ?? [],
@@ -1781,7 +1781,7 @@ export class LanguageService implements LanguageServiceBase {
 			f = offsetNode.text().trim();
 			colon = parentNode!.getAttribute('colon');
 		} else if (
-			offsetNode.is('magic-word') && !offsetNode.modifier && length === 1
+			length === 1 && offsetNode.is('magic-word') && !offsetNode.modifier
 			&& (offset > 0 || root.posFromIndex(offsetNode.getAbsoluteIndex())!.left === position.character)
 		) {
 			info = this.#getParserFunction(name!);

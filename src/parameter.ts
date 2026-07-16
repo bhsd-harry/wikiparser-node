@@ -86,7 +86,7 @@ export abstract class ParameterToken extends Token {
 	/* NOT FOR BROWSER */
 
 	set duplicated(value) {
-		if (this.duplicated && !value) {
+		if (!value && this.duplicated) {
 			this.parentNode!.fixDuplication();
 		}
 	}

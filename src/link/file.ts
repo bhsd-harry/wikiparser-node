@@ -269,7 +269,7 @@ export abstract class FileToken extends LinkBaseToken {
 			s = lintConfig.getSeverity(rule, 'extension');
 			if (
 				s && ns === 6 && !extension && !firstChild.querySelector('arg,magic-word,template')
-				&& !interwiki
+				&& !interwiki // eslint-disable-line unicorn/prefer-simple-condition-first
 			) {
 				errors.push(generateForSelf(this, rect, rule, 'missing-extension', s));
 			}

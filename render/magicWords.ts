@@ -532,7 +532,7 @@ export const expandMagicWord = (
 			const {ns: n, main, extension} = title,
 				i = arg0 === 'local' ? 0 : 1,
 				isSubpage = main.includes('/');
-			if (isSubpage && (n === 10 || n === 828) && extension === 'css') {
+			if (isSubpage && extension === 'css' && (n === 10 || n === 828)) {
 				return contentmodel(i, 'sanitized-css');
 			} else if (n === 828) {
 				if (extension === 'json') {
@@ -540,7 +540,7 @@ export const expandMagicWord = (
 				}
 				return main.endsWith('/doc') ? 'wikiext' : contentmodel(i, 'Scribunto');
 			}
-			return (n === 8 || n === 2 && isSubpage) && extension && contentmodels.has(extension)
+			return extension && (n === 8 || n === 2 && isSubpage) && contentmodels.has(extension)
 				? contentmodel(i, extension)
 				: 'wikitext';
 		}
@@ -750,7 +750,7 @@ export const expandMagicWord = (
 			if (!mt) {
 				return localurl(config, [redirect]);
 			}
-			const [width, height] = mt[1]!.split('x'),
+			const [width, height] = mt[1]!.split('x', 2),
 				query = new URLSearchParams();
 			if (width) {
 				query.set('width', width);

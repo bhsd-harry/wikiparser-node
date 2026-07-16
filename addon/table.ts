@@ -164,7 +164,7 @@ const split = (table: TableToken, coords: TableCoords | TableRenderedCoords, dir
 	}
 	let {x, y} = coords;
 	const rawCoords = isTableCoords(coords) ? coords : table.toRawCoords(coords)!;
-	if (rawCoords.start === false || x === undefined) {
+	if (x === undefined || rawCoords.start === false) {
 		({x, y} = table.toRenderedCoords(rawCoords)!);
 	}
 	const splitting = {rowspan: 1, colspan: 1};

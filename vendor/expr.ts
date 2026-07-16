@@ -414,7 +414,7 @@ const emit = (node: ExprNode): number => {
 				if (!Number.isFinite(left) || !Number.isFinite(right) || !Number.isSafeInteger(right)) {
 					return left * 10 ** right;
 				}
-				const [coefficient, exponent = 0] = String(left).split('e'),
+				const [coefficient, exponent = 0] = String(left).split('e', 2),
 					result = Number(`${coefficient}e${Number(exponent) + right}`);
 				return result === 0 ? 0 : result;
 			}

@@ -228,7 +228,7 @@ export class AstText extends AstNode {
 					error.startsWith('<') && !tags.has(tag!.toLowerCase())
 					|| lbrackInExtLinkText && (
 						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-						|| nextSibling?.is('ext') && nextName === 'nowiki'
+						|| nextName === 'nowiki' && nextSibling?.is('ext')
 						&& nextSibling.innerText?.includes(']')
 					)
 				) {

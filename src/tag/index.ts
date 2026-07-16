@@ -182,7 +182,7 @@ export abstract class TagToken extends Token {
 							return undefined;
 						} else if (
 							cur.#match?.[0] === rev
-							&& viewOnly
+							&& viewOnly // eslint-disable-line unicorn/prefer-simple-condition-first
 						) {
 							const [, matched] = cur.#match;
 							if (!matched) {

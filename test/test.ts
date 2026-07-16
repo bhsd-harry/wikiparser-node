@@ -122,7 +122,7 @@ describe('API tests', () => {
 					} else if (
 						/ \(browser\)/u.test(first)
 						|| / \(self\)/u.test(first)
-						&& clone
+						&& clone // eslint-disable-line unicorn/prefer-simple-condition-first
 					) {
 						it.skip(first.slice(3));
 					} else {

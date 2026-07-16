@@ -130,7 +130,7 @@ export const toHtml = (token: Token): string => {
 			output += closeParagraph();
 			inBlockElem = !closeMatch;
 		} else if (!inBlockElem) {
-			if (line.startsWith(' ') && (lastParagraph === 'pre' || line.trim()) && !inBlockquote) {
+			if (!inBlockquote && line.startsWith(' ') && (lastParagraph === 'pre' || line.trim())) {
 				if (lastParagraph !== 'pre') {
 					pendingPTag = false;
 					output += `${closeParagraph()}<pre>`;

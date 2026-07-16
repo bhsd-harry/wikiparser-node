@@ -397,7 +397,7 @@ export const checkToken = (
 	 */
 	const needUniversal = (): void => {
 		/* c8 ignore next 3 */
-		if (step.length === 0 && (condition.length > 1 || !has)) {
+		if (step.length === 0 && (!has || condition.length > 1)) {
 			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
 		}
 	};

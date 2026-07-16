@@ -116,9 +116,9 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 		const open = childNodes[i]!,
 			{name, closing, selfClosing} = open as HtmlToken;
 		if (
-			open.is('html') && !closing
+			!closing && open.is('html')
 			&& (tag ? name === tag : !voidTags.has(name))
-			&& (normalTags.has(name) || !selfClosing)
+			&& (!selfClosing || normalTags.has(name))
 		) {
 			const close = open.findMatchingTag();
 			if (close) {

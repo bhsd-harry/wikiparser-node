@@ -578,7 +578,7 @@ export class Token extends AstElement {
 		/* NOT FOR BROWSER */
 
 		const acceptable = this.getAcceptable();
-		if (!Shadow.running && acceptable) {
+		if (acceptable && !Shadow.running) {
 			const nodesAfter = this.childNodes.slice(i),
 				insertedName = token.constructor.name;
 			if (!acceptable[insertedName]?.has(i, length + 1)) {

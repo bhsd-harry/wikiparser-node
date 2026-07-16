@@ -458,7 +458,7 @@ export class AstRange {
 			}
 		} else {
 			const {startContainer, startOffset} = this;
-			if (startContainer.type === 'text' && startOffset) {
+			if (startOffset && startContainer.type === 'text') {
 				this.#startContainer = startContainer.splitText(startOffset);
 				this.#startOffset = 0;
 				if (this.#endContainer === startContainer) {

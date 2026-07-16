@@ -293,7 +293,7 @@ export abstract class MagicLinkToken extends Token {
 			const {type, name} = token;
 			if (type === 'template') {
 				this.constructorError('cannot insert a template');
-			} else if (!Shadow.running && type === 'magic-word' && name !== '!' && name !== '=') {
+			} else if (type === 'magic-word' && name !== '!' && name !== '=' && !Shadow.running) {
 				this.constructorError('cannot insert magic words other than "{{!}}" or "{{=}}"');
 			}
 		}

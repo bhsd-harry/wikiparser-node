@@ -814,7 +814,7 @@ export abstract class AstNode implements AstNodeBase {
 				break;
 			}
 		}
-		if ((bold === undefined || italic === undefined) && type === 'ext-link-text' && parentNode.parentNode) {
+		if (type === 'ext-link-text' && (bold === undefined || italic === undefined) && parentNode.parentNode) {
 			update(parentNode.parentNode);
 		}
 		return {bold: Boolean(bold), italic: Boolean(italic), b, i};

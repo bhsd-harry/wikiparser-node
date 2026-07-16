@@ -89,7 +89,7 @@ export abstract class IncludeToken extends TagPairToken {
 				}
 				errors.push(e);
 			}
-			if (s[1] && !closed) {
+			if (!closed && s[1]) {
 				const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed', `<${name}>`), s[1]);
 				if (computeEditInfo) {
 					e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];

@@ -703,7 +703,7 @@ export abstract class TableToken extends TrBaseToken {
 			[this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(newOpt).trim()).join(' ')
 		}<table${childNodes[1].toHtmlInternal()}>${newline}<tbody>${
 			firstRow + (tr.length > 0 && firstRow.endsWith('</tr>') ? newline : '')
-		}${html(tr, newline, opt)}${tr.length === 0 && !firstRow ? '<tr><td></td></tr>' : ''}</tbody></table>`;
+		}${html(tr, newline, opt)}${!firstRow && tr.length === 0 ? '<tr><td></td></tr>' : ''}</tbody></table>`;
 	}
 }
 

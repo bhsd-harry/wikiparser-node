@@ -147,7 +147,7 @@ AttributesToken.prototype.sanitize =
 				}
 			}
 		}
-		if (!Shadow.running && dirty) {
+		if (dirty && !Shadow.running) {
 			Parser.warn('AttributesToken.sanitize will remove invalid attributes!');
 		}
 	};

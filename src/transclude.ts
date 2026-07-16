@@ -130,7 +130,7 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	set duplication(duplication) {
-		if (this.duplication && !duplication) {
+		if (!duplication && this.duplication) {
 			this.fixDuplication();
 		}
 	}
@@ -379,7 +379,7 @@ export abstract class TranscludeToken extends Token {
 					delete data.oldKey;
 					delete data.newKey;
 				}
-				if (prevTarget === this.firstChild && isTemplate) {
+				if (isTemplate && prevTarget === this.firstChild) {
 					this.#title = this.#getTitle();
 					this.setAttribute('name', this.#title.title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {

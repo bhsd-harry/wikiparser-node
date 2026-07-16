@@ -468,7 +468,7 @@ export abstract class ImageParameterToken extends Token {
 					} = this.thumb!;
 					if (
 						!valid || ns !== 6 || !extensions.has(extension!)
-						|| interwiki
+						|| interwiki // eslint-disable-line unicorn/prefer-simple-condition-first
 					) {
 						errors.push(generateForSelf(this, {start}, rule, 'invalid-thumb', s));
 					}
