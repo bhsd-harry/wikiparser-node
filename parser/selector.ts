@@ -320,7 +320,7 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstE
 const desanitize = (selector: string): string => {
 	if (selector.includes('&') && selector.includes(';')) {
 		for (const [c, entity] of specialChars) {
-			selector = selector.replaceAll(entity, c); // eslint-disable-line unicorn/no-unsafe-string-replacement
+			selector = selector.replaceAll(entity, () => c);
 		}
 	}
 	return selector.trim();
@@ -346,8 +346,7 @@ export const checkToken = (
 	let sanitized = selector.trim();
 	if (sanitized.includes('\\')) {
 		for (const [c, entity] of specialChars) {
-			// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-			sanitized = sanitized.replaceAll(`\\${c}`, entity);
+			sanitized = sanitized.replaceAll(`\\${c}`, () => entity);
 		}
 	}
 	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];

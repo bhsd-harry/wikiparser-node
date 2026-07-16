@@ -212,8 +212,10 @@ const expand = (
 					let template = Parser.templates.get(dest)!.replace(/\n$/u, '');
 					if (!isTemplate) {
 						for (let j = 1; j < args.length; j++) {
-							// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-							template = template.replaceAll(`$${j}`, removeComment(args[j]!.toString()));
+							template = template.replaceAll(
+								`$${j}`,
+								() => removeComment(args[j]!.toString()),
+							);
 						}
 					}
 					return implicitNewLine(

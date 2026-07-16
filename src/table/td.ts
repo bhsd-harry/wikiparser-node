@@ -288,8 +288,7 @@ export abstract class TdToken extends TableBaseToken {
 									e.fix = fixBy(
 										e,
 										'newline',
-										// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-										data.replace(/\|\|/gu, `\n${syntax}`),
+										data.replace(/\|\|/gu, () => `\n${syntax}`),
 									);
 								} else if (computeEditInfo) {
 									e.suggestions = [fixByPipe(e.startIndex, data)];
