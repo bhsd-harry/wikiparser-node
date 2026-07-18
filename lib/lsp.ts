@@ -837,7 +837,7 @@ export class LanguageService implements LanguageServiceBase {
 					+ ')$',
 					'iu',
 				),
-				allSwitches = (doubleUnderscore.slice(0, 2) as string[][]).flat();
+				allSwitches = (doubleUnderscore.slice(0, 2) as string[][]).flat().map(s => s.toUpperCase());
 			this.#completionConfig = [
 				{
 					re,
