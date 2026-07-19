@@ -3,6 +3,7 @@
 # WikiParser-Template
 
 [![npm version](https://badge.fury.io/js/wikiparser-template.svg)](https://www.npmjs.com/package/wikiparser-template)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13661/badge)](https://www.bestpractices.dev/projects/13661)
 
 WikiParser-Template is a standalone [Wikitext](https://www.mediawiki.org/wiki/Wikitext) [template](https://www.mediawiki.org/wiki/Help:Templates) parser for the [Node.js](https://nodejs.org/) and browser environments. It is a highly simplified version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node), focusing solely on parsing templates and their parameters.
 
