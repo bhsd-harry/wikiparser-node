@@ -9,6 +9,7 @@
 [![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/wikiparser-node)](https://www.npmjs.com/package/wikiparser-node)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a2fbe7641031451baca2947ae6d7891f)](https://app.codacy.com/gh/bhsd-harry/wikiparser-node/dashboard)
 ![Coverage](./coverage/badge.svg)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13661/badge)](https://www.bestpractices.dev/projects/13661)
 
 ## Other Languages
 
