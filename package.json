@@ -50,13 +50,13 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/cm-util": "^2.3.0",
-		"@bhsd/common": "^4.0.0",
+		"@bhsd/cm-util": "^2.4.0",
+		"@bhsd/common": "^4.0.1",
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^3.2.0",
-		"@bhsd/codemirror-mediawiki": "^4.2.1",
+		"@bhsd/code-standard": "^3.3.0",
+		"@bhsd/codemirror-mediawiki": "^4.2.2",
 		"@bhsd/test-util": "^3.1.0",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
@@ -66,7 +66,7 @@
 		"eslint": "^10.7.0",
 		"http-server": "^14.1.1",
 		"monaco-editor": "~0.53.0",
-		"stylelint": "^17.14.0",
+		"stylelint": "^17.14.1",
 		"typescript": "^6.0.3",
 		"v8r": "^6.1.0"
 	},
