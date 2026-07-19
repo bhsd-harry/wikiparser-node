@@ -7,6 +7,7 @@
 [![CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml)
 [![NPM downloads](https://img.shields.io/npm/dm/wikilint)](https://www.npmjs.com/package/wikilint)
 ![Coverage](./coverage/badge.svg)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13661/badge)](https://www.bestpractices.dev/projects/13661)
 
 This is a minimal version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node). The [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) and the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension is written based on this package.
 
