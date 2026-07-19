@@ -126,7 +126,7 @@ export abstract class TranscludeToken extends Token {
 
 	/** whether to contain duplicated parameters / 是否存在重复参数 */
 	get duplication(): boolean {
-		return this.isTemplate() && Boolean(this.hasDuplicatedArgs());
+		return (this.isTemplate() || this.name === 'tag') && Boolean(this.hasDuplicatedArgs());
 	}
 
 	set duplication(duplication) {
@@ -465,50 +465,53 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const errors = super.lint(start, re);
-			if (!this.isTemplate()) {
-				return errors;
-			}
-			const {type, childNodes, length: l} = this,
+			const errors = super.lint(start, re),
+				{type, childNodes, length: l, name} = this,
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
-				invoke = type === 'magic-word';
-			let rule: LintError.Rule = 'no-ignored',
-				s = lintConfig.getSeverity(rule, 'fragment');
-			if (invoke && !this.#getTitle().valid) {
-				rule = 'invalid-invoke';
-				s = lintConfig.getSeverity(rule, 'name');
-				if (s) {
-					errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
-				}
-			} else if (s) {
-				const child = childNodes[invoke ? 1 : 0] as AtomToken,
-					i = child.childNodes
-						.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
-					textNode = child.childNodes[i] as AstText | undefined;
-				if (textNode) {
-					const e = generateForChild(child, rect, rule, 'useless-fragment', s);
-					if (computeEditInfo) {
-						e.suggestions = [
-							fixByRemove(
-								e,
-								child.getRelativeIndex(i) + textNode.data.indexOf('#'),
-							),
-						];
+				isTemplate = this.isTemplate();
+			let rule: LintError.Rule,
+				s: LintError.Severity | false;
+			if (isTemplate) {
+				const invoke = type === 'magic-word';
+				if (invoke && !this.#getTitle().valid) {
+					rule = 'invalid-invoke';
+					s = lintConfig.getSeverity(rule, 'name');
+					if (s) {
+						errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
 					}
-					errors.push(e);
+				} else {
+					rule = 'no-ignored';
+					s = lintConfig.getSeverity(rule, 'fragment');
+					if (s) {
+						const child = childNodes[invoke ? 1 : 0] as AtomToken,
+							i = child.childNodes
+								.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
+							textNode = child.childNodes[i] as AstText | undefined;
+						if (textNode) {
+							const e = generateForChild(child, rect, rule, 'useless-fragment', s);
+							if (computeEditInfo) {
+								e.suggestions = [
+									fixByRemove(
+										e,
+										child.getRelativeIndex(i) + textNode.data.indexOf('#'),
+									),
+								];
+							}
+							errors.push(e);
+						}
+					}
 				}
-			}
-			rule = 'invalid-invoke';
-			s = lintConfig.getSeverity(rule, 'function');
-			if (s && invoke && l === 2) {
-				errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
-				return errors;
+				rule = 'invalid-invoke';
+				s = lintConfig.getSeverity(rule, 'function');
+				if (s && invoke && l === 2) {
+					errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
+				}
 			}
 			rule = 'no-duplicate';
 			s = lintConfig.getSeverity(rule, 'parameter');
-			if (s) {
+			if (s && (isTemplate || name === 'tag')) {
 				const duplicatedArgs = this.getDuplicatedArgs()
 					.filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 				for (const [, args] of duplicatedArgs) {
@@ -658,8 +661,15 @@ export abstract class TranscludeToken extends Token {
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
 		LINT: {
-			if (this.isTemplate()) {
-				return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
+			const isTemplate = this.isTemplate();
+			if (isTemplate || this.name === 'tag') {
+				const duplicatedArgs = [...this.#args].filter(([, {size}]) => size > 1)
+					.map(([key, args]): [string, ParameterToken[]] => [key, [...args]]);
+				return isTemplate
+					? duplicatedArgs
+					: duplicatedArgs
+						.map(([key, args]): [string, ParameterToken[]] => [key, args.filter(({anon}) => !anon)])
+						.filter(([, args]) => args.length > 1);
 			}
 
 			/* NOT FOR BROWSER */
@@ -1006,7 +1016,7 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	hasDuplicatedArgs(): number {
-		if (this.isTemplate()) {
+		if (this.isTemplate() || this.name === 'tag') {
 			return this.getAllArgs().length - this.getKeys().length;
 		}
 		throw new Error('TranscludeToken.hasDuplicatedArgs method is only for template!');

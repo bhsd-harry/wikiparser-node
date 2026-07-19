@@ -3,6 +3,10 @@
 
 *2026-07-19*
 
+**Added**
+
+- [`TranscludeToken#duplication`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#duplication), [`TranscludeToken#getDuplicatedArgs`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getduplicatedargs), [`TranscludeToken#fixDuplication`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#fixduplication) and [`ParameterToken#duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#duplicated) now supports `#tag` parser function
+
 **Changed**
 
 - [`LanguageService#provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now always suggests behavior switches in the uppercase form

@@ -13,7 +13,7 @@ import {AtomToken} from '../src/atom';
  * 调整最后一个子节点的换行符
  * @param token 魔术字或模板节点
  */
-const format = (token: TranscludeToken): void => {
+export const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
 		isParameter = lastChild.is('parameter');
 	if (
@@ -112,7 +112,8 @@ TranscludeToken.prototype.fixDuplication =
 		if (!this.hasDuplicatedArgs()) {
 			return [];
 		}
-		const duplicatedKeys: string[] = [];
+		const duplicatedKeys: string[] = [],
+			isTemplate = this.isTemplate();
 		let {anonCount} = this;
 		for (const [key, args] of this.getDuplicatedArgs()) {
 			if (args.length <= 1) {
@@ -127,7 +128,7 @@ TranscludeToken.prototype.fixDuplication =
 					values.set(val, [arg]);
 				}
 			}
-			let noMoreAnon = anonCount === 0 || !key.trim() || !Number.isSafeInteger(Number(key));
+			let noMoreAnon = !isTemplate || anonCount === 0 || !key.trim() || !Number.isSafeInteger(Number(key));
 			const emptyArgs = values.get('') ?? [],
 				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
@@ -151,7 +152,7 @@ TranscludeToken.prototype.fixDuplication =
 			let remaining = args.length - badArgs.length;
 			if (remaining === 1) {
 				continue;
-			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
+			} else if (aggressive && isTemplate && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
 				let last: number;
 				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0].length);
 				/^a\d+$/u; // eslint-disable-line @typescript-eslint/no-unused-expressions
@@ -177,20 +178,22 @@ TranscludeToken.prototype.fixDuplication =
 				}
 			}
 			if (remaining > 1) {
-				Parser.error(`${JSON.stringify(
-					this.type === 'template'
-						? this.name
-						: this.normalizeTitle(
-							`Module:${this.childNodes[1].text()}`,
-							828,
-							{temporary: true, page: ''},
-						).title,
-				)} still has ${remaining} duplicated ${JSON.stringify(key)} parameters:\n${
-					[...this.getArgs(key)].map(arg => {
-						const {top, left} = arg.getBoundingClientRect();
-						return `Line ${top} Column ${left}`;
-					}).join('\n')
-				}`);
+				if (isTemplate) {
+					Parser.error(`${JSON.stringify(
+						this.type === 'template'
+							? this.name
+							: this.normalizeTitle(
+								`Module:${this.childNodes[1].text()}`,
+								828,
+								{temporary: true, page: ''},
+							).title,
+					)} still has ${remaining} duplicated ${JSON.stringify(key)} parameters:\n${
+						[...this.getArgs(key)].map(arg => {
+							const {top, left} = arg.getBoundingClientRect();
+							return `Line ${top} Column ${left}`;
+						}).join('\n')
+					}`);
+				}
 				duplicatedKeys.push(key);
 			}
 		}

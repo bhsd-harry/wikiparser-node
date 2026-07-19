@@ -75,9 +75,10 @@ export abstract class ParameterToken extends Token {
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
 		LSP: {
-			const {parentNode, name} = this;
-			return Boolean(parentNode?.isTemplate())
-				&& parentNode!.getArgs(name, false, false).size > 1;
+			const {parentNode, name, anon} = this;
+			return parentNode?.isTemplate()
+				? parentNode.getArgs(name, false, false).size > 1
+				: parentNode?.name === 'tag' && !anon && parentNode.getArgs(name, true, false).size > 1;
 		}
 	}
 

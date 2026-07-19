@@ -126,8 +126,8 @@
 		}
 	},
 	"dependencies": {
-		"@bhsd/cm-util": "^2.3.0",
-		"@bhsd/common": "^4.0.0",
+		"@bhsd/cm-util": "^2.4.0",
+		"@bhsd/common": "^4.0.1",
 		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/stylelint-util": "^1.1.0",
 		"culori": "^4.0.2",
@@ -135,7 +135,7 @@
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^3.2.0",
+		"@bhsd/code-standard": "^3.3.0",
 		"@bhsd/test-util": "^3.1.0",
 		"@codemirror/lint": "^6.9.7",
 		"@eslint/markdown": "^8.0.3",
@@ -156,7 +156,7 @@
 		"monaco-editor": "~0.53.0",
 		"prism-wiki": "^2.3.0",
 		"prismjs": "^1.30.0",
-		"stylelint": "^17.14.0",
+		"stylelint": "^17.14.1",
 		"tsx": "^4.23.1",
 		"typescript": "^6.0.3",
 		"v8r": "^6.1.0",
