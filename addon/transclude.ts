@@ -5,7 +5,7 @@ import {TranscludeToken} from '../src/transclude';
  * 调整最后一个子节点的换行符
  * @param token 魔术字或模板节点
  */
-const format = (token: TranscludeToken): void => {
+export const format = (token: TranscludeToken): void => {
 	const {lastChild, type} = token,
 		isParameter = lastChild.is('parameter');
 	if (
@@ -15,5 +15,3 @@ const format = (token: TranscludeToken): void => {
 		(isParameter ? lastChild.lastChild : lastChild).insertAt('\n');
 	}
 };
-
-export {format};
