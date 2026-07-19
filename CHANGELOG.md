@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.46.2
+
+*2026-07-19*
+
+**Changed**
+
+- [`LanguageService#provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now always suggests behavior switches in the uppercase form
+
 ## v1.46.1
 
 *2026-07-14*
