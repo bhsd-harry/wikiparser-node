@@ -1,11 +1,15 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.46.2
 
-*2026-07-19*
+*2026-07-23*
 
 **Added**
 
-- [`TranscludeToken#duplication`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#duplication), [`TranscludeToken#getDuplicatedArgs`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getduplicatedargs), [`TranscludeToken#fixDuplication`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#fixduplication) and [`ParameterToken#duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#duplicated) now supports `#tag` parser function
+- [`TranscludeToken.duplication`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#duplication), [`TranscludeToken#getDuplicatedArgs`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getduplicatedargs), [`TranscludeToken#fixDuplication`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#fixduplication) and [`ParameterToken.duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#duplicated) now supports `#tag` parser function
+
+**Fixed**
+
+- [`ImageParameterToken.link`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken-%28EN%29#link) when the `link` parameter contains HTML tags or links
 
 **Changed**
 
@@ -198,7 +202,7 @@
 
 **Added**
 
-- [`TranscludeToken#anonCount`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#anoncount)
+- [`TranscludeToken.anonCount`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#anoncount)
 
 **Changed**
 

@@ -12,7 +12,6 @@ import type {
 
 	/* NOT FOR BROWSER */
 
-	ListRangeToken,
 	AstNodes,
 } from '../../internal';
 
@@ -148,7 +147,7 @@ export abstract class TagToken extends Token {
 					until: this | undefined;
 				while (
 					cur
-					|| parentNode.is<ListRangeToken>('list-range') && parentNode.parentNode
+					|| parentNode.is('list-range') && parentNode.parentNode
 				) {
 					if (!cur) {
 						/* NOT FOR BROWSER */
@@ -161,7 +160,7 @@ export abstract class TagToken extends Token {
 							closing ? ch.slice(0, j) : ch.slice(j + 1).reverse(),
 						);
 						parentNode = parent;
-					} else if (cur.is<ListRangeToken>('list-range')) {
+					} else if (cur.is('list-range')) {
 						const ch = cur.childNodes;
 						Array.prototype.push.apply(siblings, closing ? ch as AstNodes[] : [...ch].reverse());
 

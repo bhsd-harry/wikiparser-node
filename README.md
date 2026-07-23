@@ -39,6 +39,7 @@ WikiParser-Node has been extensively tested against the official [MediaWiki PHP 
 <a href="https://lsp.sublimetext.io/"><img src="https://raw.githubusercontent.com/sublimelsp/LSP/main/icons/lsp_logo.svg" width="50" height="50" alt="LSP for Sublime Text"></a>
 <a href="https://euporie.readthedocs.io/en/latest/"><img src="https://avatars.githubusercontent.com/u/12154190?s=100" width="50" height="50" alt="euporie"></a>
 <a href="http://www.qbittorrent.org/"><img src="https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg" width="50" height="50" alt="qBittorrent"></a>
+<a href="https://github.com/misterclayt0n/the-editor/tree/legacy"><img src="https://raw.githubusercontent.com/misterclayt0n/the-editor/main/assets/the-editor-icon.svg" width="50" height="50" alt="the-editor"></a>
 </div>
 
 ## Other Versions
