@@ -77,27 +77,23 @@ function validate(
 	accum?: Token[],
 ): string | Title | boolean {
 	val = removeComment(val).trim();
-	let value = val.replace(key === 'link' ? /\0\d+[tq]\x7F/gu : /\0\d+t\x7F/gu, '').trim();
+	const value = val.replace(key === 'link' ? /\0\d+[tq]\x7F/gu : /\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
 			return !value && Boolean(val) || /^(?:\d+x?|\d*x\d+)(?:\s*px)?$/u.test(value);
 		case 'link': {
 			const isGalleryImage = extOrType === 'gallery-image';
-			let nowiki = true;
 			if (!value) {
 				return val;
 			} else if (getUrlLikeRegex(config.protocol).test(value)) {
 				return getUrlRegex(config.protocol).test(value) ? val : isGalleryImage;
-			} else if (value.startsWith('[[') && value.endsWith(']]')) {
-				value = value.slice(2, -2);
-				nowiki = false;
 			}
 			const title = Parser.normalizeTitle(
 				value,
 				0,
 				false,
 				config,
-				{halfParsed, decode: true, selfLink: true, page: '', nowiki},
+				{halfParsed, decode: true, selfLink: true, page: '', nowiki: true},
 				accum,
 			);
 			return title.valid ? title : isGalleryImage;
@@ -148,10 +144,14 @@ export abstract class ImageParameterToken extends Token {
 	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
 		LINT: {
-			if (this.name !== 'link') {
+			const {name, parentNode, childNodes} = this;
+			if (name !== 'link') {
 				return undefined;
 			}
-			const value = super.text().trim();
+			const value = text(
+				childNodes.flatMap(child => child.is('link') ? child.lastChild.childNodes : child)
+					.filter(({type}) => type !== 'html'),
+			).trim();
 			return Shadow.run((): string | Title | undefined => {
 				const config = this.getAttribute('config'),
 					accum: Token[] = [],
@@ -160,8 +160,8 @@ export abstract class ImageParameterToken extends Token {
 				if (/^\0\d+m\x7F/u.test(token.firstChild!.toString())) {
 					return value;
 				}
-				const link = validate('link', value, config, this.parentNode?.type, undefined, accum);
-				return link === true ? undefined : link as string | Title;
+				const link = validate('link', value, config, parentNode?.type, undefined, accum);
+				return typeof link === 'boolean' ? undefined : link;
 			}, Parser);
 		}
 	}
