@@ -99,7 +99,7 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
 			return attr;
 		}
 	}
-	const val = token[key as keyof Token];
+	const val = token[key as keyof Token]; // eslint-disable-line @typescript-eslint/unbound-method
 	return val instanceof RegExp ? val.source : val;
 };
 
