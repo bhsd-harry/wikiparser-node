@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.46.1",
+	"version": "1.46.2",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -28,7 +28,7 @@
 	},
 	"scripts": {
 		"prepublishOnly": "npm run build:core",
-		"build:core": "bash build.sh",
+		"build:core": "bash build.sh && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:test",
 		"diff": "bash diff.sh",
@@ -42,12 +42,12 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^3.3.0",
+		"@bhsd/code-standard": "^4.0.0",
 		"@bhsd/common": "^4.0.1",
 		"@bhsd/test-util": "^3.1.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.1",
-		"eslint": "^10.7.0",
+		"eslint": "^10.8.0",
 		"markdownlint-cli2": "^0.23.1",
 		"typescript": "^6.0.3"
 	}
