@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "2.46.1",
+	"version": "2.46.2",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -106,13 +106,13 @@
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^3.3.0",
+		"@bhsd/code-standard": "^4.0.0",
 		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/test-util": "^3.1.0",
 		"c8": "^12.0.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.1",
-		"eslint": "^10.7.0",
+		"eslint": "^10.8.0",
 		"markdownlint-cli2": "^0.23.1",
 		"mathoid-texvcjs": "^0.6.0",
 		"stylelint": "^17.14.1",
