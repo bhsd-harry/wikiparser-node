@@ -38,6 +38,7 @@ const [,, site = ''] = process.argv,
 				{
 					site: name,
 					grcnamespace: '10',
+					grclimit: '10',
 				},
 			);
 			for (const page of pages) {
