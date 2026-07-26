@@ -273,9 +273,11 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				break;
 			case 'provideDocumentHighlights': {
 				const positions = [
+					// 需要 +1/+2
+					html,
+					// 需要 +1
 					attrKey,
 					ext,
-					html,
 					argName,
 					templateName,
 					magicWordName,
@@ -284,8 +286,10 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 
 					linkTarget,
 					parameterKey,
-				].filter(isSimpleToken)
-					.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
+				].filter(isSimpleToken).map(token => indexToPos(
+					root,
+					token.getAbsoluteIndex() + 1 + Number(token.is('html') && token.closing),
+				));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
