@@ -1,4 +1,3 @@
-import {numLeadingSpaces} from '@bhsd/common';
 import type {AstNodes, Token} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -18,12 +17,6 @@ export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
  * @param s 字符串
  */
 export const trimLc = (s: string): string => s.trim().toLowerCase();
-
-/**
- * trim starting whitespaces
- * @param s 字符串
- */
-export const trimStart = (s: string): string => s.slice(numLeadingSpaces(s));
 
 /**
  * 恢复原始字符串
