@@ -15,14 +15,14 @@ const onlyincludeLeft = '<onlyinclude>',
 		const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 			includeRegex = includeOnly ? 'noinclude' : 'includeonly';
 		return getRegex(exts => new RegExp(
-			String.raw`<!--[\s\S]*?(?:-->|$)|<${
+			String.raw`<!--.*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
 				exts // eslint-disable-next-line unicorn/prefer-string-raw
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
+			})(\s[^>]*?)?(?:/>|>(.*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
-			'giu',
+			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
+			'gisu',
 		));
 	}) as [RegexGetter, RegexGetter];
 

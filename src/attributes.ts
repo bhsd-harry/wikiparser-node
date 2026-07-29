@@ -51,7 +51,7 @@ export abstract class AttributesToken extends Token {
 		});
 		this.#type = type;
 		if (attr) {
-			const regex = /([^\s/][^\s/=]*)(?:(\s*=\s*)(?:(["'])([\s\S]*?)(\3|$)|(\S*)))?/gu;
+			const regex = /([^\s/][^\s/=]*)(?:(\s*=\s*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 			let out = '',
 				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;

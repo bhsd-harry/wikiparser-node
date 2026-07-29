@@ -21,7 +21,7 @@ export interface TitleOptions {
  * @param title 标题
  */
 const resolve = (title: string): [number, string] => {
-	const [, {length}, sub] = /^((?:\.\.\/)*)([\s\S]*)/u.exec(title) as unknown as [string, string, string];
+	const [, {length}, sub] = /^((?:\.\.\/)*)(.*)/su.exec(title) as unknown as [string, string, string];
 	return [length / 3, sub];
 };
 
