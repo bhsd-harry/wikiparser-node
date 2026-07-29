@@ -16,14 +16,14 @@ const onlyincludeLeft = '<onlyinclude>',
 		const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 			includeRegex = includeOnly ? 'noinclude' : 'includeonly';
 		return getRegex(exts => new RegExp(
-			String.raw`<!--[\s\S]*?(?:-->|$)|<${
+			String.raw`<!--.*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
 				exts // eslint-disable-next-line unicorn/prefer-string-raw
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(${'\\1'}\s*)>)|<(${
+			})(\s[^>]*?)?(?:/>|>(.*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
-			'giu',
+			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
+			'gisu',
 		));
 	}) as [RegexGetter, RegexGetter];
 
@@ -82,11 +82,11 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		const stack: string[] = [];
 		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar');
 		newConfig = {...config, ext: newExt};
-		wikitext = wikitext.replace(/<nowiki>[\s\S]*?<\/nowiki>/giu, m => {
+		wikitext = wikitext.replace(/<nowiki>.*?<\/nowiki>/gisu, m => {
 			stack.push(m);
 			return `\0${stack.length - 1}\x7F`;
 		}).replace(
-			/<translate( nowrap)?>([\s\S]*?)<\/translate>/gu,
+			/<translate( nowrap)?>(.*?)<\/translate>/gsu,
 			(_, p1: string | undefined, p2: string) => {
 				const l = accum.length;
 				// @ts-expect-error abstract class
