@@ -46,21 +46,19 @@ export abstract class LinkBaseToken extends Token {
 				firstChild,
 				childNodes,
 			} = this,
-			target = firstChild.text();
-		let str: string;
-		// eslint-disable-next-line unicorn/prefer-ternary
-		if (length === 1) {
-			str =
-				target.trim();
-		} else {
-			str = `${target.trim()}|${
-				text(
-					childNodes.slice(1)
-						.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
-					'|',
-				)
-			}`;
-		}
+			target = firstChild.text(),
+			str = length === 1
+				? target[
+					// eslint-disable-next-line @typescript-eslint/dot-notation
+					'trim'
+				]()
+				: `${target.trim()}|${
+					text(
+						childNodes.slice(1)
+							.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
+						'|',
+					)
+				}`;
 		return str;
 	}
 }
