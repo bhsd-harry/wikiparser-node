@@ -8,7 +8,7 @@ import {CategoryToken} from '../src/link/category';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
+const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su;
 
 /**
  * 解析内部链接
@@ -21,8 +21,8 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
 export const parseLinks = (wikitext: string, config: Config, accum: Token[], page?: string, tidy?: boolean): string => {
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = config.inExt
-			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u
-			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])*)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]])?)?\]\]([\s\S]*)$/u,
+			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
+			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])*)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;
 	for (let i = 0; i < bits.length; i++) {
