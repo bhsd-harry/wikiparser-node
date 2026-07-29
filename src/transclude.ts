@@ -1,6 +1,5 @@
 import {
 	removeComment,
-	trimStart,
 	decodeHtml,
 } from '../util/string';
 import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
@@ -125,7 +124,7 @@ export abstract class TranscludeToken extends Token {
 			const magicWord = isFunction ? title.slice(0, colon) : title,
 				arg = isFunction && title.slice(colon + 1),
 				cleaned = removeComment(magicWord),
-				name = isFunction ? trimStart(cleaned) + (fullWidth ? '：' : '') : cleaned.trim(),
+				name = isFunction ? cleaned.trimStart() + (fullWidth ? '：' : '') : cleaned.trim(),
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				[, isSensitive, canonicalName] = getMagicWordInfo(name, parserFunction),
 				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
