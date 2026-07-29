@@ -11,7 +11,7 @@ import {classes} from '../../util/constants';
 import {Shadow} from '../../util/debug';
 
 const legacyPattern = /^\|([^>]+)$/u,
-	newPattern = /^\s+name\s*=(?:\s*(?:(["'])([\s\S]*?)\1|([^"'\s>]+)))?\s*$/iu,
+	newPattern = /^\s+name\s*=(?:\s*(?:(["'])(.*?)\1|([^"'\s>]+)))?\s*$/isu,
 	legacyClosingPattern = /^$/u,
 	newClosingPattern = /^\s*$/u;
 

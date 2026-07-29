@@ -127,7 +127,7 @@ export abstract class NestedToken extends Token {
 			}
 			const rect = new BoundingRect(this, start),
 				msg = Parser.msg('invalid-content', name),
-				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--[\s\S]*-->$/u,
+				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--.*-->$/su,
 				ignored = childNodes.filter(child => {
 					const {type, name: n} = child;
 					if (type === 'ext') {

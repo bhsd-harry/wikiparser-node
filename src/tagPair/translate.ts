@@ -60,7 +60,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 			{AstText: ':'},
 		);
 		inner = inner?.replace(
-			/<tvar(\|[^>]+)>([\s\S]*?)<\/>/gu,
+			/<tvar(\|[^>]+)>(.*?)<\/>/gsu,
 			(_, p1: string, p2: string) => {
 				// @ts-expect-error abstract class
 				new TvarToken('tvar', p1, false, config, accum);
@@ -69,7 +69,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 				return `\0${accum.length - 2}n\x7F${p2}\0${accum.length}n\x7F`;
 			},
 		).replace(
-			/<(tvar)(\s+name\s*=(?:\s*(?:(["'])[\s\S]*?\3|[^"'\s>]+))?\s*)>([\s\S]*?)<\/(tvar)(\s*)>/giu,
+			/<(tvar)(\s+name\s*=(?:\s*(?:(["']).*?\3|[^"'\s>]+))?\s*)>(.*?)<\/(tvar)(\s*)>/gisu,
 			(_, p1: string, p2: string, __, p3: string, p4: string, p5: string) => {
 				// @ts-expect-error abstract class
 				new TvarToken(p1, p2, false, config, accum);
