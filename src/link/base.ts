@@ -8,7 +8,6 @@ import {
 } from '../../util/debug';
 import {
 	text,
-	trimStart,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
@@ -139,22 +138,20 @@ export abstract class LinkBaseToken extends Token {
 				childNodes,
 				type,
 			} = this,
-			target = firstChild.text();
-		let str: string;
-		if (length === 1) {
-			str =
-				type === 'link' ?
-					trimStart(target) :
-					target.trim();
-		} else {
-			str = `${target.trim()}|${
-				text(
-					childNodes.slice(1)
-						.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
-					'|',
-				)
-			}`;
-		}
+			target = firstChild.text(),
+			str = length === 1
+				? target[
+					type === 'link' ?
+						'trimStart' :
+						'trim'
+				]()
+				: `${target.trim()}|${
+					text(
+						childNodes.slice(1)
+							.filter(({type: t, name}) => t !== 'image-parameter' || name !== 'invalid'),
+						'|',
+					)
+				}`;
 		if (this.#bracket) {
 			return `[[${str}]]`;
 		}
