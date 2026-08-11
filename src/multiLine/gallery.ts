@@ -23,22 +23,24 @@ export abstract class GalleryToken extends MultiLineToken {
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		for (const line of inner?.split('\n') ?? []) {
-			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
-			if (!matches) {
-				super.insertAt(
-					line,
-				);
-				continue;
-			}
-			const [, file, alt] = matches;
-			if (this.#checkFile(file)) {
-				// @ts-expect-error abstract class
-				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
-			} else {
-				super.insertAt(
-					line,
-				);
+		if (inner) {
+			for (const line of inner.split('\n')) {
+				const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
+				if (!matches) {
+					super.insertAt(
+						line,
+					);
+					continue;
+				}
+				const [, file, alt] = matches;
+				if (this.#checkFile(file)) {
+					// @ts-expect-error abstract class
+					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
+				} else {
+					super.insertAt(
+						line,
+					);
+				}
 			}
 		}
 	}
