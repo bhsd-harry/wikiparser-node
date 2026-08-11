@@ -40,6 +40,7 @@ npm i mathoid-texvcjs vscode-css-languageservice
 
 | Option | Argument | Description | Default |
 | :----- | :------- | :---------- | :------ |
+| `--` | | End of options | |
 | `-c`, `--config` | \<path or preset config\> | Choose parser's [configuration](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config) | `default` |
 | `--cache` | | Enable caching | `false` |
 | `--cache-file` | \<path\> | Specify cache file and enable caching | `.wikilintcache` |

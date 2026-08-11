@@ -16,6 +16,7 @@ declare interface Cache {
 
 const man = `
 Available options:
+--                                      End of options
 -c, --config <path or preset config>    Choose parser's configuration
 --cache                                 Enable caching
 --cache-file <path>                     Specify cache file
@@ -279,6 +280,10 @@ for (let i = 2; i < argv.length; i++) {
 			process.exit(0);
 			break;
 		}
+		case '--':
+			files = [...files, ...argv.slice(i + 1)];
+			i = argv.length;
+			break;
 		default: {
 			let known = true;
 			if (option.includes('=')) {
@@ -328,6 +333,9 @@ if (quiet && strict) {
 }
 if (recursive) {
 	files = files.flatMap(file => {
+		if (!fs.existsSync(file)) {
+			return [];
+		}
 		if (fs.statSync(file).isFile()) {
 			return file;
 		}
@@ -406,6 +414,9 @@ const {mtimeMs} = fs.statSync(config),
 	}
 
 	for (const file of new Set(files.map(f => path.resolve(f)))) {
+		if (!fs.existsSync(file)) {
+			continue;
+		}
 		const stat = fs.statSync(file);
 		if (stat.isDirectory()) {
 			console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
