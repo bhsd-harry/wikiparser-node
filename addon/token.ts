@@ -96,11 +96,12 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 	tag &&= tag.toLowerCase();
 	const {html} = this.getAttribute('config'),
 		voidTags = new Set(html[2]);
-	/* c8 ignore next 6 */
+	/* c8 ignore next 3 */
 	if (voidTags.has(tag!)) {
 		throw new RangeError(`Void tag: ${tag}`);
 	}
 	const normalTags = new Set(html[0]);
+	/* c8 ignore next 3 */
 	if (tag && !normalTags.has(tag) && !html[1].includes(tag)) {
 		throw new RangeError(`Invalid tag name: ${tag}`);
 	}

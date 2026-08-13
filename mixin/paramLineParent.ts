@@ -1,4 +1,10 @@
-import {mixin} from '../util/debug';
+import {
+	mixin,
+
+	/* NOT FOR BROWSER */
+
+	Shadow,
+} from '../util/debug';
 import {generateForChild, fixByRemove} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -9,7 +15,6 @@ import type {Token} from '../internal';
 /* NOT FOR BROWSER */
 
 import {mixins} from '../util/constants';
-import {Shadow} from '../util/debug';
 
 /* NOT FOR BROWSER END */
 
