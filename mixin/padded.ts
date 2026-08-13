@@ -1,4 +1,8 @@
+/* NOT FOR BROWSER ONLY */
+
 import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /**
  * 给定 padding 的类
@@ -11,6 +15,12 @@ export const padded = ({length}: string) => <S extends AstConstructor>(construct
 			return key === 'padding' ? length as TokenAttribute<T> : super.getAttribute(key);
 		}
 	}
+
+	/* NOT FOR BROWSER ONLY */
+
 	mixin(PaddedToken, constructor);
+
+	/* NOT FOR BROWSER ONLY END */
+
 	return PaddedToken;
 };

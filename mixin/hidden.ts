@@ -1,5 +1,10 @@
-import {mixin} from '../util/debug';
 import type {LintError} from '../base';
+
+/* NOT FOR BROWSER ONLY */
+
+import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /**
  * 解析后不可见的类
@@ -16,6 +21,12 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 			LINT: return linter ? [] : super.lint(start);
 		}
 	}
+
+	/* NOT FOR BROWSER ONLY */
+
 	mixin(AnyHiddenToken, constructor);
+
+	/* NOT FOR BROWSER ONLY END */
+
 	return AnyHiddenToken;
 };

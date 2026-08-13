@@ -1,6 +1,3 @@
-import {
-	mixin,
-} from '../util/debug';
 import {generateForChild, fixByRemove} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -8,6 +5,14 @@ import Parser from '../index';
 import {ParamLineToken} from '../src/paramLine';
 import type {LintError} from '../base';
 import type {Token} from '../internal';
+
+/* NOT FOR BROWSER ONLY */
+
+import {
+	mixin,
+} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 export interface ParamLineParentBase {
 
@@ -86,7 +91,13 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 				return errors;
 			}
 		}
+
+		/* NOT FOR BROWSER ONLY */
+
 		mixin(ParamLineParent, constructor);
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return ParamLineParent;
 	}
 };
