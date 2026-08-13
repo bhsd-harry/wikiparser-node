@@ -1,5 +1,10 @@
-import {mixin} from '../util/debug';
 import type {AttributesToken} from '../internal';
+
+/* NOT FOR BROWSER ONLY */
+
+import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
@@ -175,7 +180,13 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 				return this.#getAttributesChild().css(key, value);
 			}
 		}
+
+		/* NOT FOR BROWSER ONLY */
+
 		mixin(AttributesParent, constructor);
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return AttributesParent;
 	}
 };

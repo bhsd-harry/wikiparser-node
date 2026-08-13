@@ -1,4 +1,3 @@
-import {mixin} from '../util/debug';
 import {getCondition} from '../util/selector';
 import type {TokenPredicate} from '../util/selector';
 import type {AstElement} from '../lib/element';
@@ -9,6 +8,12 @@ import type {
 	ExtToken,
 } from '../internal';
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
+
+/* NOT FOR BROWSER ONLY */
+
+import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
@@ -240,7 +245,13 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 				);
 			}
 		}
+
+		/* NOT FOR BROWSER ONLY */
+
 		mixin(ElementLike, constructor);
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return ElementLike;
 	}
 };

@@ -1,4 +1,8 @@
+/* NOT FOR BROWSER ONLY */
+
 import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
@@ -16,7 +20,13 @@ export const gapped = (gap = 1) => <S extends AstConstructor>(constructor: S): S
 			return gap;
 		}
 	}
+
+	/* NOT FOR BROWSER ONLY */
+
 	mixin(GappedToken, constructor);
+
+	/* NOT FOR BROWSER ONLY END */
+
 	return GappedToken;
 };
 

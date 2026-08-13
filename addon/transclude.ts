@@ -88,7 +88,7 @@ TranscludeToken.prototype.replaceFunction =
 	/** @implements */
 	function(func): void {
 		const {type, name, length} = this;
-		/* c8 ignore next 6 */
+		/* c8 ignore next 3 */
 		if (type !== 'magic-word' || name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
 		} else if (length === 2) {

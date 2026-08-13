@@ -1,3 +1,12 @@
+import {generateForChild, fixByRemove} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
+import Parser from '../index';
+import {ParamLineToken} from '../src/paramLine';
+import type {LintError} from '../base';
+import type {Token} from '../internal';
+
+/* NOT FOR BROWSER ONLY */
+
 import {
 	mixin,
 
@@ -5,12 +14,8 @@ import {
 
 	Shadow,
 } from '../util/debug';
-import {generateForChild, fixByRemove} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
-import {ParamLineToken} from '../src/paramLine';
-import type {LintError} from '../base';
-import type {Token} from '../internal';
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
@@ -194,7 +199,13 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 				return this.childNodes.filter(({key}) => key !== undefined).length - this.getKeys().size;
 			}
 		}
+
+		/* NOT FOR BROWSER ONLY */
+
 		mixin(ParamLineParent, constructor);
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return ParamLineParent;
 	}
 };

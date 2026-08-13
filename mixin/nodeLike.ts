@@ -1,6 +1,11 @@
-import {mixin} from '../util/debug';
 import type {Dimension} from '../lib/node';
 import type {AstNodes} from '../internal';
+
+/* NOT FOR BROWSER ONLY */
+
+import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
@@ -47,7 +52,13 @@ export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
 			LINT: return this.getDimension().width;
 		}
 	}
+
+	/* NOT FOR BROWSER ONLY */
+
 	mixin(NodeLike, constructor);
+
+	/* NOT FOR BROWSER ONLY END */
+
 	return NodeLike;
 };
 
