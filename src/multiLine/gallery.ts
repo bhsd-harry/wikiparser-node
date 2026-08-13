@@ -83,36 +83,38 @@ export abstract class GalleryToken extends MultiLineToken {
 		super(undefined, config, accum, {
 			AstText: ':', GalleryImageToken: ':', CommentLineToken: ':',
 		});
-		for (const line of inner?.split('\n') ?? []) {
-			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
-			if (!matches) {
-				super.insertAt(
-					(
-						line.trim()
-							// @ts-expect-error abstract class
-							? new CommentLineToken(
-								line,
-								config,
-								accum,
-							)
-							: line
-					) as string,
-				);
-				continue;
-			}
-			const [, file, alt] = matches;
-			if (this.#checkFile(file)) {
-				// @ts-expect-error abstract class
-				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
-			} else {
-				super.insertAt(
+		if (inner) {
+			for (const line of inner.split('\n')) {
+				const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
+				if (!matches) {
+					super.insertAt(
+						(
+							line.trim()
+								// @ts-expect-error abstract class
+								? new CommentLineToken(
+									line,
+									config,
+									accum,
+								)
+								: line
+						) as string,
+					);
+					continue;
+				}
+				const [, file, alt] = matches;
+				if (this.#checkFile(file)) {
 					// @ts-expect-error abstract class
-					new CommentLineToken(
-						line,
-						config,
-						accum,
-					) as CommentLineToken,
-				);
+					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
+				} else {
+					super.insertAt(
+						// @ts-expect-error abstract class
+						new CommentLineToken(
+							line,
+							config,
+							accum,
+						) as CommentLineToken,
+					);
+				}
 			}
 		}
 	}
