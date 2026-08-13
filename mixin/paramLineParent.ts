@@ -1,4 +1,6 @@
-import {mixin} from '../util/debug';
+import {
+	mixin,
+} from '../util/debug';
 import {generateForChild, fixByRemove} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
