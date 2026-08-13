@@ -1,4 +1,8 @@
+/* NOT FOR BROWSER ONLY */
+
 import {mixin} from '../util/debug';
+
+/* NOT FOR BROWSER ONLY END */
 
 /**
  * 不需要转义的类
@@ -11,7 +15,13 @@ export const noEscape = <T extends AstConstructor>(constructor: T): T => {
 				//
 			}
 		}
+
+		/* NOT FOR BROWSER ONLY */
+
 		mixin(NoEscapeToken, constructor);
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return NoEscapeToken;
 	}
 };
