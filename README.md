@@ -86,7 +86,7 @@ repos:
     hooks:
       - id: wikilint
         name: WikiLint
-		# You can add any CLI options as needed
+        # You can add any CLI options as needed
         entry: wikilint
         language: node
         additional_dependencies: ['wikilint@2.46.2']
