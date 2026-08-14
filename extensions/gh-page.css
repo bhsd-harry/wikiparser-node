@@ -113,7 +113,7 @@ input:checked + span {
 	background-color: var(--color-checked);
 	border-color: var(--color-checked);
 	background-size: 1em 1em;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Cg fill=%22%23fff%22%3E%3Ctitle xmlns:default=%22http://www.w3.org/2000/svg%22%3Echeck%3C/title%3E%3Cpath xmlns:default=%22http://www.w3.org/2000/svg%22 d=%22M7 14.17L2.83 10l-1.41 1.41L7 17 19 5l-1.41-1.42L7 14.17z%22/%3E%3C/g%3E%3C/svg%3E");
+	background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Cpath fill=%22%23fff%22 d=%22M7 14.17 2.83 10l-1.41 1.41L7 17 19 5l-1.41-1.42z%22/%3E%3C/svg%3E");
 }
 input[type="text"]:hover {
 	border-color: var(--color-input);
