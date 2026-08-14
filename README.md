@@ -75,3 +75,20 @@ The generated configuration file will be saved in the `config` directory. You ca
 # For example:
 npx wikilint --config frwiki *.wiki
 ```
+
+## Use with pre-commit
+
+To use `wikilint` with [pre-commit](https://pre-commit.com/), add the following to your [`.pre-commit-config.yaml`](https://pre-commit.com/#adding-pre-commit-plugins-to-your-project):
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: wikilint
+        name: WikiLint
+		# You can add any CLI options as needed
+        entry: wikilint
+        language: node
+        additional_dependencies: ['wikilint@2.46.2']
+        files: \.(mediawiki|wiki|wikitext)$
+```
