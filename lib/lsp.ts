@@ -877,7 +877,7 @@ export class LanguageService implements LanguageServiceBase {
 				'Class',
 				mt[1].slice(closing ? 1 : 0),
 				position,
-				closing && !curLine?.slice(character).trim().startsWith('>') ? '>' : '',
+				closing && !curLine?.slice(character).trimStart().startsWith('>') ? '>' : '',
 			);
 		} else if (mt?.[4] || mt?.[5] && jaSwitches.length > 0) { // behavior switch
 			const isJa = mt[5] !== undefined;
