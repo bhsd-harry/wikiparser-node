@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "1.46.2",
+	"version": "1.46.3",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -43,8 +43,8 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^4.1.0",
-		"@bhsd/common": "^4.0.2",
-		"@bhsd/test-util": "^3.1.0",
+		"@bhsd/common": "^4.1.0",
+		"@bhsd/test-util": "^3.1.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
 		"eslint": "^10.8.1",
