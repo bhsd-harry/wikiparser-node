@@ -207,7 +207,7 @@ export abstract class LinkBaseToken extends Token {
 					);
 				} else if (
 					type === 'link' && !interwiki && (ns === 6 || ns === 14)
-					&& !name.trim().startsWith(':')
+					&& !name.trimStart().startsWith(':')
 				) {
 					const {firstChild} = prevTarget;
 					if (firstChild?.type === 'text') {

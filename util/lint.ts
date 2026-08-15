@@ -27,7 +27,7 @@ export const isFostered = (token: AstNodes): 1 | 2 | false => {
 	const first = token.childNodes.find(child => child.text().trim());
 	if (
 		!first
-		|| first.type === 'text' && first.data.trim().startsWith('!')
+		|| first.type === 'text' && first.data.trimStart().startsWith('!')
 		|| first.is('magic-word') && first.name === '!'
 		|| first.is('template') && tableTemplates.has(first.name)
 		|| first.is('html') && tableTags.has(first.name)
