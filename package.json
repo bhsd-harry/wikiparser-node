@@ -127,7 +127,7 @@
 	},
 	"dependencies": {
 		"@bhsd/cm-util": "^2.4.1",
-		"@bhsd/common": "^4.0.2",
+		"@bhsd/common": "^4.1.0",
 		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/stylelint-util": "^1.1.0",
 		"culori": "^4.0.2",
@@ -154,7 +154,7 @@
 		"markdownlint-cli2": "^0.23.2",
 		"mathoid-texvcjs": "^0.6.0",
 		"monaco-editor": "~0.53.0",
-		"prism-wiki": "^2.3.0",
+		"prism-wiki": "^2.3.1",
 		"prismjs": "^1.30.0",
 		"stylelint": "^17.14.1",
 		"tsx": "^4.23.12",

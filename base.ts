@@ -387,14 +387,12 @@ export interface LanguageService {
 	 * Provide color decorators
 	 *
 	 * 提供颜色指示
-	 * @param rgba color parser / 颜色解析函数
 	 * @param text source Wikitext / 源代码
-	 * @param hsl whether HSL colors are treated / 是否允许HSL颜色
+	 * @param rgba color parser / 颜色解析函数
 	 */
 	provideDocumentColors(
-		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
-		hsl?: boolean,
+		rgba?: (s: string) => [number, number, number, number] | [],
 	): Promise<ColorInformation[]>;
 
 	/**

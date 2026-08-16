@@ -92,7 +92,7 @@ import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
 import {styleLint} from '@bhsd/stylelint-util';
-import {colorsNamed} from '@bhsd/common/color';
+import {colorsNamed, rgba as rgbaCulori} from '@bhsd/common/color';
 import findIndex from '../vendor/search';
 import {jsonTags} from '../util/constants';
 import {
@@ -729,13 +729,16 @@ export class LanguageService implements LanguageServiceBase {
 	 * Provide color decorators
 	 *
 	 * 提供颜色指示
-	 * @param rgba color parser / 颜色解析函数
 	 * @param text source Wikitext / 源代码
+	 * @param rgba color parser / 颜色解析函数
 	 */
 	async provideDocumentColors(
-		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
+		rgba = rgbaCulori,
 	): Promise<ColorInformation[]> {
+		if (typeof text === 'function' && typeof rgba === 'string') {
+			[rgba, text] = [text, rgba];
+		}
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse().flatMap(token => {
 			const {

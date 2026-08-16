@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.46.3
+
+*2026-08-17*
+
+**Changed**
+
+- [`LanguageService#provideDocumentColors`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providedocumentcolors) no longer requires an argument for the color parser, and it will automatically use the color parser from [culori](https://culorijs.org/)
+
 ## v1.46.2
 
 *2026-07-26*

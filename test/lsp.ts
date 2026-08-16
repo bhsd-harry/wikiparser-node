@@ -15,7 +15,6 @@ import type {
 
 import {execSync} from 'child_process';
 import {numLeadingSpaces} from '@bhsd/common';
-import {rgba} from '@bhsd/common/color';
 import Parser from '../index';
 import type {
 	Token,
@@ -173,17 +172,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'provideCodeAction':
 			case 'setTargetWikipedia':
 				break;
-			case 'provideDocumentColors':
-				await wrap(
-					method,
-					title,
-					() => lsp.provideDocumentColors(
-						rgba,
-						content,
-					),
-					summary,
-				);
-				break;
 			case 'provideCompletionItems': {
 				const positions = [
 
@@ -224,6 +212,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 				}
 				break;
 			}
+			case 'provideDocumentColors':
 			case 'provideFoldingRanges':
 			case 'provideLinks':
 			case 'provideDiagnostics':
