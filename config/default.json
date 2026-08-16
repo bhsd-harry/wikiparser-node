@@ -534,6 +534,7 @@
 		"chart",
 		"avatar",
 		"img",
+		"uic",
 		"mentor"
 	],
 	"variable": [
@@ -884,6 +885,8 @@
 			"#lstx": "lstx",
 			"#section-x": "lstx",
 			"#assessment": "assessment",
+			"#uic": "uic",
+			"#userinfocard": "uic",
 			"#mentor": "mentor",
 			"#property": "property",
 			"#屬性": "property",
