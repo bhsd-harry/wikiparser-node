@@ -50,21 +50,21 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/browser": "^2.1.0",
+		"@bhsd/browser": "^2.1.1",
 		"@bhsd/cm-util": "^2.4.1",
 		"@bhsd/common": "^4.1.0",
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^4.1.0",
-		"@bhsd/codemirror-mediawiki": "^4.3.0",
-		"@bhsd/test-util": "^3.1.1",
+		"@bhsd/codemirror-mediawiki": "^4.5.0",
+		"@bhsd/test-util": "^3.1.2",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.8.1",
+		"eslint": "^10.9.1",
 		"http-server": "^14.1.1",
 		"monaco-editor": "~0.53.0",
 		"stylelint": "^17.14.1",
