@@ -27,28 +27,6 @@ const workerJS = () => {
         lsps.set(id, lsp);
         return lsp;
     };
-    const parseColor = (s) => {
-        var _a;
-        if (s.startsWith('#')) {
-            const short = s.length < 7;
-            return [
-                parseInt(short ? s.charAt(1).repeat(2) : s.slice(1, 3), 16),
-                parseInt(short ? s.charAt(2).repeat(2) : s.slice(3, 5), 16),
-                parseInt(short ? s.charAt(3).repeat(2) : s.slice(5, 7), 16),
-                parseInt((short ? s.charAt(4).repeat(2) : s.slice(7, 9)) || 'ff', 16)
-                    / 255,
-            ];
-        }
-        const values = s.slice(s.indexOf('(') + 1, -1).trim()
-            .split(/\s+(?:[,/]\s*)?|[,/]\s*/u)
-            .map(v => parseFloat(v) / (v.endsWith('%') ? 100 : 1));
-        return [
-            values[0],
-            values[1],
-            values[2],
-            (_a = values[3]) !== null && _a !== void 0 ? _a : 1,
-        ];
-    };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage, newName] = data;
         switch (command) {
@@ -103,7 +81,7 @@ const workerJS = () => {
                     postMessage([
                         command,
                         qid,
-                        await getLSP(qid, include).provideDocumentColors(parseColor, wikitext, false),
+                        await getLSP(qid, include).provideDocumentColors(wikitext),
                         wikitext,
                     ]);
                 })();

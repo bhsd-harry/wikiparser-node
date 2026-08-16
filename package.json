@@ -50,8 +50,9 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
+		"@bhsd/browser": "^2.1.0",
 		"@bhsd/cm-util": "^2.4.1",
-		"@bhsd/common": "^4.0.2",
+		"@bhsd/common": "^4.1.0",
 		"vscode-languageserver-types": "^3.18.0"
 	},
 	"devDependencies": {

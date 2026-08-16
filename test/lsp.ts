@@ -98,6 +98,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'findStyleTokens':
 			case 'querySelectorAll':
 			case 'provideInlayHints':
+			case 'provideDocumentColors':
 			case 'provideColorPresentations':
 			case 'resolveCodeAction':
 			case 'provideDefinition':
@@ -110,16 +111,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'provideRefactoringAction':
 			case 'findTemplateTokens':
 			case 'include':
-				break;
-			case 'provideDocumentColors':
-				await wrap(
-					method,
-					title,
-					() => lsp.provideDocumentColors(
-						content,
-					),
-					summary,
-				);
 				break;
 			case 'provideCompletionItems': {
 				const positions = [

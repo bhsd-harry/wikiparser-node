@@ -1,3 +1,4 @@
+import {rgba as rgbaBrowser} from '@bhsd/browser/color';
 import {
 	splitColors,
 	numToHex,
@@ -541,13 +542,16 @@ export class LanguageService implements LanguageServiceBase {
 	 * Provide color decorators
 	 *
 	 * 提供颜色指示
-	 * @param rgba color parser / 颜色解析函数
 	 * @param text source Wikitext / 源代码
+	 * @param rgba color parser / 颜色解析函数
 	 */
 	async provideDocumentColors(
-		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
+		rgba = rgbaBrowser,
 	): Promise<ColorInformation[]> {
+		if (typeof text === 'function' && typeof rgba === 'string') {
+			[rgba, text] = [text, rgba];
+		}
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse().flatMap(token => {
 			const {
@@ -561,6 +565,7 @@ export class LanguageService implements LanguageServiceBase {
 				const {data} = child,
 					parts = splitColors(
 						data,
+						true,
 					).filter(([,,, isColor]) => isColor);
 				if (parts.length === 0) {
 					return [];
