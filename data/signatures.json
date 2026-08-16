@@ -52,7 +52,7 @@
 			"aliases": [
 				"expectunusedcategory"
 			],
-			"description": "Used on a category page, removes the category from Special:UnusedCategories."
+			"description": "Used on a category page, removes the category from [Special:UnusedCategories](https://www.mediawiki.org/wiki/Special:UnusedCategories)."
 		},
 		{
 			"aliases": [
@@ -90,7 +90,13 @@
 			"aliases": [
 				"expectunusedtemplate"
 			],
-			"description": "Used on a template page, removes the page from Special:UnusedTemplates."
+			"description": "Used on a template page, removes the page from [Special:UnusedTemplates](https://www.mediawiki.org/wiki/Special:UnusedTemplates)."
+		},
+		{
+			"aliases": [
+				"expectshortpage"
+			],
+			"description": "Used on a article page, removes the page from [Special:ShortPages](https://www.mediawiki.org/wiki/Special:ShortPages)."
 		},
 		{
 			"aliases": [
@@ -702,7 +708,7 @@
 					}
 				]
 			],
-			"description": "A switch for the gender set by the user in Special:Preferences.\n\nIf only two parameters are used (for male and female text) but the 3rd parameter is omitted, and user hasn't defined their gender, then the first parameter (`male text`) is returned as a default.\n\nA blank username field (`{{GENDER:|`) means the current user, but can be used only in interface messages (MediaWiki namespace).\n\nUsing a dot (`.`) in the username field produces the output corresponding to the default user gender on this wiki."
+			"description": "A switch for the gender set by the user in [Special:Preferences](https://www.mediawiki.org/wiki/Special:Preferences).\n\nIf only two parameters are used (for male and female text) but the 3rd parameter is omitted, and user hasn't defined their gender, then the first parameter (`male text`) is returned as a default.\n\nA blank username field (`{{GENDER:|`) means the current user, but can be used only in interface messages (MediaWiki namespace).\n\nUsing a dot (`.`) in the username field produces the output corresponding to the default user gender on this wiki."
 		},
 		{
 			"aliases": [
@@ -958,7 +964,7 @@
 					}
 				]
 			],
-			"description": "**[Expensive]** This function takes an input string, interprets it as a page title, and returns one of two values depending on whether or not the page exists on the local wiki.\n\nThe function evaluates to `true` for [system messages](https://www.mediawiki.org/wiki/Help:System_message) that have been customized, and for [special pages](https://www.mediawiki.org/wiki/Help:Special_pages) that are defined by the software.\n\nIf a page checks a target using `#ifexist:`, then that page will appear in the Special:WhatLinksHere list for the target page.\n\n`#ifexist:` does not work with interwiki links.\n\nA page that does not exist and is tested for using #ifexist will end up on the [Wanted Pages](https://www.mediawiki.org/wiki/Manual:WantedPages)."
+			"description": "**[Expensive]** This function takes an input string, interprets it as a page title, and returns one of two values depending on whether or not the page exists on the local wiki.\n\nThe function evaluates to `true` for [system messages](https://www.mediawiki.org/wiki/Help:System_message) that have been customized, and for [special pages](https://www.mediawiki.org/wiki/Help:Special_pages) that are defined by the software.\n\nIf a page checks a target using `#ifexist:`, then that page will appear in the [Special:WhatLinksHere](https://www.mediawiki.org/wiki/Special:WhatLinksHere) list for the target page.\n\n`#ifexist:` does not work with interwiki links.\n\nA page that does not exist and is tested for using #ifexist will end up on the [Wanted Pages](https://www.mediawiki.org/wiki/Manual:WantedPages)."
 		},
 		{
 			"aliases": [
@@ -2255,7 +2261,7 @@
 					}
 				]
 			],
-			"description": "Number of active users, based on the criteria used in Special:Statistics."
+			"description": "Number of active users, based on the criteria used in [Special:Statistics](https://www.mediawiki.org/wiki/Special:Statistics)."
 		},
 		{
 			"aliases": [
