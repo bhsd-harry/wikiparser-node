@@ -664,7 +664,7 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 		const img = `<img${alt || this.hasArg('alt') ? ` alt="${alt}"` : ''}${
 			isThumb && hasLink ? ` resource="${file.getUrl()}"` : ''
-		} src="${src}" decoding="async"${
+		} src="${src}" decoding="async" loading="lazy"${
 			hasWidth ? ` width="${width}"` : ''
 		}${hasHeight ? ` height="${height}"` : ''} class="mw-file-element"${
 			nolines || slideshow ? ` style="max-height: ${height}px"` : ''
