@@ -2,7 +2,7 @@ import path from 'path';
 import {sanitizeInlineStyle} from '@bhsd/common';
 import {jsonTags} from '../util/constants';
 import type {Position} from 'vscode-languageserver-types';
-import type {TextDocument} from 'vscode-languageserver-textdocument';
+import type {TextDocument, Range} from 'vscode-languageserver-textdocument';
 import type {
 	JSONDocument,
 	SchemaConfiguration,
@@ -134,7 +134,7 @@ export const loadStylelint = /** @ignore */ (): PublicApi | null => {
 };
 
 /** embedded document */
-class EmbeddedDocument implements TextDocument {
+abstract class EmbeddedDocument implements TextDocument {
 	declare languageId: string;
 	declare lineCount: number;
 	declare pre: string;
@@ -144,6 +144,9 @@ class EmbeddedDocument implements TextDocument {
 	#content;
 	#offset;
 	#post;
+
+	abstract getLineRange(): Range;
+	abstract getEOLCharacters(): string;
 
 	/**
 	 * @param id language ID
@@ -191,6 +194,11 @@ class EmbeddedDocument implements TextDocument {
 export class EmbeddedJSONDocument extends EmbeddedDocument {
 	declare jsonDoc: JSONDocument;
 
+	// @ts-expect-error unused method
+	abstract getLineRange(): Range;
+	// @ts-expect-error unused method
+	abstract getEOLCharacters(): string;
+
 	/**
 	 * @param root root token
 	 * @param token current token
@@ -205,6 +213,11 @@ export class EmbeddedJSONDocument extends EmbeddedDocument {
 /** embedded CSS document */
 export class EmbeddedCSSDocument extends EmbeddedDocument {
 	declare styleSheet: Stylesheet;
+
+	// @ts-expect-error unused method
+	abstract getLineRange(): Range;
+	// @ts-expect-error unused method
+	abstract getEOLCharacters(): string;
 
 	/**
 	 * @param root root token
