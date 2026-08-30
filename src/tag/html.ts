@@ -386,28 +386,24 @@ export abstract class HtmlToken extends TagToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
-		const {closing, name, selfClosing} = this,
-			[, selfClosingTags, voidTags] = this.getAttribute('config').html,
+		const {closing, name, selfClosing} = this;
+		if (!closing && /^h\d$/u.test(name)) {
+			if (!this.id) {
+				const id = this.getTocLine()?.[0];
+				if (id !== undefined) {
+					this.setAttr('id', id);
+				}
+			}
+			this.classList.add('mw-html-heading');
+		}
+		const [, selfClosingTags, voidTags] = this.getAttribute('config').html,
 			tag = name + (closing ? '' : super.toHtmlInternal());
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : `<${tag}>`;
 		}
-		const result = `<${closing ? '/' : ''}${tag}>${
+		return `${this.tocData ?? ''}<${closing ? '/' : ''}${tag}>${
 			selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
 		}`;
-		if (/^h\d$/u.test(name)) {
-			if (closing) {
-				return result + (this.findMatchingTag()?.id === '' ? '</div>' : '');
-			} else if (!this.id) {
-				const id = this.getTocLine()?.[0];
-				if (id !== undefined) {
-					return `<div class="mw-heading mw-heading${name.slice(-1)}">${
-						result.slice(0, -1)
-					} id="${id}">`;
-				}
-			}
-		}
-		return (this.tocData ?? '') + result;
 	}
 
 	/** @private */

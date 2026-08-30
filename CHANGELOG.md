@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.46.4
+
+*2026-08-31*
+
+**Changed**
+
+- [`HtmlToken#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#tohtml) now renders `<h1>` to `<h6>` tags with a `mw-html-heading` class
+
 ## v1.46.3
 
 *2026-08-17*
