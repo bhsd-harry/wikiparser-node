@@ -706,7 +706,9 @@ export abstract class FileToken extends LinkBaseToken {
 				: ` style="width: ${Number(width) + padding}px;${
 					nolines || slideshow ? '' : ` height: ${Number(height) + padding}px;`
 				}"`
-		}><span>${a}</span></div>\n\t\t\t${overlay ? '<div class="gallerytextwrapper">' : ''}<div class="gallerytext">${
+		}><span${classAttr}>${a}</span></div>\n\t\t\t${
+			overlay ? '<div class="gallerytextwrapper">' : ''
+		}<div class="gallerytext">${
 			gallery?.hasAttr('showfilename')
 				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
 					sanitizeId(file.title)

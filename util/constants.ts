@@ -19,7 +19,7 @@ export const enMsg = /* #__PURE__ */ (() => {
 	);
 })();
 
-export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
+export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption', 'class']);
 
 export const extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
 

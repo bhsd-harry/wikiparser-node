@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
 ## v1.46.4
 
-*2026-08-31*
+*2026-08-30*
+
+**Fixed**
+
+- `GalleryImageToken` now supports a `class` parameter
 
 **Changed**
 
