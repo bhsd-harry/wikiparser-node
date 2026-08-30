@@ -419,6 +419,7 @@
 		"commaseparatedlist",
 		"assessment",
 		"chart",
+		"uic",
 		"mentor",
 		"msgnw"
 	],
@@ -649,6 +650,8 @@
 			"#commaseparatedlist": "commaseparatedlist",
 			"#assessment": "assessment",
 			"#chart": "chart",
+			"#uic": "uic",
+			"#userinfocard": "uic",
 			"#mentor": "mentor",
 			"articlepath": "articlepath",
 			"条目路径": "articlepath",
@@ -938,6 +941,7 @@
 			"notalk": "notalk"
 		},
 		{
+			"EXPECTSHORTPAGE": "EXPECTSHORTPAGE",
 			"EXPECTUNUSEDCATEGORY": "EXPECTUNUSEDCATEGORY",
 			"EXPECTUNUSEDTEMPLATE": "EXPECTUNUSEDTEMPLATE",
 			"HIDDENCAT": "HIDDENCAT",
