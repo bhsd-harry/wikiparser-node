@@ -280,6 +280,7 @@
 		"commaseparatedlist",
 		"assessment",
 		"chart",
+		"uic",
 		"mentor",
 		"msgnw"
 	],
@@ -436,6 +437,8 @@
 			"#commaseparatedlist": "commaseparatedlist",
 			"#assessment": "assessment",
 			"#chart": "chart",
+			"#uic": "uic",
+			"#userinfocard": "uic",
 			"#mentor": "mentor",
 			"articlepath": "articlepath",
 			"scriptpath": "scriptpath",
@@ -578,6 +581,7 @@
 			"notalk": "notalk"
 		},
 		{
+			"EXPECTSHORTPAGE": "EXPECTSHORTPAGE",
 			"EXPECTUNUSEDCATEGORY": "EXPECTUNUSEDCATEGORY",
 			"EXPECTUNUSEDTEMPLATE": "EXPECTUNUSEDTEMPLATE",
 			"HIDDENCAT": "HIDDENCAT",
