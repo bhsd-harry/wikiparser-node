@@ -306,6 +306,7 @@
 		"statements",
 		"commaseparatedlist",
 		"chart",
+		"uic",
 		"mentor",
 		"msgnw"
 	],
@@ -510,6 +511,8 @@
 			"#statements": "statements",
 			"#commaseparatedlist": "commaseparatedlist",
 			"#chart": "chart",
+			"#uic": "uic",
+			"#userinfocard": "uic",
 			"#mentor": "mentor",
 			"記事パス": "articlepath",
 			"articlepath": "articlepath",
@@ -863,6 +866,7 @@
 			"notalk": "notalk"
 		},
 		{
+			"EXPECTSHORTPAGE": "EXPECTSHORTPAGE",
 			"EXPECTUNUSEDCATEGORY": "EXPECTUNUSEDCATEGORY",
 			"EXPECTUNUSEDTEMPLATE": "EXPECTUNUSEDTEMPLATE",
 			"カテゴリ非表示": "HIDDENCAT",
