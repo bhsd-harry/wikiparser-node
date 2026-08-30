@@ -1,4 +1,5 @@
 !! options
+parsoid-compatible=wt2html
 version=2
 !! end
 
@@ -23,4 +24,49 @@ Minimal JSON
 <templatedata>{"params":{}}</templatedata>
 !! html
 <section class="mw-templatedata-doc-wrap"><header><p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">No description.</p></header><table class="wikitable mw-templatedata-doc-params"><caption><p class="mw-templatedata-caption">Template parameters<mw:edittemplatedata page="Parser test"></mw:edittemplatedata></p></caption><thead><tr><th colspan="2">Parameter</th><th>Description</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td class="mw-templatedata-doc-muted" colspan="7">No parameters specified</td></tr></tbody></table></section>
+!! end
+
+!! article
+Template:Documentation
+!! text
+{{:Foo/doc}}
+!! end
+
+!! article
+Foo/doc
+!! text
+<templatedata>{"params":{}}</templatedata>
+!! end
+
+!! test
+T429624: templatedata in subpage
+!! config
+wgReturnExperimentalPFragmentTypes=[ "ExtTagPFragment" ]
+!! wikitext
+{{Documentation}}
+!! html/php
+<section class="mw-templatedata-doc-wrap"><header><p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">No description.</p></header><table class="wikitable mw-templatedata-doc-params"><caption><p class="mw-templatedata-caption">Template parameters<mw:edittemplatedata page="Foo/doc"></mw:edittemplatedata></p></caption><thead><tr><th colspan="2">Parameter</th><th>Description</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td class="mw-templatedata-doc-muted" colspan="7">No parameters specified</td></tr></tbody></table></section>
+!! html/parsoid
+<section class="mw-templatedata-doc-wrap" data-mw='{"name":"templatedata","attrs":{},"body":{"extsrc":"{\"params\":{}}"},"parts":[{"template":{"target":{"wt":"Documentation","href":"./Template:Documentation"},"params":{},"i":0}}]}' typeof="mw:Extension/templatedata mw:Transclusion"><header>
+<p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">No description.</p>
+</header>
+<table class="wikitable mw-templatedata-doc-params">
+<caption>
+<p class="mw-templatedata-caption">Template parameters<mw:edittemplatedata page="Foo/doc"></mw:edittemplatedata></p>
+</caption>
+<thead>
+<tr>
+<th colspan="2">Parameter</th>
+<th>Description</th>
+<th>Type</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="mw-templatedata-doc-muted" colspan="7">No parameters specified</td>
+</tr>
+</tbody>
+</table>
+</section>
 !! end
