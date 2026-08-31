@@ -6,12 +6,11 @@ If you find a security vulnerability, please do not open a public issue. Instead
 
 Only the latest major version of this project currently receives security updates:
 
-| Package                 | Supported Version |
-|:-----------------------:|:-----------------:|
-| wikiparser-node         | 1.x               |
-| wikiparser-node@browser | 1.x               |
-| wikilint                | 2.x               |
-| wikiparser-template     | 1.x               |
+| Package             | Supported Version |
+|:-------------------:|:-----------------:|
+| wikiparser-node     | 1.x               |
+| wikilint            | 2.x               |
+| wikiparser-template | 1.x               |
 
 ## Reporting a Vulnerability
 
