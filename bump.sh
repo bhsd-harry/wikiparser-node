@@ -9,7 +9,7 @@ else
 		IFS='.' read major minor <<< "$1"
 		version=$(( major + 1 )).$minor
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$version\"/" package.json
-		gsed -i -E "s/additional_dependencies: \[wikilint@.+\]/additional_dependencies: \[wikilint@$version\]/" README.md
+		gsed -i -E "s/additional_dependencies: \['wikilint@.+'\]/additional_dependencies: \['wikilint@$version'\]/" README.md
 		rm package-lock.json
 		npm i --package-lock-only
 		git add -A
