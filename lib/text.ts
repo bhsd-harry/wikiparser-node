@@ -317,7 +317,7 @@ export class AstText extends AstNode {
 				if (lintConfig.computeEditInfo) {
 					if (char === '<') {
 						e.suggestions = [fixByEscape(startIndex, '&lt;')];
-					} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
+					} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar ?? '')) {
 						e.suggestions = [fixBySpace(startIndex)];
 					} else if (lbrackInExtLinkText) {
 						const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;

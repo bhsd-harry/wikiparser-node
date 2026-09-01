@@ -1,4 +1,4 @@
-<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div>
+<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div><!-- markdownlint-disable-line line-length -->
 
 # WikiLint
 
@@ -9,7 +9,10 @@
 ![Coverage](./coverage/badge.svg)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13661/badge)](https://www.bestpractices.dev/projects/13661)
 
-This is a minimal version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node). The [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) and the [WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser) VS Code extension is written based on this package.
+This is a minimal version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node).
+The [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp) and the
+[WikiParser Language Server](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)
+VS Code extension is written based on this package.
 
 You can also directly lint Wikitext articles in the command line using this package:
 
@@ -61,7 +64,10 @@ npm i mathoid-texvcjs vscode-css-languageservice
 
 ## Configuration
 
-For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed, such as different language editions of Wikipedia and other [Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix), you can use the following command to obtain the parser configuration:
+For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror)
+installed, such as different language editions of Wikipedia and other
+[Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix),
+you can use the following command to obtain the parser configuration:
 
 ```sh
 npx getParserConfig <site> <script path> [user] [force]
@@ -69,7 +75,8 @@ npx getParserConfig <site> <script path> [user] [force]
 npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 ```
 
-The generated configuration file will be saved in the `config` directory. You can then use the site name as the `--config` option.
+The generated configuration file will be saved in the `config` directory. You
+can then use the site name as the `--config` option.
 
 ```sh
 # For example:
@@ -78,7 +85,8 @@ npx wikilint --config frwiki *.wiki
 
 ## Use with pre-commit
 
-To use `wikilint` with [pre-commit](https://pre-commit.com/), add the following to your [`.pre-commit-config.yaml`](https://pre-commit.com/#adding-pre-commit-plugins-to-your-project):
+To use `wikilint` with [pre-commit](https://pre-commit.com/), add the following
+to your [`.pre-commit-config.yaml`](https://pre-commit.com/#adding-pre-commit-plugins-to-your-project):
 
 ```yaml
 repos:
