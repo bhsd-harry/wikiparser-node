@@ -102,6 +102,12 @@ const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken[]]}`
  */
 export abstract class FileToken extends LinkBaseToken {
+	/* NOT FOR BROWSER */
+
+	#classList: Set<string> | undefined;
+
+	/* NOT FOR BROWSER END */
+
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
@@ -177,6 +183,50 @@ export abstract class FileToken extends LinkBaseToken {
 		} else {
 			this.setValue('width', height && `x${height}`);
 		}
+	}
+
+	/**
+	 * class attribute in string
+	 *
+	 * 以字符串表示的class属性
+	 * @since v1.47.0
+	 */
+	get className(): string {
+		return this.getValue('class') as string | undefined ?? '';
+	}
+
+	set className(className) {
+		this.setValue('class', className || false);
+	}
+
+	/**
+	 * class attribute in Set
+	 *
+	 * 以Set表示的class属性
+	 * @since v1.47.0
+	 */
+	get classList(): Set<string> {
+		if (!this.#classList) {
+			this.#classList = new Set(this.className.split(/\s+/u));
+
+			/**
+			 * 更新classList
+			 * @param prop 方法名
+			 */
+			const factory = (prop: 'add' | 'delete' | 'clear'): PropertyDescriptor => ({
+				value: /** @ignore */ (...args: unknown[]): unknown => {
+					const result = Set.prototype[prop as 'add'].apply(this.#classList, args as [unknown]);
+					this.className = [...this.#classList!].join(' ');
+					return result;
+				},
+			});
+			Object.defineProperties(this.#classList, {
+				add: factory('add'),
+				delete: factory('delete'),
+				clear: factory('clear'),
+			});
+		}
+		return this.#classList;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -652,9 +702,7 @@ export abstract class FileToken extends LinkBaseToken {
 			hasHeight = !nolines && !slideshow && isInteger(height),
 			className = `${manual || framed || hasWidth || hasHeight ? '' : 'mw-default-size '}${
 				horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`
-			}${this.getValue('border') ? ' mw-image-border' : ''} ${
-				sanitizeAlt(this.getValue('class') as string | undefined) ?? ''
-			}`.trim(),
+			}${this.getValue('border') ? ' mw-image-border' : ''} ${sanitizeAlt(this.className)}`.trim(),
 			classAttr = className && ` class="${className}"`;
 		let src: string;
 		try {

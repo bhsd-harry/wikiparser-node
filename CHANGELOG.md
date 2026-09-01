@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## v1.47.0
+
+*2026-09-01*
+
+**Added**
+
+- [`FileToken.className`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#classname) and [`FileToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#classlist)
+
 ## v1.46.4
 
 *2026-08-31*

@@ -161,7 +161,7 @@ export abstract class AttributesToken extends Token {
 			const factory = (prop: 'add' | 'delete' | 'clear'): PropertyDescriptor => ({
 				value: /** @ignore */ (...args: unknown[]): unknown => {
 					const result = Set.prototype[prop as 'add'].apply(this.#classList, args as [unknown]);
-					this.setAttr('class', [...this.#classList!].join(' '));
+					this.className = [...this.#classList!].join(' ');
 					return result;
 				},
 			});
