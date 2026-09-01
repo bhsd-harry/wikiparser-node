@@ -1,3 +1,4 @@
+<!-- markdownlint-disable line-length -->
 <div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div>
 
 # WikiParser-Node

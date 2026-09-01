@@ -30,6 +30,7 @@ import type {TableTokens} from './table/index';
 import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {ClassList} from '../lib/classList';
 import {clone} from '../mixin/clone';
 import {cached} from '../mixin/cached';
 
@@ -99,7 +100,7 @@ export abstract class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	#classList: Set<string> | undefined;
+	#classList: ClassList | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -151,26 +152,7 @@ export abstract class AttributesToken extends Token {
 
 	/** class attribute in Set / 以Set表示的class属性 */
 	get classList(): Set<string> {
-		if (!this.#classList) {
-			this.#classList = new Set(this.className.split(/\s+/u));
-
-			/**
-			 * 更新classList
-			 * @param prop 方法名
-			 */
-			const factory = (prop: 'add' | 'delete' | 'clear'): PropertyDescriptor => ({
-				value: /** @ignore */ (...args: unknown[]): unknown => {
-					const result = Set.prototype[prop as 'add'].apply(this.#classList, args as [unknown]);
-					this.className = [...this.#classList!].join(' ');
-					return result;
-				},
-			});
-			Object.defineProperties(this.#classList, {
-				add: factory('add'),
-				delete: factory('delete'),
-				clear: factory('clear'),
-			});
-		}
+		this.#classList ??= new ClassList(this);
 		return this.#classList;
 	}
 

@@ -32,6 +32,7 @@ import type {
 import {sanitizeAlt, sanitizeId} from '../../util/string';
 import {Shadow} from '../../util/debug';
 import {Title} from '../../lib/title';
+import {ClassList} from '../../lib/classList';
 import {cached} from '../../mixin/cached';
 import {packedModes} from '../../render/extension';
 
@@ -104,7 +105,7 @@ const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n
 export abstract class FileToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
-	#classList: Set<string> | undefined;
+	#classList: ClassList | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -206,26 +207,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @since v1.47.0
 	 */
 	get classList(): Set<string> {
-		if (!this.#classList) {
-			this.#classList = new Set(this.className.split(/\s+/u));
-
-			/**
-			 * 更新classList
-			 * @param prop 方法名
-			 */
-			const factory = (prop: 'add' | 'delete' | 'clear'): PropertyDescriptor => ({
-				value: /** @ignore */ (...args: unknown[]): unknown => {
-					const result = Set.prototype[prop as 'add'].apply(this.#classList, args as [unknown]);
-					this.className = [...this.#classList!].join(' ');
-					return result;
-				},
-			});
-			Object.defineProperties(this.#classList, {
-				add: factory('add'),
-				delete: factory('delete'),
-				clear: factory('clear'),
-			});
-		}
+		this.#classList ??= new ClassList(this);
 		return this.#classList;
 	}
 

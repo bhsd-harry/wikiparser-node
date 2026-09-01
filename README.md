@@ -1,4 +1,4 @@
-<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div>
+<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div><!-- markdownlint-disable-line line-length -->
 
 # WikiParser-Node
 
@@ -17,22 +17,42 @@
 
 ## Introduction
 
-WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext) parser developed by [Bhsd](https://github.com/bhsd-harry) for the [Node.js](https://nodejs.org/) environment. It can parse almost all [wiki syntax](https://www.mediawiki.org/wiki/Help:Advanced_editing) and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) ([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also allows for easy querying and modification of the AST, and returns the modified Wikitext.
+WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext)
+parser developed by [Bhsd](https://github.com/bhsd-harry) for the [Node.js](https://nodejs.org/)
+environment. It can parse almost all [wiki syntax](https://www.mediawiki.org/wiki/Help:Advanced_editing)
+and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
+([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also
+allows for easy querying and modification of the AST, and returns the modified Wikitext.
 
-Although WikiParser-Node is not primarily designed to convert Wikitext to HTML, it provides pragmatic HTML rendering for many situations. [Here](https://bhsd-harry.github.io/wikiparser-website/) is a list of example HTML pages from [MediaWiki.org](https://www.mediawiki.org/) rendered using this package.
+Although WikiParser-Node is not primarily designed to convert Wikitext to HTML,
+it provides pragmatic HTML rendering for many situations. [Here](https://bhsd-harry.github.io/wikiparser-website/)
+is a list of example HTML pages from [MediaWiki.org](https://www.mediawiki.org/)
+rendered using this package.
 
-WikiParser-Node has been extensively tested against the official [MediaWiki PHP parser tests](https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/refs/heads/master/tests/parser/) with ~3,000 test cases, covering various edge cases and peculiarities of Wikitext. These tests are available [here](https://bhsd-harry.github.io/wikiparser-node/tests.html).
+WikiParser-Node has been extensively tested against the official
+[MediaWiki PHP parser tests](https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/refs/heads/master/tests/parser/)
+with ~3,000 test cases, covering various edge cases and peculiarities of
+Wikitext. These tests are available [here](https://bhsd-harry.github.io/wikiparser-node/tests.html).
 
 ## Why WikiParser-Node
 
-- **Round-trip editing for bots and automation**: parse Wikitext into an AST, query and modify nodes, then write back valid Wikitext.
-- **LSP and linting ready for Node.js tooling**: powers [WikiLint](https://www.npmjs.com/package/wikilint) and [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp).
-- **Browser/editor integration**: works with [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki), [Monaco](https://www.npmjs.com/package/monaco-wiki), and MediaWiki's official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror).
-- **Large-scale usage evidence**: [full-dump parsing and linting on English Wikipedia scale](https://lint-wiki-dumps.toolforge.org/) is practical on consumer hardware.
-- **Transparent quality signals**: [CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml), [CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml), public [parser-test results](https://bhsd-harry.github.io/wikiparser-node/tests.html), and coverage are all visible in this repository.
+- **Round-trip editing for bots and automation**: parse Wikitext into an AST,
+  query and modify nodes, then write back valid Wikitext.
+- **LSP and linting ready for Node.js tooling**: powers [WikiLint](https://www.npmjs.com/package/wikilint)
+  and [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp).
+- **Browser/editor integration**: works with [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki),
+  [Monaco](https://www.npmjs.com/package/monaco-wiki), and MediaWiki's official
+  [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror).
+- **Large-scale usage evidence**:
+  [full-dump parsing and linting on English Wikipedia scale](https://lint-wiki-dumps.toolforge.org/)
+  is practical on consumer hardware.
+- **Transparent quality signals**: [CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml),
+  [CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml),
+  public [parser-test results](https://bhsd-harry.github.io/wikiparser-node/tests.html),
+  and coverage are all visible in this repository.
 
 ## Used by
-
+<!-- markdownlint-disable line-length -->
 <div align="center">
 <a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
 <a href="https://helix-editor.com/"><img src="https://helix-editor.com/logo.svg" width="50" height="50" alt="Helix"></a>
@@ -41,28 +61,43 @@ WikiParser-Node has been extensively tested against the official [MediaWiki PHP 
 <a href="http://www.qbittorrent.org/"><img src="https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg" width="50" height="50" alt="qBittorrent"></a>
 <a href="https://github.com/misterclayt0n/the-editor/tree/legacy"><img src="https://raw.githubusercontent.com/misterclayt0n/the-editor/main/assets/the-editor-icon.svg" width="50" height="50" alt="the-editor"></a>
 </div>
+<!-- markdownlint-enable line-length -->
 
 ## Other Versions
 
 ### [WikiLint](https://www.npmjs.com/package/wikilint)
 
-This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing and linting functionality. At the cost of losing AST modification capabilities, it executes [2.4x faster](#performance). It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser), [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface),
+but only retains the parsing and linting functionality. At the cost of losing
+AST modification capabilities, it executes [2.4x faster](#performance). It
+powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which
+provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser),
+[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 
 A list of available linting rules can be found [here](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules).
 
 ### Browser-compatible
 
-A browser-compatible version, which can be used for code highlighting or as a [LSP](https://microsoft.github.io/language-server-protocol/) plugin in conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)). It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror) since Release 1.45.
+A browser-compatible version, which can be used for code highlighting or as a
+[LSP](https://microsoft.github.io/language-server-protocol/) plugin in
+conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki)
+and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)).
+It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror)
+since Release 1.45.
 
 ### [WikiParser-Template](https://www.npmjs.com/package/wikiparser-template)
 
-A lightweight version that only supports parsing and manipulation of templates. This version is designed for use cases where only template processing is needed, such as certain types of bots or web tools (e.g., [GANReviewTool](https://en.wikipedia.org/wiki/User:Novem_Linguae/Scripts/GANReviewTool)) that focus on template manipulation.
+A lightweight version that only supports parsing and manipulation of templates.
+This version is designed for use cases where only template processing is needed,
+such as certain types of bots or web tools (e.g., [GANReviewTool](https://en.wikipedia.org/wiki/User:Novem_Linguae/Scripts/GANReviewTool))
+that focus on template manipulation.
 
 ## Installation
 
 ### Node.js
 
-Please install the corresponding version as needed (`WikiParser-Node` or `WikiLint`), for example:
+Please install the corresponding version as needed (`WikiParser-Node` or
+`WikiLint`), for example:
 
 ```sh
 npm i wikiparser-node
@@ -117,7 +152,10 @@ For more browser extensions, please refer to the corresponding [documentation](h
 
 ### CLI usage
 
-For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror) installed, such as different language editions of Wikipedia and other [Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix), you can use the following command to obtain the parser configuration:
+For MediaWiki sites with the [CodeMirror extension](https://mediawiki.org/wiki/Extension:CodeMirror)
+installed, such as different language editions of Wikipedia and other
+[Wikimedia Foundation-hosted sites](https://meta.wikimedia.org/wiki/Special:SiteMatrix),
+you can use the following command to obtain the parser configuration:
 
 ```sh
 npx getParserConfig <site> <script path> [user] [force]
@@ -125,7 +163,8 @@ npx getParserConfig <site> <script path> [user] [force]
 npx getParserConfig frwiki https://fr.wikipedia.org/w user@example.net
 ```
 
-The generated configuration file will be saved in the [`config` directory](https://github.com/bhsd-harry/wikiparser-node/tree/main/config/). You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).
+The generated configuration file will be saved in the [`config` directory](https://github.com/bhsd-harry/wikiparser-node/tree/main/config/).
+You can then use the site name for [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#config).
 
 ```javascript
 // For example:
@@ -134,7 +173,9 @@ Parser.config = "frwiki";
 
 ### API usage
 
-Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29). In particular, there are some [usage examples](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29#examples) that demonstrate how to use this package to complete various tasks.
+Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).
+In particular, there are some [usage examples](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29#examples)
+that demonstrate how to use this package to complete various tasks.
 
 #### Round-trip editing quickstart (TypeScript)
 
@@ -152,7 +193,9 @@ assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
 
 ## Performance
 
-A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps) of English Wikipedia's ~19 million articles (parsing and linting) on a personal MacBook Air takes about 5 hours.
+A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps)
+of English Wikipedia's ~19 million articles (parsing and linting) on a personal
+MacBook Air takes about 5 hours.
 
 *Performance comparison between WikiParser-Node and [WikiLint](#wikilint)*
 
@@ -163,7 +206,8 @@ A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wik
 
 ## Best fit
 
-- MediaWiki bot workflows that require robust AST manipulation and round-trip-safe edits.
+- MediaWiki bot workflows that require robust AST manipulation and
+  round-trip-safe edits.
 - Node.js pipelines for linting and refactoring Wikitext.
 - LSP-based language tooling.
 - Browser-side editing helpers, and gadgets/user scripts that require Wikitext parsing.
@@ -185,13 +229,18 @@ The following limitations are documented for transparency.
 
 #### Extension
 
-1. Many [extensions](https://github.com/bhsd-harry/wikiparser-node/wiki/Extensions-%28EN%29#support) are not supported.
-1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing) is not supported.
-1. Special cases involving templates inside the `link` parameter of a gallery image ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Link%20media%20option%20with%20template%20with%20arguments)).
+1. Many [extensions](https://github.com/bhsd-harry/wikiparser-node/wiki/Extensions-%28EN%29#support)
+   are not supported.
+1. [Sub-referencing](https://meta.wikimedia.org/wiki/WMDE_Technical_Wishes/Sub-referencing)
+   is not supported.
+1. Special cases involving templates inside the `link` parameter of a gallery
+   image ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Link%20media%20option%20with%20template%20with%20arguments)).
 
 #### Transclusion
 
-1. Some parser functions are not supported, notably [`#formatdate`](https://bhsd-harry.github.io/wikiparser-node/tests.html#formatdate%20parser%20function), [`#time`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Input%20times%20are%20UTC%2C%20not%20local%20time) and [`#invoke`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Scribunto%3A%20hello%20world).
+1. Some parser functions are not supported, notably [`#formatdate`](https://bhsd-harry.github.io/wikiparser-node/tests.html#formatdate%20parser%20function),
+   [`#time`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Input%20times%20are%20UTC%2C%20not%20local%20time)
+   and [`#invoke`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Scribunto%3A%20hello%20world).
 1. New lines in `{{localurl:}}` are not handled correctly ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Basic%20%7B%7Blocalurle%3A%7D%7D%20test)).
 
 #### Heading
@@ -213,7 +262,8 @@ The following limitations are documented for transparency.
 
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
 1. Block elements inside a link should break it into multiple links ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
-1. Invalid or missing images (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20image%20with%20bogus%20manual%20thumbnail), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20line%20not%20in%20the%20file%20namespace)).
+1. Invalid or missing images (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20image%20with%20bogus%20manual%20thumbnail),
+   [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20line%20not%20in%20the%20file%20namespace)).
 1. Link starting with `../` on a subpage ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Parent%20directory%20in%20redirect)).
 1. Duplicate file namespace prefixes should be invalid ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20valid%20attributes)).
 1. File redirects ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20(with%20showfilename%20option))).
@@ -226,14 +276,17 @@ The following limitations are documented for transparency.
 
 #### Block element
 
-1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [`<div>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily) or even [closing tags](https://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
+1. Incomplete `<p>` wrapping when there are block elements (e.g., [`<pre>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link),
+   [`<div>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily)
+   or even [closing tags](https://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
 1. Mixed lists ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Mixed%20Lists%3A%20Test%204)).
 
 #### Language conversion
 
 1. Automatic language conversion is not supported.
 1. Support for manual language conversion is minimal ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Explicit%20session-wise%20one-way%20language%20variant%20mapping%20(A%20flag%20and%20-%20flag))).
-1. Language conversion should prevent `<p>` wrapping (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Code%20coverage%3A%20rules%20with%20no%20variants), [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Language%20converter%20markup%20with%20block%20content)).
+1. Language conversion should prevent `<p>` wrapping (Examples [1](https://bhsd-harry.github.io/wikiparser-node/tests.html#Code%20coverage%3A%20rules%20with%20no%20variants),
+   [2](https://bhsd-harry.github.io/wikiparser-node/tests.html#Language%20converter%20markup%20with%20block%20content)).
 
 #### Miscellaneous
 

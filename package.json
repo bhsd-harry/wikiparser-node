@@ -132,11 +132,11 @@
 		"@bhsd/stylelint-util": "^1.1.0",
 		"culori": "^4.0.2",
 		"entities": "^8.0.0",
-		"vscode-languageserver-types": "^3.18.0"
+		"vscode-languageserver-types": "^3.18.3"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^4.1.0",
-		"@bhsd/test-util": "^3.1.2",
+		"@bhsd/code-standard": "^4.2.0",
+		"@bhsd/test-util": "^3.2.0",
 		"@codemirror/lint": "^6.9.7",
 		"@eslint/markdown": "^8.0.3",
 		"@types/jsdom": "^30.0.0",
@@ -148,22 +148,22 @@
 		"diff2html-cli": "^5.2.15",
 		"dompurify": "^3.4.14",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.9.1",
+		"eslint": "^10.10.0",
 		"jsdom": "^30.0.1",
-		"katex": "^0.18.4",
+		"katex": "^0.18.5",
 		"markdownlint-cli2": "^0.23.2",
 		"mathoid-texvcjs": "^0.6.0",
 		"monaco-editor": "~0.53.0",
 		"prism-wiki": "^2.3.1",
 		"prismjs": "^1.30.0",
-		"stylelint": "^17.14.1",
-		"tsx": "^4.23.12",
+		"stylelint": "^17.15.0",
+		"tsx": "^4.23.13",
 		"typescript": "^6.0.3",
 		"v8r": "^6.1.0",
 		"vscode-css-languageservice": "^6.3.10",
 		"vscode-html-languageservice": "^5.6.2",
 		"vscode-json-languageservice": "^5.7.2",
-		"vscode-languageserver-textdocument": "^1.0.13"
+		"vscode-languageserver-textdocument": "^1.0.14"
 	},
 	"engines": {
 		"node": "^20.19.0 || ^22.13.0 || >=24.11.0"
