@@ -1,11 +1,15 @@
-<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div>
+<div align="center"><img src="https://github.com/bhsd-harry/wikiparser-node/raw/main/logo.png" width="200" alt="WikiParser-Node logo"></div><!-- markdownlint-disable-line line-length -->
 
 # WikiParser-Template
 
 [![npm version](https://badge.fury.io/js/wikiparser-template.svg)](https://www.npmjs.com/package/wikiparser-template)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13661/badge)](https://www.bestpractices.dev/projects/13661)
 
-WikiParser-Template is a standalone [Wikitext](https://www.mediawiki.org/wiki/Wikitext) [template](https://www.mediawiki.org/wiki/Help:Templates) parser for the [Node.js](https://nodejs.org/) and browser environments. It is a highly simplified version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node), focusing solely on parsing templates and their parameters.
+WikiParser-Template is a standalone [Wikitext](https://www.mediawiki.org/wiki/Wikitext)
+[template](https://www.mediawiki.org/wiki/Help:Templates) parser for the
+[Node.js](https://nodejs.org/) and browser environments. It is a highly
+simplified version of [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node),
+focusing solely on parsing templates and their parameters.
 
 ## Installation
 
@@ -23,7 +27,10 @@ import Parser from 'wikiparser-template';
 
 ## API
 
-The full [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node) API is documented in the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29), but WikiParser-Template only supports a small [subset](#list-of-supported-properties-and-methods) of it. The most commonly used methods are (in TypeScript syntax):
+The full [WikiParser-Node](https://www.npmjs.com/package/wikiparser-node) API is
+documented in the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29),
+but WikiParser-Template only supports a small [subset](#list-of-supported-properties-and-methods)
+of it. The most commonly used methods are (in TypeScript syntax):
 
 ```ts
 import Parser from 'wikiparser-template';
