@@ -76,7 +76,7 @@ XSS is escaped (inline)
 !! options
 parsoid={ "modes": ["wt2html","wt2wt"], "normalizePhp": true }
 !! wikitext
-<source lang="doesnotexist" inline="">
+<source lang="doesnotexist" inline>
 <script>alert("pwnd")</script>
 <IMG SRC=`javascript:alert("RSnake says, 'XSS'")`>
 <IMG

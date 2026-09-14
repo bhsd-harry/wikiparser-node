@@ -510,7 +510,7 @@ Empty details content with name, ignored outside of <references>
 !! config
 wgCiteSubReferencing=true
 !! wikitext
-<ref details="" name="a">Book</ref>
+<ref details name="a">Book</ref>
 <references />
 !! html/php
 <p><sup id="cite&#95;ref-a&#95;1-0" class="reference"><a href="#cite_note-a-1"><span class="cite-bracket">&#91;</span>1<span class="cite-bracket">&#93;</span></a></sup>
@@ -533,7 +533,7 @@ Empty details content without name, ignored outside of <references>
 !! config
 wgCiteSubReferencing=true
 !! wikitext
-<ref details="">Book</ref>
+<ref details>Book</ref>
 <references />
 !! html/php
 <p><sup id="cite&#95;ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">&#91;</span>1<span class="cite-bracket">&#93;</span></a></sup>
@@ -558,7 +558,7 @@ wgCiteSubReferencing=true
 !! wikitext
 <ref name="a" />
 <references>
-<ref details="" name="a">Book</ref>
+<ref details name="a">Book</ref>
 </references>
 !! html/php
 <p><sup id="cite&#95;ref-a&#95;1-0" class="reference"><a href="#cite_note-a-1"><span class="cite-bracket">&#91;</span>1<span class="cite-bracket">&#93;</span></a></sup>

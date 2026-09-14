@@ -1348,7 +1348,7 @@ zero<sup about="#mwt8" class="mw-ref reference" id="cite_ref-3" rel="dc:referenc
 !! test
 <ref> with an empty-string name parameter and no content.
 !! wikitext
-Bla.<ref name=""> </ref>
+Bla.<ref name> </ref>
 <references />
 !! html/php
 <p>Bla.<span class="error mw-ext-cite-error" lang="en" dir="ltr">Cite error: Invalid <code>&lt;ref&gt;</code> tag; refs with no name must have content.</span>
@@ -3011,7 +3011,7 @@ wgCiteResponsiveReferences=false
 wgCiteResponsiveReferencesThreshold=2
 !! wikitext
 Test <ref>1</ref><ref>2</ref>
-<references responsive="" />
+<references responsive />
 !! html/parsoid
 <p>Test <sup about="#mwt3" class="mw-ref reference" id="cite_ref-1" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-1"}}'><a href="./Parser_test#cite_note-1"><span class="mw-reflink-text"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></span></a></sup><sup about="#mwt4" class="mw-ref reference" id="cite_ref-2" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-2"}}'><a href="./Parser_test#cite_note-2"><span class="mw-reflink-text"><span class="cite-bracket">[</span>2<span class="cite-bracket">]</span></span></a></sup></p>
 <div class="mw-references-wrap" typeof="mw:Extension/references" typeof="mw:Extension/references" about="#mwt6" data-mw='{"name":"references","attrs":{"responsive":""}}'><ol class="mw-references references">
@@ -3027,7 +3027,7 @@ wgCiteResponsiveReferences=false
 wgCiteResponsiveReferencesThreshold=1
 !! wikitext
 Test <ref>1</ref><ref>2</ref>
-<references responsive="" />
+<references responsive />
 !! html/parsoid
 <p>Test <sup about="#mwt3" class="mw-ref reference" id="cite_ref-1" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-1"}}'><a href="./Parser_test#cite_note-1"><span class="mw-reflink-text"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></span></a></sup><sup about="#mwt4" class="mw-ref reference" id="cite_ref-2" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-2"}}'><a href="./Parser_test#cite_note-2"><span class="mw-reflink-text"><span class="cite-bracket">[</span>2<span class="cite-bracket">]</span></span></a></sup></p>
 <div class="mw-references-wrap mw-references-columns" typeof="mw:Extension/references" about="#mwt6" data-mw='{"name":"references","attrs":{"responsive":""}}'><ol class="mw-references references">
@@ -3255,7 +3255,7 @@ T15673: <ref> with direction "LTR", keeps upper case
 T15673: <ref> with direction "nonsense" and "" (empty), strip invalid dir attribute and shows error
 !! wikitext
 <ref dir="nonsense">NONSENSE_DIR_TEST</ref>
-<ref dir="">EMPTY_DIR_TEST</ref>
+<ref dir>EMPTY_DIR_TEST</ref>
 <references />
 !! html/php
 <p><sup id="cite&#95;ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">&#91;</span>1<span class="cite-bracket">&#93;</span></a></sup>

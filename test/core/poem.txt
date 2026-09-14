@@ -285,7 +285,7 @@ hi ho
 !! test
 Poem with empty class
 !! wikitext
-<poem class="">
+<poem class>
 hi ho
 </poem>
 !! html/php
