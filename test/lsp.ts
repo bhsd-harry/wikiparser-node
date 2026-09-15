@@ -150,6 +150,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 			case 'provideColorPresentations':
 			case 'resolveCodeAction':
 			case 'provideCodeAction':
+			case 'resolveCompletionItem':
 			case 'provideDefinition':
 			case 'setTargetWikipedia':
 				break;
