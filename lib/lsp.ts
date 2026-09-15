@@ -234,7 +234,6 @@ const createNodeRange = (token: Token): Range => {
  * @param pos.line line number
  * @param pos.character character number
  * @param extra extra text
- * @param getDoc documentation method
  */
 const getCompletion = (
 	words: Iterable<string>,
@@ -242,27 +241,36 @@ const getCompletion = (
 	mt: string,
 	{line, character}: Position,
 	extra = '',
-	getDoc?: (name: string) => SignatureInfo | undefined,
-): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => {
-	const doc = getDoc?.(w)?.description;
-	return {
-		label: w,
-		kind,
-		textEdit: {
-			range: {
-				start: {line, character: character - mt.length},
-				end: {line, character},
-			},
-			newText: w + extra,
+): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => ({
+	label: w,
+	kind,
+	textEdit: {
+		range: {
+			start: {line, character: character - mt.length},
+			end: {line, character},
 		},
-		...doc && {
-			documentation: {
-				kind: 'markdown',
-				value: doc,
-			},
-		},
-	};
-});
+		newText: w + extra,
+	},
+}));
+
+/**
+ * Normalize a magic word.
+ * @param word magic word
+ * @param insensitive dictionary of insensitive magic words
+ * @param sensitive dictionary of sensitive magic words
+ */
+const normalizeMagicWord = (
+	word: string,
+	insensitive: Record<string, string>,
+	sensitive: Record<string, string>,
+): string => {
+	if (Object.hasOwn(insensitive, word)) {
+		word = insensitive[word]!;
+	} else if (Object.hasOwn(sensitive, word)) {
+		word = sensitive[word]!;
+	}
+	return word.toLowerCase();
+};
 
 /**
  * Get the caret position at the position from a word.
@@ -871,8 +879,7 @@ export class LanguageService implements LanguageServiceBase {
 			} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line],
-			mt = re.exec(curLine?.slice(0, character) ?? ''),
-			[,, iAlias, sAlias] = this.config!.doubleUnderscore;
+			mt = re.exec(curLine?.slice(0, character) ?? '');
 		if (mt?.[1] !== undefined) { // tag
 			const closing = mt[1].startsWith('/');
 			return getCompletion(
@@ -884,26 +891,7 @@ export class LanguageService implements LanguageServiceBase {
 			);
 		} else if (mt?.[4] || mt?.[5] && jaSwitches.length > 0) { // behavior switch
 			const isJa = mt[5] !== undefined;
-			return getCompletion(
-				isJa ? jaSwitches : switches,
-				'Constant',
-				mt[isJa ? 5 : 4]!,
-				position,
-				'',
-				name => {
-					if (!this.data) {
-						return undefined;
-					} else if (!isJa) {
-						name = name.slice(2, -2);
-					}
-					if (Object.hasOwn(iAlias, name)) {
-						name = iAlias[name]!;
-					} else if (Object.hasOwn(sAlias, name)) {
-						name = sAlias[name]!;
-					}
-					return this.#getBehaviorSwitch(name.toLowerCase());
-				},
-			);
+			return getCompletion(isJa ? jaSwitches : switches, 'Constant', mt[isJa ? 5 : 4]!, position);
 		} else if (mt?.[6] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[6], position);
 		}
@@ -921,8 +909,7 @@ export class LanguageService implements LanguageServiceBase {
 					position,
 				);
 			}
-			const [insensitive, sensitive] = this.config!.parserFunction,
-				colon = match.startsWith(':'),
+			const colon = match.startsWith(':'),
 				str = colon ? match.slice(1).trimStart() : match;
 			if (mt[2] === '[[') { // link
 				return getCompletion(
@@ -943,23 +930,7 @@ export class LanguageService implements LanguageServiceBase {
 				words = functions.filter(s => s.endsWith('：')).map(s => s.slice(0, -1));
 			}
 			return [
-				...getCompletion(
-					words,
-					'Function',
-					match,
-					position,
-					'',
-					name => {
-						if (!this.data) {
-							return undefined;
-						} else if (Object.hasOwn(insensitive, name)) {
-							name = insensitive[name]!;
-						} else if (Object.hasOwn(sensitive, name)) {
-							name = sensitive[name]!;
-						}
-						return this.#getParserFunction(name.toLowerCase());
-					},
-				),
+				...getCompletion(words, 'Function', match, position),
 				...match.startsWith('#')
 					? []
 					: getCompletion(
@@ -1118,6 +1089,37 @@ export class LanguageService implements LanguageServiceBase {
 			return getCompletion(data, 'Value', val, position);
 		}
 		return undefined;
+	}
+
+	/**
+	 * Add additional information to a completion item
+	 *
+	 * 为自动补全项添加额外信息
+	 * @param item completion item / 自动补全项
+	 * @since v1.48.0
+	 */
+	resolveCompletionItem(item: CompletionItem): CompletionItem {
+		if (!this.data) {
+			return item;
+		}
+		this.config ??= Parser.getConfig();
+		const {kind} = item;
+		let {label} = item,
+			doc: SignatureInfo | undefined;
+		if (kind === 'Constant') {
+			const [,, insensitive, sensitive] = this.config.doubleUnderscore;
+			if (label.endsWith('_')) {
+				label = label.slice(2, -2);
+			}
+			doc = this.#getBehaviorSwitch(normalizeMagicWord(label, insensitive, sensitive));
+		} else if (kind === 'Function' && !label.startsWith('/')) {
+			const [insensitive, sensitive] = this.config.parserFunction;
+			doc = this.#getParserFunction(normalizeMagicWord(label, insensitive, sensitive));
+		}
+		if (doc?.description) {
+			item.documentation = {kind: 'markdown', value: doc.description};
+		}
+		return item;
 	}
 
 	/**
