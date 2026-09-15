@@ -30,6 +30,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		monacoContainer = document.getElementById('monaco-container')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
+		field = input.closest<HTMLDivElement>('.fieldLayout')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
 		api = document.querySelector<HTMLInputElement>('#wpAPI')!,
 		fetchBtn = document.querySelector<HTMLButtonElement>('#wpFetch')!,
@@ -73,7 +74,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		model,
 		automaticLayout: true,
 		theme: 'monokai',
-		readOnly: true,
 		wordWrap: 'on',
 		wordBreak: 'keepAll',
 		renderValidationDecorations: 'on',
@@ -312,12 +312,34 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}
 		const text1 = jar.toString(),
-			text2 = cm.view!.state.doc.toString();
+			text2 = cm.view!.state.doc.toString(),
+			text3 = model.getValue();
 		switch (active.value) {
+			case 'editor':
+				if (text2 !== text1) {
+					cm.view!.dispatch({changes: {from: 0, to: text2.length, insert: text1}});
+					cm.update();
+				}
+				if (text3 !== text1) {
+					model.setValue(text1);
+				}
+				break;
 			case 'linter':
-				// 离开linter时，将linter的文本同步到editor
 				if (text1 !== text2) {
 					jar.updateCode(text2);
+				}
+				if (text3 !== text2) {
+					model.setValue(text2);
+				}
+				break;
+			case 'lsp':
+				field.style.display = '';
+				if (text1 !== text3) {
+					jar.updateCode(text3);
+				}
+				if (text2 !== text3) {
+					cm.view!.dispatch({changes: {from: 0, to: text2.length, insert: text3}});
+					cm.update();
 				}
 				break;
 			case 'highlighter':
@@ -326,13 +348,8 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			// no default
 		}
 		switch (value) {
-			case 'linter':
-				// 进入linter时，将editor的文本同步到linter
-				if (text1 !== text2) {
-					cm.view!.dispatch({changes: {from: 0, to: text2.length, insert: text1}});
-					model.setValue(text1);
-					cm.update();
-				}
+			case 'lsp':
+				field.style.display = 'none';
 				break;
 			case 'highlighter':
 				// 进入highlighter时，将editor的文本同步到highlighter

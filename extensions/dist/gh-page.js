@@ -5,7 +5,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
     Object.assign(globalThis, { CodeJar });
     await import('/wikiparser-node/extensions/dist/codejar.js');
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), field = input.closest('.fieldLayout'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
     Parser.internal = true;
     Parser.config = config;
@@ -20,7 +20,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
         model,
         automaticLayout: true,
         theme: 'monokai',
-        readOnly: true,
         wordWrap: 'on',
         wordBreak: 'keepAll',
         renderValidationDecorations: 'on',
@@ -208,23 +207,41 @@ const keys = new Set(['type', 'childNodes', 'range']);
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
-        const text1 = jar.toString(), text2 = cm.view.state.doc.toString();
+        const text1 = jar.toString(), text2 = cm.view.state.doc.toString(), text3 = model.getValue();
         switch (active.value) {
+            case 'editor':
+                if (text2 !== text1) {
+                    cm.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
+                    cm.update();
+                }
+                if (text3 !== text1) {
+                    model.setValue(text1);
+                }
+                break;
             case 'linter':
                 if (text1 !== text2) {
                     jar.updateCode(text2);
+                }
+                if (text3 !== text2) {
+                    model.setValue(text2);
+                }
+                break;
+            case 'lsp':
+                field.style.display = '';
+                if (text1 !== text3) {
+                    jar.updateCode(text3);
+                }
+                if (text2 !== text3) {
+                    cm.view.dispatch({ changes: { from: 0, to: text2.length, insert: text3 } });
+                    cm.update();
                 }
                 break;
             case 'highlighter':
                 wikiparse.print = print;
         }
         switch (value) {
-            case 'linter':
-                if (text1 !== text2) {
-                    cm.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
-                    model.setValue(text1);
-                    cm.update();
-                }
+            case 'lsp':
+                field.style.display = 'none';
                 break;
             case 'highlighter':
                 (async () => {

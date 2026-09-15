@@ -22,6 +22,7 @@
 				<div class="tab">
 					<button value="editor">As Editor</button>
 					<button value="linter" class="active">As Linter</button>
+					<button value="lsp">As LSP</button>
 					<button value="highlighter">As Highlighter</button>
 					<button>
 						<a href="https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-(EN)" target="_blank">
@@ -69,9 +70,9 @@
 							</label>
 						</span>
 					</div>
-					<h3>CodeMirror</h3>
 					<textarea id="wpTextbox2" rows="15"></textarea>
-					<h3>Monaco (read-only)</h3>
+				</div>
+				<div class="tabcontent" id="lsp">
 					<div id="monaco-container"></div>
 				</div>
 				<div class="tabcontent" id="highlighter">
