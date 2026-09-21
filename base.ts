@@ -374,8 +374,6 @@ export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {
 export interface LanguageService {
 	/** @since v1.17.1 */
 	include: boolean;
-	/** @private */
-	data?: SignatureData;
 
 	/**
 	 * Destroy the instance
