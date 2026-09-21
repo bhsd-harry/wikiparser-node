@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
+## v1.47.1
+
+*2026-09-19*
+
+**Added**
+
+- [`AttributesToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#classlist) and [`FileToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#classlist) now support [`DOMTokenList`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList)-like getters and methods including [`length`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/length), [`value`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/value), [`item`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/item), [`contains`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/contains), [`remove`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/remove), [`replace`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/replace) and [`toggle`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/toggle)
+
 ## v1.47.0
 
 *2026-09-10*

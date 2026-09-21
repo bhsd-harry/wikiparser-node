@@ -151,7 +151,7 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** class attribute in Set / 以Set表示的class属性 */
-	get classList(): Set<string> {
+	get classList(): ClassList {
 		this.#classList ??= new ClassList(this);
 		return this.#classList;
 	}

@@ -20,11 +20,6 @@ export class Attributes {
 	#lastIndex: number | undefined;
 	#lastIndexOfType: number | undefined;
 
-	constructor(token: Token) {
-		this.token = token;
-		this.type = token.type;
-	}
-
 	get link(): string | Title | undefined {
 		this.#link ??= this.token.link;
 		return this.#link;
@@ -73,6 +68,11 @@ export class Attributes {
 	get lastIndexOfType(): number {
 		this.#lastIndexOfType ??= this.siblingsCountOfType - this.indexOfType + 1;
 		return this.#lastIndexOfType;
+	}
+
+	constructor(token: Token) {
+		this.token = token;
+		this.type = token.type;
 	}
 }
 

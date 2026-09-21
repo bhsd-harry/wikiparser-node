@@ -62,8 +62,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (mode === 'slideshow' && firstChild.hasAttr('showthumbnails')) {
 				firstChild.setAttr('data-showthumbnails', '1');
 			}
-			classList.add('gallery');
-			classList.add(`mw-gallery-${galleryModes.has(mode) ? mode : 'traditional'}`);
+			classList.add('gallery', `mw-gallery-${galleryModes.has(mode) ? mode : 'traditional'}`);
 			if (perrow > 0) {
 				firstChild.setAttr(
 					'style',

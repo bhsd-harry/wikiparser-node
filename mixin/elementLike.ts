@@ -18,6 +18,7 @@ import {mixin} from '../util/debug';
 /* NOT FOR BROWSER */
 
 import {mixins} from '../util/constants';
+import type {ClassList} from '../lib/classList';
 
 /* NOT FOR BROWSER END */
 
@@ -234,7 +235,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			getElementsByClassName<T = Token>(className: string): T[] {
 				return this.getElementsBy(
 					(
-						token => 'classList' in token && (token.classList as Set<string>).has(className)
+						token => 'classList' in token && (token.classList as ClassList).has(className)
 					) as TokenPredicate<T>,
 				);
 			}

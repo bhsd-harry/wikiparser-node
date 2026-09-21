@@ -9,6 +9,7 @@ import {mixin} from '../util/debug';
 /* NOT FOR BROWSER */
 
 import {mixins} from '../util/constants';
+import type {ClassList} from '../lib/classList';
 
 /* NOT FOR BROWSER END */
 
@@ -24,7 +25,7 @@ export interface AttributesParentBase {
 	className: string;
 
 	/** class attribute in Set / 以Set表示的class属性 */
-	readonly classList: Set<string>;
+	readonly classList: ClassList;
 
 	/** id attribute / id属性 */
 	id: string;
@@ -125,7 +126,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 				this.#getAttributesChild().className = className;
 			}
 
-			get classList(): Set<string> {
+			get classList(): ClassList {
 				return this.#getAttributesChild().classList;
 			}
 

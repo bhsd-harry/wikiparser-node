@@ -206,7 +206,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 以Set表示的class属性
 	 * @since v1.47.0
 	 */
-	get classList(): Set<string> {
+	get classList(): ClassList {
 		this.#classList ??= new ClassList(this);
 		return this.#classList;
 	}
