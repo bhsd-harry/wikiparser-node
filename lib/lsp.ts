@@ -28,6 +28,7 @@ import type {
 	Position,
 	ColorInformation,
 	ColorPresentation,
+	CompletionItem as CompletionItemBase,
 	CompletionItemKind,
 	FoldingRange,
 	DocumentLink,
@@ -1121,7 +1122,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param item completion item / 自动补全项
 	 * @since v1.48.0
 	 */
-	resolveCompletionItem(item: CompletionItem): CompletionItem {
+	resolveCompletionItem<T extends CompletionItem | CompletionItemBase>(item: T): T {
 		if (!LanguageService.data) {
 			return item;
 		}
@@ -1129,13 +1130,13 @@ export class LanguageService implements LanguageServiceBase {
 		const {kind} = item;
 		let {label} = item,
 			doc: SignatureInfo | undefined;
-		if (kind === 'Constant') {
+		if (kind === 'Constant' || kind === 21) {
 			const [,, insensitive, sensitive] = this.config.doubleUnderscore;
 			if (label.endsWith('_')) {
 				label = label.slice(2, -2);
 			}
 			doc = LanguageService.#getBehaviorSwitch(normalizeMagicWord(label, insensitive, sensitive));
-		} else if (kind === 'Function' && !label.startsWith('/')) {
+		} else if ((kind === 'Function' || kind === 3) && !label.startsWith('/')) {
 			const [insensitive, sensitive] = this.config.parserFunction;
 			doc = LanguageService.#getParserFunction(normalizeMagicWord(label, insensitive, sensitive));
 		}
