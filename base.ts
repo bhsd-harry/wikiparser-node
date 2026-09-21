@@ -372,6 +372,7 @@ export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {
 };
 
 export interface LanguageService {
+	/** @since v1.17.1 */
 	include: boolean;
 	/** @private */
 	data?: SignatureData;
@@ -413,6 +414,15 @@ export interface LanguageService {
 	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined>;
 
 	/**
+	 * Add additional information to a completion item
+	 *
+	 * 为自动补全项添加额外信息
+	 * @param item completion item / 自动补全项
+	 * @since v1.48.0
+	 */
+	resolveCompletionItem(item: CompletionItem): CompletionItem;
+
+	/**
 	 * Provide grammar check
 	 *
 	 * 提供语法检查
@@ -426,6 +436,7 @@ export interface LanguageService {
 	 *
 	 * 实现修复全部代码的操作
 	 * @param action code action / 代码操作
+	 * @since v1.24.1
 	 */
 	resolveCodeAction(action: CodeAction): CodeAction;
 
@@ -451,6 +462,7 @@ export interface LanguageService {
 	 * 提供文档高亮
 	 * @param text source Wikitext / 源代码
 	 * @param position position / 位置
+	 * @since v1.46.1
 	 */
 	provideDocumentHighlights(text: string, position: Position): Promise<DocumentHighlight[] | undefined>;
 
@@ -514,6 +526,7 @@ export interface LanguageService {
 	 *
 	 * 提供 CodeLens
 	 * @param text source Wikitext / 源代码
+	 * @since v1.16.3
 	 */
 	provideInlayHints(text: string): Promise<InlayHint[]>;
 
@@ -523,6 +536,7 @@ export interface LanguageService {
 	 * 提供重构操作
 	 * @param text source Wikitext / 源代码
 	 * @param range range of the refactoring / 重构范围
+	 * @since v1.24.1
 	 */
 	provideRefactoringAction(text: string, range?: Range): Promise<CodeAction[]>;
 
@@ -556,6 +570,7 @@ export interface LanguageService {
 	 * 设置目标维基百科
 	 * @param wiki Wikipedia URL / 维基百科网址
 	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
+	 * @since v1.18.1
 	 */
 	setTargetWikipedia(wiki: string, user: string): Promise<void>;
 

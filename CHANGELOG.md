@@ -1,11 +1,16 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
-## v1.47.1
+## v1.48.0
 
-*2026-09-19*
+*2026-09-22*
 
 **Added**
 
 - [`AttributesToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#classlist) and [`FileToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#classlist) now support [`DOMTokenList`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList)-like getters and methods including [`length`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/length), [`value`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/value), [`item`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/item), [`contains`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/contains), [`remove`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/remove), [`replace`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/replace) and [`toggle`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/toggle)
+- [`LanguageService#resolveCompletionItem`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolvecompletionitem)
+
+**Changed**
+
+- [`LanguageService#provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) no longer includes the [`documentation`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#completionItem) property in completion items for [magic words](https://www.mediawiki.org/wiki/Help:Magic_words), and instead the `documentation` property will be provided when the completion item is resolved via [`LanguageService#resolveCompletionItem`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolvecompletionitem)
 
 ## v1.47.0
 
