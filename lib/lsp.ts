@@ -578,8 +578,9 @@ export class LanguageService implements LanguageServiceBase {
 	include = true;
 	/** @private */
 	config?: Config;
+
 	/** @private */
-	data?: SignatureData;
+	static data?: SignatureData;
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -589,11 +590,35 @@ export class LanguageService implements LanguageServiceBase {
 	#lilypondData: string[];
 	#mathData: string[];
 
+	static {
+		this.data = require(path.join('..', '..', 'data', 'signatures.json'));
+	}
+
 	/* NOT FOR BROWSER ONLY END */
+
+	/**
+	 * 检索状态开关
+	 * @param name 魔术字名
+	 */
+	static #getBehaviorSwitch(name: string): SignatureInfo | undefined {
+		return this.data!.behaviorSwitches.find(({aliases}) => aliases.includes(name));
+	}
+
+	/**
+	 * 检索解析器函数
+	 * @param name 函数名
+	 */
+	static #getParserFunction(name: string): SignatureInfo | undefined {
+		return this.data!.parserFunctions
+			.find(({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === name));
+	}
 
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
 		tasks.set(uri, this);
+		Object.defineProperties(this, {
+			config: {enumerable: false},
+		});
 
 		/* NOT FOR BROWSER ONLY */
 
@@ -601,19 +626,6 @@ export class LanguageService implements LanguageServiceBase {
 			extDir = path.join(dataDir, 'ext');
 		this.#lilypondData = require(path.join(extDir, 'score.json'));
 		this.#mathData = require(path.join(extDir, 'math.json'));
-
-		/* NOT FOR BROWSER ONLY END */
-
-		Object.defineProperties(this, {
-			config: {enumerable: false},
-			data: {
-				enumerable: false,
-
-				/* NOT FOR BROWSER ONLY */
-
-				value: require(path.join(dataDir, 'signatures.json')),
-			},
-		});
 	}
 
 	/** @implements */
@@ -1099,7 +1111,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @since v1.48.0
 	 */
 	resolveCompletionItem(item: CompletionItem): CompletionItem {
-		if (!this.data) {
+		if (!LanguageService.data) {
 			return item;
 		}
 		this.config ??= Parser.getConfig();
@@ -1111,10 +1123,10 @@ export class LanguageService implements LanguageServiceBase {
 			if (label.endsWith('_')) {
 				label = label.slice(2, -2);
 			}
-			doc = this.#getBehaviorSwitch(normalizeMagicWord(label, insensitive, sensitive));
+			doc = LanguageService.#getBehaviorSwitch(normalizeMagicWord(label, insensitive, sensitive));
 		} else if (kind === 'Function' && !label.startsWith('/')) {
 			const [insensitive, sensitive] = this.config.parserFunction;
-			doc = this.#getParserFunction(normalizeMagicWord(label, insensitive, sensitive));
+			doc = LanguageService.#getParserFunction(normalizeMagicWord(label, insensitive, sensitive));
 		}
 		if (doc?.description) {
 			item.documentation = {kind: 'markdown', value: doc.description};
@@ -1720,23 +1732,6 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
-	 * 检索状态开关
-	 * @param name 魔术字名
-	 */
-	#getBehaviorSwitch(name: string): SignatureInfo | undefined {
-		return this.data!.behaviorSwitches.find(({aliases}) => aliases.includes(name));
-	}
-
-	/**
-	 * 检索解析器函数
-	 * @param name 函数名
-	 */
-	#getParserFunction(name: string): SignatureInfo | undefined {
-		return this.data!.parserFunctions
-			.find(({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === name));
-	}
-
-	/**
 	 * Provide hover information
 	 *
 	 * 提供悬停信息
@@ -1745,7 +1740,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
 		/* c8 ignore next 3 */
-		if (!this.data) {
+		if (!LanguageService.data) {
 			return undefined;
 		}
 		const root = await this.#queue(text);
@@ -1760,16 +1755,16 @@ export class LanguageService implements LanguageServiceBase {
 			colon: string | undefined,
 			range: Range | undefined;
 		if (offsetNode.is('double-underscore') && offset > 0) {
-			info = this.#getBehaviorSwitch(offsetNode.name);
+			info = LanguageService.#getBehaviorSwitch(offsetNode.name);
 		} else if (type === 'magic-word-name') {
-			info = this.#getParserFunction(parentNode!.name!);
+			info = LanguageService.#getParserFunction(parentNode!.name!);
 			f = offsetNode.text().trim();
 			colon = parentNode!.getAttribute('colon');
 		} else if (
 			length === 1 && offsetNode.is('magic-word') && !offsetNode.modifier
 			&& (offset > 0 || root.posFromIndex(offsetNode.getAbsoluteIndex())!.left === position.character)
 		) {
-			info = this.#getParserFunction(name!);
+			info = LanguageService.#getParserFunction(name!);
 			f = offsetNode.firstChild.text().trim();
 			colon = offsetNode.getAttribute('colon');
 		} else if (
@@ -1777,7 +1772,7 @@ export class LanguageService implements LanguageServiceBase {
 			&& offsetNode.modifier && offset >= 2 && offsetNode.getRelativeIndex(0) > offset
 		) {
 			f = offsetNode.modifier.trim().slice(0, -1);
-			info = this.#getParserFunction(f.toLowerCase());
+			info = LanguageService.#getParserFunction(f.toLowerCase());
 			colon = ':';
 			if (info) {
 				const aIndex = offsetNode.getAbsoluteIndex();
@@ -1856,7 +1851,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
 		/* c8 ignore next 3 */
-		if (!this.data) {
+		if (!LanguageService.data) {
 			return undefined;
 		}
 		const {line, character} = position,
@@ -1870,7 +1865,7 @@ export class LanguageService implements LanguageServiceBase {
 			return undefined;
 		}
 		const {name, childNodes, firstChild} = lastChild,
-			info = this.#getParserFunction(name);
+			info = LanguageService.#getParserFunction(name);
 		if (!info?.signatures) {
 			return undefined;
 		}
