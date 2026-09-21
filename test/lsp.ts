@@ -142,7 +142,6 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 	for (const method of Object.getOwnPropertyNames(Object.getPrototypeOf(lsp)) as Key[]) {
 		switch (method) {
 			case 'constructor':
-			case 'data':
 			case 'destroy':
 			case 'findStyleTokens':
 			case 'querySelectorAll':
