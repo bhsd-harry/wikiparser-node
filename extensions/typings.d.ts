@@ -124,7 +124,7 @@ export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums
 
 export interface LanguageServiceBase extends Omit<
 	LanguageService,
-	'provideDocumentSymbols' | 'provideCodeAction'
+	'provideDocumentSymbols' | 'provideCodeAction' | 'resolveCompletionItem'
 > {
 	data?: SignatureData;
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;

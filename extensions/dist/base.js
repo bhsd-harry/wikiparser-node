@@ -108,10 +108,12 @@ const workerJS = () => {
                 break;
             case 'completionItems':
                 (async () => {
+                    var _a;
+                    const lsp = getLSP(qid, include);
                     postMessage([
                         command,
                         qid,
-                        await getLSP(qid, include).provideCompletionItems(wikitext, stage),
+                        (_a = (await lsp.provideCompletionItems(wikitext, stage))) === null || _a === void 0 ? void 0 : _a.map(item => lsp.resolveCompletionItem(item)),
                         wikitext,
                     ]);
                 })();
