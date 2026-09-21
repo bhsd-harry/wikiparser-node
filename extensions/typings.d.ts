@@ -70,6 +70,8 @@ export type Command = ['setI18N', Record<string, string>?]
 	| ['data', number, SignatureData, boolean]
 	| ['colorPresentations', number, ColorInformation, boolean]
 	| ['diagnostics', number, string, boolean, boolean | undefined]
+	| ['codeAction', number, string, boolean, Range]
+	| ['resolveCodeAction', number, string, boolean]
 	| [
 		'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'inlayHints',
 		number,
@@ -77,8 +79,6 @@ export type Command = ['setI18N', Record<string, string>?]
 		boolean?,
 		number?,
 	]
-	| ['codeAction', number, string, boolean, Range]
-	| ['resolveCodeAction', number, string, boolean]
 	| [
 		'completionItems'
 		| 'documentHighlights'

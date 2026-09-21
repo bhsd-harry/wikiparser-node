@@ -9,8 +9,12 @@ import type {
 	LintConfig,
 } from './typings';
 
-declare type WorkerListener<T> = (e: {data: [string, number, T, string]}) => void;
+declare type WorkerListener<T> = (e: {data: [Command[0], number, T, string]}) => void;
 declare type Token = ReturnType<typeof Parser['parse']>;
+declare interface LSPClass {
+	data: unknown;
+	new(): LanguageService;
+}
 
 const version = '1.47.0',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
@@ -25,6 +29,7 @@ const workerJS = (): void => {
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'},
 		lsps = new Map<number, LanguageService>(),
 		last: {wikitext?: string, include: boolean, root?: Token} = {include: true};
+	let LSP: LSPClass | undefined;
 
 	/**
 	 * 解析
@@ -55,6 +60,7 @@ const workerJS = (): void => {
 			return lsps.get(id)!;
 		}
 		const lsp = Parser.createLanguageService();
+		LSP ??= lsp.constructor as LSPClass;
 		lsp.include = include;
 		lsps.set(id, lsp);
 		return lsp;
@@ -105,19 +111,15 @@ const workerJS = (): void => {
 				lsps.delete(qid);
 				break;
 			case 'data':
-				getLSP(qid, include).data = wikitext;
+				getLSP(qid, include);
+				LSP!.data = wikitext;
 				break;
 			case 'colorPresentations':
 				postMessage([command, qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
 				break;
 			case 'documentColors':
 				(async () => {
-					postMessage([
-						command,
-						qid,
-						await getLSP(qid, include).provideDocumentColors(wikitext),
-						wikitext,
-					]);
+					postMessage([command, qid, await getLSP(qid, include).provideDocumentColors(wikitext), wikitext]);
 				})();
 				break;
 			case 'foldingRanges':
@@ -274,7 +276,12 @@ URL.revokeObjectURL(url);
  * @param resolve Promise对象的resolve函数
  * @param raw 原始文本
  */
-const getListener = <T>(command: string, qid: number, resolve: (res: T) => void, raw?: string): WorkerListener<T> => {
+const getListener = <T>(
+	command: Command[0],
+	qid: number,
+	resolve: (res: T) => void,
+	raw?: string,
+): WorkerListener<T> => {
 	/**
 	 * 事件监听函数
 	 * @param {{data: unknown[]}} e 消息事件
@@ -321,7 +328,13 @@ const setConfig = (config: ConfigData): void => {
  * @param raw 原始文本
  * @param args 参数
  */
-const getFeedback = <T>(command: string, qid: number, strict?: boolean, raw?: string, ...args: unknown[]): Promise<T> =>
+const getFeedback = <T>(
+	command: Command[0],
+	qid: number,
+	strict?: boolean,
+	raw?: string,
+	...args: unknown[]
+): Promise<T> =>
 	new Promise(resolve => {
 		worker.addEventListener('message', getListener(command, qid, resolve, strict ? raw : undefined));
 		worker.postMessage([command, qid, raw, ...args]);
@@ -370,7 +383,7 @@ const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[
  * @param wikitext wikitext
  * @param args 额外参数
  */
-const provide = (command: string, qid: number, wikitext?: unknown, ...args: unknown[]): Promise<unknown> =>
+const provide = (command: Command[0], qid: number, wikitext?: unknown, ...args: unknown[]): Promise<unknown> =>
 	getFeedback(
 		command,
 		qid,

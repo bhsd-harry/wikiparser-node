@@ -6,6 +6,7 @@ const version = '1.47.0', src = (_a = document.currentScript) === null || _a ===
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle-lsp.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map(), last = { include: true };
+    let LSP;
     const parse = (wikitext, include = false, stage) => {
         if (stage === undefined && last.wikitext === wikitext && last.include === include) {
             return last.root;
@@ -23,6 +24,7 @@ const workerJS = () => {
             return lsps.get(id);
         }
         const lsp = Parser.createLanguageService();
+        LSP !== null && LSP !== void 0 ? LSP : (LSP = lsp.constructor);
         lsp.include = include;
         lsps.set(id, lsp);
         return lsp;
@@ -71,19 +73,15 @@ const workerJS = () => {
                 lsps.delete(qid);
                 break;
             case 'data':
-                getLSP(qid, include).data = wikitext;
+                getLSP(qid, include);
+                LSP.data = wikitext;
                 break;
             case 'colorPresentations':
                 postMessage([command, qid, getLSP(qid, include).provideColorPresentations(wikitext)]);
                 break;
             case 'documentColors':
                 (async () => {
-                    postMessage([
-                        command,
-                        qid,
-                        await getLSP(qid, include).provideDocumentColors(wikitext),
-                        wikitext,
-                    ]);
+                    postMessage([command, qid, await getLSP(qid, include).provideDocumentColors(wikitext), wikitext]);
                 })();
                 break;
             case 'foldingRanges':
