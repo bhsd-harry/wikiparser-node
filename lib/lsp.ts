@@ -1116,16 +1116,18 @@ export class LanguageService implements LanguageServiceBase {
 			return item;
 		}
 		this.config ??= Parser.getConfig();
-		const {kind} = item;
+		const {kind} = item,
+			Constant: (typeof CompletionItemKind)['Constant'] = 21,
+			Function: (typeof CompletionItemKind)['Function'] = 3;
 		let {label} = item,
 			doc: SignatureInfo | undefined;
-		if (kind === 'Constant' || kind === 21) {
+		if (kind === 'Constant' || kind === Constant) {
 			const [,, insensitive, sensitive] = this.config.doubleUnderscore;
 			if (label.endsWith('_')) {
 				label = label.slice(2, -2);
 			}
 			doc = LanguageService.#getBehaviorSwitch(normalizeMagicWord(label, insensitive, sensitive));
-		} else if ((kind === 'Function' || kind === 3) && !label.startsWith('/')) {
+		} else if ((kind === 'Function' || kind === Function) && !label.startsWith('/')) {
 			const [insensitive, sensitive] = this.config.parserFunction;
 			doc = LanguageService.#getParserFunction(normalizeMagicWord(label, insensitive, sensitive));
 		}
