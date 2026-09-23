@@ -29,7 +29,7 @@ export class OnlyincludeToken extends Token {
 		return this.text();
 	}
 
-	/** @throws `RangeError` 不允许包含`</onlyinclude>` */
+	/** @throws `RangeError` if the text contains `</onlyinclude>` */
 	set innerText(text) {
 		/* c8 ignore next 3 */
 		if (text.includes('</onlyinclude>')) {

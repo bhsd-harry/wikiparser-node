@@ -281,7 +281,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param n row number / 行号
 	 * @param force whether to regard the table itself as the first row / 是否将表格自身视为第一行
 	 * @param insert whether to be used to insert a new row / 是否用于判断插入新行的位置
-	 * @throws `RangeError` 不存在该行
+	 * @throws `RangeError` if the `n`-th row does not exist
 	 */
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
@@ -352,7 +352,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @override
 	 * @param token node to be inserted / 待插入的子节点
 	 * @param i position to be inserted at / 插入位置
-	 * @throws `SyntaxError` 表格的闭合部分非法
+	 * @throws `SyntaxError` if the closing syntax of the table is invalid
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
@@ -363,7 +363,7 @@ export abstract class TableToken extends TrBaseToken {
 		}
 		/* c8 ignore next 3 */
 		if (i > 0 && token instanceof SyntaxToken && token.pattern !== closingPattern) {
-			throw new SyntaxError(`The closing part of the table is invalid: ${noWrap(token.toString())}`);
+			throw new SyntaxError(`The closing syntax of the table is invalid: ${noWrap(token.toString())}`);
 		}
 		return super.insertAt(token, i);
 	}

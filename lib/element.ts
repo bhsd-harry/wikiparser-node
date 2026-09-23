@@ -149,7 +149,7 @@ export abstract class AstElement extends AstNode {
 	 * 插入子节点
 	 * @param node node to be inserted / 待插入的子节点
 	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 不能插入祖先或子节点
+	 * @throws `RangeError` cannot insert an ancestor node or its own child node
 	 */
 	@readOnly()
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
@@ -209,7 +209,7 @@ export abstract class AstElement extends AstNode {
 	 * 修改文本子节点
 	 * @param str new text / 新文本
 	 * @param i position of the text child node / 子节点位置
-	 * @throws `RangeError` 对应位置的子节点不是文本节点
+	 * @throws `RangeError` if the child node is not a text node
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;

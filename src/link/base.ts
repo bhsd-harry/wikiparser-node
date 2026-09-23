@@ -115,7 +115,7 @@ export abstract class LinkBaseToken extends Token {
 		return this.#title.interwiki;
 	}
 
-	/** @throws `RangeError` 非法的跨维基前缀 */
+	/** @throws `RangeError` if the interwiki prefix is invalid */
 	set interwiki(interwiki) {
 		if (isLink(this.type)) {
 			const {prefix, main, fragment} = this.#title,

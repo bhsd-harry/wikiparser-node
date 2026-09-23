@@ -507,7 +507,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 是否是全同节点
 	 * @param node node to be compared to / 待比较的节点
-	 * @throws `assert.AssertionError`
+	 * @throws `assert.AssertionError` if the nodes are not identical
 	 */
 	isEqualNode(node: AstNode): boolean {
 		try {
@@ -712,7 +712,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 比较和另一个节点的相对位置
 	 * @param other node to be compared with / 待比较的节点
-	 * @throws `RangeError` 不在同一个语法树
+	 * @throws `RangeError` if the nodes are not in the same document
 	 */
 	compareDocumentPosition(other: AstNodes): number {
 		if ((this as AstNode as AstNodes) === other) {

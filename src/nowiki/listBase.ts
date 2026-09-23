@@ -38,7 +38,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @throws `Error` not `<dd>` only */
+	/** @throws `Error` if the token contains non-`:` characters */
 	set indent(indent) {
 		if (/[^:\s]/u.test(this.innerText)) {
 			throw new Error('The token is not <dd>!');
@@ -86,7 +86,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	 * Get the range of the list
 	 *
 	 * 获取列表行的范围
-	 * @throws `Error` 不存在父节点
+	 * @throws `Error` if the token has no parent node
 	 */
 	getRange(): ListRangeToken {
 		const {parentNode} = this;

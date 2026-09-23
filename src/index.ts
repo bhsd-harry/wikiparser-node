@@ -856,7 +856,7 @@ export class Token extends AstElement {
 	 *
 	 * 替换为同类节点
 	 * @param token token to be replaced with / 待替换的节点
-	 * @throws `Error` 不存在父节点
+	 * @throws `Error` if the token has no parent node
 	 */
 	@readOnly()
 	safeReplaceWith(token: this): void {

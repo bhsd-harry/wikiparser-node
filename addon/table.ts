@@ -13,6 +13,8 @@ import type {TableCoords} from '../src/table/trBase';
 import type {TableRenderedCoords} from '../src/table/index';
 import type {TdAttrs, TdSpanAttrs, TdSubtypes} from '../src/table/td';
 
+const msg = 'The specified coordinates are not the starting point of any cell: ';
+
 /**
  * 比较两个数
  * @param a
@@ -179,12 +181,7 @@ const split = (table: TableToken, coords: TableCoords | TableRenderedCoords, dir
 				try {
 					table.insertTableCell('', {x: i, y: j}, subtype, attr);
 				} catch (e) {
-					if (
-						e instanceof RangeError
-						&& e.message.startsWith(
-							'The specified coordinates are not the starting point of a cell: ',
-						)
-					) {
+					if (e instanceof RangeError && e.message.startsWith(msg)) {
 						break;
 					}
 					throw e;
@@ -373,9 +370,7 @@ TableToken.prototype.insertTableCell =
 			const {x, y} = coords;
 			rawCoords = this.toRawCoords(coords);
 			if (!rawCoords?.start) {
-				throw new RangeError(
-					`The specified coordinates are not the starting point of any cell: (${x}, ${y})`,
-				);
+				throw new RangeError(`${msg}(${x}, ${y})`);
 			}
 		} else {
 			rawCoords = coords;

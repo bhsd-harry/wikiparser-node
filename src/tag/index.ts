@@ -24,6 +24,7 @@ import Parser from '../../index';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
+import {cannotSetRange} from '../../lib/range';
 import {fixedToken} from '../../mixin/fixed';
 import type {AstRange} from '../../lib/range';
 
@@ -241,6 +242,7 @@ export abstract class TagToken extends Token {
 	 * Get the range of the tag pair
 	 *
 	 * 获取标签对的范围
+	 * @throws `RangeError` if the opening and closing tags are not siblings
 	 * @since v1.23.0
 	 */
 	getRange(): AstRange | undefined {
@@ -251,7 +253,14 @@ export abstract class TagToken extends Token {
 		const {closing} = this,
 			range = this.createRange();
 		range.setStartAfter(closing ? matched : this);
-		range.setEndBefore(closing ? this : matched);
+		try {
+			range.setEndBefore(closing ? this : matched);
+		} catch (e) {
+			if (e instanceof RangeError && e.message === cannotSetRange) {
+				throw new RangeError('The opening and closing tags are not siblings!', {cause: e});
+			}
+			throw e;
+		}
 		return range;
 	}
 }

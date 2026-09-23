@@ -8,6 +8,8 @@ import type {Dimension, Position} from './node';
 
 export interface AstRange extends NodeLike, ElementLike {}
 
+export const cannotSetRange = 'The start and end positions are not siblings!';
+
 /**
  * 计算绝对位置
  * @param referenceNode 容器
@@ -140,26 +142,25 @@ export class AstRange {
 			}
 			return;
 		}
-		const msg2 = 'The start and end positions are not siblings!',
-			{type: startType, parentNode: startParent} = startContainer,
+		const {type: startType, parentNode: startParent} = startContainer,
 			{type: endType, parentNode: endParent} = endContainer;
 		/* c8 ignore start */
 		if (startType !== 'text') {
 			if (endType !== 'text' || startContainer !== endParent) {
-				throw new RangeError(msg2);
+				throw new RangeError(cannotSetRange);
 			} else if (startOffset > endParent.childNodes.indexOf(endContainer)) {
 				throw new RangeError(msg1);
 			}
 		} else if (endType === 'text') {
 			if (!startParent || startParent !== endParent) {
-				throw new RangeError(msg2);
+				throw new RangeError(cannotSetRange);
 			}
 			const {childNodes} = startParent;
 			if (childNodes.indexOf(startContainer) > childNodes.indexOf(endContainer)) {
 				throw new RangeError(msg1);
 			}
 		} else if (startParent !== endContainer) {
-			throw new RangeError(msg2);
+			throw new RangeError(cannotSetRange);
 		} else if (endOffset <= startParent.childNodes.indexOf(startContainer)) {
 			throw new RangeError(msg1);
 		}
@@ -172,7 +173,7 @@ export class AstRange {
 	 * 设置起点
 	 * @param startNode start container / 起点容器
 	 * @param offset start offset / 起点位置
-	 * @throws `RangeError` offset取值超出范围
+	 * @throws `RangeError` if the offset is out of range
 	 */
 	setStart(startNode: AstNodes, offset: number): void {
 		const {length} = startNode;
@@ -202,7 +203,7 @@ export class AstRange {
 	 * 设置终点
 	 * @param endNode end container / 终点容器
 	 * @param offset end offset / 终点位置
-	 * @throws `RangeError` offset取值超出范围
+	 * @throws `RangeError` if the offset is out of range
 	 */
 	setEnd(endNode: AstNodes, offset: number): void {
 		const {length} = endNode;
@@ -336,7 +337,7 @@ export class AstRange {
 	 * 比较端点和Range的位置
 	 * @param referenceNode node container / 端点容器
 	 * @param offset node offset / 端点位置
-	 * @throws `RangeError` 不在同一个文档
+	 * @throws `RangeError` if the point is not in the same document
 	 */
 	comparePoint(referenceNode: AstNodes, offset: number): -1 | 0 | 1 {
 		const {startContainer, startIndex, endContainer, endIndex} = this;
@@ -645,7 +646,7 @@ export class AstRange {
 	 *
 	 * 移除子节点
 	 * @param node child node to be removed / 子节点
-	 * @throws `RangeError` 不是子节点
+	 * @throws `RangeError` if the node is not a child node
 	 */
 	removeChild<T extends AstNodes>(node: T): T {
 		const {childNodes, commonAncestorContainer, startContainer, endContainer} = this;

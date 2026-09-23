@@ -48,6 +48,8 @@ declare interface Frame {
 
 /* NOT FOR BROWSER END */
 
+export const invalidTemplateMsg = 'Invalid template name';
+
 /**
  * template or magic word
  *
@@ -243,11 +245,11 @@ export abstract class TranscludeToken extends Token {
 
 				/* NOT FOR BROWSER */
 
-				Parser.debug(`Invalid template name: ${noWrap(name)}`);
+				Parser.debug(`${invalidTemplateMsg}: ${noWrap(name)}`);
 
 				/* NOT FOR BROWSER END */
 
-				throw new SyntaxError('Invalid template name');
+				throw new SyntaxError(invalidTemplateMsg);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
@@ -656,7 +658,7 @@ export abstract class TranscludeToken extends Token {
 	 * Get duplicated parameters
 	 *
 	 * 获取重名参数
-	 * @throws `Error` 仅用于模板
+	 * @throws `Error` if not a template or module invocation
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
 		LINT: {
@@ -681,7 +683,7 @@ export abstract class TranscludeToken extends Token {
 	 * Get possible values of some magic words
 	 *
 	 * 对特定魔术字获取可能的取值
-	 * @throws `Error` 不是可接受的魔术字
+	 * @throws `Error` if not a supported magic word
 	 */
 	getPossibleValues(): Token[] {
 		const {type, name, childNodes, length: l} = this;
@@ -964,7 +966,7 @@ export abstract class TranscludeToken extends Token {
 	 * Convert all anonymous parameters to named ones
 	 *
 	 * 将匿名参数改写为命名参数
-	 * @throws `Error` 仅用于模板
+	 * @throws `Error` if not a template or module invocation
 	 */
 	anonToNamed(): void {
 		if (!this.isTemplate()) {
@@ -1012,7 +1014,7 @@ export abstract class TranscludeToken extends Token {
 	 * Count duplicated parameters
 	 *
 	 * 重复参数计数
-	 * @throws `Error` 仅用于模板
+	 * @throws `Error` if not a template or module invocation
 	 */
 	hasDuplicatedArgs(): number {
 		if (this.isTemplate() || this.name === 'tag') {
@@ -1054,7 +1056,7 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 获取模块名和模块函数名
 	 * @since v1.16.4
-	 * @throws `Error` 仅用于模块
+	 * @throws `Error` if not a module invocation
 	 */
 	getModule(): [string, string | undefined] {
 		/* c8 ignore next 3 */
@@ -1070,7 +1072,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取 [frame 对象](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object)
 	 * @param context template calling this module / 调用该模块的模板
 	 * @since v1.22.0
-	 * @throws `Error` 仅用于模块
+	 * @throws `Error` if not a module invocation
 	 */
 	getFrame(context?: this): Frame {
 		/* c8 ignore next 3 */

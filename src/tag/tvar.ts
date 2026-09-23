@@ -140,8 +140,8 @@ export abstract class TvarToken extends TagToken {
 	 * 设置tvar变量名。
 	 * @param name name / 变量名
 	 * @since v1.28.0
-	 * @throws `Error` 闭合标签
-	 * @throws `SyntaxError` 同时包含单引号和双引号
+	 * @throws `Error` if this is a closing tvar tag
+	 * @throws `SyntaxError` if the name contains both `"` and `'`
 	 */
 	setName(name: string): void {
 		const {closing, firstChild} = this;

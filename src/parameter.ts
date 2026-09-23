@@ -301,8 +301,8 @@ export abstract class ParameterToken extends Token {
 	 * 修改参数名
 	 * @param key new parameter name / 新参数名
 	 * @param force whether to rename regardless of conflicts / 是否无视冲突命名
-	 * @throws `Error` 仅用于模板参数
-	 * @throws `RangeError` 更名造成重复参数
+	 * @throws `Error` if the parent node is not a template
+	 * @throws `RangeError` if the new parameter name conflicts with existing parameters
 	 */
 	rename(key: string, force?: boolean): void {
 		const {parentNode, anon} = this;

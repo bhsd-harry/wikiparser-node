@@ -123,7 +123,7 @@ export abstract class MagicLinkToken extends Token {
 		return this.pattern.exec(this.text())?.[1];
 	}
 
-	/** @throws `Error` 特殊外链无法更改协议n */
+	/** @throws `Error` if the link is a magic link or special external link */
 	set protocol(value: string) {
 		const {link, pattern, type} = this;
 		if (type === 'magic-link' || !pattern.test(link)) {

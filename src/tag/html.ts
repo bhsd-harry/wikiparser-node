@@ -89,7 +89,7 @@ export abstract class HtmlToken extends TagToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @throws `Error` 闭合标签或无效自封闭标签 */
+	/** @throws `Error` if this is a closing tag or an invalid self-closing tag */
 	set selfClosing(value) {
 		if (!value) {
 			this.#selfClosing = false;
@@ -324,7 +324,7 @@ export abstract class HtmlToken extends TagToken {
 	 *
 	 * 更换标签名
 	 * @param tag tag name / 标签名
-	 * @throws `RangeError` 非法的HTML标签
+	 * @throws `RangeError` if the tag name is invalid
 	 */
 	replaceTag(tag: string): void {
 		const name = tag.toLowerCase();
@@ -339,7 +339,7 @@ export abstract class HtmlToken extends TagToken {
 	 * Fix the invalid self-closing tag
 	 *
 	 * 修复无效自封闭标签
-	 * @throws `Error` 无法修复无效自封闭标签
+	 * @throws `Error` if the invalid self-closing tag cannot be fixed
 	 */
 	fix(): void {
 		const [normalTags] = this.getAttribute('config').html,

@@ -550,7 +550,7 @@ export abstract class ImageParameterToken extends Token {
 	 *
 	 * 设置参数值
 	 * @param value parameter value / 参数值
-	 * @throws `Error` 无效参数
+	 * @throws `Error` if the parameter is invalid
 	 */
 	setValue(value: string | boolean = false): void {
 		const {name} = this;

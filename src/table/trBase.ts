@@ -81,7 +81,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * 获取第n列
 	 * @param n column number / 列号
 	 * @param insert whether to be used to insert a new column / 是否用于判断插入新列的位置
-	 * @throws `RangeError` 不存在对应单元格
+	 * @throws `RangeError` if the `n`-th column does not exist
 	 */
 	getNthCol(n: number, insert?: false): TdToken | undefined;
 	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;

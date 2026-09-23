@@ -184,7 +184,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 * 搜索匹配的直引号
 	 * @since v1.30.0
 	 * @param type type of apostrophes to match / 匹配的直引号类型
-	 * @throws `RangeError` ambiguous or wrong apostrophe type
+	 * @throws `RangeError` if the apostrophes type is ambiguous or not matched
 	 */
 	findMatchingQuote(type?: 'bold' | 'italic'): this | undefined {
 		if (type) {

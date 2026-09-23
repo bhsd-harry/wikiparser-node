@@ -492,7 +492,7 @@ export abstract class AttributesToken extends Token {
 	 * @override
 	 * @param token node to be inserted / 待插入的子节点
 	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 标签不匹配
+	 * @throws `RangeError` if the inserted attribute is not for the current tag
 	 */
 	override insertAt<T extends AtomToken | AttributeToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
@@ -539,7 +539,7 @@ export abstract class AttributesToken extends Token {
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
 	 * @param prop attribute object / 属性对象
-	 * @throws `RangeError` 扩展标签属性不能包含">"
+	 * @throws `RangeError` if the attribute of an extension tag contains `>`
 	 */
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
@@ -585,7 +585,7 @@ export abstract class AttributesToken extends Token {
 	 * 开关指定属性
 	 * @param key attribute name / 属性键
 	 * @param force whether to force enabling or disabling / 强制开启或关闭
-	 * @throws `RangeError` 不为Boolean类型的属性值
+	 * @throws `RangeError` if the attribute is not a boolean attribute
 	 */
 	toggleAttr(key: string, force?: boolean): void {
 		require('../addon/attribute');

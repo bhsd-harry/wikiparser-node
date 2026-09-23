@@ -87,7 +87,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * 设置跨语言链接
 	 * @param lang language prefix / 语言前缀
 	 * @param link page title / 页面标题
-	 * @throws `SyntaxError` 仅有片段标识符
+	 * @throws `SyntaxError` if the link only contains a fragment identifier
 	 */
 	setLangLink(lang: string, link: string): void {
 		require('../../addon/link');
@@ -101,7 +101,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 *
 	 * 修改为到自身的链接
 	 * @param fragment URI fragment / 片段标识符
-	 * @throws `RangeError` 空的片段标识符
+	 * @throws `RangeError` if the link does not contain a fragment identifier
 	 */
 	asSelfLink(fragment?: string): void {
 		require('../../addon/link');
@@ -114,7 +114,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * Automatically generate the link text after the pipe
 	 *
 	 * 自动生成管道符后的链接文字
-	 * @throws `Error` 带有"#"或"%"时不可用
+	 * @throws `Error` if the link contains `#` or `%`
 	 */
 	pipeTrick(): void {
 		require('../../addon/link');

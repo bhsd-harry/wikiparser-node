@@ -119,7 +119,7 @@ export class Title {
 		this.main = (i === -1 ? main : main.slice(0, i)) + (extension && '.') + extension;
 	}
 
-	/** @throws `RangeError` undefined namespace */
+	/** @throws `RangeError` if the namespace is not defined */
 	set ns(ns) {
 		/* c8 ignore next 3 */
 		if (!Object.hasOwn(this.#namespaces, this.ns)) {
@@ -397,8 +397,8 @@ export class Title {
 	 * @param width width / 宽度
 	 * @param height height / 高度
 	 * @since v1.32.0
-	 * @throws `RangeError` invalid width or height
-	 * @throws `Error` not a file
+	 * @throws `RangeError` if width or height is not a positive integer
+	 * @throws `Error` if the title is not a file
 	 */
 	getFileUrl(width?: number | false, height?: number | false): string {
 		/* c8 ignore start */

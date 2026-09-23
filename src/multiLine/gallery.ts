@@ -223,7 +223,7 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * 插入图片
 	 * @param file image file name / 图片文件名
 	 * @param i position to be inserted at / 插入位置
-	 * @throws `SyntaxError` 非法的文件名
+	 * @throws `SyntaxError` if the file name is invalid
 	 */
 	insertImage(file: string, i?: number): GalleryImageToken {
 		if (this.#checkFile(file)) {

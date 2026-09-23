@@ -1,7 +1,7 @@
 import {getRegex} from '@bhsd/common';
 import {removeComment, restore, trimLc} from '../util/string';
 import {HeadingToken} from '../src/heading';
-import {TranscludeToken} from '../src/transclude';
+import {TranscludeToken, invalidTemplateMsg} from '../src/transclude';
 import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../internal';
@@ -125,7 +125,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					return `\0${length}${getSymbol(parts[0]!)}\x7F`;
 				} catch (e) {
 					/* c8 ignore next 3 */
-					if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
+					if (!(e instanceof SyntaxError) || e.message !== invalidTemplateMsg) {
 						throw e;
 					}
 				}
@@ -224,7 +224,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					ch = getSymbol(parts![0]![0]!);
 				} catch (e) {
 					/* c8 ignore next 3 */
-					if (!(e instanceof SyntaxError && e.message === 'Invalid template name')) {
+					if (!(e instanceof SyntaxError && e.message === invalidTemplateMsg)) {
 						throw e;
 					}
 					skip = true;

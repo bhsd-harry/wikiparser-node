@@ -601,7 +601,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 设置图片参数
 	 * @param key parameter name / 参数名
 	 * @param value parameter value / 参数值
-	 * @throws `RangeError` 未定义的图片参数
+	 * @throws `RangeError` if the parameter name is unknown
 	 */
 	setValue(key: string, value: string | boolean = false): void {
 		if (value === false) {
@@ -644,7 +644,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/* c8 ignore start */
 	/**
 	 * @override
-	 * @throws `Error` 不适用于图片
+	 * @throws `Error` if called, since `setLinkText` is not applicable to images
 	 */
 	override setLinkText(): never {
 		throw new Error('LinkBaseToken.setLinkText method is not applicable to images!');

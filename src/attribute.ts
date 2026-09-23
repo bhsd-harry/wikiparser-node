@@ -567,8 +567,8 @@ export abstract class AttributeToken extends Token {
 	 *
 	 * 设置属性值
 	 * @param value attribute value / 属性值
-	 * @throws `RangeError` 扩展标签属性不能包含 ">"
-	 * @throws `RangeError` 同时包含单引号和双引号
+	 * @throws `RangeError` if the attribute of an extension tag contains `>`
+	 * @throws `RangeError` if the value contains both `"` and `'`
 	 */
 	setValue(value: string | boolean): void {
 		require('../addon/attribute');
@@ -581,7 +581,7 @@ export abstract class AttributeToken extends Token {
 	 *
 	 * 修改属性名
 	 * @param key new attribute name / 新属性名
-	 * @throws `Error` title和alt属性不能更名
+	 * @throws `Error` if the attribute name is `title` or `alt`
 	 */
 	rename(key: string): void {
 		require('../addon/attribute');
@@ -624,9 +624,9 @@ export abstract class AttributeToken extends Token {
 	 * @param key style property / 样式属性
 	 * @param value style property value / 样式属性值
 	 * @since v1.17.1
-	 * @throws `Error` 不是style属性
-	 * @throws `Error` 复杂的style属性
-	 * @throws `Error` 无CSS语言服务
+	 * @throws `Error` if the attribute is not `style`
+	 * @throws `Error` if the value is too complex
+	 * @throws `Error` if CSS language service is not available
 	 */
 	css(key: string, value?: string | number): string | undefined {
 		require('../addon/attribute');

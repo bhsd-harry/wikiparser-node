@@ -87,7 +87,9 @@ export abstract class ConverterRuleToken extends Token {
 		return this.length === 3;
 	}
 
-	/** @throws `Error` 不能用于将双向转换或不转换更改为单向转换 */
+	/**
+	 * @throws `Error` if trying to change from no conversion or bidirectional conversion to unidirectional conversion
+	 */
 	set unidirectional(flag) {
 		const {length} = this;
 		if (length === 3 && !flag) {
@@ -110,7 +112,10 @@ export abstract class ConverterRuleToken extends Token {
 		return this.length === 2;
 	}
 
-	/** @throws `Error` 不能用于将双向转换更改为单向转换或将不转换更改为双向转换 */
+	/**
+	 * @throws `Error` if trying to change from no conversion to bidirectional conversion
+	 * or from bidirectional to unidirectional conversion
+	 */
 	set bidirectional(flag) {
 		const {length} = this;
 		if (length === 3 && flag) {
@@ -297,7 +302,7 @@ export abstract class ConverterRuleToken extends Token {
 	 *
 	 * 设置转换原文
 	 * @param from source of language conversion / 转换原文
-	 * @throws `Error` 尚未指定语言变体
+	 * @throws `Error` if the language variant is not specified
 	 */
 	setFrom(from: string): void {
 		const {variant, unidirectional} = this;

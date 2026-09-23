@@ -79,7 +79,7 @@ export abstract class HeadingToken extends Token {
 		return this.firstChild.text().trim();
 	}
 
-	/** @throws `Error` 首尾包含`=` */
+	/** @throws `Error` if the inner text is wrapped with `=` */
 	set innerText(text) {
 		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
 			throw new Error('Please use HeadingToken.setLevel method to change the level of the heading!');
