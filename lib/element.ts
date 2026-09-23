@@ -337,8 +337,8 @@ export abstract class AstElement extends AstNode {
 	print(opt: PrintOpt = {}): string {
 		PRINT: {
 			const cl = opt.class;
-			if (this.toString()) {
-				return (
+			return this.toString()
+				? (
 					cl === ''
 						? ''
 						: `<span class="wpb-${cl ?? this.type}${
@@ -346,9 +346,8 @@ export abstract class AstElement extends AstNode {
 						}">`
 				)
 				+ print(this.childNodes, opt)
-				+ (cl === '' ? '' : '</span>');
-			}
-			return '';
+				+ (cl === '' ? '' : '</span>')
+				: '';
 		}
 	}
 

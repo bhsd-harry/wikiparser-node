@@ -25,6 +25,7 @@ import type {SimplePage} from '@bhsd/test-util';
 
 Object.assign(Parser, {
 	lintConfig: {
+		fix: false,
 		rules: {
 			'invalid-css': 0,
 			'invalid-math': 0,

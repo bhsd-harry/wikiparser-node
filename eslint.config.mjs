@@ -95,6 +95,12 @@ export default extend(
 			'n/no-unpublished-bin': 0,
 			'unicorn/no-this-assignment': 0,
 			'unicorn/no-top-level-side-effects': 0,
+			'unicorn/prefer-minimal-ternary': [
+				2,
+				{
+					checkVaryingBase: true,
+				},
+			],
 			'jsdoc/require-param-description': 0,
 			'jsdoc/require-param': [
 				1,

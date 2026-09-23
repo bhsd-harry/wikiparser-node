@@ -220,29 +220,30 @@ const moveCol = (table: TableToken, x: number, reference: number, after?: boolea
 			setRef.add(refCoords);
 			rows[refCoords.row]!.getNthCol(refCoords.column)!.colspan++;
 		}
-		if (coords && !setX.has(coords)) {
-			setX.add(coords);
-			const rowToken = rows[i]!;
-			let token = rowToken.getNthCol(coords.column)!;
-			const {colspan} = token;
-			if (colspan > 1) {
-				token.colspan = colspan - 1;
-				if (start) {
-					const original = token;
-					token = token.cloneNode();
-					original.lastChild.replaceChildren();
-					token.colspan = 1;
-				}
-			}
+		if (!coords || setX.has(coords)) {
+			continue;
+		}
+		setX.add(coords);
+		const rowToken = rows[i]!;
+		let token = rowToken.getNthCol(coords.column)!;
+		const {colspan} = token;
+		if (colspan > 1) {
+			token.colspan = colspan - 1;
 			if (start) {
-				const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
-				rowToken.insertBefore(
-					token,
-					col === undefined
-						? rowToken.childNodes.slice(2).find(isRowEnd)
-						: rowToken.getNthCol(col),
-				);
+				const original = token;
+				token = token.cloneNode();
+				original.lastChild.replaceChildren();
+				token.colspan = 1;
 			}
+		}
+		if (start) {
+			const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
+			rowToken.insertBefore(
+				token,
+				col === undefined
+					? rowToken.childNodes.slice(2).find(isRowEnd)
+					: rowToken.getNthCol(col),
+			);
 		}
 	}
 };

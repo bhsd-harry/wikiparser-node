@@ -19,7 +19,7 @@ LinkBaseToken.prototype.setTarget =
 			[],
 			{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 		));
-		// eslint-disable-next-line unicorn/no-unused-array-method-return
+		// eslint-disable-next-line unicorn/no-unused-builtin-method-return
 		token.concat(Parser.parseWithRef(link, this, 2).childNodes);
 		this.firstChild.safeReplaceWith(token);
 	};

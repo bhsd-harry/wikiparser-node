@@ -218,7 +218,7 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	getChildNodes(): AstNodes[] {
 		const {childNodes} = this;
-		if (Object.isFrozen(childNodes)) {
+		if (Object.isFrozen(childNodes)) { // eslint-disable-line unicorn/prefer-ternary
 			return [...childNodes];
 		}
 		return childNodes as AstNodes[];

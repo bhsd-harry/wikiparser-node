@@ -584,15 +584,16 @@ export abstract class TranscludeToken extends Token {
 				/* eslint-enable unicorn/no-negated-condition */
 				{name} = token,
 				newName = String(i + 1);
-			if (name !== newName || token === addedToken) {
-				token.setAttribute('name', newName);
-				this.getArgs(newName, false, false).add(token);
+			if (name === newName && token !== addedToken) {
+				continue;
+			}
+			token.setAttribute('name', newName);
+			this.getArgs(newName, false, false).add(token);
 
-				/* NOT FOR BROWSER */
+			/* NOT FOR BROWSER */
 
-				if (name && token !== addedToken) {
-					this.getArgs(name, false, false).delete(token);
-				}
+			if (name && token !== addedToken) {
+				this.getArgs(name, false, false).delete(token);
 			}
 		}
 	}
@@ -926,7 +927,7 @@ export abstract class TranscludeToken extends Token {
 	): string
 		| Record<string, string>
 		| undefined {
-		if (key === undefined) {
+		if (key === undefined) { // eslint-disable-line unicorn/prefer-ternary
 			return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)!]));
 		}
 		return this.getArg(key)?.getValue();

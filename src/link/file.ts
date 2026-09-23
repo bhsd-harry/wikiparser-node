@@ -383,14 +383,15 @@ export abstract class FileToken extends LinkBaseToken {
 						...relevantArgs.slice(-1),
 					];
 				}
-				if (relevantArgs.length > 1) {
-					let severity: SeverityPredicate = !isCaption || !extension || extensions.has(extension);
-					if (isCaption && severity) {
-						const plainArgs = filterArgs(relevantArgs, transclusion);
-						severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
-					}
-					Array.prototype.push.apply(errors, generate(relevantArgs, 'duplicate', key, severity));
+				if (relevantArgs.length < 2) {
+					continue;
 				}
+				let severity: SeverityPredicate = !isCaption || !extension || extensions.has(extension);
+				if (isCaption && severity) {
+					const plainArgs = filterArgs(relevantArgs, transclusion);
+					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
+				}
+				Array.prototype.push.apply(errors, generate(relevantArgs, 'duplicate', key, severity));
 			}
 			if (frameKeys.length > 1) {
 				Array.prototype.push.apply(

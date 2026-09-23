@@ -329,7 +329,7 @@ export class Title {
 			return result;
 		}
 		this.autoConvert();
-		if (this.main !== main) {
+		if (this.main !== main) { // eslint-disable-line unicorn/prefer-ternary
 			return this.#getTitle(pre);
 		}
 

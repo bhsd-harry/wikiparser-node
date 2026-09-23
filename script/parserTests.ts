@@ -10,6 +10,7 @@ prepare(Parser);
 Object.assign(Parser, {
 	internal: true,
 	lintConfig: {
+		fix: false,
 		rules: {
 			'invalid-css': 0,
 			'invalid-math': 0,
