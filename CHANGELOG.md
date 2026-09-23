@@ -1,12 +1,16 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
 ## v1.48.0
 
-*2026-09-23*
+*2026-09-24*
 
 **Added**
 
 - [`AttributesToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken-%28EN%29#classlist) and [`FileToken.classList`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken-%28EN%29#classlist) now support [`DOMTokenList`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList)-like getters and methods including [`length`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/length), [`value`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/value), [`item`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/item), [`contains`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/contains), [`remove`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/remove), [`replace`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/replace) and [`toggle`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/toggle)
 - [`LanguageService#resolveCompletionItem`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#resolvecompletionitem)
+
+**Fixed**
+
+- [`TranscludeToken#getArgs`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getargs) and [`TranscludeToken#getDuplicatedArgs`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken-%28EN%29#getduplicatedargs) now guarantee the order of the returned arguments
 
 **Changed**
 

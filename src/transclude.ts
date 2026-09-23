@@ -50,6 +50,9 @@ declare interface Frame {
 
 export const invalidTemplateMsg = 'Invalid template name';
 
+const sortArgs = /** @ignore */ ({childNodes}: TranscludeToken, args: Set<ParameterToken>): ParameterToken[] =>
+	[...args].sort((a, b) => childNodes.indexOf(a) - childNodes.indexOf(b));
+
 /**
  * template or magic word
  *
@@ -646,12 +649,13 @@ export abstract class TranscludeToken extends Token {
 
 		if (exact && keyStr.trim() && Number.isSafeInteger(Number(keyStr))) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
-		} else if (copy) {
-			args = new Set(args);
 		}
 
 		/* NOT FOR BROWSER END */
 
+		if (copy) {
+			args = new Set(sortArgs(this, args));
+		}
 		return args;
 	}
 
@@ -666,7 +670,7 @@ export abstract class TranscludeToken extends Token {
 			const isTemplate = this.isTemplate();
 			if (isTemplate || this.name === 'tag') {
 				const duplicatedArgs = [...this.#args].filter(([, {size}]) => size > 1)
-					.map(([key, args]): [string, ParameterToken[]] => [key, [...args]]);
+					.map(([key, args]): [string, ParameterToken[]] => [key, sortArgs(this, args)]);
 				return isTemplate
 					? duplicatedArgs
 					: duplicatedArgs
@@ -858,16 +862,13 @@ export abstract class TranscludeToken extends Token {
 		key: string | number,
 		exact?: boolean,
 	): ParameterToken | undefined {
-		return [
+		const args = [
 			...this.getArgs(
 				key,
 				exact,
-				false,
 			),
-		].toSorted(
-			(a, b) =>
-				b.compareDocumentPosition(a),
-		)[0];
+		];
+		return args[args.length - 1];
 	}
 
 	/**
@@ -910,7 +911,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param key parameter name / 参数名
 	 */
 	getValues(key: string | number): string[] {
-		return [...this.getArgs(key, false, false)].map(token => token.getValue());
+		return [...this.getArgs(key)].map(token => token.getValue());
 	}
 
 	/**
