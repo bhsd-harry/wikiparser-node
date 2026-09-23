@@ -17,6 +17,9 @@ export interface Test extends TestBase {
 declare const Parser: ParserBase;
 Object.assign(Parser, {
 	config: require('../../config/default'),
+	lintConfig: {
+		fix: false,
+	},
 });
 
 /* PRINT ONLY */

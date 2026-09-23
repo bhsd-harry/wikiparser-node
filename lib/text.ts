@@ -85,7 +85,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		if (skip && !this.parentNode?.getAttribute('built')) {
+		if (skip && !this.parentNode?.getAttribute('built')) { // eslint-disable-line unicorn/prefer-ternary
 			return removeComment(this.data);
 		}
 		return this.data;
@@ -290,8 +290,7 @@ export class AstText extends AstNode {
 					}
 					if (!/(?:^|[^=])=+\s*(?:\S\s*)?$/u.test(line)) {
 						continue;
-					}
-					if (lineEnd === -1) {
+					} else if (lineEnd === -1) {
 						endIndex = sibling!.getAbsoluteIndex() + line.length;
 						({top: endLine, left: endCol} = root.posFromIndex(endIndex)!);
 					} else {

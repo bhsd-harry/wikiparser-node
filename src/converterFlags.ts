@@ -106,21 +106,22 @@ export abstract class ConverterFlagsToken extends Token {
 					const child = childNodes[i]!,
 						flag = child.text().trim();
 					if (
-						flag
-						&& !variantFlags.has(flag.toLowerCase())
-						&& !unknownFlags.has(flag)
-						&& (variantFlags.size > 0 || !definedFlags.has(flag))
+						!flag
+						|| variantFlags.has(flag.toLowerCase())
+						|| unknownFlags.has(flag)
+						|| variantFlags.size === 0 && definedFlags.has(flag)
 					) {
-						const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
-						if (computeEditInfo || fix) {
-							if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-								e.fix = fixByUpper(e, flag);
-							} else if (computeEditInfo) {
-								e.suggestions = [fixByRemove(e, i && -1)];
-							}
-						}
-						errors.push(e);
+						continue;
 					}
+					const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
+					if (computeEditInfo || fix) {
+						if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
+							e.fix = fixByUpper(e, flag);
+						} else if (computeEditInfo) {
+							e.suggestions = [fixByRemove(e, i && -1)];
+						}
+					}
+					errors.push(e);
 				}
 			}
 			return errors;

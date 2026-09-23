@@ -124,7 +124,7 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override toString(skip?: boolean): string {
 		const str = super.toString(skip, this.#delimiter);
-		if (this.#bracket) {
+		if (this.#bracket) { // eslint-disable-line unicorn/prefer-ternary
 			return `[[${str}]]`;
 		}
 		return str;
@@ -152,7 +152,7 @@ export abstract class LinkBaseToken extends Token {
 						'|',
 					)
 				}`;
-		if (this.#bracket) {
+		if (this.#bracket) { // eslint-disable-line unicorn/prefer-ternary
 			return `[[${str}]]`;
 		}
 		return str;
