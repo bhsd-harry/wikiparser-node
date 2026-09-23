@@ -367,8 +367,8 @@ export class AstText extends AstNode {
 	 *
 	 * 将文本子节点分裂为两部分
 	 * @param offset position to be splitted at / 分裂位置
-	 * @throws `RangeError` 错误的断开位置
-	 * @throws `Error` 没有父节点
+	 * @throws `RangeError` if the offset is out of range
+	 * @throws `Error` if the text node has no parent node
 	 */
 	splitText(offset: number): AstText {
 		LSP: {
@@ -389,7 +389,7 @@ export class AstText extends AstNode {
 	 *
 	 * 转义 `=` 和 `|`
 	 * @since v1.1.4
-	 * @throws `Error` 没有父节点
+	 * @throws `Error` if the text node has no parent node
 	 */
 	escape(): void {
 		LSP: {
