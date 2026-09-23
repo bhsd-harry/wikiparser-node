@@ -27,6 +27,9 @@ import type {AstText} from '../internal';
 
 export const invalidTemplateMsg = 'Invalid template name';
 
+const sortArgs = /** @ignore */ ({childNodes}: TranscludeToken, args: Set<ParameterToken>): ParameterToken[] =>
+	[...args].sort((a, b) => childNodes.indexOf(a) - childNodes.indexOf(b));
+
 /**
  * template or magic word
  *
@@ -443,6 +446,9 @@ export abstract class TranscludeToken extends Token {
 			);
 			this.#args.set(keyStr, args);
 		}
+		if (copy) {
+			args = new Set(sortArgs(this, args));
+		}
 		return args;
 	}
 
@@ -455,7 +461,7 @@ export abstract class TranscludeToken extends Token {
 		LINT: {
 			const isTemplate = this.isTemplate();
 			const duplicatedArgs = [...this.#args].filter(([, {size}]) => size > 1)
-				.map(([key, args]): [string, ParameterToken[]] => [key, [...args]]);
+				.map(([key, args]): [string, ParameterToken[]] => [key, sortArgs(this, args)]);
 			return isTemplate
 				? duplicatedArgs
 				: duplicatedArgs
