@@ -16,6 +16,8 @@ import type {
 } from '../base';
 import type {Title} from '../lib/title';
 
+export const invalidTemplateMsg = 'Invalid template name';
+
 /**
  * template or magic word
  *
@@ -113,7 +115,7 @@ export abstract class TranscludeToken extends Token {
 			const name = removeComment(title).trim();
 			if (!this.normalizeTitle(name, 10, {halfParsed: true, temporary: true}).valid) {
 				accum.pop();
-				throw new SyntaxError('Invalid template name');
+				throw new SyntaxError(invalidTemplateMsg);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
 			});
