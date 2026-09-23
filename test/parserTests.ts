@@ -1,10 +1,23 @@
 import assert from 'assert';
 import {describe, it} from '@bhsd/test-util/mocha';
-import type {Test} from '@bhsd/test-util/parser';
-import type {Parser as ParserBase} from '../base';
+import type {Test as TestBase} from '@bhsd/test-util/parser';
+import type {
+	LintError,
+	Parser as ParserBase,
+} from '../base';
+
+export interface Test extends TestBase {
+	title?: string | undefined;
+	html?: string;
+	render?: string;
+	print?: string;
+	lint?: LintError[];
+}
 
 declare const Parser: ParserBase;
-Parser.config = require('../../config/default');
+Object.assign(Parser, {
+	config: require('../../config/default'),
+});
 
 /* PRINT ONLY */
 
@@ -32,7 +45,7 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title = 'Parser test', wikitext, print, render} of tests) {
+	for (const {desc, title = 'Parser test', wikitext, print, render, lint} of tests) {
 		if (wikitext && (print || render)) {
 			if (wikitext.includes('[[|')) {
 				it.skip(desc);
@@ -46,6 +59,10 @@ describe('Parser tests', () => {
 							tidied,
 							'解析过程中不可逆地修改了原始文本！',
 						);
+
+						if (lint) {
+							assert.deepStrictEqual(root.lint(), lint);
+						}
 
 						/* PRINT ONLY */
 
