@@ -582,6 +582,7 @@ export class LanguageService implements LanguageServiceBase {
 				type,
 				childNodes,
 			} = token;
+			// eslint-disable-next-line unicorn/prefer-ternary
 			if (type !== 'attr-value' && !isPlain(token)) {
 				return [];
 			}
