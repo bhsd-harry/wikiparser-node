@@ -18,6 +18,9 @@ import type {Title} from '../lib/title';
 
 export const invalidTemplateMsg = 'Invalid template name';
 
+const sortArgs = /** @ignore */ ({childNodes}: TranscludeToken, args: Set<ParameterToken>): ParameterToken[] =>
+	[...args].sort((a, b) => childNodes.indexOf(a) - childNodes.indexOf(b));
+
 /**
  * template or magic word
  *
@@ -288,6 +291,9 @@ export abstract class TranscludeToken extends Token {
 			);
 			this.#args.set(keyStr, args);
 		}
+		if (copy) {
+			args = new Set(sortArgs(this, args));
+		}
 		return args;
 	}
 
@@ -320,15 +326,12 @@ export abstract class TranscludeToken extends Token {
 	getArg(
 		key: string | number,
 	): ParameterToken | undefined {
-		const {childNodes} = this;
-		return [
+		const args = [
 			...this.getArgs(
 				key,
 			),
-		].sort(
-			(a, b) =>
-				childNodes.indexOf(b) - childNodes.indexOf(a),
-		)[0];
+		];
+		return args[args.length - 1];
 	}
 
 	/**
