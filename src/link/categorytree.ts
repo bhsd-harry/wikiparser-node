@@ -51,10 +51,9 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 		LINT: {
 			const rule = 'no-ignored',
 				s = Parser.lintConfig.getSeverity(rule, 'categorytree');
-			if (s && this.#lint()) {
-				return [generateForSelf(this, {start}, rule, 'invalid-category', s)];
-			}
-			return super.lint(start, false);
+			return s && this.#lint()
+				? [generateForSelf(this, {start}, rule, 'invalid-category', s)]
+				: super.lint(start, false);
 		}
 	}
 

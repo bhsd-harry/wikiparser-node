@@ -1598,26 +1598,25 @@ export class LanguageService implements LanguageServiceBase {
 			index = root.indexFromPos(position.line, position.character)!,
 			node = root.elementFromIndex(index),
 			type = node?.type;
-		if (!node || (type === 'ext' || type === 'html') && !/\w/u.test(text.charAt(index))) {
-			return undefined;
-		}
-		return getMatchingTokens(root, node, highlightTypes)?.map((token): DocumentHighlight => {
-			const range = createNodeRange(token);
-			if (type === 'ext' || type === 'html') {
-				const {start} = range;
-				start.character += (token as HtmlToken).closing ? 2 : 1;
-				return {
-					range: {
-						start,
-						end: {
-							line: start.line,
-							character: start.character + token.name!.length,
+		return !node || (type === 'ext' || type === 'html') && !/\w/u.test(text.charAt(index))
+			? undefined
+			: getMatchingTokens(root, node, highlightTypes)?.map((token): DocumentHighlight => {
+				const range = createNodeRange(token);
+				if (type === 'ext' || type === 'html') {
+					const {start} = range;
+					start.character += (token as HtmlToken).closing ? 2 : 1;
+					return {
+						range: {
+							start,
+							end: {
+								line: start.line,
+								character: start.character + token.name!.length,
+							},
 						},
-					},
-				};
-			}
-			return {range};
-		});
+					};
+				}
+				return {range};
+			});
 	}
 
 	/**

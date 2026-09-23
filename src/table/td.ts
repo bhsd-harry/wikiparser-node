@@ -134,6 +134,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override getGaps(i: number): number {
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (i === 1) {
 			return this.#innerSyntax.length;
 		}
