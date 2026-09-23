@@ -51,6 +51,7 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (this.length === 1) {
 			return `[${super.toString(skip)}${this.#space}]`;
 		}

@@ -336,11 +336,10 @@ if (recursive) {
 		if (!fs.existsSync(file)) {
 			return [];
 		}
-		if (fs.statSync(file).isFile()) {
-			return file;
-		}
-		return fs.readdirSync(file, {recursive: true, withFileTypes: true}).filter(dir => dir.isFile())
-			.map(dir => path.join(dir.parentPath, dir.name));
+		return fs.statSync(file).isFile()
+			? file
+			: fs.readdirSync(file, {recursive: true, withFileTypes: true}).filter(dir => dir.isFile())
+				.map(dir => path.join(dir.parentPath, dir.name));
 	});
 }
 if (exts.length > 0) {
