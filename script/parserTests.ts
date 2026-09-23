@@ -3,10 +3,19 @@ import path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
 import {prepare} from './util';
-import type {Test} from '@bhsd/test-util/parser';
+import type {LintRuleConfig} from '../base';
+import type {Test} from '../test/parserTests';
 
 prepare(Parser);
-Parser.internal = true;
+Object.assign(Parser, {
+	internal: true,
+	lintConfig: {
+		rules: {
+			'invalid-css': 0,
+			'invalid-math': 0,
+		} satisfies LintRuleConfig,
+	},
+});
 
 const tests: Test[] = [],
 	regex = {
@@ -153,6 +162,7 @@ for (const file of ['parserTests.txt', ...files]) {
 				console.error(`${test}\n`);
 			}
 		}
+		t.lint = root.lint();
 		t.print = root.print();
 		tests.push(t);
 	}
