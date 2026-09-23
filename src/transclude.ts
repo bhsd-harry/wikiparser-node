@@ -25,6 +25,8 @@ import type {
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
 
+export const invalidTemplateMsg = 'Invalid template name';
+
 /**
  * template or magic word
  *
@@ -166,7 +168,7 @@ export abstract class TranscludeToken extends Token {
 			const name = removeComment(title).trim();
 			if (!this.normalizeTitle(name, 10, {halfParsed: true, temporary: true}).valid) {
 				accum.pop();
-				throw new SyntaxError('Invalid template name');
+				throw new SyntaxError(invalidTemplateMsg);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
 			});
@@ -466,7 +468,7 @@ export abstract class TranscludeToken extends Token {
 	 * Get possible values of some magic words
 	 *
 	 * 对特定魔术字获取可能的取值
-	 * @throws `Error` 不是可接受的魔术字
+	 * @throws `Error` if not a supported magic word
 	 */
 	getPossibleValues(): Token[] {
 		const {type, name, childNodes, length: l} = this;
