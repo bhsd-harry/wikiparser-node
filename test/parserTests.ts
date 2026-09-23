@@ -1,13 +1,23 @@
 import assert from 'assert';
 import {describe, it} from '@bhsd/test-util/mocha';
-import type {Test} from '@bhsd/test-util/parser';
 import Parser from '../../bundle/bundle.min.js'; // eslint-disable-line n/no-missing-import
+import type {Test as TestBase} from '@bhsd/test-util/parser';
 
-Parser.config = require('../../config/default');
+export interface Test extends TestBase {
+	title?: string | undefined;
+	html?: string;
+	render?: string;
+	print?: string;
+}
+
+Object.assign(Parser, {
+	config: require('../../config/default'),
+});
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title = 'Parser test', wikitext, print, render} of tests) {
+	// @ts-expect-error no `lint` property
+	for (const {desc, title = 'Parser test', wikitext, print, render, lint} of tests) {
 		if (wikitext && (print || render)) {
 			it(desc, () => {
 				const root = Parser.parse(wikitext, title),
