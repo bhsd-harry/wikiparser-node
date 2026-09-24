@@ -565,6 +565,7 @@ export interface Parser {
 	 *
 	 * 获取当前的解析设置
 	 * @param config unprocessed parser configuration / 未处理的解析设置
+	 * @throws `RangeError` if the configuration file path or file name is invalid
 	 */
 	getConfig(config?: ConfigData): Config;
 

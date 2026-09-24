@@ -72,6 +72,7 @@ const pkg = $PKG,
  * @param user URI for wiki userpage or email address of the user
  * @param force whether to overwrite the existing configuration
  * @param internal for internal use
+ * @throws `RangeError` if the site nickname or script path is missing, or Extension:CodeMirror is not installed
  */
 export default async (
 	site: string,
