@@ -47,8 +47,7 @@ const getSymbol = (s: string): string => {
  * @param wikitext
  * @param config
  * @param accum
- * @throws `RangeError` Maximum iteration exceeded
- * @throws `TranscludeToken.constructor()`
+ * @throws `RangeError` if maximum iteration exceeded
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${

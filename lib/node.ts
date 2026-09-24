@@ -112,6 +112,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 在后方批量插入兄弟节点
 	 * @param nodes nodes to be inserted / 插入节点
+	 * @throws `Error` if the current node has no parent node
 	 */
 	after(...nodes: (AstNodes | string)[]): void {
 		this.insertAdjacent(nodes, 1);
@@ -122,6 +123,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 在前方批量插入兄弟节点
 	 * @param nodes nodes to be inserted / 插入节点
+	 * @throws `Error` if the current node has no parent node
 	 */
 	before(...nodes: (AstNodes | string)[]): void {
 		this.insertAdjacent(nodes, 0);
