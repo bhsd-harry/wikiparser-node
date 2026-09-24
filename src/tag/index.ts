@@ -238,11 +238,11 @@ export abstract class TagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	// eslint-disable-next-line jsdoc/require-throws
 	/**
 	 * Get the range of the tag pair
 	 *
 	 * 获取标签对的范围
-	 * @throws `RangeError` if the opening and closing tags are not siblings
 	 * @since v1.23.0
 	 */
 	getRange(): AstRange | undefined {
@@ -257,7 +257,7 @@ export abstract class TagToken extends Token {
 			range.setEndBefore(closing ? this : matched);
 		} catch (e) {
 			if (e instanceof RangeError && e.message === cannotSetRange) {
-				throw new RangeError('The opening and closing tags are not siblings!', {cause: e});
+				return undefined;
 			}
 			throw e;
 		}

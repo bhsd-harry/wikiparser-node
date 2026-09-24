@@ -166,6 +166,7 @@ declare interface Parser extends ParserBase {
 	 *
 	 * 获取一个WMF网站的名称
 	 * @param url script path
+	 * @throws `RangeError` if the URL is not a recognizable WMF site
 	 * @since v1.22.0
 	 */
 	getWMFSite(url: string): [string, string];
@@ -177,6 +178,7 @@ declare interface Parser extends ParserBase {
 	 * @param site site nickname / 网站别名
 	 * @param url script path / 脚本路径
 	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
+	 * @throws `RangeError` if Extension:CodeMirror is not installed
 	 * @since v1.18.4
 	 */
 	fetchConfig(site: string, url: string, user?: string): Promise<Config>;
@@ -222,6 +224,7 @@ declare interface Parser extends ParserBase {
 	 * 调用一个解析器函数
 	 * @param name parser function name / 解析器函数名
 	 * @param args arguments / 参数
+	 * @throws `RangeError` if failed to resolve the parser function
 	 * @since v1.31.0
 	 */
 	callParserFunction(name: string, ...args: string[]): string;
@@ -264,7 +267,7 @@ const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
 /**
  * require一个JSON文件
  * @param file 文件名
- * @throws {RangeError} 仅支持JSON文件
+ * @throws `RangeError` 仅支持JSON文件
  */
 const jsonRequire = (file: string): unknown => {
 	const fullPath = require.resolve(file);

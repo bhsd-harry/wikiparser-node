@@ -109,8 +109,7 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
  * @param step 解析后的选择器
  * @param scope 作用对象
  * @param has `:has()`伪选择器
- * @throws `SyntaxError` 错误的正则伪选择器
- * @throws `SyntaxError` 未定义的伪选择器
+ * @throws `SyntaxError` 未定义的伪选择器或错误的正则伪选择器
  */
 const matches = (
 	token: Token & Partial<AttributesParentBase>,
@@ -337,6 +336,7 @@ const deQuote = (val: string): string => /^(["']).*\1$/u.test(val) ? val.slice(1
  * @param selector
  * @param scope 作用对象
  * @param has `:has()`伪选择器
+ * @throws `SyntaxError` 非法的选择器
  */
 export const checkToken = (
 	selector: string,
@@ -358,8 +358,7 @@ export const checkToken = (
 	/**
 	 * 解析简单伪选择器
 	 * @param index 伪选择器的终点位置
-	 * @throws `SyntaxError` 选择器排序
-	 * @throws `SyntaxError` 非法的选择器
+	 * @throws `SyntaxError` 选择器排序不当或非法的选择器
 	 */
 	const pushSimple = (index?: number): void => {
 		const str = sanitized.slice(0, index).trim();

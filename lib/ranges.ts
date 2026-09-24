@@ -12,9 +12,7 @@ export class Range {
 
 	/**
 	 * @param str 表达式
-	 * @throws `RangeError` 起点、终点和步长均应为整数
-	 * @throws `RangeError` n的系数不能为0
-	 * @throws `RangeError` 应使用CSS选择器或Python切片的格式
+	 * @throws `RangeError` 起点、终点和步长均应为整数；n的系数不能为0；应使用CSS选择器或Python切片的格式
 	 */
 	constructor(str: string) {
 		str = str.trim();

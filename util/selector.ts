@@ -24,6 +24,7 @@ export const basic = (selector: string): BasicCondition => {
  * @param selector 选择器
  * @param scope 作用对象
  * @param has `:has()`伪选择器
+ * @throws `SyntaxError` 非法的选择器
  */
 export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
 	selector = selector.trim();

@@ -83,7 +83,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @param insert whether to be used to insert a new column / 是否用于判断插入新列的位置
 	 * @throws `RangeError` if the `n`-th column does not exist
 	 */
-	getNthCol(n: number, insert?: false): TdToken | undefined;
+	getNthCol(n: number, insert?: false): TdToken;
 	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
 	getNthCol(n: number, insert?: boolean): TdToken | TrToken | SyntaxToken | undefined {
 		const nCols = this.getColCount();
@@ -195,6 +195,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @param {TableCoords} coord table coordinates of the cell / 单元格坐标
 	 * @param subtype cell type / 单元格类型
 	 * @param attr cell attribute / 单元格属性
+	 * @throws `RangeError` if the specified coordinates are not the starting point of a cell
 	 */
 	insertTableCell(
 		inner: string | Token,

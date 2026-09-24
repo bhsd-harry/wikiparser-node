@@ -129,8 +129,7 @@ export class AstRange {
 
 	/**
 	 * 检查起点和终点的设置是否有效
-	 * @throws `RangeError` 起点和终点不是兄弟节点
-	 * @throws `RangeError` 起点位于终点之后
+	 * @throws `RangeError` 起点和终点不是兄弟节点或起点位于终点之后
 	 */
 	#check(): void {
 		const {startContainer, startOffset, endContainer, endOffset} = this,
@@ -173,7 +172,7 @@ export class AstRange {
 	 * 设置起点
 	 * @param startNode start container / 起点容器
 	 * @param offset start offset / 起点位置
-	 * @throws `RangeError` if the offset is out of range
+	 * @throws `RangeError` if the offset is out of range or the start container is invalid
 	 */
 	setStart(startNode: AstNodes, offset: number): void {
 		const {length} = startNode;
@@ -203,7 +202,7 @@ export class AstRange {
 	 * 设置终点
 	 * @param endNode end container / 终点容器
 	 * @param offset end offset / 终点位置
-	 * @throws `RangeError` if the offset is out of range
+	 * @throws `RangeError` if the offset is out of range or the end container is invalid
 	 */
 	setEnd(endNode: AstNodes, offset: number): void {
 		const {length} = endNode;
@@ -242,6 +241,7 @@ export class AstRange {
 	 *
 	 * 在节点后设置起点
 	 * @param referenceNode reference node / 节点
+	 * @throws `RangeError` if the node has no parent
 	 */
 	setStartAfter(referenceNode: AstNodes): void {
 		this.#setAfter('setStart', referenceNode);
@@ -252,6 +252,7 @@ export class AstRange {
 	 *
 	 * 在节点后设置终点
 	 * @param referenceNode reference node / 节点
+	 * @throws `RangeError` if the node has no parent
 	 */
 	setEndAfter(referenceNode: AstNodes): void {
 		this.#setAfter('setEnd', referenceNode);
@@ -272,6 +273,7 @@ export class AstRange {
 	 *
 	 * 在节点前设置起点
 	 * @param referenceNode reference node / 节点
+	 * @throws `RangeError` if the node has no parent
 	 */
 	setStartBefore(referenceNode: AstNodes): void {
 		this.#setBefore('setStart', referenceNode);
@@ -282,6 +284,7 @@ export class AstRange {
 	 *
 	 * 在节点前设置终点
 	 * @param referenceNode reference node / 节点
+	 * @throws `RangeError` if the node has no parent
 	 */
 	setEndBefore(referenceNode: AstNodes): void {
 		this.#setBefore('setEnd', referenceNode);
@@ -305,6 +308,7 @@ export class AstRange {
 	 *
 	 * 设置Range包含整个节点
 	 * @param referenceNode reference node / 节点
+	 * @throws `RangeError` if the node has no parent
 	 */
 	selectNode(referenceNode: AstNodes): void {
 		const parentNode = getParent(referenceNode),

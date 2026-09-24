@@ -907,6 +907,7 @@ export class Token extends AstElement {
 	 * @param options options / 选项
 	 * @param options.selfClosing whether to be a self-closing tag / 是否自封闭
 	 * @param options.closing whether to be a closing tag / 是否是闭合标签
+	 * @throws `RangeError` if the tag name is invalid
 	 */
 	createElement(
 		tagName: string,
@@ -1003,6 +1004,7 @@ export class Token extends AstElement {
 	 *
 	 * 获取指定的外层HTML标签
 	 * @param tag HTML tag name / HTML标签名
+	 * @throws `RangeError` if the tag name is invalid or is a void tag
 	 */
 	findEnclosingHtml(tag?: string): AstRangeBase | undefined {
 		require('../addon/token');

@@ -54,6 +54,7 @@ export interface ElementLike {
 	 *
 	 * 最近的符合选择器的祖先节点
 	 * @param selector selector / 选择器
+	 * @throws `SyntaxError` if the selector is invalid
 	 */
 	closest<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
 	closest<T = Token>(selector: string): T | undefined;
@@ -63,6 +64,7 @@ export interface ElementLike {
 	 *
 	 * 符合选择器的第一个后代节点
 	 * @param selector selector / 选择器
+	 * @throws `SyntaxError` if the selector is invalid
 	 */
 	querySelector<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K] | undefined;
 	querySelector<T = Token>(selector: string): T | undefined;
@@ -72,6 +74,7 @@ export interface ElementLike {
 	 *
 	 * 符合选择器的所有后代节点
 	 * @param selector selector / 选择器
+	 * @throws `SyntaxError` if the selector is invalid
 	 */
 	querySelectorAll<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K][];
 	querySelectorAll<T = Token>(selector: string): T[];

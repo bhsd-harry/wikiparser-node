@@ -92,6 +92,7 @@ export abstract class ParameterToken extends Token {
 		}
 	}
 
+	/** @throws `Error` if trying to convert a named parameter to an anonymous one */
 	set anon(value) {
 		if (value) {
 			throw new Error('Cannot convert named parameter to anonymous parameter!');
@@ -301,7 +302,7 @@ export abstract class ParameterToken extends Token {
 	 * 修改参数名
 	 * @param key new parameter name / 新参数名
 	 * @param force whether to rename regardless of conflicts / 是否无视冲突命名
-	 * @throws `Error` if the parent node is not a template
+	 * @throws `Error` if the parent node is not a template or module invocation
 	 * @throws `RangeError` if the new parameter name conflicts with existing parameters
 	 */
 	rename(key: string, force?: boolean): void {

@@ -284,7 +284,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` if the `n`-th row does not exist
 	 */
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
-	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
+	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this;
 	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
 		LINT: {
 			const isRow = super.getRowCount();
@@ -540,6 +540,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param inner inner wikitext / 内部wikitext
 	 * @param subtype type of the cell / 单元格类型
 	 * @param attr cell attribute / 单元格属性
+	 * @throws `RangeError` if the row does not have `x` columns
 	 */
 	insertTableCol(x: number, inner: string | Token, subtype?: TdSubtypes, attr?: TdAttrs): void {
 		require('../../addon/table');
@@ -574,6 +575,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 合并单元格
 	 * @param xlim column range / 列范围
 	 * @param ylim row range / 行范围
+	 * @throws `RangeError` if the specified area is invalid
 	 */
 	mergeCells(xlim: readonly [number, number], ylim: readonly [number, number]): TdToken {
 		require('../../addon/table');
@@ -641,6 +643,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 移动表格行
 	 * @param y row number / 行号
 	 * @param before new position / 新位置
+	 * @throws `RangeError` if failed to move the row
 	 */
 	moveTableRowBefore(y: number, before: number): TrToken {
 		require('../../addon/table');
@@ -653,6 +656,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 移动表格行
 	 * @param y row number / 行号
 	 * @param after new position / 新位置
+	 * @throws `RangeError` if failed to move the row
 	 */
 	moveTableRowAfter(y: number, after: number): TrToken {
 		require('../../addon/table');
@@ -665,6 +669,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 移动表格列
 	 * @param x column number / 列号
 	 * @param before new position / 新位置
+	 * @throws `RangeError` if failed to move the column
 	 */
 	moveTableColBefore(x: number, before: number): void {
 		require('../../addon/table');
@@ -677,6 +682,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 移动表格列
 	 * @param x column number / 列号
 	 * @param after new position / 新位置
+	 * @throws `RangeError` if failed to move the column
 	 */
 	moveTableColAfter(x: number, after: number): void {
 		require('../../addon/table');

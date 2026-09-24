@@ -143,12 +143,12 @@ const prependTableRow = (table: TableToken): TrToken => {
 	return row;
 };
 
+// eslint-disable-next-line jsdoc/require-throws
 /**
  * 分裂单元格
  * @param table 表格
  * @param coords 单元格坐标
  * @param dirs 分裂方向
- * @throws `RangeError` 指定坐标不是某个单元格的起始点
  */
 const split = (table: TableToken, coords: TableCoords | TableRenderedCoords, dirs: Set<keyof TdSpanAttrs>): void => {
 	const cell = table.getNthCell(coords)!,
@@ -218,14 +218,14 @@ const moveCol = (table: TableToken, x: number, reference: number, after?: boolea
 			start = isStartCol(rowLayout, x);
 		if (refCoords && !start && !setRef.has(refCoords)) {
 			setRef.add(refCoords);
-			rows[refCoords.row]!.getNthCol(refCoords.column)!.colspan++;
+			rows[refCoords.row]!.getNthCol(refCoords.column).colspan++;
 		}
 		if (!coords || setX.has(coords)) {
 			continue;
 		}
 		setX.add(coords);
 		const rowToken = rows[i]!;
-		let token = rowToken.getNthCol(coords.column)!;
+		let token = rowToken.getNthCol(coords.column);
 		const {colspan} = token;
 		if (colspan > 1) {
 			token.colspan = colspan - 1;
@@ -280,7 +280,7 @@ TableToken.prototype.getNthCell =
 	/** @implements */
 	function(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
 		const rawCoords: TableCoords | undefined = coords.row === undefined ? this.toRawCoords(coords) : coords;
-		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
+		return rawCoords && this.getNthRow(rawCoords.row).getNthCol(rawCoords.column);
 	};
 
 TableToken.prototype.printLayout =
@@ -319,7 +319,7 @@ TableToken.prototype.getFullRow =
 	/** @implements */
 	function(y): Map<TdToken, boolean> {
 		const rows = this.getAllRows();
-		return new Map(this.getLayout({y})[y]?.map(({row, column}) => [rows[row]!.getNthCol(column)!, row === y]));
+		return new Map(this.getLayout({y})[y]?.map(({row, column}) => [rows[row]!.getNthCol(column), row === y]));
 	};
 
 TableToken.prototype.getFullCol =
@@ -328,7 +328,7 @@ TableToken.prototype.getFullCol =
 		const layout = this.getLayout(),
 			rows = this.getAllRows();
 		return new Map(layout.map(row => row[x]).filter(coords => coords !== undefined).map(
-			coords => [rows[coords.row]!.getNthCol(coords.column)!, layout[coords.row]![x - 1] !== coords],
+			coords => [rows[coords.row]!.getNthCol(coords.column), layout[coords.row]![x - 1] !== coords],
 		));
 	};
 
@@ -348,7 +348,7 @@ TableToken.prototype.fillTableRow =
 	/** @implements */
 	function(y, inner, subtype, attr): void {
 		const layout = this.getLayout({y});
-		fill(y, this.getNthRow(y)!, layout, getMaxCol(layout), createTd(inner, this, subtype, attr));
+		fill(y, this.getNthRow(y), layout, getMaxCol(layout), createTd(inner, this, subtype, attr));
 	};
 
 TableToken.prototype.fillTable =
@@ -379,7 +379,7 @@ TableToken.prototype.insertTableCell =
 		const rowToken = this.getNthRow(rawCoords.row, true);
 		return rowToken === this
 			? TrBaseToken.prototype.insertTableCell.call(this, inner, rawCoords, subtype, attr)
-			: rowToken!.insertTableCell(inner, rawCoords, subtype, attr);
+			: rowToken.insertTableCell(inner, rawCoords, subtype, attr);
 	};
 
 TableToken.prototype.insertTableRow =
@@ -438,7 +438,7 @@ TableToken.prototype.insertTableCol =
 			if (!prevCoords) {
 				//
 			} else if (prevCoords !== coords) {
-				const rowToken = this.getNthRow(i)!;
+				const rowToken = this.getNthRow(i);
 				rowToken.insertBefore(token.cloneNode(), rowToken.getNthCol(coords!.column, true));
 			} else if (coords.row === i) {
 				this.getNthCell(coords)!.colspan++;
@@ -459,7 +459,7 @@ TableToken.prototype.removeTableRow =
 				continue;
 			}
 			set.add(coords);
-			const token = rows[coords.row]!.getNthCol(coords.column)!;
+			const token = rows[coords.row]!.getNthCol(coords.column);
 			let {rowspan} = token;
 			if (rowspan > 1) {
 				token.rowspan = --rowspan;
@@ -515,12 +515,12 @@ TableToken.prototype.mergeCells =
 		}
 		const corner = layout[ymin]![xmin]!,
 			rows = this.getAllRows(),
-			cornerCell = rows[corner.row]!.getNthCol(corner.column)!;
+			cornerCell = rows[corner.row]!.getNthCol(corner.column);
 		cornerCell.rowspan = ymax - ymin;
 		cornerCell.colspan = xmax - xmin;
 		set.delete(corner);
 		for (const {row, column} of set) {
-			rows[row]!.getNthCol(column)!.remove();
+			rows[row]!.getNthCol(column).remove();
 		}
 		return cornerCell;
 	};
@@ -546,7 +546,7 @@ TableToken.prototype.splitIntoCells =
 TableToken.prototype.replicateTableRow =
 	/** @implements */
 	function(row): TrToken {
-		let rowToken = this.getNthRow(row)!;
+		let rowToken = this.getNthRow(row);
 		if (rowToken.is('table')) {
 			rowToken = prependTableRow(this);
 		}
@@ -601,7 +601,7 @@ TableToken.prototype.moveTableRowBefore =
 				this.getNthCell(coords)!.rowspan++;
 			}
 		}
-		let beforeToken = this.getNthRow(before)!;
+		let beforeToken = this.getNthRow(before);
 		if (beforeToken.is('table')) {
 			beforeToken = prependTableRow(this);
 		}
@@ -613,7 +613,7 @@ TableToken.prototype.moveTableRowAfter =
 	/** @implements */
 	function(y, after): TrToken {
 		const layout = this.getLayout(),
-			afterToken = this.getNthRow(after)!,
+			afterToken = this.getNthRow(after),
 			cells = afterToken.childNodes.filter(
 				child => child.is('td') && child.subtype !== 'caption',
 			) as TdToken[];

@@ -357,6 +357,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 获取当前节点的相对字符位置，或其第`j`个子节点的相对字符位置
 	 * @param j rank of the child node / 子节点序号
+	 * @throws `RangeError` if the `j`-th child node does not exist
 	 */
 	getRelativeIndex(j?: number): number {
 		if (j === undefined) {
@@ -502,12 +503,12 @@ export abstract class AstNode implements AstNodeBase {
 		throw new Error(`${this.constructor.name} ${msg}!`);
 	}
 
+	// eslint-disable-next-line jsdoc/require-throws
 	/**
 	 * Check if the node is identical
 	 *
 	 * 是否是全同节点
 	 * @param node node to be compared to / 待比较的节点
-	 * @throws `assert.AssertionError` if the nodes are not identical
 	 */
 	isEqualNode(node: AstNode): boolean {
 		try {
@@ -540,6 +541,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 在后方批量插入兄弟节点
 	 * @param nodes nodes to be inserted / 插入节点
+	 * @throws `Error` if the current node has no parent node
 	 */
 	after(...nodes: (AstNodes | string)[]): void {
 		this.insertAdjacent(nodes, 1);
@@ -550,6 +552,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 在前方批量插入兄弟节点
 	 * @param nodes nodes to be inserted / 插入节点
+	 * @throws `Error` if the current node has no parent node
 	 */
 	before(...nodes: (AstNodes | string)[]): void {
 		this.insertAdjacent(nodes, 0);
@@ -580,6 +583,7 @@ export abstract class AstNode implements AstNodeBase {
 	 *
 	 * 将当前节点批量替换为新的节点
 	 * @param nodes nodes to be inserted / 插入节点
+	 * @throws `Error` if the current node has no parent node
 	 */
 	replaceWith(...nodes: (AstNodes | string)[]): void {
 		this.insertAdjacent(nodes, 1);

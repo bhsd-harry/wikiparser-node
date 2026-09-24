@@ -567,8 +567,7 @@ export abstract class AttributeToken extends Token {
 	 *
 	 * 设置属性值
 	 * @param value attribute value / 属性值
-	 * @throws `RangeError` if the attribute of an extension tag contains `>`
-	 * @throws `RangeError` if the value contains both `"` and `'`
+	 * @throws `RangeError` if the attribute of an extension tag contains `>` or the value contains both `"` and `'`
 	 */
 	setValue(value: string | boolean): void {
 		require('../addon/attribute');
@@ -624,9 +623,7 @@ export abstract class AttributeToken extends Token {
 	 * @param key style property / 样式属性
 	 * @param value style property value / 样式属性值
 	 * @since v1.17.1
-	 * @throws `Error` if the attribute is not `style`
-	 * @throws `Error` if the value is too complex
-	 * @throws `Error` if CSS language service is not available
+	 * @throws `Error` if the attribute is not `style`, the value is too complex, or CSS language service is unavailable
 	 */
 	css(key: string, value?: string | number): string | undefined {
 		require('../addon/attribute');

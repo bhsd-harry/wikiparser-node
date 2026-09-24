@@ -131,6 +131,7 @@ export abstract class AstElement extends AstNode {
 	 *
 	 * 移除子节点
 	 * @param i position of the child node / 移除位置
+	 * @throws `RangeError` if the child node does not exist
 	 */
 	@readOnly()
 	removeAt(i: number): AstNodes {
@@ -209,7 +210,7 @@ export abstract class AstElement extends AstNode {
 	 * 修改文本子节点
 	 * @param str new text / 新文本
 	 * @param i position of the text child node / 子节点位置
-	 * @throws `RangeError` if the child node is not a text node
+	 * @throws `RangeError` if the child node does not exist or is not a text node
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;
@@ -447,6 +448,7 @@ export abstract class AstElement extends AstNode {
 	 *
 	 * 检查是否符合选择器
 	 * @param selector selector / 选择器
+	 * @throws `SyntaxError` if the selector is invalid
 	 */
 	matches<K extends SelectedTokenTypes>(selector: K): this is TokenTypeMap[K];
 	matches<T extends Token>(selector: string): this is T;
@@ -485,6 +487,7 @@ export abstract class AstElement extends AstNode {
 	 *
 	 * 移除子节点
 	 * @param node child node to be removed / 子节点
+	 * @throws `RangeError` if not a child node
 	 */
 	removeChild<T extends AstNodes>(node: T): T {
 		return this.removeAt(this.#getChildIndex(node)) as T;
@@ -506,6 +509,7 @@ export abstract class AstElement extends AstNode {
 	 * 在指定位置前插入子节点
 	 * @param child node to be inserted / 插入节点
 	 * @param reference reference child node / 指定位置处的子节点
+	 * @throws `RangeError` if the specified reference node is not a child node
 	 */
 	insertBefore(child: string, reference?: AstNodes): AstText;
 	insertBefore<T extends AstNodes>(child: T, reference?: AstNodes): T;
