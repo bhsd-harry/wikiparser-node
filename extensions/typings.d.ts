@@ -57,7 +57,7 @@ export interface wikiparse {
 	setLintConfig: (config?: LintConfig) => void;
 	setConfig: (config: ConfigData) => void;
 	getConfig: () => Promise<Config>;
-	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
+	json: (wikitext: string, include?: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[] & {output?: string}>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string, paddingBottom?: string) => void;

@@ -1065,25 +1065,25 @@ export class Token extends AstElement {
 	 * @since v1.10.0
 	 */
 	toHtml(): string {
-		const {viewOnly, internal} = Parser;
-		let output: string;
-		Parser.internal = true;
-		if (this.type === 'root') {
-			const {expandToken}: typeof import('../render/expand') = require('../render/expand'),
-				{toHtml}: typeof import('../render/html') = require('../render/html');
-			Parser.viewOnly = true;
-			const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
-				e = new Event('expand');
-			this.dispatchEvent(e, {type: 'expand', token: expanded});
-			Parser.viewOnly = false;
-			output = toHtml(expanded);
-		} else {
-			Parser.viewOnly = false;
-			output = this.cloneNode().toHtmlInternal();
-		}
-		Parser.viewOnly = viewOnly;
-		Parser.internal = internal;
-		return output;
+		const {viewOnly} = Parser;
+		return Shadow.internal(() => {
+			let output: string;
+			if (this.type === 'root') {
+				const {expandToken}: typeof import('../render/expand') = require('../render/expand'),
+					{toHtml}: typeof import('../render/html') = require('../render/html');
+				Parser.viewOnly = true;
+				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
+					e = new Event('expand');
+				this.dispatchEvent(e, {type: 'expand', token: expanded});
+				Parser.viewOnly = false;
+				output = toHtml(expanded);
+			} else {
+				Parser.viewOnly = false;
+				output = this.cloneNode().toHtmlInternal();
+			}
+			Parser.viewOnly = viewOnly;
+			return output;
+		}, Parser);
 	}
 
 	/**
