@@ -28,7 +28,7 @@ import type {
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 // eslint-disable-next-line @stylistic/max-len
-import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData, CompletionItem, Parser} from '../base';
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData, TokenTypes, CompletionItem, Parser} from '../base';
 
 /* NOT EXPORTED */
 
@@ -60,6 +60,7 @@ export type {
 	SignatureHelp,
 	InlayHint,
 	CodeAction,
+	TokenTypes,
 };
 
 export type Command = ['setI18N', Record<string, string>?]
@@ -135,6 +136,21 @@ export interface LanguageServiceBase extends Omit<
 	findTemplateTokens(): Promise<AST[]>;
 }
 
+export interface ExtendedAST extends AST {
+	parentNode: this | undefined;
+	nextSibling: this | undefined;
+	previousSibling: this | undefined;
+	firstChild: this | undefined;
+	lastChild: this | undefined;
+	childNodes: this[];
+	length: number;
+	getRootNode(): this;
+	is(type: TokenTypes): boolean;
+	closest(selector: string): this | undefined;
+	querySelector(selector: string): this | undefined;
+	querySelectorAll(selector: string): this[];
+}
+
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {
 	version: string;
@@ -143,9 +159,10 @@ export interface wikiparse {
 	setLintConfig: (config?: LintConfig) => void;
 	setConfig: (config: ConfigData) => void;
 	getConfig: () => Promise<Config>;
-	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
+	json: (wikitext: string, include?: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[] & {output?: string}>;
+	parse?: (wikitext: string, include?: boolean, qid?: number, stage?: number) => Promise<ExtendedAST>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string, paddingBottom?: string) => void;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;

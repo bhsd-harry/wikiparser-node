@@ -71,4 +71,5 @@ Object.assign(globalThis, {
 require(`../.${src}`);
 require(`../.${src.replace('base.js', 'lint.js')}`);
 require(`../.${src.replace('base.js', 'lsp.js')}`);
+require(`../.${src.replace('base.js', 'parse.js')}`);
 wikiparse.CDN = 'https://cdn.jsdelivr.net/npm/wikiparser-node';

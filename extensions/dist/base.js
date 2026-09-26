@@ -5,6 +5,7 @@ const version = '1.47.0', src = (_a = document.currentScript) === null || _a ===
     : `https://fastly.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle-lsp.min.js');
+    Parser.internal = true;
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map(), last = { include: true };
     let LSP;
     const parse = (wikitext, include = false, stage) => {

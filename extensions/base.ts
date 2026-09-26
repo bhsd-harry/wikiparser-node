@@ -26,6 +26,7 @@ const version = '1.47.0',
 /** web worker */
 const workerJS = (): void => {
 	importScripts('$CDN/bundle/bundle-lsp.min.js');
+	Parser.internal = true;
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'},
 		lsps = new Map<number, LanguageService>(),
 		last: {wikitext?: string, include: boolean, root?: Token} = {include: true};
@@ -350,7 +351,7 @@ const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
  * @param qid 编号
  * @param stage 解析层级
  */
-const json = (wikitext: string, include: boolean, qid = -4, stage?: number): Promise<AST> =>
+const json = (wikitext: string, include?: boolean, qid = -4, stage?: number): Promise<AST> =>
 	getFeedback('json', qid, false, wikitext, include, stage);
 
 /**
