@@ -23,7 +23,7 @@ import type {
 } from './internal';
 
 declare interface Parser extends ParserBase {
-	default: Parser;
+	default: this;
 
 	/**
 	 * Normalize page title
