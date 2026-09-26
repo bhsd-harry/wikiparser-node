@@ -183,7 +183,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取第n行
 	 * @param n row number / 行号
 	 */
-	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
+	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this;
 	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
 		LINT: {
 			const isRow = super.getRowCount();

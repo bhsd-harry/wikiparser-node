@@ -366,7 +366,6 @@ export class AstText extends AstNode {
 	 *
 	 * 将文本子节点分裂为两部分
 	 * @param offset position to be splitted at / 分裂位置
-	 * @throws `RangeError` if the offset is out of range
 	 * @throws `Error` if the text node has no parent node
 	 */
 	splitText(offset: number): AstText {

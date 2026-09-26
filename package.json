@@ -66,7 +66,7 @@
 		"esbuild": "^0.28.2",
 		"eslint": "^10.11.0",
 		"http-server": "^14.1.1",
-		"monaco-editor": "~0.53.0",
+		"monaco-editor": "^0.57.0",
 		"stylelint": "^17.15.0",
 		"typescript": "^6.0.3",
 		"v8r": "^6.1.0"

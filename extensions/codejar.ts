@@ -8,7 +8,7 @@ const codejar = (async (): Promise<f> => {
 
 	return (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean): CodeJarAsync => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
-			throw new TypeError('wikiparse.codejar方法仅可用于textarea元素！');
+			throw new TypeError('wikiparse.codejar can only be called with a <textarea> element!');
 		}
 		const preview = document.createElement('div'),
 			root = document.createElement('span'),

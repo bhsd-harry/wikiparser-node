@@ -129,7 +129,7 @@ _Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox 
 };
 const edit = (textbox, include) => {
     if (!(textbox instanceof HTMLTextAreaElement)) {
-        throw new TypeError('wikiparse.edit方法仅可用于textarea元素！');
+        throw new TypeError('wikiparse.edit can only be called with a <textarea> element!');
     }
     const preview = document.createElement('div'), container = document.createElement('div'), printer = new Printer(preview, textbox, include);
     preview.id = 'wikiPretty';

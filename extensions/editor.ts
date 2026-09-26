@@ -195,7 +195,7 @@ class Printer implements PrinterBase {
  */
 const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 	if (!(textbox instanceof HTMLTextAreaElement)) {
-		throw new TypeError('wikiparse.edit方法仅可用于textarea元素！');
+		throw new TypeError('wikiparse.edit can only be called with a <textarea> element!');
 	}
 	const preview = document.createElement('div'),
 		container = document.createElement('div'),

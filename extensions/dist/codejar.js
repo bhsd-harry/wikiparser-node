@@ -6,7 +6,7 @@ const codejar = (async () => {
     return (textbox, include, linenums) => {
         var _a;
         if (!(textbox instanceof HTMLTextAreaElement)) {
-            throw new TypeError('wikiparse.codejar方法仅可用于textarea元素！');
+            throw new TypeError('wikiparse.codejar can only be called with a <textarea> element!');
         }
         const preview = document.createElement('div'), root = document.createElement('span'), { offsetHeight, selectionStart: start, selectionEnd: end, style: { height, paddingTop, paddingBottom, paddingLeft, paddingRight }, } = textbox;
         preview.className = 'wikiparser wikiparse-container';
