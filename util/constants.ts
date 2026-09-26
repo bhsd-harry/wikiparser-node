@@ -1,7 +1,7 @@
 export const MAX_STAGE =
 	11;
 
-export enum BuildMethod {
+export const enum BuildMethod {
 	String,
 	Text,
 }
