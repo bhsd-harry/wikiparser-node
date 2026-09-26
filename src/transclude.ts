@@ -42,7 +42,7 @@ import {cached} from '../mixin/cached';
 
 declare interface Frame {
 	args: Record<string, string>;
-	parent?: Frame | undefined;
+	parent?: this | undefined;
 	title: string;
 }
 

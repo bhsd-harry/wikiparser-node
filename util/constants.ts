@@ -7,7 +7,7 @@ import type {Token, FunctionHook, TagHook} from '../internal';
 export const MAX_STAGE =
 	11;
 
-export enum BuildMethod {
+export const enum BuildMethod {
 	String,
 	Text,
 }

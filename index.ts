@@ -76,7 +76,7 @@ import {
 /* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
-	default: Parser;
+	default: this;
 	/** @since v1.5.1 */
 	readonly rules: readonly LintError.Rule[];
 	/** @private */
