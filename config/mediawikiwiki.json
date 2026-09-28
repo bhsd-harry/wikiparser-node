@@ -477,6 +477,7 @@
 			"DEFAULTSORT": "defaultsort",
 			"DEFAULTSORTKEY": "defaultsort",
 			"DEFAULTCATEGORYSORT": "defaultsort",
+			"CATEGORYSORT": "categorysort",
 			"PAGESINCATEGORY": "pagesincategory",
 			"PAGESINCAT": "pagesincategory",
 			"PAGESIZE": "pagesize",

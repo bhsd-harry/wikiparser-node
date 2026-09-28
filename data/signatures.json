@@ -2160,6 +2160,26 @@
 		},
 		{
 			"aliases": [
+				"categorysort"
+			],
+			"signatures": [
+				[
+					{
+						"label": "TIMESTAMP",
+						"const": true
+					}
+				],
+				[
+					{
+						"label": "RTIMESTAMP",
+						"const": true
+					}
+				]
+			],
+			"description": "When placed on a category page, the category will be sorted based on timestamp of categorization. `{{CATEGORYSORT:TIMESTAMP}}` lists members by the time they were added to the category, oldest first, and `{{CATEGORYSORT:RTIMESTAMP}}` lists the most recently added members first. Readers can still override this with the `cldsort` URL parameter, and the new `cldorder=desc` URL parameter reverses a `cldsort=timestamp` listing."
+		},
+		{
+			"aliases": [
 				"numberofpages"
 			],
 			"signatures": [
