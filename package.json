@@ -39,6 +39,7 @@
 		"lint:ts": "npm run clean && tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && testUtil dist/test/json.js",
 		"lint:css": "stylelint --cache css/*.css extensions/*.css",
+		"lint:bundle": "eslint --no-config-lookup --no-inline-config --parser=@typescript-eslint/parser --rule 'no-unused-vars: [2, {args: none}]' build/*.js",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"prof": "node dist/test/prof.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",

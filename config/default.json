@@ -1023,6 +1023,7 @@
 			"DEFAULTSORT": "defaultsort",
 			"DEFAULTSORTKEY": "defaultsort",
 			"DEFAULTCATEGORYSORT": "defaultsort",
+			"CATEGORYSORT": "categorysort",
 			"分类中页面数": "pagesincategory",
 			"カテゴリ内ページ数": "pagesincategory",
 			"PAGESINCATEGORY": "pagesincategory",

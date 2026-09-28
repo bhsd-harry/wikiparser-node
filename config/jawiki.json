@@ -546,6 +546,7 @@
 			"DEFAULTSORT": "defaultsort",
 			"DEFAULTSORTKEY": "defaultsort",
 			"DEFAULTCATEGORYSORT": "defaultsort",
+			"CATEGORYSORT": "categorysort",
 			"カテゴリ内ページ数": "pagesincategory",
 			"PAGESINCATEGORY": "pagesincategory",
 			"PAGESINCAT": "pagesincategory",
