@@ -682,6 +682,7 @@
 			"默认排序": "defaultsort",
 			"默认排序关键字": "defaultsort",
 			"默认分类排序": "defaultsort",
+			"CATEGORYSORT": "categorysort",
 			"PAGESINCATEGORY": "pagesincategory",
 			"PAGESINCAT": "pagesincategory",
 			"分类中页面数": "pagesincategory",
