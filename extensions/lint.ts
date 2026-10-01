@@ -93,6 +93,7 @@ class Linter implements LinterBase {
 				startColumn: startCol + 1,
 				endLineNumber: endLine + 1,
 				endColumn: endCol + 1,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
 				severity: severity === 'error' ? 8 : 4,
 				code: rule,
 				message,
