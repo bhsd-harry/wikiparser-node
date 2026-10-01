@@ -97,6 +97,6 @@ repos:
         # You can add any CLI options as needed
         entry: wikilint
         language: node
-        additional_dependencies: ['wikilint@2.47.0']
+        additional_dependencies: ['wikilint@2.48.0']
         files: \.(mediawiki|wiki|wikitext)$
 ```
