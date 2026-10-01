@@ -434,7 +434,7 @@ TableToken.prototype.insertTableCol =
 		for (let i = 0; i < layout.length; i++) {
 			const rowLayout = layout[i]!,
 				coords = rowLayout[x],
-				prevCoords = x === 0 ? true : rowLayout[x - 1];
+				prevCoords = x === 0 || rowLayout[x - 1];
 			if (!prevCoords) {
 				//
 			} else if (prevCoords !== coords) {

@@ -928,7 +928,7 @@ export abstract class TranscludeToken extends Token {
 	): string
 		| Record<string, string>
 		| undefined {
-		if (key === undefined) { // eslint-disable-line unicorn/prefer-ternary
+		if (key === undefined) { // NOT FOR TEMPLATE
 			return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)!]));
 		}
 		return this.getArg(key)?.getValue();

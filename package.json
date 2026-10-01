@@ -55,6 +55,7 @@
 		"lint:ts": "[ ! -f dist/bin/config.js ] && npm run build:core; tsc --noEmit && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && testUtil dist/test/json.js",
 		"lint:md": "markdownlint-cli2 '**/*.md'",
+		"lint:bundle": "eslint --no-config-lookup --no-inline-config --parser=@typescript-eslint/parser --rule 'no-unused-vars: [2, {args: none}]' build/*.js",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:md",
 		"prof": "node dist/test/prof.js",
 		"coverage": "tsc --declaration false --target es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",

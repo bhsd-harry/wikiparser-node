@@ -165,7 +165,7 @@ export const replaceEntities = (re = /[&<>"{}[\]|]/gu): (str: string) => string 
 	factory(re, p => `&${entities[p as keyof typeof entities]};`);
 
 /** escape HTML entities */
-export const escape = replaceEntities(/[&<>]/gu);
+export const escape = /* #__PURE__ */ replaceEntities(/[&<>]/gu);
 
 /**
  * 以HTML格式打印
