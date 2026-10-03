@@ -133,7 +133,7 @@
 		"@bhsd/stylelint-util": "^1.1.0",
 		"culori": "^4.0.2",
 		"entities": "^8.1.0",
-		"vscode-languageserver-types": "^3.18.3"
+		"vscode-languageserver-types": "^3.18.4"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^4.3.0",
@@ -149,7 +149,7 @@
 		"diff2html-cli": "^5.2.15",
 		"dompurify": "^3.4.16",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.11.0",
+		"eslint": "^10.12.0",
 		"jsdom": "^30.1.1",
 		"katex": "^0.18.7",
 		"markdownlint-cli2": "^0.23.3",
