@@ -95,6 +95,7 @@ export default extend(
 			'unicorn/empty-brace-spaces': 0,
 			'unicorn/no-this-assignment': 0,
 			'unicorn/no-top-level-side-effects': 0,
+			'unicorn/no-unnecessary-parameters': 0,
 			'unicorn/prefer-global-this': 0,
 			'unicorn/prefer-minimal-ternary': [
 				2,
