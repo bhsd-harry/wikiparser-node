@@ -478,17 +478,16 @@ const {mtimeMs} = fs.statSync(config),
 
 	if (nErr || nWarn) {
 		console.error(
-			styleText(['red', 'bold'], '%s'),
-			`\n✖ ${plural(nErr + nWarn, 'problem')} (${
-				plural(nErr, 'error')
-			}, ${plural(nWarn, 'warning')})`,
+			styleText(['red', 'bold'], '\n✖ %s (%s, %s)'),
+			plural(nErr + nWarn, 'problem'),
+			plural(nErr, 'error'),
+			plural(nWarn, 'warning'),
 		);
 		if (nFixableErr || nFixableWarn) {
 			console.error(
-				styleText(['red', 'bold'], '%s'),
-				`  ${plural(nFixableErr, 'error')} and ${
-					plural(nFixableWarn, 'warning')
-				} potentially fixable with the \`--fix\` option.`,
+				styleText(['red', 'bold'], '  %s and %s potentially fixable with the `--fix` option.'),
+				plural(nFixableErr, 'error'),
+				plural(nFixableWarn, 'warning'),
 			);
 		}
 		console.error();
