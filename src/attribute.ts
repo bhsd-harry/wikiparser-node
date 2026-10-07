@@ -354,29 +354,20 @@ export abstract class AttributeToken extends Token {
 					return e;
 				}
 			}
-		} else if (
-			(/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
-			|| simple
-			&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
-			&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
-				.test(value)
-		) {
-			/* PRINT ONLY */
-
-			PRINT: if (start === undefined) {
-				return 2;
+		} else {
+			let valueIssue = (/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
+				|| simple
+				&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
+				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
+					.test(value);
+			if (simple && !valueIssue && type !== 'ext-attr') {
+				const data = provideValues(tag, name),
+					v = value.toLowerCase();
+				if (data.length > 0 && data.every(n => n !== v)) {
+					valueIssue = true;
+				}
 			}
-
-			/* PRINT ONLY END */
-
-			LINT: {
-				const s = lintConfig.getSeverity(rule, 'value');
-				return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
-			}
-		} else if (simple && type !== 'ext-attr') {
-			const data = provideValues(tag, name),
-				v = value.toLowerCase();
-			if (data.length > 0 && data.every(n => n !== v)) {
+			if (valueIssue) {
 				/* PRINT ONLY */
 
 				PRINT: if (start === undefined) {
