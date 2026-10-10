@@ -96,7 +96,6 @@ const clean = (accum: Token[], tokens: Token | ParameterToken[]): void => {
  * @param config
  * @param include
  * @param context 模板调用环境
- * @param now 当前时间
  * @param accum
  * @param stack 模板调用栈
  */
@@ -107,8 +106,7 @@ const expand = (
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
-	now = Parser.now,
-	accum: Token[] = [],
+	accum: Token[] = [], // eslint-disable-line unicorn/no-unnecessary-parameters
 	stack: string[] = [],
 ): Token => {
 	const n = accum.length,
@@ -219,7 +217,7 @@ const expand = (
 						}
 					}
 					return implicitNewLine(
-						expand(template, dest, callPage, config, true, target, now, accum, [...stack, dest])
+						expand(template, dest, callPage, config, true, target, accum, [...stack, dest])
 							.toString(),
 						prev,
 					);
@@ -235,7 +233,6 @@ const expand = (
 						args.map(({anon, name: key, value}) => anon ? value : `${key}=${value}`),
 						callPage,
 						config,
-						now,
 						accum,
 					);
 					if (result === false) {

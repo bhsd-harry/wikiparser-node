@@ -249,7 +249,6 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
  * @param args 参数
  * @param page 当前页面标题
  * @param config
- * @param now 当前时间
  * @param accum
  * @throws `RangeError` 不支持的魔术字名称
  */
@@ -258,11 +257,11 @@ export const expandMagicWord = (
 	args: string[],
 	page = '',
 	config = Parser.getConfig(),
-	now = Parser.now,
 	accum?: Token[],
 ): string | false => {
 	const arg0 = args[0]!,
-		target = args[0] ?? page;
+		target = args[0] ?? page,
+		{now} = Parser;
 	switch (name) {
 		case 'currentyear':
 			return String(now.getUTCFullYear());
