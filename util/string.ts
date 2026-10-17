@@ -1,5 +1,11 @@
 import type {AstNodes, Token} from '../internal';
 
+/* NOT FOR BROWSER ONLY */
+
+import type * as Entities from 'entities';
+
+/* NOT FOR BROWSER ONLY END */
+
 export const zs = String.raw` \xA0\u1680\u2000-\u200A\u202F\u205F\u3000`;
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F${zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
@@ -107,7 +113,7 @@ export const decodeHtml = (str: string): string => {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		NPM: if (typeof process === 'object' && typeof process.versions?.node === 'string') {
 			try {
-				const {decodeHTMLStrict}: typeof import('entities') = require('entities');
+				const {decodeHTMLStrict}: typeof Entities = require('entities');
 				return (s): string => decodeHTMLStrict(s).replaceAll('\xA0', ' ');
 			} catch /* c8 ignore next */ {}
 		}
