@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {Worker} from 'worker_threads';
 import {EventEmitter} from 'events';
+import type * as WorkerThreads from 'worker_threads';
 import type {} from '../extensions/typings';
 
 EventEmitter.defaultMaxListeners = 25;
@@ -10,7 +11,7 @@ export const mock = {} as {worker: Worker};
 const src = './extensions/dist/base.js',
 	head = (): void => {
 		/* eslint-disable @typescript-eslint/no-unused-vars */
-		const {parentPort}: typeof import('worker_threads') = require('worker_threads');
+		const {parentPort}: typeof WorkerThreads = require('worker_threads');
 		const importScripts = require,
 			postMessage = parentPort!.postMessage.bind(parentPort),
 			self = {

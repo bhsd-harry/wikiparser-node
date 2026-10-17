@@ -37,31 +37,33 @@
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "npm run clean && tsc --noEmit && tsc --noEmit -p extensions/tsconfig.json && tsc --noEmit -p extensions/tsconfig.codejar.json && eslint --cache .",
-		"lint:json": "v8r -s config/.schema.json config/*.json && testUtil dist/test/json.js",
 		"lint:css": "stylelint --cache css/*.css extensions/*.css",
 		"lint:bundle": "eslint --no-config-lookup --no-inline-config --parser=@typescript-eslint/parser --rule 'no-unused-vars: [2, {args: none}]' build/*.js",
-		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
+		"lint": "npm run lint:ts && npm run lint:css",
 		"prof": "node dist/test/prof.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
 		"test:unit": "testUtil --test-timeout=5000 --require=./bundle/bundle-lsp.min.js --enable-source-maps dist/test/test.js",
+		"test:json": "testUtil dist/test/json.js",
 		"test:es10": "testUtil --require=./bundle/bundle-es10.min.js --enable-source-maps dist/test/test-es10.js",
 		"test:parser": "LC_ALL=en.UTF-8 testUtil --require=./bundle/bundle-lsp.min.js --enable-source-maps dist/test/parserTests.js",
-		"test": "npm run test:unit && npm run test:parser && npm run test:es10",
+		"test": "npm run test:unit && npm run test:parser && npm run test:json && npm run test:es10",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
 		"@bhsd/browser": "^2.1.1",
-		"@bhsd/cm-util": "^2.4.1",
+		"@bhsd/cm-util": "^2.4.2",
 		"@bhsd/common": "^4.1.0",
 		"vscode-languageserver-types": "^3.18.4"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^5.0.0",
-		"@bhsd/codemirror-mediawiki": "^4.7.1",
+		"@bhsd/codemirror-mediawiki": "^4.7.2",
 		"@bhsd/test-util": "^3.2.1",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
+		"ajv": "^8.20.0",
+		"ajv-errors": "^3.0.0",
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
@@ -69,8 +71,7 @@
 		"http-server": "^14.1.1",
 		"monaco-editor": "^0.57.0",
 		"stylelint": "^17.16.0",
-		"typescript": "^6.0.3",
-		"v8r": "^6.1.0"
+		"typescript": "^6.0.3"
 	},
 	"engines": {
 		"node": "^20.19.0 || ^22.13.0 || >=24.11.0"

@@ -2,17 +2,38 @@ import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 import {describe, it} from '@bhsd/test-util/mocha';
+import getValidator from '../util/ajv';
 import type {
 	ConfigData,
 } from '../base';
 
+const validateConfig = getValidator(path.join('config', '.schema.json')),
+	validateData = getValidator(path.join('data', '.schema.json'));
+
 const basePath = path.join('..', '..');
+
+for (const fullPath of fs.globSync('data/*.json')) {
+	const file = path.basename(fullPath, '.json');
+	describe(file, () => {
+		const data = require(path.join(basePath, fullPath));
+		it('schema', () => {
+			assert.strictEqual(validateData(data), '');
+		});
+	});
+}
 
 const configs: Record<string, ConfigData> = {};
 for (const fullPath of fs.globSync('config/*.json')) {
 	const file = path.basename(fullPath, '.json');
 	describe(file, () => {
 		const config: ConfigData = require(path.join(basePath, fullPath));
+
+		if (file !== 'github') {
+			it('schema', () => {
+				assert.strictEqual(validateConfig(config), '');
+			});
+		}
+
 		const {html, namespaces, nsid, doubleUnderscore, parserFunction, variable, functionHook, img} = config,
 			magicWords = parserFunction.slice(0, 2) as Record<string, string>[],
 			magicWordKeys = magicWords.flatMap(Object.keys),

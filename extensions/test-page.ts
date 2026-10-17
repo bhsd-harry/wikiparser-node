@@ -7,6 +7,7 @@ import {
 	inputHandler,
 } from './test-page-common.js';
 import type {} from 'prismjs';
+import type {ConfigData} from './typings';
 
 declare interface Test {
 	desc: string;
@@ -263,7 +264,7 @@ const repaint = (
 		container = document.getElementById('frame')!,
 		container1 = document.getElementById('frame1')!,
 		container2 = document.getElementById('frame2')!;
-	wikiparse.setConfig(await (await fetch('./config/default.json')).json() as import('./typings').ConfigData);
+	wikiparse.setConfig(await (await fetch('./config/default.json')).json() as ConfigData);
 	await wikiparse.highlight!(pre, false, true);
 	let optgroup: HTMLOptGroupElement | undefined;
 	for (let i = 0; i < tests.length; i++) {
