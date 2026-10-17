@@ -67,6 +67,18 @@ import type {
 } from '../base';
 import type {Cached} from '../util/lint';
 import type {Title, TitleOptions} from '../lib/title';
+import type * as CommentAndExt from '../parser/commentAndExt';
+import type * as Braces from '../parser/braces';
+import type * as Redirect from '../parser/redirect';
+import type * as Html from '../parser/html';
+import type * as Table from '../parser/table';
+import type * as HrAndDoubleUnderscore from '../parser/hrAndDoubleUnderscore';
+import type * as Links from '../parser/links';
+import type * as Quotes from '../parser/quotes';
+import type * as ExternalLinks from '../parser/externalLinks';
+import type * as MagicLinks from '../parser/magicLinks';
+import type * as List from '../parser/list';
+import type * as Converter from '../parser/converter';
 import type {
 	AstNodes,
 	CategoryToken,
@@ -269,7 +281,7 @@ export class Token extends AstElement {
 
 	/** 解析重定向 */
 	#parseRedirect(): boolean {
-		const {parseRedirect}: typeof import('../parser/redirect') = require('../parser/redirect');
+		const {parseRedirect}: typeof Redirect = require('../parser/redirect');
 		const wikitext = this.firstChild!.toString(),
 			parsed = parseRedirect(wikitext, this.#config, this.#accum);
 		if (parsed !== false) {
@@ -283,13 +295,13 @@ export class Token extends AstElement {
 	 * @param includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
-		const {parseCommentAndExt}: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
+		const {parseCommentAndExt}: typeof CommentAndExt = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(this.firstChild!.toString(), this.#config, this.#accum, includeOnly));
 	}
 
 	/** 解析花括号 */
 	#parseBraces(): void {
-		const {parseBraces}: typeof import('../parser/braces') = require('../parser/braces');
+		const {parseBraces}: typeof Braces = require('../parser/braces');
 		const str = this.type === 'root' ? this.firstChild!.toString() : `\0${this.firstChild!.toString()}`,
 			parsed = parseBraces(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
@@ -300,7 +312,7 @@ export class Token extends AstElement {
 		if (this.#config.excludes.includes('html')) {
 			return;
 		}
-		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
+		const {parseHtml}: typeof Html = require('../parser/html');
 		this.setText(parseHtml(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
@@ -309,7 +321,7 @@ export class Token extends AstElement {
 		if (this.#config.excludes.includes('table')) {
 			return;
 		}
-		const {parseTable}: typeof import('../parser/table') = require('../parser/table');
+		const {parseTable}: typeof Table = require('../parser/table');
 		this.setText(parseTable(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
 
@@ -318,7 +330,7 @@ export class Token extends AstElement {
 		if (this.#config.excludes.includes('hr')) {
 			return;
 		}
-		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore') =
+		const {parseHrAndDoubleUnderscore}: typeof HrAndDoubleUnderscore =
 			require('../parser/hrAndDoubleUnderscore');
 		this.setText(parseHrAndDoubleUnderscore(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
@@ -328,7 +340,7 @@ export class Token extends AstElement {
 	 * @param tidy 是否整理
 	 */
 	#parseLinks(tidy?: boolean): void {
-		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
+		const {parseLinks}: typeof Links = require('../parser/links');
 		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, this.pageName, tidy));
 	}
 
@@ -337,7 +349,7 @@ export class Token extends AstElement {
 	 * @param tidy 是否整理
 	 */
 	#parseQuotes(tidy?: boolean): void {
-		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
+		const {parseQuotes}: typeof Quotes = require('../parser/quotes');
 		const lines = this.firstChild!.toString().split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum, tidy);
@@ -347,13 +359,13 @@ export class Token extends AstElement {
 
 	/** 解析外部链接 */
 	#parseExternalLinks(): void {
-		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
+		const {parseExternalLinks}: typeof ExternalLinks = require('../parser/externalLinks');
 		this.setText(parseExternalLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
 	/** 解析自由外链 */
 	#parseMagicLinks(): void {
-		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
+		const {parseMagicLinks}: typeof MagicLinks = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
@@ -362,7 +374,7 @@ export class Token extends AstElement {
 		if (this.#config.excludes.includes('list')) {
 			return;
 		}
-		const {parseList}: typeof import('../parser/list') = require('../parser/list');
+		const {parseList}: typeof List = require('../parser/list');
 		const {firstChild, type, name} = this,
 			lines = firstChild!.toString().split('\n'),
 			state = {lastPrefix: ''};
@@ -376,7 +388,7 @@ export class Token extends AstElement {
 	/** 解析语言变体转换 */
 	#parseConverter(): void {
 		if (this.#config.variants.length > 0) {
-			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
+			const {parseConverter}: typeof Converter = require('../parser/converter');
 			this.setText(parseConverter(this.firstChild!.toString(), this.#config, this.#accum));
 		}
 	}

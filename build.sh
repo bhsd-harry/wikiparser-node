@@ -17,7 +17,7 @@ then
 // @ts-expect-error mixed export styles' dist/index.d.ts
 	npm run build:define
 	cp dist/base.d.ts dist/base.d.mts
-	err=$(tsc --project tsconfig.dist.json 2>&1)
+	err=$(tsc -p tsconfig.dist.json 2>&1)
 	if [[ -n $err ]]
 	then
 		echo "$err"

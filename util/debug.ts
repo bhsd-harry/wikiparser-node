@@ -1,4 +1,5 @@
 import type {TokenTypes, Config, Parser as ParserBase} from '../base';
+import type * as TokenBase from '../src/index';
 import type {AstNodes, Token} from '../internal';
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
@@ -15,7 +16,7 @@ export const Shadow = {
 			this.running = running;
 		};
 		try {
-			const {Token}: typeof import('../src/index') = require('../src/index');
+			const {Token}: typeof TokenBase = require('../src/index');
 			const result = callback();
 			if (result instanceof Token && !result.getAttribute('built')) {
 				result.afterBuild();

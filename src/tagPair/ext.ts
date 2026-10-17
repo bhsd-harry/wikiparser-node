@@ -10,6 +10,18 @@ import type {
 	LintError,
 } from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
+import type * as Nested from '../nested';
+import type * as Gallery from '../multiLine/gallery';
+import type * as Nowiki from '../nowiki/index';
+import type * as Pre from '../pre';
+import type * as MultiLine from '../multiLine/index';
+import type * as ParamTag from '../multiLine/paramTag';
+import type * as Inputbox from '../multiLine/inputbox';
+import type * as Imagemap from '../multiLine/imagemap';
+import type * as Commented from '../commented';
+import type * as Categorytree from '../link/categorytree';
+import type * as FuncTag from '../funcTag';
+import type * as Charinsert from '../multiLine/charinsert';
 
 export interface ExtToken extends AttributesParentBase {}
 
@@ -68,7 +80,7 @@ export abstract class ExtToken extends TagPairToken {
 		switch (lcName) {
 			case 'pre':
 				if (attrToken.getAttr('format') !== 'wikitext') {
-					const {PreToken}: typeof import('../pre') = require('../pre');
+					const {PreToken}: typeof Pre = require('../pre');
 					// @ts-expect-error abstract class
 					innerToken = new PreToken(inner, newConfig, accum);
 					break;
@@ -101,26 +113,26 @@ export abstract class ExtToken extends TagPairToken {
 				innerToken = new Token(inner, newConfig, accum);
 				break;
 			case 'poll': {
-				const {MultiLineToken}: typeof import('../multiLine/index') = require('../multiLine/index');
+				const {MultiLineToken}: typeof MultiLine = require('../multiLine/index');
 				// @ts-expect-error abstract class
 				innerToken = new MultiLineToken(inner, newConfig, accum);
 				break;
 			}
 			case 'dynamicpagelist': {
-				const {ParamTagToken}: typeof import('../multiLine/paramTag') = require('../multiLine/paramTag');
+				const {ParamTagToken}: typeof ParamTag = require('../multiLine/paramTag');
 				// @ts-expect-error abstract class
 				innerToken = new ParamTagToken(lcName, include, inner, newConfig, accum);
 				break;
 			}
 			case 'inputbox': {
-				const {InputboxToken}: typeof import('../multiLine/inputbox') = require('../multiLine/inputbox');
+				const {InputboxToken}: typeof Inputbox = require('../multiLine/inputbox');
 				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(lcName, include, inner, newConfig, accum);
 				break;
 			}
 			case 'references': {
 				// NestedToken 依赖 ExtToken
-				const {NestedToken}: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof Nested = require('../nested');
 				newConfig.excludes.push('heading');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(inner, include, ['ref'], newConfig, accum);
@@ -128,7 +140,7 @@ export abstract class ExtToken extends TagPairToken {
 			}
 			case 'choose': {
 				// NestedToken 依赖 ExtToken
-				const {NestedToken}: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof Nested = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -141,7 +153,7 @@ export abstract class ExtToken extends TagPairToken {
 			}
 			case 'combobox': {
 				// NestedToken 依赖 ExtToken
-				const {NestedToken}: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof Nested = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -153,38 +165,37 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'gallery': {
-				const {GalleryToken}: typeof import('../multiLine/gallery') = require('../multiLine/gallery');
+				const {GalleryToken}: typeof Gallery = require('../multiLine/gallery');
 				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			case 'imagemap': {
-				const {ImagemapToken}: typeof import('../multiLine/imagemap') = require('../multiLine/imagemap');
+				const {ImagemapToken}: typeof Imagemap = require('../multiLine/imagemap');
 				// @ts-expect-error abstract class
 				innerToken = new ImagemapToken(inner, newConfig, accum);
 				break;
 			}
 			case 'hiero': {
-				const {CommentedToken}: typeof import('../commented') = require('../commented');
+				const {CommentedToken}: typeof Commented = require('../commented');
 				// @ts-expect-error abstract class
 				innerToken = new CommentedToken(inner, newConfig, accum);
 				break;
 			}
 			case 'categorytree': {
-				const {CategorytreeToken}: typeof import('../link/categorytree') = require('../link/categorytree');
+				const {CategorytreeToken}: typeof Categorytree = require('../link/categorytree');
 				// @ts-expect-error abstract class
 				innerToken = new CategorytreeToken(inner, undefined, newConfig, accum);
 				break;
 			}
 			case 'seo': {
-				const {FuncTagToken}: typeof import('../funcTag') = require('../funcTag');
+				const {FuncTagToken}: typeof FuncTag = require('../funcTag');
 				// @ts-expect-error abstract class
 				innerToken = new FuncTagToken(inner, newConfig, accum);
 				break;
 			}
 			case 'charinsert': {
-				const {CharinsertToken}: typeof import('../multiLine/charinsert') =
-					require('../multiLine/charinsert');
+				const {CharinsertToken}: typeof Charinsert = require('../multiLine/charinsert');
 				// @ts-expect-error abstract class
 				innerToken = new CharinsertToken(inner, newConfig, accum);
 				break;
@@ -198,7 +209,7 @@ export abstract class ExtToken extends TagPairToken {
 			// }
 			// ```
 			default: {
-				const {NowikiToken}: typeof import('../nowiki/index') = require('../nowiki/index');
+				const {NowikiToken}: typeof Nowiki = require('../nowiki/index');
 				// @ts-expect-error abstract class
 				innerToken = new NowikiToken(inner, newConfig, accum);
 			}
