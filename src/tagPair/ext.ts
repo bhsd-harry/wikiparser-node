@@ -5,6 +5,9 @@ import {AttributesToken} from '../attributes';
 import type {
 	Config,
 } from '../../base';
+import type * as Nested from '../nested';
+import type * as Gallery from '../multiLine/gallery';
+import type * as Nowiki from '../nowiki/index';
 
 /**
  * extension tag
@@ -56,7 +59,7 @@ export abstract class ExtToken extends TagPairToken {
 		switch (lcName) {
 			case 'pre':
 				if (!attr || !/\sformat\s*=\s*(?:["']\s*)?wikitext(?:\s*["'])?(?=\s|$)/iu.test(attr)) {
-					const {NowikiToken: PreToken}: typeof import('../nowiki/index') = require('../nowiki/index');
+					const {NowikiToken: PreToken}: typeof Nowiki = require('../nowiki/index');
 					// @ts-expect-error abstract class
 					innerToken = new PreToken(inner, newConfig, accum);
 					break;
@@ -75,20 +78,20 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			case 'references': {
 				// NestedToken 依赖 ExtToken
-				const {NestedToken}: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof Nested = require('../nested');
 				newConfig.excludes.push('heading');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(inner, include, ['ref'], newConfig, accum);
 				break;
 			}
 			case 'gallery': {
-				const {GalleryToken}: typeof import('../multiLine/gallery') = require('../multiLine/gallery');
+				const {GalleryToken}: typeof Gallery = require('../multiLine/gallery');
 				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			default: {
-				const {NowikiToken}: typeof import('../nowiki/index') = require('../nowiki/index');
+				const {NowikiToken}: typeof Nowiki = require('../nowiki/index');
 				// @ts-expect-error abstract class
 				innerToken = new NowikiToken(inner, newConfig, accum);
 			}

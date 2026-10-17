@@ -18,6 +18,7 @@ import type {
 	Parser as ParserBase,
 } from './base';
 import type {TitleOptions} from './lib/title';
+import type * as TokenBase from './src/index';
 import type {
 	Token,
 } from './internal';
@@ -72,7 +73,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (opt?.halfParsed) {
 			titleObj = new Title(title, defaultNs, config, opt, accum);
 		} else {
-			const {Token}: typeof import('./src/index') = require('./src/index');
+			const {Token}: typeof TokenBase = require('./src/index');
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config, accum);
 				root.type = 'root';
@@ -116,7 +117,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		maxStage ??= MAX_STAGE;
 		config ??= this.getConfig();
-		const {Token}: typeof import('./src/index') = require('./src/index');
+		const {Token}: typeof TokenBase = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';

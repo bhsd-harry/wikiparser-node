@@ -60,6 +60,8 @@ import type {
 	TokenTypes,
 } from '../base';
 import type {Title, TitleOptions} from '../lib/title';
+import type * as CommentAndExt from '../parser/commentAndExt';
+import type * as Braces from '../parser/braces';
 import type {
 	AstNodes,
 } from '../internal';
@@ -205,13 +207,13 @@ export class Token extends AstElement {
 	 * @param includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
-		const {parseCommentAndExt}: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
+		const {parseCommentAndExt}: typeof CommentAndExt = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(this.firstChild!.toString(), this.#config, this.#accum, includeOnly));
 	}
 
 	/** 解析花括号 */
 	#parseBraces(): void {
-		const {parseBraces}: typeof import('../parser/braces') = require('../parser/braces');
+		const {parseBraces}: typeof Braces = require('../parser/braces');
 		const str = this.type === 'root' ? this.firstChild!.toString() : `\0${this.firstChild!.toString()}`,
 			parsed = parseBraces(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
