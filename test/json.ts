@@ -137,8 +137,8 @@ for (const file in configs) {
 							);
 						} else {
 							assert.strictEqual(
-								defaultConfig[key][k],
-								val[k],
+								defaultConfig[key as 'nsid'][k],
+								(val as Record<string, unknown>)[k],
 								`'${k}' not in defaultConfig.${key}`,
 							);
 						}
