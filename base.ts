@@ -1,6 +1,6 @@
 export interface Config {
 	ext: string[];
-	readonly namespaces: Record<string, string>;
+	readonly namespaces: Record<number, string>;
 	readonly nsid: Record<string, number>;
 	readonly parserFunction: [Record<string, string>, Record<string, string>, string[], string[]];
 	variable: string[];
