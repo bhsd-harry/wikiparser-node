@@ -54,12 +54,12 @@ Wikitext. These tests are available [here](https://bhsd-harry.github.io/wikipars
 ## Used by
 <!-- markdownlint-disable line-length -->
 <div align="center">
-<a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
 <a href="https://helix-editor.com/"><img src="https://helix-editor.com/logo.svg" width="50" height="50" alt="Helix"></a>
+<a href="http://www.qbittorrent.org/"><img src="https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg" width="50" height="50" alt="qBittorrent"></a>
+<a href="https://www.mediawiki.org/"><img src="https://www.mediawiki.org/static/images/icons/mediawikiwiki.svg" width="50" height="50" alt="MediaWiki"></a>
+<a href="https://euporie.readthedocs.io/en/latest/"><img src="https://raw.githubusercontent.com/joouha/euporie/dev/docs/_static/favicon.svg" width="50" height="50" alt="euporie"></a>
 <a href="https://flow-control.dev/"><img src="https://github.com/neurocyte/flow-website/blob/master/assets/img/flow-control.png?raw=true" width="50" height="50" alt="Flow Control"></a>
 <a href="https://lsp.sublimetext.io/"><img src="https://raw.githubusercontent.com/sublimelsp/LSP/main/icons/lsp_logo.svg" width="50" height="50" alt="LSP for Sublime Text"></a>
-<a href="https://euporie.readthedocs.io/en/latest/"><img src="https://raw.githubusercontent.com/joouha/euporie/dev/docs/_static/favicon.svg" width="50" height="50" alt="euporie"></a>
-<a href="http://www.qbittorrent.org/"><img src="https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg" width="50" height="50" alt="qBittorrent"></a>
 <a href="https://github.com/misterclayt0n/the-editor/tree/legacy"><img src="https://raw.githubusercontent.com/misterclayt0n/the-editor/main/assets/the-editor-icon.svg" width="50" height="50" alt="the-editor"></a>
 <a href="https://mitos.computer/"><img src="https://raw.githubusercontent.com/mitos-editor/mitos/main/book/theme/favicon.svg" width="50" height="50" alt="Mitos"></a>
 </div>

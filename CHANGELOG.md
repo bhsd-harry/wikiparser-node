@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
+## v1.48.1
+
+*2026-10-17*
+
+**Fixed**
+
+- Expansion of parser functions `#special` and `#speciale`
+
 ## v1.48.0
 
 *2026-10-02*

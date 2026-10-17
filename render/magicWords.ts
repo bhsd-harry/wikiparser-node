@@ -132,8 +132,8 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
 			return '';
 		}
 		const title = Parser.normalizeTitle(
-			page,
-			nsid,
+			(nsid === 0 ? '' : `${config.namespaces[nsid]}:`) + page,
+			0,
 			false,
 			config,
 			{halfParsed: true, temporary: true, page: subpage ? undefined : ''},
@@ -219,7 +219,7 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
 	anchorencode = replaceEntities(),
 	special = (target: string, config: Config): string => {
 		const title = makeTitle(target, config, -1);
-		return title && title.ns === -1 ? title.prefix + title.main : 'Special:Badtitle';
+		return title ? title.prefix + title.main : 'Special:Badtitle';
 	},
 	contentmodels = new Map<string, [string, string?]>([
 		['js', ['JavaScript', 'javascript']],

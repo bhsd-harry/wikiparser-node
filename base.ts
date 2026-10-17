@@ -24,7 +24,7 @@ import type {
 export interface Config {
 	ext: string[];
 	readonly html: [string[], string[], string[]];
-	readonly namespaces: Record<string, string>;
+	readonly namespaces: Record<number, string>;
 	readonly nsid: Record<string, number>;
 	readonly parserFunction: [Record<string, string>, Record<string, string>, string[], string[]];
 	readonly doubleUnderscore: [string[], string[], Record<string, string>, Record<string, string>];
