@@ -2,6 +2,9 @@ import {parsers, states} from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr, sanitize} from '../util/string';
 import {extAttrs} from '../util/sharable';
 import Parser from '../index';
+import type * as SyntaxHighlight from './syntaxhighlight';
+import type * as Math from './math';
+import type * as TemplateData from './templatedata';
 import type {ExtToken, GalleryToken, Token, NowikiToken} from '../internal';
 
 export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
@@ -87,7 +90,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				{classList} = firstChild;
 			classList.add('mw-highlight');
 			if (lexer) {
-				const {Prism, loadLanguage}: typeof import('./syntaxhighlight') = require('./syntaxhighlight');
+				const {Prism, loadLanguage}: typeof SyntaxHighlight = require('./syntaxhighlight');
 				lexer = lexer.toLowerCase();
 				if (Prism) {
 					try {
@@ -341,7 +344,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		case 'math':
 		case 'chem':
 		case 'ce': {
-			const {texToSvg}: typeof import('./math') = require('./math');
+			const {texToSvg}: typeof Math = require('./math');
 			const id = firstChild.getAttr('id');
 			return `<span class="mwe-math-element mwe-math-element-${
 				firstChild.getAttr('display') === 'block' ? 'block' : 'inline'
@@ -354,7 +357,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				validateTemplateData,
 				resolveInterfaceText,
 				resolveOptionalInterfaceText,
-			}: typeof import('./templatedata') = require('./templatedata');
+			}: typeof TemplateData = require('./templatedata');
 			const data = validateTemplateData(token.innerText ?? '');
 			if (typeof data === 'string') {
 				return '<div class="cdx-message--error cdx-message cdx-message--block>'

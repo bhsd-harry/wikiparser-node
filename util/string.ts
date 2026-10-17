@@ -1,5 +1,11 @@
 import type {AstNodes, Token} from '../internal';
 
+/* NOT FOR BROWSER ONLY */
+
+import type * as Entities from 'entities';
+
+/* NOT FOR BROWSER ONLY END */
+
 /* NOT FOR BROWSER */
 
 import {getRegex} from '@bhsd/common';
@@ -114,7 +120,7 @@ export const decodeHtml = (str: string): string => {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		NPM: if (typeof process === 'object' && typeof process.versions?.node === 'string') {
 			try {
-				const {decodeHTMLStrict}: typeof import('entities') = require('entities');
+				const {decodeHTMLStrict}: typeof Entities = require('entities');
 				return (s): string => decodeHTMLStrict(s).replaceAll('\xA0', ' ');
 			} catch /* c8 ignore next */ {}
 		}

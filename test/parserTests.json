@@ -12059,6 +12059,14 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">a</span>]]</span></span></span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">a</span>]]</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">b</span>|<span class=\"wpb-link-text\"> <span class=\"wpb-html\">&lt;s&gt;</span>c<span class=\"wpb-html\">&lt;/s&gt;</span> </span>]]</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\"> d </span>]]</span>e</span></span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-html\">&lt;b<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=<span class=\"wpb-attr-value\">x</span></span></span>&gt;</span>b<span class=\"wpb-html\">&lt;/b&gt;</span></span></span>]]</span></span>"
 	},
 	{
+		"desc": "Language conversion inside a template",
+		"wikitext": "{{1x|-{R|foo=bar}-}}\n\n{{1x|-{foo=bar}-}}",
+		"html": "<p>foo=bar\n</p><p>foo=bar\n</p>",
+		"render": "<p>foo=bar\n</p><p>foo=bar\n</p>",
+		"lint": [],
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo=bar</span></span>}-</span></span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo=bar</span></span>}-</span></span></span>}}</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{

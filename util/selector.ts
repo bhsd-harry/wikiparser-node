@@ -1,6 +1,12 @@
 import type {AstElement} from '../lib/element';
 import type {Token} from '../internal';
 
+/* NOT FOR BROWSER */
+
+import type * as Selector from '../parser/selector';
+
+/* NOT FOR BROWSER END */
+
 // @ts-expect-error unconstrained predicate
 export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
 declare type BasicCondition = (type: string, name?: string) => boolean;
@@ -32,7 +38,7 @@ export const getCondition = <T>(selector: string, scope?: AstElement, has?: Toke
 	/* NOT FOR BROWSER */
 
 	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector)) {
-		const {checkToken}: typeof import('../parser/selector') = require('../parser/selector');
+		const {checkToken}: typeof Selector = require('../parser/selector');
 		return checkToken(selector, scope, has) as TokenPredicate<T>;
 	}
 

@@ -19,7 +19,7 @@ then
 	cp dist/base.d.ts dist/base.d.mts
 	mkdir -p dist/extensions
 	cp extensions/typings.d.ts dist/extensions/typings.d.ts
-	err=$(tsc --project tsconfig.dist.json 2>&1)
+	err=$(tsc -p tsconfig.dist.json 2>&1)
 	if [[ -n $err ]]
 	then
 		echo "$err"

@@ -2332,3 +2332,15 @@ Surprisingly valid link parameter in an image
 <figure class="mw-default-size" typeof="mw:File/Thumb"><a href="/wiki/A_c_d_e" title="A c d e"><img resource="/wiki/File:Foobar.jpg" src="http://example.com/images/3/3a/Foobar.jpg" decoding="async" loading="lazy" width="240" height="28" class="mw-file-element" data-file-width="240" data-file-height="28"></a><figcaption></figcaption></figure>
 <figure class="mw-default-size" typeof="mw:File/Thumb"><a href="/wiki/B" title="B"><img resource="/wiki/File:Foobar.jpg" src="http://example.com/images/3/3a/Foobar.jpg" decoding="async" loading="lazy" width="240" height="28" class="mw-file-element" data-file-width="240" data-file-height="28"></a><figcaption></figcaption></figure>
 !! end
+
+!! test
+Language conversion inside a template
+!! wikitext
+{{1x|-{R|foo=bar}-}}
+
+{{1x|-{foo=bar}-}}
+!! html
+<p>foo=bar
+</p><p>foo=bar
+</p>
+!! end

@@ -12,6 +12,7 @@ import {setChildNodes, Shadow} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes, FullLintConfigValue} from '../base';
+import type * as Transclude from '../src/transclude';
 import type {AttributeToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -488,7 +489,7 @@ export class AstText extends AstNode {
 			if (!parentNode) {
 				throw new Error('The text node to be escaped has no parent node!');
 			}
-			const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
+			const {TranscludeToken}: typeof Transclude = require('../src/transclude');
 			const config = parentNode.getAttribute('config'),
 				index = parentNode.childNodes.indexOf(this) + 1;
 

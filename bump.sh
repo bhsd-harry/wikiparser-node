@@ -22,7 +22,7 @@ then
 elif [[ $2 == 'gh' ]]
 then
 	gsed -n "/## v$1/,/##/{/^## .*/d;/./,\$!d;p}" CHANGELOG.md > release-notes.md
-	gh release create "v$1" --notes-file release-notes.md -t "v$1" --verify-tag --latest="${3-true}"
+	gh release create "v$1" -F release-notes.md -t "v$1" --verify-tag --latest="${3-true}"
 	rm release-notes.md
 else
 	npm run build && npm run lint && npm test && npm run test:perf && npm run test:math && npm run test:real

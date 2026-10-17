@@ -1,6 +1,7 @@
 import path from 'path';
 import {sanitize} from '../util/string';
 import {parsers} from '../util/constants';
+import getValidator from '../util/ajv';
 
 declare type InterfaceText = string | Record<string, string>;
 declare interface TemplateDataParam {
@@ -58,24 +59,7 @@ export const resolveOptionalInterfaceText = (dt: string, text?: InterfaceText, c
  */
 const validate: (data: unknown) => string = (() => {
 	try {
-		const Ajv: typeof import('ajv').default = require('ajv'),
-			ajvErrors: typeof import('ajv-errors').default = require('ajv-errors');
-		const ajv = new Ajv({allErrors: true});
-		ajvErrors(ajv, {singleError: true});
-		ajv.addKeyword('markdownDescription');
-		const v = ajv.compile(require(path.join('..', '..', 'data', 'ext', 'templatedata.json')));
-		return data => {
-			if (v(data)) {
-				return '';
-			}
-			const errors = v.errors!,
-				{instancePath} = errors[0]!,
-				related = errors.filter(error => error.instancePath === instancePath);
-			return ajv.errorsText(
-				[related.find(({keyword}) => keyword === 'errorMessage') || related[0]!],
-				{dataVar: 'templatedata'},
-			);
-		};
+		return getValidator(path.join('data', 'ext', 'templatedata.json'), 'templatedata');
 	} catch {
 		return () => 'Cannot perform schema validation.';
 	}

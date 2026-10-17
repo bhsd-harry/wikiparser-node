@@ -1,6 +1,7 @@
 import {newline} from '../util/string';
 import {parsers} from '../util/constants';
 import {loadTexvcjs} from '../lib/document';
+import type * as Katex from 'katex';
 import type {TexvcReport} from '../lib/document';
 
 export const texToSvg = (() => {
@@ -9,7 +10,7 @@ export const texToSvg = (() => {
 		return undefined;
 	}
 	try {
-		const katex: typeof import('katex') = require('katex');
+		const katex: typeof Katex = require('katex');
 		require('katex/contrib/mhchem');
 		return ([result,, tex]: [TexvcReport, number, string]): string => {
 			if (result.status === '+') {

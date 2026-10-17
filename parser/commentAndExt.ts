@@ -7,6 +7,7 @@ import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
 import type {RegexGetter} from '@bhsd/common';
 import type {Config} from '../base';
+import type * as Translate from '../src/tagPair/translate';
 import type {Token} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -86,7 +87,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	let newExt = ext,
 		newConfig = config;
 	if (ext.includes('translate')) {
-		const {TranslateToken}: typeof import('../src/tagPair/translate') = require('../src/tagPair/translate');
+		const {TranslateToken}: typeof Translate = require('../src/tagPair/translate');
 		const stack: string[] = [];
 		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar');
 		newConfig = {...config, ext: newExt};

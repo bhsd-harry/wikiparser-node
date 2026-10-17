@@ -17,6 +17,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
+import type * as MagicWords from '../render/magicWords';
 
 /* NOT FOR BROWSER END */
 
@@ -416,7 +417,7 @@ export class Title {
 		if (height) {
 			width ||= 1e4;
 		}
-		const {expandMagicWord}: typeof import('../render/magicWords') = require('../render/magicWords');
+		const {expandMagicWord}: typeof MagicWords = require('../render/magicWords');
 		return expandMagicWord('filepath', [main, `${width || ''}${height ? `x${height}` : ''}`]) as string;
 	}
 
