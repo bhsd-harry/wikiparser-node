@@ -69,8 +69,11 @@ Wikitext. These tests are available [here](https://bhsd-harry.github.io/wikipars
 
 This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface),
 but only retains the parsing and linting functionality. At the cost of losing
-AST modification capabilities, it executes [2.4x faster](#performance). It
-powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which
+AST modification capabilities, it executes [2.4x faster](#performance). Projects
+can use WikiLint in their CI pipelines to automatically lint wiki content (for
+example, [qBittorrent](https://github.com/qbittorrent/wiki/blob/master/.pre-commit-config.yaml)).
+
+It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which
 provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser),
 [Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki), and [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext).
 

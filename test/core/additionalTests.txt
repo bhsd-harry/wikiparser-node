@@ -2344,3 +2344,63 @@ Language conversion inside a template
 </p><p>foo=bar
 </p>
 !! end
+
+!! test
+SyntaxHighlight with line numbers
+!! wikitext
+<syntaxhighlight lang="python" line>
+def quick_sort(arr):
+	less = []
+</syntaxhighlight>
+!! html
+<div class="mw-highlight mw-highlight-lang-python mw-content-ltr mw-highlight-lines" dir="ltr"><pre><span></span><span class="linenos" data-line="1"></span><span class="k">def</span><span class="w"> </span><span class="nf">quick_sort</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<span class="linenos" data-line="2"></span>	<span class="n">less</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+!! end
+
+!! test
+SyntaxHighlight with first line number
+!! wikitext
+<syntaxhighlight lang="python" line start="55">
+def quick_sort(arr):
+	less = []
+</syntaxhighlight>
+!! html
+<div class="mw-highlight mw-highlight-lang-python mw-content-ltr mw-highlight-lines" dir="ltr"><pre><span></span><span class="linenos" data-line="55"></span><span class="k">def</span><span class="w"> </span><span class="nf">quick_sort</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<span class="linenos" data-line="56"></span>	<span class="n">less</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+!! end
+
+!! test
+SyntaxHighlight with link anchors to each line
+!! wikitext
+<syntaxhighlight lang="python" line linelinks="example">
+def quick_sort(arr):
+	less = []
+</syntaxhighlight>
+!! html
+<div class="mw-highlight mw-highlight-lang-python mw-content-ltr mw-highlight-lines" dir="ltr"><pre><span></span><span id="example-1"><a href="#example-1"><span class="linenos" data-line="1"></span></a><span class="k">def</span><span class="w"> </span><span class="nf">quick_sort</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+</span><span id="example-2"><a href="#example-2"><span class="linenos" data-line="2"></span></a>	<span class="n">less</span> <span class="o">=</span> <span class="p">[]</span>
+</span></pre></div>
+!! end
+
+!! test
+SyntaxHighlight with marked lines
+!! wikitext
+<syntaxhighlight lang="python" line start="3" highlight="1,5-7">
+def quick_sort(arr):
+	less = []
+	pivot_list = []
+	more = []
+	if len(arr) <= 1:
+		return arr
+</syntaxhighlight>
+!! html
+<div class="mw-highlight mw-highlight-lang-python mw-content-ltr mw-highlight-lines" dir="ltr"><pre><span></span><span class="hll"><span class="linenos" data-line="3"></span><span class="k">def</span><span class="w"> </span><span class="nf">quick_sort</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+</span><span class="linenos" data-line="4"></span>	<span class="n">less</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos" data-line="5"></span>	<span class="n">pivot_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos" data-line="6"></span>	<span class="n">more</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="hll"><span class="linenos" data-line="7"></span>	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos" data-line="8"></span>		<span class="k">return</span> <span class="n">arr</span>
+</span></pre></div>
+!! end

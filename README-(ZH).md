@@ -47,7 +47,9 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 ### [WikiLint](https://www.npmjs.com/package/wikilint)
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能。虽然牺牲了语法树的修改能力，但换来了 [2.4 倍](#性能)的执行速度提升。这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能。虽然牺牲了语法树的修改能力，但换来了 [2.4 倍](#性能)的执行速度提升。可以在 CI 流水线中集成 WikiLint 以自动检查维基内容（例如 [qBittorrent](https://github.com/qbittorrent/wiki/blob/master/.pre-commit-config.yaml)）。
+
+这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 
 可用的语法检查规则列表请见[这里](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules)。
 
