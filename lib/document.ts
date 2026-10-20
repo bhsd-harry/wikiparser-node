@@ -3,9 +3,9 @@ import {sanitizeInlineStyle} from '@bhsd/common';
 import {jsonTags} from '../util/constants';
 import type {Position} from 'vscode-languageserver-types';
 import type {TextDocument, Range} from 'vscode-languageserver-textdocument';
-import type * as JSONLanguageService from 'vscode-json-languageservice';
-import type * as CSSLanguageService from 'vscode-css-languageservice';
-import type * as HTMLLanguageService from 'vscode-html-languageservice';
+import type * as JsonLanguageService from 'vscode-json-languageservice';
+import type * as CssLanguageService from 'vscode-css-languageservice';
+import type * as HtmlLanguageService from 'vscode-html-languageservice';
 import type {PublicApi} from 'stylelint';
 import type {Token, AttributeToken} from '../internal';
 
@@ -54,11 +54,11 @@ export const loadTexvcjs = /** @ignore */ (): Texvcjs | null => {
 	}
 };
 
-let jsonLSP: JSONLanguageService.LanguageService | undefined | null;
-export const loadJsonLSP = /** @ignore */ (): JSONLanguageService.LanguageService | null => {
+let jsonLSP: JsonLanguageService.LanguageService | undefined | null;
+export const loadJsonLSP = /** @ignore */ (): JsonLanguageService.LanguageService | null => {
 	if (jsonLSP === undefined) {
 		try {
-			jsonLSP = (require('vscode-json-languageservice') as typeof JSONLanguageService).getLanguageService({
+			jsonLSP = (require('vscode-json-languageservice') as typeof JsonLanguageService).getLanguageService({
 				/* c8 ignore start */
 				/** @implements */
 				async schemaRequestService(uri) {
@@ -68,7 +68,7 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService.LanguageServic
 			});
 			const dir = path.join('..', '..', 'data', 'ext');
 			jsonLSP.configure({
-				schemas: jsonTags.map((tag): JSONLanguageService.SchemaConfiguration | false => {
+				schemas: jsonTags.map((tag): JsonLanguageService.SchemaConfiguration | false => {
 					const uri = path.join(dir, `${tag}.json`);
 					try {
 						const schema = require(tag === 'maplink' ? path.join(dir, 'mapframe.json') : uri);
@@ -91,11 +91,11 @@ export const loadJsonLSP = /** @ignore */ (): JSONLanguageService.LanguageServic
 	return jsonLSP;
 };
 
-let cssLSP: CSSLanguageService.LanguageService | undefined | null;
-export const loadCssLSP = /** @ignore */ (): CSSLanguageService.LanguageService | null => {
+let cssLSP: CssLanguageService.LanguageService | undefined | null;
+export const loadCssLSP = /** @ignore */ (): CssLanguageService.LanguageService | null => {
 	if (cssLSP === undefined) {
 		try {
-			cssLSP = (require('vscode-css-languageservice') as typeof CSSLanguageService).getCSSLanguageService();
+			cssLSP = (require('vscode-css-languageservice') as typeof CssLanguageService).getCSSLanguageService();
 		} catch /* c8 ignore start */ {
 			cssLSP = null;
 		}
@@ -104,11 +104,11 @@ export const loadCssLSP = /** @ignore */ (): CSSLanguageService.LanguageService 
 	return cssLSP;
 };
 
-let htmlData: HTMLLanguageService.IHTMLDataProvider | undefined | null;
-export const loadHtmlData = /** @ignore */ (): HTMLLanguageService.IHTMLDataProvider | null => {
+let htmlData: HtmlLanguageService.IHTMLDataProvider | undefined | null;
+export const loadHtmlData = /** @ignore */ (): HtmlLanguageService.IHTMLDataProvider | null => {
 	if (htmlData === undefined) {
 		try {
-			htmlData = (require('vscode-html-languageservice') as typeof HTMLLanguageService)
+			htmlData = (require('vscode-html-languageservice') as typeof HtmlLanguageService)
 				.getDefaultHTMLDataProvider();
 		} catch /* c8 ignore start */ {
 			htmlData = null;
@@ -192,7 +192,7 @@ abstract class EmbeddedDocument implements TextDocument {
 
 /** embedded JSON document */
 export class EmbeddedJSONDocument extends EmbeddedDocument {
-	declare jsonDoc: JSONLanguageService.JSONDocument;
+	declare jsonDoc: JsonLanguageService.JSONDocument;
 
 	// @ts-expect-error unused method
 	abstract getLineRange(): Range;
@@ -212,7 +212,7 @@ export class EmbeddedJSONDocument extends EmbeddedDocument {
 
 /** embedded CSS document */
 export class EmbeddedCSSDocument extends EmbeddedDocument {
-	declare styleSheet: CSSLanguageService.Stylesheet;
+	declare styleSheet: CssLanguageService.Stylesheet;
 
 	// @ts-expect-error unused method
 	abstract getLineRange(): Range;

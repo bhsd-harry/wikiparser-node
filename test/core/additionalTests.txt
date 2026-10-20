@@ -2404,3 +2404,54 @@ def quick_sort(arr):
 </span><span class="hll"><span class="linenos" data-line="8"></span>		<span class="k">return</span> <span class="n">arr</span>
 </span></pre></div>
 !! end
+
+!! test
+SyntaxHighlight for Vue SFC
+!! wikitext
+<syntaxhighlight lang="vue">
+<template>
+    <p v-i18n-html="fooOrBarMsg"></p>
+</template>
+<script>
+const { defineComponent } = require( 'vue' );
+module.exports = defineComponent( {
+    computed: {
+        fooOrBarMsg: function () {
+            // Note that this returns a Message object, not a string
+            return mw.message( this.foo ? 'foo-msg' : 'bar-msg' )
+                .params( [ this.baz, this.quux ] );
+        }
+    }
+} );
+</script>
+</syntaxhighlight>
+!! html
+<div class="mw-highlight mw-highlight-lang-vue mw-content-ltr" dir="ltr"><pre><span></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">p</span> <span class="na">v-i18n-html</span><span class="o">=</span><span class="s">"</span><span class="nx">fooOrBarMsg</span><span class="s">"</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">defineComponent</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="w"> </span><span class="s1">'vue'</span><span class="w"> </span><span class="p">);</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">defineComponent</span><span class="p">(</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">computed</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">fooOrBarMsg</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Note that this returns a Message object, not a string</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">mw</span><span class="p">.</span><span class="nx">message</span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">foo</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'foo-msg'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'bar-msg'</span><span class="w"> </span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="nx">params</span><span class="p">(</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">baz</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">quux</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span><span class="w"> </span><span class="p">);</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+!! end
+
+!! test
+Comment in external links
+!! wikitext
+[//example<!-- -->.com]
+
+http://example<!-- -->.com
+!! html
+<p><a rel="nofollow" class="external autonumber" href="//example.com">[1]</a>
+</p><p><a rel="nofollow" class="external free" href="http://example.com">http://example.com</a>
+</p>
+!! end

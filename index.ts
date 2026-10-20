@@ -42,7 +42,7 @@ import type {
 import type {TitleOptions} from './lib/title';
 import type * as LSP from './lib/lsp';
 import type {LanguageService, QuickFixData} from './lib/lsp';
-import type * as TokenBase from './src/index';
+import type * as Src from './src/index';
 import type {
 	Token,
 
@@ -506,7 +506,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (opt?.halfParsed) {
 			titleObj = new Title(title, defaultNs, config, opt, accum);
 		} else {
-			const {Token}: typeof TokenBase = require('./src/index');
+			const {Token}: typeof Src = require('./src/index');
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config, accum);
 				root.type = 'root';
@@ -568,7 +568,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
-		const {Token}: typeof TokenBase = require('./src/index');
+		const {Token}: typeof Src = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';
@@ -829,7 +829,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (!main) {
 			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
 		}
-		const {Token}: typeof TokenBase = require('./src/index');
+		const {Token}: typeof Src = require('./src/index');
 		const file = path.join(dir, main),
 			wikitext = fs.readFileSync(file, 'utf8'),
 			{stage = MAX_STAGE, include, config, page}: ParsingError = (() => {

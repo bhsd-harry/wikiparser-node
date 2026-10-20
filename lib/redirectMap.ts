@@ -1,12 +1,12 @@
 import {classes} from '../util/constants';
-import type * as ParserType from '../index';
+import type * as ParserBase from '../index';
 
 /**
  * 快速规范化页面标题
  * @param title 标题
  */
 const normalizeTitle = (title: string): string => {
-	const Parser: typeof ParserType = require('../index');
+	const Parser: typeof ParserBase = require('../index');
 	return String(Parser.normalizeTitle(
 		title,
 		0,

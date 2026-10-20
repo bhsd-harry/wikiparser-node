@@ -106,7 +106,7 @@ const expand = (
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
-	accum: Token[] = [], // eslint-disable-line unicorn/no-unnecessary-parameters
+	accum: Token[] = [],
 	stack: string[] = [],
 ): Token => {
 	const n = accum.length,
