@@ -402,7 +402,7 @@ export abstract class TranscludeToken extends Token {
 		this.#anonCount +=
 			1;
 		let i: number;
-		// eslint-disable-next-line prefer-const
+		// eslint-disable-next-line prefer-const, unicorn/no-immediate-mutation
 		i = this.#anonCount - 1;
 		const token =
 				addedToken as ParameterToken,
