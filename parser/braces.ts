@@ -18,7 +18,7 @@ const closes: Record<string, string> = {
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
 	getExecRegex = getRegex(s => new RegExp(s, 'gmu'));
 let reReplace: RegExp;
-// eslint-disable-next-line prefer-const
+// eslint-disable-next-line prefer-const, unicorn/no-immediate-mutation
 reReplace = new RegExp(
 	String.raw`\{\{((?:[^\n{}[]|${lbrack}|${newline})*)\}\}(?!\})` // eslint-disable-line prefer-template
 	+ '|'
