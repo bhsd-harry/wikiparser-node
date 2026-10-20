@@ -75,7 +75,7 @@ export abstract class GalleryToken extends MultiLineToken {
 					continue;
 				}
 				const [, file, alt] = matches;
-				if (this.#checkFile(file)) {
+				if (this.#checkFile(file)) { // eslint-disable-line unicorn/prefer-ternary
 					// @ts-expect-error abstract class
 					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 				} else {

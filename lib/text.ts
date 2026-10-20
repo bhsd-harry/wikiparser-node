@@ -86,7 +86,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		if (skip && !this.parentNode?.getAttribute('built')) { // NOT FOR TEMPLATE
+		if (skip && !this.parentNode?.getAttribute('built')) { // eslint-disable-line unicorn/prefer-ternary
 			return removeComment(this.data);
 		}
 		return this.data;
