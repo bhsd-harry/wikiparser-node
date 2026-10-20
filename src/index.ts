@@ -60,8 +60,8 @@ import type {
 	TokenTypes,
 } from '../base';
 import type {Title, TitleOptions} from '../lib/title';
-import type * as CommentAndExt from '../parser/commentAndExt';
-import type * as Braces from '../parser/braces';
+import type * as CommentAndExtParser from '../parser/commentAndExt';
+import type * as BracesParser from '../parser/braces';
 import type {
 	AstNodes,
 } from '../internal';
@@ -112,6 +112,7 @@ export class Token extends AstElement {
 			return this;
 		}
 		/* c8 ignore start */
+		// eslint-disable-next-line unicorn/prefer-combined-guards
 		if (this.#stage >= MAX_STAGE) {
 			return this;
 		}
@@ -207,13 +208,13 @@ export class Token extends AstElement {
 	 * @param includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
-		const {parseCommentAndExt}: typeof CommentAndExt = require('../parser/commentAndExt');
+		const {parseCommentAndExt}: typeof CommentAndExtParser = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(this.firstChild!.toString(), this.#config, this.#accum, includeOnly));
 	}
 
 	/** 解析花括号 */
 	#parseBraces(): void {
-		const {parseBraces}: typeof Braces = require('../parser/braces');
+		const {parseBraces}: typeof BracesParser = require('../parser/braces');
 		const str = this.type === 'root' ? this.firstChild!.toString() : `\0${this.firstChild!.toString()}`,
 			parsed = parseBraces(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
