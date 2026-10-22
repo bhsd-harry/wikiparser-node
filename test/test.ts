@@ -28,8 +28,9 @@ describe('API tests', () => {
 	for (const fullPath of fs.globSync(path.resolve('wiki', '*.md'))) {
 		const md = fs.readFileSync(fullPath, 'utf8');
 		const wikicodes = md.matchAll(re),
-			codes = [...md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)]
-				.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''));
+			codes = md.matchAll(/(?<=```[jt]s\n).*?(?=\n```)/gsu)
+				.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''))
+				.toArray();
 		const file = path.basename(fullPath, '.md'),
 			testCodes = file.startsWith('LanguageService')
 				? codes.flatMap(code => [
