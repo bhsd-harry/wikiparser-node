@@ -189,7 +189,8 @@ const matches = (
 			if (equal === '~=') {
 				const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
 				return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
-					&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
+					&& Iterator.from(thisVals as Iterable<unknown>)
+						.some(w => typeof w === 'string' && toCase(w, i) === v);
 			}
 			/* c8 ignore next 3 */
 			if (!(primitives.has(typeof thisVal) || thisVal instanceof Title)) {
@@ -233,17 +234,17 @@ const matches = (
 					throw new SyntaxError('The :has() pseudo-selector cannot be nested.');
 				}
 				const condition: (child: Token) => boolean = getCondition(s, scope, token),
-					childOrSibling = attributes.siblings && /(?:^|,)\s*[+~]/u.test(s)
-						? [...token.childNodes, ...attributes.siblings.slice(attributes.siblings.indexOf(token))]
-						: token.childNodes;
 
-				/**
-				 * 递归查找元素
-				 * @param child 子节点
-				 */
-				const hasElement = (child: AstNodes): boolean =>
-					child.type !== 'text' && (condition(child) || child.childNodes.some(hasElement));
-				return childOrSibling.some(hasElement);
+					/**
+					 * 递归查找元素
+					 * @param child 子节点
+					 */
+					hasElement = (child: AstNodes): boolean =>
+						child.type !== 'text' && (condition(child) || child.childNodes.some(hasElement));
+				return [
+					token.childNodes,
+					/(?:^|,)\s*[+~]/u.test(s) && attributes.siblings?.slice(attributes.siblings.indexOf(token)),
+				].some(arr => arr && arr.some(hasElement));
 			}
 			case 'lang': {
 				/^zh(?:-|$)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions

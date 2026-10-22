@@ -188,7 +188,7 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
 /* NOT FOR BROWSER */
 
 /** escape special chars for RegExp constructor */
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/unbound-method
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 export const escapeRegExp = RegExp.escape || factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 
 /** escape newlines */

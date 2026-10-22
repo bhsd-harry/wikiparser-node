@@ -481,7 +481,7 @@ const cssRules = {'block-no-empty': null},
 	colors = Object.keys(colorsNamed),
 	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
-	scores = new Map<string, LilyPondError[]>();
+	scores = new Map<string, LilyPondError[] | undefined>();
 
 /**
  * Correct the position of an error.
@@ -548,7 +548,10 @@ function getStylelintPos(
  * @param token `<score>` extension token
  * @param errors LilyPond errors
  */
-const getLilyPondDiagnostics = (root: Token, token: ExtToken, errors: LilyPondError[]): DiagnosticBase[] => {
+const getLilyPondDiagnostics = (root: Token, token: ExtToken, errors?: LilyPondError[]): DiagnosticBase[] => {
+	if (!errors) {
+		return [];
+	}
 	const {top, left} = root.posFromIndex(token.lastChild.getAbsoluteIndex())!;
 	return errors.map(({line, col, message}): DiagnosticBase => {
 		const pos = getEndPos(top, left, line, col);
@@ -1327,7 +1330,7 @@ export class LanguageService implements LanguageServiceBase {
 							token.hasAttr('raw') ? `\n${innerText}` : ` \\score {\n${innerText}\n}`
 						}`;
 					if (scores.has(score)) {
-						return getLilyPondDiagnostics(root, token, scores.get(score)!);
+						return getLilyPondDiagnostics(root, token, scores.get(score));
 					}
 					const hash = createHash('sha256');
 					hash.update(score);
@@ -1336,12 +1339,12 @@ export class LanguageService implements LanguageServiceBase {
 					try {
 						// eslint-disable-next-line @typescript-eslint/strict-void-return
 						await util.promisify(execFile)(this.lilypond, ['-dno-print-pages', '-s', '-o', dir, file]);
-						scores.set(score, []);
+						scores.set(score, undefined);
 					} catch (e) {
 						const {stderr} = e as ExecException;
 						if (stderr) {
 							const re = new RegExp(String.raw`^${file}:(\d+):(\d+): error: (.+)$`, 'gmu'),
-								lilypondErrors = [...(stderr as string).matchAll(re)]
+								lilypondErrors = (stderr as string).matchAll(re)
 									.map(([, line, col, msg]): LilyPondError => {
 										const {offsetHeight, offsetWidth} = token.lastChild,
 											pos = adjustPos(
@@ -1355,7 +1358,8 @@ export class LanguageService implements LanguageServiceBase {
 											col: pos[1],
 											message: msg!,
 										};
-									});
+									})
+									.toArray();
 							scores.set(score, lilypondErrors);
 							return getLilyPondDiagnostics(root, token, lilypondErrors);
 						}
@@ -2027,8 +2031,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	provideCodeAction(diagnostics: DiagnosticBase[]): CodeAction[] {
 		const actionable = diagnostics.filter((diagnostic): diagnostic is Diagnostic => diagnostic.data),
-			fixable = actionable.filter(({source, data}) => source === 'WikiLint' && data.some(({fix}) => fix)),
-			fixableRules = [...new Set(fixable.map(({code}) => code as string))];
+			fixable = actionable.filter(({source, data}) => source === 'WikiLint' && data.some(({fix}) => fix));
 		return [
 			...actionable.flatMap(
 				diagnostic => diagnostic.data.map((data): CodeAction => ({
@@ -2044,13 +2047,14 @@ export class LanguageService implements LanguageServiceBase {
 			...fixable.length === 0
 				? []
 				: [
-					...fixableRules.map((rule): CodeAction => ({
-						title: `Fix all: ${rule}`,
-						kind: 'source.fixAll',
-						diagnostics: fixable.filter(({code}) => code === rule),
-						isPreferred: true,
-						data: {rule},
-					})),
+					...Iterator.from(new Set(fixable.map(({code}) => code as string)))
+						.map((rule): CodeAction => ({
+							title: `Fix all: ${rule}`,
+							kind: 'source.fixAll',
+							diagnostics: fixable.filter(({code}) => code === rule),
+							isPreferred: true,
+							data: {rule},
+						})),
 					{
 						title: 'Fix all: WikiLint',
 						kind: 'source.fixAll',

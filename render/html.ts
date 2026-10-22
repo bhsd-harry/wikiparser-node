@@ -177,7 +177,7 @@ export const toHtml = (token: Token): string => {
 <div id="catlinks" class="catlinks"><div><a href="${
 	token.normalizeTitle('Special:Categories', -1, {temporary: true}).getUrl()
 }" title="Special:Categories">Categories</a>: <ul>${
-	[...categories].map(catlink => `<li>${catlink}</li>`).join('')
+	Iterator.from(categories).map(catlink => `<li>${catlink}</li>`).toArray().join('')
 }</div></div>`;
 	}
 	return html;

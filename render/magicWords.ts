@@ -199,13 +199,7 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
 		const {main} = title;
 		return main.slice(main.lastIndexOf('/') + 1);
 	},
-	language = (() => {
-		try {
-			return navigator.language; // eslint-disable-line n/no-unsupported-features/node-builtins
-		} catch {
-			return new Intl.DateTimeFormat().resolvedOptions().locale;
-		}
-	})(),
+	{language} = navigator,
 	dir = (lang = language): 'ltr' | 'rtl' => {
 		try {
 			const locale = new Intl.Locale(lang) as Locale;
@@ -565,7 +559,10 @@ export const expandMagicWord = (
 				attributes.set(key, value);
 			}
 			const tag = `<${tagName} ${
-				[...attributes].map(([key, value]) => `${sanitizeId(key)}="${sanitizeId(value)}"`).join(' ')
+				Iterator.from(attributes)
+					.map(([key, value]) => `${sanitizeId(key)}="${sanitizeId(value)}"`)
+					.toArray()
+					.join(' ')
 			}${inner === undefined ? '/>' : `>${inner}</${tagName}>`}`;
 			if (!accum) {
 				return tag;

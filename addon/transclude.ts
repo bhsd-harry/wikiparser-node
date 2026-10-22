@@ -130,8 +130,9 @@ TranscludeToken.prototype.fixDuplication =
 			}
 			let noMoreAnon = !isTemplate || anonCount === 0 || !key.trim() || !Number.isSafeInteger(Number(key));
 			const emptyArgs = values.get('') ?? [],
-				duplicatedArgs = Iterator.from(values)
-					.filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
+				badArgs = [
+					...emptyArgs,
+					...Iterator.from(values).filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 						const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
 						if (anonIndex !== -1) {
 							noMoreAnon = true;
@@ -139,7 +140,7 @@ TranscludeToken.prototype.fixDuplication =
 						curArgs.splice(anonIndex, 1);
 						return curArgs;
 					}),
-				badArgs = [...emptyArgs, ...duplicatedArgs],
+				],
 				index = noMoreAnon ? -1 : emptyArgs.findIndex(({anon}) => anon);
 			if (badArgs.length === args.length) {
 				badArgs.splice(index, 1);
@@ -189,10 +190,10 @@ TranscludeToken.prototype.fixDuplication =
 								{temporary: true, page: ''},
 							).title,
 					)} still has ${remaining} duplicated ${JSON.stringify(key)} parameters:\n${
-						[...this.getArgs(key)].map(arg => {
+						Iterator.from(this.getArgs(key)).map(arg => {
 							const {top, left} = arg.getBoundingClientRect();
 							return `Line ${top} Column ${left}`;
-						}).join('\n')
+						}).toArray().join('\n')
 					}`);
 				}
 				duplicatedKeys.push(key);

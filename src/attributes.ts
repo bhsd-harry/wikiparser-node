@@ -637,7 +637,7 @@ export abstract class AttributesToken extends Token {
 				renderRefs(child);
 			}
 		}
-		const output = map.size === 0 ? '' : html([...map.values()], ' ', {removeBlank: true});
+		const output = map.size === 0 ? '' : html(map.values(), ' ', {removeBlank: true});
 		return output && ` ${output}`;
 	}
 
