@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
+## v2.0.0
+
+*2026-10-23*
+
+**Removed**
+
+- Support for Node.js 20
+
 ## v1.48.1
 
 *2026-10-21*

@@ -130,14 +130,15 @@ TranscludeToken.prototype.fixDuplication =
 			}
 			let noMoreAnon = !isTemplate || anonCount === 0 || !key.trim() || !Number.isSafeInteger(Number(key));
 			const emptyArgs = values.get('') ?? [],
-				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
-					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
-					if (anonIndex !== -1) {
-						noMoreAnon = true;
-					}
-					curArgs.splice(anonIndex, 1);
-					return curArgs;
-				}),
+				duplicatedArgs = Iterator.from(values)
+					.filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
+						const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
+						if (anonIndex !== -1) {
+							noMoreAnon = true;
+						}
+						curArgs.splice(anonIndex, 1);
+						return curArgs;
+					}),
 				badArgs = [...emptyArgs, ...duplicatedArgs],
 				index = noMoreAnon ? -1 : emptyArgs.findIndex(({anon}) => anon);
 			if (badArgs.length === args.length) {

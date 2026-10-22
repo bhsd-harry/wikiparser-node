@@ -254,7 +254,7 @@ export abstract class ConverterFlagsToken extends Token {
 				...hasT && hasD ? [] : unknownFlags,
 			]);
 		} else if (variantFlags.size > 0) {
-			return new Set([...variantFlags, ...unknownFlags]);
+			return variantFlags.union(unknownFlags);
 		}
 		if (flags.size === 1 && flags.has('T')) {
 			flags.add('H');

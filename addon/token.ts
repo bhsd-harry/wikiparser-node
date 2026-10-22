@@ -61,9 +61,10 @@ Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined
 		return undefined;
 	}
 	const {childNodes, length} = this,
-		headings: [number, number][] = [...childNodes.entries()]
+		headings: [number, number][] = childNodes.entries()
 			.filter((entry): entry is [number, HeadingToken] => entry[1].is('heading'))
-			.map(([i, {level}]) => [i, level]),
+			.map(([i, {level}]): [number, number] => [i, level])
+			.toArray(),
 		lastHeading = [-1, -1, -1, -1, -1, -1],
 		sections = headings.map(([i]) => {
 			const range = this.createRange();

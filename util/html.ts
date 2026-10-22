@@ -97,14 +97,18 @@ const openList = (chars: string, {dt}: State): string => {
  * @param separator delimiter between nodes
  * @param opt options
  */
-export const html = (childNodes: readonly AstNodes[], separator: string, opt: HtmlOpt = {}): string => {
+export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: HtmlOpt = {}): string => {
 	let lastPrefix = '';
 	const results: string[] = [],
 		{removeBlank} = opt,
 		state: State = {dt: []};
 	delete opt.removeBlank;
-	for (let j = 0; j < childNodes.length; j++) {
-		const child = childNodes[j]!;
+	let skip = 0;
+	for (const child of childNodes) {
+		if (skip) {
+			skip--;
+			continue;
+		}
 		let result = child.toHtmlInternal(opt);
 		if (child.is('list-range')) {
 			const {previousSibling} = child,
@@ -142,14 +146,14 @@ export const html = (childNodes: readonly AstNodes[], separator: string, opt: Ht
 					const next = nextSibling.nextSibling as ListRangeToken;
 					result += nextItem(':', state) + next.toHtmlInternal(opt).trim();
 					({nextSibling} = next);
-					j += 2;
+					skip += 2;
 				}
 				if (
 					nextSibling?.type === 'text'
 					&& nextSibling.data === '\n'
 					&& nextSibling.nextVisibleSibling?.is('list')
 				) {
-					j += 2;
+					skip += 2;
 					lastPrefix = prefix2;
 				} else {
 					lastPrefix = '';

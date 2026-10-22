@@ -508,7 +508,7 @@ TableToken.prototype.mergeCells =
 			[ymin, ymax] = ylim.map(y => y < 0 ? y + layout.length : y).toSorted(compare) as [number, number],
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
 		if (
-			[...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
+			[layout[ymin - 1], layout[ymax]].some(rowLayout => rowLayout?.some(coords => set.has(coords)))
 			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]!) || set.has(rowLayout[xmax]!))
 		) {
 			throw new RangeError('The area to be merged overlaps with the outer area!');

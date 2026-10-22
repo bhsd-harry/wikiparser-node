@@ -105,7 +105,7 @@ for (const fullPath of fs.globSync('config/*.json')) {
 				assert.ok(variables.has('upright'), `'manual-upright' not in img`);
 				assert.strictEqual(
 					constants.size + variables.size - 1,
-					new Set([...constants, ...variables]).size,
+					constants.union(variables).size,
 					'img not unique',
 				);
 			});
