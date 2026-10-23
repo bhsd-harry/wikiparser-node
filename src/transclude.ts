@@ -648,7 +648,7 @@ export abstract class TranscludeToken extends Token {
 		/* NOT FOR BROWSER */
 
 		if (exact && keyStr.trim() && Number.isSafeInteger(Number(keyStr))) {
-			args = new Set(Iterator.from(args).filter(({anon}) => typeof key === 'number' === anon));
+			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		}
 
 		/* NOT FOR BROWSER END */
@@ -911,7 +911,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param key parameter name / 参数名
 	 */
 	getValues(key: string | number): string[] {
-		return Iterator.from(this.getArgs(key)).map(token => token.getValue()).toArray();
+		return [...this.getArgs(key)].map(token => token.getValue());
 	}
 
 	/**

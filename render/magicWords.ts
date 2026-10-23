@@ -559,10 +559,7 @@ export const expandMagicWord = (
 				attributes.set(key, value);
 			}
 			const tag = `<${tagName} ${
-				Iterator.from(attributes)
-					.map(([key, value]) => `${sanitizeId(key)}="${sanitizeId(value)}"`)
-					.toArray()
-					.join(' ')
+				[...attributes].map(([key, value]) => `${sanitizeId(key)}="${sanitizeId(value)}"`).join(' ')
 			}${inner === undefined ? '/>' : `>${inner}</${tagName}>`}`;
 			if (!accum) {
 				return tag;

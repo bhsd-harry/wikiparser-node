@@ -1344,7 +1344,7 @@ export class LanguageService implements LanguageServiceBase {
 						const {stderr} = e as ExecException;
 						if (stderr) {
 							const re = new RegExp(String.raw`^${file}:(\d+):(\d+): error: (.+)$`, 'gmu'),
-								lilypondErrors = (stderr as string).matchAll(re)
+								lilypondErrors = [...(stderr as string).matchAll(re)]
 									.map(([, line, col, msg]): LilyPondError => {
 										const {offsetHeight, offsetWidth} = token.lastChild,
 											pos = adjustPos(
@@ -1358,8 +1358,7 @@ export class LanguageService implements LanguageServiceBase {
 											col: pos[1],
 											message: msg!,
 										};
-									})
-									.toArray();
+									});
 							scores.set(score, lilypondErrors);
 							return getLilyPondDiagnostics(root, token, lilypondErrors);
 						}
@@ -2047,14 +2046,13 @@ export class LanguageService implements LanguageServiceBase {
 			...fixable.length === 0
 				? []
 				: [
-					...Iterator.from(new Set(fixable.map(({code}) => code as string)))
-						.map((rule): CodeAction => ({
-							title: `Fix all: ${rule}`,
-							kind: 'source.fixAll',
-							diagnostics: fixable.filter(({code}) => code === rule),
-							isPreferred: true,
-							data: {rule},
-						})),
+					...[...new Set(fixable.map(({code}) => code as string))].map((rule): CodeAction => ({
+						title: `Fix all: ${rule}`,
+						kind: 'source.fixAll',
+						diagnostics: fixable.filter(({code}) => code === rule),
+						isPreferred: true,
+						data: {rule},
+					})),
 					{
 						title: 'Fix all: WikiLint',
 						kind: 'source.fixAll',

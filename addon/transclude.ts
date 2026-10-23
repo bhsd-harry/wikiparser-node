@@ -190,10 +190,10 @@ TranscludeToken.prototype.fixDuplication =
 								{temporary: true, page: ''},
 							).title,
 					)} still has ${remaining} duplicated ${JSON.stringify(key)} parameters:\n${
-						Iterator.from(this.getArgs(key)).map(arg => {
+						[...this.getArgs(key)].map(arg => {
 							const {top, left} = arg.getBoundingClientRect();
 							return `Line ${top} Column ${left}`;
-						}).toArray().join('\n')
+						}).join('\n')
 					}`);
 				}
 				duplicatedKeys.push(key);
