@@ -17,9 +17,8 @@ const fullPath = path.resolve('test', 'test.md');
 const md = fs.readFileSync(fullPath, 'utf8');
 for (const section of md.split(/^## /mu).slice(1)) {
 	describe(section.slice(0, section.indexOf('\n')), () => {
-		const testCodes = section.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)
-			.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''))
-			.toArray();
+		const testCodes = [...section.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
+			.map(([code]) => code.replaceAll(/(?: |\n\t*)\/\/ .*$/gmu, ''));
 		if (isSkip) {
 			prepare(testCodes.length);
 		} else {
