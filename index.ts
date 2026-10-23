@@ -22,7 +22,6 @@ import type {
 	LintConfig,
 	TokenTypes,
 	Parser as ParserBase,
-	Stage,
 	AST,
 } from './base';
 import type {TitleOptions} from './lib/title';
@@ -368,10 +367,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 		maxStage ??= MAX_STAGE;
 		config ??= this.getConfig();
-		// eslint-disable-next-line unicorn/prefer-smaller-scope
-		let types: Stage[] | undefined;
 		LSP: if (typeof maxStage !== 'number') {
-			types = Array.isArray(maxStage) ? maxStage : [maxStage];
+			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
 		const {Token}: typeof Src = require('./src/index');
@@ -405,6 +402,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 			/* NOT FOR BROWSER ONLY END */
 		});
+		PRINT: if (maxStage > MAX_STAGE) {
+			root.buildLists();
+		}
 		return root;
 	},
 
