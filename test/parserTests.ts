@@ -56,8 +56,6 @@ describe('Parser tests', () => {
 				it(desc, () => {
 					const root = Parser.parse(wikitext, title),
 						tidied = wikitext.replaceAll('\0', '');
-					// @ts-expect-error private method
-					root.buildLists();
 					try {
 						assert.strictEqual(
 							root.toString(),

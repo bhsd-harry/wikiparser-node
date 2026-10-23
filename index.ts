@@ -253,22 +253,23 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			config = configOrStage as Config | undefined;
 			page = pageOrConfig as string | undefined;
 		}
-		maxStage ??= MAX_STAGE;
+		maxStage ??= MAX_STAGE + 1;
 		config ??= this.getConfig();
 		LSP: if (typeof maxStage !== 'number') {
 			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
-			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE + 1));
 		}
 		const {Token}: typeof Src = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';
 			token.pageName = page;
-			return token.parse(maxStage, include);
+			token.parse(maxStage, include);
+			PRINT: if (maxStage > MAX_STAGE) {
+				token.buildLists();
+			}
+			return token;
 		});
-		PRINT: if (maxStage > MAX_STAGE) {
-			root.buildLists();
-		}
 		return root;
 	},
 
