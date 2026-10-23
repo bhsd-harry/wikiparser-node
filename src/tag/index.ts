@@ -6,10 +6,7 @@ import type {
 	Config,
 	AST,
 } from '../../base';
-import type {
-	AttributesToken,
-	SyntaxToken,
-} from '../../internal';
+import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
 
 /* PRINT ONLY */
 
@@ -78,7 +75,6 @@ export abstract class TagToken extends Token {
 					closing,
 					selfClosing,
 				} = this;
-				// eslint-disable-next-line prefer-const
 				let {parentNode} = this,
 					isVoid = false,
 					isFlexible = false;
@@ -102,11 +98,19 @@ export abstract class TagToken extends Token {
 					{rev} = Shadow;
 				let cur = siblings.pop(),
 					until: this | undefined;
-				while (
-					cur
-				) {
-					// eslint-disable-next-line no-empty, @typescript-eslint/no-unnecessary-condition
+				while (cur || parentNode.is('list-range') && parentNode.parentNode) {
 					if (!cur) {
+						const parent: Token = parentNode.parentNode!,
+							ch = parent.childNodes,
+							j = ch.indexOf(parentNode);
+						Array.prototype.push.apply(
+							siblings,
+							closing ? ch.slice(0, j) : ch.slice(j + 1).reverse(),
+						);
+						parentNode = parent;
+					} else if (cur.is('list-range')) {
+						const ch = cur.childNodes;
+						Array.prototype.push.apply(siblings, closing ? ch as AstNodes[] : [...ch].reverse());
 					} else if (until) {
 						if (cur === until) {
 							until = undefined;

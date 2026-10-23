@@ -45,6 +45,7 @@
 
 import {
 	text,
+	print,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -625,5 +626,54 @@ export class Token extends AstElement {
 					}
 				},
 			);
+	}
+
+	/**
+	 * 构建列表
+	 * @param recursive 是否递归
+	 */
+	#buildLists(recursive?: boolean): void {
+		PRINT: for (let i = 0; i < this.length; i++) {
+			const child = this.childNodes[i]!;
+			if (child.is('list') || child.is('dd')) {
+				child.getRange();
+			} else if (recursive && child.type !== 'text') {
+				child.#buildLists(true);
+			}
+		}
+	}
+
+	/**
+	 * Build lists
+	 *
+	 * 构建列表
+	 * @since v1.17.1
+	 */
+	buildLists(): void {
+		PRINT: this.#buildLists(true);
+	}
+
+	/** @private */
+	concat(elements: readonly AstNodes[]): void {
+		PRINT: {
+			if (elements.length === 0) {
+				return;
+			}
+			const {childNodes, lastChild} = this,
+				first = elements[0]!,
+				last = elements.at(-1)!;
+			for (const element of elements) {
+				element.setAttribute('parentNode', this);
+			}
+			lastChild?.setAttribute('nextSibling', first);
+			first.setAttribute('previousSibling', lastChild);
+			last.setAttribute('nextSibling', undefined);
+			this.setAttribute('childNodes', [...childNodes, ...elements]);
+		}
+	}
+
+	/** @private */
+	override print(opt?: PrintOpt): string {
+		PRINT: return this.is('list-range') ? print(this.childNodes) : super.print(opt);
 	}
 }
