@@ -115,13 +115,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			maxStage = maxStageOrInclude as MaxStage | undefined;
 			config = configOrStage as Config | undefined;
 		}
-		maxStage ??= MAX_STAGE;
+		maxStage ??= MAX_STAGE + 1;
 		config ??= this.getConfig();
 		const {Token}: typeof Src = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';
-			return token.parse(maxStage, include);
+			token.parse(maxStage, include);
+			return token;
 		});
 		return root;
 	},
