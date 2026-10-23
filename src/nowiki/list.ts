@@ -39,11 +39,12 @@ export abstract class ListToken extends ListBaseToken {
 					nextSibling = nextSibling.firstChild;
 				}
 				if (nextSibling?.type === 'text' && linkTypes.has(nextSibling.nextSibling?.type)) {
-					/^redirect\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+					/^redirect[^\S\n]*(?::[^\S\n]*)?$/iu;
 					const re = new RegExp(
 						String.raw`^(?:${
 							this.getAttribute('config').redirection.join('|')
-						})\s*(?::\s*)?$`,
+						})[^\S\n]*(?::[^\S\n]*)?$`,
 						'iu',
 					);
 					if (re.test(`#${nextSibling.data}`)) {
