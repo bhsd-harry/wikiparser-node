@@ -560,11 +560,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			config = configOrStage as Config | undefined;
 			page = pageOrConfig as string | undefined;
 		}
-		maxStage ??= MAX_STAGE;
+		maxStage ??= MAX_STAGE + 1;
 		config ??= this.getConfig();
-		PRINT: if (typeof maxStage !== 'number') {
+		LSP: if (typeof maxStage !== 'number') {
 			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
-			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE + 1));
 		}
 		const {Token}: typeof Src = require('./src/index');
 		const root = Shadow.run(() => {
@@ -572,23 +572,33 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			token.type = 'root';
 			token.pageName = page;
 			try {
-				return token.parse(maxStage, include);
+				token.parse(maxStage, include);
+				PRINT: if (maxStage > MAX_STAGE) {
+					token.buildLists();
+				}
+				return token;
 
 				/* NOT FOR BROWSER ONLY */
 			} catch (e) /* c8 ignore start */ {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
-						stage = token.getAttribute('stage');
+						stage = token.getAttribute('stage'),
+						isMax = stage === MAX_STAGE;
 					for (const k in config) {
 						if (k.startsWith('regex') || config[k as keyof Config] instanceof Set) {
 							delete config[k as keyof Config];
 						}
 					}
-					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : token.toString());
+					fs.writeFileSync(file, isMax ? wikitext : token.toString());
 					fs.writeFileSync(`${file}.err`, e.stack!);
 					fs.writeFileSync(
 						`${file}.json`,
-						JSON.stringify({stage, include, config, page}, null, '\t'),
+						JSON.stringify({
+							stage: isMax ? maxStage : stage,
+							include,
+							config,
+							page,
+						}, null, '\t'),
 					);
 				}
 				throw e;
@@ -597,9 +607,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 			/* NOT FOR BROWSER ONLY END */
 		});
-		LSP: if (maxStage > MAX_STAGE) {
-			root.buildLists();
-		}
 
 		/* NOT FOR BROWSER */
 
@@ -846,6 +853,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				token.parseOnce(stage, include);
 			} else {
 				token.parse(undefined, include);
+				if (stage > MAX_STAGE) {
+					token.buildLists();
+				}
 			}
 			fs.unlinkSync(file);
 			fs.rmSync(`${file}.err`, {force: true});

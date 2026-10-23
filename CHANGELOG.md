@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
 ## v2.0.0
 
-*2026-10-23*
+*2026-10-24*
+
+**Changed**
+
+- [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) now builds list items by default
 
 **Removed**
 
@@ -108,7 +112,7 @@
 
 **Fixed**
 
-- [`TagToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagToken-%28EN%29#findmatchingtag) after [`Token#buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) is executed
+- [`TagToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagToken-%28EN%29#findmatchingtag) after `Token#buildLists` is executed
 - Missing `ImagemapLinkToken#cloneNode` method
 - JSON schema for `<templatedata>`
 - Parsing of `<poll>` extension tags
@@ -211,7 +215,7 @@
 
 **Changed**
 
-- Setting the stage parameter of [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) to `Infinity` now implicitly calls [`Token#buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) after parsing to build the list items
+- Setting the stage parameter of [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) to `Infinity` now implicitly calls `Token#buildLists` after parsing to build the list items
 
 **Removed**
 
@@ -843,7 +847,7 @@
 
 **Added**
 
-- [`Token#buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#buildlists) that builds all `list-range` tokens
+- `Token#buildLists` that builds all `list-range` tokens
 - [`LanguageService#provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providediagnostics), [`LanguageService#provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providehover) and [`LanguageService#provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecompletionitems) now work for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`) and inline CSS
 - [`LanguageService#provideFoldingRanges`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providefoldingranges) now works for embedded JSON in extension tags (`templatedata`, `mapframe` and `maplink`)
 - `Token#lint` now reports errors and warnings for inline CSS

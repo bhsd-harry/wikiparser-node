@@ -812,12 +812,7 @@ export class Token extends AstElement {
 		}
 	}
 
-	/**
-	 * Build lists
-	 *
-	 * 构建列表
-	 * @since v1.17.1
-	 */
+	/** @private */
 	buildLists(): void {
 		PRINT: this.#buildLists(true);
 	}
