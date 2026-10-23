@@ -143,13 +143,7 @@ describe('Parser tests', () => {
 
 				const root = Parser.parse(wikitext, title),
 					tidied = wikitext.replaceAll('\0', '');
-
-				/* NOT FOR BROWSER */
-
 				root.buildLists();
-
-				/* NOT FOR BROWSER END */
-
 				try {
 					assert.strictEqual(
 						root.toString(),

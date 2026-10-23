@@ -6,14 +6,7 @@ import type {
 	Config,
 	AST,
 } from '../../base';
-import type {
-	AttributesToken,
-	SyntaxToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
-} from '../../internal';
+import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
 
 /* PRINT ONLY */
 
@@ -146,13 +139,8 @@ export abstract class TagToken extends Token {
 					{rev} = Shadow;
 				let cur = siblings.pop(),
 					until: this | undefined;
-				while (
-					cur
-					|| parentNode.is('list-range') && parentNode.parentNode
-				) {
+				while (cur || parentNode.is('list-range') && parentNode.parentNode) {
 					if (!cur) {
-						/* NOT FOR BROWSER */
-
 						const parent: Token = parentNode.parentNode!,
 							ch = parent.childNodes,
 							j = ch.indexOf(parentNode);
@@ -164,8 +152,6 @@ export abstract class TagToken extends Token {
 					} else if (cur.is('list-range')) {
 						const ch = cur.childNodes;
 						Array.prototype.push.apply(siblings, closing ? ch as AstNodes[] : [...ch].reverse());
-
-						/* NOT FOR BROWSER END */
 					} else if (until) {
 						if (cur === until) {
 							until = undefined;

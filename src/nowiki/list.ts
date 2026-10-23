@@ -35,15 +35,9 @@ export abstract class ListToken extends ListBaseToken {
 				{innerText} = this;
 			if (s && innerText === '#') {
 				let {nextSibling} = this;
-
-				/* NOT FOR BROWSER */
-
-				if (nextSibling?.is('list-range')) {
+				PRINT: if (nextSibling?.is('list-range')) {
 					nextSibling = nextSibling.firstChild;
 				}
-
-				/* NOT FOR BROWSER END */
-
 				if (nextSibling?.type === 'text' && linkTypes.has(nextSibling.nextSibling?.type)) {
 					/^redirect\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 					const re = new RegExp(

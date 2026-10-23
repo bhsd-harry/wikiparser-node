@@ -39,9 +39,6 @@ import type {
 	ParamLineToken,
 	ImagemapLinkToken,
 	CharinsertLineToken,
-
-	/* NOT FOR BROWSER */
-
 	ListRangeToken,
 } from './internal';
 
@@ -110,9 +107,6 @@ export interface TokenTypeMap {
 	'param-line-value': AtomToken;
 	'imagemap-link': ImagemapLinkToken;
 	'charinsert-line': CharinsertLineToken;
-
-	/* NOT FOR BROWSER */
-
 	'list-range': ListRangeToken;
 }
 export type SelectedTokenTypes = keyof TokenTypeMap;

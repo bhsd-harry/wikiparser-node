@@ -148,9 +148,6 @@ export type TokenTypes = 'root'
 	| 'param-line-value'
 	| 'imagemap-link'
 	| 'charinsert-line'
-
-	/* NOT FOR BROWSER */
-
 	| 'list-range';
 
 export const stages = /* #__PURE__ */ (() => {
@@ -179,16 +176,13 @@ export const stages = /* #__PURE__ */ (() => {
 		list: 10,
 		dd: 10,
 		converter: 11,
-
-		/* NOT FOR BROWSER */
-
-		'list-range': 11,
+		'list-range': 12,
 	} satisfies Partial<Record<TokenTypes, number>>;
 	Object.setPrototypeOf(obj, null);
 	return obj;
 })();
 
-export type Stage = keyof typeof stages;
+declare type Stage = keyof typeof stages;
 
 export const rules = /* #__PURE__ */ (() => {
 	const arr = [

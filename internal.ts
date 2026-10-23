@@ -55,10 +55,9 @@ export type {CommentLineToken} from './src/nowiki/commentLine';
 export type {TranslateToken} from './src/tagPair/translate';
 export type {TvarToken} from './src/tag/tvar';
 export type {FuncTagToken} from './src/funcTag';
+export type {ListRangeToken} from './src/nowiki/listBase';
 
 /* NOT FOR BROWSER */
-
-export type {ListRangeToken} from './src/nowiki/listBase';
 
 import type {TranscludeToken} from './src/transclude';
 import type {ExtToken} from './src/tagPair/ext';
