@@ -39,6 +39,7 @@ import type {
 	ParamLineToken,
 	ImagemapLinkToken,
 	CharinsertLineToken,
+	ListRangeToken,
 } from './internal';
 
 export interface TokenTypeMap {
@@ -106,6 +107,7 @@ export interface TokenTypeMap {
 	'param-line-value': AtomToken;
 	'imagemap-link': ImagemapLinkToken;
 	'charinsert-line': CharinsertLineToken;
+	'list-range': ListRangeToken;
 }
 export type SelectedTokenTypes = keyof TokenTypeMap;
 
