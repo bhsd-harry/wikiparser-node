@@ -1,8 +1,6 @@
 import type {AstElement} from '../lib/element';
 import type {Token} from '../internal';
 
-// @ts-expect-error unconstrained predicate
-export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
 declare type BasicCondition = (type: string, name?: string) => boolean;
 
 /**

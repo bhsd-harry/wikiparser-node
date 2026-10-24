@@ -1,7 +1,5 @@
 import util from 'util';
 
-export type log = (msg: string, ...args: unknown[]) => void;
-
 /* c8 ignore start */
 /** @implements */
 export const error: log = (msg, ...args) => {
