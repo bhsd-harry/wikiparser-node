@@ -6578,7 +6578,7 @@
 		"html": "<dl><dd><dl><dt><dl><dt><dl><dt><dl><dd><dl><dd></dd></dl></dd></dl></dt></dl></dt></dl></dt></dl></dd></dl>",
 		"render": "<dl><dd><dl><dt><dl><dt><dl><dt><dl><dd><dl><dd></dd></dl></dd></dl></dt></dl></dt></dl></dt></dl></dd></dl>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;::</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:;;;::</span></span>"
 	},
 	{
 		"desc": "[Before] HTML without raw HTML enabled ($wgRawHtml==false)",
@@ -10908,7 +10908,7 @@
 		"html": "<dl><dt>t3</dt>\n<dd><dl><dt></dt>\n<dd><dl><dt></dt>\n<dd>d3</dd></dl></dd></dl></dd></dl>\n<dl><dt>t5</dt>\n<dd><dl><dt></dt>\n<dd><dl><dt></dt>\n<dd><dl><dt></dt>\n<dd><dl><dt></dt>\n<dd>:d5</dd></dl></dd></dl></dd></dl></dd></dl></dd></dl>\n<dl><dt>t1</dt></dl>\n<dl><dt>t1</dt>\n<dd><ul><li>d1</li>\n<li>t1:d1</li></ul></dd></dl>",
 		"render": "<dl><dt><dl><dt><dl><dt>t3</dt>\n<dd>d3\n<dl><dt><dl><dt>t5</dt>\n<dd>:d5</dd></dl></dt></dl></dd></dl></dt></dl></dt></dl>\n<dl><dt>t1\n<ul><li>t1</dt>\n<dd>d1</li>\n<li>t1:d1</li></ul></dd></dl>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t3<span class=\"wpb-dd\">:::</span>d3\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t5<span class=\"wpb-dd\">:::::</span>:d5\n\n<span class=\"wpb-list\">;</span>t1\n<span class=\"wpb-list\">;*</span>t1<span class=\"wpb-dd\">:</span>d1\n<span class=\"wpb-list\">;*</span>t1:d1</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;;;</span>t3<span class=\"wpb-dd\">:::</span>d3\n<span class=\"wpb-list\">;;;;;</span>t5<span class=\"wpb-dd\">:::::</span>:d5\n\n<span class=\"wpb-list\">;</span>t1\n<span class=\"wpb-list\">;*</span>t1<span class=\"wpb-dd\">:</span>d1\n<span class=\"wpb-list\">;*</span>t1:d1</span>"
 	},
 	{
 		"desc": "Extension tag in language conversion",
@@ -16120,7 +16120,7 @@
 		"desc": "Nesting: Multi-level (Parsoid only)",
 		"wikitext": ";t1:d1\n;;t2::d2\n;;;t3:::d3",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>t1<span class=\"wpb-dd\">:</span>d1\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t2<span class=\"wpb-dd\">::</span>d2\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>t3<span class=\"wpb-dd\">:::</span>d3</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>t1<span class=\"wpb-dd\">:</span>d1\n<span class=\"wpb-list\">;;</span>t2<span class=\"wpb-dd\">::</span>d2\n<span class=\"wpb-list\">;;;</span>t3<span class=\"wpb-dd\">:::</span>d3</span>"
 	},
 	{
 		"desc": "Nesting: Test 2",
@@ -16136,7 +16136,7 @@
 		"html": "<dl><dd><dl><dt>t1</dt>\n<dd>\n<dl><dd><dl><dd>d2</dd></dl></dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd><dl><dt>t1</dt>\n<dd>\n<dl><dd><dl><dd>d2</dd></dl></dd></dl></dd></dl></dd></dl>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span><span class=\"wpb-list\">;</span>t1\n<span class=\"wpb-list\">::::</span>d2</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:;</span>t1\n<span class=\"wpb-list\">::::</span>d2</span>"
 	},
 	{
 		"desc": "Nesting: Test 4",
@@ -16144,7 +16144,7 @@
 		"html": "<dl><dd><dl><dd><dl><dt>t3</dt>\n<dd>d3</dd></dl></dd></dl></dd></dl>",
 		"render": "<dl><dd><dl><dd><dl><dt>t3</dt>\n<dd>d3</dd></dl></dd></dl></dd></dl>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">::</span><span class=\"wpb-list\">;</span>t3\n<span class=\"wpb-list\">:::</span>d3</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">::;</span>t3\n<span class=\"wpb-list\">:::</span>d3</span>"
 	},
 	{
 		"desc": "Mixed Lists: Test 1",
@@ -16152,7 +16152,7 @@
 		"html": "<dl><dd><dl><dt><ul><li>foo</li>\n<li>bar</li></ul></dt></dl>\n<dl><dt>baz</dt></dl></dd></dl>",
 		"render": "<dl><dd><dl><dt><ul><li>foo</li>\n<li>bar</li></ul></dt>\n<dt>baz</dt></dl></dd></dl>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span><span class=\"wpb-list\">;*</span>foo\n<span class=\"wpb-list\">::*</span>bar\n<span class=\"wpb-list\">:</span><span class=\"wpb-list\">;</span>baz</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:;*</span>foo\n<span class=\"wpb-list\">::*</span>bar\n<span class=\"wpb-list\">:;</span>baz</span>"
 	},
 	{
 		"desc": "Mixed Lists: Test 2",
@@ -16240,7 +16240,7 @@
 		"html": "<ul><li><ol><li><ul><li><ol><li><dl><dt>foo</dt>\n<dd><ul><li><dl><dt><dl><dt>bar</dt></dl></dt></dl></li></ul></dd></dl></li></ol></li></ul>\n<dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul>",
 		"render": "<ul><li><ol><li><ul><li><ol><li><dl><dt><ul><li><dl><dt><dl><dt>foo</dt>\n<dd>bar</dd></dl></dt></dl></li></ul></dt></dl></li>\n<li><dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul></li></ol></li></ul>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;*</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span> bar\n<span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;</span>boo <span class=\"wpb-dd\">:</span> baz</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#*#;*;</span><span class=\"wpb-list\">;</span>foo <span class=\"wpb-dd\">:</span> bar\n<span class=\"wpb-list\">*#*#</span><span class=\"wpb-list\">;</span>boo <span class=\"wpb-dd\">:</span> baz</span>"
 	},
 	{
 		"desc": "colons occurring in tags",
@@ -16248,7 +16248,7 @@
 		"html": "<dl><dt>a</dt>\n<dd>b</dd>\n<dt><b>a:b</b></dt>\n<dt><i>a:b</i></dt>\n<dt><span>a:b</span></dt>\n<dt><div>a:b</div></dt>\n<dt><div>a</div></dt>\n<dd>b</dd>\n<dt>a</dt>\n<dd>b</dd>\n<dt><i>a:b</i></dt></dl>\n<dl><dt><dl><dt><dl><dt><i>a:b</i></dt></dl></dt></dl></dt></dl>",
 		"render": "<dl><dt>a</dt>\n<dd>b</dd>\n<dt><b>a:b</b></dt>\n<dt><i>a:b</i></dt>\n<dt><span>a:b</span></dt>\n<dt><div>a:b</div></dt>\n<dt><div>a</dt>\n<dd>b</div></dd>\n<dt>a</dt>\n<dd>b</dd>\n<dt><i>a:b</i>\n<dl><dt><dl><dt><i>a:b</i></dt></dl></dt></dl></dt></dl>",
 		"lint": [],
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>a<span class=\"wpb-dd\">:</span>b\n<span class=\"wpb-list\">;</span><span class=\"wpb-quote\">'''</span>a:b<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;i&gt;</span>a:b<span class=\"wpb-html\">&lt;/i&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;span&gt;</span>a:b<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;div&gt;</span>a:b<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;div&gt;</span>a\n<span class=\"wpb-list\">:</span>b<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a:b</span></span>}}</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>a:b<span class=\"wpb-quote\">''</span></span></span>}}</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-list\">;</span><span class=\"wpb-quote\">''</span>a:b<span class=\"wpb-quote\">''</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span>a<span class=\"wpb-dd\">:</span>b\n<span class=\"wpb-list\">;</span><span class=\"wpb-quote\">'''</span>a:b<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;i&gt;</span>a:b<span class=\"wpb-html\">&lt;/i&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;span&gt;</span>a:b<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;div&gt;</span>a:b<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-html\">&lt;div&gt;</span>a\n<span class=\"wpb-list\">:</span>b<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a:b</span></span>}}</span>\n<span class=\"wpb-list\">;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>a:b<span class=\"wpb-quote\">''</span></span></span>}}</span>\n<span class=\"wpb-list\">;;;</span><span class=\"wpb-quote\">''</span>a:b<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "colons and tables 1",
