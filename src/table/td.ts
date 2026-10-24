@@ -444,19 +444,35 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
-		const {subtype, childNodes: [, attr, inner], nextSibling} = this,
+	/** @ignore */
+	#toHtmlOrPlain(method: Method, opt?: Omit<HtmlOpt, 'nocc'>): [string, string, string] {
+		const {lastChild, nextSibling} = this,
 			notEOL = nextSibling?.toString().startsWith('\n') === false,
 			lf = opt?.nowrap ? ' ' : '\n';
-		let html = inner.toHtmlInternal(opt).replace(/^[^\S\n]*/u, '');
+		let html = lastChild[method](opt).replace(/^[^\S\n]*/u, '');
 		if (notEOL) {
 			html = html.replace(/(?<=[\S\n])[^\S\n]*$/u, '');
 		}
+		return [lf, html, notEOL ? '' : lf];
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
+		const {subtype, childNodes: [, attr]} = this,
+			[lf, html, lfAfter] = this.#toHtmlOrPlain('toHtmlInternal', opt);
 		return `${lf}<${subtype}${attr.toHtmlInternal()}>${
 			subtype === 'caption' ? newline(html) : html
-		}${notEOL ? '' : lf}</${subtype}>`;
+		}${lfAfter}</${subtype}>`;
+	}
+
+	/** @private */
+	@cached()
+	override plainTextInternal(opt?: PlainOpt): string {
+		const [lf, html, lfAfter] = this.#toHtmlOrPlain('plainTextInternal', opt);
+		return lf
+			+ (this.subtype === 'caption' ? html.replaceAll('\n', ' ') : html)
+			+ lfAfter;
 	}
 }
 

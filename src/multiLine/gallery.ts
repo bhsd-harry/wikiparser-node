@@ -21,8 +21,6 @@ import type {
 
 import {Shadow, isToken} from '../../util/debug';
 import {classes} from '../../util/constants';
-import {html} from '../../util/html';
-import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -249,9 +247,8 @@ export abstract class GalleryToken extends MultiLineToken {
 	}
 
 	/** @private */
-	@cached()
-	override toHtmlInternal(): string {
-		return html(this.childNodes.filter(isToken('gallery-image')), '\n');
+	override toHtmlOrPlain(func: HtmlOrPlainFunc): string {
+		return func(this.childNodes.filter(isToken('gallery-image')), '\n');
 	}
 }
 

@@ -354,12 +354,17 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @private */
+	override toHtmlOrPlain(_: unknown, method: Method): string {
+		return this.firstChild[method]().trim();
+	}
+
+	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
-		const {level, firstChild} = this;
+		const {level} = this;
 		return `${this.tocData ?? ''}<div class="mw-heading mw-heading${level}"><h${level} id="${
 			this.getRenderedId()
-		}">${firstChild.toHtmlInternal().trim()}</h${level}></div>`;
+		}">${super.toHtmlInternal()}</h${level}></div>`;
 	}
 
 	/**

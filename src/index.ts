@@ -49,6 +49,7 @@ import {
 	/* NOT FOR BROWSER */
 
 	isInterwiki,
+	decodeHtml,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -82,7 +83,6 @@ import type {
 	TokenTypes,
 	LintError,
 } from '../base';
-import type {Cached} from '../util/lint';
 import type {Title, TitleOptions} from '../lib/title';
 import type * as CommentAndExtParser from '../parser/commentAndExt';
 import type * as BracesParser from '../parser/braces';
@@ -112,7 +112,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import assert from 'assert/strict';
-import {html} from '../util/html';
+import {html, plainText} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
@@ -1088,6 +1088,28 @@ export class Token extends AstElement {
 		}
 	}
 
+	/** @ignore */
+	#toHtmlOrPlain(func: (expanded: Token) => string, method: Method): string {
+		const {viewOnly} = Parser;
+		return Shadow.internal(() => {
+			let output: string;
+			if (this.type === 'root') {
+				const {expandToken}: typeof Expand = require('../render/expand');
+				Parser.viewOnly = true;
+				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
+					e = new Event('expand');
+				this.dispatchEvent(e, {type: 'expand', token: expanded});
+				Parser.viewOnly = false;
+				output = func(expanded);
+			} else {
+				Parser.viewOnly = false;
+				output = this.cloneNode()[method]();
+			}
+			Parser.viewOnly = viewOnly;
+			return output;
+		}, Parser);
+	}
+
 	/**
 	 * Generate HTML
 	 *
@@ -1095,30 +1117,24 @@ export class Token extends AstElement {
 	 * @since v1.10.0
 	 */
 	toHtml(): string {
-		const {viewOnly} = Parser;
-		return Shadow.internal(() => {
-			let output: string;
-			if (this.type === 'root') {
-				const {expandToken}: typeof Expand = require('../render/expand'),
-					{toHtml}: typeof RenderHtml = require('../render/html');
-				Parser.viewOnly = true;
-				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
-					e = new Event('expand');
-				this.dispatchEvent(e, {type: 'expand', token: expanded});
-				Parser.viewOnly = false;
-				output = toHtml(expanded);
-			} else {
-				Parser.viewOnly = false;
-				output = this.cloneNode().toHtmlInternal();
-			}
-			Parser.viewOnly = viewOnly;
-			return output;
-		}, Parser);
+		const {toHtml}: typeof RenderHtml = require('../render/html');
+		return this.#toHtmlOrPlain(toHtml, 'toHtmlInternal');
+	}
+
+	/**
+	 * Extract plain text
+	 *
+	 * 提取纯文本
+	 * @since v2.0.0
+	 */
+	plainText(): string {
+		return decodeHtml(
+			this.#toHtmlOrPlain(expanded => expanded.plainTextInternal(), 'plainTextInternal'),
+		);
 	}
 
 	/** @private */
-	@cached()
-	toHtmlInternal(opt?: HtmlOpt): string {
+	toHtmlOrPlain(func: HtmlOrPlainFunc, _: Method, opt?: HtmlOpt): string {
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {
 				child.removeBlankLines();
@@ -1126,7 +1142,19 @@ export class Token extends AstElement {
 		}
 		this.#buildLists();
 		this.normalize();
-		return html(this.childNodes, '', opt);
+		return func(this.childNodes, '', opt);
+	}
+
+	/** @private */
+	@cached()
+	toHtmlInternal(opt?: HtmlOpt): string {
+		return this.toHtmlOrPlain(html, 'toHtmlInternal', opt);
+	}
+
+	/** @private */
+	@cached()
+	plainTextInternal(opt?: PlainOpt): string {
+		return this.toHtmlOrPlain(plainText, 'plainTextInternal', opt);
 	}
 }
 

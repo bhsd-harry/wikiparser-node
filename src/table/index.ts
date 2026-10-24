@@ -23,7 +23,7 @@ import type {TableCoords} from './trBase';
 
 /* NOT FOR BROWSER */
 
-import {html} from '../../util/html';
+import {html, plainText} from '../../util/html';
 import {classes} from '../../util/constants';
 import {noWrap} from '../../util/string';
 import type {TdAttrs, TdSubtypes} from './td';
@@ -700,9 +700,8 @@ export abstract class TableToken extends TrBaseToken {
 		this.moveTableColAfter(x, after);
 	}
 
-	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
+	/** @ignore */
+	#toHtmlOrPlain(func: HtmlOrPlainFunc, method: Method, opt?: HtmlOpt): [[string, string, string, string], boolean] {
 		/**
 		 * 过滤需要移出表格的节点
 		 * @param token 表格或表格行
@@ -710,17 +709,38 @@ export abstract class TableToken extends TrBaseToken {
 		const filter = (token: TrBaseToken): Token[] => token.childNodes.filter(isToken('table-inter'));
 		const {childNodes} = this,
 			tr = childNodes.filter(isToken('tr')),
+			hasTr = tr.length > 0,
 			newOpt = {
 				...opt,
 				nowrap: true,
 			},
-			firstRow = super.toHtmlInternal(opt),
 			newline = opt?.nowrap ? ' ' : '\n';
-		return `${
-			[this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(newOpt).trim()).join(' ')
-		}<table${childNodes[1].toHtmlInternal()}>${newline}<tbody>${
-			firstRow + (tr.length > 0 && firstRow.endsWith('</tr>') ? newline : '')
-		}${html(tr, newline, opt)}${!firstRow && tr.length === 0 ? '<tr><td></td></tr>' : ''}</tbody></table>`;
+		return [
+			[
+				[this, ...tr].flatMap(filter).map(token => token[method](newOpt).trim()).join(' '),
+				newline,
+				super[method](opt),
+				(hasTr && childNodes.some(node => node.is('td') && node.subtype !== 'caption') ? newline : '')
+				+ func(tr, newline, opt),
+			],
+			hasTr,
+		];
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
+		const {childNodes} = this,
+			[[inter, newline, firstRow, rows], hasTr] = this.#toHtmlOrPlain(html, 'toHtmlInternal', opt);
+		return `${inter}<table${childNodes[1].toHtmlInternal()}>${newline}<tbody>${firstRow}${rows}${
+			hasTr || firstRow ? '' : '<tr><td></td></tr>'
+		}</tbody></table>`;
+	}
+
+	/** @private */
+	@cached()
+	override plainTextInternal(opt?: PlainOpt): string {
+		return this.#toHtmlOrPlain(plainText, 'plainTextInternal', opt)[0].join('');
 	}
 }
 

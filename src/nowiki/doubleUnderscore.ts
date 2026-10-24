@@ -82,8 +82,14 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 		));
 	}
 
+	/** @private */
 	override toHtmlInternal(): string {
 		return this.tocData ?? '';
+	}
+
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
 	}
 }
 

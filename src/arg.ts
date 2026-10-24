@@ -17,7 +17,6 @@ import type {
 
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -259,13 +258,12 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: HtmlOpt): string {
+	override toHtmlOrPlain(_: unknown, method: Method, opt?: HtmlOpt): string {
 		if (this.length === 1) {
 			const html = this.toString();
 			return opt?.nowrap ? html.replaceAll('\n', ' ') : html;
 		}
-		return this.childNodes[1]!.toHtmlInternal(opt);
+		return this.childNodes[1]![method](opt);
 	}
 }
 

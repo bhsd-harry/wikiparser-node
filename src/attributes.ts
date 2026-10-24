@@ -641,6 +641,11 @@ export abstract class AttributesToken extends Token {
 		return output && ` ${output}`;
 	}
 
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
+
 	/* c8 ignore start */
 	/**
 	 * Get the value of a style property

@@ -159,6 +159,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			try {
 				t.render = root.toHtml()
 					.replace(/\n<div id="catlinks" class="catlinks">.+$/su, '');
+				t.plain = root.plainText();
 			} catch {
 				console.error(`${test}\n`);
 			}

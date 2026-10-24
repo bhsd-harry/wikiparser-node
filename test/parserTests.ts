@@ -13,6 +13,7 @@ export interface Test extends TestBase {
 	title?: string | undefined;
 	html?: string;
 	render?: string;
+	plain?: string;
 	print?: string;
 	lint?: LintError[];
 }
@@ -46,11 +47,15 @@ const {window} = new JSDOM(''),
 	DOMPurify = createDOMPurify(window),
 	mathTags = new Set(['MOVER', 'MUNDER', 'MI', 'MROW']);
 
+/** @ignore */
+const normalize = (str: string): string => str.trim().replaceAll(/\s+/gu, '\n');
+
 /**
  * 检查HTML字符串是否安全
  * @param render HTML字符串
+ * @param plain 纯文本字符串
  */
-const purify = (render: string): void => {
+const purify = (render: string, plain?: string): void => {
 	DOMPurify.sanitize(render, {
 		FORBID_TAGS: ['style'],
 		ADD_TAGS: ['semantics', 'annotation', 'rb', 'rt', 'rtc'],
@@ -87,6 +92,17 @@ const purify = (render: string): void => {
 		}).filter(Boolean),
 		[],
 	);
+
+	if (plain) {
+		const {body} = new JSDOM(render).window.document,
+			selector = 'div#toc, ul.redirectText,' // 目录和重定向
+				+ 'sup.reference, span.mw-ext-cite-error, ol.references, a[href^="#cite_note-"],' // 引用
+				+ 'span.mwe-math-element, a.mw-charinsert-item'; // 其他扩展
+		for (const ele of body.querySelectorAll(selector)) {
+			ele.remove();
+		}
+		assert.strictEqual(normalize(body.textContent), normalize(plain));
+	}
 };
 
 /**
@@ -126,8 +142,8 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title = 'Parser test', wikitext, print, render, lint} of tests) {
-		if (wikitext && (print || render)) {
+	for (const {desc, title = 'Parser test', wikitext, print, render, plain, lint} of tests) {
+		if (wikitext && (print || render || plain)) {
 			it(desc, () => {
 				/* NOT FOR BROWSER */
 
@@ -180,7 +196,11 @@ describe('Parser tests', () => {
 							),
 							split(render),
 						);
-						purify(render);
+						purify(render, plain);
+					}
+
+					if (plain) {
+						assert.deepStrictEqual(root.plainText(), plain);
 					}
 
 					/* NOT FOR BROWSER END */

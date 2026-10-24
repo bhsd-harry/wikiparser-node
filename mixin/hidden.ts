@@ -39,6 +39,10 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 		override toHtmlInternal(opt?: HtmlOpt): string {
 			return html ? '' : super.toHtmlInternal(opt);
 		}
+
+		override plainTextInternal(): string {
+			return '';
+		}
 	}
 
 	/* NOT FOR BROWSER ONLY */

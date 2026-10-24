@@ -7,8 +7,6 @@ import type * as Selector from '../parser/selector';
 
 /* NOT FOR BROWSER END */
 
-// @ts-expect-error unconstrained predicate
-export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
 declare type BasicCondition = (type: string, name?: string) => boolean;
 
 /**

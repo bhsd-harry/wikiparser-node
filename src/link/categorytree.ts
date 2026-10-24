@@ -102,7 +102,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	override toHtmlInternal(): '' {
+	override toHtmlInternal(): string {
 		return '';
 	}
 

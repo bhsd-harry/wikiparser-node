@@ -1093,21 +1093,34 @@ export abstract class TranscludeToken extends Token {
 		};
 	}
 
-	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
+	/** @ignore */
+	#toHtmlOrPlain(opt?: Omit<HtmlOpt, 'nocc'>): [string, true?] {
 		const {type, name} = this;
 		if (type === 'template' && !name.startsWith('Special:')) {
 			if (this.normalizeTitle(name, 0, {halfParsed: true, temporary: true}).valid) {
-				const title = name.replaceAll('_', ' ');
-				return `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
-					sanitizeId(title)
-				} (page does not exist)">${title}</a>`;
+				return [name.replaceAll('_', ' '), true];
 			}
 			const str = this.text();
-			return opt?.nowrap ? str.replaceAll('\n', ' ') : str;
+			return [opt?.nowrap ? str.replaceAll('\n', ' ') : str];
 		}
-		return '';
+		return [''];
+	}
+
+	/** @private */
+	@cached()
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
+		const [title, missing] = this.#toHtmlOrPlain(opt);
+		return missing
+			? `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
+				sanitizeId(title)
+			} (page does not exist)">${title}</a>`
+			: title;
+	}
+
+	/** @private */
+	@cached()
+	override plainTextInternal(opt?: PlainOpt): string {
+		return this.#toHtmlOrPlain(opt)[0];
 	}
 }
 

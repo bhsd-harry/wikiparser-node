@@ -606,6 +606,11 @@ export abstract class AttributeToken extends Token {
 		return `${name}="${sanitized}"`;
 	}
 
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
+
 	/* c8 ignore start */
 	/**
 	 * Get or set the value of a style property

@@ -335,6 +335,12 @@ export abstract class MagicLinkToken extends Token {
 					+ (isISBN ? ' class="internal mw-magiclink-isbn"' : '');
 		return `<a${attrs}>${innerText}</a>`;
 	}
+
+	/** @private */
+	@cached()
+	override plainTextInternal(): string {
+		return this.innerText;
+	}
 }
 
 classes['MagicLinkToken'] = __filename;

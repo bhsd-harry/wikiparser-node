@@ -12,10 +12,8 @@ import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -136,16 +134,15 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: HtmlOpt): string {
+	override toHtmlOrPlain(func: HtmlOrPlainFunc, method: Method, opt?: HtmlOpt): string {
 		const flags = this.getEffectiveFlags(),
-			nocc = opt?.nocc,
+			nocc = method === 'toHtmlInternal' && opt?.nocc,
 			[, ...rules] = this.childNodes;
 		if (nocc || flags.has('R') || this.getVariantFlags().size > 0) {
-			return (nocc ? '-{' : '') + html(rules, ';', opt) + (nocc ? '}-' : '');
+			return (nocc ? '-{' : '') + func(rules, ';', opt) + (nocc ? '}-' : '');
 		} else if (flags.has('S')) {
-			return rules.find(({variant}) => variant)?.lastChild.toHtmlInternal(opt).trim()
-				?? rules[0].lastChild.toHtmlInternal(opt);
+			return rules.find(({variant}) => variant)?.lastChild[method](opt).trim()
+				?? rules[0].lastChild[method](opt);
 		}
 		return '';
 	}

@@ -661,12 +661,13 @@ export abstract class FileToken extends LinkBaseToken {
 			manual = fr instanceof Title,
 			isThumb = manual || fr === 'thumbnail',
 			framed = fr === 'framed',
-			visibleCaption = isThumb || framed || type === 'gallery-image',
+			isGallery = type === 'gallery-image',
+			visibleCaption = isThumb || framed || isGallery,
 			caption = this.getArg('caption')?.toHtmlInternal({
 				...opt,
 				nowrap: true,
 			}) ?? '',
-			titleFromCaption = visibleCaption && type !== 'gallery-image' ? '' : sanitizeAlt(caption)!,
+			titleFromCaption = visibleCaption && !isGallery ? '' : sanitizeAlt(caption)!,
 			hasLink = manual || link !== file,
 			title = titleFromCaption || (hasLink && typeof link !== 'string' ? link.getTitleAttr() : ''),
 			titleAttr = title && ` title="${title}"`,
@@ -676,7 +677,7 @@ export abstract class FileToken extends LinkBaseToken {
 			})) ?? titleFromCaption,
 			horiz = this.getHorizAlign() ?? '',
 			vert = this.getVertAlign() ?? '',
-			gallery = type === 'gallery-image' && parentNode?.parentNode as ExtToken | undefined,
+			gallery = isGallery && parentNode?.parentNode as ExtToken | undefined,
 			mode = gallery && gallery.getAttr('mode')?.toLowerCase(),
 			nolines = mode === 'nolines',
 			slideshow = mode === 'slideshow',
@@ -746,6 +747,20 @@ export abstract class FileToken extends LinkBaseToken {
 				}">${file.main}</a>\n`
 				: ''
 		}${caption}</div>${overlay ? '\n\t\t\t</div>' : ''}\n\t\t</li>`;
+	}
+
+	/** @private */
+	@cached()
+	override plainTextInternal(): string {
+		const {type, parentNode} = this,
+			fr = this.getFrame(),
+			isGallery = type === 'gallery-image',
+			gallery = isGallery && parentNode?.parentNode as ExtToken | undefined;
+		return (gallery && gallery.hasAttr('showfilename') ? `${this.getAttribute('title').main}\n` : '') + (
+			isGallery || fr === 'thumbnail' || fr === 'framed' || fr instanceof Title || this.getHorizAlign()
+				? this.getArg('caption')?.plainTextInternal({nowrap: true}) ?? ''
+				: ''
+		);
 	}
 }
 

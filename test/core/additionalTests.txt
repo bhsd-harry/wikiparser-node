@@ -399,7 +399,7 @@ title=[[Root]]
 !! wikitext
 #redirect [[/redirect]]
 !! html
-<ul class="redirectText"><li><a href="/w/index.php?title=/redirect&amp;action=edit&amp;redlink=1" class="new" title="/redirect (page does not exist)">/redirect</a></li></ul></div>
+<ul class="redirectText"><li><a href="/w/index.php?title=/redirect&amp;action=edit&amp;redlink=1" class="new" title="/redirect (page does not exist)">/redirect</a></li></ul>
 !! end
 
 !! test

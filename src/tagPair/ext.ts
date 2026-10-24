@@ -251,7 +251,7 @@ export abstract class ExtToken extends TagPairToken {
 			const refName = this.getAttr('name'),
 				text = this.innerText?.trim();
 			let msg = '';
-			if (this.closest('ext#references')) {
+			if (this.closest('ext-inner#references')) {
 				if (!refName) {
 					msg = 'no-named-in-references';
 				} else if (!text) {
@@ -336,15 +336,24 @@ export abstract class ExtToken extends TagPairToken {
 		});
 	}
 
+	/** @ignore */
+	#toHtmlOrPlain(render: typeof Extension.renderExt, opt?: Omit<HtmlOpt, 'nowrap'>): string {
+		const {name} = this;
+		return tagHooks.has(name) ? tagHooks.get(name)!(this) : render(this, opt);
+	}
+
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		const {name} = this;
-		if (tagHooks.has(name)) {
-			return tagHooks.get(name)!(this);
-		}
 		const {renderExt}: typeof Extension = require('../../render/extension');
-		return renderExt(this, opt);
+		return this.#toHtmlOrPlain(renderExt, opt);
+	}
+
+	/** @private */
+	@cached()
+	override plainTextInternal(): string {
+		const {renderExtPlain}: typeof Extension = require('../../render/extension');
+		return this.#toHtmlOrPlain(renderExtPlain);
 	}
 }
 

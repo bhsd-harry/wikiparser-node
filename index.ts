@@ -73,7 +73,6 @@ import type * as Bin from './bin/config';
 
 import {yellow, blue} from '@bhsd/nodejs';
 import {RedirectMap} from './lib/redirectMap';
-import type {log} from './util/diff';
 import type * as MagicWords from './render/magicWords';
 
 /* NOT FOR BROWSER END */

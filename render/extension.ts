@@ -21,7 +21,8 @@ const getCiteNoteId = (i: number, refName?: string): string =>
 			ref.content = content;
 			ref.dir = dir;
 		}
-	};
+	},
+	trimNewlines = (str: string): string => str.trimEnd().replace(/^\n+/u, '');
 
 /**
  * 将扩展标签渲染为HTML
@@ -57,7 +58,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}${padding}</div>`;
 		}
 		case 'gallery': {
-			const caption = firstChild.getAttrToken('caption'),
+			const caption = firstChild.getAttrToken('caption')?.lastChild.toHtmlInternal({nowrap: true}),
 				perrow = parseInt(firstChild.getAttr('perrow') || ''),
 				{classList} = firstChild,
 				mode = firstChild.getAttr('mode')?.toLowerCase(),
@@ -75,14 +76,12 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				);
 			}
 			return `<ul${firstChild.toHtmlInternal()}>\n${
-				caption
-					? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal({nowrap: true})}</li>\n`
-					: ''
+				caption === undefined ? '' : `\t<li class="gallerycaption">${caption}</li>\n`
 			}${lastChild.toHtmlInternal()}\n</ul>`;
 		}
 		case 'syntaxhighlight':
 		case 'source': {
-			let html = lastChild.toHtmlInternal().trimEnd().replace(/^\n+/u, ''),
+			let html = trimNewlines(lastChild.toHtmlInternal()),
 				lexer = firstChild.getAttr('lang');
 			const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
 				isInline = firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline'),
@@ -96,11 +95,11 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					try {
 						lexer = loadLanguage(lexer);
 						html = Prism.highlight(
-							lastChild.childNodes.map(
+							trimNewlines(lastChild.childNodes.map(
 								child => child.is('ext') && child.name === 'nowiki'
 									? child.innerText ?? ''
 									: child.toString(),
-							).join().trimEnd().replace(/^\n+/u, ''),
+							).join()),
 							Prism.languages[lexer]!,
 							lexer,
 						);
@@ -440,6 +439,39 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		}
 		case 'charinsert':
 			return lastChild.toHtmlInternal();
+		default:
+			return '';
+	}
+};
+
+/**
+ * 将扩展标签渲染为纯文本
+ * @param token 扩展标签节点
+ */
+export const renderExtPlain = (token: ExtToken): string => {
+	const {name, firstChild, lastChild} = token;
+	switch (name) {
+		case 'nowiki':
+			return lastChild.plainTextInternal({nowrap: token.closest('ext-inner')?.name !== 'poem'});
+		case 'pre':
+			return lastChild.plainTextInternal();
+		case 'langconvert':
+			return lastChild.plainTextInternal({nowrap: true});
+		case 'poem': {
+			const padding = firstChild.hasAttr('compact') ? '' : '\n';
+			return `${padding}${trimNewlines(lastChild.plainTextInternal())}${padding}`;
+		}
+		case 'gallery': {
+			const caption = firstChild.getAttrToken('caption')?.lastChild.plainTextInternal({nowrap: true});
+			return `\n${caption === undefined ? '' : `${caption}\n`}${lastChild.plainTextInternal()}\n`;
+		}
+		case 'syntaxhighlight':
+		case 'source': {
+			const html = trimNewlines(lastChild.plainTextInternal());
+			return firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline')
+				? html.trim().replaceAll('\n', ' ')
+				: html;
+		}
 		default:
 			return '';
 	}

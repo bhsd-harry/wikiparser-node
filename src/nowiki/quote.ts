@@ -178,6 +178,11 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			+ (italic === false ? '<i>' : '') + (bold === false ? '<b>' : '');
 	}
 
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
+
 	/**
 	 * Find the matching apostrophes
 	 *

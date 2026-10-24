@@ -46,7 +46,10 @@ declare global {
 		constructorError(msg: string): never;
 		seal(key: string, permanent?: boolean): void;
 		toHtmlInternal(opt?: HtmlOpt): string;
+		plainTextInternal(opt?: PlainOpt): string;
 	};
+
+	type Cached<T> = [number, T];
 
 	interface PrintOpt {
 		readonly pre?: string;
@@ -83,6 +86,10 @@ declare global {
 		readonly nocc?: boolean | undefined;
 		removeBlank?: boolean | undefined;
 	}
-}
 
-export {};
+	type PlainOpt = Pick<HtmlOpt, 'nowrap'>;
+
+	type Method = 'toHtmlInternal' | 'plainTextInternal';
+
+	type HtmlOrPlainFunc = (childNodes: readonly AstNodes[], separator: string, opt?: HtmlOpt) => string;
+}

@@ -14,7 +14,6 @@ import type {LintError} from '../../base';
 
 import {Shadow, isToken} from '../../util/debug';
 import {classes} from '../../util/constants';
-import {html} from '../../util/html';
 import {cached} from '../../mixin/cached';
 import {Token} from '../index';
 import type {TdAttrs, TdSubtypes} from './td';
@@ -207,13 +206,18 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/** @private */
+	override toHtmlOrPlain(func: HtmlOrPlainFunc, _: unknown, opt?: Omit<HtmlOpt, 'nocc'>): string {
+		return func(this.childNodes.filter(isToken('td')), '', opt);
+	}
+
+	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {childNodes, type} = this,
-			td = childNodes.filter(isToken('td'));
-		return td.some(({subtype}) => subtype !== 'caption')
-			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${html(td, '', opt)}</tr>`
-			: html(td, '', opt);
+			result = super.toHtmlInternal(opt);
+		return childNodes.some(node => node.is('td') && node.subtype !== 'caption')
+			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${result}</tr>`
+			: result;
 	}
 }
 

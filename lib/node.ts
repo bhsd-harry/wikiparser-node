@@ -10,7 +10,6 @@ import type {
 	TokenTypes,
 	LintError,
 } from '../base';
-import type {Cached} from '../util/lint';
 import type {NodeLike} from '../mixin/nodeLike';
 import type {AstText, Token} from '../internal';
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
@@ -37,10 +36,6 @@ export interface Dimension {
 export interface Position {
 	readonly top: number;
 	readonly left: number;
-}
-export interface CaretPosition {
-	readonly offsetNode: AstNodes;
-	readonly offset: number;
 }
 export interface Font {
 	bold: boolean;

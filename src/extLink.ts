@@ -221,34 +221,33 @@ export abstract class ExtLinkToken extends Token {
 	}
 
 	/** @private */
+	override toHtmlOrPlain(_: unknown, method: Method, opt?: HtmlOpt): string {
+		const {length, lastChild} = this;
+		if (length === 1) {
+			return this.innerText;
+		}
+		lastChild.normalize();
+		const {childNodes} = lastChild,
+			i = childNodes.findIndex(
+				child => child.is('link') || child.is('file') && child.getValue('link') !== '',
+			);
+		if (i !== -1) {
+			const after = childNodes.slice(i);
+			this.insertAdjacent(after, 1);
+		}
+		return lastChild[method](opt);
+	}
+
+	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: HtmlOpt): string {
-		const {length, lastChild} = this;
-		let innerText: string,
-			linkType: string,
-			href: string | undefined;
-		if (length > 1) {
-			lastChild.normalize();
-			const {childNodes} = lastChild,
-				i = childNodes.findIndex(
-					child => child.is('link') || child.is('file') && child.getValue('link') !== '',
-				);
-			if (i !== -1) {
-				const after = childNodes.slice(i);
-				this.insertAdjacent(after, 1);
-			}
-			innerText = lastChild.toHtmlInternal(opt);
-			linkType = 'text';
-		} else {
-			({innerText} = this);
-			linkType = 'autonumber';
-		}
+		let href = '';
 		try {
-			({href} = this.getUrl());
+			href = ` href="${this.getUrl().href}"`;
 		} catch {}
-		return `<a rel="nofollow" class="external ${linkType}"${
-			href === undefined ? '' : ` href="${href}"`
-		}>${innerText}</a>`;
+		return `<a rel="nofollow" class="external ${
+			this.length > 1 ? 'text' : 'autonumber'
+		}"${href}>${super.toHtmlInternal(opt)}</a>`;
 	}
 
 	/**

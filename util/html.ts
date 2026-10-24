@@ -117,7 +117,7 @@ export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: Htm
 				(child.length > 0 || /\s$/u.test(innerText))
 				&& previousSibling.is('list')
 				&& !/[;#*]/u.test(innerText)
-				&& child.closest('ext#poem,list-range')?.type === 'ext'
+				&& child.closest('ext-inner#poem,list-range')?.type === 'ext-inner'
 			) {
 				lastPrefix = '';
 				result = `<span class="mw-poem-indented" style="display: inline-block; margin-inline-start: ${
@@ -164,6 +164,23 @@ export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: Htm
 		results.push(result);
 	}
 	return (removeBlank ? results.filter(result => result !== '') : results).join(separator);
+};
+
+/**
+ * convert to plain text
+ * @param childNodes a Token's contents
+ * @param separator delimiter between nodes
+ * @param opt options
+ */
+export const plainText: HtmlOrPlainFunc = (childNodes, separator, opt?: PlainOpt): string => {
+	const results: string[] = [];
+	for (const child of childNodes) { // eslint-disable-line unicorn/prefer-array-from-map
+		results.push(
+			child.plainTextInternal(opt)
+			+ (child.is('list-range') && child.nextSibling?.is('dd') ? '\n' : ''),
+		);
+	}
+	return results.join(separator);
 };
 
 /**

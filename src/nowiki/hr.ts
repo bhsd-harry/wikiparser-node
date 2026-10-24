@@ -24,6 +24,11 @@ export abstract class HrToken extends NowikiBaseToken {
 	override toHtmlInternal(): string {
 		return '<hr>';
 	}
+
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
 }
 
 classes['HrToken'] = __filename;

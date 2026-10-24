@@ -595,8 +595,19 @@ export class AstText extends AstNode {
 	 * @since v1.10.0
 	 */
 	toHtml(nowrap?: boolean): string {
+		return sanitize(this.plainText(nowrap));
+	}
+
+	/**
+	 * Extract plain text
+	 *
+	 * 提取纯文本
+	 * @param nowrap whether to disable line-wrapping / 是否不换行
+	 * @since v2.0.0
+	 */
+	plainText(nowrap?: boolean): string {
 		const {data} = this;
-		return sanitize(nowrap ? data.replaceAll('\n', ' ') : data);
+		return nowrap ? data.replaceAll('\n', ' ') : data;
 	}
 
 	/** @private */
@@ -648,9 +659,15 @@ export class AstText extends AstNode {
 
 	/** @private */
 	@cached()
-	toHtmlInternal(opt?: Pick<HtmlOpt, 'nowrap'>): string {
+	toHtmlInternal(opt?: PlainOpt): string {
+		return sanitize(this.plainTextInternal(opt));
+	}
+
+	/** @private */
+	@cached()
+	plainTextInternal(opt?: PlainOpt): string {
 		this.removeBlankLines();
-		return this.toHtml(opt?.nowrap);
+		return this.plainText(opt?.nowrap);
 	}
 }
 

@@ -18,8 +18,6 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../util/debug';
-import {html} from '../util/html';
-import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -339,14 +337,13 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: HtmlOpt): string {
+	override toHtmlOrPlain(func: HtmlOrPlainFunc, method: Method, opt?: HtmlOpt): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3
-			? `${firstChild.toHtmlInternal(opt)}=>${childNodes[1].text()}:${
-				lastChild.toHtmlInternal(opt)
+			? `${firstChild[method](opt)}=>${childNodes[1].text()}:${
+				lastChild[method](opt)
 			}`
-			: html(childNodes, ':', opt);
+			: func(childNodes, ':', opt);
 	}
 }
 

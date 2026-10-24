@@ -442,6 +442,11 @@ export abstract class LinkBaseToken extends Token {
 		/* c8 ignore next */
 		return '';
 	}
+
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
 }
 
 classes['LinkBaseToken'] = __filename;

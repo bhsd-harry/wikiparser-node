@@ -180,6 +180,11 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	override toHtmlInternal(): string {
 		return '';
 	}
+
+	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
 }
 
 classes['ListBaseToken'] = __filename;

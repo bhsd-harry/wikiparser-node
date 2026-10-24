@@ -9,7 +9,6 @@ import type {Config} from '../../base';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {trimLc} from '../../util/string';
-import {cached} from '../../mixin/cached';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER END */
@@ -177,8 +176,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	}
 
 	/** @private */
-	@cached()
-	override toHtmlInternal(opt?: HtmlOpt): string {
+	override toHtmlOrPlain(_: unknown, method: Method, opt?: HtmlOpt): string {
 		const inner = this.lastChild,
 			{firstChild, lastChild} = inner;
 		if (firstChild?.type === 'text' && firstChild.data.startsWith('\n')) {
@@ -194,7 +192,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 				nextSibling.deleteData(0, 1);
 			}
 		}
-		return inner.toHtmlInternal(opt);
+		return inner[method](opt);
 	}
 }
 

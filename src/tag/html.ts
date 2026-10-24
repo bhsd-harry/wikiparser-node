@@ -407,6 +407,11 @@ export abstract class HtmlToken extends TagToken {
 	}
 
 	/** @private */
+	override plainTextInternal(): string {
+		return '';
+	}
+
+	/** @private */
 	override getRange(): AstRange | undefined {
 		const {selfClosing, name} = this,
 			[, selfClosingTags, voidTags] = this.getAttribute('config').html;

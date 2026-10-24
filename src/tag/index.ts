@@ -1,7 +1,6 @@
 import {cache} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {Token} from '../index';
-import type {Cached} from '../../util/lint';
 import type {
 	Config,
 	AST,

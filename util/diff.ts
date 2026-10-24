@@ -3,8 +3,6 @@ import util from 'util';
 import {spawn} from 'child_process';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
-export type log = (msg: string, ...args: unknown[]) => void;
-
 /* c8 ignore start */
 process.on('unhandledRejection', e => {
 	console.error(e);

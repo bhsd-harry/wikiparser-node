@@ -9,6 +9,8 @@ import type {Token, AtomToken} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
+import {sanitize} from '../../util/string';
+import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
 
@@ -79,6 +81,13 @@ export abstract class LinkToken extends LinkBaseToken {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/** @private */
+	@cached()
+	override plainTextInternal(): string {
+		const {length, lastChild} = this;
+		return length === 1 ? sanitize(this.innerText) : lastChild.plainTextInternal({nowrap: true});
+	}
 
 	/* c8 ignore start */
 	/**
