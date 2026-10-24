@@ -332,6 +332,13 @@ TableToken.prototype.getFullCol =
 		));
 	};
 
+TableToken.prototype.getEntries =
+	/** @implements */
+	function(): TdToken[][] {
+		const rows = this.getAllRows();
+		return this.getLayout().map(rowLayout => rowLayout.map(({row, column}) => rows[row]!.getNthCol(column)));
+	};
+
 TableToken.prototype.formatTableRow =
 	/** @implements */
 	function(y, attr, multiRow): void {

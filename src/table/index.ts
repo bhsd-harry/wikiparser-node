@@ -449,6 +449,17 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/**
+	 * Get all table entries in the form of a regular 2D array
+	 *
+	 * 以规则二维数组的形式获取表格所有单元格
+	 * @since v2.0.0
+	 */
+	getEntries(): TdToken[][] {
+		require('../../addon/table');
+		return this.getEntries();
+	}
+
+	/**
 	 * Format the row
 	 *
 	 * 设置行格式

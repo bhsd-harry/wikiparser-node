@@ -3,6 +3,10 @@
 
 *2026-10-24*
 
+**Added**
+
+- `TableToken#getEntries` that returns a regular 2D array of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29) for all table cells, resolving the `rowspan` and `colspan` attributes
+
 **Changed**
 
 - [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) now builds list items by default
