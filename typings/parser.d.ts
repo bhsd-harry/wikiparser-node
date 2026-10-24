@@ -1,4 +1,11 @@
+import type {AstElement} from '../lib/element';
+import type {Token} from '../internal';
+
 declare global {
+	type log = (msg: string, ...args: unknown[]) => void;
+
+	type TokenPredicate<T = Token> = (token: AstElement) => token is T;
+
 	interface BraceExecArray extends RegExpExecArray {
 		parts?: string[][];
 		findEqual?: boolean;
@@ -7,5 +14,3 @@ declare global {
 
 	type BraceExecArrayOrEmpty = Partial<BraceExecArray>;
 }
-
-export {};
