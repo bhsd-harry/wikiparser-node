@@ -6,10 +6,15 @@
 **Changed**
 
 - [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) now builds list items by default
+- `ListRangeToken#print` now wraps its content in an unstyled `<span class="wpb-list-range">`
 
 **Removed**
 
 - Support for Node.js 20
+
+**Migration Guide**
+
+- The old behavior of `Parser.parse` can be restored by specifying the [parsing stage](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) parameter as `'converter'` (or `'list'` if language conversion is disabled)
 
 ## v1.48.1
 

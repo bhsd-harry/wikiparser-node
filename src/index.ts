@@ -45,7 +45,6 @@
 
 import {
 	text,
-	print,
 
 	/* NOT FOR BROWSER */
 
@@ -834,11 +833,6 @@ export class Token extends AstElement {
 			last.setAttribute('nextSibling', undefined);
 			this.setAttribute('childNodes', [...childNodes, ...elements]);
 		}
-	}
-
-	/** @private */
-	override print(opt?: PrintOpt): string {
-		PRINT: return this.is('list-range') ? print(this.childNodes) : super.print(opt);
 	}
 
 	/* NOT FOR BROWSER */

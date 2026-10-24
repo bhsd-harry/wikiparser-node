@@ -79,14 +79,8 @@ provides multiple language services for editors such as [VS Code](https://market
 
 A list of available linting rules can be found [here](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules).
 
-### Browser-compatible
-
-A browser-compatible version, which can be used for code highlighting or as a
-[LSP](https://microsoft.github.io/language-server-protocol/) plugin in
-conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki)
-and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)).
-It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror)
-since Release 1.45.
+**Note**: The major version number of WikiLint is always higher than that of
+WikiParser-Node by 1.
 
 ### [WikiParser-Template](https://www.npmjs.com/package/wikiparser-template)
 
@@ -94,6 +88,15 @@ A lightweight version that only supports parsing and manipulation of templates.
 This version is designed for use cases where only template processing is needed,
 such as certain types of bots or web tools (e.g., [GANReviewTool](https://en.wikipedia.org/wiki/User:Novem_Linguae/Scripts/GANReviewTool))
 that focus on template manipulation.
+
+### [Browser-compatible](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-%28EN%29)
+
+A browser-compatible version, which can be used for code highlighting or as a
+[LSP](https://microsoft.github.io/language-server-protocol/) plugin in
+conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki)
+and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)).
+It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror)
+since MediaWiki Release 1.45.
 
 ## Installation
 

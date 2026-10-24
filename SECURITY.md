@@ -10,9 +10,9 @@ Only the latest major version of this project currently receives security update
 
 | Package             | Supported Version |
 |:-------------------:|:-----------------:|
-| wikiparser-node     | 1.x               |
-| wikilint            | 2.x               |
-| wikiparser-template | 1.x               |
+| wikiparser-node     | 2.x               |
+| wikilint            | 3.x               |
+| wikiparser-template | 2.x               |
 
 ## Reporting a Vulnerability
 

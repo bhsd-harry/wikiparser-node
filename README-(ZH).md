@@ -53,13 +53,15 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 可用的语法检查规则列表请见[这里](https://github.com/bhsd-harry/wikiparser-node/wiki/Rules)。
 
-### Browser-compatible
-
-兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为[语言服务器协议（LSP）](https://microsoft.github.io/language-server-protocol/)插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
+**注意**: WikiLint 的主版本号始终比 WikiParser-Node 的主版本号高 1。
 
 ### [WikiParser-Template](https://www.npmjs.com/package/wikiparser-template)
 
 一个轻量级版本，仅支持模板的解析和操作。这个版本适用于仅需要处理模板的使用场景，例如某些专注于模板操作的的机器人或网络工具（例如 [GANReviewTool](https://en.wikipedia.org/wiki/User:Novem_Linguae/Scripts/GANReviewTool)）。
+
+### [浏览器版本](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)
+
+兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为[语言服务器协议（LSP）](https://microsoft.github.io/language-server-protocol/)插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 MediaWiki 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
 
 ## 安装方法
 
