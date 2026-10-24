@@ -45,7 +45,6 @@
 
 import {
 	text,
-	print,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -665,10 +664,5 @@ export class Token extends AstElement {
 			last.setAttribute('nextSibling', undefined);
 			this.setAttribute('childNodes', [...childNodes, ...elements]);
 		}
-	}
-
-	/** @private */
-	override print(opt?: PrintOpt): string {
-		PRINT: return this.is('list-range') ? print(this.childNodes) : super.print(opt);
 	}
 }
