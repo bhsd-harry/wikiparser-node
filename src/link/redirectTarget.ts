@@ -106,7 +106,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	/** @private */
 	override setLinkText(linkStr?: string): void {
 		if (!linkStr) {
-			this.childNodes[1]?.remove();
+			this.childNodes[1]?.removeInternal();
 		}
 	}
 }

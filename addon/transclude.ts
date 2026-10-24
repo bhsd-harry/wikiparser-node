@@ -149,7 +149,7 @@ TranscludeToken.prototype.fixDuplication =
 				anonCount = 0;
 			}
 			for (const arg of badArgs) {
-				arg.remove();
+				arg.removeInternal();
 			}
 			let remaining = args.length - badArgs.length;
 			if (remaining === 1) {

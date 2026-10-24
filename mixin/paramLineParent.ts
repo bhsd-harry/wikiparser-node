@@ -165,7 +165,7 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 
 			removeParams(key: string): void {
 				for (const param of this.getParams(key)) {
-					param.remove();
+					param.removeInternal();
 				}
 			}
 

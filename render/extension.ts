@@ -238,7 +238,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			} else if (text && /<ref\b[^>]*>/iu.test(text)) {
 				const inner = lastChild.cloneNode();
 				for (const ref of inner.querySelectorAll<ExtToken>('ext#ref')) {
-					ref.remove();
+					ref.removeInternal();
 				}
 				if (/<ref\b[^>]*>/iu.test(inner.toString())) {
 					return '';

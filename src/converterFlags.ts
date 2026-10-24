@@ -297,7 +297,7 @@ export abstract class ConverterFlagsToken extends Token {
 	 */
 	removeFlag(flag: string): void {
 		for (const token of this.getFlagTokens(flag)) {
-			token.remove();
+			token.removeInternal();
 		}
 	}
 

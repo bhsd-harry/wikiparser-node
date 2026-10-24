@@ -31,7 +31,7 @@ AttributeToken.prototype.setValue =
 	/** @implements */
 	function(value): void {
 		if (value === false) {
-			this.remove();
+			this.removeInternal();
 			return;
 		} else if (value === true) {
 			this.setAttribute('equal', '');

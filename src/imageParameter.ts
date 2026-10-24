@@ -554,7 +554,7 @@ export abstract class ImageParameterToken extends Token {
 	setValue(value: string | boolean = false): void {
 		const {name} = this;
 		if (value === false) {
-			this.remove();
+			this.removeInternal();
 			return;
 		} else if (name === 'invalid') {
 			throw new Error('Invalid image parameter!');

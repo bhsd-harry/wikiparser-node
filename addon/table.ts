@@ -479,7 +479,7 @@ TableToken.prototype.removeTableRow =
 		}
 		const row = rows[y]!,
 			rowToken = row.is('tr') ? row : prependTableRow(this);
-		rowToken.remove();
+		rowToken.removeInternal();
 		return rowToken;
 	};
 
@@ -494,7 +494,7 @@ TableToken.prototype.removeTableCol =
 					lastChild.replaceChildren();
 				}
 			} else {
-				token.remove();
+				token.removeInternal();
 			}
 		}
 	};
@@ -520,7 +520,7 @@ TableToken.prototype.mergeCells =
 		cornerCell.colspan = xmax - xmin;
 		set.delete(corner);
 		for (const {row, column} of set) {
-			rows[row]!.getNthCol(column).remove();
+			rows[row]!.getNthCol(column).removeInternal();
 		}
 		return cornerCell;
 	};

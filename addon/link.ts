@@ -38,7 +38,7 @@ LinkBaseToken.prototype.setLinkText =
 	/** @implements */
 	function(linkStr): void {
 		if (linkStr === undefined) {
-			this.childNodes[1]?.remove();
+			this.childNodes[1]?.removeInternal();
 			return;
 		} else if (this.length === 1) {
 			const config = this.getAttribute('config');

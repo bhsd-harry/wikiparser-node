@@ -574,7 +574,7 @@ export abstract class AttributesToken extends Token {
 	 */
 	removeAttr(key: string): void {
 		for (const attr of this.getAttrTokens(key)) {
-			attr.remove();
+			attr.removeInternal();
 		}
 	}
 

@@ -452,35 +452,13 @@ export abstract class AstNode implements AstNodeBase {
 		LINT: return splitLines(String(this));
 	}
 
-	/**
-	 * Remove the current node
-	 *
-	 * 移除当前节点
-	 * @param ownLine whether to remove the current line if it is empty / 是否删除所在的空行
-	 */
-	remove(ownLine?: boolean): void {
+	/** @private */
+	removeInternal(): number | undefined {
 		PRINT: {
-			const {
-					parentNode,
-
-					/* NOT FOR BROWSER */
-
-					nextSibling,
-					previousSibling,
-				} = this,
+			const {parentNode} = this,
 				i = parentNode?.childNodes.indexOf(this as AstNode as AstNodes);
 			parentNode?.removeAt(i!);
-
-			/* NOT FOR BROWSER */
-
-			if (
-				ownLine
-				&& parentNode?.getGaps(i! - 1) === 0
-				&& nextSibling?.type === 'text' && previousSibling?.type === 'text'
-				&& nextSibling.data.startsWith('\n') && previousSibling.data.endsWith('\n')
-			) {
-				nextSibling.deleteData(0, 1);
-			}
+			return i;
 		}
 	}
 
@@ -591,6 +569,25 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Remove the current node
+	 *
+	 * 移除当前节点
+	 * @param ownLine whether to remove the current line if it is empty / 是否删除所在的空行
+	 */
+	remove(ownLine?: boolean): void {
+		const {parentNode, nextSibling, previousSibling} = this,
+			i = this.removeInternal();
+		if (
+			ownLine
+			&& parentNode?.getGaps(i! - 1) === 0
+			&& nextSibling?.type === 'text' && previousSibling?.type === 'text'
+			&& nextSibling.data.startsWith('\n') && previousSibling.data.endsWith('\n')
+		) {
+			nextSibling.deleteData(0, 1);
+		}
+	}
+
+	/**
 	 * Replace the current node with new nodes
 	 *
 	 * 将当前节点批量替换为新的节点
@@ -599,7 +596,7 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	replaceWith(...nodes: (AstNodes | string)[]): void {
 		this.insertAdjacent(nodes, 1);
-		this.remove();
+		this.removeInternal();
 	}
 
 	/**

@@ -1088,7 +1088,7 @@ export class Token extends AstElement {
 			for (const child of this.childNodes) {
 				if (child.type !== 'text' && child.isPlain()) {
 					child.insertAdjacent([...child.childNodes], 1);
-					child.remove();
+					child.removeInternal();
 				}
 			}
 		}
