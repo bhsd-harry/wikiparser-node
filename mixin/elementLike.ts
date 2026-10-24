@@ -1,5 +1,4 @@
 import {getCondition} from '../util/selector';
-import type {TokenPredicate} from '../util/selector';
 import type {AstElement} from '../lib/element';
 import type {
 	AstNodes,

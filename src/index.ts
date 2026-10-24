@@ -69,7 +69,6 @@ import type {
 	TokenTypes,
 	LintError,
 } from '../base';
-import type {Cached} from '../util/lint';
 import type {Title, TitleOptions} from '../lib/title';
 import type * as CommentAndExtParser from '../parser/commentAndExt';
 import type * as BracesParser from '../parser/braces';
