@@ -13,6 +13,7 @@ export interface Test extends TestBase {
 	title?: string | undefined;
 	html?: string;
 	render?: string;
+	plain?: string;
 	print?: string;
 	lint?: LintError[];
 }
@@ -37,8 +38,8 @@ Object.assign(Parser, {
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title = 'Parser test', wikitext, print, render, lint} of tests) {
-		if (wikitext && (print || render)) {
+	for (const {desc, title = 'Parser test', wikitext, print, render, plain, lint} of tests) {
+		if (wikitext && (print || render || plain)) {
 			it(desc, () => {
 				const root = Parser.parse(wikitext, title),
 					tidied = wikitext.replaceAll('\0', '');

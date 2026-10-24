@@ -231,7 +231,7 @@ export abstract class ExtToken extends TagPairToken {
 			const refName = this.getAttr('name'),
 				text = this.innerText?.trim();
 			let msg = '';
-			if (this.closest('ext#references')) {
+			if (this.closest('ext-inner#references')) {
 				if (!refName) {
 					msg = 'no-named-in-references';
 				} else if (!text) {

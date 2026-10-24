@@ -20,6 +20,8 @@ declare global {
 		getAbsoluteIndex(): number;
 	};
 
+	type Cached<T> = [number, T];
+
 	interface PrintOpt {
 		readonly pre?: string;
 		readonly post?: string;
@@ -27,5 +29,3 @@ declare global {
 		readonly class?: string;
 	}
 }
-
-export {};

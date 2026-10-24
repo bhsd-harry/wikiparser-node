@@ -6,8 +6,6 @@ import type {Position} from 'vscode-languageserver-types';
 import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
 
-export type Cached<T> = [number, T];
-
 declare type generator = (
 	token: AstNodes,
 	rect: BoundingRect | {start: number},
