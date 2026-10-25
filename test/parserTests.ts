@@ -43,6 +43,7 @@ const deprint = (str: string): string => str.replaceAll(
  * @param str HTML字符串
  */
 const split = (str: string): string[] => str
+	.replace(/(?<!\n)\n+/u, '')
 	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
 
 /* PRINT ONLY END */
