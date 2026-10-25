@@ -30,7 +30,9 @@ const getCiteNoteId = (i: number, refName?: string): string =>
  * @param opt 渲染选项
  */
 export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): string => {
-	const {name, firstChild, lastChild} = token;
+	const {name, firstChild, lastChild} = token,
+		render = opt?.render,
+		renderOpt: HtmlOpt = {render};
 	switch (name) {
 		case 'nowiki': {
 			const html = lastChild.toHtmlInternal();
@@ -47,6 +49,8 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		}
 		case 'langconvert':
 			return lastChild.toHtmlInternal({...opt, nowrap: true});
+		case 'charinsert':
+			return lastChild.toHtmlInternal();
 		case 'poem': {
 			const padding = firstChild.hasAttr('compact') ? '' : '\n';
 			firstChild.classList.add('poem');
@@ -58,7 +62,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}${padding}</div>`;
 		}
 		case 'gallery': {
-			const caption = firstChild.getAttrToken('caption')?.lastChild.toHtmlInternal({nowrap: true}),
+			const caption = firstChild.getAttrToken('caption')?.lastChild.toHtmlInternal({nowrap: true, render}),
 				perrow = parseInt(firstChild.getAttr('perrow') || ''),
 				{classList} = firstChild,
 				mode = firstChild.getAttr('mode')?.toLowerCase(),
@@ -77,11 +81,11 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}
 			return `<ul${firstChild.toHtmlInternal()}>\n${
 				caption === undefined ? '' : `\t<li class="gallerycaption">${caption}</li>\n`
-			}${lastChild.toHtmlInternal()}\n</ul>`;
+			}${lastChild.toHtmlInternal(renderOpt)}\n</ul>`;
 		}
 		case 'syntaxhighlight':
 		case 'source': {
-			let html = trimNewlines(lastChild.toHtmlInternal()),
+			let html = trimNewlines(lastChild.toHtmlInternal(renderOpt)),
 				lexer = firstChild.getAttr('lang');
 			const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
 				isInline = firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline'),
@@ -303,7 +307,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (!refs.has(group)) {
 				return '';
 			}
-			const html = lastChild.toHtmlInternal();
+			const html = lastChild.toHtmlInternal(renderOpt);
 			if (!refs.has(group)) { // 嵌套的`<ref>`
 				return html;
 			}
@@ -313,7 +317,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}
 			let ol = `<ol class="references"${group && ` data-mw-group="${sanitizeId(group)}"`}>`;
 			for (const {content} of follows) {
-				ol += `\n<p><span class="reference-text">${content.toHtmlInternal()}</span>\n</p>`;
+				ol += `\n<p><span class="reference-text">${content.toHtmlInternal(renderOpt)}</span>\n</p>`;
 			}
 			for (let i = 0; i < referencesGroup.length; i++) {
 				const {content, count, dir, name: refName, id} = referencesGroup[i]!;
@@ -330,7 +334,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 								}">${i + 1}.${j}</a></sup>`,
 							).join('')
 						}`
-				}</span> <span class="reference-text">${content?.toHtmlInternal() ?? ''}</span>\n</li>`;
+				}</span> <span class="reference-text">${content?.toHtmlInternal(renderOpt) ?? ''}</span>\n</li>`;
 			}
 			ol += '\n</ol>';
 			refs.delete(group);
@@ -437,8 +441,6 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				+ '</table>'
 				+ '</section>';
 		}
-		case 'charinsert':
-			return lastChild.toHtmlInternal();
 		default:
 			return '';
 	}

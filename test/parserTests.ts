@@ -51,6 +51,19 @@ const {window} = new JSDOM(''),
 const normalize = (str: string): string => str.trim().replaceAll(/\s+/gu, '\n');
 
 /**
+ * 移除HTML字符串中指定选择器的元素
+ * @param render HTML字符串
+ * @param selector CSS选择器
+ */
+const removeFromDom = (render: string, selector: string): HTMLElement => {
+	const {body} = new JSDOM(render).window.document;
+	for (const ele of body.querySelectorAll(selector)) {
+		ele.remove();
+	}
+	return body;
+};
+
+/**
  * 检查HTML字符串是否安全
  * @param render HTML字符串
  * @param plain 纯文本字符串
@@ -91,26 +104,20 @@ const purify = (render: string, plain?: string): void => {
 			) && {[name]: value};
 		}).filter(Boolean),
 		[],
+		'渲染结果不安全！',
 	);
 
 	if (plain) {
-		const {body} = new JSDOM(render).window.document,
-			selector = 'div#toc, ul.redirectText,' // 目录和重定向
-				+ 'sup.reference, span.mw-ext-cite-error, ol.references, a[href^="#cite_note-"],' // 引用
-				+ 'span.mwe-math-element, a.mw-charinsert-item'; // 其他扩展
-		for (const ele of body.querySelectorAll(selector)) {
-			ele.remove();
-		}
-		assert.strictEqual(normalize(body.textContent), normalize(plain));
+		const selector = 'div#toc, ul.redirectText,' // 目录和重定向
+			+ 'sup.reference, span.mw-ext-cite-error, ol.references, a[href^="#cite_note-"],' // 引用
+			+ 'span.mwe-math-element, a.mw-charinsert-item'; // 其他扩展
+		assert.strictEqual(
+			normalize(removeFromDom(render, selector).textContent),
+			normalize(plain),
+			'渲染结果与纯文本不一致！',
+		);
 	}
 };
-
-/**
- * 合并`wpb-list`元素
- * @param html HTML字符串
- */
-const merge = (html: string): string =>
-	html.replaceAll('</span><span class="wpb-list">', '');
 
 /* NOT FOR BROWSER END */
 
@@ -134,8 +141,7 @@ const deprint = (str: string): string => str.replaceAll(
  * @param str HTML字符串
  */
 const split = (str: string): string[] => str
-	// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-	.replaceAll(/(?:<span class="wpb-list">[^<]+<\/span>)+/gu, merge)
+	.replace(/(?<!\n)\n+/u, '')
 	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
 
 /* PRINT ONLY END */
@@ -195,12 +201,28 @@ describe('Parser tests', () => {
 								),
 							),
 							split(render),
+							'渲染结果不符合预期！',
 						);
+						if (!/\S__TOC__/u.test(wikitext)) {
+							assert.deepStrictEqual(
+								split(
+									root.toHtml({toc: false}).replace(
+										/\n<div id="catlinks" class="catlinks">.+$/su,
+										'',
+									),
+								),
+								split(
+									render.replace(/<div class="toctitle">.+?<\/div>/su, '')
+										.replace(/<div id="toc" .+?<\/div>\n?/su, ''),
+								),
+								'{toc: false} 选项渲染结果不符合预期！',
+							);
+						}
 						purify(render, plain);
 					}
 
 					if (plain) {
-						assert.deepStrictEqual(root.plainText(), plain);
+						assert.deepStrictEqual(root.plainText(), plain, '纯文本结果不符合预期！');
 					}
 
 					/* NOT FOR BROWSER END */

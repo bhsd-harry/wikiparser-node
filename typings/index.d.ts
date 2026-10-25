@@ -4,6 +4,7 @@ import type {
 	/* NOT FOR BROWSER */
 
 	Config,
+	RenderOpt,
 } from '../base';
 import type {
 	AstNodes,
@@ -85,6 +86,7 @@ declare global {
 		readonly nowrap?: boolean | undefined;
 		readonly nocc?: boolean | undefined;
 		removeBlank?: boolean | undefined;
+		render?: RenderOpt | undefined;
 	}
 
 	type PlainOpt = Pick<HtmlOpt, 'nowrap'>;

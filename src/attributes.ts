@@ -16,6 +16,10 @@ import {AttributeToken} from './attribute';
 import type {
 	Config,
 	LintError,
+
+	/* NOT FOR BROWSER */
+
+	RenderOpt,
 } from '../base';
 import type {
 	ExtToken,
@@ -79,10 +83,11 @@ const required = new Map([
 /**
  * 处理不显示的`<ref>`
  * @param token 不显示的节点
+ * @param render 渲染设置
  */
-const renderRefs = (token: Token): void => {
+const renderRefs = (token: Token, render?: RenderOpt): void => {
 	for (const ref of token.querySelectorAll<ExtToken>('ext#ref')) {
-		ref.toHtmlInternal();
+		ref.toHtmlInternal({render});
 	}
 };
 
@@ -624,20 +629,20 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal(): string {
+	override toHtmlInternal({render}: HtmlOpt = {}): string {
 		const map = new Map<string, AttributeToken>();
 		for (const child of this.childNodes) {
 			if (child instanceof AttributeToken) {
 				const last = map.get(child.name);
 				if (last) {
-					renderRefs(last);
+					renderRefs(last, render);
 				}
 				map.set(child.name, child);
 			} else {
-				renderRefs(child);
+				renderRefs(child, render);
 			}
 		}
-		const output = map.size === 0 ? '' : html(map.values(), ' ', {removeBlank: true});
+		const output = map.size === 0 ? '' : html(map.values(), ' ', {removeBlank: true, render});
 		return output && ` ${output}`;
 	}
 

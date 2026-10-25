@@ -732,9 +732,9 @@ export abstract class TableToken extends TrBaseToken {
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {childNodes} = this,
 			[[inter, newline, firstRow, rows], hasTr] = this.#toHtmlOrPlain(html, 'toHtmlInternal', opt);
-		return `${inter}<table${childNodes[1].toHtmlInternal()}>${newline}<tbody>${firstRow}${rows}${
-			hasTr || firstRow ? '' : '<tr><td></td></tr>'
-		}</tbody></table>`;
+		return `${inter}<table${
+			childNodes[1].toHtmlInternal({render: opt?.render})
+		}>${newline}<tbody>${firstRow}${rows}${hasTr || firstRow ? '' : '<tr><td></td></tr>'}</tbody></table>`;
 	}
 
 	/** @private */

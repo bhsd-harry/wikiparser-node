@@ -8,6 +8,7 @@ import type {Token} from '../../internal';
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import {getTocData} from '../../util/html';
 import {syntax} from '../../mixin/syntax';
 import type {SyntaxBase} from '../../mixin/syntax';
 
@@ -83,8 +84,8 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
-		return this.tocData ?? '';
+	override toHtmlInternal({render}: HtmlOpt = {}): string {
+		return getTocData(this, render);
 	}
 
 	/** @private */

@@ -82,6 +82,10 @@ import {AstText} from '../lib/text';
 import type {
 	TokenTypes,
 	LintError,
+
+	/* NOT FOR BROWSER */
+
+	RenderOpt,
 } from '../base';
 import type {Title, TitleOptions} from '../lib/title';
 import type * as CommentAndExtParser from '../parser/commentAndExt';
@@ -1089,7 +1093,7 @@ export class Token extends AstElement {
 	}
 
 	/** @ignore */
-	#toHtmlOrPlain(func: (expanded: Token) => string, method: Method): string {
+	#toHtmlOrPlain(func: (expanded: Token, opt?: RenderOpt) => string, method: Method, render?: RenderOpt): string {
 		const {viewOnly} = Parser;
 		return Shadow.internal(() => {
 			let output: string;
@@ -1100,10 +1104,10 @@ export class Token extends AstElement {
 					e = new Event('expand');
 				this.dispatchEvent(e, {type: 'expand', token: expanded});
 				Parser.viewOnly = false;
-				output = func(expanded);
+				output = func(expanded, render);
 			} else {
 				Parser.viewOnly = false;
-				output = this.cloneNode()[method]();
+				output = this.cloneNode()[method]({render});
 			}
 			Parser.viewOnly = viewOnly;
 			return output;
@@ -1114,11 +1118,12 @@ export class Token extends AstElement {
 	 * Generate HTML
 	 *
 	 * 生成HTML
+	 * @param opt options / 设置
 	 * @since v1.10.0
 	 */
-	toHtml(): string {
+	toHtml(opt?: RenderOpt): string {
 		const {toHtml}: typeof RenderHtml = require('../render/html');
-		return this.#toHtmlOrPlain(toHtml, 'toHtmlInternal');
+		return this.#toHtmlOrPlain(toHtml, 'toHtmlInternal', opt);
 	}
 
 	/**

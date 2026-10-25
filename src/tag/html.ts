@@ -15,7 +15,7 @@ import type {Token, AttributesToken} from '../../internal';
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
-import {getId, html} from '../../util/html';
+import {getId, html, getTocData} from '../../util/html';
 import {cached} from '../../mixin/cached';
 import type {AstRange} from '../../lib/range';
 
@@ -385,7 +385,7 @@ export abstract class HtmlToken extends TagToken {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal(): string {
+	override toHtmlInternal({render}: HtmlOpt = {}): string {
 		const {closing, name, selfClosing} = this;
 		if (!closing && /^h\d$/u.test(name)) {
 			if (!this.id) {
@@ -397,11 +397,11 @@ export abstract class HtmlToken extends TagToken {
 			this.classList.add('mw-html-heading');
 		}
 		const [, selfClosingTags, voidTags] = this.getAttribute('config').html,
-			tag = name + (closing ? '' : super.toHtmlInternal());
+			tag = name + (closing ? '' : super.toHtmlInternal({render}));
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : `<${tag}>`;
 		}
-		return `${this.tocData ?? ''}<${closing ? '/' : ''}${tag}>${
+		return `${getTocData(this, render)}<${closing ? '/' : ''}${tag}>${
 			selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
 		}`;
 	}

@@ -127,8 +127,8 @@ export abstract class RedirectToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
-		return `<ul class="redirectText"><li>${this.lastChild.toHtmlInternal()}</li></ul>`;
+	override toHtmlInternal({render}: HtmlOpt = {}): string {
+		return `<ul class="redirectText"><li>${this.lastChild.toHtmlInternal({render})}</li></ul>`;
 	}
 }
 

@@ -7,6 +7,7 @@
 
 - `TableToken#getEntries` that returns a regular 2D array of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29) for all table cells, resolving the `rowspan` and `colspan` attributes
 - [`Token#plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#plaintext)
+- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now takes an optional object parameter to control the rendering of the table of contents (TOC), category links and redirect links
 
 **Changed**
 

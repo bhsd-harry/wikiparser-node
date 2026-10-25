@@ -37,6 +37,10 @@ import type {
 	TokenTypes,
 	Parser as ParserBase,
 	AST,
+
+	/* NOT FOR BROWSER */
+
+	RenderOpt,
 } from './base';
 import type {TitleOptions} from './lib/title';
 import type * as LSP from './lib/lsp';
@@ -195,10 +199,11 @@ declare interface Parser extends ParserBase {
 	 * 生成HTML
 	 * @param include whether to be transcluded / 是否嵌入
 	 * @param page page name / 页面名称
+	 * @param opt options / 设置
 	 * @since v1.32.0
 	 */
-	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string): string;
-	toHtml(wikitext: string, page: string, include?: boolean, config?: Config): string;
+	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string, opt?: RenderOpt): string;
+	toHtml(wikitext: string, page: string, include?: boolean, config?: Config, opt?: RenderOpt): string;
 
 	/**
 	 * Define how to expand a parser function
@@ -697,9 +702,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* NOT FOR BROWSER */
 
 	/** @implements */
-	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-		return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).toHtml(), this);
+		return Shadow.internal(
+			() => this.parse(wikitext, include, undefined, config, page).toHtml(opt),
+			this,
+		);
 	},
 
 	/** @implements */

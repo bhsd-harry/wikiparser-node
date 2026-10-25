@@ -216,7 +216,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		const {childNodes, type} = this,
 			result = super.toHtmlInternal(opt);
 		return childNodes.some(node => node.is('td') && node.subtype !== 'caption')
-			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${result}</tr>`
+			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal({render: opt?.render}) : ''}>${result}</tr>`
 			: result;
 	}
 }

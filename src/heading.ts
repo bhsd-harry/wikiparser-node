@@ -25,7 +25,7 @@ import type {
 
 import {classes, states} from '../util/constants';
 import {sanitizeId} from '../util/string';
-import {getId} from '../util/html';
+import {getId, getTocData} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import {cached} from '../mixin/cached';
@@ -360,11 +360,11 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal(): string {
+	override toHtmlInternal({render}: HtmlOpt = {}): string {
 		const {level} = this;
-		return `${this.tocData ?? ''}<div class="mw-heading mw-heading${level}"><h${level} id="${
+		return `${getTocData(this, render)}<div class="mw-heading mw-heading${level}"><h${level} id="${
 			this.getRenderedId()
-		}">${super.toHtmlInternal()}</h${level}></div>`;
+		}">${super.toHtmlInternal({render})}</h${level}></div>`;
 	}
 
 	/**

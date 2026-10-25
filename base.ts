@@ -343,7 +343,7 @@ interface Token extends AstNode {
 	 * 生成HTML
 	 * @since v1.10.0
 	 */
-	toHtml(): string;
+	toHtml(opt?: RenderOpt): string;
 }
 
 interface SignatureParameter {
@@ -650,4 +650,12 @@ export interface Parser {
 	 */
 	lint(wikitext: string, include?: boolean, config?: Config, page?: string): LintError[];
 	lint(wikitext: string, page: string, include?: boolean, config?: Config): LintError[];
+}
+
+/* NOT FOR BROWSER */
+
+export interface RenderOpt {
+	toc?: boolean;
+	cats?: boolean;
+	redirect?: boolean;
 }

@@ -1,6 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {decodeHtml, sanitizeAlt} from './string';
+import type {RenderOpt} from '../base';
 import type {AstNodes, ListRangeToken, Token} from '../internal';
 
 declare type Prefix = '#' | '*' | ';' | ':';
@@ -193,3 +194,12 @@ export const getId = (tokens: Token | string): string => {
 			.replace(/[\s_]+/gu, '_');
 	return id.endsWith('_') ? id.slice(0, -1) : id;
 };
+
+/**
+ * get the toc data
+ * @param token
+ * @param opt
+ * @param opt.toc whether to render toc data
+ */
+export const getTocData = (token: Token & {tocData?: string}, {toc = true}: RenderOpt = {}): string =>
+	toc ? token.tocData ?? '' : '';
