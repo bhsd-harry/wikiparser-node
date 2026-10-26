@@ -188,7 +188,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	token.normalizeTitle('Special:Categories', -1, {temporary: true}).getUrl()
 }" title="Special:Categories">Categories</a>: <ul>${
 	[...categories].map(catlink => `<li>${catlink}</li>`).join('')
-}</div></div>`;
+}</ul></div></div>`;
 		}
 	}
 

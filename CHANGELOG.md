@@ -9,6 +9,10 @@
 - [`Token#plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#plaintext)
 - [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now takes an optional object parameter to include/exclude certain elements, including the redirect link, the table of contents (TOC) and category links
 
+**Fixed**
+
+- Unclosed `<ul>` in the category links produced by `Token#toHtml`
+
 **Changed**
 
 - [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#parse) now builds list items by default
