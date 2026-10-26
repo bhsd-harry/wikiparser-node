@@ -2658,13 +2658,13 @@
 			"aliases": [
 				"!"
 			],
-			"description": "Used to include a vertical bar (pipe).\n\nSee [help](https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#Escaping_pipe_characters_in_tables) for further explanation."
+			"description": "Used to include an escaped [pipe](https://en.wikipedia.org/wiki/Vertical_bar) (`|`) character as part of template or parser function arguments to prevent interpretation as a parameter separator during expansion.\n\nSee [help](https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#Escaping_pipe_characters_in_tables) for further explanation."
 		},
 		{
 			"aliases": [
 				"="
 			],
-			"description": "Used to include an equal sign.\n\nSee [help](https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#Raw_equal_signs) for further explanation."
+			"description": "Used to include an escaped equal sign (`=`) character as part of template or parser function arguments to prevent interpretation as a name-value separator during expansion.\n\nSee [help](https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#Raw_equal_signs) for further explanation."
 		},
 		{
 			"aliases": [
