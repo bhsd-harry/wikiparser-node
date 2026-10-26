@@ -51,6 +51,19 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			return lastChild.toHtmlInternal({...opt, nowrap: true});
 		case 'charinsert':
 			return lastChild.toHtmlInternal();
+		case 'indicator': {
+			const nameAttr = firstChild.getAttr('name')?.trim();
+			if (nameAttr) {
+				return render?.indicators
+					? `<div id="mw-indicator-${sanitizeAttr(nameAttr, true)}" class="mw-indicator">${
+						lastChild.toHtmlInternal(renderOpt)
+					}</div>`
+					: '';
+			}
+			return '<span class="error">'
+				+ "<strong>Error:</strong> Page status indicators' <code>name</code> attribute must not be empty."
+				+ '</span>';
+		}
 		case 'poem': {
 			const padding = firstChild.hasAttr('compact') ? '' : '\n';
 			firstChild.classList.add('poem');
@@ -459,6 +472,10 @@ export const renderExtPlain = (token: ExtToken): string => {
 			return lastChild.plainTextInternal();
 		case 'langconvert':
 			return lastChild.plainTextInternal({nowrap: true});
+		case 'indicator':
+			return firstChild.getAttr('name')?.trim()
+				? ''
+				: "Error: Page status indicators' name attribute must not be empty.";
 		case 'poem': {
 			const padding = firstChild.hasAttr('compact') ? '' : '\n';
 			return `${padding}${trimNewlines(lastChild.plainTextInternal())}${padding}`;

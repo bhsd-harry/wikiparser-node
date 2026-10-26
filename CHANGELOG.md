@@ -12,6 +12,7 @@
 **Fixed**
 
 - Unclosed `<ul>` in the category links produced by `Token#toHtml`
+- Lists and tables inside `<indicator>` extension tags
 
 **Changed**
 

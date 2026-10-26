@@ -1,6 +1,7 @@
 import {states, parsers} from '../util/constants';
+import {sanitizeAttr} from '../util/string';
 import type {RenderOpt} from '../base';
-import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken} from '../internal';
+import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken, ExtToken} from '../internal';
 
 const blockElems = 'table|h[1-6]|pre|p|[uod]l',
 	antiBlockElems = 't[dh]',
@@ -36,7 +37,25 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 		refs: Object.assign(new Map(), {id: 0}),
 	});
 	const opt: HtmlOpt = {render},
-		{toc = true, cats = true} = render;
+		{toc = true, cats = true, indicators} = render;
+
+	// 处理指示器
+	let prelim = '';
+	if (indicators) {
+		const indicatorMap = new Map<string, ExtToken>();
+		for (const indicator of token.querySelectorAll<ExtToken>('ext#indicator')) {
+			const nameAttr = indicator.getAttr('name')?.trim(),
+				name = nameAttr && sanitizeAttr(nameAttr, true);
+			if (name) {
+				indicatorMap.set(name, indicator);
+				indicator.remove();
+			}
+		}
+		if (indicatorMap.size > 0) {
+			prelim = [...indicatorMap.values()].map(indicator => `${indicator.toHtmlInternal(opt)}\n`)
+				.join('');
+		}
+	}
 
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
@@ -193,7 +212,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	}
 
 	states.delete(token);
-	return html;
+	return prelim + html;
 };
 
 parsers['toHtml'] = __filename;

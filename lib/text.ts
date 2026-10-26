@@ -616,7 +616,8 @@ export class AstText extends AstNode {
 			const spaces: AstText[] = [],
 				mt = /\n[^\S\n]*$/u.exec(this.data);
 			let {nextSibling} = this,
-				mt2: RegExpExecArray | null = null;
+				mt2: RegExpExecArray | null = null,
+				hasCommentOrCat = false;
 			while (
 				nextSibling
 				&& (nextSibling.is('comment') || nextSibling.is('category') || nextSibling.type === 'text')
@@ -628,7 +629,10 @@ export class AstText extends AstNode {
 					} else {
 						spaces.push(nextSibling);
 					}
-				} else if (mt && nextSibling.is('category')) {
+				} else {
+					hasCommentOrCat = true;
+				}
+				if (mt && nextSibling.is('category')) {
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -641,7 +645,7 @@ export class AstText extends AstNode {
 				}
 				({nextSibling} = nextSibling);
 			}
-			if (mt2 || nextSibling?.is('table')) {
+			if (hasCommentOrCat && mt2 || nextSibling?.is('table')) {
 				if (mt) {
 					this.deleteData(mt.index + (mt2 ? 0 : 1));
 					if (mt2) {

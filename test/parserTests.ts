@@ -215,6 +215,16 @@ describe('Parser tests', () => {
 							),
 							'{redirect: false} 选项渲染结果不符合预期！',
 						);
+						assert.deepStrictEqual(
+							split(
+								root.toHtml({indicators: true, cats: false}).replace(
+									/^(?:<div id="mw-indicator-.+?<\/div>\n)+/su,
+									'',
+								),
+							),
+							split(render),
+							'{indicators: true} 选项渲染结果不符合预期！',
+						);
 						if (!/\S__TOC__/u.test(wikitext)) {
 							assert.deepStrictEqual(
 								split(root.toHtml({toc: false, cats: false})),

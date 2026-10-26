@@ -658,4 +658,5 @@ export interface RenderOpt {
 	toc?: boolean;
 	cats?: boolean;
 	redirect?: boolean;
+	indicators?: boolean;
 }
