@@ -28,7 +28,7 @@ export const parseHrAndDoubleUnderscore = (
 		})＿{2}`,
 		'gimu',
 	);
-	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
+	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem' && name !== 'indicator')) {
 		data = `\0${data}`;
 	}
 	data = data.replace(config.regexHrAndDoubleUnderscore, (m, p1?: string, p2?: string, p3?: string, p4?: string) => {
@@ -61,5 +61,7 @@ export const parseHrAndDoubleUnderscore = (
 			},
 		);
 	}
-	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
+	return type === 'root' || type === 'ext-inner' && (name === 'poem' || name === 'indicator')
+		? data
+		: data.slice(1);
 };

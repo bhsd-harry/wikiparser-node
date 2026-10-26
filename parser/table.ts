@@ -35,7 +35,9 @@ export const parseTable = (
 ): string => {
 	const stack: TableTokens[] = [],
 		lines = data.split('\n');
-	let out = type === 'root' || type === 'parameter-value' || type === 'ext-inner' && name === 'poem'
+	let out = type === 'root'
+		|| type === 'parameter-value'
+		|| type === 'ext-inner' && (name === 'poem' || name === 'indicator')
 			? ''
 			: `\n${lines.shift()!}`,
 		top: TableTokens | undefined;
