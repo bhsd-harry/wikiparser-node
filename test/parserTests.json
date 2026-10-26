@@ -22328,7 +22328,30 @@
 		"html": "<p><br />\n</p>",
 		"render": "<p><br>\n</p>",
 		"plain": "\n",
-		"lint": [],
+		"lint": [
+			{
+				"rule": "no-duplicate",
+				"message": "duplicate name of <indicator>",
+				"severity": "error",
+				"startIndex": 0,
+				"endIndex": 35,
+				"startLine": 0,
+				"endLine": 0,
+				"startCol": 0,
+				"endCol": 35
+			},
+			{
+				"rule": "no-duplicate",
+				"message": "duplicate name of <indicator>",
+				"severity": "error",
+				"startIndex": 36,
+				"endIndex": 71,
+				"startLine": 1,
+				"endLine": 1,
+				"startCol": 0,
+				"endCol": 35
+			}
+		],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;indicator<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/indicator&gt;</span>\n<span class=\"wpb-ext\">&lt;indicator<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">bar</span>&lt;/indicator&gt;</span></span>"
 	},
 	{
@@ -22346,7 +22369,30 @@
 		"html": "<p>abcd\n</p><p><br />\n</p>",
 		"render": "<p>abcd\n</p><p><br>\n</p>",
 		"plain": "abcd\n\n",
-		"lint": [],
+		"lint": [
+			{
+				"rule": "no-duplicate",
+				"message": "duplicate name of <indicator>",
+				"severity": "error",
+				"startIndex": 5,
+				"endIndex": 40,
+				"startLine": 1,
+				"endLine": 1,
+				"startCol": 0,
+				"endCol": 35
+			},
+			{
+				"rule": "no-duplicate",
+				"message": "duplicate name of <indicator>",
+				"severity": "error",
+				"startIndex": 46,
+				"endIndex": 81,
+				"startLine": 2,
+				"endLine": 2,
+				"startCol": 5,
+				"endCol": 40
+			}
+		],
 		"print": "<span class=\"wpb-root\">abcd\n<span class=\"wpb-ext\">&lt;indicator<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">bar</span>&lt;/indicator&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;indicator<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/indicator&gt;</span></span></span>}}</span></span>"
 	},
 	{
@@ -22364,7 +22410,30 @@
 		"html": "<p>abcd\n</p><p>efgh\n</p>",
 		"render": "<p>abcd\n</p><p>efgh\n</p>",
 		"plain": "abcd\n\nefgh",
-		"lint": [],
+		"lint": [
+			{
+				"rule": "no-duplicate",
+				"message": "duplicate name of <indicator>",
+				"severity": "error",
+				"startIndex": 5,
+				"endIndex": 40,
+				"startLine": 1,
+				"endLine": 1,
+				"startCol": 0,
+				"endCol": 35
+			},
+			{
+				"rule": "no-duplicate",
+				"message": "duplicate name of <indicator>",
+				"severity": "error",
+				"startIndex": 50,
+				"endIndex": 85,
+				"startLine": 2,
+				"endLine": 2,
+				"startCol": 9,
+				"endCol": 44
+			}
+		],
 		"print": "<span class=\"wpb-root\">abcd\n<span class=\"wpb-ext\">&lt;indicator<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">bar</span>&lt;/indicator&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">efgh<span class=\"wpb-ext\">&lt;indicator<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">foo</span>&lt;/indicator&gt;</span></span></span>}}</span></span>"
 	},
 	{
