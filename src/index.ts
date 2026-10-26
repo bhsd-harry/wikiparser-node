@@ -378,7 +378,7 @@ export class Token extends AstElement {
 		const {firstChild, type, name} = this,
 			lines = firstChild!.toString().split('\n'),
 			state = {lastPrefix: ''};
-		let i = type === 'root' || type === 'ext-inner' && name === 'poem' ? 0 : 1;
+		let i = type === 'root' || type === 'ext-inner' && (name === 'poem' || name === 'indicator') ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, state, this.#config, this.#accum);
 		}

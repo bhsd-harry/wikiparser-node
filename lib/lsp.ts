@@ -1837,8 +1837,8 @@ export class LanguageService implements LanguageServiceBase {
 						? `${info.signatures.map(
 							params => `- **{{ ${f}${params.length === 0 ? '**' : `${colon}** `}${
 								params.map(({label, const: c}) => c ? label : `*${label}*`).join(' **|** ')
-							} **}}**`,
-						).join('\n')}\n\n`
+							} **}}**\n`,
+						).join('')}\n`
 						: ''
 				)
 				+ info.description,
