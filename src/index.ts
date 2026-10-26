@@ -45,7 +45,6 @@
 
 import {
 	text,
-	sanitizeAttr,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -506,10 +505,10 @@ export class Token extends AstElement {
 						if (i === 0) { // category
 							key = cat.name;
 						} else if (i === 1) { // id
-							key = sanitizeAttr((cat as AttributeToken).getValue(), true);
+							key = (cat as AttributeToken).getValue().replace(/\s+/gu, '_');
 						} else { // indicator
-							const nameAttr = (cat as ExtToken).getAttr('name');
-							key = nameAttr && sanitizeAttr(nameAttr, true);
+							key = (cat as ExtToken).getAttr('name')
+								?.replace(/\s+/gu, '_');
 						}
 						if (key) {
 							const thisCat = record.get(key);
