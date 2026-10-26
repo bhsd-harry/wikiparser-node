@@ -138,8 +138,6 @@ export const decodeNumber = factory(
  */
 export const toLowerCase = (str: string[]): string[] => str.map(s => s.toLowerCase());
 
-/* PRINT ONLY */
-
 const entities = {
 	'&': 'amp',
 	'<': 'lt',
@@ -154,6 +152,19 @@ const entities = {
  */
 export const replaceEntities = (re = /[&<>"{}[\]|]/gu): (str: string) => string =>
 	factory(re, p => `&${entities[p as keyof typeof entities]};`);
+
+const replaceAttrEntities = /* #__PURE__ */ replaceEntities(/[<>"]/gu);
+
+/**
+ * escape HTML entities in attributes
+ * @param attr 属性值
+ * @param id 是否是`id`属性
+ */
+export const sanitizeAttr = (attr: string, id?: boolean): string =>
+	// eslint-disable-next-line unicorn/no-unsafe-string-replacement
+	replaceAttrEntities(attr.replace(/\s+|&#10;/gu, id ? '_' : ' '));
+
+/* PRINT ONLY */
 
 /** escape HTML entities */
 export const escape = /* #__PURE__ */ replaceEntities(/[&<>]/gu);
