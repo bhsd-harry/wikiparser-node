@@ -42,18 +42,22 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	// 处理指示器
 	let prelim = '';
 	if (indicators) {
-		const indicatorMap = new Map<string, ExtToken>();
+		const indicatorMap = new Map<string, ExtToken>(),
+			indicatorList: ExtToken[] = [];
 		for (const indicator of token.querySelectorAll<ExtToken>('ext#indicator')) {
 			const nameAttr = indicator.getAttr('name'),
 				name = nameAttr && sanitizeAttr(nameAttr, true);
 			if (name) {
 				indicatorMap.set(name, indicator);
-				indicator.remove();
+				indicatorList.push(indicator);
 			}
 		}
 		if (indicatorMap.size > 0) {
 			prelim = [...indicatorMap.values()].map(indicator => `${indicator.toHtmlInternal(opt)}\n`)
 				.join('');
+		}
+		for (const indicator of indicatorList) {
+			indicator.remove();
 		}
 	}
 

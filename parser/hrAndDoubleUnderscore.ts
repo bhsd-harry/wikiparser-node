@@ -37,7 +37,7 @@ export const parseHrAndDoubleUnderscore = (
 		})＿{2}`,
 		'gimu',
 	);
-	if (type !== 'root' && (type !== 'ext-inner' || isIsolated(name))) {
+	if (type !== 'root' && (type !== 'ext-inner' || !isIsolated(name))) {
 		data = `\0${data}`;
 	}
 	data = data.replace(config.regexHrAndDoubleUnderscore, (m, p1?: string, p2?: string, p3?: string, p4?: string) => {
