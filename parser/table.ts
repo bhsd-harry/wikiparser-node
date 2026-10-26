@@ -1,3 +1,4 @@
+import {isIsolated} from '../util/debug';
 import {Token} from '../src/index';
 import {TableToken} from '../src/table/index';
 import {TrToken} from '../src/table/tr';
@@ -35,9 +36,7 @@ export const parseTable = (
 ): string => {
 	const stack: TableTokens[] = [],
 		lines = data.split('\n');
-	let out = type === 'root'
-		|| type === 'parameter-value'
-		|| type === 'ext-inner' && (name === 'poem' || name === 'indicator')
+	let out = type === 'root' || type === 'parameter-value' || type === 'ext-inner' && isIsolated(name)
 			? ''
 			: `\n${lines.shift()!}`,
 		top: TableTokens | undefined;

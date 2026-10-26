@@ -50,6 +50,12 @@ export function isToken(type: TokenTypes) {
 }
 
 /**
+ * 扩展节点是否提供独立解析环境
+ * @param name 扩展节点名称
+ */
+export const isIsolated = (name?: string): boolean => name === 'poem' || name === 'indicator';
+
+/**
  * 是否是行尾
  * @param token 节点
  * @param token.type 节点类型
