@@ -44,7 +44,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	if (indicators) {
 		const indicatorMap = new Map<string, ExtToken>();
 		for (const indicator of token.querySelectorAll<ExtToken>('ext#indicator')) {
-			const nameAttr = indicator.getAttr('name')?.trim(),
+			const nameAttr = indicator.getAttr('name'),
 				name = nameAttr && sanitizeAttr(nameAttr, true);
 			if (name) {
 				indicatorMap.set(name, indicator);

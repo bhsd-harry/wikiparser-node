@@ -8,6 +8,7 @@
 - `TableToken#getEntries` that returns a regular 2D array of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29) for all table cells, resolving the `rowspan` and `colspan` attributes
 - [`Token#plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#plaintext)
 - [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now takes an optional object parameter to include/exclude certain elements, including the redirect link, the table of contents (TOC) and category links
+- New category of linting errors: [duplicate names of `<indicator>`](https://github.com/bhsd-harry/wikiparser-node/wiki/no-duplicate#extension-tag-name)
 
 **Fixed**
 

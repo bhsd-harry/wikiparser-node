@@ -1,4 +1,4 @@
-import {mixin} from '../util/debug';
+import {mixin, isIsolated} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {Token} from '../internal';
 
@@ -18,7 +18,7 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 			}
 			return parentNode?.type === 'root'
 				|| type === 'list' && parentNode?.is('list-range')
-				|| parentNode?.type === 'ext-inner' && (parentNode.name === 'poem' || parentNode.name === 'indicator')
+				|| parentNode?.type === 'ext-inner' && isIsolated(parentNode.name)
 				? ''
 				: '\n';
 		}

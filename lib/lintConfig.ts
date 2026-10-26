@@ -140,6 +140,7 @@ const defaultLintRuleConfig: Required<LintRuleConfig<FullLintConfigValue>> = {
 			// parameter: 2,
 			unknownImageParameter: 1,
 
+			// indicator: 2,
 			// dynamicpagelist: 2,
 			// inputbox: 2,
 			// seo: 2,

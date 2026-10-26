@@ -52,7 +52,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		case 'charinsert':
 			return lastChild.toHtmlInternal();
 		case 'indicator': {
-			const nameAttr = firstChild.getAttr('name')?.trim();
+			const nameAttr = firstChild.getAttr('name');
 			if (nameAttr) {
 				return render?.indicators
 					? `<div id="mw-indicator-${sanitizeAttr(nameAttr, true)}" class="mw-indicator">${
@@ -473,7 +473,7 @@ export const renderExtPlain = (token: ExtToken): string => {
 		case 'langconvert':
 			return lastChild.plainTextInternal({nowrap: true});
 		case 'indicator':
-			return firstChild.getAttr('name')?.trim()
+			return firstChild.getAttr('name')
 				? ''
 				: "Error: Page status indicators' name attribute must not be empty.";
 		case 'poem': {

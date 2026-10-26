@@ -286,6 +286,7 @@ The following limitations are documented for transparency.
    [`<div>`](https://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily)
    or even [closing tags](https://bhsd-harry.github.io/wikiparser-node/tests.html#Non-word%20characters%20don't%20terminate%20tag%20names%20(T19663%2C%20T42670%2C%20T54022))).
 1. Mixed lists ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Mixed%20Lists%3A%20Test%204)).
+1. `<p>` wrapping and preformatted text are not supported inside `<indicator>`.
 
 #### Language conversion
 

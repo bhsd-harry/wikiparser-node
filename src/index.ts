@@ -45,6 +45,7 @@
 
 import {
 	text,
+	sanitizeAttr,
 
 	/* NOT FOR BROWSER */
 
@@ -71,6 +72,7 @@ import {
 } from '../util/lint';
 import {
 	setChildNodes,
+	isIsolated,
 
 	/* NOT FOR BROWSER */
 
@@ -102,14 +104,13 @@ import type * as ListParser from '../parser/list';
 import type * as ConverterParser from '../parser/converter';
 import type {
 	AstNodes,
-	CategoryToken,
 	AttributeToken,
+	ExtToken,
 
 	/* NOT FOR BROWSER */
 
 	IncludeToken,
 	HtmlToken,
-	ExtToken,
 	CommentToken,
 } from '../internal';
 
@@ -137,7 +138,7 @@ declare type ExtendedLintError = LintError[] & {
 	output?: string;
 };
 
-const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id'];
+const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id', 'ext#indicator'];
 
 /* NOT FOR BROWSER */
 
@@ -499,7 +500,7 @@ export class Token extends AstElement {
 		const {firstChild, type, name} = this,
 			lines = firstChild!.toString().split('\n'),
 			state = {lastPrefix: ''};
-		let i = type === 'root' || type === 'ext-inner' && (name === 'poem' || name === 'indicator') ? 0 : 1;
+		let i = type === 'root' || type === 'ext-inner' && isIsolated(name) ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, state, this.#config, this.#accum);
 		}
@@ -674,21 +675,26 @@ export class Token extends AstElement {
 				{computeEditInfo, fix: needFix, ignoreDisables, configurationComment} = lintConfig;
 			let errors = super.lint(start, re);
 			if (this.type === 'root') {
-				const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
-					r = 'no-duplicate',
-					s = ['category', 'id'].map(key => lintConfig.getSeverity(r, key)),
-					wikitext = this.toString(),
-					selector = lintSelectors.filter((_, i) => s[i]).join();
-				if (selector) {
-					for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
-						let key;
-						if (cat.is('category')) {
+				const r = 'no-duplicate',
+					s = ['category', 'id', 'indicator'].map(key => lintConfig.getSeverity(r, key)),
+					msgs = ['category', 'id', 'name'],
+					wikitext = this.toString();
+				for (let i = 0; i < s.length; i++) {
+					const severity = s[i]!;
+					if (!severity) {
+						continue;
+					}
+					const record = new Map<string, Set<Token>>(),
+						selector = lintSelectors[i]!;
+					for (const cat of this.querySelectorAll(selector)) {
+						let key: string | undefined;
+						if (i === 0) { // category
 							key = cat.name;
-						} else {
-							const value = cat.getValue();
-							if (value) {
-								key = `#${value}`;
-							}
+						} else if (i === 1) { // id
+							key = sanitizeAttr((cat as AttributeToken).getValue(), true);
+						} else { // indicator
+							const nameAttr = (cat as ExtToken).getAttr('name');
+							key = nameAttr && sanitizeAttr(nameAttr, true);
 						}
 						if (key) {
 							const thisCat = record.get(key);
@@ -700,13 +706,16 @@ export class Token extends AstElement {
 						}
 					}
 					for (const [key, value] of record) {
-						if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
-							const isCat = !key.startsWith('#'),
-								msg: 'duplicate-category' | 'duplicate-id' = `duplicate-${isCat ? 'category' : 'id'}`,
-								severity = s[isCat ? 0 : 1] as LintError.Severity;
+						if (value.size > 1 && (i !== 1 || !key.startsWith('mw-customcollapsible-'))) {
 							errors.push(...[...value].map(cat => {
-								const e = generateForSelf(cat, {start: cat.getAbsoluteIndex()}, r, msg, severity);
-								if (computeEditInfo && isCat) {
+								const e = generateForSelf(
+									cat,
+									{start: cat.getAbsoluteIndex()},
+									r,
+									`duplicate-${msgs[i]}`,
+									severity,
+								);
+								if (computeEditInfo && i === 0) {
 									e.suggestions = [fixByRemove(e)];
 								}
 								return e;
