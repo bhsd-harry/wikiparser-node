@@ -157,8 +157,7 @@ for (const file of ['parserTests.txt', ...files]) {
 		if (/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test) && (!option || re.test(test))) {
 			t.html = html!;
 			try {
-				t.render = root.toHtml()
-					.replace(/\n<div id="catlinks" class="catlinks">.+$/su, '');
+				t.render = root.toHtml({cats: false});
 				t.plain = root.plainText();
 			} catch {
 				console.error(`${test}\n`);

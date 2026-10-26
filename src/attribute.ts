@@ -586,7 +586,7 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal({render}: HtmlOpt = {}): string {
+	override toHtmlInternal(): string {
 		const {type, name, tag, lastChild} = this;
 		if (type === 'ext-attr' && extAttrs[tag]?.has(name)) {
 			return '';
@@ -595,7 +595,7 @@ export abstract class AttributeToken extends Token {
 		if (linted) {
 			return linted === 1 ? 'style="/* insecure input */"' : '';
 		}
-		const value = lastChild.toHtmlInternal({render}).trim();
+		const value = lastChild.toHtmlInternal().trim();
 		if (name === 'id' && !value) {
 			return '';
 		}

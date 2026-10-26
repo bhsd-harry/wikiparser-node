@@ -35,7 +35,8 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 		categories: new Set(),
 		refs: Object.assign(new Map(), {id: 0}),
 	});
-	const opt: HtmlOpt = {render};
+	const opt: HtmlOpt = {render},
+		{toc = true, cats = true} = render;
 
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
@@ -44,7 +45,6 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	}
 
 	// 处理目录
-	const {toc = true} = render;
 	if (toc) {
 		const tocSwitch = token.querySelector<DoubleUnderscoreToken>('double-underscore#toc'),
 			forcetoc = tocSwitch || token.querySelector<DoubleUnderscoreToken>('double-underscore#forcetoc'),
@@ -180,16 +180,19 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	let html = output.trimEnd();
 
 	// 处理分类
-	const {categories} = states.get(token)!;
-	states.delete(token);
-	if (categories.size > 0) {
-		html += `
+	if (cats) {
+		const {categories} = states.get(token)!;
+		if (categories.size > 0) {
+			html += `
 <div id="catlinks" class="catlinks"><div><a href="${
 	token.normalizeTitle('Special:Categories', -1, {temporary: true}).getUrl()
 }" title="Special:Categories">Categories</a>: <ul>${
 	[...categories].map(catlink => `<li>${catlink}</li>`).join('')
 }</div></div>`;
+		}
 	}
+
+	states.delete(token);
 	return html;
 };
 

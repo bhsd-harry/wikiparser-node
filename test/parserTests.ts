@@ -203,14 +203,21 @@ describe('Parser tests', () => {
 							split(render),
 							'渲染结果不符合预期！',
 						);
+						assert.deepStrictEqual(
+							split(root.toHtml({cats: false})),
+							split(render),
+							'{cats: false} 选项渲染结果不符合预期！',
+						);
+						assert.deepStrictEqual(
+							split(root.toHtml({redirect: false, cats: false})),
+							split(
+								render.replace(/<ul class="redirectText">.+?<\/ul>/su, ''),
+							),
+							'{redirect: false} 选项渲染结果不符合预期！',
+						);
 						if (!/\S__TOC__/u.test(wikitext)) {
 							assert.deepStrictEqual(
-								split(
-									root.toHtml({toc: false}).replace(
-										/\n<div id="catlinks" class="catlinks">.+$/su,
-										'',
-									),
-								),
+								split(root.toHtml({toc: false, cats: false})),
 								split(
 									render.replace(/<div class="toctitle">.+?<\/div>/su, '')
 										.replace(/<div id="toc" .+?<\/div>\n?/su, ''),

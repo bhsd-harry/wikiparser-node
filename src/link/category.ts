@@ -93,8 +93,11 @@ export abstract class CategoryToken extends LinkBaseToken {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal({render}: HtmlOpt = {}): string {
-		states.get(this.getRootNode())?.categories.add(super.toHtmlInternal({render}));
+	override toHtmlInternal({render = {}}: HtmlOpt = {}): string {
+		const {cats = true} = render;
+		if (cats) {
+			states.get(this.getRootNode())?.categories.add(super.toHtmlInternal());
+		}
 		return '';
 	}
 }

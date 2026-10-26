@@ -133,8 +133,8 @@ export abstract class CharinsertToken extends MultiLineToken {
 
 	/** @private */
 	@cached()
-	override toHtmlInternal({render}: HtmlOpt = {}): string {
-		return html(this.childNodes, '<br>', {render})
+	override toHtmlInternal(): string {
+		return html(this.childNodes, '<br>')
 			.replaceAll(/^(?:<br>)+|(?<!<br>)(?:<br>)+$/gu, '');
 	}
 }
