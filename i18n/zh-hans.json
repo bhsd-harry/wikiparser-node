@@ -16,6 +16,7 @@
 	"duplicate-ext-parameter": "重复的<$1>参数",
 	"duplicate-id": "重复的HTML id属性",
 	"duplicate-image-parameter": "重复的图像$1参数",
+	"duplicate-name": "重复的<indicator> name属性",
 	"duplicate-parameter": "重复的模板参数",
 	"encode": "编码",
 	"escape": "转义",

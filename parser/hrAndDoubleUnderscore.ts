@@ -1,4 +1,5 @@
 import {isUnderscore} from '@bhsd/cm-util';
+import {isIsolated} from '../util/debug';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';
@@ -28,7 +29,7 @@ export const parseHrAndDoubleUnderscore = (
 		})＿{2}`,
 		'gimu',
 	);
-	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem' && name !== 'indicator')) {
+	if (type !== 'root' && (type !== 'ext-inner' || isIsolated(name))) {
 		data = `\0${data}`;
 	}
 	data = data.replace(config.regexHrAndDoubleUnderscore, (m, p1?: string, p2?: string, p3?: string, p4?: string) => {
@@ -61,7 +62,5 @@ export const parseHrAndDoubleUnderscore = (
 			},
 		);
 	}
-	return type === 'root' || type === 'ext-inner' && (name === 'poem' || name === 'indicator')
-		? data
-		: data.slice(1);
+	return type === 'root' || type === 'ext-inner' && isIsolated(name) ? data : data.slice(1);
 };

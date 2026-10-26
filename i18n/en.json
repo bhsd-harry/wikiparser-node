@@ -16,6 +16,7 @@
 	"duplicate-ext-parameter": "duplicate parameter of <$1>",
 	"duplicate-id": "duplicate HTML id",
 	"duplicate-image-parameter": "duplicate image $1 parameter",
+	"duplicate-name": "duplicate name of <indicator>",
 	"duplicate-parameter": "duplicate template parameter",
 	"encode": null,
 	"escape": null,
