@@ -19,7 +19,7 @@ node.at(-1).settings.n.allowModules = [
 	'chalk',
 ];
 
-export default extend(
+const config = extend(
 	jsDoc,
 	...node,
 	{
@@ -223,3 +223,5 @@ export default extend(
 		},
 	},
 );
+
+export default config;

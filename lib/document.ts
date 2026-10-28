@@ -188,10 +188,8 @@ abstract class EmbeddedDocument implements TextDocument {
 export class EmbeddedJSONDocument extends EmbeddedDocument {
 	declare jsonDoc: JsonLanguageService.JSONDocument;
 
-	// @ts-expect-error unused method
-	abstract getLineRange(): Range;
-	// @ts-expect-error unused method
-	abstract getEOLCharacters(): string;
+	declare getLineRange: () => Range;
+	declare getEOLCharacters: () => string;
 
 	/**
 	 * @param root root token
@@ -208,10 +206,8 @@ export class EmbeddedJSONDocument extends EmbeddedDocument {
 export class EmbeddedCSSDocument extends EmbeddedDocument {
 	declare styleSheet: CssLanguageService.Stylesheet;
 
-	// @ts-expect-error unused method
-	abstract getLineRange(): Range;
-	// @ts-expect-error unused method
-	abstract getEOLCharacters(): string;
+	declare getLineRange: () => Range;
+	declare getEOLCharacters: () => string;
 
 	/**
 	 * @param root root token

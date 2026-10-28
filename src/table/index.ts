@@ -20,8 +20,7 @@ export type TableTokens = TableToken | TrToken | TdToken;
 
 /** @extends {Array<TableCoords[]>} */
 export class Layout extends Array<TableCoords[]> {
-	// @ts-expect-error abstract override
-	abstract override static from(arr: TableCoords[][]): Layout;
+	declare static from: (arr: TableCoords[][]) => Layout;
 }
 
 /**
