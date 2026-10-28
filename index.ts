@@ -491,7 +491,6 @@ Object.defineProperties(Parser, def);
 
 // @ts-expect-error mixed export styles
 export = Parser;
-export default Parser;
 export type {
 	Config,
 	ConfigData,

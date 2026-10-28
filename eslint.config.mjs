@@ -20,7 +20,7 @@ node.at(-1).settings.n.allowModules = [
 	'monaco-editor',
 ];
 
-export default extend(
+const config = extend(
 	jsDoc,
 	...node,
 	{
@@ -217,3 +217,5 @@ export default extend(
 		},
 	},
 );
+
+export default config;

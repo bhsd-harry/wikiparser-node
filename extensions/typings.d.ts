@@ -9,7 +9,8 @@ import type {
 	CodeAction,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData} from '../base';
+import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData, TokenTypes} from '../base';
+import type {} from './modules';
 
 declare interface Test {
 	desc: string;
@@ -38,7 +39,7 @@ export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums
 
 export interface LanguageServiceBase extends Omit<
 	LanguageService,
-	'provideDocumentSymbols' | 'provideCodeAction'
+	'provideDocumentSymbols' | 'provideCodeAction' | 'resolveCompletionItem'
 > {
 	data?: SignatureData;
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
@@ -49,6 +50,21 @@ export interface LanguageServiceBase extends Omit<
 	findTemplateTokens(): Promise<AST[]>;
 }
 
+export interface ExtendedAST extends AST {
+	parentNode: this | undefined;
+	nextSibling: this | undefined;
+	previousSibling: this | undefined;
+	firstChild: this | undefined;
+	lastChild: this | undefined;
+	childNodes: this[];
+	length: number;
+	getRootNode(): this;
+	is(type: TokenTypes): boolean;
+	closest(selector: string): this | undefined;
+	querySelector(selector: string): this | undefined;
+	querySelectorAll(selector: string): this[];
+}
+
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {
 	version: string;
@@ -57,9 +73,10 @@ export interface wikiparse {
 	setLintConfig: (config?: LintConfig) => void;
 	setConfig: (config: ConfigData) => void;
 	getConfig: () => Promise<Config>;
-	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
+	json: (wikitext: string, include?: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[] & {output?: string}>;
+	parse?: (wikitext: string, include?: boolean, qid?: number, stage?: number) => Promise<ExtendedAST>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string, paddingBottom?: string) => void;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
@@ -96,15 +113,6 @@ declare global {
 	) => void;
 	type HashChangeHandler = (select: HTMLSelectElement, tests: Test[]) => void;
 	type InputHandler = (input: HTMLInputElement, select: HTMLSelectElement) => void;
-
-	module '/wikiparser-node/extensions/*' {
-		export const prepareDoneBtn: PrepareDoneBtn;
-		export const hideOptGroup: HideOptGroup;
-		export const addOption: AddOption;
-		export const changeHandler: ChangeHandler;
-		export const hashChangeHandler: HashChangeHandler;
-		export const inputHandler: InputHandler;
-	}
 
 	const wikiparse: wikiparse;
 }
