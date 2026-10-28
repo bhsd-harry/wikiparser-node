@@ -29,6 +29,7 @@ import type {
 // 必须写在一行内
 // eslint-disable-next-line @stylistic/max-len
 import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData, TokenTypes, CompletionItem, Parser} from '../base';
+import type {} from './modules';
 
 /* NOT EXPORTED */
 
@@ -207,15 +208,6 @@ declare global {
 	) => void;
 	type HashChangeHandler = (select: HTMLSelectElement, tests: Test[]) => void;
 	type InputHandler = (input: HTMLInputElement, select: HTMLSelectElement) => void;
-
-	module '/wikiparser-node/extensions/*' {
-		export const prepareDoneBtn: PrepareDoneBtn;
-		export const hideOptGroup: HideOptGroup;
-		export const addOption: AddOption;
-		export const changeHandler: ChangeHandler;
-		export const hashChangeHandler: HashChangeHandler;
-		export const inputHandler: InputHandler;
-	}
 
 	const wikiparse: wikiparse;
 

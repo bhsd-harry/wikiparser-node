@@ -267,6 +267,7 @@ const workerJS = (): void => {
 
 const blob = new Blob([`(${String(workerJS).replace('$CDN', () => CDN)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	worker = new Worker(url); // same-origin policy
 URL.revokeObjectURL(url);
 
