@@ -10,6 +10,7 @@ import type {
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 import type {Config, ConfigData, LintConfig, LintError, AST, LanguageService, SignatureData, TokenTypes} from '../base';
+import type {} from './modules';
 
 declare interface Test {
 	desc: string;
@@ -112,15 +113,6 @@ declare global {
 	) => void;
 	type HashChangeHandler = (select: HTMLSelectElement, tests: Test[]) => void;
 	type InputHandler = (input: HTMLInputElement, select: HTMLSelectElement) => void;
-
-	module '/wikiparser-node/extensions/*' {
-		export const prepareDoneBtn: PrepareDoneBtn;
-		export const hideOptGroup: HideOptGroup;
-		export const addOption: AddOption;
-		export const changeHandler: ChangeHandler;
-		export const hashChangeHandler: HashChangeHandler;
-		export const inputHandler: InputHandler;
-	}
 
 	const wikiparse: wikiparse;
 }

@@ -18,7 +18,7 @@ then
 	npm run build:define
 	cp dist/base.d.ts dist/base.d.mts
 	mkdir -p dist/extensions
-	cp extensions/typings.d.ts dist/extensions/typings.d.ts
+	cp extensions/*.d.ts dist/extensions/
 	err=$(tsc -p tsconfig.dist.json 2>&1)
 	if [[ -n $err ]]
 	then

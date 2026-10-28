@@ -1,5 +1,5 @@
 dist/
-!/dist/extensions/typings.d.ts
+!/dist/extensions/*.d.ts
 /bundle/bundle-es*.min.js
 /bundle/*.map
 /coverage/*

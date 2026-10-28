@@ -113,8 +113,8 @@ export class Title {
 
 	/* NOT FOR BROWSER */
 
-	// @ts-expect-error default parameter in a setter
-	set extension(extension = '') {
+	set extension(extension) {
+		extension ??= '';
 		const {main} = this,
 			i = main.lastIndexOf('.');
 		this.main = (i === -1 ? main : main.slice(0, i)) + (extension && '.') + extension;
