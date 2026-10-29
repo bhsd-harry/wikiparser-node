@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 if (( $# > 2 ))
 then
 	git diff -w --color-moved --minimal "$@"

@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 function is_gnu_sed() {
 	sed --version >/dev/null 2>&1

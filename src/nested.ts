@@ -25,7 +25,7 @@ const childTypes = new Set<TokenTypes>(['comment', 'include', 'arg', 'template',
  * extension tag that has a nested structure
  *
  * 嵌套式的扩展标签
- * @classdesc `{childNodes: (ExtToken|NoincludeToken|CommentToken)[]}`
+ * @classdesc `{childNodes: (ExtToken|NoincludeToken|CommentToken|IncludeToken|ArgToken|TranscludeToken)[]}`
  */
 export abstract class NestedToken extends Token {
 	declare readonly name: string;

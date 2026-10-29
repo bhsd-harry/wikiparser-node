@@ -28,7 +28,7 @@ export class Layout extends Array<TableCoords[]> {
  * table
  *
  * 表格
- * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken[], ...TrToken[], ?SyntaxToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...TdToken[], ...TrToken[], SyntaxToken?]}`
  */
 export abstract class TableToken extends TrBaseToken {
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]

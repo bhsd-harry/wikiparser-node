@@ -10,7 +10,7 @@ import type {Token, CharinsertToken, AstText} from '../../internal';
  * lines in `<charinsert>`
  *
  * `<charinsert>` 的行
- * @classdesc `{childNodes: (AstText | ExtToken)[]}`
+ * @classdesc `{childNodes: (AstText|ExtToken)[]}`
  */
 export abstract class CharinsertLineToken extends SingleLineToken {
 	declare readonly childNodes: readonly (AstText | ExtToken)[];

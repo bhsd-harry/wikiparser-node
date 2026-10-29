@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 rm -rf extensions/dist/
 bash sed.sh -i -E "s|(import type .+ from '../base';)|// \1|" extensions/typings.d.ts
 tsc -p extensions/tsconfig.json -m ES6 --noImplicitAny false

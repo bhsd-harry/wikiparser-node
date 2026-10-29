@@ -10,7 +10,7 @@ import type {Token, AtomToken} from '../../internal';
  * internal link
  *
  * 内链
- * @classdesc `{childNodes: [AtomToken, ?Token]}`
+ * @classdesc `{childNodes: [AtomToken, Token?]}`
  */
 export abstract class LinkToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];

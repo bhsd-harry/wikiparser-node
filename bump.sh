@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 if [[ $2 == 'npm' ]]
 then
 	echo 'npm publish should be run in the main branch!'

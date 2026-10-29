@@ -14,7 +14,7 @@ import type {Config} from '../base';
  * language conversion
  *
  * 转换
- * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
+ * @classdesc `{childNodes: [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]]}`
  */
 @noEscape @padded('-{')
 export abstract class ConverterToken extends Token {

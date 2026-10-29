@@ -15,7 +15,7 @@ import type {
 
 declare type Child = GalleryImageToken
 	| CommentLineToken
-	| AstText;
+	;
 
 /**
  * `<gallery>`
@@ -24,9 +24,9 @@ declare type Child = GalleryImageToken
 export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: readonly Child[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | undefined;
+	declare readonly childNodes: readonly (AstText | Child)[];
+	abstract override get firstChild(): AstText | Child | undefined;
+	abstract override get lastChild(): AstText | Child | undefined;
 
 	/* PRINT ONLY */
 

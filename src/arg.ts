@@ -17,7 +17,7 @@ import type {
  * argument wrapped in `{{{}}}`
  *
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
+ * @classdesc `{childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]]}`
  */
 @noEscape @padded('{{{') @gapped()
 export abstract class ArgToken extends Token {
