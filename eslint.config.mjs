@@ -41,7 +41,7 @@ const config = extend(
 			'bundle/',
 			'errors/',
 			'printed/',
-			'test/parserTests.json',
+			'test/math/*.json',
 		],
 	},
 	{

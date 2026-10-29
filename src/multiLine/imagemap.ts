@@ -22,22 +22,24 @@ import {classes} from '../../util/constants';
 
 /* NOT FOR BROWSER END */
 
+declare type Child = GalleryImageToken | CommentLineToken | ImagemapLinkToken;
+
 /**
  * `<imagemap>`
- * @classdesc `{childNodes: [...CommentLineToken[], GalleryImageToken, ...(CommentLineToken|ImagemapLinkToken|AstText)[]]}`
+ * @classdesc `{childNodes: (GalleryImageToken|CommentLineToken|ImagemapLinkToken|AstText)[]]}`
  */
 export abstract class ImagemapToken extends MultiLineToken {
 	declare readonly name: 'imagemap';
 
-	declare readonly childNodes: readonly (GalleryImageToken | CommentLineToken | ImagemapLinkToken | AstText)[];
+	declare readonly childNodes: readonly (Child | AstText)[];
 	abstract override get firstChild(): GalleryImageToken | CommentLineToken | undefined;
-	abstract override get lastChild(): GalleryImageToken | CommentLineToken | ImagemapLinkToken | AstText | undefined;
+	abstract override get lastChild(): Child | AstText | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (GalleryImageToken | CommentLineToken | ImagemapLinkToken)[];
+	abstract override get children(): Child[];
 	abstract override get firstElementChild(): GalleryImageToken | CommentLineToken | undefined;
-	abstract override get lastElementChild(): GalleryImageToken | CommentLineToken | ImagemapLinkToken | undefined;
+	abstract override get lastElementChild(): Child | undefined;
 
 	/* NOT FOR BROWSER END */
 

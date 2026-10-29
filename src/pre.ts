@@ -16,6 +16,8 @@ import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
+declare type Child = NoincludeToken | ConverterToken;
+
 /**
  * `<pre>`
  * @classdesc `{childNodes: (AstText|NoincludeToken|ConverterToken)[]}`
@@ -23,18 +25,18 @@ import {clone} from '../mixin/clone';
 export abstract class PreToken extends Token {
 	declare readonly name: 'pre';
 
-	declare readonly childNodes: readonly (NoincludeToken | ConverterToken | AstText)[];
-	abstract override get firstChild(): NoincludeToken | ConverterToken | AstText | undefined;
-	abstract override get lastChild(): NoincludeToken | ConverterToken | AstText | undefined;
+	declare readonly childNodes: readonly (Child | AstText)[];
+	abstract override get firstChild(): Child | AstText | undefined;
+	abstract override get lastChild(): Child | AstText | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (NoincludeToken | ConverterToken)[];
-	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
-	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
+	abstract override get children(): Child[];
+	abstract override get firstElementChild(): Child | undefined;
+	abstract override get lastElementChild(): Child | undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;

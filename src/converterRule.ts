@@ -39,7 +39,7 @@ const getRuleFromTo = (text: string | undefined, type: 'from' | 'to', config: Co
  * language conversion rule
  *
  * 转换规则
- * @classdesc `{childNodes: [Token?, AtomToken?, Token]}`
+ * @classdesc `{childNodes: [Token] | [Token?, AtomToken, Token]}`
  */
 @noEscape
 export abstract class ConverterRuleToken extends Token {

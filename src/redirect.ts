@@ -23,7 +23,7 @@ const getPattern = getRegex<string[]>(
  * redirect
  *
  * 重定向
- * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, RedirectTargetToken]}`
  */
 @fixedToken
 @hiddenToken(false, false) @noEscape

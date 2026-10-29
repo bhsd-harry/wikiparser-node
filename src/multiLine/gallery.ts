@@ -26,7 +26,7 @@ import {classes} from '../../util/constants';
 
 declare type Child = GalleryImageToken
 	| CommentLineToken
-	| AstText;
+	;
 
 /**
  * `<gallery>`
@@ -35,15 +35,15 @@ declare type Child = GalleryImageToken
 export abstract class GalleryToken extends MultiLineToken {
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: readonly Child[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | undefined;
+	declare readonly childNodes: readonly (AstText | Child)[];
+	abstract override get firstChild(): AstText | Child | undefined;
+	abstract override get lastChild(): AstText | Child | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (GalleryImageToken | CommentLineToken)[];
-	abstract override get firstElementChild(): GalleryImageToken | CommentLineToken | undefined;
-	abstract override get lastElementChild(): GalleryImageToken | CommentLineToken | undefined;
+	abstract override get children(): Child[];
+	abstract override get firstElementChild(): Child | undefined;
+	abstract override get lastElementChild(): Child | undefined;
 
 	/** all images / 所有图片 */
 	override get images(): GalleryImageToken[] {

@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 if (( $(ls -1q errors/* | wc -l) > 1 ))
 then
 	echo 'There are remaining error files in the "errors/" directory. Please resolve them before proceeding.'

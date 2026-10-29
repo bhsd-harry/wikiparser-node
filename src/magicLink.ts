@@ -29,6 +29,7 @@ import type {SyntaxBase} from '../mixin/syntax';
 /* NOT FOR BROWSER END */
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
+declare type Child = CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
 
 const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -55,23 +56,21 @@ export interface MagicLinkToken extends SyntaxBase {}
  * free external link
  *
  * 自由外链
- * @classdesc `{childNodes: (AstText|CommentToken|IncludeToken|NoincludeToken)[]}`
+ * @classdesc `{childNodes: (AstText|CommentToken|IncludeToken|NoincludeToken|TranscludeToken)[]}`
  */
 @syntax()
 export abstract class MagicLinkToken extends Token {
 	readonly #type;
 
-	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
+	declare readonly childNodes: readonly (AstText | Child)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
-	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
+	abstract override get lastChild(): AstText | Child;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
-	abstract override get firstElementChild():
-		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
-	abstract override get lastElementChild():
-		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
+	abstract override get children(): Child[];
+	abstract override get firstElementChild(): Child | undefined;
+	abstract override get lastElementChild(): Child | undefined;
 
 	/* NOT FOR BROWSER END */
 
