@@ -13,6 +13,7 @@ import type {
 } from '../internal';
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
+declare type Child = CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
 
 const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
 const spaceRegex = new RegExp(`${space}+`, 'gu');
@@ -21,14 +22,14 @@ const spaceRegex = new RegExp(`${space}+`, 'gu');
  * free external link
  *
  * 自由外链
- * @classdesc `{childNodes: (AstText|CommentToken|IncludeToken|NoincludeToken)[]}`
+ * @classdesc `{childNodes: (AstText|CommentToken|IncludeToken|NoincludeToken|TranscludeToken)[]}`
  */
 export abstract class MagicLinkToken extends Token {
 	readonly #type;
 
-	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
+	declare readonly childNodes: readonly (AstText | Child)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
-	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
+	abstract override get lastChild(): AstText | Child;
 
 	override get type(): ExtLinkTypes {
 		return this.#type;
