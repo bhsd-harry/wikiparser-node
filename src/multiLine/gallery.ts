@@ -9,15 +9,15 @@ import type {
 } from '../../internal';
 
 declare type Child = GalleryImageToken
-	| AstText;
+	;
 
 /**
  * `<gallery>`
  */
 export abstract class GalleryToken extends MultiLineToken {
-	declare readonly childNodes: readonly Child[];
-	abstract override get firstChild(): Child | undefined;
-	abstract override get lastChild(): Child | undefined;
+	declare readonly childNodes: readonly (AstText | Child)[];
+	abstract override get firstChild(): AstText | Child | undefined;
+	abstract override get lastChild(): AstText | Child | undefined;
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {

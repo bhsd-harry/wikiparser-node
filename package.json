@@ -42,12 +42,12 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^5.0.0",
+		"@bhsd/code-standard": "^5.1.0",
 		"@bhsd/common": "^4.1.0",
 		"@bhsd/test-util": "^3.3.0",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.13.0",
+		"eslint": "^10.14.0",
 		"typescript": "^6.0.3"
 	}
 }

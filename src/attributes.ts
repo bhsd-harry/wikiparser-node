@@ -13,6 +13,7 @@ import type {
 import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = `${AttributeTypes}s`;
+declare type Child = AtomToken | AttributeToken;
 
 /**
  * 将属性类型转换为单属性类型
@@ -29,9 +30,9 @@ export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
 export abstract class AttributesToken extends Token {
 	readonly #type;
 
-	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
-	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
-	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
+	declare readonly childNodes: readonly Child[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | undefined;
 	abstract override get parentNode(): ExtToken
 		| undefined;
 	abstract override get previousSibling():

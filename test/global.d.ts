@@ -1,8 +1,4 @@
-import type {Parser as ParserBase} from '../base';
-
-declare global {
-	module '../../bundle/*' {
-		const Parser: ParserBase;
-		export default Parser;
-	}
+declare module '../../bundle/*' {
+	const Parser: import('../base').Parser;
+	export default Parser;
 }

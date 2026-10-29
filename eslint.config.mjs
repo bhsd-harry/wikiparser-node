@@ -32,7 +32,6 @@ const config = extend(
 			'bundle/',
 			'errors/',
 			'wiki/',
-			'test/parserTests.json',
 		],
 	},
 	{
