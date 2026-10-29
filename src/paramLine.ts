@@ -13,7 +13,7 @@ const skipTypes = new Set<TokenTypes | 'text'>(['comment', 'include', 'noinclude
  * parameter of certain extension tags
  *
  * 某些扩展标签的参数
- * @classdesc `{childNodes: [AtomToken] | [AtomToken, AtomToken]}`
+ * @classdesc `{childNodes: [AtomToken, AtomToken?]}`
  */
 @gapped()
 export abstract class ParamLineToken extends Token {

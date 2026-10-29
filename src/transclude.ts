@@ -34,7 +34,7 @@ const sortArgs = /** @ignore */ ({childNodes}: TranscludeToken, args: Set<Parame
  * template or magic word
  *
  * 模板或魔术字
- * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
+ * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...ParameterToken[]]}`
  */
 @noEscape @gapped()
 export abstract class TranscludeToken extends Token {

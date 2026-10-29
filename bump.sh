@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 if [[ $2 == 'npm' ]]
 then
 	npm publish --tag "${3-latest}"

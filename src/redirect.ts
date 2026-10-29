@@ -9,7 +9,7 @@ import type {Config, LintError} from '../base';
  * redirect
  *
  * 重定向
- * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, RedirectTargetToken]}`
  */
 @hiddenToken(false, false) @noEscape
 export abstract class RedirectToken extends Token {

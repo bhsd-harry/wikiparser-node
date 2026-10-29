@@ -6,20 +6,22 @@ import type {
 } from '../../base';
 import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
 
+declare type Child = AttributesToken | SyntaxToken;
+
 /**
  * HTML tag
  *
  * HTML标签
- * @classdesc `{childNodes: [AttributesToken]}`
+ * @classdesc `{childNodes: [AttributesToken|SyntaxToken]}`
  */
 export abstract class TagToken extends Token {
 	#closing;
 	#tag;
 	#match: Cached<this | undefined> | undefined;
 
-	declare readonly childNodes: readonly [AttributesToken | SyntaxToken];
-	abstract override get firstChild(): AttributesToken | SyntaxToken;
-	abstract override get lastChild(): AttributesToken | SyntaxToken;
+	declare readonly childNodes: readonly [Child];
+	abstract override get firstChild(): Child;
+	abstract override get lastChild(): Child;
 	abstract override get type(): 'html' | 'tvar';
 	abstract get selfClosing(): boolean | undefined;
 
@@ -33,7 +35,7 @@ export abstract class TagToken extends Token {
 	 * @param attr 标签属性
 	 * @param closing 是否闭合
 	 */
-	constructor(tag: string, attr: AttributesToken | SyntaxToken, closing: boolean, config?: Config, accum?: Token[]) {
+	constructor(tag: string, attr: Child, closing: boolean, config?: Config, accum?: Token[]) {
 		super(undefined, config, accum);
 		this.insertAt(attr);
 		this.#closing = closing;

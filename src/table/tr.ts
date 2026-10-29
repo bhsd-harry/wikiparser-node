@@ -6,7 +6,7 @@ import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../
  * table row that contains the newline at the beginning but not at the end
  *
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken[]]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...TdToken[]]}`
  */
 export abstract class TrToken extends TrBaseToken {
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...TdToken[]];

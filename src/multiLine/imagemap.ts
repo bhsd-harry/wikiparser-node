@@ -12,16 +12,18 @@ import type {
 	Token,
 } from '../../internal';
 
+declare type Child = GalleryImageToken | CommentLineToken | ImagemapLinkToken;
+
 /**
  * `<imagemap>`
- * @classdesc `{childNodes: [...CommentLineToken[], GalleryImageToken, ...(CommentLineToken|ImagemapLinkToken|AstText)[]]}`
+ * @classdesc `{childNodes: (GalleryImageToken|CommentLineToken|ImagemapLinkToken|AstText)[]]}`
  */
 export abstract class ImagemapToken extends MultiLineToken {
 	declare readonly name: 'imagemap';
 
-	declare readonly childNodes: readonly (GalleryImageToken | CommentLineToken | ImagemapLinkToken | AstText)[];
+	declare readonly childNodes: readonly (Child | AstText)[];
 	abstract override get firstChild(): GalleryImageToken | CommentLineToken | undefined;
-	abstract override get lastChild(): GalleryImageToken | CommentLineToken | ImagemapLinkToken | AstText | undefined;
+	abstract override get lastChild(): Child | AstText | undefined;
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {

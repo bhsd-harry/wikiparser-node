@@ -10,7 +10,7 @@ import type {Token, AtomToken} from '../../internal';
  * target of a redirect
  *
  * 重定向目标
- * @classdesc `{childNodes: [AtomToken, ?NoincludeToken]}`
+ * @classdesc `{childNodes: [AtomToken, NoincludeToken?]}`
  */
 export abstract class RedirectTargetToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
