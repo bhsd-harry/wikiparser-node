@@ -18,7 +18,7 @@ const onlyincludeLeft = '<onlyinclude>',
 			String.raw`<!--.*?(?:-->|$)|<${
 				noincludeRegex
 			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				exts // eslint-disable-next-line unicorn/prefer-string-raw
+				exts
 			})(\s[^>]*?)?(?:/>|>(.*?)</(${'\\1'}\s*)>)|<(${
 				includeRegex
 			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
