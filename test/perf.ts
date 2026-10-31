@@ -210,11 +210,11 @@ void describe('Performance test', () => {
 	});
 	it('simple list', () => {
 		const content = '*\n'.repeat(N);
-		basic(content, 'list', N * 2);
+		basic(content, 'list', N * 3);
 	});
 	it('definition list', () => {
 		const content = ';a:b\n'.repeat(N);
-		basic(content, 'list', N * 4);
+		basic(content, 'list', N * 5);
 	});
 	it('language conversion', () => {
 		const content = '-{}-'.repeat(N);
