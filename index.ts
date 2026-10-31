@@ -661,7 +661,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	lint(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
 		LINT: {
 			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-			return Shadow.internal(() => this.parse(wikitext, include, undefined, config, page).lint(), this);
+			return Shadow.internal(() => this.parse(wikitext, include, MAX_STAGE, config, page).lint(), this);
 		}
 	},
 
