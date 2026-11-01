@@ -1,4 +1,5 @@
 import {error} from '../util/diff';
+import {MAX_STAGE} from '../util/constants';
 import type {
 	Position,
 
@@ -107,7 +108,7 @@ export default async ({title, content}: SimplePage, summary?: boolean, silent?: 
 	using lsp = Parser.createLanguageService();
 	lsp.lilypond = execSync('which lilypond', {encoding: 'utf8'}).trim();
 	lsp.config = {...Parser.getConfig(), articlePath: 'https://mediawiki.org/wiki/$1'};
-	const root = Parser.parse(content, title, true),
+	const root = Parser.parse(content, title, true, MAX_STAGE),
 		imageParameter = root.querySelector('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
 		ext = root.querySelector('ext'),
