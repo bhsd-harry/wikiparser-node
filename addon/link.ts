@@ -1,6 +1,6 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
-import {classes} from '../util/constants';
+import {classes, MAX_STAGE} from '../util/constants';
 import {Shadow, isLink} from '../util/debug';
 import {encode} from '../util/string';
 import Parser from '../index';
@@ -53,7 +53,7 @@ LinkBaseToken.prototype.setLinkText =
 				return inner;
 			}));
 		}
-		this.lastChild.safeReplaceChildren(Parser.parseWithRef(linkStr, this.lastChild).childNodes);
+		this.lastChild.safeReplaceChildren(Parser.parseWithRef(linkStr, this.lastChild, MAX_STAGE).childNodes);
 	};
 
 LinkToken.prototype.setLangLink =

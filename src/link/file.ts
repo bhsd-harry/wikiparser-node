@@ -5,6 +5,7 @@ import {
 	/* NOT FOR BROWSER */
 
 	classes,
+	MAX_STAGE,
 } from '../../util/constants';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -637,7 +638,7 @@ export abstract class FileToken extends LinkBaseToken {
 				),
 		);
 		if (free) {
-			parameter.safeReplaceChildren(Parser.parseWithRef(value as string, this).childNodes);
+			parameter.safeReplaceChildren(Parser.parseWithRef(value as string, this, MAX_STAGE).childNodes);
 		}
 		this.insertAt(parameter);
 	}

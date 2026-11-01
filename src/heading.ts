@@ -23,7 +23,7 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {classes, states} from '../util/constants';
+import {classes, states, MAX_STAGE} from '../util/constants';
 import {sanitizeId} from '../util/string';
 import {getId, getTocData} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
@@ -84,7 +84,7 @@ export abstract class HeadingToken extends Token {
 		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
 			throw new Error('Please use HeadingToken.setLevel method to change the level of the heading!');
 		}
-		this.firstChild.safeReplaceChildren(Parser.parseWithRef(text, this).childNodes);
+		this.firstChild.safeReplaceChildren(Parser.parseWithRef(text, this, MAX_STAGE).childNodes);
 	}
 
 	/**
