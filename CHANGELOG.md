@@ -7,7 +7,7 @@
 
 - `TableToken#getEntries` that returns a regular 2D array of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken-%28EN%29) for all table cells, resolving the `rowspan` and `colspan` attributes
 - [`Token#plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#plaintext)
-- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now takes an optional object parameter to include/exclude certain elements, including the redirect link, the table of contents (TOC) and category links
+- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) now takes an optional object parameter to include/exclude certain elements, including the redirect link, the table of contents (TOC) and category links
 - New category of linting errors: [duplicate names of `<indicator>`](https://github.com/bhsd-harry/wikiparser-node/wiki/no-duplicate#extension-tag-name)
 
 **Fixed**
@@ -366,7 +366,7 @@
 
 - HTML conversion of `<syntaxhighlight>` with [Prism](https://prismjs.com/) highlighting
 - [`CategoryToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken-%28EN%29#innertext)
-- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN#tohtml) now supports category links at the end of the page
+- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) now supports category links at the end of the page
 - [`Parser.callParserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#callparserfunction) now supports custom parser functions defined via [`Parser.setFunctionHook`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#setfunctionhook)
 - [`Title#getFileUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title-%28EN%29#getfileurl) that internally calls the `filepath` parser function to generate a `Special:Redirect/file/` URL
 - New methods of [`Parser`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29): [`lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#lint), [`print`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#print) and [`toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#tohtml)
