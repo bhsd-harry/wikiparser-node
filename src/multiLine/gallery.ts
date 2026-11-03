@@ -1,8 +1,10 @@
 import {fixByRemove, fixByComment} from '../../util/lint';
+import {removeComment} from '../../util/string';
 import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {GalleryImageToken} from '../link/galleryImage';
 import {CommentLineToken} from '../nowiki/commentLine';
+import {CommentToken} from '../nowiki/comment';
 import type {
 	Config,
 	LintError,
@@ -32,7 +34,12 @@ export abstract class GalleryToken extends MultiLineToken {
 		super(undefined, config, accum, {
 		});
 		if (inner) {
-			for (const line of inner.split('\n')) {
+			for (let line of inner.split('\n')) {
+				line = line.replaceAll(/<!--(.*?)-->/gu, (_, p1) => {
+					// @ts-expect-error abstract class
+					new CommentToken(p1, true, config, accum);
+					return `\0${accum.length}c\x7F`;
+				});
 				const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 				if (!matches) {
 					super.insertAt(
@@ -50,7 +57,7 @@ export abstract class GalleryToken extends MultiLineToken {
 					continue;
 				}
 				const [, file, alt] = matches;
-				if (this.#checkFile(file)) { // eslint-disable-line unicorn/prefer-ternary
+				if (this.#checkFile(file, true)) { // eslint-disable-line unicorn/prefer-ternary
 					// @ts-expect-error abstract class
 					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 				} else {
@@ -70,10 +77,11 @@ export abstract class GalleryToken extends MultiLineToken {
 	/**
 	 * 检查文件名是否有效
 	 * @param file 文件名
+	 * @param parsing 是否在解析过程中
 	 */
-	#checkFile(file: string): boolean {
+	#checkFile(file: string, parsing?: boolean): boolean {
 		return this.normalizeTitle(
-			file,
+			parsing ? removeComment(file) : file,
 			6,
 			{halfParsed: true, temporary: true, decode: true, page: ''},
 		).valid;
