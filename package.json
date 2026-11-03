@@ -89,7 +89,7 @@
 		"mathoid-texvcjs": ">=0.4.0",
 		"prism-wiki": ">=1.0.0",
 		"prismjs": "^1.0.0",
-		"stylelint": ">=16.0.0",
+		"stylelint-config-recommended": ">=14.0.0",
 		"vscode-css-languageservice": ">=3.0.0",
 		"vscode-html-languageservice": ">=3.1.0",
 		"vscode-json-languageservice": ">=3.2.0"
@@ -113,7 +113,7 @@
 		"prismjs": {
 			"optional": true
 		},
-		"stylelint": {
+		"stylelint-config-recommended": {
 			"optional": true
 		},
 		"vscode-css-languageservice": {
@@ -130,7 +130,7 @@
 		"@bhsd/cm-util": "^2.4.2",
 		"@bhsd/common": "^4.1.0",
 		"@bhsd/nodejs": "^1.2.1",
-		"@bhsd/stylelint-util": "^1.1.0",
+		"@bhsd/stylelint-util": "^2.0.0",
 		"culori": "^4.0.2",
 		"entities": "^8.1.0",
 		"vscode-languageserver-types": "^3.18.5"
@@ -157,6 +157,7 @@
 		"prism-wiki": "^2.5.0",
 		"prismjs": "^1.30.0",
 		"stylelint": "^17.16.0",
+		"stylelint-config-recommended": "^18.0.0",
 		"tsx": "^4.23.15",
 		"typescript": "^6.0.3",
 		"vscode-css-languageservice": "^6.3.10",

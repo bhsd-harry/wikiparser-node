@@ -122,7 +122,7 @@ You can install any of the following optional packages to enable advanced featur
 | Package | Purpose |
 | :-: | --- |
 | `mathoid-texvcjs` | Diagnostics and HTML conversion support for `<math>` and `<chem>` extension tags |
-| `stylelint` | Diagnostics for `style` attributes |
+| `stylelint-config-recommended` | Diagnostics for `style` attributes |
 | `vscode-css-languageservice` | CSS language support for `style` attributes |
 | `vscode-html-languageservice` | Language support for HTML tags |
 | `vscode-json-languageservice` | JSON language support for `<templatedata>`, `<mapframe>` and `<maplink>` tags |
@@ -132,7 +132,7 @@ You can install any of the following optional packages to enable advanced featur
 
 ```sh
 # Full LanguageService features for `Parser.createLanguageService()`
-npm i mathoid-texvcjs stylelint vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
+npm i mathoid-texvcjs stylelint-config-recommended vscode-css-languageservice vscode-html-languageservice vscode-json-languageservice
 
 # Full HTML conversion support for `Parser.toHtml()`
 npm i ajv ajv-errors katex mathoid-texvcjs prismjs prism-wiki

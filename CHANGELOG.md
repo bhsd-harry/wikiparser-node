@@ -3,9 +3,9 @@
 
 *2026-11-04*
 
-**Fixed**
+**Changed**
 
-- 
+- [stylelint-config-recommended](https://www.npmjs.com/package/stylelint-config-recommended) is now an optional peer dependency
 
 ## v2.0.0
 
