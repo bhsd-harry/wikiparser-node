@@ -69,9 +69,9 @@ Wikitext. These tests are available [here](https://bhsd-harry.github.io/wikipars
 
 This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface),
 but only retains the parsing and linting functionality. At the cost of losing
-AST modification capabilities, it executes [2.4x faster](#performance). Projects
-can use WikiLint in their CI pipelines to automatically lint wiki content (for
-example, [qBittorrent](https://github.com/qbittorrent/wiki/blob/master/.pre-commit-config.yaml)).
+AST modification and HTML rendering capabilities, it executes [2.4x faster](#performance).
+Projects can use WikiLint in their CI pipelines to automatically lint wiki
+content (e.g., [qBittorrent](https://github.com/qbittorrent/wiki/blob/master/.pre-commit-config.yaml)).
 
 It powers the [Wikitext LSP](https://www.npmjs.com/package/wikitext-lsp), which
 provides multiple language services for editors such as [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser),
@@ -97,6 +97,10 @@ conjunction with editors such as [CodeMirror](https://www.npmjs.com/package/@bhs
 and [Monaco](https://www.npmjs.com/package/monaco-wiki) ([Usage example](https://bhsd-harry.github.io/wikiparser-node)).
 It has been integrated into the MediaWiki official [CodeMirror extension](https://www.mediawiki.org/wiki/Extension:CodeMirror)
 since MediaWiki Release 1.45.
+
+To ensure maximum responsiveness within browser environments, the parser is
+optimized for speed and memory usage while AST manipulation and HTML rendering
+are intentionally excluded to prevent main-thread blocking.
 
 ## Installation
 
@@ -218,15 +222,24 @@ MacBook Air takes about 5 hours.
 - LSP-based language tooling.
 - Browser-side editing helpers, and gadgets/user scripts that require Wikitext parsing.
 
-## Known issues
+## Reliability and limitations
 
-The following limitations are documented for transparency.
+WikiParser-Node has been extensively validated against the official
+[MediaWiki PHP parser tests](https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/refs/heads/master/tests/parser/)
+(~3,000 integration test cases), ensuring robust compliance with the Wikitext
+quirks and edge cases. However, for complete transparency, the following
+limitations are documented.
 
 ### Parser
 
 1. Memory leaks may occur in rare cases.
 1. Invalid page names with unicode characters are treated like valid ones ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 1. Preformatted text with a leading space is only processed by [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
+
+### Linter
+
+1. HTML tag pairs may not match when nested inside a list item ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Lists%20and%20block-element%20interaction)),
+   but the linter will not report it.
 
 ### HTML conversion
 

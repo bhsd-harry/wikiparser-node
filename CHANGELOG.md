@@ -3,6 +3,10 @@
 
 *2026-11-04*
 
+**Fixed**
+
+- Support HTML comments in gallery image names
+
 **Changed**
 
 - [stylelint-config-recommended](https://www.npmjs.com/package/stylelint-config-recommended) is now an optional peer dependency

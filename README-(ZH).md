@@ -47,7 +47,7 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 ### [WikiLint](https://www.npmjs.com/package/wikilint)
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能。虽然牺牲了语法树的修改能力，但换来了 [2.4 倍](#性能)的执行速度提升。可以在 CI 流水线中集成 WikiLint 以自动检查维基内容（例如 [qBittorrent](https://github.com/qbittorrent/wiki/blob/master/.pre-commit-config.yaml)）。
+提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析和语法错误分析功能。虽然牺牲了语法树修改和 HTML 渲染的能力，但换来了 [2.4 倍](#性能)的执行速度提升。可以在 CI 流水线中集成 WikiLint 以自动检查维基内容（例如 [qBittorrent](https://github.com/qbittorrent/wiki/blob/master/.pre-commit-config.yaml)）。
 
 这个版本为 [Wikitext 语言服务器协议](https://www.npmjs.com/package/wikitext-lsp)提供支持，可为 [VS Code](https://marketplace.visualstudio.com/items?itemName=Bhsd.vscode-extension-wikiparser)、[Sublime Text](https://lsp.sublimetext.io/language_servers/#mediawiki) 和 [Helix](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#wikitext) 等编辑器提供多种语言服务。
 
@@ -62,6 +62,8 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 ### [浏览器版本](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)
 
 兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://www.npmjs.com/package/@bhsd/codemirror-mediawiki) 和 [Monaco](https://www.npmjs.com/package/monaco-wiki) 等编辑器作为[语言服务器协议（LSP）](https://microsoft.github.io/language-server-protocol/)插件（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）。自 MediaWiki 1.45 版本起已集成到 MediaWiki 官方 [CodeMirror 扩展](https://www.mediawiki.org/wiki/Extension:CodeMirror)中。
+
+为了确保在浏览器环境中获得最大的响应速度，解析器经过了速度和内存使用的优化，同时有意排除了语法树修改和 HTML 渲染功能，以防止阻塞主线程。
 
 ## 安装方法
 
@@ -173,6 +175,6 @@ assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
 - 基于语言服务器协议（LSP）的语言工具。
 - 浏览器端用于全站小工具、用户脚本和编辑器插件中的维基文本解析与编辑辅助功能。
 
-## 已知问题
+## 可靠性与限制
 
-请参阅[英语版本](./README.md#known-issues)。
+请参阅[英语版本](./README.md#reliability-and-limitations)。

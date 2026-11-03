@@ -87,7 +87,7 @@ export abstract class GalleryImageToken extends FileToken {
 	override getTitle(temporary?: boolean): Title {
 		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(
-			this.firstChild.toString(),
+			this.firstChild[imagemap ? 'toString' : 'text'](),
 			imagemap ? 0 : 6,
 			{halfParsed: true, temporary, decode: !imagemap, page: ''},
 		);
