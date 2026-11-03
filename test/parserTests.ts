@@ -77,6 +77,7 @@ describe('Parser tests', () => {
 
 					if (lint) {
 						assert.deepStrictEqual(root.lint(), lint);
+						assert.deepStrictEqual(Parser.lint(wikitext, title), lint);
 					}
 
 					/* PRINT ONLY */
