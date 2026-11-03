@@ -6,7 +6,7 @@ import type {TextDocument, Range} from 'vscode-languageserver-textdocument';
 import type * as JsonLanguageService from 'vscode-json-languageservice';
 import type * as CssLanguageService from 'vscode-css-languageservice';
 import type * as HtmlLanguageService from 'vscode-html-languageservice';
-import type {PublicApi} from 'stylelint';
+import type {PublicApi, Warning} from 'stylelint';
 import type {Token, AttributeToken} from '../internal';
 
 export interface TexvcLocation {
@@ -32,6 +32,7 @@ export type TexvcReport = {
 declare interface Texvcjs {
 	check(input: string, options?: {usemathrm?: boolean, usemhchem?: boolean}): TexvcReport;
 }
+declare type StylelintUtil = (code: string) => Promise<Warning[]>;
 
 let texvcjs: Texvcjs | undefined | null;
 export const loadTexvcjs = /** @ignore */ (): Texvcjs | null => {
@@ -112,12 +113,15 @@ export const loadHtmlData = /** @ignore */ (): HtmlLanguageService.IHTMLDataProv
 	return htmlData;
 };
 
-let stylelint: PublicApi | undefined | null;
-export const loadStylelint = /** @ignore */ (): PublicApi | null => {
+let stylelint: StylelintUtil | undefined | null;
+export const loadStylelint = /** @ignore */ (): StylelintUtil | null => {
 	NPM: {
 		if (stylelint === undefined) {
 			try {
-				stylelint = require('stylelint') as PublicApi;
+				const stylelintApi: PublicApi = require('stylelint'),
+					{styleLint}: typeof import('@bhsd/stylelint-util') = require('@bhsd/stylelint-util');
+				const cssRules = {'block-no-empty': null};
+				stylelint = /** @implements */ (code): Promise<Warning[]> => styleLint(stylelintApi, code, cssRules);
 			} catch /* c8 ignore start */ {
 				stylelint = null;
 			}

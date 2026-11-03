@@ -74,7 +74,7 @@
 	},
 	"peerDependencies": {
 		"mathoid-texvcjs": ">=0.4.0",
-		"stylelint": ">=16.0.0",
+		"stylelint-config-recommended": ">=14.0.0",
 		"vscode-css-languageservice": ">=3.0.0",
 		"vscode-html-languageservice": ">=3.1.0",
 		"vscode-json-languageservice": ">=3.2.0"
@@ -83,7 +83,7 @@
 		"mathoid-texvcjs": {
 			"optional": true
 		},
-		"stylelint": {
+		"stylelint-config-recommended": {
 			"optional": true
 		},
 		"vscode-css-languageservice": {
@@ -99,7 +99,7 @@
 	"dependencies": {
 		"@bhsd/cm-util": "^2.4.2",
 		"@bhsd/common": "^4.1.0",
-		"@bhsd/stylelint-util": "^1.1.0",
+		"@bhsd/stylelint-util": "^2.0.0",
 		"culori": "^4.0.2",
 		"entities": "^8.1.0",
 		"vscode-languageserver-types": "^3.18.5"
@@ -120,6 +120,7 @@
 		"mathoid-texvcjs": "^0.6.0",
 		"monaco-editor": "^0.57.0",
 		"stylelint": "^17.16.0",
+		"stylelint-config-recommended": "^18.0.0",
 		"typescript": "^6.0.3",
 		"vscode-css-languageservice": "^6.3.10",
 		"vscode-html-languageservice": "^5.6.2",

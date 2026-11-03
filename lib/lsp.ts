@@ -86,7 +86,6 @@ import path from 'path';
 import util from 'util';
 import {execFile} from 'child_process';
 import {createHash} from 'crypto';
-import {styleLint} from '@bhsd/stylelint-util';
 import {colorsNamed, rgba as rgbaCulori} from '@bhsd/common/color';
 import findIndex from '../vendor/search';
 import {jsonTags} from '../util/constants';
@@ -470,8 +469,7 @@ const partialParse = async (
 /* NOT FOR BROWSER ONLY */
 
 /** @see https://www.npmjs.com/package/stylelint-config-recommended */
-const cssRules = {'block-no-empty': null},
-	colors = Object.keys(colorsNamed),
+const colors = Object.keys(colorsNamed),
 	sources: Partial<Record<LintError.Rule, string>> = {'invalid-css': 'css', 'invalid-math': 'texvc'},
 	jsonSelector = jsonTags.map(s => `ext#${s}`).join(),
 	scores = new Map<string, LilyPondError[] | undefined>();
@@ -1234,7 +1232,7 @@ export class LanguageService implements LanguageServiceBase {
 										sanitizeInlineStyle(lastChild.toString())
 									}\n}`,
 								).join('\n'),
-								cssErrors = await styleLint(stylelint, code, cssRules);
+								cssErrors = await stylelint(code);
 							if (cssErrors.length === 0) {
 								return [];
 							}
