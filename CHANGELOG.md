@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
+## v2.0.1
+
+*2026-11-04*
+
+**Fixed**
+
+- 
+
 ## v2.0.0
 
 *2026-11-01*
@@ -640,8 +648,8 @@
 
 - HTML conversion of `<poem>` containing `<nowiki>` or leading `:`
 - HTML conversion of `<h1>` to `<h6>` without and `id` attribute
-- [HeadingToken](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29) as the first token of a `<poem>` tag does not need to be on a new line
-- Sanitization of [AttributeToken](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29)
+- [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken-%28EN%29) as the first token of a `<poem>` tag does not need to be on a new line
+- Sanitization of [`AttributeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken-%28EN%29)
 - Use the legacy `rgba()` function instead of `#rrggbbaa` in [`LanguageService#provideColorPresentations`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providecolorpresentations) for colors with an alpha channel
 - `NowikiToken#cloneNode` should copy the `name` attribute if it exists
 
@@ -881,7 +889,7 @@
 
 **Changed**
 
-- [`HtmlToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken-%28EN%29#findmatchingtag) now returns `undefined` if there is no matching tag instead of throwing a syntax error
+- `HtmlToken#findMatchingTag` now returns `undefined` if there is no matching tag instead of throwing a syntax error
 
 ## v1.16.6
 
