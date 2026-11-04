@@ -3,6 +3,10 @@
 
 *2026-11-04*
 
+**Added**
+
+- [`Config.capitalLinks`](https://github.com/bhsd-harry/wikiparser-node/wiki/types-%28EN%29#config) property to control whether the first letter of page names should be capitalized
+
 **Fixed**
 
 - Support HTML comments in gallery image names

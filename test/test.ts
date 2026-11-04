@@ -77,6 +77,7 @@ describe('API tests', () => {
 				/* NOT FOR BROWSER END */
 
 				if (typeof Parser.config === 'object') {
+					Parser.config.capitalLinks = true;
 					Parser.config.articlePath = '/wiki/$1';
 
 					/* NOT FOR BROWSER */

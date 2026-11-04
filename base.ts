@@ -33,6 +33,7 @@ export interface Config {
 	readonly redirection: string[];
 	variable: string[];
 	functionHook: string[];
+	capitalLinks?: boolean;
 	variants: string[];
 	articlePath?: string;
 

@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import * as assert from 'assert';
 import {describe, it, prepare} from '@bhsd/test-util/mocha';
-import Parser = require('../index');
+import Parser from '../index';
 import type {LintError} from '../base';
 
 const {rules} = Parser.lintConfig,
