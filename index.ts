@@ -9,7 +9,6 @@ import {
 import {
 	tidy,
 } from './util/string';
-import {Title} from './lib/title';
 import type {
 	MaxStage,
 	Config,
@@ -17,7 +16,8 @@ import type {
 	TokenTypes,
 	Parser as ParserBase,
 } from './base';
-import type {TitleOptions} from './lib/title';
+import type * as LibTitle from './lib/title';
+import type {TitleOptions, Title} from './lib/title';
 import type * as Src from './src/index';
 import type {
 	Token,
@@ -69,16 +69,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		opt?: TitleOptions,
 		accum: Token[] = [],
 	) {
+		const {Title: TitleObj}: typeof LibTitle = require('./lib/title');
 		let titleObj: Title;
 		if (opt?.halfParsed) {
-			titleObj = new Title(title, defaultNs, config, opt, accum);
+			titleObj = new TitleObj(title, defaultNs, config, opt, accum);
 		} else {
 			const {Token}: typeof Src = require('./src/index');
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config, accum);
 				root.type = 'root';
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt, accum);
+				const t = new TitleObj(root.firstChild!.toString(), defaultNs, config, opt, accum);
 				root.build();
 				/* eslint-disable @stylistic/array-bracket-newline */
 				const keys = [

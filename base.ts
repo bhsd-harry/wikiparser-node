@@ -5,6 +5,7 @@ export interface Config {
 	readonly parserFunction: [Record<string, string>, Record<string, string>, string[], string[]];
 	variable: string[];
 	functionHook: string[];
+	capitalLinks?: boolean;
 
 	/** @private */
 	readonly excludes: string[];
