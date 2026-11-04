@@ -60,7 +60,7 @@ export abstract class GalleryToken extends MultiLineToken {
 		});
 		if (inner) {
 			for (let line of inner.split('\n')) {
-				line = line.replaceAll(/<!--(.*?)-->/gu, (_, p1) => {
+				line = line.replace(/<!--(.*?)-->/gu, (_, p1) => {
 					// @ts-expect-error abstract class
 					new CommentToken(p1, true, config, accum);
 					return `\0${accum.length}c\x7F`;
