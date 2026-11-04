@@ -1,7 +1,6 @@
 import {removeComment} from '../../util/string';
 import {MultiLineToken} from './index';
 import {GalleryImageToken} from '../link/galleryImage';
-import {CommentToken} from '../nowiki/comment';
 import type {
 	Config,
 } from '../../base';
@@ -26,12 +25,8 @@ export abstract class GalleryToken extends MultiLineToken {
 		super(undefined, config, accum, {
 		});
 		if (inner) {
+			// eslint-disable-next-line prefer-const
 			for (let line of inner.split('\n')) {
-				line = line.replaceAll(/<!--(.*?)-->/gu, (_, p1) => {
-					// @ts-expect-error abstract class
-					new CommentToken(p1, true, config, accum);
-					return `\0${accum.length}c\x7F`;
-				});
 				const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 				if (!matches) {
 					super.insertAt(

@@ -12710,6 +12710,71 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//example<span class=\"wpb-comment\">&lt;!-- --&gt;</span>.com</span>]</span>\n\n<span class=\"wpb-free-ext-link\">http://example<span class=\"wpb-comment\">&lt;!-- --&gt;</span>.com</span></span>"
 	},
 	{
+		"desc": "Comment in gallery line target (not supported in legacy)",
+		"wikitext": "<gallery>\nFile:Foobar.jpg|<!--test-->123\nFile:Foobar.jpg<!--test-->\nFile:Foobar.jpg<!--te|st-->\nFile:Foobar.jpg<!--test\n123-->\n</gallery>",
+		"lint": [
+			{
+				"rule": "no-ignored",
+				"message": "invalid content in <gallery>",
+				"severity": "error",
+				"startIndex": 96,
+				"endIndex": 119,
+				"startLine": 4,
+				"endLine": 4,
+				"startCol": 0,
+				"endCol": 23,
+				"suggestions": [
+					{
+						"desc": "remove",
+						"range": [
+							96,
+							119
+						],
+						"text": ""
+					},
+					{
+						"desc": "comment",
+						"range": [
+							96,
+							119
+						],
+						"text": "<!--File:Foobar.jpg<!--test-->"
+					}
+				]
+			},
+			{
+				"rule": "no-ignored",
+				"message": "invalid content in <gallery>",
+				"severity": "warning",
+				"startIndex": 120,
+				"endIndex": 126,
+				"startLine": 5,
+				"endLine": 5,
+				"startCol": 0,
+				"endCol": 6,
+				"suggestions": [
+					{
+						"desc": "remove",
+						"range": [
+							120,
+							126
+						],
+						"text": ""
+					},
+					{
+						"desc": "comment",
+						"range": [
+							120,
+							126
+						],
+						"text": "<!--123-->-->"
+					}
+				]
+			}
+		],
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-comment\">&lt;!--test--&gt;</span>123</span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg<span class=\"wpb-comment\">&lt;!--test--&gt;</span></span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg<span class=\"wpb-comment\">&lt;!--te|st--&gt;</span></span></span>\n<span class=\"wpb-noinclude\">File:Foobar.jpg&lt;!--test</span>\n<span class=\"wpb-noinclude\">123--&gt;</span>\n</span>&lt;/gallery&gt;</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
