@@ -159,7 +159,9 @@ assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
 
 ## 性能
 
-在一台个人的 MacBook Air 上对英文维基百科约 1900 万篇条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 5 小时。
+WikiParser-Node 优先考虑语法准确性和规范性，而不是追求合成基准测试的速度。尽管它不通过走捷径和舍弃复杂边缘情况来谋取更高的速度，它在实际生产环境中的性能仍然可靠。
+
+在一台个人的 MacBook Air 上对英文维基百科约 1900 万篇或短小、或篇幅宏大且模板密集的条目的数据库转储文件（`*.xml.bz2`）的一次完整[扫描](https://www.npmjs.com/package/lint-wiki-dumps)（解析和语法错误分析）需要约 5 小时（实际运行时间）。
 
 *WikiParser-Node 与 [WikiLint](#wikilint) 的性能比较*
 

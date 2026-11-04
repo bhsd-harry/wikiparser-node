@@ -4,9 +4,12 @@
 		"allowed_elements": [
 			"a",
 			"br",
+			"code",
 			"details",
 			"div",
 			"img",
+			"li",
+			"ol",
 			"summary"
 		]
 	}

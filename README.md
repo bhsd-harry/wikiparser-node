@@ -203,9 +203,14 @@ assert.strictEqual(wikitext, "{{Infobox|name=New}}\nText");
 
 ## Performance
 
-A full database dump (`*.xml.bz2`) [scan](https://www.npmjs.com/package/lint-wiki-dumps)
-of English Wikipedia's ~19 million articles (parsing and linting) on a personal
-MacBook Air takes about 5 hours.
+WikiParser-Node prioritizes syntax accuracy and compliance over synthetic
+benchmarks. It does not chase higher speed by cutting corners on complex edge
+cases, but its real-world performance remains reliable for production use.
+
+A full [scan](https://www.npmjs.com/package/lint-wiki-dumps) (parsing and
+linting) of an English Wikipedia database dump (`*.xml.bz2`) with ~19 million
+articles—from short stubs to massive, template-heavy pages—takes about 5 hours
+(wall-clock) on a personal MacBook Air.
 
 *Performance comparison between WikiParser-Node and [WikiLint](#wikilint)*
 
@@ -235,6 +240,8 @@ limitations are documented.
 1. Memory leaks may occur in rare cases.
 1. Invalid page names with unicode characters are treated like valid ones ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Render%20invalid%20page%20names%20as%20plain%20text%20(T53090))).
 1. Preformatted text with a leading space is only processed by [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
+1. Link text containing `!!` in a table header ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Exclamation%20points%20in%20wikilink%20content%20in%20table%20precedence)).
+1. Seemingly broken file link syntax in a table ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#File%20in%20table%20pipe%20precedence)).
 
 ### Linter
 
@@ -275,7 +282,6 @@ limitations are documented.
 1. `<caption>` elements are wrapped in `<tbody>` elements ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Trim%20whitespace%20in%20wikitext%20headings%2C%20list%20items%2C%20table%20captions%2C%20headings%2C%20and%20cells)).
 1. Unclosed HTML tags in the table fostered content ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Fuzz%20testing%3A%20Parser24)).
 1. `<tr>` elements should not be fostered ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Empty%20TR%20followed%20by%20a%20template-generated%20TR)).
-1. Link text containing `!!` in a table header ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Exclamation%20points%20in%20wikilink%20content%20in%20table%20precedence)).
 
 #### Link
 
@@ -287,7 +293,6 @@ limitations are documented.
 1. Duplicate file namespace prefixes should be invalid ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20with%20valid%20attributes)).
 1. File redirects ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#Gallery%20(with%20showfilename%20option))).
 1. Figure caption should not be nested inside inline elements ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#File%20in%20formatting%20element%20violating%20content%20model%2C%20figcaption%20content)).
-1. Seemingly broken file link syntax in a table ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#File%20in%20table%20pipe%20precedence)).
 
 #### External link
 
