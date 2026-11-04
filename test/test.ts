@@ -45,6 +45,7 @@ describe('API tests', () => {
 					'en';
 				Parser.lintConfig = undefined as unknown as LintConfiguration;
 				if (typeof Parser.config === 'object') {
+					Parser.config.capitalLinks = true;
 					Parser.config.articlePath = '/wiki/$1';
 				}
 			});

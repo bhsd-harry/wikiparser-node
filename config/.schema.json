@@ -247,6 +247,11 @@
 			"description": "base URL of the server",
 			"type": "string",
 			"pattern": "^(?:https?:)?//"
+		},
+		"capitalLinks": {
+			"description": "whether to capitalize the first letter of page titles",
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"required": [
