@@ -2455,3 +2455,15 @@ http://example<!-- -->.com
 </p><p><a rel="nofollow" class="external free" href="http://example.com">http://example.com</a>
 </p>
 !! end
+
+!! test
+Comment in gallery line target (not supported in legacy)
+!! wikitext
+<gallery>
+File:Foobar.jpg|<!--test-->123
+File:Foobar.jpg<!--test-->
+File:Foobar.jpg<!--te|st-->
+File:Foobar.jpg<!--test
+123-->
+</gallery>
+!! end
