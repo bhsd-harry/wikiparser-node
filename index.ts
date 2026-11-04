@@ -13,7 +13,6 @@ import {
 	tidy,
 } from './util/string';
 import {LintConfiguration} from './lib/lintConfig';
-import {Title} from './lib/title';
 import type {
 	MaxStage,
 	Config,
@@ -24,7 +23,8 @@ import type {
 	Parser as ParserBase,
 	AST,
 } from './base';
-import type {TitleOptions} from './lib/title';
+import type * as LibTitle from './lib/title';
+import type {TitleOptions, Title} from './lib/title';
 import type * as LSP from './lib/lsp';
 import type {LanguageService, QuickFixData} from './lib/lsp';
 import type * as Src from './src/index';
@@ -202,9 +202,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		opt?: TitleOptions,
 		accum: Token[] = [],
 	) {
+		const {Title: TitleObj}: typeof LibTitle = require('./lib/title');
 		let titleObj: Title;
 		if (opt?.halfParsed) {
-			titleObj = new Title(title, defaultNs, config, opt, accum);
+			titleObj = new TitleObj(title, defaultNs, config, opt, accum);
 		} else {
 			const {Token}: typeof Src = require('./src/index');
 			titleObj = Shadow.run(() => {
@@ -212,7 +213,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.type = 'root';
 				root.pageName = opt?.page;
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.firstChild!.toString(), defaultNs, config, opt, accum);
+				const t = new TitleObj(root.firstChild!.toString(), defaultNs, config, opt, accum);
 				root.build();
 				const keys = [
 					'main',
