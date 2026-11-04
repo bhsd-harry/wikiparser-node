@@ -193,6 +193,7 @@ export class AstText extends AstNode {
 				return [];
 			}
 			errorRegex.lastIndex = 0;
+			let rule: LintError.Rule = 'tag-like';
 			const errors: LintError[] = [],
 				nextType = nextSibling?.type,
 				nextName = nextSibling?.name,
@@ -202,7 +203,7 @@ export class AstText extends AstNode {
 				{ext, html, variants} = root.getAttribute('config'),
 				{top, left} = root.posFromIndex(start)!,
 				{lintConfig} = Parser,
-				tagLike = lintConfig.rules['tag-like'] as FullLintConfigValue,
+				tagLike = lintConfig.rules[rule] as FullLintConfigValue,
 				specified = tagLike[1]
 					? new Set(Object.keys(tagLike[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed'))
 					: new Set(),
@@ -215,7 +216,7 @@ export class AstText extends AstNode {
 					...html[1],
 					...html[2],
 					...specified,
-					...lintConfig.getSeverity('tag-like', 'disallowed') ? disallowedTags : [],
+					...lintConfig.getSeverity(rule, 'disallowed') ? disallowedTags : [],
 				]);
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 				let {index, 0: error} = mt;
@@ -253,7 +254,6 @@ export class AstText extends AstNode {
 				// Rule & Severity
 				let startIndex = start + index,
 					endIndex = startIndex + length,
-					rule: LintError.Rule | undefined,
 					severity: LintError.Severity | false;
 				const nextChar = rootStr[endIndex],
 					previousChar = rootStr[startIndex - 1],
