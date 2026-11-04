@@ -27,6 +27,8 @@ const resolve = (title: string): [number, string] => {
 	return [length / 3, sub];
 };
 
+const capitalLinkNs = new Set([-1, 2, 3, 8, 9]);
+
 /**
  * title object of a MediaWiki page
  *
@@ -38,6 +40,7 @@ export class Title {
 	readonly #namespaces;
 	#path: string;
 	#ns;
+	#capitalLinks;
 	#fragment;
 	/** @private */
 	page;
@@ -62,7 +65,9 @@ export class Title {
 
 	set main(title) {
 		title = title.replace(/_/gu, ' ').trim();
-		this.#main = title && title[0]!.toUpperCase() + title.slice(1);
+		this.#main = this.#capitalLinks || capitalLinkNs.has(this.#ns)
+			? title && title[0]!.toUpperCase() + title.slice(1)
+			: title;
 	}
 
 	/** namespace prefix / 命名空间前缀 */
@@ -166,6 +171,7 @@ export class Title {
 		&& decodeHtml(title) === title
 		&& (level === 0 || page === undefined || page.split('/', level + 1).length > level)
 		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(sub);
+		this.#capitalLinks = config.capitalLinks !== false;
 		this.main = title;
 		this.#namespaces = config.namespaces;
 		this.#path = config.articlePath || '/wiki/$1';
