@@ -1,5 +1,6 @@
 import {fixByRemove, fixByComment} from '../../util/lint';
 import {removeComment} from '../../util/string';
+import {safeStringReplace} from '../../util/replace';
 import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {GalleryImageToken} from '../link/galleryImage';
@@ -35,9 +36,9 @@ export abstract class GalleryToken extends MultiLineToken {
 		});
 		if (inner) {
 			for (let line of inner.split('\n')) {
-				line = line.replace(/<!--(.*?)-->/gu, (_, p1) => {
+				line = safeStringReplace(line, '<!--', '-->', false, p => {
 					// @ts-expect-error abstract class
-					new CommentToken(p1, true, config, accum);
+					new CommentToken(p, true, config, accum);
 					return `\0${accum.length}c\x7F`;
 				});
 				const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;

@@ -54,15 +54,6 @@ const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 		'select',
 		'textarea',
 	]);
-const wordRegex = /* #__PURE__ */ ((): RegExp => {
-	try {
-		// eslint-disable-next-line prefer-regex-literals
-		return new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
-	} catch /* c8 ignore start */ {
-		return /\w/u;
-	}
-	/* c8 ignore stop */
-})();
 
 /**
  * text node
@@ -317,7 +308,7 @@ export class AstText extends AstNode {
 				if (lintConfig.computeEditInfo) {
 					if (char === '<') {
 						e.suggestions = [fixByEscape(startIndex, '&lt;')];
-					} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar ?? '')) {
+					} else if (char === 'h' && type !== 'link-text' && /[\p{L}\p{N}_]/u.test(previousChar ?? '')) {
 						e.suggestions = [fixBySpace(startIndex)];
 					} else if (lbrackInExtLinkText) {
 						const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;

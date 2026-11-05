@@ -31,7 +31,7 @@ export type AttributeTypes = 'ext-attr'
 	| 'table-attr';
 
 const insecureStyle =
-		/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
+		/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|src|image(?:-set)?)\s*\(|attr\s*\((?:(?!attr\s*\()[^)])+[\s,]url/u,
 	evil = /(?:^|\s|\*\/)(?:java|vb)script(?:\W|$)/iu,
 	complexTypes = new Set<TokenTypes | 'text'>(['ext', 'arg', 'magic-word', 'template']),
 	itemAttrs = new Set(['itemtype', 'itemid', 'itemref']),

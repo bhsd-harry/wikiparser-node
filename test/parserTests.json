@@ -12775,6 +12775,90 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-comment\">&lt;!--test--&gt;</span>123</span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg<span class=\"wpb-comment\">&lt;!--test--&gt;</span></span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg<span class=\"wpb-comment\">&lt;!--te|st--&gt;</span></span></span>\n<span class=\"wpb-noinclude\">File:Foobar.jpg&lt;!--test</span>\n<span class=\"wpb-noinclude\">123--&gt;</span>\n</span>&lt;/gallery&gt;</span></span>"
 	},
 	{
+		"desc": "Half-complete syntax",
+		"wikitext": "[//example.com\n\n<nowiki>\n\n<translate>\n\n<pre><nowiki></pre>\n\n<includeonly>",
+		"html": "<p>[//example.com\n</p><p>&lt;nowiki&gt;\n</p><p>&lt;translate&gt;\n</p>\n<pre>&lt;nowiki&gt;</pre>\n<p><br />\n</p>",
+		"render": "<p>[//example.com\n</p><p>&lt;nowiki&gt;\n</p><p>&lt;translate&gt;\n</p>\n<pre>&lt;nowiki&gt;</pre>\n<p><br>\n</p>",
+		"plain": "[//example.com\n\n<nowiki>\n\n<translate>\n\n<nowiki>\n\n",
+		"lint": [
+			{
+				"rule": "lonely-bracket",
+				"message": "lonely \"[\"",
+				"severity": "warning",
+				"startIndex": 0,
+				"endIndex": 1,
+				"startLine": 0,
+				"endLine": 0,
+				"startCol": 0,
+				"endCol": 1
+			},
+			{
+				"rule": "tag-like",
+				"message": "lonely \"<\"",
+				"severity": "error",
+				"startIndex": 16,
+				"endIndex": 23,
+				"startLine": 2,
+				"endLine": 2,
+				"startCol": 0,
+				"endCol": 7,
+				"suggestions": [
+					{
+						"desc": "escape",
+						"range": [
+							16,
+							17
+						],
+						"text": "&lt;"
+					}
+				]
+			},
+			{
+				"rule": "tag-like",
+				"message": "lonely \"<\"",
+				"severity": "error",
+				"startIndex": 26,
+				"endIndex": 36,
+				"startLine": 4,
+				"endLine": 4,
+				"startCol": 0,
+				"endCol": 10,
+				"suggestions": [
+					{
+						"desc": "escape",
+						"range": [
+							26,
+							27
+						],
+						"text": "&lt;"
+					}
+				]
+			},
+			{
+				"rule": "unclosed-comment",
+				"message": "unclosed <includeonly>",
+				"severity": "warning",
+				"startIndex": 60,
+				"endIndex": 73,
+				"startLine": 8,
+				"endLine": 8,
+				"startCol": 0,
+				"endCol": 13,
+				"suggestions": [
+					{
+						"desc": "close",
+						"range": [
+							73,
+							73
+						],
+						"text": "</includeonly>"
+					}
+				]
+			}
+		],
+		"print": "<span class=\"wpb-root\">[//example.com\n\n&lt;nowiki&gt;\n\n&lt;translate&gt;\n\n<span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">&lt;nowiki&gt;</span>&lt;/pre&gt;</span>\n\n<span class=\"wpb-include\">&lt;includeonly&gt;</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
