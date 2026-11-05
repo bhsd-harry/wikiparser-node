@@ -1,6 +1,7 @@
 import {
 	MAX_STAGE,
 } from '../util/constants';
+import {safeStringReplace} from '../util/replace';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {Config, LintError} from '../base';
@@ -28,35 +29,19 @@ export abstract class PreToken extends Token {
 
 	/** @class */
 	constructor(wikitext?: string, config?: Config, accum: Token[] = []) {
-		if (wikitext) {
-			const opening = /<nowiki>/giu,
-				closing = /<\/nowiki>/giu,
-				{length} = opening.source;
-			let i = opening.exec(wikitext);
-			if (i) {
-				closing.lastIndex = i.index + length;
-			}
-			let j = closing.exec(wikitext),
-				lastIndex = 0,
-				str = '';
-			while (i && j) {
+		wikitext &&= safeStringReplace(
+			wikitext,
+			'<nowiki>',
+			'</nowiki>',
+			true,
+			(inner, opening, closing) => {
 				// @ts-expect-error abstract class
-				new NoincludeToken(i[0], config, accum, true);
+				new NoincludeToken(opening, config, accum, true);
 				// @ts-expect-error abstract class
-				new NoincludeToken(j[0], config, accum, true);
-				str += `${wikitext.slice(lastIndex, i.index)}\0${accum.length - 1}n\x7F${
-					wikitext.slice(i.index + length, j.index)
-				}\0${accum.length}n\x7F`;
-				lastIndex = j.index + length + 1;
-				opening.lastIndex = lastIndex;
-				i = opening.exec(wikitext);
-				if (i) {
-					closing.lastIndex = i.index + length;
-				}
-				j = closing.exec(wikitext);
-			}
-			wikitext = str + wikitext.slice(lastIndex);
-		}
+				new NoincludeToken(closing, config, accum, true);
+				return `\0${accum.length - 1}n\x7F${inner}\0${accum.length}n\x7F`;
+			},
+		);
 		super(wikitext, config, accum, {
 		});
 		this.setAttribute('stage', MAX_STAGE - 1);

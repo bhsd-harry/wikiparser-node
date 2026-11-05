@@ -111,9 +111,9 @@ export const parseTable = (
 		} else {
 			top = pop(top, stack);
 			const regex = cell === '!' ? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu : /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
-			let mt = regex.exec(attr),
-				lastIndex = 0,
-				lastSyntax = `\n${spaces}${cell!}`;
+			let lastIndex = 0,
+				lastSyntax = `\n${spaces}${cell!}`,
+				mt: RegExpExecArray | null;
 
 			/**
 			 * 创建表格单元格
@@ -125,11 +125,10 @@ export const parseTable = (
 				tr.insertAt(td);
 				return td;
 			};
-			while (mt) {
+			for (mt = regex.exec(attr); mt; mt = regex.exec(attr)) {
 				newTd(top);
 				({lastIndex} = regex);
 				[lastSyntax] = mt;
-				mt = regex.exec(attr);
 			}
 			stack.push(top, newTd(top));
 		}

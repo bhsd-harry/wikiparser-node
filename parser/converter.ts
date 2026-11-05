@@ -16,9 +16,8 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
 		stack: RegExpExecArray[] = [];
-	let regex = regex1,
-		mt = regex.exec(text);
-	while (mt) {
+	let regex = regex1;
+	for (let mt = regex.exec(text); mt; mt = regex.exec(text)) {
 		const {0: syntax, index} = mt;
 		if (syntax === '}-') {
 			const top = stack.pop()!,
@@ -41,7 +40,6 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 			regex = regex2;
 			regex.lastIndex = index + 2;
 		}
-		mt = regex.exec(text);
 	}
 	return text;
 };
