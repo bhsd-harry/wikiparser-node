@@ -1,4 +1,7 @@
 import {getRegex} from '@bhsd/common';
+import {
+	safeStringReplace,
+} from '../util/replace';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';
@@ -10,30 +13,16 @@ import type {Token} from '../internal';
 
 const onlyincludeLeft = '<onlyinclude>',
 	onlyincludeRight = '</onlyinclude>',
-	{length} = onlyincludeLeft,
 	getExtRegex = [false, true].map(includeOnly => {
 		const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 			includeRegex = includeOnly ? 'noinclude' : 'includeonly';
 		return getRegex(exts => new RegExp(
-			String.raw`<!--.*?(?:-->|$)|<${
-				noincludeRegex
-			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
-				exts
-			})(\s[^>]*?)?(?:/>|>(.*?)</(${'\\1'}\s*)>)|<(${
+			String.raw`<!--.*?(?:-->|$)|<${noincludeRegex}(?=\s|/?>)|</${noincludeRegex}\s*>|<(${exts})(?=\s|/?>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
+			})(?=\s|/?>)`,
 			'gisu',
 		));
 	}) as [RegexGetter, RegexGetter];
-
-/**
- * 更新`<onlyinclude>`和`</onlyinclude>`的位置
- * @param wikitext
- */
-const update = (wikitext: string): {i: number, j: number} => {
-	const i = wikitext.indexOf(onlyincludeLeft);
-	return {i, j: wikitext.indexOf(onlyincludeRight, i + length)};
-};
 
 /**
  * 解析HTML注释和扩展标签
@@ -44,33 +33,27 @@ const update = (wikitext: string): {i: number, j: number} => {
  */
 export const parseCommentAndExt = (wikitext: string, config: Config, accum: Token[], includeOnly: boolean): string => {
 	if (includeOnly) {
-		let {i, j} = update(wikitext);
-		if (i !== -1 && j !== -1) { // `<onlyinclude>`拥有最高优先级
-			let str = '';
-
-			/**
-			 * 忽略未被`<onlyinclude>`和`</onlyinclude>`包裹的内容
-			 * @param text 未被包裹的内容
-			 */
-			const noinclude = (text: string): void => {
-				// @ts-expect-error abstract class
-				new NoincludeToken(text, config, accum);
-				str += `\0${accum.length - 1}n\x7F`;
-			};
-			while (i !== -1 && j !== -1) {
-				const token = `\0${accum.length}g\x7F`;
-				new OnlyincludeToken(wikitext.slice(i + length, j), config, accum);
-				if (i > 0) {
-					noinclude(wikitext.slice(0, i));
-				}
-				str += token;
-				wikitext = wikitext.slice(j + length + 1);
-				({i, j} = update(wikitext));
-			}
-			if (wikitext) {
-				noinclude(wikitext);
-			}
-			return str;
+		const i = wikitext.indexOf(onlyincludeLeft);
+		if (i !== -1 && wikitext.includes(onlyincludeRight, i)) { // `<onlyinclude>`拥有最高优先级
+			return safeStringReplace(
+				wikitext,
+				onlyincludeLeft,
+				onlyincludeRight,
+				false,
+				inner => {
+					const token = `\0${accum.length}g\x7F`;
+					new OnlyincludeToken(inner, config, accum);
+					return token;
+				},
+				s => {
+					if (!s) {
+						return '';
+					}
+					// @ts-expect-error abstract class
+					new NoincludeToken(s, config, accum);
+					return `\0${accum.length - 1}n\x7F`;
+				},
+			);
 		}
 	}
 	const {ext} = config;
@@ -80,55 +63,99 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		newExt = ext.filter(e => e !== 'translate' && e !== 'tvar');
 		newConfig = {...config, ext: newExt};
 	}
-	const re = getExtRegex[includeOnly ? 1 : 0](newExt.join('|'));
+	const re = getExtRegex[includeOnly ? 1 : 0](newExt.join('|')),
+		noMoreTags = new Set<string>();
 	re.lastIndex = 0;
-	return re.test(wikitext)
-		? wikitext.replace(
-			re,
-			(
-				substr,
-				name?: string,
-				attr?: string,
-				inner?: string,
-				closing?: string,
-				include?: string,
-				includeAttr?: string,
-				includeInner?: string,
-				includeClosing?: string,
-			) => {
-				const l = accum.length;
-				let ch = 'n';
+	let lastIndex = 0,
+		text = '',
+		noMoreGt = false;
+	for (let mt = re.exec(wikitext); mt; mt = re.exec(wikitext)) {
+		const [substr, name, include] = mt,
+			tag = name || include,
+			{index} = mt,
+			l = accum.length;
+		text += wikitext.slice(lastIndex, index);
+		({lastIndex} = re);
+		let ch = 'n',
+			matched = true;
+		if (substr.startsWith('<!--')) {
+			ch = 'c';
+			const closed = substr.endsWith('-->');
+			// @ts-expect-error abstract class
+			new CommentToken(
+				substr
+					.slice(4, closed ? -3 : undefined),
+				closed,
+				config,
+				accum,
+			);
+		} else if (noMoreGt) {
+			matched = false;
+		} else if (tag) {
+			const i = wikitext.indexOf('>', lastIndex);
+			let attr: string | undefined,
+				inner: string | undefined,
+				closing: string | undefined;
+			if (i === -1) {
+				matched = false;
+				noMoreGt = true;
+			} else if (wikitext[i - 1] === '/') {
+				attr = wikitext.slice(lastIndex, i - 1);
+				lastIndex = i + 1;
+				re.lastIndex = lastIndex;
+			} else if (noMoreTags.has(tag.toLowerCase())) {
+				matched = false;
+			} else {
+				attr = wikitext.slice(lastIndex, i);
+				const after = wikitext.slice(i + 1),
+					m = new RegExp(String.raw`</(${tag}\s*)>`, 'iu').exec(after);
+				if (m) {
+					inner = after.slice(0, m.index);
+					[, closing] = m;
+					lastIndex = i + 1 + m.index + m[0].length;
+					re.lastIndex = lastIndex;
+				} else if (include) {
+					inner = after;
+					lastIndex = wikitext.length;
+					re.lastIndex = lastIndex;
+				} else {
+					matched = false;
+					noMoreTags.add(tag.toLowerCase());
+				}
+			}
+			if (matched) {
 				if (name) {
 					ch = 'e';
 					// @ts-expect-error abstract class
 					new ExtToken(name, attr, inner, closing, newConfig, include, accum);
-				} else if (substr.startsWith('<!--')) {
-					ch = 'c';
-					const closed = substr.endsWith('-->');
-					// @ts-expect-error abstract class
-					new CommentToken(
-						substr
-							.slice(4, closed ? -3 : undefined),
-						closed,
-						config,
-						accum,
-					);
-				} else if (include) {
+				} else {
 					// @ts-expect-error abstract class
 					new IncludeToken(
 						include,
-						includeAttr,
-						includeInner,
-						includeClosing,
+						attr,
+						inner,
+						closing,
 						config,
 						accum,
 					);
-				} else {
-					// @ts-expect-error abstract class
-					new NoincludeToken(substr, config, accum, true);
 				}
-				return `\0${l}${ch}\x7F`;
-			},
-		)
-		: wikitext;
+			}
+		} else if (substr.startsWith('</')) {
+			// @ts-expect-error abstract class
+			new NoincludeToken(wikitext.slice(index, lastIndex), config, accum, true);
+		} else {
+			const i = wikitext.indexOf('>', lastIndex);
+			if (i === -1) {
+				matched = false;
+				noMoreGt = true;
+			} else {
+				lastIndex = i + 1;
+				re.lastIndex = lastIndex;
+				// @ts-expect-error abstract class
+				new NoincludeToken(wikitext.slice(index, lastIndex), config, accum, true);
+			}
+		}
+		text += matched ? `\0${l}${ch}\x7F` : substr;
+	}
+	return text + wikitext.slice(lastIndex);
 };

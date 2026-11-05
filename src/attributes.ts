@@ -54,7 +54,6 @@ export abstract class AttributesToken extends Token {
 		if (attr) {
 			const regex = /([^\s/][^\s/=]*)(?:(\s*=\s*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 			let out = '',
-				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
@@ -64,12 +63,12 @@ export abstract class AttributesToken extends Token {
 					out = '';
 				}
 			};
-			while (mt) {
+			for (let mt = regex.exec(attr); mt; mt = regex.exec(attr)) {
 				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
 				out += attr.slice(lastIndex, index);
 				if (
 					/^[\w:][\w:.-]*$/u
-						.test(removeComment(key).trim())
+						.test(removeComment(key!).trim())
 				) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd] as [string?, string?],
@@ -90,7 +89,6 @@ export abstract class AttributesToken extends Token {
 					out += full;
 				}
 				({lastIndex} = regex);
-				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null;
 			}
 			out += attr.slice(lastIndex);
 			insertDirty();
