@@ -26,9 +26,9 @@ import {fixedToken} from '../mixin/fixed';
 /* NOT FOR BROWSER END */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/iu;
+/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/u;
 const linkRegex = /* #__PURE__ */ (() =>
-	new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu'))();
+	new RegExp(`^https?://${extUrlCharFirst}${extUrlChar}$`, 'u'))();
 
 /**
  * template or magic word parameter
@@ -210,9 +210,11 @@ export abstract class ParameterToken extends Token {
 				s = lintConfig.getSeverity(rule);
 			if (s) {
 				const {firstChild} = this,
-					link = linkRegex.exec(firstChild.text())?.[0];
+					key = firstChild.text().toLowerCase(),
+					i = Math.max(key.lastIndexOf('http://'), key.lastIndexOf('https://')),
+					link = i !== -1 && key.slice(i);
 				try {
-					if (link && new URL(link).search) {
+					if (link && linkRegex.test(link) && new URL(link).search) {
 						const e = generateForChild(firstChild, {start}, rule, 'unescaped-query', s);
 						e.startIndex = e.endIndex;
 						e.startLine = e.endLine;

@@ -852,7 +852,7 @@ export class LanguageService implements LanguageServiceBase {
 			/(?:<(\/?\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(_(?:_(?:(?!__|＿{2})[\p{L}\p{N}_])*)?)|(＿(?:＿(?:(?!__|＿{2})[\p{L}\p{N}＿])*)?)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\9))?(?=\s))*)?\s(\w*))$/iu;
 			const re = new RegExp(
 					'(?:' // eslint-disable-line prefer-template
-					+ String.raw`<(\/?\w*)` // tag ($1)
+					+ String.raw`<(/?\w*)` // tag ($1)
 					+ '|'
 					+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets ($2, $3)
 					+ '|'
@@ -913,7 +913,7 @@ export class LanguageService implements LanguageServiceBase {
 			} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line],
-			mt = re.exec(curLine?.slice(0, character) ?? '');
+			mt = re.exec(curLine?.slice(Math.max(0, character - 1e4), character) ?? '');
 		if (mt?.[1] !== undefined) { // tag
 			const closing = mt[1].startsWith('/');
 			return getCompletion(

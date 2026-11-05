@@ -1,3 +1,4 @@
+import {safeStringReplace} from '../util/replace';
 import {Token} from './index';
 import {CommentToken} from './nowiki/comment';
 import type {Config, LintError} from '../base';
@@ -45,28 +46,27 @@ export abstract class CommentedToken extends Token {
 			AstText: ':', CommentToken: ':',
 		});
 		if (wikitext) {
-			let i = wikitext.indexOf('<!--'),
-				j = i !== -1 && wikitext.indexOf('-->', i + 4),
-				lastIndex = 0;
-			while (j !== false && j !== -1) {
-				if (i > lastIndex) {
-					this.insertAt(wikitext.slice(lastIndex, i));
-				}
-				// @ts-expect-error abstract class
-				this.insertAt(new CommentToken(wikitext.slice(i + 4, j), true, config, accum));
-				lastIndex = j + 3;
-				i = wikitext.indexOf('<!--', lastIndex);
-				j = i !== -1 && wikitext.indexOf('-->', i + 4);
-			}
-			if (lastIndex < wikitext.length) {
-				this.insertAt(wikitext.slice(lastIndex));
-			}
+			safeStringReplace(
+				wikitext,
+				'<!--',
+				'-->',
+				false,
+				inner => {
+					// @ts-expect-error abstract class
+					this.insertAt(new CommentToken(inner, true, config, accum));
+					return '';
+				},
+				s => {
+					this.insertAt(s);
+					return '';
+				},
+			);
 		}
 	}
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: return super.lint(start, new RegExp(String.raw`<\s*(?:\/\s*)?(${this.name})\b`, 'giu'));
+		LINT: return super.lint(start, new RegExp(String.raw`<\s*(?:/\s*)?(${this.name})\b`, 'giu'));
 	}
 
 	/* NOT FOR BROWSER */

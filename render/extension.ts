@@ -161,7 +161,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 							end = '</span>';
 						}
 					}
-					const re = /<\/?span\b[^>]*>|\n/gu,
+					const re = /<\/?span\b[^<>]*>|\n/gu,
 						stack: string[] = [],
 
 						/**
@@ -181,12 +181,11 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 						 * @param i 行号
 						 */
 						g = (i: number): string => begin && `<span id="${sanitizeId(begin)}${i}">`;
-					let mt = re.exec(html),
-						i = 1,
+					let i = 1,
 						lastIndex = 0,
 						// eslint-disable-next-line unicorn/no-unsafe-string-replacement
 						output = g(i) + f(1) + (lineReplace?.replaceAll('$1', String(start)) ?? '');
-					while (mt) {
+					for (let mt = re.exec(html); mt; mt = re.exec(html)) {
 						if (mt[0] === '\n') {
 							output += `${html.slice(lastIndex, mt.index)}${'</span>'.repeat(stack.length)}\n${
 								f(i, true)
@@ -201,7 +200,6 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 						} else {
 							stack.push(mt[0]);
 						}
-						mt = re.exec(html);
 					}
 					html = output + html.slice(lastIndex) + f(i, true) + end;
 				}
@@ -249,15 +247,17 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					updateRef(ref, lastChild, dir);
 				}
 				return '';
-			} else if (text && /<references\b[^>]*>/iu.test(text)) {
-				return '';
-			} else if (text && /<ref\b[^>]*>/iu.test(text)) {
-				const inner = lastChild.cloneNode();
-				for (const ref of inner.querySelectorAll<ExtToken>('ext#ref')) {
-					ref.removeInternal();
-				}
-				if (/<ref\b[^>]*>/iu.test(inner.toString())) {
+			} else if (text) {
+				if (/<references\b(?:(?!<references\b)[^>])*>/iu.test(text)) {
 					return '';
+				} else if (/<ref\b(?:(?!<ref\b)[^>])*>/iu.test(text)) {
+					const inner = lastChild.cloneNode();
+					for (const ref of inner.querySelectorAll<ExtToken>('ext#ref')) {
+						ref.removeInternal();
+					}
+					if (/<ref\b(?:(?!<ref\b)[^>])*>/iu.test(inner.toString())) {
+						return '';
+					}
 				}
 			}
 			const group = firstChild.getAttr('group') || '';

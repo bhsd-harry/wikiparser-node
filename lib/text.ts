@@ -99,15 +99,6 @@ const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
 		'param',
 		'xmp',
 	]);
-const wordRegex = /* #__PURE__ */ ((): RegExp => {
-	try {
-		// eslint-disable-next-line prefer-regex-literals
-		return new RegExp(String.raw`[\p{L}\p{N}_]`, 'u');
-	} catch /* c8 ignore start */ {
-		return /\w/u;
-	}
-	/* c8 ignore stop */
-})();
 
 /**
  * text node
@@ -386,7 +377,7 @@ export class AstText extends AstNode {
 				if (lintConfig.computeEditInfo) {
 					if (char === '<') {
 						e.suggestions = [fixByEscape(startIndex, '&lt;')];
-					} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar ?? '')) {
+					} else if (char === 'h' && type !== 'link-text' && /[\p{L}\p{N}_]/u.test(previousChar ?? '')) {
 						e.suggestions = [fixBySpace(startIndex)];
 					} else if (lbrackInExtLinkText) {
 						const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
@@ -614,16 +605,16 @@ export class AstText extends AstNode {
 	removeBlankLines(): void {
 		if (/\s$/u.test(this.data)) {
 			const spaces: AstText[] = [],
-				mt = /\n[^\S\n]*$/u.exec(this.data);
+				index = this.data.search(/\n[^\S\n]*$/u);
 			let {nextSibling} = this,
-				mt2: RegExpExecArray | null = null,
+				mt2: RegExpExecArray | null | false = null,
 				hasCommentOrCat = false;
 			while (
 				nextSibling
 				&& (nextSibling.is('comment') || nextSibling.is('category') || nextSibling.type === 'text')
 			) {
 				if (nextSibling.type === 'text') {
-					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(nextSibling.data);
+					mt2 = index !== -1 && /^[^\S\n]*(?=\n)/u.exec(nextSibling.data);
 					if (mt2 || nextSibling.data.trim()) {
 						break;
 					} else {
@@ -632,7 +623,7 @@ export class AstText extends AstNode {
 				} else {
 					hasCommentOrCat = true;
 				}
-				if (mt && nextSibling.is('category')) {
+				if (index !== -1 && nextSibling.is('category')) {
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -646,13 +637,13 @@ export class AstText extends AstNode {
 				({nextSibling} = nextSibling);
 			}
 			if (hasCommentOrCat && mt2 || nextSibling?.is('table')) {
-				if (mt) {
-					this.deleteData(mt.index + (mt2 ? 0 : 1));
+				if (index === -1) {
+					this.#setData(this.data.trimEnd());
+				} else {
+					this.deleteData(index + (mt2 ? 0 : 1));
 					if (mt2) {
 						(nextSibling as AstText).deleteData(0, mt2[0].length);
 					}
-				} else {
-					this.#setData(this.data.trimEnd());
 				}
 				for (const space of spaces) {
 					space.#setData('');

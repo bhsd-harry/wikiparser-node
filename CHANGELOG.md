@@ -1,7 +1,7 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
-## v2.0.1
+## v2.1.0
 
-*2026-11-04*
+*2026-11-05*
 
 **Added**
 
@@ -10,6 +10,7 @@
 **Fixed**
 
 - Support HTML comments in gallery image names
+- Inefficient regular expressions used in parsing, linting and HTML conversion
 
 **Changed**
 

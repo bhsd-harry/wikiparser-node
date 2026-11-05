@@ -21,34 +21,22 @@ const space = String.raw`[${zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	if (!config.regexMagicLinks) {
-		try {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/(^|[^\p{L}\p{N}_])(?:(?:ftp:\/\/|http:\/\/)((?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*)|(?:rfc|pmid)[\p{Zs}\t]+\d+\b|isbn[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dx]\b)/giu;
-			config.regexMagicLinks = new RegExp(
-				String.raw`(^|[^\p{L}\p{N}_])(?:(?:${
-					config.protocol
-				})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
-				'giu',
-			);
-		} catch /* c8 ignore start */ {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/(^|\W)(?:(?:ftp:\/\/|http:\/\/)((?:\[[\da-f:.]+\]|[^[\]<>"\s])[^[\]<>"\0\s]*)|(?:rfc|pmid)\s+\d+\b|isbn\s+(?:97[89][\s-]?)?(?:\d[\s-]?){9}[\dx]\b)/giu;
-			config.regexMagicLinks = new RegExp(
-				String.raw`(^|\W)(?:(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
-				'giu',
-			);
-		}
-		/* c8 ignore stop */
-	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	/(^|[^\p{L}\p{N}_])(?:(?:ftp:\/\/|http:\/\/)((?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*)|(?:rfc|pmid)[\p{Zs}\t]+\d+\b|isbn[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dx]\b)/giu;
+	config.regexMagicLinks ??= new RegExp(
+		String.raw`(^|[^\p{L}\p{N}_])(?:(?:${
+			config.protocol
+		})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
+		'giu',
+	);
 	return wikitext.replace(config.regexMagicLinks, (m, lead: string, p1: string | undefined) => {
 		let url = lead ? m.slice(lead.length) : m;
 		if (p1) {
 			let trail = '';
-			const m2 = /&(?:[lg]t|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);
-			if (m2) {
-				trail = url.slice(m2.index);
-				url = url.slice(0, m2.index);
+			const index = url.search(/&(?:[lg]t|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu);
+			if (index !== -1) {
+				trail = url.slice(index);
+				url = url.slice(0, index);
 			}
 			const sep = url.includes('(') ? /[^,;\\.:!?][,;\\.:!?]+$/u : /[^,;\\.:!?)][,;\\.:!?)]+$/u,
 				sepChars = sep.exec(url);

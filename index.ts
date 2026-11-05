@@ -269,7 +269,7 @@ declare interface Parser extends ParserBase {
 
 /* NOT FOR BROWSER ONLY */
 
-const re = new RegExp(String.raw`^https?:\/\/([^./]+)\.(${wmf})\.org`, 'iu');
+const re = new RegExp(String.raw`^https?://([^./]+)\.(${wmf})\.org`, 'iu');
 
 /**
  * require一个JSON文件

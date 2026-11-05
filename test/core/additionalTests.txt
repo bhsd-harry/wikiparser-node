@@ -2467,3 +2467,25 @@ File:Foobar.jpg<!--test
 123-->
 </gallery>
 !! end
+
+!! test
+Half-complete syntax
+!! wikitext
+[//example.com
+
+<nowiki>
+
+<translate>
+
+<pre><nowiki></pre>
+
+<includeonly>
+!! html
+<p>[//example.com
+</p><p>&lt;nowiki&gt;
+</p><p>&lt;translate&gt;
+</p>
+<pre>&lt;nowiki&gt;</pre>
+<p><br />
+</p>
+!! end
