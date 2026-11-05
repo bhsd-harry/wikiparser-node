@@ -99,6 +99,7 @@ export default extend(
 					checkVaryingBase: true,
 				},
 			],
+			'unicorn/prefer-set-methods': 0,
 			'jsdoc/require-param-description': 0,
 			'jsdoc/require-param': [
 				1,

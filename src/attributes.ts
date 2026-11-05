@@ -36,16 +36,6 @@ export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
  */
 const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
 
-const wordRegex = /* #__PURE__ */ ((): RegExp => {
-	try {
-		// eslint-disable-next-line prefer-regex-literals
-		return new RegExp(String.raw`[\p{L}\p{N}]`, 'u');
-	} catch /* c8 ignore start */ {
-		return /[^\W_]/u;
-	}
-	/* c8 ignore stop */
-})();
-
 const required = new Map([
 	['indicator', ['name']],
 	['langconvert', ['from', 'to']],
@@ -94,7 +84,6 @@ export abstract class AttributesToken extends Token {
 		if (attr) {
 			const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+[cn]\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+[cn]\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 			let out = '',
-				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
@@ -109,12 +98,12 @@ export abstract class AttributesToken extends Token {
 					out = '';
 				}
 			};
-			while (mt) {
+			for (let mt = regex.exec(attr); mt; mt = regex.exec(attr)) {
 				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
 				out += attr.slice(lastIndex, index);
 				if (
 					/^(?:[\w:]|\0\d+t\x7F)(?:[\w:.-]|\0\d+t\x7F)*$/u
-						.test(removeComment(key).trim())
+						.test(removeComment(key!).trim())
 				) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd] as [string?, string?],
@@ -135,7 +124,6 @@ export abstract class AttributesToken extends Token {
 					out += full;
 				}
 				({lastIndex} = regex);
-				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null;
 			}
 			out += attr.slice(lastIndex);
 			insertDirty();
@@ -259,7 +247,7 @@ export abstract class AttributesToken extends Token {
 					}
 				} else {
 					const str = attr.text().trim(),
-						severity = s[wordRegex.test(str) ? 1 : 2];
+						severity = s[/[\p{L}\p{N}]/u.test(str) ? 1 : 2];
 					if (str && severity) {
 						const e = generateForChild(attr, rect, rules[0], 'invalid-attribute', severity);
 						if (computeEditInfo) {
