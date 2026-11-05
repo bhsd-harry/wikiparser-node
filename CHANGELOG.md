@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
+## v2.1.1
+
+*2026-11-07*
+
+**Fixed**
+
+- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) is improved for simple mixed lists
+
 ## v2.1.0
 
 *2026-11-06*

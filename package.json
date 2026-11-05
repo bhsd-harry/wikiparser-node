@@ -54,7 +54,6 @@
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "[ ! -f dist/bin/config.js ] && npm run build:core; tsc --noEmit && eslint --cache .",
 		"lint:md": "myMarkdownlint && myMarkdownlint wiki",
-		"lint:bundle": "eslint --no-config-lookup --no-inline-config --parser=@typescript-eslint/parser --rule 'no-unused-vars: [2, {args: none}]' build/*.js",
 		"lint": "npm run lint:ts && npm run lint:md",
 		"prof": "node dist/test/prof.js",
 		"coverage": "tsc -d false -t es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
@@ -132,7 +131,7 @@
 		"@bhsd/nodejs": "^1.2.1",
 		"@bhsd/stylelint-util": "^2.0.0",
 		"culori": "^4.0.2",
-		"entities": "^8.1.0",
+		"entities": "^9.0.0",
 		"vscode-languageserver-types": "^3.18.5"
 	},
 	"devDependencies": {

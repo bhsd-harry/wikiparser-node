@@ -112,9 +112,18 @@ export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: Htm
 		}
 		let result = child.toHtmlInternal(opt);
 		if (child.is('list-range')) {
-			const {previousSibling} = child,
-				{innerText} = previousSibling;
-			if (
+			const {previousSibling, firstChild, childNodes: chs} = child,
+				{innerText} = previousSibling,
+				prefix = innerText.trim();
+			if (firstChild?.is('list')) { // 嵌套的<dl>
+				for (const ch of chs) {
+					if (ch.is('list') || ch.is('dd')) {
+						ch.firstChild.insertData(0, prefix);
+					}
+				}
+				child.after(...chs);
+				continue;
+			} else if (
 				(child.length > 0 || /\s$/u.test(innerText))
 				&& previousSibling.is('list')
 				&& !/[;#*]/u.test(innerText)
@@ -126,8 +135,7 @@ export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: Htm
 				}em;">${result}</span>`;
 			} else {
 				result = result.trim();
-				const prefix = innerText.trim(),
-					prefix2 = prefix.replaceAll(';', ':'),
+				const prefix2 = prefix.replaceAll(';', ':'),
 					commonPrefixLength = getCommon(prefix2, lastPrefix);
 				let pre = closeList(lastPrefix.slice(commonPrefixLength), state);
 				if (prefix.length === commonPrefixLength) {
