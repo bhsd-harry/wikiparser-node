@@ -24,8 +24,6 @@ const config = extend(
 	...node,
 	{
 		ignores: [
-			'.cache/',
-			'.nyc_output/',
 			'coverage/',
 			'bundle/',
 			'errors/',
