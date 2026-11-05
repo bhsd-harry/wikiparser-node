@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {safeStringReplace} from '../../util/replace';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {SingleLineToken} from './index';
@@ -27,11 +28,25 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 	/** @class */
 	constructor(wikitext: string | undefined, config: Config, accum: Token[]) {
 		super(
-			wikitext?.replace(/<(nowiki)>(.*?)<\/(nowiki)>/giu, (_, opening, content, closing) => {
-				// @ts-expect-error abstract class
-				new ExtToken(opening, undefined, content, closing, config, false, accum);
-				return `\0${accum.length - 2}e\x7F`;
-			}),
+			wikitext && safeStringReplace(
+				wikitext,
+				'<nowiki>',
+				'</nowiki>',
+				true,
+				(content, opening, closing) => {
+					// @ts-expect-error abstract class
+					new ExtToken(
+						opening.slice(1, -1),
+						undefined,
+						content,
+						closing.slice(2, -1),
+						config,
+						false,
+						accum,
+					);
+					return `\0${accum.length - 2}e\x7F`;
+				},
+			),
 			config,
 			accum,
 		);
@@ -54,24 +69,23 @@ export abstract class CharinsertLineToken extends SingleLineToken {
 				re = /(?:^|\s)\S+/gu,
 				rect = new BoundingRect(this, start),
 				msg = Parser.msg('invalid-content', 'charinsert');
-			let mt = re.exec(str);
-			while (mt) {
+			for (let mt = re.exec(str); mt; mt = re.exec(str)) {
 				const [item] = mt;
 				let i = item.indexOf('+');
 				if (i !== -1 && item.slice(0, i).trim()) {
 					i = item.indexOf('+', i + 1);
 				}
-				if (i !== -1) {
-					const e = generateForSelf(this, rect, rule, msg, s),
-						startOffset = mt.index + i,
-						endOffset = mt.index + item.length;
-					e.endIndex = start + endOffset;
-					e.endCol = e.startCol + endOffset;
-					e.startIndex += startOffset;
-					e.startCol += startOffset;
-					errors.push(e);
+				if (i === -1) {
+					continue;
 				}
-				mt = re.exec(str);
+				const e = generateForSelf(this, rect, rule, msg, s),
+					startOffset = mt.index + i,
+					endOffset = mt.index + item.length;
+				e.endIndex = start + endOffset;
+				e.endCol = e.startCol + endOffset;
+				e.startIndex += startOffset;
+				e.startCol += startOffset;
+				errors.push(e);
 			}
 			return errors;
 		}

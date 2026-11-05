@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.48.1",
+	"version": "1.48.2",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -51,14 +51,14 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/browser": "^2.1.1",
+		"@bhsd/browser": "^2.2.0",
 		"@bhsd/cm-util": "^2.4.2",
 		"@bhsd/common": "^4.1.0",
-		"vscode-languageserver-types": "^3.18.4"
+		"vscode-languageserver-types": "^3.18.5"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^5.0.0",
-		"@bhsd/codemirror-mediawiki": "^4.7.2",
+		"@bhsd/code-standard": "^5.1.0",
+		"@bhsd/codemirror-mediawiki": "^4.8.0",
 		"@bhsd/test-util": "^3.3.0",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
@@ -67,7 +67,7 @@
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.13.0",
+		"eslint": "^10.14.0",
 		"http-server": "^14.1.1",
 		"monaco-editor": "^0.57.0",
 		"stylelint": "^17.16.0",

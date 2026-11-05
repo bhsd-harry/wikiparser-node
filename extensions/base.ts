@@ -16,7 +16,7 @@ declare interface LSPClass {
 	new(): LanguageService;
 }
 
-const version = '1.48.1',
+const version = '1.48.2',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
@@ -267,6 +267,7 @@ const workerJS = (): void => {
 
 const blob = new Blob([`(${String(workerJS).replace('$CDN', () => CDN)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	worker = new Worker(url); // same-origin policy
 URL.revokeObjectURL(url);
 
