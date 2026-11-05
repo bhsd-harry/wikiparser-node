@@ -16,7 +16,7 @@ declare interface LSPClass {
 	new(): LanguageService;
 }
 
-const version = '2.0.0',
+const version = '2.1.0',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
