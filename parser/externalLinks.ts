@@ -1,4 +1,5 @@
 import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
+import {safePatternReplace} from '../util/replace';
 import {ExtLinkToken} from '../src/extLink';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
@@ -19,20 +20,24 @@ import {parsers} from '../util/constants';
  */
 export const parseExternalLinks = (wikitext: string, config: Config, accum: Token[], inFile?: boolean): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/\[((?:\0\d+[cn]\x7F)*(?:\0\d+f\x7F|(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\t\n\p{Zs}]*(?=[[\]<>"\t\p{Zs}]|\0\d)))(\p{Zs}*(?!\p{Zs}))([^\]\n]*)\]/giu;
+	/\[((?:\0\d+[cn]\x7F)*(?:\0\d+f\x7F|(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\t\n\p{Zs}]*(?=[[\]<>"\t\p{Zs}]|\0\d)))(\p{Zs}*(?!\p{Zs}))/giu;
 	config.regexExternalLinks ??= new RegExp(
 		String.raw`\[((?:\0\d+[cn]\x7F)*(?:\0\d+f\x7F|(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${
 			extUrlChar
-		}(?=[[\]<>"\t${zs}]|\0\d)))([${zs}]*(?![${zs}]))([^\]\x01-\x08\x0A-\x1F\uFFFD]*)\]`,
+		}(?=[[\]<>"\t${zs}]|\0\d)))([${zs}]*(?![${zs}]))`,
 		'giu',
 	);
-	return wikitext.replace(config.regexExternalLinks, (_, url: string, space: string, text: string) => {
+	const re = config.regexExternalLinks;
+	return safePatternReplace(wikitext, re, ']', (text, [, url, space]) => {
+		if (/[\x01-\x08\x0A-\x1F\uFFFD]/u.test(text)) {
+			return false;
+		}
 		const {length} = accum,
-			mt = /&[lg]t;/u.exec(url);
-		if (mt) {
+			i = url!.search(/&[lg]t;/u);
+		if (i !== -1) {
 			space = '';
-			text = url.slice(mt.index) + space + text;
-			url = url.slice(0, mt.index);
+			text = url!.slice(i) + space + text;
+			url = url!.slice(0, i);
 		}
 		if (inFile) {
 			// @ts-expect-error abstract class

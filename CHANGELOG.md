@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
+## v1.48.2
+
+*2026-11-06*
+
+**Fixed**
+
+- Inefficient regular expressions used in parsing, linting and HTML conversion
+
 ## v1.48.1
 
 *2026-10-21*

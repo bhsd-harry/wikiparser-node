@@ -236,7 +236,8 @@ const parseUrl = ({server = '', articlePath = ''}: Config): [URL, number] => {
 		return a === b || Boolean(a && b) && Number(a) === Number(b);
 	},
 	isError = (s: string): boolean =>
-		/<(?:strong|span|p|div)\s+(?:[^\s>]+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u.test(s),
+		/<(?:strong|span|p|div)\s+(?:(?:(?!<(?:strong|span|p|div))[^\s>])+\s+)*?class="\s*(?:[^"\s>]+\s+)*?error(?:\s[^">]*)?"/u
+			.test(s),
 	splitArg = (arg: string): [string, string] | false => {
 		const i = arg.indexOf('=');
 		return i !== -1 && [arg.slice(0, i).trim(), arg.slice(i + 1).trim()];

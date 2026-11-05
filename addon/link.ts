@@ -96,7 +96,7 @@ LinkToken.prototype.pipeTrick =
 			this.setLinkText(m2[1]);
 			return;
 		}
-		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.*?)(?: ?(?<!\()\(.+\))?(?:(?:, |，|، ).|$)/u
+		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.*?)(?: ?(?<!\()\((?:(?!\().)+\))?(?:(?:, |，|، ).|$)/u
 			.exec(linkText) as string[] as [string, string];
 		this.setLinkText(m3[1]);
 	};

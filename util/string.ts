@@ -9,6 +9,7 @@ import type * as Entities from 'entities';
 /* NOT FOR BROWSER */
 
 import {getRegex} from '@bhsd/common';
+import {safePatternReplace} from './replace';
 import type {Config} from '../base';
 
 /* NOT FOR BROWSER END */
@@ -233,7 +234,7 @@ export const sanitizeId = replaceEntities(/["<>&]/gu);
  * @param str attribute value
  */
 export const sanitizeAlt = (str: string | undefined): string | undefined =>
-	str?.replace(/<\/?[a-z].*?>/gu, '').trim()
+	str && safePatternReplace(str, /<\/?[a-z]/gu, '>', () => '').trim()
 		.replace(/\s+|"/gu, m => m === '"' ? '&quot;' : ' ');
 
 /** escape newline */

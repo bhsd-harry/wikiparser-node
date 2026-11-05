@@ -351,7 +351,6 @@ export const checkToken = (
 	}
 	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let regex = regularRegex,
-		mt = regex.exec(sanitized),
 		[condition] = stack,
 		[step] = condition;
 
@@ -400,7 +399,7 @@ export const checkToken = (
 			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
 		}
 	};
-	while (mt) {
+	for (let mt = regex.exec(sanitized); mt; mt = regex.exec(sanitized)) {
 		let {0: syntax, index} = mt;
 		if (!syntax.trim()) {
 			index += syntax.length;
@@ -452,7 +451,6 @@ export const checkToken = (
 		if (grouping.has(syntax)) {
 			sanitized = sanitized.trim();
 		}
-		mt = regex.exec(sanitized);
 	}
 	if (regex === regularRegex) {
 		pushSimple();

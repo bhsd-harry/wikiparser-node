@@ -719,8 +719,7 @@ export class Token extends AstElement {
 							'gu',
 						),
 						ignores: LintIgnore[] = [];
-					let mt = regex.exec(wikitext);
-					while (mt) {
+					for (let mt = regex.exec(wikitext); mt; mt = regex.exec(wikitext)) {
 						const {1: type, index} = mt,
 							detail = mt[2]?.trim();
 						let line: number | undefined;
@@ -733,7 +732,6 @@ export class Token extends AstElement {
 							to: type === 'enable' ? regex.lastIndex : undefined,
 							rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
 						});
-						mt = regex.exec(wikitext);
 					}
 					errors = errors.filter(({rule, startLine, startIndex}) => {
 						const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};

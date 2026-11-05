@@ -61,10 +61,9 @@ const explode = (str?: string): string[] => {
 	}
 	const regex = /-\{|\}-|\|/gu,
 		exploded: string[] = [];
-	let mt = regex.exec(str),
-		depth = 0,
+	let depth = 0,
 		lastIndex = 0;
-	while (mt) {
+	for (let mt = regex.exec(str); mt; mt = regex.exec(str)) {
 		const {0: match, index} = mt;
 		if (match !== '|') {
 			depth += match === '-{' ? 1 : -1;
@@ -72,7 +71,6 @@ const explode = (str?: string): string[] => {
 			exploded.push(str.slice(lastIndex, index));
 			({lastIndex} = regex);
 		}
-		mt = regex.exec(str);
 	}
 	exploded.push(str.slice(lastIndex));
 	return exploded;

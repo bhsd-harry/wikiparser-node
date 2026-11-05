@@ -59,25 +59,57 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 			accum,
 			{AstText: ':'},
 		);
-		inner = inner?.replace(
-			/<tvar(\|[^>]+)>(.*?)<\/>/gsu,
-			(_, p1: string, p2: string) => {
+		if (inner) {
+			let result = '',
+				lastIndex = 0,
+				i: number,
+				j: number,
+				k: number,
+				index: number;
+			const update = /** @ignore */ (): [number, number, number] => {
+				i = inner!.indexOf('<tvar|', lastIndex);
+				index = i + 6;
+				j = inner!.indexOf('>', index);
+				k = inner!.indexOf('</>', j + 1);
+				return [i, j === index ? -1 : j, k];
+			};
+			for ([i, j, k] = update(); i !== -1 && j !== -1 && k !== -1; [i, j, k] = update()) {
+				result += inner.slice(lastIndex, i);
+				lastIndex = k + 3;
 				// @ts-expect-error abstract class
-				new TvarToken('tvar', p1, false, config, accum);
+				new TvarToken('tvar', inner.slice(index - 1, j), false, config, accum);
 				// @ts-expect-error abstract class
 				new TvarToken('', '', true, config, accum);
-				return `\0${accum.length - 2}n\x7F${p2}\0${accum.length}n\x7F`;
-			},
-		).replace(
-			/<(tvar)(\s+name\s*=(?:\s*(?:(["']).*?\3|[^"'\s>]+))?\s*)>(.*?)<\/(tvar)(\s*)>/gisu,
-			(_, p1: string, p2: string, __, p3: string, p4: string, p5: string) => {
+				result += `\0${accum.length - 2}n\x7F${inner.slice(j + 1, k)}\0${accum.length}n\x7F`;
+			}
+			inner = result + inner.slice(lastIndex);
+			result = '';
+			lastIndex = 0;
+			const start = /<(tvar)(\s+name\s*=)/giu,
+				end = /<\/(tvar)(\s*)>/giu;
+			for (let mt = start.exec(inner); mt; mt = start.exec(inner)) {
+				i = inner.indexOf('>', start.lastIndex);
+				const name = inner.slice(start.lastIndex, i);
+				if (i === -1 || !/^(?:\s*(?:(["']).*?\1|[^"'\s>]+))?\s*$/su.test(name)) {
+					break;
+				}
+				end.lastIndex = i + 1;
+				const mt2 = end.exec(inner);
+				if (!mt2) {
+					break;
+				}
 				// @ts-expect-error abstract class
-				new TvarToken(p1, p2, false, config, accum);
+				new TvarToken(mt[1], mt[2] + name, false, config, accum);
 				// @ts-expect-error abstract class
-				new TvarToken(p4, p5, true, config, accum);
-				return `\0${accum.length - 2}n\x7F${p3}\0${accum.length}n\x7F`;
-			},
-		);
+				new TvarToken(mt2[1], mt2[2], true, config, accum);
+				result += `${inner.slice(lastIndex, mt.index)}\0${accum.length - 2}n\x7F${
+					inner.slice(i + 1, mt2.index)
+				}\0${accum.length}n\x7F`;
+				({lastIndex} = end);
+				start.lastIndex = lastIndex;
+			}
+			inner = result + inner.slice(lastIndex);
+		}
 		const innerToken = new Token(inner, config, accum);
 		innerToken.type = 'translate-inner';
 		super('translate', attrToken, innerToken, 'translate', config, accum);

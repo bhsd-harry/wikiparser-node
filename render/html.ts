@@ -13,13 +13,13 @@ const tocContainer = '<div id="toc" class="toc" role="navigation" aria-labelledb
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:table|\/t[dh]|\/?(?:tr|caption|d[td]|li))\b/iu;
 const openRegex = new RegExp(
-	String.raw`<(?:${blockElems}|\/${antiBlockElems}|\/?(?:tr|caption|d[td]|li))\b`,
+	String.raw`<(?:${blockElems}|/${antiBlockElems}|/?(?:tr|caption|d[td]|li))\b`,
 	'iu',
 );
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<(?:\/(?:pre|p)|t[dh]|\/?(?:center|blockquote|div|hr|figure))\b/iu;
 const closeRegex = new RegExp(
-	String.raw`<(?:\/(?:${blockElems})|${antiBlockElems}|\/?(?:center|blockquote|div|hr|figure))\b`,
+	String.raw`<(?:/(?:${blockElems})|${antiBlockElems}|/?(?:center|blockquote|div|hr|figure))\b`,
 	'iu',
 );
 
@@ -137,7 +137,7 @@ export const toHtml = (token: Token): string => {
 					lastParagraph = 'pre';
 				}
 				line = line.slice(1);
-			} else if (/^(?:<link\b[^>]*>\s*)+$/iu.test(line)) {
+			} else if (/^(?:<link\b[^<>]*>\s*)+$/iu.test(line)) {
 				if (pendingPTag) {
 					output += closeParagraph();
 					pendingPTag = false;

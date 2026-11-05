@@ -126,7 +126,7 @@ export class Title {
 		if (!Object.hasOwn(this.#namespaces, this.ns)) {
 			throw new RangeError('Undefined namespace!');
 		}
-		this.#ns = Number(ns);
+		this.#ns = ns;
 	}
 
 	set fragment(fragment) {

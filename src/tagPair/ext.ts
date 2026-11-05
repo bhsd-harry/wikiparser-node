@@ -160,7 +160,7 @@ export abstract class ExtToken extends TagPairToken {
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
-					/<(option|choicetemplate)(\s[^>]*?)?(?:\/>|>(.*?)<\/(\1)>)/gsu,
+					/<(option|choicetemplate)(?=\s|\/?>)/gu,
 					['option', 'choicetemplate'],
 					newConfig,
 					accum,
@@ -173,7 +173,7 @@ export abstract class ExtToken extends TagPairToken {
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
-					/<(combooption)(\s[^>]*?)?(?:\/>|>(.*?)<\/(combooption\s*)>)/gisu,
+					/<(combooption)(?=\s|\/?>)/gu,
 					['combooption'],
 					newConfig,
 					accum,
