@@ -33,7 +33,6 @@ import type {
 } from './internal';
 
 declare interface Parser extends ParserBase {
-	default: this;
 	/** @since v1.5.1 */
 	readonly rules: readonly LintError.Rule[];
 	/** @private */
@@ -310,10 +309,16 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 const def: PropertyDescriptorMap = {
 	},
 	enumerable = new Set([
+		'getConfig',
+		'lint',
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
+
+		/* PRINT ONLY */
+
+		'print',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
