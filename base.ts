@@ -100,6 +100,6 @@ export interface Parser {
 	 * @param maxStage max stage for parsing / 最大解析层级
 	 * @param page page name / 页面名称
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 }
