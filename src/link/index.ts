@@ -1,18 +1,7 @@
 import {rawurldecode} from '@bhsd/common';
-import {generateForSelf, fixBy} from '../../util/lint';
-import Parser from '../../index';
 import {LinkBaseToken} from './base';
-import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-import {sanitize} from '../../util/string';
-import {cached} from '../../mixin/cached';
-
-/* NOT FOR BROWSER END */
 
 /**
  * internal link
@@ -27,7 +16,6 @@ export abstract class LinkToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
-	abstract override set link(link: string);
 
 	/* NOT FOR BROWSER END */
 
@@ -37,99 +25,8 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** link text / 链接显示文字 */
 	get innerText(): string {
-		LINT: return this.length > 1
+		return this.length > 1
 			? this.lastChild.text()
 			: rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
 	}
-
-	/* NOT FOR BROWSER */
-
-	set innerText(text) {
-		this.setLinkText(text);
-	}
-
-	/** whether to be a self link / 是否链接到自身 */
-	get selfLink(): boolean {
-		const {title, fragment} = this.link;
-		return !title && Boolean(fragment);
-	}
-
-	set selfLink(selfLink) {
-		if (selfLink) {
-			this.asSelfLink();
-		}
-	}
-
-	/* NOT FOR BROWSER END */
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rule = 'nested-link',
-				{lintConfig} = Parser,
-				s = lintConfig.getSeverity(rule);
-			if (s && this.isInside('ext-link-text')) {
-				const e = generateForSelf(this, {start}, rule, 'link-in-extlink', s);
-				if (lintConfig.computeEditInfo || lintConfig.fix) {
-					e.fix = fixBy(e, 'delink', this.innerText);
-				}
-				errors.push(e);
-			}
-			return errors;
-		}
-	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	@cached()
-	override plainTextInternal(): string {
-		const {length, lastChild} = this;
-		return length === 1 ? sanitize(this.innerText) : lastChild.plainTextInternal({nowrap: true});
-	}
-
-	/* c8 ignore start */
-	/**
-	 * Set the interlanguage link
-	 *
-	 * 设置跨语言链接
-	 * @param lang language prefix / 语言前缀
-	 * @param link page title / 页面标题
-	 * @throws `SyntaxError` if the link only contains a fragment identifier
-	 */
-	setLangLink(lang: string, link: string): void {
-		require('../../addon/link');
-		this.setLangLink(lang, link);
-	}
-	/* c8 ignore stop */
-
-	/* c8 ignore start */
-	/**
-	 * Convert to a self link
-	 *
-	 * 修改为到自身的链接
-	 * @param fragment URI fragment / 片段标识符
-	 * @throws `RangeError` if the link does not contain a fragment identifier
-	 */
-	asSelfLink(fragment?: string): void {
-		require('../../addon/link');
-		this.asSelfLink(fragment);
-	}
-	/* c8 ignore stop */
-
-	/* c8 ignore start */
-	/**
-	 * Automatically generate the link text after the pipe
-	 *
-	 * 自动生成管道符后的链接文字
-	 * @throws `Error` if the link contains `#` or `%`
-	 */
-	pipeTrick(): void {
-		require('../../addon/link');
-		this.pipeTrick();
-	}
-	/* c8 ignore stop */
 }
-
-classes['LinkToken'] = __filename;

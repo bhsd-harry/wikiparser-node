@@ -7,7 +7,6 @@ import type {Token} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import {getTocData} from '../../util/html';
 import {syntax} from '../../mixin/syntax';
 import type {SyntaxBase} from '../../mixin/syntax';
@@ -63,14 +62,6 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 		return underscore + this.innerText + underscore;
 	}
 
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const underscore = this.#fullWidth ? '＿＿' : '__';
-			return super.print({pre: underscore, post: underscore});
-		}
-	}
-
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -87,11 +78,4 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	override toHtmlInternal({render}: HtmlOpt = {}): string {
 		return getTocData(this, render);
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
 }
-
-classes['DoubleUnderscoreToken'] = __filename;

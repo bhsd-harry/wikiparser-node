@@ -1,21 +1,13 @@
-import {numLeadingSpaces} from '@bhsd/common';
-import {generateForChild, generateForSelf, fixBy, fixByRemove, fixByClose} from '../util/lint';
 import {
-	isToken,
 
 	/* NOT FOR BROWSER */
 
 	Shadow,
 } from '../util/debug';
-import {BoundingRect} from '../lib/rect';
-import {noEscape} from '../mixin/noEscape';
-import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../base';
 import type {
 	AstText,
@@ -23,13 +15,11 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {classes, states, MAX_STAGE} from '../util/constants';
+import {states} from '../util/constants';
 import {sanitizeId} from '../util/string';
 import {getId, getTocData} from '../util/html';
-import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import {cached} from '../mixin/cached';
-import type {AstRange} from '../lib/range';
 
 /* NOT FOR BROWSER END */
 
@@ -39,8 +29,7 @@ import type {AstRange} from '../lib/range';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-@fixedToken @sol()
-@noEscape
+@sol()
 export abstract class HeadingToken extends Token {
 	#level;
 
@@ -54,8 +43,6 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	declare tocData?: string;
 	abstract override get children(): [Token, SyntaxToken];
-	abstract override get firstElementChild(): Token;
-	abstract override get lastElementChild(): SyntaxToken;
 
 	/* NOT FOR BROWSER END */
 
@@ -67,37 +54,6 @@ export abstract class HeadingToken extends Token {
 	get level(): number {
 		return this.#level;
 	}
-
-	/* NOT FOR BROWSER */
-
-	set level(n) {
-		this.setLevel(n);
-	}
-
-	/** inner wikitext / 内部wikitext */
-	get innerText(): string {
-		return this.firstChild.text().trim();
-	}
-
-	/** @throws `Error` if the inner text is wrapped with `=` */
-	set innerText(text) {
-		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
-			throw new Error('Please use HeadingToken.setLevel method to change the level of the heading!');
-		}
-		this.firstChild.safeReplaceChildren(Parser.parseWithRef(text, this, MAX_STAGE).childNodes);
-	}
-
-	/**
-	 * id attribute
-	 *
-	 * id属性
-	 * @since v1.12.4
-	 */
-	get id(): string {
-		return this.#getId(true);
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param level 标题层级
@@ -139,159 +95,12 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* PRINT ONLY */
-
-		PRINT: if (key === 'invalid') {
-			return Boolean(this.#lint()) as TokenAttribute<T>;
-		}
-
-		/* PRINT ONLY END */
-
 		return key === 'padding' ? this.level as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
 	override getGaps(): number {
 		return this.level;
-	}
-
-	/** 是否包含未成对的`=` */
-	#lint(): boolean | 1 {
-		const innerStr = this.firstChild.toString(),
-			unbalancedStart = innerStr.startsWith('=');
-		return unbalancedStart ? 1 : innerStr.endsWith('=');
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{firstChild, level} = this,
-				innerStr = firstChild.toString(),
-				unbalanced = this.#lint(),
-				rect = new BoundingRect(this, start),
-				s = this.inHtmlAttrs(),
-				rules = ['h1', 'unbalanced-header', 'format-leakage'] as const,
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				severities = rules.map(rule => lintConfig.getSeverity(rule, 'apostrophe'));
-			if (severities[0] && this.level === 1) {
-				const e = generateForChild(firstChild, rect, rules[0], '<h1>', severities[0]);
-				if (computeEditInfo && !unbalanced) {
-					e.suggestions = [fixBy(e, 'h2', `=${innerStr}=`)];
-				}
-				errors.push(e);
-			}
-			if (unbalanced && severities[1]) {
-				const msg = Parser.msg('unbalanced-in-section-header', '"="'),
-					e = generateForChild(firstChild, rect, rules[1], msg, severities[1]);
-				if (!computeEditInfo || innerStr === '=') {
-					//
-				} else if (unbalanced === 1) {
-					const extra = numLeadingSpaces(innerStr, /[^=]|$/u),
-						newLevel = level + extra;
-					e.suggestions = [{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra], text: ''}];
-					if (newLevel < 7) {
-						e.suggestions.push({
-							desc: `h${newLevel}`,
-							range: [e.endIndex, e.endIndex],
-							text: '='.repeat(extra),
-						});
-					}
-				} else {
-					const extra = /[^=](=+)$/u.exec(innerStr)![1]!,
-						newLevel = level + extra.length;
-					e.suggestions = [{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''}];
-					if (newLevel < 7) {
-						e.suggestions.push({desc: `h${newLevel}`, range: [e.startIndex, e.startIndex], text: extra});
-					}
-				}
-				errors.push(e);
-			}
-			if (s) {
-				const rule = 'parsing-order',
-					severity = lintConfig.getSeverity(rule, s === 2 ? 'heading' : 'templateInTable');
-				if (severity) {
-					errors.push(generateForSelf(this, rect, rule, 'header-in-html', severity));
-				}
-			}
-			if (severities[2]) {
-				const rootStr = this.getRootNode().toString(),
-					quotes = firstChild.childNodes.filter(isToken('quote')),
-					boldQuotes = quotes.filter(({bold}) => bold),
-					italicQuotes = quotes.filter(({italic}) => italic);
-				if (boldQuotes.length % 2) {
-					const e = generateForChild(
-						boldQuotes[boldQuotes.length - 1]!,
-						{
-							...rect, // eslint-disable-line @typescript-eslint/no-misused-spread
-							start: start + level,
-							left: rect.left + level,
-						},
-						rules[2],
-						Parser.msg('unbalanced-in-section-header', 'bold-apostrophes'),
-						severities[2],
-					);
-					if (computeEditInfo || fix) {
-						const end = start + level + innerStr.length,
-							remove = fixByRemove(e);
-						if (rootStr.slice(e.endIndex, end).trim()) {
-							if (computeEditInfo) {
-								e.suggestions = [
-									remove,
-									fixByClose(end, `'''`),
-								];
-							}
-						} else if (boldQuotes.length === 1 && italicQuotes.length === 0) {
-							e.fix = remove;
-						} else if (computeEditInfo) {
-							e.suggestions = [remove];
-						}
-					}
-					errors.push(e);
-				}
-				if (italicQuotes.length % 2) {
-					const e = generateForChild(
-						italicQuotes[italicQuotes.length - 1]!,
-						{start: start + level},
-						rules[2],
-						Parser.msg('unbalanced-in-section-header', 'italic-apostrophes'),
-						severities[2],
-					);
-					if (computeEditInfo || fix) {
-						const end = start + level + innerStr.length;
-						if (rootStr.slice(e.endIndex, end).trim()) {
-							if (computeEditInfo) {
-								e.suggestions = [fixByClose(end, `''`)];
-							}
-						} else if (italicQuotes.length === 1 && boldQuotes.length === 0) {
-							e.fix = fixByRemove(e);
-						} else if (computeEditInfo) {
-							e.suggestions = [fixByRemove(e)];
-						}
-					}
-					errors.push(e);
-				}
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const equals = this.#getEquals();
-			return super.print({pre: equals, sep: equals});
-		}
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			json['level'] = this.level;
-			return json;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -308,30 +117,10 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/**
-	 * Set the level of heading
-	 *
-	 * 设置标题层级
-	 * @param n level of heading / 标题层级
-	 */
-	setLevel(n: number): void {
-		this.#level = Math.min(Math.max(n, 1), 6);
-	}
-
-	/**
-	 * Remove the invisible content following the heading
-	 *
-	 * 移除标题后的不可见内容
-	 */
-	removeTrail(): void {
-		this.lastChild.replaceChildren();
-	}
-
-	/**
 	 * id属性
-	 * @param expand 是否展开模板
 	 */
-	#getId(expand?: boolean): string {
-		return getId(this.firstChild[expand ? 'expand' : 'cloneNode']());
+	#getId(): string {
+		return getId(this.firstChild.cloneNode());
 	}
 
 	/** @private */
@@ -366,31 +155,4 @@ export abstract class HeadingToken extends Token {
 			this.getRenderedId()
 		}">${super.toHtmlInternal({render})}</h${level}></div>`;
 	}
-
-	/**
-	 * Get the section led by this heading
-	 *
-	 * 获取由此标题引导的章节
-	 * @since v1.30.0
-	 */
-	override section(): AstRange | undefined {
-		const {parentNode, level} = this;
-		if (!parentNode) {
-			return undefined;
-		}
-		const range = this.createRange(),
-			{childNodes, length} = parentNode;
-		let i = childNodes.indexOf(this);
-		range.setStart(parentNode, i);
-		for (i++; i < length; i++) {
-			const sibling = childNodes[i]!;
-			if (sibling.is('heading') && sibling.level <= level) {
-				break;
-			}
-		}
-		range.setEnd(parentNode, i);
-		return range;
-	}
 }
-
-classes['HeadingToken'] = __filename;

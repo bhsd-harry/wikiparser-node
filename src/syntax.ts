@@ -1,9 +1,8 @@
 import {Token} from './index';
-import type {Config, LintError} from '../base';
+import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 import {syntax} from '../mixin/syntax';
 import type {SyntaxBase} from '../mixin/syntax';
@@ -52,11 +51,6 @@ export class SyntaxToken extends Token {
 		this.setAttribute('pattern', pattern);
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: return super.lint(start, false);
-	}
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -71,5 +65,3 @@ export class SyntaxToken extends Token {
 		) as this;
 	}
 }
-
-classes['SyntaxToken'] = __filename;

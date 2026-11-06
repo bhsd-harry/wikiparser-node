@@ -2,7 +2,6 @@ import {NowikiBaseToken} from './base';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {syntax} from '../../mixin/syntax';
 import type {SyntaxBase} from '../../mixin/syntax';
@@ -24,11 +23,4 @@ export abstract class HrToken extends NowikiBaseToken {
 	override toHtmlInternal(): string {
 		return '<hr>';
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
 }
-
-classes['HrToken'] = __filename;

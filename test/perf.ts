@@ -7,12 +7,8 @@ const N = 1e4;
 
 /** @ignore */
 const methods = (root: Token): void => {
-	root.lint();
-
 	/* NOT FOR BROWSER */
 
-	root.print();
-	root.json();
 	root.toHtml();
 };
 

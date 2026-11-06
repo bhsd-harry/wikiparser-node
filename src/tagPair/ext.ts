@@ -1,5 +1,3 @@
-import {generateForSelf} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {attributesParent} from '../../mixin/attributesParent';
 import {Token} from '../index';
@@ -7,7 +5,6 @@ import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
 import type {
 	Config,
-	LintError,
 } from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 import type * as Nested from '../nested';
@@ -26,15 +23,13 @@ import type * as Charinsert from '../multiLine/charinsert';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {classes, tagHooks} from '../../util/constants';
+import {tagHooks} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 import type * as Extension from '../../render/extension';
 
 /* NOT FOR BROWSER END */
 
 export interface ExtToken extends AttributesParentBase {}
-
-const nonVoidExt = new Set(['dynamicpagelist', 'templatedata', 'rss']);
 
 /**
  * extension tag
@@ -53,7 +48,6 @@ export abstract class ExtToken extends TagPairToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AttributesToken, Token];
-	abstract override get firstElementChild(): AttributesToken;
 
 	/* NOT FOR BROWSER END */
 
@@ -242,76 +236,27 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @private */
-	lintRef(): string;
 	/** @private */
-	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
-	/** @private */
-	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
-		LINT: {
-			const refName = this.getAttr('name'),
-				text = this.innerText?.trim();
-			let msg = '';
-			if (this.closest('ext-inner#references')) {
-				if (!refName) {
-					msg = 'no-named-in-references';
-				} else if (!text) {
-					msg = 'no-empty-in-references';
-				}
-			} else if (!refName && !text) {
-				msg = this.hasAttr('details') ? 'ref-details' : 'ref-no-name';
+	lintRef(): string {
+		const refName = this.getAttr('name'),
+			text = this.innerText?.trim();
+		let msg = '';
+		if (this.closest('ext-inner#references')) {
+			if (!refName) {
+				msg = 'no-named-in-references';
+			} else if (!text) {
+				msg = 'no-empty-in-references';
 			}
-			return msg && (rect ? generateForSelf(this, rect, 'invalid-ref', msg, severity) : msg);
+		} else if (!refName && !text) {
+			msg = this.hasAttr('details') ? 'ref-details' : 'ref-no-name';
 		}
+		return msg;
 	}
 
 	/** @private */
 	override text(): string {
 		const {name, firstChild, lastChild, selfClosing} = this;
 		return `<${name}${firstChild.text()}${selfClosing ? '/>' : `>${lastChild.text()}</${name}>`}`;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{name} = this,
-				{lintConfig} = Parser,
-				rect = new BoundingRect(this, start);
-			if (name !== 'nowiki') {
-				const s = this.inHtmlAttrs(),
-					rule = 'parsing-order',
-					severity = s && lintConfig.getSeverity(rule, s === 2 ? 'ext' : 'templateInTable');
-				if (severity) {
-					errors.push(generateForSelf(this, rect, rule, 'ext-in-html', severity));
-				}
-			}
-			if (name === 'ref') {
-				let rule: LintError.Rule = 'var-anchor',
-					s = lintConfig.getSeverity(rule, 'ref');
-				if (s && this.closest('heading-title')) {
-					errors.push(generateForSelf(this, rect, rule, 'variable-anchor', s));
-				}
-				rule = 'nested-link';
-				s = lintConfig.getSeverity(rule, 'ref');
-				if (s && this.closest('link-text,ext-link-text')) {
-					errors.push(generateForSelf(this, rect, rule, 'ref-in-link', s));
-				}
-				s = lintConfig.getSeverity('invalid-ref');
-				if (s) {
-					const e = this.lintRef(rect, s);
-					if (e) {
-						errors.push(e);
-					}
-				}
-			} else {
-				const rule = 'void-ext',
-					s = lintConfig.getSeverity(rule, name);
-				if (s && nonVoidExt.has(name) && !this.innerText) {
-					errors.push(generateForSelf(this, {start}, rule, Parser.msg('no-empty', name), s));
-				}
-			}
-			return errors;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -348,13 +293,4 @@ export abstract class ExtToken extends TagPairToken {
 		const {renderExt}: typeof Extension = require('../../render/extension');
 		return this.#toHtmlOrPlain(renderExt, opt);
 	}
-
-	/** @private */
-	@cached()
-	override plainTextInternal(): string {
-		const {renderExtPlain}: typeof Extension = require('../../render/extension');
-		return this.#toHtmlOrPlain(renderExtPlain);
-	}
 }
-
-classes['ExtToken'] = __filename;

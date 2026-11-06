@@ -1,12 +1,11 @@
 import {safeStringReplace} from '../util/replace';
 import {Token} from './index';
 import {CommentToken} from './nowiki/comment';
-import type {Config, LintError} from '../base';
+import type {Config} from '../base';
 import type {AstText, AttributesToken, ExtToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
@@ -28,11 +27,7 @@ export abstract class CommentedToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): CommentToken[];
-	abstract override get firstElementChild(): CommentToken | undefined;
-	abstract override get lastElementChild(): CommentToken | undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -64,11 +59,6 @@ export abstract class CommentedToken extends Token {
 		}
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: return super.lint(start, new RegExp(String.raw`<\s*(?:/\s*)?(${this.name})\b`, 'giu'));
-	}
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -77,5 +67,3 @@ export abstract class CommentedToken extends Token {
 		return new CommentedToken(undefined, this.getAttribute('config'));
 	}
 }
-
-classes['CommentedToken'] = __filename;

@@ -1,140 +1,58 @@
+import fs from 'fs';
+import path from 'path';
 import assert from 'assert';
 import {describe, it} from '@bhsd/test-util/mocha';
+import {tidy} from '../util/string';
+import {Shadow} from '../util/debug';
+import {parseRedirect} from '../parser/redirect';
 import type {Test as TestBase} from '@bhsd/test-util/parser';
-import type {
-	LintError,
-
-	/* NOT FOR BROWSER ONLY */
-
-	LintRuleConfig,
-} from '../base';
+import type {Token} from '../internal';
 
 export interface Test extends TestBase {
 	title?: string | undefined;
-	html?: string;
 	render?: string;
 	plain?: string;
-	print?: string;
-	lint?: LintError[];
 }
 
 /* NOT FOR BROWSER ONLY */
 
 import Parser from '../index';
-import lsp from './lsp';
-import type {SimplePage} from '@bhsd/test-util';
-
-Object.assign(Parser, {
-	lintConfig: {
-		fix: false,
-		rules: {
-			'invalid-css': 0,
-			'invalid-math': 0,
-		} satisfies LintRuleConfig,
-	},
-});
 
 /* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
-import {JSDOM} from 'jsdom';
-import createDOMPurify from 'dompurify';
 import {prepare} from '../script/util';
 
 prepare(Parser);
-const {window} = new JSDOM(''),
-	DOMPurify = createDOMPurify(window),
-	mathTags = new Set(['MOVER', 'MUNDER', 'MI', 'MROW']);
 
-/** @ignore */
-const normalize = (str: string): string => str.trim().replaceAll(/\s+/gu, '\n');
-
-/**
- * 移除HTML字符串中指定选择器的元素
- * @param render HTML字符串
- * @param selector CSS选择器
- */
-const removeFromDom = (render: string, selector: string): HTMLElement => {
-	const {body} = new JSDOM(render).window.document;
-	for (const ele of body.querySelectorAll(selector)) {
-		ele.remove();
+for (const file of fs.readdirSync('test/templates', {withFileTypes: true, recursive: true})) {
+	if (!file.isFile()) {
+		continue;
 	}
-	return body;
-};
-
-/**
- * 检查HTML字符串是否安全
- * @param render HTML字符串
- * @param plain 纯文本字符串
- */
-const purify = (render: string, plain?: string): void => {
-	DOMPurify.sanitize(render, {
-		FORBID_TAGS: ['style'],
-		ADD_TAGS: ['semantics', 'annotation', 'rb', 'rt', 'rtc'],
-		ADD_ATTR: ['resource', 'itemscope', 'itemprop', 'content'],
-		ADD_URI_SAFE_ATTR: ['resource'],
-		ALLOWED_URI_REGEXP:
-			/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|news|irc):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/iu,
-	});
-	assert.deepStrictEqual(
-		DOMPurify.removed.map(item => {
-			if ('element' in item) {
-				const ele = item.element as Element,
-					{tagName, outerHTML} = ele,
-					attrs = ele.getAttributeNames();
-				return !(
-					mathTags.has(tagName)
-					|| tagName === 'META' && attrs.every(attr => ['itemprop', 'content'].includes(attr))
-					|| tagName === 'LINK' && attrs.every(attr => ['itemprop', 'href'].includes(attr))
-				) && outerHTML;
-			}
-			const {attribute} = item;
-			if (!attribute) {
-				return item;
-			}
-			const {name, value} = attribute;
-			return !(
-				name === 'title'
-				|| name === 'alt'
-				|| name.startsWith('xmlns:')
-				|| name === 'typeof' && /^mw:File(?:\/\w+)?$/u.test(value)
-				|| name === 'property' && !/^(?:(?:java|vb)script|data):|[<>]/iu.test(value)
-				|| !value && name.startsWith('data-')
-			) && {[name]: value};
-		}).filter(Boolean),
-		[],
-		'渲染结果不安全！',
-	);
-
-	if (plain) {
-		const selector = 'div#toc, ul.redirectText,' // 目录和重定向
-			+ 'sup.reference, span.mw-ext-cite-error, ol.references, a[href^="#cite_note-"],' // 引用
-			+ 'span.mwe-math-element, a.mw-charinsert-item'; // 其他扩展
-		assert.strictEqual(
-			normalize(removeFromDom(render, selector).textContent),
-			normalize(plain),
-			'渲染结果与纯文本不一致！',
-		);
+	const {parentPath, name} = file,
+		content = tidy(fs.readFileSync(path.join(parentPath, name), 'utf8')),
+		accum: Token[] = [],
+		parsed = Shadow.run(() => parseRedirect(content, Parser.getConfig(), accum));
+	let title = path.relative(
+		Parser.templateDir!,
+		path.join(parentPath, name.replace(/\.(?:wiki|txt)$/iu, '')),
+	).replaceAll('꞉', ':');
+	try {
+		title = decodeURIComponent(title);
+	} catch {}
+	if (parsed) {
+		Parser.redirects.set(title, parsed);
+	} else {
+		Parser.templates.set(title, content);
 	}
-};
+}
 
 /* NOT FOR BROWSER END */
 
 /* PRINT ONLY */
 
 Parser.internal = true;
-
-const entities = {lt: '<', gt: '>', amp: '&'};
-
-/**
- * 移除HTML标签
- * @param str HTML字符串
- */
-const deprint = (str: string): string => str.replaceAll(
-	/<[^<]+?>|&([lg]t|amp);/gu,
-	(_, s?: keyof typeof entities) => s ? entities[s] : '',
-);
 
 /**
  * HTML字符串分行
@@ -148,8 +66,14 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title = 'Parser test', wikitext, print, render, plain, lint} of tests) {
-		if (wikitext && (print || render || plain)) {
+	for (const {desc, title = 'Parser test', wikitext, render} of tests) {
+		if (
+			wikitext && render
+			&& !wikitext.includes('#rel2abs:')
+			&& !render.includes('</math>')
+			&& !render.includes('mw-highlight mw-highlight-lang-')
+			&& !render.includes('<section class="mw-templatedata-doc-wrap">')
+		) {
 			it(desc, () => {
 				/* NOT FOR BROWSER */
 
@@ -171,25 +95,6 @@ describe('Parser tests', () => {
 						tidied,
 						'解析过程中不可逆地修改了原始文本！',
 					);
-
-					if (lint) {
-						assert.deepStrictEqual(root.lint(), lint);
-						assert.deepStrictEqual(Parser.lint(wikitext, title), lint);
-					}
-
-					/* PRINT ONLY */
-
-					if (print) {
-						const printed = root.print();
-						assert.strictEqual(
-							deprint(printed),
-							tidied,
-							'高亮过程中不可逆地修改了原始文本！',
-						);
-						assert.deepStrictEqual(split(printed), split(print));
-					}
-
-					/* PRINT ONLY END */
 
 					/* NOT FOR BROWSER */
 
@@ -236,11 +141,6 @@ describe('Parser tests', () => {
 								'{toc: false} 选项渲染结果不符合预期！',
 							);
 						}
-						purify(render, plain);
-					}
-
-					if (plain) {
-						assert.deepStrictEqual(root.plainText(), plain, '纯文本结果不符合预期！');
 					}
 
 					/* NOT FOR BROWSER END */
@@ -251,20 +151,6 @@ describe('Parser tests', () => {
 					throw e;
 				}
 			});
-
-			/* NOT FOR BROWSER ONLY */
-
-			if (process.env['LSP'] !== '0') {
-				it(`LSP: ${desc}`, async () => {
-					/* NOT FOR BROWSER */
-
-					Parser.viewOnly = true;
-
-					/* NOT FOR BROWSER END */
-
-					await lsp({title, content: wikitext} as SimplePage, true, true);
-				});
-			}
 		}
 	}
 });

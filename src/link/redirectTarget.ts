@@ -1,16 +1,8 @@
-import {generateForChild, fixByRemove} from '../../util/lint';
-import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
-import type {LintError, Config} from '../../base';
+import type {Config} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
 
 /**
  * target of a redirect
@@ -26,8 +18,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken] | [AtomToken, NoincludeToken];
-	abstract override get lastElementChild(): AtomToken | NoincludeToken;
-	abstract override set link(link: string);
 
 	/* NOT FOR BROWSER END */
 
@@ -75,40 +65,4 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			{halfParsed: true, decode: true, page: ''},
 		);
 	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: {
-			const errors = super.lint(start, false),
-				rule = 'no-ignored',
-				{lintConfig} = Parser,
-				s = lintConfig.getSeverity(rule, 'redirect');
-			if (s && this.length === 2) {
-				const e = generateForChild(this.lastChild, {start}, rule, 'useless-link-text', s);
-				e.startIndex--;
-				e.startCol--;
-				if (lintConfig.computeEditInfo || lintConfig.fix) {
-					e.fix = fixByRemove(e);
-				}
-				errors.push(e);
-			}
-			return errors;
-		}
-	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override setTarget(link: string): void {
-		this.firstChild.setText(link);
-	}
-
-	/** @private */
-	override setLinkText(linkStr?: string): void {
-		if (!linkStr) {
-			this.childNodes[1]?.removeInternal();
-		}
-	}
 }
-
-classes['RedirectTargetToken'] = __filename;

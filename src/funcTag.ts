@@ -4,16 +4,12 @@ import {ParamLineToken} from './paramLine';
 import {gapped} from '../mixin/gapped';
 import type {Config} from '../base';
 import type {AttributesToken, ExtToken} from '../internal';
-import type {ParamLineParentBase} from '../mixin/paramLineParent';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
-
-export interface FuncTagToken extends ParamLineParentBase {}
 
 /**
  * `<seo>`
@@ -32,11 +28,7 @@ export abstract class FuncTagToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): ParamLineToken[];
-	abstract override get firstElementChild(): ParamLineToken | undefined;
-	abstract override get lastElementChild(): ParamLineToken | undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -67,11 +59,6 @@ export abstract class FuncTagToken extends Token {
 		return this.childNodes.map(child => child.text()).filter(Boolean).join('|');
 	}
 
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({sep: '|'});
-	}
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -80,5 +67,3 @@ export abstract class FuncTagToken extends Token {
 		return new FuncTagToken(undefined, this.getAttribute('config'));
 	}
 }
-
-classes['FuncTagToken'] = __filename;

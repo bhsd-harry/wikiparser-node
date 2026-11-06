@@ -3,16 +3,12 @@ import {MultiLineToken} from './index';
 import {ParamLineToken} from '../paramLine';
 import type {Config} from '../../base';
 import type {Token} from '../../internal';
-import type {ParamLineParentBase} from '../../mixin/paramLineParent';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {clone} from '../../mixin/clone';
 
 /* NOT FOR BROWSER END */
-
-export interface ParamTagToken extends ParamLineParentBase {}
 
 /**
  * `<dynamicpagelist>`
@@ -27,8 +23,6 @@ export abstract class ParamTagToken extends MultiLineToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): ParamLineToken[];
-	abstract override get firstElementChild(): ParamLineToken | undefined;
-	abstract override get lastElementChild(): ParamLineToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -67,5 +61,3 @@ export abstract class ParamTagToken extends MultiLineToken {
 		return new C(this.name, this.getAttribute('include'), undefined, this.getAttribute('config'));
 	}
 }
-
-classes['ParamTagToken'] = __filename;

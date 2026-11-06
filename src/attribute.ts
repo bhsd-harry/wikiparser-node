@@ -1,8 +1,7 @@
-import {generateForChild, provideValues, fixBy, fixByClose, fixByRemove} from '../util/lint';
+import {provideValues} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
-	escape,
 
 	/* NOT FOR BROWSER */
 
@@ -11,35 +10,19 @@ import {
 import {
 	MAX_STAGE,
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../util/constants';
-import {commonHtmlAttrs, extAttrs, htmlAttrs, obsoleteAttrs} from '../util/sharable';
-import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
+import {commonHtmlAttrs, extAttrs, htmlAttrs} from '../util/sharable';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {
-	LintError,
 	Config,
 	TokenTypes,
-	AST,
 } from '../base';
-import type {LintConfiguration} from '../lib/lintConfig';
 import type {AttributesToken} from '../internal';
-
-/* NOT FOR BROWSER ONLY */
-
-import {loadCssLSP, EmbeddedCSSDocument} from '../lib/document';
-
-/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../util/debug';
-import {fixedToken} from '../mixin/fixed';
 import {cached} from '../mixin/cached';
 
 export const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
@@ -75,7 +58,6 @@ const insecureStyle =
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-@fixedToken
 export abstract class AttributeToken extends Token {
 	declare readonly name: string;
 	#type;
@@ -98,10 +80,6 @@ export abstract class AttributeToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken, Token];
-	abstract override get firstElementChild(): AtomToken;
-	abstract override get lastElementChild(): Token;
-	abstract override get parentElement(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): AtomToken | this | undefined;
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -115,26 +93,11 @@ export abstract class AttributeToken extends Token {
 		return this.#tag;
 	}
 
-	/** whether the quotes are balanced / 引号是否匹配 */
-	get balanced(): boolean {
-		LINT: return !this.#equal || this.#quotes[0] === this.#quotes[1];
-	}
-
 	/* NOT FOR BROWSER */
-
-	set balanced(value) {
-		if (value) {
-			this.close();
-		}
-	}
 
 	/** attribute value / 属性值 */
 	get value(): string {
 		return this.getValue();
-	}
-
-	set value(value: string | true) {
-		this.setValue(value);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -230,15 +193,6 @@ export abstract class AttributeToken extends Token {
 		}
 		this.#setName();
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ attributeListener: AstListener = ({prevTarget}) => {
-			if (prevTarget === this.firstChild) {
-				this.#setName();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], attributeListener);
 	}
 
 	/** @private */
@@ -261,31 +215,14 @@ export abstract class AttributeToken extends Token {
 
 	/**
 	 * 判定无效的属性名或值
-	 * @param start 起始位置
-	 * @param rect 位置
 	 */
-	#lint(): false | 1 | 2;
-	#lint(start: number, rect: BoundingRect): LintError | false;
-	#lint(
-		start?: number,
-		rect?: BoundingRect,
-	): LintError
-		| 2
-		| 1
-		| false {
-		const {firstChild, lastChild, type, name, tag, parentNode} = this,
+	#lint(): false | 1 | 2 {
+		const {lastChild, type, name, tag, parentNode} = this,
+			// eslint-disable-next-line unicorn/no-declarations-before-early-exit
 			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),
 			attrs = extAttrs[tag],
-			attrs2 = htmlAttrs[tag],
-			{length} = this.toString();
-		let rule: LintError.Rule = 'illegal-attr',
-			lintConfig: LintConfiguration,
-			computeEditInfo: boolean | undefined;
-		LINT: {
-			({lintConfig} = Parser);
-			({computeEditInfo} = lintConfig);
-		}
+			attrs2 = htmlAttrs[tag];
 		if (
 			!attrs?.has(name)
 			&& !attrs2?.has(name)
@@ -302,156 +239,35 @@ export abstract class AttributeToken extends Token {
 		) {
 			/* PRINT ONLY */
 
-			PRINT: if (start === undefined) {
-				return 2;
-			}
-
-			/* PRINT ONLY END */
-
-			LINT: {
-				const s = lintConfig.getSeverity(rule, 'unknown');
-				if (s) {
-					const e = generateForChild(firstChild, rect!, rule, 'illegal-attribute-name', s);
-					if (computeEditInfo) {
-						e.suggestions = [fixByRemove(start, length)];
-					}
-					return e;
-				}
-			}
+			return 2;
 		} else if (name === 'style' && insecureStyle.test(value)) {
 			/* PRINT ONLY */
 
-			PRINT: if (start === undefined) {
-				return 1;
-			}
-
-			/* PRINT ONLY END */
-
-			LINT: {
-				rule = 'insecure-style';
-				const s = lintConfig.getSeverity(rule);
-				return s && generateForChild(lastChild, rect!, rule, 'insecure-style', s);
-			}
+			return 1;
 		} else if (name === 'tabindex' && value !== '0') {
 			/* PRINT ONLY */
 
-			PRINT: if (start === undefined) {
-				return 2;
+			return 2;
+		}
+		let valueIssue = (/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
+			|| simple
+			&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
+			&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
+				.test(value);
+		if (simple && !valueIssue && type !== 'ext-attr') {
+			const data = provideValues(tag, name),
+				v = value.toLowerCase();
+			if (data.length > 0 && data.every(n => n !== v)) {
+				valueIssue = true;
 			}
+		}
+		// eslint-disable-next-line unicorn/prefer-ternary
+		if (valueIssue) {
+			/* PRINT ONLY */
 
-			/* PRINT ONLY END */
-
-			LINT: {
-				const s = lintConfig.getSeverity(rule, 'tabindex');
-				if (s) {
-					const e = generateForChild(lastChild, rect!, rule, 'nonzero-tabindex', s);
-					if (computeEditInfo) {
-						e.suggestions = [
-							fixByRemove(start, length),
-							fixBy(e, '0 tabindex', '0'),
-						];
-					}
-					return e;
-				}
-			}
-		} else {
-			let valueIssue = (/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
-				|| simple
-				&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
-				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
-					.test(value);
-			if (simple && !valueIssue && type !== 'ext-attr') {
-				const data = provideValues(tag, name),
-					v = value.toLowerCase();
-				if (data.length > 0 && data.every(n => n !== v)) {
-					valueIssue = true;
-				}
-			}
-			if (valueIssue) {
-				/* PRINT ONLY */
-
-				PRINT: if (start === undefined) {
-					return 2;
-				}
-
-				/* PRINT ONLY END */
-
-				LINT: {
-					const s = lintConfig.getSeverity(rule, 'value');
-					return s && generateForChild(lastChild, rect!, rule, 'illegal-attribute-value', s);
-				}
-			}
+			return 2;
 		}
 		return false;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{balanced, firstChild, lastChild, name, tag} = this,
-				rect = new BoundingRect(this, start),
-				rules = ['unclosed-quote', 'obsolete-attr'] as const,
-				{lintConfig} = Parser,
-				s = rules.map(rule => lintConfig.getSeverity(rule, name));
-			if (!balanced && s[0]) {
-				const e = generateForChild(lastChild, rect, rules[0], 'unclosed-quotes', s[0]);
-				e.startIndex--;
-				e.startCol--;
-				if (lintConfig.computeEditInfo) {
-					e.suggestions = [fixByClose(e.endIndex, this.#quotes[0]!)];
-				}
-				errors.push(e);
-			}
-			const e = this.#lint(start, rect);
-			if (e) {
-				errors.push(e);
-			}
-			if (s[1] && obsoleteAttrs[tag]?.has(name)) {
-				errors.push(generateForChild(firstChild, rect, rules[1], 'obsolete-attribute', s[1]));
-			}
-
-			/* NOT FOR BROWSER ONLY */
-
-			const rule = 'invalid-css',
-				sError = lintConfig.getSeverity(rule),
-				sWarn = lintConfig.getSeverity(rule, 'warn');
-			if (
-				name === 'style'
-				&& (sError || sWarn)
-				&& lastChild.length === 1 && lastChild.firstChild!.type === 'text'
-			) {
-				const cssLSP = loadCssLSP();
-				if (cssLSP) {
-					const root = this.getRootNode(),
-						textDoc = new EmbeddedCSSDocument(root, lastChild);
-					Array.prototype.push.apply(
-						errors,
-						cssLSP.doValidation(textDoc, textDoc.styleSheet)
-							.filter(
-								({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
-									&& (severity === 1 ? sError : sWarn),
-							)
-							.map(({range: {start: {line, character}, end}, message, severity, code}): LintError => ({
-								code: code as string,
-								rule,
-								message,
-								severity: (severity === 1 ? sError : sWarn) as LintError.Severity,
-								startLine: line,
-								startCol: character,
-								startIndex: root.indexFromPos(line, character)!,
-								endLine: end.line,
-								endCol: end.character,
-								endIndex: root.indexFromPos(end.line, end.character)!,
-							})),
-					);
-				}
-			}
-
-			/* NOT FOR BROWSER ONLY END */
-
-			return errors;
-		}
 	}
 
 	/**
@@ -463,47 +279,20 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? this.lastChild.text().replace(/[\t\r\n ]+/gu, ' ').trim() : '';
 	}
 
-	/** @private */
-	override escape(): void {
-		LSP: if (this.type !== 'ext-attr') {
-			this.#equal = '{{=}}';
-			this.lastChild.escape();
-		}
-	}
-
 	/* PRINT ONLY */
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* NOT FOR BROWSER */
 
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (key === 'quotes') {
 			return this.#quotes as TokenAttribute<T>;
 		}
 
 		/* NOT FOR BROWSER END */
 
-		PRINT: if (key === 'invalid') {
-			return Boolean(this.#lint()) as TokenAttribute<T>;
-		}
 		return super.getAttribute(key);
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-			return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();
-		}
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			json['tag'] = this.tag;
-			return json;
-		}
 	}
 
 	/* PRINT ONLY END */
@@ -565,20 +354,6 @@ export abstract class AttributeToken extends Token {
 		this.setValue(value);
 	}
 
-	/* c8 ignore start */
-	/**
-	 * Rename the attribute
-	 *
-	 * 修改属性名
-	 * @param key new attribute name / 新属性名
-	 * @throws `Error` if the attribute name is `title` or `alt`
-	 */
-	rename(key: string): void {
-		require('../addon/attribute');
-		this.rename(key);
-	}
-	/* c8 ignore stop */
-
 	/** @private */
 	asHtmlAttr(): void {
 		this.#type = 'html-attr';
@@ -605,27 +380,4 @@ export abstract class AttributeToken extends Token {
 			: sanitizeAttr(value, name === 'id');
 		return `${name}="${sanitized}"`;
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
-
-	/* c8 ignore start */
-	/**
-	 * Get or set the value of a style property
-	 *
-	 * 获取或设置某一样式属性的值
-	 * @param key style property / 样式属性
-	 * @param value style property value / 样式属性值
-	 * @since v1.17.1
-	 * @throws `Error` if the attribute is not `style`, the value is too complex, or CSS language service is unavailable
-	 */
-	css(key: string, value?: string | number): string | undefined {
-		require('../addon/attribute');
-		return this.css(key, value);
-	}
-	/* c8 ignore stop */
 }
-
-classes['AttributeToken'] = __filename;

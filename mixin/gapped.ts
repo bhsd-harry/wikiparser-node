@@ -4,12 +4,6 @@ import {mixin} from '../util/debug';
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-import {mixins} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 给定 gap 的类
  * @param gap
@@ -29,5 +23,3 @@ export const gapped = (gap = 1) => <S extends AstConstructor>(constructor: S): S
 
 	return GappedToken;
 };
-
-mixins['gapped'] = __filename;

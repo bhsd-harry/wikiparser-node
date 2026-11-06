@@ -2,7 +2,6 @@ import {ListBaseToken} from './listBase';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
 import type {SyntaxBase} from '../../mixin/syntax';
 
@@ -17,5 +16,3 @@ export abstract class DdToken extends ListBaseToken {
 		return 'dd';
 	}
 }
-
-classes['DdToken'] = __filename;

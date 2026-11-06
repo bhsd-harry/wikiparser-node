@@ -4,12 +4,6 @@ import {mixin} from '../util/debug';
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-import {mixins} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 给定 padding 的类
  * @param padding padding 字符串
@@ -30,5 +24,3 @@ export const padded = ({length}: string) => <S extends AstConstructor>(construct
 
 	return PaddedToken;
 };
-
-mixins['padded'] = __filename;

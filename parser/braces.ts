@@ -6,20 +6,6 @@ import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
-/* NOT FOR BROWSER ONLY */
-
-import {getHeapStatistics} from 'v8';
-
-const MAXHEAP = getHeapStatistics().heap_size_limit * 0.9;
-
-/* NOT FOR BROWSER ONLY END */
-
 const closes: Record<string, string> = {
 		'=': String.raw`\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)`,
 		'{': String.raw`\}{2,}|\|`,
@@ -146,14 +132,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		|| lastIndex !== undefined && lastIndex <= wikitext.length
 		&& stack[stack.length - 1]?.[0]?.startsWith('=')
 	) {
-		/* NOT FOR BROWSER ONLY */
-
-		if (process.memoryUsage().heapUsed > MAXHEAP) {
-			throw new RangeError('Maximum heap size exceeded');
-		}
-
-		/* NOT FOR BROWSER ONLY END */
-
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0].slice(length);
@@ -265,5 +243,3 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	}
 	return restore(wikitext, linkStack);
 };
-
-parsers['parseBraces'] = __filename;

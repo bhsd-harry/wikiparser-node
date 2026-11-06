@@ -1,21 +1,14 @@
-import {generateForChild, generateForSelf, fixByRemove, fixByInsert} from '../../util/lint';
 import {
-	extensions,
 
 	/* NOT FOR BROWSER */
 
-	classes,
 	MAX_STAGE,
 } from '../../util/constants';
-import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {
-	TokenTypes,
 	Config,
-	LintError,
-	AST,
 } from '../../base';
 import type {GalleryImageTypes} from '../imageParameter';
 import type {
@@ -33,13 +26,10 @@ import type {
 import {sanitizeAlt, sanitizeId} from '../../util/string';
 import {Shadow} from '../../util/debug';
 import {Title} from '../../lib/title';
-import {ClassList} from '../../lib/classList';
 import {cached} from '../../mixin/cached';
 import {packedModes} from '../../render/extension';
 
 /* NOT FOR BROWSER END */
-
-declare type SeverityPredicate = boolean | ((arg: ImageParameterToken) => boolean);
 
 const frame = new Map([
 		['manualthumb', 'Thumb'],
@@ -47,8 +37,6 @@ const frame = new Map([
 		['framed', 'Frame'],
 		['thumbnail', 'Thumb'],
 	]),
-	argTypes = new Set<TokenTypes>(['arg']),
-	transclusion = new Set<TokenTypes>(['template', 'magic-word']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
 	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
 
@@ -77,14 +65,6 @@ const explode = (str?: string): string[] => {
 	return exploded;
 };
 
-/**
- * filter out the image parameters that are not of the specified type
- * @param args image parameter tokens
- * @param types token types to be filtered
- */
-const filterArgs = (args: ImageParameterToken[], types: Set<TokenTypes | 'text'>): ImageParameterToken[] =>
-	args.filter(({childNodes}) => !childNodes.some(node => node.text().trim() && types.has(node.type)));
-
 /* NOT FOR BROWSER */
 
 /**
@@ -102,19 +82,12 @@ const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken[]]}`
  */
 export abstract class FileToken extends LinkBaseToken {
-	/* NOT FOR BROWSER */
-
-	#classList: ClassList | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
-	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
 
 	/* NOT FOR BROWSER END */
 
@@ -139,18 +112,10 @@ export abstract class FileToken extends LinkBaseToken {
 		return this.getArg('link')?.link ?? super.link;
 	}
 
-	override set link(value: string) {
-		this.setValue('link', value);
-	}
-
 	/** image size / 图片大小 */
 	get size(): {width: string, height: string} | undefined {
 		const fr = this.getFrame();
 		return fr === 'framed' || fr instanceof Title ? undefined : this.getArg('width')?.size;
-	}
-
-	set size(size) {
-		this.setValue('width', size && size.width + (size.height && 'x') + size.height);
 	}
 
 	/** image width / 图片宽度 */
@@ -160,29 +125,11 @@ export abstract class FileToken extends LinkBaseToken {
 			: this.size?.width;
 	}
 
-	set width(width) {
-		const arg = this.getArg('width');
-		if (arg) {
-			arg.width = width;
-		} else {
-			this.setValue('width', width);
-		}
-	}
-
 	/** image height / 图片高度 */
 	get height(): string | undefined {
 		return this.is('gallery-image')
 			? (this.parentNode as GalleryToken | undefined)?.heights.toString()
 			: this.size?.height;
-	}
-
-	set height(height) {
-		const arg = this.getArg('width');
-		if (arg) {
-			arg.height = height;
-		} else {
-			this.setValue('width', height && `x${height}`);
-		}
 	}
 
 	/**
@@ -197,17 +144,6 @@ export abstract class FileToken extends LinkBaseToken {
 
 	set className(className) {
 		this.setValue('class', className || false);
-	}
-
-	/**
-	 * class attribute in Set
-	 *
-	 * 以Set表示的class属性
-	 * @since v1.47.0
-	 */
-	get classList(): ClassList {
-		this.#classList ??= new ClassList(this);
-		return this.#classList;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -249,186 +185,13 @@ export abstract class FileToken extends LinkBaseToken {
 		));
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				args = filterArgs(this.getAllArgs(), argTypes),
-				keys = [...new Set(args.map(({name}) => name))],
-				frameKeys = keys.filter(key => frame.has(key)),
-				horizAlignKeys = keys.filter(key => horizAlign.has(key)),
-				vertAlignKeys = keys.filter(key => vertAlign.has(key)),
-				[fr] = frameKeys,
-				unscaled = fr === 'framed' || fr === 'manualthumb',
-				rect = new BoundingRect(this, start),
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				{
-					ns,
-					extension,
-
-					/* NOT FOR BROWSER */
-
-					interwiki,
-				} = this.getAttribute('title'),
-				{firstChild} = this;
-			let rule: LintError.Rule = 'nested-link',
-				s = lintConfig.getSeverity(rule, 'file');
-			if (
-				s
-				&& extensions.has(extension!)
-				&& this.isInside('ext-link-text')
-				&& this.getValue('link') !== ''
-			) {
-				const e = generateForSelf(this, rect, rule, 'link-in-extlink', s);
-				if (computeEditInfo || fix) {
-					const link = this.getArg('link');
-					if (link) {
-						const from = start + link.getRelativeIndex();
-						e.fix = {
-							desc: Parser.msg('delink'),
-							range: [from, from + link.toString().length],
-							text: 'link=',
-						};
-					} else {
-						e.fix = fixByInsert(e.endIndex - 2, 'delink', '|link=');
-					}
-				}
-				errors.push(e);
-			}
-			rule = 'invalid-gallery';
-			s = lintConfig.getSeverity(rule, 'extension');
-			if (
-				s && ns === 6 && !extension && !firstChild.querySelector('arg,magic-word,template')
-				&& !interwiki // eslint-disable-line unicorn/prefer-simple-condition-first
-			) {
-				errors.push(generateForSelf(this, rect, rule, 'missing-extension', s));
-			}
-			s = lintConfig.getSeverity(rule, 'parameter');
-			if (s && unscaled) {
-				const widths = args.filter(({name}) => name === 'width');
-				for (let i = widths.length - 1; i >= 0; i--) {
-					const e = generateForChild(widths[i]!, rect, rule, 'invalid-image-parameter', s);
-					if (computeEditInfo || fix) {
-						e.fix = fixByRemove(e, -1);
-					}
-					errors.push(e);
-				}
-			}
-			rule = 'blank-alt';
-			s = lintConfig.getSeverity(rule);
-			if (s) {
-				const alt = this.getArg('alt');
-				if (alt?.getValue() === '') {
-					const e = generateForChild(alt, rect, rule, 'blank-alt', s);
-					if (computeEditInfo || fix) {
-						e.fix = fixByRemove(e, -1);
-					}
-					errors.push(e);
-				}
-			}
-			if (
-				args.length === keys.length
-				&& frameKeys.length < 2
-				&& horizAlignKeys.length < 2
-				&& vertAlignKeys.length < 2
-			) {
-				return errors;
-			}
-			rule = 'no-duplicate';
-			const severities = ['unknownImageParameter', 'imageParameter'].map(k => lintConfig.getSeverity(rule, k));
-
-			/**
-			 * 图片参数到语法错误的映射
-			 * @param tokens 图片参数节点
-			 * @param msg 消息键
-			 * @param p1 替换$1
-			 * @param severity 错误等级
-			 */
-			const generate = (
-				tokens: ImageParameterToken[],
-				msg: 'conflicting' | 'duplicate',
-				p1: string,
-				severity: SeverityPredicate = true,
-			): LintError[] => {
-				const {length} = tokens,
-					duplication = Array.from<LintError | false>({length});
-				for (let i = length - 1; i >= 0; i--) {
-					const arg = tokens[i]!;
-					s = severities[Number(typeof severity === 'function' ? severity(arg) : severity)]!;
-					if (!s) {
-						duplication[i] = false;
-						continue;
-					}
-
-					/** `conflicting-image-parameter`或`duplicate-image-parameter` */
-					const e = generateForChild(arg, rect, rule, Parser.msg(`${msg}-image-parameter`, p1), s);
-					if (computeEditInfo) {
-						e.suggestions = [fixByRemove(e, -1)];
-					}
-					duplication[i] = e;
-				}
-				return duplication.filter((e): e is LintError => e !== false);
-			};
-			for (const key of keys) {
-				if (key === 'invalid' || key === 'width' && unscaled) {
-					continue;
-				}
-				const isCaption = key === 'caption';
-				let relevantArgs = args.filter(({name}) => name === key);
-				if (isCaption) {
-					relevantArgs = [
-						...relevantArgs.slice(0, -1).filter(arg => arg.text()),
-						...relevantArgs.slice(-1),
-					];
-				}
-				if (relevantArgs.length < 2) {
-					continue;
-				}
-				let severity: SeverityPredicate = !isCaption || !extension || extensions.has(extension);
-				if (isCaption && severity) {
-					const plainArgs = filterArgs(relevantArgs, transclusion);
-					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
-				}
-				Array.prototype.push.apply(errors, generate(relevantArgs, 'duplicate', key, severity));
-			}
-			if (frameKeys.length > 1) {
-				Array.prototype.push.apply(
-					errors,
-					generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'),
-				);
-			}
-			if (horizAlignKeys.length > 1) {
-				Array.prototype.push.apply(
-					errors,
-					generate(
-						args.filter(({name}) => horizAlign.has(name)),
-						'conflicting',
-						'horizontal-alignment',
-					),
-				);
-			}
-			if (vertAlignKeys.length > 1) {
-				Array.prototype.push.apply(
-					errors,
-					generate(
-						args.filter(({name}) => vertAlign.has(name)),
-						'conflicting',
-						'vertical-alignment',
-					),
-				);
-			}
-			return errors;
-		}
-	}
-
 	/**
 	 * Get all image parameter tokens
 	 *
 	 * 获取所有图片参数节点
 	 */
 	getAllArgs(): ImageParameterToken[] {
-		LINT: return this.childNodes.slice(1) as ImageParameterToken[];
+		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**
@@ -438,7 +201,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
-		LINT: return this.getAllArgs().filter(({name}) => key === name);
+		return this.getAllArgs().filter(({name}) => key === name);
 	}
 
 	/**
@@ -448,10 +211,8 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getArg(key: string): ImageParameterToken | undefined {
-		LINT: {
-			const args = this.getArgs(key);
-			return args[key === 'manualthumb' ? 0 : args.length - 1];
-		}
+		const args = this.getArgs(key);
+		return args[key === 'manualthumb' ? 0 : args.length - 1];
 	}
 
 	/**
@@ -461,19 +222,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getValue(key: string): string | true | undefined {
-		LINT: return this.getArg(key)?.getValue();
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start),
-				{extension} = this;
-			if (extension) {
-				json['extension'] = extension;
-			}
-			return json;
-		}
+		return this.getArg(key)?.getValue();
 	}
 
 	/* NOT FOR BROWSER */
@@ -577,25 +326,6 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/**
-	 * Get all image parameter names
-	 *
-	 * 获取图片参数名
-	 */
-	getKeys(): Set<string> {
-		return new Set(this.getAllArgs().map(({name}) => name));
-	}
-
-	/**
-	 * Get the image parameter values with the specified name
-	 *
-	 * 获取指定的图片参数值
-	 * @param key parameter name / 参数名
-	 */
-	getValues(key: string): (string | true)[] {
-		return this.getArgs(key).map(token => token.getValue());
-	}
-
-	/**
 	 * Set the image parameter
 	 *
 	 * 设置图片参数
@@ -603,7 +333,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param value parameter value / 参数值
 	 * @throws `RangeError` if the parameter name is unknown
 	 */
-	setValue(key: string, value: string | boolean = false): void {
+	setValue(key: 'class', value: string | false = false): void {
 		if (value === false) {
 			this.removeArg(key);
 			return;
@@ -614,42 +344,23 @@ export abstract class FileToken extends LinkBaseToken {
 			return;
 		}
 		const config = this.getAttribute('config'),
-			syntax = key === 'caption' ? '$1' : Object.entries(config.img).find(([, name]) => name === key)?.[0];
-		/* c8 ignore next 3 */
-		if (syntax === undefined) {
-			throw new RangeError(`Unknown image parameter: ${key}`);
-		}
-		const free = syntax.includes('$1');
-		/* c8 ignore next 3 */
-		if (value === true && free) {
-			this.typeError('setValue', 'String');
-		}
+			syntax = Object.entries(config.img).find(([, name]) => name === key)?.[0];
+		const free = syntax!.includes('$1');
 		const parameter = Shadow.run(
 			(): ImageParameterToken =>
 				// @ts-expect-error abstract class
 				new ImageParameterToken(
-					// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-					syntax.replace('$1', key === 'width' ? '1' : ''),
+					syntax!.replace('$1', ''),
 					this.extension,
 					this.type,
 					config,
 				),
 		);
 		if (free) {
-			parameter.safeReplaceChildren(Parser.parseWithRef(value as string, this, MAX_STAGE).childNodes);
+			parameter.safeReplaceChildren(Parser.parseWithRef(value, this, MAX_STAGE).childNodes);
 		}
 		this.insertAt(parameter);
 	}
-
-	/* c8 ignore start */
-	/**
-	 * @override
-	 * @throws `Error` if called, since `setLinkText` is not applicable to images
-	 */
-	override setLinkText(): never {
-		throw new Error('LinkBaseToken.setLinkText method is not applicable to images!');
-	}
-	/* c8 ignore stop */
 
 	/** @private */
 	@cached()
@@ -747,20 +458,4 @@ export abstract class FileToken extends LinkBaseToken {
 				: ''
 		}${caption}</div>${overlay ? '\n\t\t\t</div>' : ''}\n\t\t</li>`;
 	}
-
-	/** @private */
-	@cached()
-	override plainTextInternal(): string {
-		const {type, parentNode} = this,
-			fr = this.getFrame(),
-			isGallery = type === 'gallery-image',
-			gallery = isGallery && parentNode?.parentNode as ExtToken | undefined;
-		return (gallery && gallery.hasAttr('showfilename') ? `${this.getAttribute('title').main}\n` : '') + (
-			isGallery || fr === 'thumbnail' || fr === 'framed' || fr instanceof Title || this.getHorizAlign()
-				? this.getArg('caption')?.plainTextInternal({nowrap: true}) ?? ''
-				: ''
-		);
-	}
 }
-
-classes['FileToken'] = __filename;

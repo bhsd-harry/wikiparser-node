@@ -1,4 +1,3 @@
-import {classes} from '../util/constants';
 import type * as ParserBase from '../index';
 
 /**
@@ -35,5 +34,3 @@ export class RedirectMap extends Map<string, string> {
 		return super.set(normalizeTitle(key), this.#redirect ? normalizeTitle(value) : value);
 	}
 }
-
-classes['RedirectMap'] = __filename;

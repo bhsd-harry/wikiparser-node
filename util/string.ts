@@ -174,16 +174,6 @@ export const replaceEntities = (re = /[&<>"{}[\]|]/gu): (str: string) => string 
 /** escape HTML entities */
 export const escape = /* #__PURE__ */ replaceEntities(/[&<>]/gu);
 
-/**
- * 以HTML格式打印
- * @param childNodes 子节点
- * @param opt 选项
- */
-export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): string => {
-	const {pre = '', post = '', sep = ''} = opt;
-	return pre + childNodes.map(child => child.print()).join(sep) + post;
-};
-
 /* PRINT ONLY END */
 
 /* NOT FOR BROWSER */
@@ -194,9 +184,6 @@ export const escapeRegExp = RegExp.escape || factory(/[\\{}()|.?*+^$[\]]/gu, Str
 
 /** escape newlines */
 export const noWrap = factory(/\n/gu, String.raw`\n`);
-
-/** encode URI */
-export const encode = factory(/[<>[\]#|=]+/gu, encodeURIComponent);
 
 /**
  * convert newline in text nodes to single whitespace

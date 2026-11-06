@@ -1,18 +1,13 @@
-import {generateForSelf, generateForChild, fixByRemove, fixByClose} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {hiddenToken} from '../../mixin/hidden';
-import Parser from '../../index';
 import {TagPairToken} from './index';
 import type {
 	Config,
-	LintError,
 } from '../../base';
 import type {AstText, Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 
 /* NOT FOR BROWSER END */
 
@@ -31,8 +26,6 @@ export abstract class IncludeToken extends TagPairToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [];
-	abstract override get firstElementChild(): undefined;
-	abstract override get lastElementChild(): undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -44,15 +37,6 @@ export abstract class IncludeToken extends TagPairToken {
 
 	override get innerText(): string | undefined {
 		return super.innerText;
-	}
-
-	override set innerText(text) {
-		if (text === undefined) {
-			this.selfClosing = true;
-		} else {
-			this.selfClosing = false;
-			this.setText(text);
-		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -70,34 +54,6 @@ export abstract class IncludeToken extends TagPairToken {
 	/** @private */
 	override toString(skip?: boolean): string {
 		return skip ? '' : super.toString();
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: {
-			const errors: LintError[] = [],
-				{firstChild, closed, name} = this,
-				rect = new BoundingRect(this, start),
-				rules = ['no-ignored', 'unclosed-comment'] as const,
-				{lintConfig} = Parser,
-				{computeEditInfo} = lintConfig,
-				s = rules.map(rule => lintConfig.getSeverity(rule, 'include'));
-			if (s[0] && firstChild.data.trim()) {
-				const e = generateForChild(firstChild, rect, rules[0], 'useless-attribute', s[0]);
-				if (computeEditInfo) {
-					e.suggestions = [fixByRemove(e)];
-				}
-				errors.push(e);
-			}
-			if (!closed && s[1]) {
-				const e = generateForSelf(this, rect, rules[1], Parser.msg('unclosed', `<${name}>`), s[1]);
-				if (computeEditInfo) {
-					e.suggestions = [fixByClose(e.endIndex, `</${name}>`)];
-				}
-				errors.push(e);
-			}
-			return errors;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -122,15 +78,4 @@ export abstract class IncludeToken extends TagPairToken {
 	override setText(str: string): string {
 		return super.setText(str, 1);
 	}
-
-	/**
-	 * Remove tag attributes
-	 *
-	 * 清除标签属性
-	 */
-	removeAttr(): void {
-		super.setText('');
-	}
 }
-
-classes['IncludeToken'] = __filename;

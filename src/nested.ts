@@ -1,35 +1,20 @@
-import {generateForChild, fixByRemove, fixByComment} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
-import Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {
 	Config,
-	LintError,
-	TokenTypes,
 } from '../base';
 import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
-
-const childTypes = new Set<TokenTypes>(['comment', 'include', 'arg', 'template', 'magic-word']),
-	lintRegex = /* #__PURE__ */ (() => [false, true].map(article => {
-		const noinclude = article ? 'includeonly' : 'noinclude';
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/^(?:<noinclude(?:\s[^>]*)?\/?>|<\/noinclude\s*>)$/iu;
-		return new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu');
-	}) as [RegExp, RegExp])();
 
 /**
  * extension tag that has a nested structure
@@ -52,11 +37,7 @@ export abstract class NestedToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -150,61 +131,7 @@ export abstract class NestedToken extends Token {
 		this.#regex = regex;
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rule = 'no-ignored',
-				{lintConfig} = Parser,
-				{computeEditInfo} = lintConfig,
-				{name, childNodes} = this,
-				s = lintConfig.getSeverity(rule, name);
-			if (!s) {
-				return errors;
-			}
-			const rect = new BoundingRect(this, start),
-				msg = Parser.msg('invalid-content', name),
-				regex = typeof this.#regex === 'boolean' ? lintRegex[this.#regex ? 1 : 0] : /^<!--.*-->$/su,
-				ignored = childNodes.filter(child => {
-					const {type, name: n} = child;
-					if (type === 'ext') {
-						return !this.#tags.includes(n);
-					} else if (childTypes.has(type)) {
-						return false;
-					}
-					const str = child.toString().trim();
-					return str && !regex.test(str);
-				}),
-				{length} = ignored,
-				ignoredErrors = Array.from<LintError>({length});
-			for (let i = length - 1; i >= 0; i--) {
-				const child = ignored[i]!,
-					e = generateForChild(child, rect, rule, msg, s);
-				if (computeEditInfo) {
-					e.suggestions = [
-						fixByRemove(e),
-						fixByComment(e, child.toString()),
-					];
-				}
-				ignoredErrors[i] = e;
-			}
-			return [...errors, ...ignoredErrors];
-		}
-	}
-
 	/* NOT FOR BROWSER */
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inseted at / 插入位置
-	 */
-	override insertAt<T extends Token>(token: T, i?: number): T {
-		if (!Shadow.running && token.is('ext') && !this.#tags.includes(token.name)) {
-			this.constructorError(`can only have ${this.#tags.join(' or ')} tags as child nodes`);
-		}
-		return super.insertAt(token, i);
-	}
 
 	@clone
 	override cloneNode(): this {
@@ -212,5 +139,3 @@ export abstract class NestedToken extends Token {
 		return new NestedToken(undefined, this.#regex, this.#tags, this.getAttribute('config'));
 	}
 }
-
-classes['NestedToken'] = __filename;

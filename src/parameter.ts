@@ -1,15 +1,10 @@
 import {
-	extUrlChar,
-	extUrlCharFirst,
 	removeCommentLine,
 } from '../util/string';
-import {generateForChild, fixByEscape} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../base';
 import type {
 	AtomToken,
@@ -20,15 +15,8 @@ import type {
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {fixedToken} from '../mixin/fixed';
 
 /* NOT FOR BROWSER END */
-
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/u;
-const linkRegex = /* #__PURE__ */ (() =>
-	new RegExp(`^https?://${extUrlCharFirst}${extUrlChar}$`, 'u'))();
 
 /**
  * template or magic word parameter
@@ -36,7 +24,6 @@ const linkRegex = /* #__PURE__ */ (() =>
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-@fixedToken
 export abstract class ParameterToken extends Token {
 	declare readonly name: string;
 
@@ -53,10 +40,6 @@ export abstract class ParameterToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [Token, Token];
-	abstract override get firstElementChild(): Token;
-	abstract override get lastElementChild(): Token;
-	abstract override get parentElement(): TranscludeToken | undefined;
-	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -70,43 +53,11 @@ export abstract class ParameterToken extends Token {
 		return this.firstChild.length === 0;
 	}
 
-	/* PRINT ONLY */
-
-	/** whether to be a duplicated parameter / 是否是重复参数 */
-	get duplicated(): boolean {
-		LSP: {
-			const {parentNode, name, anon} = this;
-			return parentNode?.isTemplate()
-				? parentNode.getArgs(name, false, false).size > 1
-				: parentNode?.name === 'tag' && !anon && parentNode.getArgs(name, true, false).size > 1;
-		}
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
-
-	set duplicated(value) {
-		if (!value && this.duplicated) {
-			this.parentNode!.fixDuplication();
-		}
-	}
-
-	/** @throws `Error` if trying to convert a named parameter to an anonymous one */
-	set anon(value) {
-		if (value) {
-			throw new Error('Cannot convert named parameter to anonymous parameter!');
-		}
-		this.parentNode?.anonToNamed();
-	}
 
 	/** parameter value / 参数值 */
 	get value(): string {
 		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -168,20 +119,6 @@ export abstract class ParameterToken extends Token {
 			}
 		}
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ parameterListener: AstListener = ({prevTarget}, data) => {
-			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
-				const {firstChild, name} = this;
-				if (prevTarget === firstChild) {
-					const newKey = this.trimName(firstChild);
-					data.oldKey = name;
-					data.newKey = newKey;
-				}
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
 	}
 
 	/** @private */
@@ -201,37 +138,6 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? 0 : 1;
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rule = 'unescaped',
-				{lintConfig} = Parser,
-				s = lintConfig.getSeverity(rule);
-			if (s) {
-				const {firstChild} = this,
-					key = firstChild.text().toLowerCase(),
-					i = Math.max(key.lastIndexOf('http://'), key.lastIndexOf('https://')),
-					link = i !== -1 && key.slice(i);
-				try {
-					if (link && linkRegex.test(link) && new URL(link).search) {
-						const e = generateForChild(firstChild, {start}, rule, 'unescaped-query', s);
-						e.startIndex = e.endIndex;
-						e.startLine = e.endLine;
-						e.startCol = e.endCol;
-						e.endIndex++;
-						e.endCol++;
-						if (lintConfig.computeEditInfo || lintConfig.fix) {
-							e.fix = fixByEscape(e.startIndex, '{{=}}');
-						}
-						errors.push(e);
-					}
-				} catch {}
-			}
-			return errors;
-		}
-	}
-
 	/**
 	 * Get the parameter value
 	 *
@@ -246,20 +152,6 @@ export abstract class ParameterToken extends Token {
 		)
 			? value
 			: value.trim();
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({sep: this.anon ? '' : '='});
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			Object.assign(json, {anon: this.anon}, this.duplicated && {duplicated: true});
-			return json;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -286,48 +178,4 @@ export abstract class ParameterToken extends Token {
 		Parser.warn(`${this.constructor.name}.safeReplaceWith regress to AstNode.replaceWith.`);
 		this.replaceWith(token);
 	}
-
-	/**
-	 * Set the parameter value
-	 *
-	 * 设置参数值
-	 * @param value parameter value / 参数值
-	 */
-	setValue(value: string): void {
-		this.lastChild
-			.safeReplaceChildren(Parser.parseWithRef(value, this).childNodes);
-	}
-
-	/**
-	 * Rename the parameter
-	 *
-	 * 修改参数名
-	 * @param key new parameter name / 新参数名
-	 * @param force whether to rename regardless of conflicts / 是否无视冲突命名
-	 * @throws `Error` if the parent node is not a template or module invocation
-	 * @throws `RangeError` if the new parameter name conflicts with existing parameters
-	 */
-	rename(key: string, force?: boolean): void {
-		const {parentNode, anon} = this;
-		// 必须检测是否是TranscludeToken
-		if (parentNode?.isTemplate() === false) {
-			throw new Error('ParameterToken.rename method is only for template parameters!');
-		} else if (anon) {
-			parentNode?.anonToNamed();
-		}
-		const root = Parser.parseWithRef(key, this),
-			name = this.trimName(root, false);
-		if (this.name === name) {
-			Parser.warn('The actual parameter name is not changed', name);
-		} else if (parentNode?.hasArg(name)) {
-			if (force) {
-				Parser.warn('Parameter renaming causes duplicated parameters', name);
-			} else {
-				throw new RangeError(`Parameter renaming causes duplicated parameters: ${name}`);
-			}
-		}
-		this.firstChild.safeReplaceChildren(root.childNodes);
-	}
 }
-
-classes['ParameterToken'] = __filename;

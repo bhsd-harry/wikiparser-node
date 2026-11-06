@@ -1,5 +1,4 @@
 import {mixin} from '../util/debug';
-import {mixins} from '../util/constants';
 
 /**
  * 不可包含换行符的类
@@ -18,5 +17,3 @@ export const singleLine = <T extends AstConstructor>(constructor: T): T => {
 	mixin(SingleLineToken, constructor);
 	return SingleLineToken;
 };
-
-mixins['singleLine'] = __filename;

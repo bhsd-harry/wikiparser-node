@@ -6,12 +6,6 @@ import {HeadingToken} from '../src/heading';
 import type {Config} from '../base';
 import type {AstText, Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析`<hr>`和状态开关
  * @param {Token} root 根节点
@@ -72,5 +66,3 @@ export const parseHrAndDoubleUnderscore = (
 	}
 	return type === 'root' || type === 'ext-inner' && isIsolated(name) ? data : data.slice(1);
 };
-
-parsers['parseHrAndDoubleUnderscore'] = __filename;

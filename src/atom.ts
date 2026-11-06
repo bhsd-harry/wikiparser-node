@@ -3,12 +3,12 @@ import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
 
-const atomTypes = [
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare const atomTypes: [
 	'arg-name',
 	'attr-key',
 	'attr-value',
@@ -23,7 +23,7 @@ const atomTypes = [
 	'link-target',
 	'param-line-key',
 	'param-line-value',
-] as const;
+];
 
 declare type AtomTypes = typeof atomTypes[number];
 
@@ -40,15 +40,6 @@ export class AtomToken extends Token {
 	}
 
 	override set type(value) {
-		/* NOT FOR BROWSER */
-
-		/* c8 ignore next 3 */
-		if (!atomTypes.includes(value)) {
-			throw new RangeError(`${JSON.stringify(value)} is not a valid type for AtomToken!`);
-		}
-
-		/* NOT FOR BROWSER END */
-
 		this.#type = value;
 	}
 
@@ -77,5 +68,3 @@ export class AtomToken extends Token {
 		) as this;
 	}
 }
-
-classes['AtomToken'] = __filename;

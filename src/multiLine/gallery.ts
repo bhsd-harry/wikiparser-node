@@ -1,29 +1,20 @@
-import {fixByRemove, fixByComment} from '../../util/lint';
 import {removeComment} from '../../util/string';
 import {safeStringReplace} from '../../util/replace';
-import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {GalleryImageToken} from '../link/galleryImage';
 import {CommentLineToken} from '../nowiki/commentLine';
 import {CommentToken} from '../nowiki/comment';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../../base';
 import type {
 	AstText,
 	Token,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
 } from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {Shadow, isToken} from '../../util/debug';
-import {classes} from '../../util/constants';
+import {isToken} from '../../util/debug';
 
 /* NOT FOR BROWSER END */
 
@@ -45,13 +36,6 @@ export abstract class GalleryToken extends MultiLineToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
-
-	/** all images / 所有图片 */
-	override get images(): GalleryImageToken[] {
-		return this.childNodes.filter(isToken('gallery-image'));
-	}
 
 	/* NOT FOR BROWSER END */
 
@@ -108,7 +92,7 @@ export abstract class GalleryToken extends MultiLineToken {
 					continue;
 				}
 				const [, file, alt] = matches;
-				if (this.#checkFile(file, true)) { // eslint-disable-line unicorn/prefer-ternary
+				if (this.#checkFile(file)) { // eslint-disable-line unicorn/prefer-ternary
 					// @ts-expect-error abstract class
 					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 				} else {
@@ -128,73 +112,13 @@ export abstract class GalleryToken extends MultiLineToken {
 	/**
 	 * 检查文件名是否有效
 	 * @param file 文件名
-	 * @param parsing 是否在解析过程中
 	 */
-	#checkFile(file: string, parsing?: boolean): boolean {
+	#checkFile(file: string): boolean {
 		return this.normalizeTitle(
-			parsing ? removeComment(file) : file,
+			removeComment(file),
 			6,
 			{halfParsed: true, temporary: true, decode: true, page: ''},
 		).valid;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const {length: l, childNodes, name} = this,
-				{top, left} = this.getRootNode().posFromIndex(start)!,
-				errors: LintError[] = [],
-				message = Parser.msg('invalid-content', name),
-				rule = 'no-ignored',
-				{lintConfig} = Parser,
-				s = ['Image', 'NoImage', 'Comment'].map(k => lintConfig.getSeverity(rule, `gallery${k}`));
-			for (let i = 0; i < l; i++) {
-				const child = childNodes[i]!,
-					str = child.toString(),
-					{length} = str,
-					trimmed = str.trim(),
-					{type} = child,
-					startLine = top + i,
-					startCol = i ? 0 : left;
-				child.setAttribute('aIndex', start);
-				if (type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
-					let [severity] = s;
-					if (trimmed.startsWith('|')) {
-						[, severity] = s;
-					} else if (trimmed.startsWith('<!--') || trimmed.endsWith('-->')) {
-						[,, severity] = s;
-					}
-					if (severity) {
-						const endIndex = start + length,
-							e: LintError = {
-								rule,
-								message,
-								severity,
-								startIndex: start,
-								endIndex,
-								startLine,
-								endLine: startLine,
-								startCol,
-								endCol: startCol + length,
-							};
-						if (lintConfig.computeEditInfo) {
-							e.suggestions = [
-								fixByRemove(e),
-								fixByComment(e, str),
-							];
-						}
-						errors.push(e);
-					}
-				} else if (type !== 'noinclude' && type !== 'text') {
-					const childErrors = child.lint(start, re);
-					if (childErrors.length > 0) {
-						Array.prototype.push.apply(errors, childErrors);
-					}
-				}
-				start += length + 1;
-			}
-			return errors;
-		}
 	}
 
 	/* PRINT ONLY */
@@ -211,54 +135,12 @@ export abstract class GalleryToken extends MultiLineToken {
 		}
 	}
 
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			Object.assign(json, {widths: this.widths, heights: this.heights});
-			return json;
-		}
-	}
-
 	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
-
-	/**
-	 * Insert an image
-	 *
-	 * 插入图片
-	 * @param file image file name / 图片文件名
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `SyntaxError` if the file name is invalid
-	 */
-	insertImage(file: string, i?: number): GalleryImageToken {
-		if (this.#checkFile(file)) {
-			const token = Shadow.run(
-				(): GalleryImageToken =>
-					// @ts-expect-error abstract class
-					new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
-			);
-			return this.insertAt(token, i);
-		}
-		throw new SyntaxError(`Invalid file name: ${file}`);
-	}
-
-	/** @private */
-	override insertAt(token: string, i?: number): AstText;
-	/** @private */
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
-		if (!Shadow.running && (typeof token === 'string' ? token.trim() : !token.is('gallery-image'))) {
-			throw new RangeError('Please do not insert invisible content into <gallery>!');
-		}
-		return super.insertAt(token as T, i);
-	}
 
 	/** @private */
 	override toHtmlOrPlain(func: HtmlOrPlainFunc): string {
 		return func(this.childNodes.filter(isToken('gallery-image')), '\n');
 	}
 }
-
-classes['GalleryToken'] = __filename;

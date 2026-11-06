@@ -1,5 +1,4 @@
 import {Shadow} from '../util/debug';
-import {mixins} from '../util/constants';
 import type {Token} from '../internal';
 
 /**
@@ -19,5 +18,3 @@ export const clone = (method: (this: Token) => Token) => function(this: Token): 
 		return newToken;
 	});
 };
-
-mixins['clone'] = __filename;

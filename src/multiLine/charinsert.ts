@@ -1,10 +1,6 @@
-import {numLeadingSpaces} from '@bhsd/common';
-import {generateForChild, fixByRemove} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
-import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {CharinsertLineToken} from '../singleLine/charinsertLine';
-import type {Config, LintError} from '../../base';
+import type {Config} from '../../base';
 import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER ONLY */
@@ -15,7 +11,6 @@ import {text} from '../../util/string';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {html} from '../../util/html';
 import {cached} from '../../mixin/cached';
 
@@ -35,8 +30,6 @@ export abstract class CharinsertToken extends MultiLineToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): CharinsertLineToken[];
-	abstract override get firstElementChild(): CharinsertLineToken | undefined;
-	abstract override get lastElementChild(): CharinsertLineToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -54,63 +47,6 @@ export abstract class CharinsertToken extends MultiLineToken {
 		}
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: {
-			const {name, childNodes, length: l} = this,
-				rule = 'no-ignored',
-				{lintConfig} = Parser,
-				{computeEditInfo} = lintConfig,
-				s = lintConfig.getSeverity(rule, name);
-			if (!s) {
-				return [];
-			}
-			const rect = new BoundingRect(this, start),
-				msg = Parser.msg('invalid-space', name),
-				leading: LintError[] = [],
-				errors = super.lint(start);
-			let begin = false;
-			for (let i = l - 1; i >= 0; i--) {
-				const child = childNodes[i]!,
-					str = child.toString(),
-					trimmed = str.trim();
-				if (trimmed) {
-					if (begin) {
-						const [, {length}] = /(?:^|\S)(\s*)$/u.exec(str) as string[] as [string, string];
-						if (length) {
-							const e = generateForChild(child, rect, rule, msg, s);
-							e.startIndex = e.endIndex - length;
-							e.startCol = e.endCol - length;
-							if (computeEditInfo) {
-								e.fix = fixByRemove(e);
-							}
-							errors.push(e);
-						}
-					} else {
-						begin = true;
-					}
-					if (leading.length > 0) {
-						Array.prototype.push.apply(errors, leading);
-						leading.length = 0;
-					}
-				}
-				if (begin) {
-					const n = numLeadingSpaces(str);
-					if (n) {
-						const e = generateForChild(child, rect, rule, msg, s);
-						e.endIndex = e.startIndex + n;
-						e.endCol = e.startCol + n;
-						if (computeEditInfo) {
-							e.fix = fixByRemove(e);
-						}
-						leading.push(e);
-					}
-				}
-			}
-			return errors;
-		}
-	}
-
 	/* NOT FOR BROWSER ONLY */
 
 	/** @private */
@@ -122,15 +58,6 @@ export abstract class CharinsertToken extends MultiLineToken {
 
 	/* NOT FOR BROWSER */
 
-	/**
-	 * Get all insertion items
-	 *
-	 * 获取所有插入项
-	 */
-	getItems(): [string, string?][] {
-		return this.childNodes.flatMap(child => child.getItems());
-	}
-
 	/** @private */
 	@cached()
 	override toHtmlInternal(): string {
@@ -138,5 +65,3 @@ export abstract class CharinsertToken extends MultiLineToken {
 			.replaceAll(/^(?:<br>)+|(?<!<br>)(?:<br>)+$/gu, '');
 	}
 }
-
-classes['CharinsertToken'] = __filename;

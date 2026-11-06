@@ -21,36 +21,9 @@ export const enMsg = /* #__PURE__ */ (() => {
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption', 'class']);
 
-export const extensions = new Set(['tiff', 'tif', 'png', 'gif', 'jpg', 'jpeg', 'webp', 'xcf', 'pdf', 'svg', 'djvu']);
-
-export const jsonTags = ['templatedata', 'mapframe', 'maplink'];
-
-/* NOT FOR BROWSER ONLY */
-
-export const mathTags = new Set(['math', 'chem', 'ce']);
-
 /* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
-
-export const classes: Record<string, string> = {},
-	mixins = classes,
-	parsers = classes;
-
-export const aliases = [
-	['AstText'],
-	['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken', 'TranslateToken'],
-	['ArgToken', 'TranscludeToken', 'HeadingToken'],
-	['HtmlToken'],
-	['TableToken'],
-	['HrToken', 'DoubleUnderscoreToken'],
-	['LinkToken', 'FileToken', 'CategoryToken'],
-	['QuoteToken'],
-	['ExtLinkToken'],
-	['MagicLinkToken'],
-	['ListToken', 'DdToken'],
-	['ConverterToken'],
-];
 
 export const states = new WeakMap<Token, State>();
 

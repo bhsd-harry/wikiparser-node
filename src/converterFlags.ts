@@ -1,18 +1,12 @@
-import {generateForChild, fixByRemove, fixByUpper} from '../util/lint';
 import {toLowerCase} from '../util/string';
-import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
-import {noEscape} from '../mixin/noEscape';
-import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {Config, LintError} from '../base';
+import type {Config} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 
 /* NOT FOR BROWSER END */
@@ -25,7 +19,7 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: AtomToken[]}`
  */
-@gapped() @noEscape
+@gapped()
 export abstract class ConverterFlagsToken extends Token {
 	#flags?: string[];
 
@@ -39,33 +33,13 @@ export abstract class ConverterFlagsToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): AtomToken[];
-	abstract override get firstElementChild(): AtomToken | undefined;
-	abstract override get lastElementChild(): AtomToken | undefined;
-	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousElementSibling(): undefined;
-	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
 	override get type(): 'converter-flags' {
 		return 'converter-flags';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** all language conversion flags / 所有转换类型标记 */
-	get flags(): Set<string> {
-		return this.getAllFlags();
-	}
-
-	set flags(value) {
-		this.replaceChildren();
-		for (const flag of value) {
-			this.#newFlag(flag);
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/** @param flags 转换类型标记 */
 	constructor(flags: readonly string[], config: Config, accum: Token[] = []) {
@@ -84,15 +58,6 @@ export abstract class ConverterFlagsToken extends Token {
 	override afterBuild(): void {
 		this.#flags = this.#getFlags();
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ converterFlagsListener: AstListener = ({prevTarget}) => {
-			if (prevTarget) {
-				this.#flags![this.childNodes.indexOf(prevTarget as AtomToken)] = prevTarget.text().trim();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterFlagsListener);
 	}
 
 	/** @private */
@@ -111,7 +76,7 @@ export abstract class ConverterFlagsToken extends Token {
 	 * 获取未知的转换类型标记
 	 */
 	getUnknownFlags(): Set<string> {
-		LINT: return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
+		return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
 	/**
@@ -120,62 +85,8 @@ export abstract class ConverterFlagsToken extends Token {
 	 * 获取指定语言变体的转换标记
 	 */
 	getVariantFlags(): Set<string> {
-		LINT: {
-			const variants = new Set(toLowerCase(this.getAttribute('config').variants));
-			return new Set(toLowerCase(this.#flags!).filter(flag => variants.has(flag)));
-		}
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const variantFlags = this.getVariantFlags(),
-				unknownFlags = this.getUnknownFlags(),
-				emptyFlagCount = this.#flags!.filter(flag => !flag).length,
-				knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				errors = super.lint(start, re);
-			if (
-				variantFlags.size === knownFlagCount
-				|| this.#flags!.filter(flag => definedFlags.has(flag)).length === knownFlagCount
-			) {
-				return errors;
-			}
-			const rule = 'no-ignored',
-				s = lintConfig.getSeverity(rule, 'conversionFlag');
-			if (s) {
-				const rect = new BoundingRect(this, start),
-					{childNodes, length} = this;
-				for (let i = length - 1; i >= 0; i--) {
-					const child = childNodes[i]!,
-						flag = child.text().trim();
-					if (
-						!flag
-						|| variantFlags.has(flag.toLowerCase())
-						|| unknownFlags.has(flag)
-						|| variantFlags.size === 0 && definedFlags.has(flag)
-					) {
-						continue;
-					}
-					const e = generateForChild(child, rect, rule, 'invalid-conversion-flag', s);
-					if (computeEditInfo || fix) {
-						if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
-							e.fix = fixByUpper(e, flag);
-						} else if (computeEditInfo) {
-							e.suggestions = [fixByRemove(e, i && -1)];
-						}
-					}
-					errors.push(e);
-				}
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({sep: ';'});
+		const variants = new Set(toLowerCase(this.getAttribute('config').variants));
+		return new Set(toLowerCase(this.#flags!).filter(flag => variants.has(flag)));
 	}
 
 	/* NOT FOR BROWSER */
@@ -214,16 +125,6 @@ export abstract class ConverterFlagsToken extends Token {
 	 */
 	getAllFlags(): Set<string> {
 		return new Set(this.#flags);
-	}
-
-	/**
-	 * Get the conversion flag token
-	 *
-	 * 获取转换类型标记节点
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	getFlagTokens(flag: string): AtomToken[] {
-		return this.#flags!.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 
 	/**
@@ -278,62 +179,4 @@ export abstract class ConverterFlagsToken extends Token {
 	hasFlag(flag: string): boolean {
 		return this.#flags!.includes(flag);
 	}
-
-	/**
-	 * Check if an effective language conversion flag is present
-	 *
-	 * 是否具有某有效的转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	hasEffectiveFlag(flag: string): boolean {
-		return this.getEffectiveFlags().has(flag);
-	}
-
-	/**
-	 * Remove a language conversion flag
-	 *
-	 * 移除某转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	removeFlag(flag: string): void {
-		for (const token of this.getFlagTokens(flag)) {
-			token.removeInternal();
-		}
-	}
-
-	/**
-	 * 添加转换类型标记
-	 * @param flag 转换类型标记
-	 */
-	#newFlag(flag: string): void {
-		this.insertAt(Shadow.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config'))));
-	}
-
-	/**
-	 * Set a language conversion flag
-	 *
-	 * 设置转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	setFlag(flag: string): void {
-		if (!this.#flags!.includes(flag)) {
-			this.#newFlag(flag);
-		}
-	}
-
-	/**
-	 * Toggle a language conversion flag
-	 *
-	 * 开关转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	toggleFlag(flag: string): void {
-		if (this.#flags!.includes(flag)) {
-			this.removeFlag(flag);
-		} else {
-			this.#newFlag(flag);
-		}
-	}
 }
-
-classes['ConverterFlagsToken'] = __filename;

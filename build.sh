@@ -15,7 +15,6 @@ then
 	echo 'declare global { type WikiParserAcceptable = Record<string, any>; }' >> dist/index.d.ts
 	bash sed.sh -i '/export = Parser/i \
 // @ts-expect-error mixed export styles' dist/index.d.ts
-	npm run build:define
 	cp dist/base.d.ts dist/base.d.mts
 	mkdir -p dist/extensions
 	cp extensions/*.d.ts dist/extensions/

@@ -3,12 +3,6 @@ import {RedirectToken} from '../src/redirect';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析重定向
  * @param text
@@ -39,5 +33,3 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 	}
 	return false;
 };
-
-parsers['parseRedirect'] = __filename;

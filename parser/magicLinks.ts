@@ -3,12 +3,6 @@ import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const space = String.raw`[${zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
 	sp = `(?:${space})+`,
 	spdash = `(?:${space}|-)`,
@@ -62,5 +56,3 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 		return `${lead}\0${accum.length - 1}i\x7F`;
 	});
 };
-
-parsers['parseMagicLinks'] = __filename;

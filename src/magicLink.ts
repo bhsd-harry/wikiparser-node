@@ -1,26 +1,17 @@
-import {generateForChild, generateForSelf, fixBySpace} from '../util/lint';
 import {zs, text, decodeNumber} from '../util/string';
-import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
 import type {
 	AstText,
 	CommentToken,
 	IncludeToken,
 	NoincludeToken,
 	TranscludeToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
 } from '../internal';
 
 /* NOT FOR BROWSER */
 
 import {getRegex} from '@bhsd/common';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
 import {syntax} from '../mixin/syntax';
 import {cached} from '../mixin/cached';
@@ -69,8 +60,6 @@ export abstract class MagicLinkToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -113,22 +102,9 @@ export abstract class MagicLinkToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	set link(url) {
-		this.setTarget(url);
-	}
-
 	/** URL protocol / 协议 */
 	get protocol(): string | undefined {
 		return this.pattern.exec(this.text())?.[1];
-	}
-
-	/** @throws `Error` if the link is a magic link or special external link */
-	set protocol(value: string) {
-		const {link, pattern, type} = this;
-		if (type === 'magic-link' || !pattern.test(link)) {
-			throw new Error(`Special external link cannot change protocol: ${link}`);
-		}
-		this.setTarget(link.replace(pattern, () => value));
 	}
 
 	/* NOT FOR BROWSER END */
@@ -154,88 +130,13 @@ export abstract class MagicLinkToken extends Token {
 		this.setAttribute('pattern', pattern);
 	}
 
-	/** 判定无效的ISBN */
-	#lint(): boolean {
-		if (this.type === 'magic-link') {
-			const {link} = this;
-			if (link.startsWith('ISBN')) {
-				const digits = [...link.slice(5)].map(s => s === 'X' ? 10 : Number(s));
-				return digits.length === 10
-					? digits.reduce((sum, d, i) => sum + d * (10 - i), 0) % 11 !== 0
-					: digits.length === 13 && (
-						digits[12] === 10
-						|| digits.reduce((sum, d, i) => sum + d * (i % 2 ? 3 : 1), 0) % 10 !== 0
-					);
-			}
-		}
-		return false;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rect = new BoundingRect(this, start),
-				{lintConfig} = Parser,
-				{type, childNodes} = this;
-			if (type === 'magic-link') {
-				const rule = 'invalid-isbn',
-					s = lintConfig.getSeverity(rule);
-				if (s && this.#lint()) {
-					errors.push(generateForSelf(this, rect, rule, 'invalid-isbn', s));
-				}
-				return errors;
-			}
-			let rule: LintError.Rule = 'invalid-url',
-				severity = lintConfig.getSeverity(rule);
-			if (severity && !this.querySelector('magic-word')) {
-				try {
-					this.#getUrl();
-				} catch {
-					errors.push(generateForSelf(this, rect, rule, 'invalid-url', severity));
-				}
-			}
-			const pipe = type === 'ext-link-url';
-			rule = 'unterminated-url';
-			severity = lintConfig.getSeverity(rule, pipe ? 'pipe' : 'punctuation');
-			if (severity) {
-				const regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
-					child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
-				if (child) {
-					const {data} = child,
-						e = generateForChild(
-							child,
-							rect,
-							rule,
-							Parser.msg('in-url', pipe ? '"|"' : 'full-width-punctuation'),
-							severity,
-						);
-					if (lintConfig.computeEditInfo) {
-						const {index, 0: s} = regex.exec(data)!,
-							i = e.startIndex + index;
-						e.suggestions = pipe
-							? [fixBySpace(i, 1)]
-							: [
-								fixBySpace(i),
-								{desc: Parser.msg('encode'), range: [i, i + s.length], text: encodeURI(s)},
-							];
-					}
-					errors.push(e);
-				}
-			}
-			return errors;
-		}
-	}
-
 	/** 获取自由外链的 URL */
 	#getUrl(): URL {
-		LINT: {
-			let {link} = this;
-			if (link.startsWith('//')) {
-				link = `https:${link}`;
-			}
-			return new URL(link);
+		let {link} = this;
+		if (link.startsWith('//')) {
+			link = `https:${link}`;
 		}
+		return new URL(link);
 	}
 
 	/**
@@ -261,18 +162,6 @@ export abstract class MagicLinkToken extends Token {
 		}
 	}
 
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		PRINT: if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
-		}
-		return super.getAttribute(key);
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -281,41 +170,6 @@ export abstract class MagicLinkToken extends Token {
 		const token: this = new MagicLinkToken(undefined, this.type, this.getAttribute('config'));
 		token.setAttribute('pattern', this.pattern);
 		return token;
-	}
-
-	/** @private */
-	override insertAt(token: string, i?: number): AstText;
-	/** @private */
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-		if (typeof token !== 'string') {
-			const {type, name} = token;
-			if (type === 'template') {
-				this.constructorError('cannot insert a template');
-			} else if (type === 'magic-word' && name !== '!' && name !== '=' && !Shadow.running) {
-				this.constructorError('cannot insert magic words other than "{{!}}" or "{{=}}"');
-			}
-		}
-		return super.insertAt(token as string, i);
-	}
-
-	/**
-	 * Set the target of the link
-	 *
-	 * 设置外链目标
-	 * @param url URL containing the protocol / 含协议的网址
-	 */
-	setTarget(url: string): void {
-		this.safeReplaceChildren(Parser.parseWithRef(url, this, 2).childNodes);
-	}
-
-	/**
-	 * Check if it is a parameter of a template or magic word
-	 *
-	 * 是否是模板或魔术字参数
-	 */
-	isParamValue(): boolean {
-		return this.closest('parameter')?.getValue() === this.text();
 	}
 
 	/** @private */
@@ -334,12 +188,4 @@ export abstract class MagicLinkToken extends Token {
 					+ (isISBN ? ' class="internal mw-magiclink-isbn"' : '');
 		return `<a${attrs}>${innerText}</a>`;
 	}
-
-	/** @private */
-	@cached()
-	override plainTextInternal(): string {
-		return this.innerText;
-	}
 }
-
-classes['MagicLinkToken'] = __filename;

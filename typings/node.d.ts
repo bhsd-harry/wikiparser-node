@@ -10,21 +10,15 @@ import type {
 	QuoteToken,
 } from '../internal';
 
-/* NOT FOR BROWSER */
-
-import type {Ranges} from '../lib/ranges';
-
-/* NOT FOR BROWSER END */
-
 declare global {
 	type TokenAttribute<T extends string> =
-		T extends 'stage' | 'padding' | 'aIndex' ? number :
+		T extends 'stage' | 'padding' ? number :
 		T extends 'config' ? Config :
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'nextSibling' | 'previousSibling' ? AstNodes | undefined :
 		T extends 'childNodes' ? AstNodes[] :
-		T extends 'bracket' | 'include' | 'built' | 'invalid' ? boolean :
+		T extends 'bracket' | 'include' | 'built' ? boolean :
 		T extends 'title' ? Title :
 
 		/* NOT FOR BROWSER */
@@ -32,7 +26,6 @@ declare global {
 		T extends 'pattern' ? RegExp :
 		T extends 'tags' | 'quotes' ? [string, string] :
 		T extends 'keys' ? Set<string> :
-		T extends 'protectedChildren' ? Ranges :
 		T extends 'acceptable' ? WikiParserAcceptable | undefined :
 		T extends 'bold' | 'italic' ? QuoteToken :
 

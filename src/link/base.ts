@@ -1,18 +1,11 @@
-import {generateForChild, fixByRemove, fixByDecode, fixByPipe} from '../../util/lint';
 import {
 	MAX_STAGE,
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../../util/constants';
 import {
-	isLink,
 
 	/* NOT FOR BROWSER */
 
-	undo,
 	Shadow,
 } from '../../util/debug';
 import {
@@ -22,34 +15,15 @@ import {
 
 	sanitize,
 } from '../../util/string';
-import {BoundingRect} from '../../lib/rect';
 import {padded} from '../../mixin/padded';
-import {noEscape} from '../../mixin/noEscape';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
-import type {
-	LintError,
-	AST,
-
-	/* NOT FOR BROWSER */
-
-	TokenTypes,
-} from '../../base';
 import type {Title} from '../../lib/title';
-import type {
-	AstText,
-
-	/* NOT FOR BROWSER */
-
-	CategorytreeToken,
-} from '../../internal';
 
 /* NOT FOR BROWSER */
 
 import {cached} from '../../mixin/cached';
-
-const fileTypes = new Set<TokenTypes>(['file', 'gallery-image', 'imagemap-image']);
 
 /* NOT FOR BROWSER END */
 
@@ -59,7 +33,7 @@ const fileTypes = new Set<TokenTypes>(['file', 'gallery-image', 'imagemap-image'
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
-@noEscape @padded('[[')
+@padded('[[')
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;
@@ -81,8 +55,6 @@ export abstract class LinkBaseToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken, ...Token[]];
-	abstract override get firstElementChild(): AtomToken;
-	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
 
@@ -99,36 +71,6 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/* PRINT ONLY END */
-
-	/* NOT FOR BROWSER */
-
-	set fragment(fragment) {
-		this.setFragment(fragment);
-	}
-
-	set link(link: string) {
-		this.setTarget(link);
-	}
-
-	/** interwiki */
-	get interwiki(): string {
-		return this.#title.interwiki;
-	}
-
-	/** @throws `RangeError` if the interwiki prefix is invalid */
-	set interwiki(interwiki) {
-		if (isLink(this.type)) {
-			const {prefix, main, fragment} = this.#title,
-				link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
-			/* c8 ignore next 3 */
-			if (interwiki && !this.isInterwiki(link)) {
-				throw new RangeError(`${JSON.stringify(interwiki)} is not a valid interwiki prefix!`);
-			}
-			this.setTarget(link);
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param link 链接标题
@@ -160,10 +102,6 @@ export abstract class LinkBaseToken extends Token {
 			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren(0);
 	}
 
 	/** 更新name */
@@ -181,46 +119,6 @@ export abstract class LinkBaseToken extends Token {
 		}
 		this.#setName();
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e,
-				{type} = this;
-			if (
-				prevTarget?.is('link-target')
-				&& !(this.is<CategorytreeToken>('ext-inner') && this.parentNode?.selfClosing)
-			) {
-				const name = prevTarget.text(),
-					titleObj = this.getTitle(),
-					{interwiki, ns, valid} = titleObj;
-				if (!valid) {
-					undo(e, data);
-					throw new Error(`Invalid link target: ${name}`);
-				} else if (
-					(type === 'category' || type === 'ext-inner') && (interwiki || ns !== 14)
-					|| fileTypes.has(type) && (interwiki || ns !== 6)
-				) {
-					undo(e, data);
-					throw new Error(
-						`${type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
-					);
-				} else if (
-					type === 'link' && !interwiki && (ns === 6 || ns === 14)
-					&& !name.trimStart().startsWith(':')
-				) {
-					const {firstChild} = prevTarget;
-					if (firstChild?.type === 'text') {
-						firstChild.insertData(0, ':');
-					} else {
-						prevTarget.prepend(':');
-					}
-				}
-				this.#title = titleObj;
-				this.#setName();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
 
 	/** @private */
@@ -283,87 +181,12 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{childNodes: [target, linkText], type} = this,
-				{encoded, fragment} = this.#title,
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				rect = new BoundingRect(this, start);
-			let rule: LintError.Rule = 'unknown-page',
-				s = lintConfig.getSeverity(rule);
-			if (s && target.childNodes.some(({type: t}) => t === 'template')) {
-				errors.push(generateForChild(target, rect, rule, 'template-in-link', s));
-			}
-			rule = 'url-encoding';
-			s = lintConfig.getSeverity(rule);
-			if (s && encoded) {
-				const e = generateForChild(target, rect, rule, 'unnecessary-encoding', s);
-				if (computeEditInfo || fix) {
-					e.fix = fixByDecode(e, target);
-				}
-				errors.push(e);
-			}
-			rule = 'pipe-like';
-			s = lintConfig.getSeverity(rule, 'link');
-			if (s && (type === 'link' || type === 'category')) {
-				const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
-					textNode = linkText?.childNodes[j!] as AstText | undefined;
-				if (textNode) {
-					const e = generateForChild(linkText!, rect, rule, 'pipe-in-link', s);
-					if (computeEditInfo) {
-						const i = e.startIndex + linkText!.getRelativeIndex(j);
-						e.suggestions = [fixByPipe(i, textNode.data)];
-					}
-					errors.push(e);
-				}
-			}
-			rule = 'no-ignored';
-			s = lintConfig.getSeverity(rule, 'fragment');
-			if (s && fragment !== undefined && !isLink(type)) {
-				const e = generateForChild(target, rect, rule, 'useless-fragment', s);
-				if (computeEditInfo || fix) {
-					const j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
-						textNode = target.childNodes[j] as AstText | undefined;
-					if (textNode) {
-						e.fix = fixByRemove(e, target.getRelativeIndex(j) + textNode.data.indexOf('#'));
-					}
-				}
-				errors.push(e);
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
 	getTitle(temporary?: boolean, halfParsed?: boolean): Title {
 		return this.normalizeTitle(
 			this.firstChild.text(),
 			0,
 			{halfParsed, temporary, decode: true, selfLink: true},
 		);
-	}
-
-	/** @private */
-	override print(opt?: Pick<PrintOpt, 'class'>): string {
-		PRINT: return super.print(
-			this.#bracket
-				? {pre: '[[', post: ']]', sep: this.#delimiter}
-				: {sep: this.#delimiter, class: this.type + (opt?.class ? ` wpb-${opt.class}` : '')},
-		);
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start),
-				{type, fragment} = this;
-			if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
-				json['fragment'] = fragment;
-			}
-			return json;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -377,43 +200,6 @@ export abstract class LinkBaseToken extends Token {
 			token.safeAppend(linkText);
 			return token;
 		});
-	}
-
-	/* c8 ignore start */
-	/**
-	 * Set the link target
-	 *
-	 * 设置链接目标
-	 * @param link link target / 链接目标
-	 */
-	setTarget(link: string): void {
-		require('../../addon/link');
-		this.setTarget(link);
-	}
-	/* c8 ignore stop */
-
-	/* c8 ignore start */
-	/**
-	 * Set the fragment
-	 *
-	 * 设置片段标识符
-	 * @param fragment URI fragment / 片段标识符
-	 */
-	setFragment(fragment?: string): void {
-		require('../../addon/link');
-		this.setFragment(fragment);
-	}
-	/* c8 ignore stop */
-
-	/**
-	 * Set the link text
-	 *
-	 * 设置链接显示文字
-	 * @param linkStr link text / 链接显示文字
-	 */
-	setLinkText(linkStr?: string): void {
-		require('../../addon/link');
-		this.setLinkText(linkStr);
 	}
 
 	/** @private */
@@ -442,11 +228,4 @@ export abstract class LinkBaseToken extends Token {
 		/* c8 ignore next */
 		return '';
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
 }
-
-classes['LinkBaseToken'] = __filename;

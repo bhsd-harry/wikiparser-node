@@ -3,7 +3,6 @@ import {Shadow} from '../../util/debug';
 import {Token} from '../index';
 import type {
 	Config,
-	AST,
 } from '../../base';
 import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
 
@@ -13,15 +12,6 @@ import Parser from '../../index';
 
 /* PRINT ONLY END */
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-import {cannotSetRange} from '../../lib/range';
-import {fixedToken} from '../../mixin/fixed';
-import type {AstRange} from '../../lib/range';
-
-/* NOT FOR BROWSER END */
-
 declare type Child = AttributesToken | SyntaxToken;
 
 /**
@@ -30,7 +20,6 @@ declare type Child = AttributesToken | SyntaxToken;
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken|SyntaxToken]}`
  */
-@fixedToken
 export abstract class TagToken extends Token {
 	#closing;
 	#tag;
@@ -46,8 +35,6 @@ export abstract class TagToken extends Token {
 
 	abstract get legacy(): boolean | undefined;
 	abstract override get children(): [Child];
-	abstract override get firstElementChild(): Child;
-	abstract override get lastElementChild(): Child;
 
 	/* NOT FOR BROWSER END */
 
@@ -58,18 +45,9 @@ export abstract class TagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	set closing(value) {
-		this.#closing = Boolean(value);
-	}
-
 	/** @private */
 	get tag(): string {
 		return this.#tag;
-	}
-
-	/** @private */
-	set tag(value: string) {
-		this.#tag = value;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -104,7 +82,7 @@ export abstract class TagToken extends Token {
 	 * 搜索匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		LINT: return cache<this | undefined>(
+		return cache<this | undefined>(
 			this.#match,
 			() => {
 				const {
@@ -205,51 +183,4 @@ export abstract class TagToken extends Token {
 			},
 		);
 	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({
-			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
-			post: `${this.selfClosing ? '/' : ''}&gt;`,
-		});
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			json['closing'] = this.#closing;
-			return json;
-		}
-	}
-
-	/* NOT FOR BROWSER */
-
-	// eslint-disable-next-line jsdoc/require-throws
-	/**
-	 * Get the range of the tag pair
-	 *
-	 * 获取标签对的范围
-	 * @since v1.23.0
-	 */
-	getRange(): AstRange | undefined {
-		const matched = this.findMatchingTag();
-		if (!matched || matched === this) {
-			return undefined;
-		}
-		const {closing} = this,
-			range = this.createRange();
-		range.setStartAfter(closing ? matched : this);
-		try {
-			range.setEndBefore(closing ? this : matched);
-		} catch (e) {
-			if (e instanceof RangeError && e.message === cannotSetRange) {
-				return undefined;
-			}
-			throw e;
-		}
-		return range;
-	}
 }
-
-classes['TagToken'] = __filename;

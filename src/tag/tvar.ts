@@ -1,5 +1,4 @@
 import {hiddenToken} from '../../mixin/hidden';
-import {noEscape} from '../../mixin/noEscape';
 import {TagToken} from './index';
 import {SyntaxToken} from '../syntax';
 import type {Config} from '../../base';
@@ -7,7 +6,6 @@ import type {Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {Shadow} from '../../util/debug';
 
 const legacyPattern = /^\|([^>]+)$/u,
@@ -21,7 +19,7 @@ const legacyPattern = /^\|([^>]+)$/u,
  * `<tvar>`
  * @classdesc `{childNodes: [SyntaxToken]}`
  */
-@hiddenToken() @noEscape
+@hiddenToken()
 export abstract class TvarToken extends TagToken {
 	declare readonly childNodes: readonly [SyntaxToken];
 	abstract override get firstChild(): SyntaxToken;
@@ -30,8 +28,6 @@ export abstract class TvarToken extends TagToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken];
-	abstract override get firstElementChild(): SyntaxToken;
-	abstract override get lastElementChild(): SyntaxToken;
 
 	/* NOT FOR BROWSER END */
 
@@ -106,24 +102,6 @@ export abstract class TvarToken extends TagToken {
 		this.setAttribute('name', name!);
 	}
 
-	/** @private */
-	override afterBuild(): void {
-		super.afterBuild();
-		if (!this.closing) {
-			const /** @implements */ tvarListener: AstListener = ({prevTarget}) => {
-				const {firstChild} = this;
-				if (prevTarget === firstChild) {
-					const {pattern} = firstChild,
-						attr = firstChild.toString();
-					if (pattern.test(attr)) {
-						this.#setName(attr, pattern);
-					}
-				}
-			};
-			this.addEventListener(['remove', 'insert', 'replace', 'text'], tvarListener);
-		}
-	}
-
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
 		return Shadow.run((): this => new TvarToken(
@@ -133,32 +111,4 @@ export abstract class TvarToken extends TagToken {
 			this.getAttribute('config'),
 		));
 	}
-
-	/**
-	 * Set the tvar name.
-	 *
-	 * 设置tvar变量名。
-	 * @param name name / 变量名
-	 * @since v1.28.0
-	 * @throws `Error` if this is a closing tvar tag
-	 * @throws `SyntaxError` if the name contains both `"` and `'`
-	 */
-	setName(name: string): void {
-		const {closing, firstChild} = this;
-		/* c8 ignore next 3 */
-		if (closing) {
-			throw new Error('Cannot set name of a closing tvar tag');
-		}
-		if (firstChild.pattern === legacyPattern) {
-			firstChild.replaceChildren(`|${name}`);
-		} else if (name.includes('"') && name.includes("'")) {
-			/* c8 ignore next */
-			throw new SyntaxError('Tvar name cannot contain both single and double quotes');
-		} else {
-			const quote = name.includes('"') ? "'" : '"';
-			firstChild.replaceChildren(` name=${quote}${name}${quote}`);
-		}
-	}
 }
-
-classes['TvarToken'] = __filename;

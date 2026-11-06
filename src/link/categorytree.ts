@@ -1,8 +1,6 @@
-import {generateForSelf} from '../../util/lint';
 import {padded} from '../../mixin/padded';
-import Parser from '../../index';
 import {LinkBaseToken} from './base';
-import type {Config, LintError} from '../../base';
+import type {Config} from '../../base';
 import type {Title} from '../../lib/title';
 import type {
 	Token,
@@ -15,18 +13,10 @@ import type {
 	AstNodes,
 } from '../../internal';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-import {fixedToken} from '../../mixin/fixed';
-
-/* NOT FOR BROWSER END */
-
 /**
  * `<categorytree>`
  * @classdesc `{childNodes: [AtomToken]}`
  */
-@fixedToken
 @padded('')
 export abstract class CategorytreeToken extends LinkBaseToken {
 	declare readonly name: 'categorytree';
@@ -41,11 +31,7 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken];
-	abstract override get lastElementChild(): AtomToken;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get parentElement(): ExtToken | undefined;
-	abstract override set link(link: string);
 
 	/* NOT FOR BROWSER END */
 
@@ -75,30 +61,6 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 			: this.normalizeTitle(`Category:${target}`, 0, opt);
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: {
-			const rule = 'no-ignored',
-				s = Parser.lintConfig.getSeverity(rule, 'categorytree');
-			return s && this.#lint()
-				? [generateForSelf(this, {start}, rule, 'invalid-category', s)]
-				: super.lint(start, false);
-		}
-	}
-
-	/** 无效的分类名 */
-	#lint(): boolean {
-		const {link} = this;
-		return !link.valid
-			|| link.interwiki !== ''
-			|| link.ns !== 14;
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({class: this.#lint() ? 'invalid' : 'category'});
-	}
-
 	/* NOT FOR BROWSER */
 
 	/** @private */
@@ -115,5 +77,3 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 		}
 	}
 }
-
-classes['CategorytreeToken'] = __filename;

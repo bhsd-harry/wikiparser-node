@@ -1,15 +1,11 @@
-import {parsers, states} from '../util/constants';
+import {states} from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr, sanitize} from '../util/string';
 import {extAttrs} from '../util/sharable';
 import Parser from '../index';
-import type * as SyntaxHighlight from './syntaxhighlight';
-import type * as Math from './math';
-import type * as TemplateData from './templatedata';
-import type {ExtToken, GalleryToken, Token, NowikiToken} from '../internal';
+import type {ExtToken, GalleryToken, Token} from '../internal';
 
 export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
-const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']),
-	templateDataSortValues = {deprecated: -1, suggested: 1, required: 2, optional: 0};
+const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']);
 
 /** @ignore */
 const getCiteNoteId = (i: number, refName?: string): string =>
@@ -99,6 +95,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		case 'syntaxhighlight':
 		case 'source': {
 			let html = trimNewlines(lastChild.toHtmlInternal(renderOpt)),
+				// eslint-disable-next-line prefer-const
 				lexer = firstChild.getAttr('lang');
 			const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
 				isInline = firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline'),
@@ -106,23 +103,6 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 				{classList} = firstChild;
 			classList.add('mw-highlight');
 			if (lexer) {
-				const {Prism, loadLanguage}: typeof SyntaxHighlight = require('./syntaxhighlight');
-				lexer = lexer.toLowerCase();
-				if (Prism) {
-					try {
-						lexer = loadLanguage(lexer);
-						html = Prism.highlight(
-							trimNewlines(lastChild.childNodes.map(
-								child => child.is('ext') && child.name === 'nowiki'
-									? child.innerText ?? ''
-									: child.toString(),
-							).join()),
-							Prism.languages[lexer]!,
-							lexer,
-						);
-						classList.add(`mw-highlight-lang-${lexer.toLowerCase()}`);
-					} catch {}
-				}
 				const highlight = firstChild.getAttr('highlight'),
 					lines = highlight && new Set(
 						highlight.split(',').flatMap((str): number | number[] => {
@@ -357,143 +337,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 					referencesGroup.length > 10 ? ' mw-references-columns' : ''
 				}">${ol}</div>`;
 		}
-		case 'math':
-		case 'chem':
-		case 'ce': {
-			const {texToSvg}: typeof Math = require('./math');
-			const id = firstChild.getAttr('id');
-			return `<span class="mwe-math-element mwe-math-element-${
-				firstChild.getAttr('display') === 'block' ? 'block' : 'inline'
-			}"${id ? ` id="${sanitizeId(id)}"` : ''}>${
-				texToSvg?.((lastChild as NowikiToken).texvcCheck()!) ?? ''
-			}</span>`;
-		}
-		case 'templatedata': {
-			const {
-				validateTemplateData,
-				resolveInterfaceText,
-				resolveOptionalInterfaceText,
-			}: typeof TemplateData = require('./templatedata');
-			const data = validateTemplateData(token.innerText ?? '');
-			if (typeof data === 'string') {
-				return '<div class="cdx-message--error cdx-message cdx-message--block>'
-					+ '<span class="cdx-message__icon"></span>'
-					+ `<div class="cdx-message__content"><p>${sanitize(data)}\n</p></div>`
-					+ '</div>';
-			}
-			const {description, params, paramOrder = Object.keys(params)} = data;
-			return '<section class="mw-templatedata-doc-wrap">'
-				+ `<header><p class="mw-templatedata-doc-desc${
-					description === undefined ? ' mw-templatedata-doc-muted' : ''
-				}">${description === undefined ? 'No description.' : resolveInterfaceText(description)}</p></header>`
-				+ `<table class="wikitable mw-templatedata-doc-params${
-					paramOrder.length === 0 ? '' : ' sortable'
-				}">`
-				+ '<caption><p class="mw-templatedata-caption">Template parameters</p></caption>'
-				+ '<thead>'
-				+ '<tr><th colspan="2">Parameter</th><th>Description</th><th>Type</th><th>Status</th></tr>'
-				+ '</thead>'
-				+ `<tbody>${
-					paramOrder.length === 0
-						? '<tr><td class="mw-templatedata-doc-muted" colspan="7">No parameters specified</td></tr>'
-						: paramOrder.map(p => {
-							const {
-								aliases = [],
-								suggestedvalues,
-								deprecated,
-								required,
-								suggested,
-								label = p,
-								description: desc,
-								default: d,
-								example,
-								autovalue,
-								type = 'unknown',
-							} = params[p]!;
-							let status: 'deprecated' | 'optional' | 'required' | 'suggested' = 'optional';
-							if (deprecated) {
-								status = 'deprecated';
-							} else if (required) {
-								status = 'required';
-							} else if (suggested) {
-								status = 'suggested';
-							}
-							return '<tr>'
-								+ `<th>${resolveInterfaceText(label)}</th>`
-								+ `<td class="mw-templatedata-doc-param-name">${
-									[
-										`<code>${sanitize(p)}</code>`,
-										...aliases.map(alias => `<code class="mw-templatedata-doc-param-alias">${
-											sanitize(alias)
-										}</code>`),
-									].join(' ')
-								}</td>`
-								+ '<td>'
-								+ `<p${desc ? '' : ' class="mw-templatedata-doc-muted"'}>${
-									desc === undefined ? 'no description' : resolveInterfaceText(desc)
-								}</p>`
-								+ `<dl>${
-									suggestedvalues
-										? `<dt>Suggested values</dt><dd>${
-											suggestedvalues.map(v => `<code>${sanitize(v)}</code>`).join(' ')
-										}</dd>`
-										: ''
-								}${resolveOptionalInterfaceText('Default', d)}${
-									resolveOptionalInterfaceText('Example', example)
-								}${resolveOptionalInterfaceText('Auto value', autovalue, true)}</dl>`
-								+ '</td>'
-								+ `<td class="mw-templatedata-doc-param-type${
-									type === 'unknown' ? ' mw-templatedata-doc-muted' : ''
-								}">${type}</td>`
-								+ `<td class="mw-templatedata-doc-param-status-${status}" data-sort-value="${
-									templateDataSortValues[status]
-								}">${status}</td>`
-								+ '</tr>';
-						}).join('')
-				}</tbody>`
-				+ '</table>'
-				+ '</section>';
-		}
 		default:
 			return '';
 	}
 };
-
-/**
- * 将扩展标签渲染为纯文本
- * @param token 扩展标签节点
- */
-export const renderExtPlain = (token: ExtToken): string => {
-	const {name, firstChild, lastChild} = token;
-	switch (name) {
-		case 'nowiki':
-			return lastChild.plainTextInternal({nowrap: token.closest('ext-inner')?.name !== 'poem'});
-		case 'pre':
-			return lastChild.plainTextInternal();
-		case 'langconvert':
-			return lastChild.plainTextInternal({nowrap: true});
-		case 'indicator':
-			return firstChild.getAttr('name')
-				? ''
-				: "Error: Page status indicators' name attribute must not be empty.";
-		case 'poem': {
-			const padding = firstChild.hasAttr('compact') ? '' : '\n';
-			return `${padding}${trimNewlines(lastChild.plainTextInternal())}${padding}`;
-		}
-		case 'gallery': {
-			const caption = firstChild.getAttrToken('caption')?.lastChild.plainTextInternal({nowrap: true});
-			return `\n${caption === undefined ? '' : `${caption}\n`}${lastChild.plainTextInternal()}\n`;
-		}
-		case 'syntaxhighlight':
-		case 'source': {
-			const html = trimNewlines(lastChild.plainTextInternal());
-			return firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline')
-				? html.trim().replaceAll('\n', ' ')
-				: html;
-		}
-		default:
-			return '';
-	}
-};
-
-parsers['renderExt'] = __filename;

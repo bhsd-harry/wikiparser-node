@@ -1,11 +1,10 @@
+import path from 'path';
 import {getPages, reset} from '@bhsd/test-util';
 import {
 	error,
 	info,
-	diff,
 } from '../util/diff';
 import single from './single';
-import lsp from './lsp';
 
 /* NOT FOR BROWSER ONLY */
 
@@ -18,9 +17,6 @@ import Parser from '../index';
 Parser.warning = false;
 
 /* NOT FOR BROWSER END */
-
-const i18n: Record<string, string> = require('../../i18n/zh-hans');
-Parser.i18n = i18n;
 
 const [,, site = ''] = process.argv,
 	apis = ([
@@ -35,7 +31,7 @@ const [,, site = ''] = process.argv,
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`\n开始检查${name}：\n`);
-		Parser.config = config;
+		Parser.config = require(path.join('..', '..', 'config', config));
 		reset();
 		try {
 			let failed = 0;
@@ -48,29 +44,9 @@ const [,, site = ''] = process.argv,
 				},
 			);
 			for (const page of pages) {
-				const {pageid, title, content} = page;
+				const {title} = page;
 				try {
-					const errors = await single(page);
-					if (!errors) {
-						throw new Error('解析错误');
-					} else if (errors.length > 0) {
-						console.log(errors.map(({message, severity}) => ({message, severity})));
-						errors.sort(({startIndex: a}, {startIndex: b}) => b - a);
-						let text = content,
-							firstStart = Infinity;
-						for (const {startIndex, endIndex} of errors) {
-							if (endIndex <= firstStart) {
-								text = text.slice(0, startIndex) + text.slice(endIndex);
-								firstStart = startIndex;
-							} else {
-								firstStart = Math.min(firstStart, startIndex);
-							}
-						}
-						await diff(content, text, pageid);
-					}
-					if (name !== 'MediaWiki') {
-						await lsp(page, true);
-					}
+					await single(page);
 				} catch (e) {
 					error(`解析 ${title} 页面时出错！`);
 					console.error(e);

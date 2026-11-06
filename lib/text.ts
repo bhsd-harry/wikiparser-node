@@ -1,104 +1,20 @@
 import {
-	zs,
 	removeComment,
-	escape,
 
 	/* NOT FOR BROWSER */
 
 	sanitize,
 } from '../util/string';
-import {getEndPos, fixByUpper, fixBySpace, fixByEscape, fixByInsert} from '../util/lint';
-import {setChildNodes, Shadow} from '../util/debug';
+import {setChildNodes} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
-import type {LintError, TokenTypes, FullLintConfigValue} from '../base';
-import type * as Transclude from '../src/transclude';
-import type {AttributeToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
-
-const sp = /* #__PURE__ */ (() => String.raw`[${zs}\t]*`)(),
-	source =/* #__PURE__ */ (
-		() => String.raw`<(?:/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|\n={2,}`
-	)();
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/\bhttps?[:/]\/+|\b(?:rfc|pmid)(?=[-:：]?\s*\d)|\bisbn(?=[-:：]?\s*(?:\d(?:\s*|-)){6})/giu;
-const errorSyntax = /* #__PURE__ */ (() => new RegExp(
-	String.raw`${source}|\bhttps?[:/]/+|\b(?:rfc|pmid)(?=[-:：]?${sp}\d)|\bisbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
-	'giu',
-))();
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<(?:\/[^\S\n]*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|\n={2,}/giu;
-const errorSyntaxUrl = /* #__PURE__ */ new RegExp(source, 'giu'),
-	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
-	regexes = {
-		'[': /[[\]]/u,
-		'{': /[{}]/u,
-		']': /[[\]](?=[^[\]]*$)/u,
-		'}': /[{}](?=[^{}]*$)/u,
-	},
-	magic = new Set(['rfc', 'pmid', 'isbn']),
-	disallowedTags = new Set([
-		'html',
-		'head',
-		'style',
-		'title',
-		'body',
-		'a',
-		'audio',
-		'img',
-		'video',
-		'embed',
-		'iframe',
-		'object',
-		'canvas',
-		'script',
-		'col',
-		'colgroup',
-		'tbody',
-		'tfoot',
-		'thead',
-		'button',
-		'input',
-		'label',
-		'option',
-		'select',
-		'textarea',
-
-		/* NOT FOR BROWSER */
-
-		'base',
-		'menu',
-		'area',
-		'map',
-		'track',
-		'picture',
-		'source',
-		'datalist',
-		'fieldset',
-		'form',
-		'legend',
-		'meter',
-		'optgroup',
-		'output',
-		'progress',
-		'details',
-		'dialog',
-		'slot',
-		'template',
-		'dir',
-		'frame',
-		'frameset',
-		'marquee',
-		'param',
-		'xmp',
-	]);
 
 /**
  * text node
@@ -118,12 +34,6 @@ export class AstText extends AstNode {
 	/** text length / 文本长度 */
 	get length(): number {
 		return this.data.length;
-	}
-
-	set length(n) {
-		if (n >= 0 && n < this.length) {
-			this.replaceData(this.data.slice(0, n));
-		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -156,273 +66,13 @@ export class AstText extends AstNode {
 		return this.data;
 	}
 
-	/** @private */
-	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp | false): LintError[] {
-		LINT: {
-			if (errorRegex === false) {
-				return [];
-			}
-			const {data, parentNode, nextSibling, previousSibling} = this;
-			/* c8 ignore next 3 */
-			if (!parentNode) {
-				throw new Error('An isolated text node cannot be linted!');
-			}
-			const {type, parentNode: grandparent} = parentNode;
-			if (type === 'attr-value') {
-				const {name, tag} = grandparent as AttributeToken;
-				if (
-					tag === 'ref' && (name === 'name' || name === 'follow')
-					|| name === 'group' && (tag === 'ref' || tag === 'references')
-					|| tag === 'choose' && (name === 'before' || name === 'after')
-				) {
-					return [];
-				}
-			}
-			errorRegex ??= parentNode.isPlain() && !noLinkTypes.has(type) ? errorSyntax : errorSyntaxUrl;
-			errorRegex.lastIndex = 0;
-			if (!errorRegex.test(data)) {
-				return [];
-			}
-			errorRegex.lastIndex = 0;
-			let rule: LintError.Rule = 'tag-like';
-			const errors: LintError[] = [],
-				nextType = nextSibling?.type,
-				nextName = nextSibling?.name,
-				previousType = previousSibling?.type,
-				root = this.getRootNode(),
-				rootStr = root.toString(),
-				{ext, html, variants} = root.getAttribute('config'),
-				{top, left} = root.posFromIndex(start)!,
-				{lintConfig} = Parser,
-				tagLike = lintConfig.rules[rule] as FullLintConfigValue,
-				specified = tagLike[1]
-					? new Set(Object.keys(tagLike[1]).filter(tag => tag !== 'invalid' && tag !== 'disallowed'))
-					: new Set(),
-				tags = new Set([
-					'onlyinclude',
-					'noinclude',
-					'includeonly',
-					...ext,
-					...html[0],
-					...html[1],
-					...html[2],
-					...specified,
-					...lintConfig.getSeverity(rule, 'disallowed') ? disallowedTags : [],
-				]);
-			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
-				let {index, 0: error} = mt;
-				const [, tag, prefix] = mt,
-					lbrackInExtLinkText = error === '[' && type === 'ext-link-text';
-				if (prefix && prefix !== ']') {
-					const {length} = prefix;
-					index += length;
-					error = error.slice(length);
-				} else if (
-					error.startsWith('<') && !tags.has(tag!.toLowerCase())
-					|| lbrackInExtLinkText && (
-						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-						|| nextName === 'nowiki' && nextSibling?.is('ext')
-						&& nextSibling.innerText?.includes(']')
-					)
-				) {
-					continue;
-				} else if (error.startsWith('\n==')) {
-					index++;
-					error = error.slice(1);
-				}
-				error = error.toLowerCase();
-				const [char] = error,
-					magicLink = magic.has(error),
-					lbrace = char === '{',
-					rbrace = char === '}',
-					lbrack = char === '[',
-					rbrack = char === ']';
-				let {length} = error;
-				if (rbrack && (index || length > 1)) {
-					errorRegex.lastIndex--;
-				}
-
-				// Rule & Severity
-				let startIndex = start + index,
-					endIndex = startIndex + length,
-					severity: LintError.Severity | false;
-				const nextChar = rootStr[endIndex],
-					previousChar = rootStr[startIndex - 1],
-					leftBracket = lbrace || lbrack,
-					lConverter = error === '{' && previousChar === '-' && variants.length > 0,
-					rConverter = error === '}' && nextChar === '-' && variants.length > 0,
-					brokenExtLink = lbrack && nextType === 'free-ext-link' && !data.slice(index + 1).trim()
-						|| rbrack && previousType === 'free-ext-link' && index === 0;
-				if (magicLink) {
-					rule = 'lonely-http';
-					error = error.toUpperCase();
-					severity = lintConfig.getSeverity(rule, error);
-				} else if (char === '<') {
-					rule = 'tag-like';
-					let key: string | undefined;
-					if (/^<\/?\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
-						key = 'invalid';
-					} else if (specified.has(tag)) {
-						key = tag;
-					} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
-						key = 'disallowed';
-					}
-					severity = lintConfig.getSeverity(rule, key);
-				} else if (char === '=') {
-					rule = 'syntax-like';
-					severity = lintConfig.getSeverity(rule, 'heading');
-				} else if (lConverter || rConverter) {
-					rule = 'lonely-bracket';
-					severity = lintConfig.getSeverity(rule, 'converter');
-					if (lConverter && index > 0) {
-						error = '-{';
-						index--;
-						startIndex--;
-						length = 2;
-					} else if (rConverter && index < data.length - 1) {
-						error = '}-';
-						endIndex++;
-						length = 2;
-					}
-				} else if (brokenExtLink) {
-					rule = 'lonely-bracket';
-					severity = lintConfig.getSeverity(rule, 'extLink');
-				} else if (leftBracket || rbrace || rbrack) {
-					rule = 'lonely-bracket';
-					if (length > 1 || lbrace && nextChar === char || rbrace && previousChar === char) {
-						severity = lintConfig.getSeverity(rule, 'double');
-					} else {
-						if (!lbrackInExtLinkText) {
-							const regex = regexes[char],
-								remains = leftBracket ? data.slice(index + 1) : data.slice(0, index);
-							if (
-								lbrace && regex.exec(remains)?.[0] === '}'
-								|| rbrace && regex.exec(remains)?.[0] === '{'
-							) {
-								continue;
-							} else if (!remains.includes(char)) {
-								const sibling = leftBracket ? 'nextSibling' : 'previousSibling';
-								let cur = this[sibling];
-								while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
-									cur = cur[sibling];
-								}
-								if (cur && regex.exec(cur.data)![0] !== char) {
-									continue;
-								}
-							}
-						}
-						severity = lintConfig.getSeverity(rule, 'single');
-					}
-				} else {
-					rule = 'lonely-http';
-					severity = lintConfig.getSeverity(rule);
-				}
-				if (!severity) {
-					continue;
-				}
-
-				// LintError
-				const pos = this.posFromIndex(index)!,
-					{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left);
-				let endLine: number | undefined,
-					endCol: number | undefined;
-				if (char === '=') {
-					const lineEnd = data.indexOf('\n', index);
-					let sibling = nextSibling,
-						line: string;
-					if (lineEnd === -1) {
-						let end = 0;
-						while (sibling) {
-							if (sibling.type === 'text') {
-								end = sibling.data.indexOf('\n');
-								if (end !== -1) {
-									break;
-								}
-							}
-							sibling = sibling.nextSibling;
-						}
-						if (!sibling) {
-							continue;
-						}
-						line = sibling.data.slice(0, end);
-					} else {
-						line = data.slice(index + length, lineEnd);
-					}
-					if (!/(?:^|[^=])=+\s*(?:\S\s*)?$/u.test(line)) {
-						continue;
-					} else if (lineEnd === -1) {
-						endIndex = sibling!.getAbsoluteIndex() + line.length;
-						({top: endLine, left: endCol} = root.posFromIndex(endIndex)!);
-					} else {
-						endIndex += line.length;
-						length += line.length;
-					}
-				}
-				const e: LintError = {
-					rule,
-					message: Parser.msg(
-						char === '=' ? 'header-like' : 'lonely',
-						magicLink || char === 'h' || lConverter || rConverter ? error : char,
-					),
-					severity,
-					startIndex,
-					endIndex,
-					startLine,
-					endLine: endLine ?? startLine,
-					startCol,
-					endCol: endCol ?? startCol + length,
-				};
-
-				// Suggestions
-				if (lintConfig.computeEditInfo) {
-					if (char === '<') {
-						e.suggestions = [fixByEscape(startIndex, '&lt;')];
-					} else if (char === 'h' && type !== 'link-text' && /[\p{L}\p{N}_]/u.test(previousChar ?? '')) {
-						e.suggestions = [fixBySpace(startIndex)];
-					} else if (lbrackInExtLinkText) {
-						const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
-						e.suggestions = [fixByEscape(i, '&#93;')];
-					} else if (error === ']' && brokenExtLink) {
-						const i = start - previousSibling!.toString().length;
-						e.suggestions = [fixByInsert(i, 'left-bracket', '[')];
-					} else if (magicLink) {
-						e.suggestions = [
-							...mt[0] === error
-								? []
-								: [fixByUpper(e, error)],
-							...nextChar === ':' || nextChar === '：'
-								? [fixBySpace(endIndex, 1)]
-								: [],
-						];
-					}
-				}
-
-				errors.push(e);
-			}
-			return errors;
-		}
-	}
-
 	/**
 	 * 修改内容
 	 * @param text 新内容
 	 */
 	@readOnly()
 	#setData(text: string): void {
-		/* NOT FOR BROWSER */
-
-		const {data} = this,
-			e = new Event('text', {bubbles: true});
-
-		/* NOT FOR BROWSER END */
-
 		this.setAttribute('data', text);
-
-		/* NOT FOR BROWSER */
-
-		if (data !== text) {
-			this.dispatchEvent(e, {type: 'text', oldText: data});
-		}
 	}
 
 	/**
@@ -445,68 +95,12 @@ export class AstText extends AstNode {
 	 */
 	splitText(offset: number): AstText {
 		LSP: {
-			/* NOT FOR BROWSER */
-
-			/* c8 ignore next 3 */
-			if (Math.abs(offset) > this.length) {
-				throw new RangeError(`Wrong offset to split: ${offset}`);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			const {parentNode, data} = this;
-			/* c8 ignore next 3 */
-			if (!parentNode) {
-				throw new Error('The text node to be split has no parent node!');
-			}
 			const newText = new AstText(data.slice(offset));
-			setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
+			setChildNodes(parentNode!, parentNode!.childNodes.indexOf(this) + 1, 0, [newText]);
 			this.setAttribute('data', data.slice(0, offset));
 			return newText;
 		}
-	}
-
-	/**
-	 * Escape `=` and `|`
-	 *
-	 * 转义 `=` 和 `|`
-	 * @since v1.1.4
-	 * @throws `Error` if the text node has no parent node
-	 */
-	escape(): void {
-		LSP: {
-			const {parentNode} = this;
-			/* c8 ignore next 3 */
-			if (!parentNode) {
-				throw new Error('The text node to be escaped has no parent node!');
-			}
-			const {TranscludeToken}: typeof Transclude = require('../src/transclude');
-			const config = parentNode.getAttribute('config'),
-				index = parentNode.childNodes.indexOf(this) + 1;
-
-			/**
-			 * Get the last index of `=` or `|`
-			 * @param j start position from the end
-			 */
-			const lastIndexOf = (j?: number): number =>
-				Math.max(this.data.lastIndexOf('=', j), this.data.lastIndexOf('|', j));
-			let i = lastIndexOf();
-			const callback = /** @ignore */ (): TranscludeToken =>
-				// @ts-expect-error abstract class
-				new TranscludeToken(this.data[i] === '=' ? '=' : '!', [], config);
-			for (; i >= 0; i = lastIndexOf(i - 1)) {
-				if (i < this.data.length - 1) {
-					this.splitText(i + 1);
-				}
-				parentNode.insertAt(Shadow.run(callback), index);
-				this.#setData(this.data.slice(0, i));
-			}
-		}
-	}
-
-	/** @private */
-	print(): string {
-		PRINT: return escape(this.data);
 	}
 
 	/* NOT FOR BROWSER */
@@ -518,16 +112,6 @@ export class AstText extends AstNode {
 	 */
 	cloneNode(): AstText {
 		return new AstText(this.data);
-	}
-
-	/**
-	 * Insert text at the end
-	 *
-	 * 在后方添加字符串
-	 * @param text text to be inserted / 添加的字符串
-	 */
-	appendData(text: string): void {
-		this.#setData(this.data + text);
 	}
 
 	/**
@@ -553,40 +137,6 @@ export class AstText extends AstNode {
 	 */
 	insertData(offset: number, text: string): void {
 		this.#setData(this.data.slice(0, offset) + text + this.data.slice(offset));
-	}
-
-	/**
-	 * Get the substring
-	 *
-	 * 提取子串
-	 * @param offset start position / 起始位置
-	 * @param count number of characters / 字符数
-	 */
-	substringData(offset: number, count?: number): string {
-		return this.data.substr(offset, count);
-	}
-
-	/** @private */
-	override getRelativeIndex(j?: number): number {
-		if (j === undefined) {
-			return super.getRelativeIndex();
-		}
-		/* c8 ignore next 3 */
-		if (j < 0 || j > this.length) {
-			throw new RangeError('Exceeding the text length range!');
-		}
-		return j;
-	}
-
-	/**
-	 * Generate HTML
-	 *
-	 * 生成HTML
-	 * @param nowrap whether to disable line-wrapping / 是否不换行
-	 * @since v1.10.0
-	 */
-	toHtml(nowrap?: boolean): string {
-		return sanitize(this.plainText(nowrap));
 	}
 
 	/**
@@ -665,5 +215,3 @@ export class AstText extends AstNode {
 		return this.plainText(opt?.nowrap);
 	}
 }
-
-classes['AstText'] = __filename;

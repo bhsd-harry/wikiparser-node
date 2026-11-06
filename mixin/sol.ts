@@ -1,5 +1,4 @@
 import {mixin, isIsolated} from '../util/debug';
-import {mixins} from '../util/constants';
 import type {Token} from '../internal';
 
 /**
@@ -40,5 +39,3 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 	mixin(SolToken, constructor);
 	return SolToken;
 };
-
-mixins['sol'] = __filename;

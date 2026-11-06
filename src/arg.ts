@@ -1,21 +1,14 @@
-import {generateForSelf, fixBy} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {padded} from '../mixin/padded';
 import {gapped} from '../mixin/gapped';
-import {noEscape} from '../mixin/noEscape';
-import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../base';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 
 /* NOT FOR BROWSER END */
@@ -26,7 +19,7 @@ import {Shadow} from '../util/debug';
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]]}`
  */
-@noEscape @padded('{{{') @gapped()
+@padded('{{{') @gapped()
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
@@ -36,31 +29,12 @@ export abstract class ArgToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
-	abstract override get firstElementChild(): AtomToken;
-	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
 
 	override get type(): 'arg' {
 		return 'arg';
 	}
-
-	/* PRINT ONLY */
-
-	/** default value / 预设值 */
-	get default(): string | false {
-		LSP: return this.childNodes[1]?.text() ?? false;
-	}
-
-	/* PRINT ONLY END */
-
-	/* NOT FOR BROWSER */
-
-	set default(value) {
-		this.setDefault(value);
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: readonly string[], config: Config, accum: Token[] = []) {
@@ -83,10 +57,6 @@ export abstract class ArgToken extends Token {
 			}
 			super.insertAt(token);
 		}
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren(0);
 	}
 
 	/** @private */
@@ -115,57 +85,6 @@ export abstract class ArgToken extends Token {
 	override afterBuild(): void {
 		LSP: this.#setName();
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
-			if (prevTarget === this.firstChild) {
-				this.#setName();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{lintConfig} = Parser,
-				rect = new BoundingRect(this, start);
-			let rule: LintError.Rule = 'no-arg',
-				s = lintConfig.getSeverity(rule);
-			if (s && !this.getAttribute('include')) {
-				const e = generateForSelf(this, rect, rule, 'unexpected-argument', s),
-					[, argDefault] = this.childNodes;
-				if (argDefault && lintConfig.computeEditInfo) {
-					e.suggestions = [fixBy(e, 'expand', argDefault.text())];
-				}
-				errors.push(e);
-			}
-			const ext = this.closest('ext');
-			if (ext) {
-				rule = 'arg-in-ext';
-				s = lintConfig.getSeverity(rule, ext.name);
-				if (s) {
-					errors.push(generateForSelf(this, rect, rule, 'argument-in-ext', s));
-				}
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({pre: '{{{', post: '}}}', sep: '|'});
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			json['default'] = this.default;
-			return json;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -182,79 +101,17 @@ export abstract class ArgToken extends Token {
 	}
 
 	/**
-	 * Remove redundant parts
-	 *
-	 * 移除无效部分
-	 */
-	removeRedundant(): void {
-		Shadow.run(() => {
-			for (let i = this.length - 1; i > 1; i--) {
-				super.removeAt(i);
-			}
-		});
-	}
-
-	/**
-	 * @override
-	 * @param i position of the child node / 移除位置
-	 */
-	override removeAt(i: number): Token {
-		if (i === 1) {
-			this.removeRedundant();
-		}
-		return super.removeAt(i) as Token;
-	}
-
-	/**
 	 * @override
 	 * @param token node to be inserted / 待插入的子节点
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
-		if (Shadow.running) {
-			//
-		} else if (i > 1) {
-			this.constructorError('cannot insert redundant child nodes');
-		} else if (typeof token === 'string') {
-			this.constructorError('cannot insert text nodes');
-		}
 		super.insertAt(token, i);
 		if (i === 1) {
 			token.type = 'arg-default';
 		}
 		return token;
-	}
-
-	/**
-	 * Set the argument name
-	 *
-	 * 设置参数名
-	 * @param name new argument name / 新参数名
-	 */
-	setName(name: string): void {
-		this.firstChild.safeReplaceChildren(Parser.parseWithRef(name, this, 2).childNodes);
-	}
-
-	/**
-	 * Set the default value
-	 *
-	 * 设置预设值
-	 * @param value default value / 预设值
-	 */
-	setDefault(value: string | false): void {
-		if (value === false) {
-			this.removeAt(1);
-			return;
-		}
-		const [, oldDefault] = this.childNodes,
-			root = Parser.parseWithRef(value, this);
-		if (oldDefault) {
-			oldDefault.safeReplaceChildren(root.childNodes);
-		} else {
-			root.type = 'arg-default';
-			this.insertAt(root);
-		}
 	}
 
 	/** @private */
@@ -266,5 +123,3 @@ export abstract class ArgToken extends Token {
 		return this.childNodes[1]![method](opt);
 	}
 }
-
-classes['ArgToken'] = __filename;

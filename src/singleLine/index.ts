@@ -3,7 +3,6 @@ import type {MultiLineToken} from '../multiLine/index';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
 import {clone} from '../../mixin/clone';
 
@@ -18,12 +17,6 @@ import {clone} from '../../mixin/clone';
 export abstract class SingleLineToken extends Token {
 	abstract override get parentNode(): MultiLineToken | undefined;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get parentElement(): MultiLineToken | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	/** @private */
 	override isPlain(): boolean {
 		return this.type === 'plain';
@@ -37,5 +30,3 @@ export abstract class SingleLineToken extends Token {
 		return new C(undefined, this.getAttribute('config'));
 	}
 }
-
-classes['SingleLineToken'] = __filename;

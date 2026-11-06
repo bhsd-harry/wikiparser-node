@@ -1,4 +1,3 @@
-import {generateForSelf, generateForChild, fixByRemove, fixByOpen} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
@@ -8,14 +7,11 @@ import {
 	normalizeSpace,
 	text,
 } from '../util/string';
-import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {
 	Config,
-	LintError,
 
 	/* NOT FOR BROWSER */
 
@@ -33,7 +29,6 @@ import type {TableTokens} from './table/index';
 
 import {html} from '../util/html';
 import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {ClassList} from '../lib/classList';
 import {clone} from '../mixin/clone';
 import {cached} from '../mixin/cached';
@@ -58,16 +53,6 @@ export const toAttributeType = (type: AttributesTypes): AttributeTypes =>
  * @param type 属性类型
  */
 const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
-
-const required = new Map([
-	['indicator', ['name']],
-	['langconvert', ['from', 'to']],
-	['mapframe', ['width', 'height']],
-	['maplink', ['width', 'height']],
-	['phonos', [['ipa', 'file', 'wikibase']]],
-	['section', [['begin', 'end']]],
-	['templatestyles', ['src']],
-]);
 
 /* NOT FOR BROWSER */
 
@@ -114,9 +99,6 @@ export abstract class AttributesToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
-	abstract override get parentElement(): ExtToken | HtmlToken | TableTokens | undefined;
 	abstract override get previousElementSibling(): SyntaxToken | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -126,16 +108,6 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/* NOT FOR BROWSER */
-
-	/** all attributes / 全部属性 */
-	get attributes(): Record<string, string> {
-		return this.getAttrs();
-	}
-
-	set attributes(attrs: Record<string, string | true>) {
-		this.replaceChildren();
-		this.setAttr(attrs);
-	}
 
 	/** class attribute in string / 以字符串表示的class属性 */
 	get className(): string {
@@ -155,21 +127,6 @@ export abstract class AttributesToken extends Token {
 	/** id attribute / id属性 */
 	get id(): string {
 		return this.getAttr('id') || '';
-	}
-
-	set id(id) {
-		this.setAttr('id', id || false);
-	}
-
-	/** whether to contain invalid attributes / 是否含有无效属性 */
-	get sanitized(): boolean {
-		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim()).length === 0;
-	}
-
-	set sanitized(sanitized) {
-		if (sanitized) {
-			this.sanitize();
-		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -288,147 +245,19 @@ export abstract class AttributesToken extends Token {
 		return this.getAttrToken(key)?.getValue();
 	}
 
-	/** 是否位于闭合标签内 */
-	#lint(): boolean {
-		const {parentNode} = this;
-		return parentNode?.type === 'html' && parentNode.closing && this.text().trim() !== '';
-	}
-
 	/** @private */
-	lintRef(): string;
-	/** @private */
-	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
-	/** @private */
-	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
-		LINT: {
-			const followAttr = this.getAttrToken('follow'),
-				follow = followAttr?.getValue(),
-				name = this.getAttr('name'),
-				rule = 'invalid-ref';
-			if (follow && !/\D/u.test(follow)) {
-				const msg = 'int-name';
-				return rect ? generateForChild(followAttr!, rect, rule, msg, severity) : msg;
-			} else if (follow && (this.hasAttr('details') || name && /\D/u.test(name))) {
-				const msg = 'ref-follow';
-				return rect ? generateForSelf(this, rect, rule, msg, severity) : msg;
-			}
-			return '';
+	lintRef(): string {
+		const followAttr = this.getAttrToken('follow'),
+			follow = followAttr?.getValue(),
+			name = this.getAttr('name');
+		if (follow && !/\D/u.test(follow)) {
+			const msg = 'int-name';
+			return msg;
+		} else if (follow && (this.hasAttr('details') || name && /\D/u.test(name))) {
+			const msg = 'ref-follow';
+			return msg;
 		}
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{parentNode, childNodes, length: l, type, name: tag} = this,
-				attrs = new Map<string, AttributeToken[]>(),
-				duplicated = new Set<string>(),
-				rect = new BoundingRect(this, start),
-				rules = ['no-ignored', 'required-attr', 'invalid-ref', 'no-duplicate'] as const,
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				s = ['closingTag', 'invalidAttributes', 'nonWordAttributes']
-					.map(k => lintConfig.getSeverity(rules[0], k));
-			if (s[0] && this.#lint()) {
-				const e = generateForSelf(this, rect, rules[0], 'attributes-of-closing-tag', s[0]);
-				if (computeEditInfo) {
-					const index = parentNode!.getAbsoluteIndex();
-					e.suggestions = [
-						fixByRemove(e),
-						fixByOpen(index),
-					];
-				}
-				errors.push(e);
-			}
-			for (let i = l - 1; i >= 0; i--) {
-				const attr = childNodes[i]!;
-				if (attr instanceof AttributeToken) {
-					const {name} = attr;
-					if (attrs.has(name)) {
-						duplicated.add(name);
-						attrs.get(name)!.push(attr);
-					} else {
-						attrs.set(name, [attr]);
-					}
-				} else {
-					const str = attr.text().trim(),
-						severity = s[/[\p{L}\p{N}]/u.test(str) ? 1 : 2];
-					if (str && severity) {
-						const e = generateForChild(attr, rect, rules[0], 'invalid-attribute', severity);
-						if (computeEditInfo) {
-							e.suggestions = [fixByRemove(e, 0, ' ')];
-						}
-						errors.push(e);
-					}
-				}
-			}
-			if (type === 'ext-attrs' && required.has(tag)) {
-				const severity = lintConfig.getSeverity(rules[1], tag);
-				if (severity) {
-					for (const key of required.get(tag)!) {
-						const keys = typeof key === 'string' ? [key] : key;
-						if (!keys.some(k => this.getAttr(k))) {
-							errors.push(generateForSelf(
-								this,
-								rect,
-								rules[1],
-								Parser.msg('required-attribute', keys.join('/')),
-								severity,
-							));
-						}
-					}
-				}
-			}
-			if (tag === 'ref') {
-				const severity = lintConfig.getSeverity(rules[2]);
-				if (severity) {
-					const e = this.lintRef(rect, severity);
-					if (e) {
-						errors.push(e);
-					}
-				}
-			}
-			const severity = lintConfig.getSeverity(rules[3], 'attribute');
-			if (severity && duplicated.size > 0) {
-				for (const key of duplicated) {
-					const pairs = attrs.get(key)!.map(attr => [attr, attr.getValue()] as const),
-						{length} = pairs,
-						duplication = Array.from<LintError>({length}),
-						values = new Set<string>();
-					for (let i = 0; i < length; i++) {
-						const [attr, value] = pairs[i]!,
-							e = generateForChild(
-								attr,
-								rect,
-								rules[3],
-								Parser.msg('duplicate-attribute', key),
-								severity,
-							);
-						if (computeEditInfo || fix) {
-							const remove = fixByRemove(e);
-							if (!value || values.has(value)) {
-								e.fix = remove;
-							} else {
-								values.add(value);
-								if (computeEditInfo) {
-									e.suggestions = [remove];
-								}
-							}
-						}
-						duplication[length - i - 1] = e;
-					}
-					Array.prototype.push.apply(errors, duplication);
-				}
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
-	override escape(): void {
-		LSP: if (this.type !== 'ext-attrs') {
-			super.escape();
-		}
+		return '';
 	}
 
 	/* PRINT ONLY */
@@ -437,44 +266,19 @@ export abstract class AttributesToken extends Token {
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* NOT FOR BROWSER */
 
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (key === 'padding') {
 			return this.#leadingSpace(super.toString()).length as TokenAttribute<T>;
 		}
 
 		/* NOT FOR BROWSER END */
 
-		PRINT: if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
-		}
 		return super.getAttribute(key);
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return this.toString()
-			? `<span class="wpb-${this.type}${this.#lint() ? ' wpb-invalid' : ''}">${
-				this.childNodes.map(child => child.print(
-					child instanceof AtomToken ? {class: child.toString().trim() && 'attr-dirty'} : undefined,
-				)).join('')
-			}</span>`
-			: '';
 	}
 
 	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
-
-	/* c8 ignore start */
-	/**
-	 * Sanitize invalid attributes
-	 *
-	 * 清理无效属性
-	 */
-	sanitize(): void {
-		require('../addon/attribute');
-		this.sanitize();
-	}
-	/* c8 ignore stop */
 
 	@clone
 	override cloneNode(): this {
@@ -490,17 +294,9 @@ export abstract class AttributesToken extends Token {
 	 */
 	override insertAt<T extends Child>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
-			/* c8 ignore next 3 */
-			if (!Shadow.running && token.toString().trim()) {
-				this.constructorError('can only insert AttributeToken');
-			}
 			return super.insertAt(token, i);
 		}
-		const {type, name, length} = this;
-		/* c8 ignore next 3 */
-		if (token.type !== type.slice(0, -1) || token.tag !== name) {
-			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
-		}
+		const {type, length} = this;
 		if (i === length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
@@ -508,9 +304,6 @@ export abstract class AttributesToken extends Token {
 			}
 		} else {
 			token.close();
-		}
-		if (this.isInside('parameter')) {
-			token.escape();
 		}
 		super.insertAt(token, i);
 		const {previousVisibleSibling, nextVisibleSibling} = token,
@@ -532,23 +325,11 @@ export abstract class AttributesToken extends Token {
 	 * 设置指定属性
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
-	 * @param prop attribute object / 属性对象
 	 * @throws `RangeError` if the attribute of an extension tag contains `>`
 	 */
-	setAttr(key: string, value: string | boolean): void;
-	setAttr(prop: Record<string, string | boolean>): void;
-	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
+	setAttr(key: string, value: string | boolean): void {
 		require('../addon/attribute');
-		this.setAttr(keyOrProp as string, value!);
-	}
-
-	/**
-	 * Get all attribute names
-	 *
-	 * 获取全部的属性名
-	 */
-	getAttrNames(): Set<string> {
-		return new Set(this.getAttrTokens().map(({name}) => name));
+		this.setAttr(key, value);
 	}
 
 	/**
@@ -559,33 +340,6 @@ export abstract class AttributesToken extends Token {
 	getAttrs(): Record<string, string> {
 		return Object.fromEntries(this.getAttrTokens().map(({name, value}) => [name, value]));
 	}
-
-	/**
-	 * Remove an attribute
-	 *
-	 * 移除指定属性
-	 * @param key attribute name / 属性键
-	 */
-	removeAttr(key: string): void {
-		for (const attr of this.getAttrTokens(key)) {
-			attr.removeInternal();
-		}
-	}
-
-	/* c8 ignore start */
-	/**
-	 * Toggle the specified attribute
-	 *
-	 * 开关指定属性
-	 * @param key attribute name / 属性键
-	 * @param force whether to force enabling or disabling / 强制开启或关闭
-	 * @throws `RangeError` if the attribute is not a boolean attribute
-	 */
-	toggleAttr(key: string, force?: boolean): void {
-		require('../addon/attribute');
-		this.toggleAttr(key, force);
-	}
-	/* c8 ignore stop */
 
 	/**
 	 * 生成引导空格
@@ -634,26 +388,4 @@ export abstract class AttributesToken extends Token {
 		const output = map.size === 0 ? '' : html(map.values(), ' ', {removeBlank: true});
 		return output && ` ${output}`;
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
-
-	/* c8 ignore start */
-	/**
-	 * Get the value of a style property
-	 *
-	 * 获取某一样式属性的值
-	 * @param key style property / 样式属性
-	 * @param value style property value / 样式属性值
-	 * @since v1.17.1
-	 */
-	css(key: string, value?: string | number): string | undefined {
-		require('../addon/attribute');
-		return this.css(key, value);
-	}
-	/* c8 ignore stop */
 }
-
-classes['AttributesToken'] = __filename;

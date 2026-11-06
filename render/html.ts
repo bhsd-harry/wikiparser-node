@@ -1,4 +1,4 @@
-import {states, parsers} from '../util/constants';
+import {states} from '../util/constants';
 import {sanitizeAttr} from '../util/string';
 import type {RenderOpt} from '../base';
 import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken, ExtToken} from '../internal';
@@ -218,5 +218,3 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	states.delete(token);
 	return prelim + html;
 };
-
-parsers['toHtml'] = __filename;

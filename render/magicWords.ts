@@ -1,8 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import {posix} from 'path';
 import {expr} from '../vendor/expr';
 import {escape, replaceEntities, sanitizeId, decodeHtml} from '../util/string';
-import {parsers} from '../util/constants';
 import {getId} from '../util/html';
 import {Shadow} from '../util/debug';
 import Parser from '../index';
@@ -570,16 +568,6 @@ export const expandMagicWord = (
 			accum[accum.indexOf(token)] = undefined;
 			return token.firstChild!.toString();
 		}
-		case 'rel2abs': {
-			const to = !arg0 || arg0.startsWith('/') ? `.${arg0}` : arg0,
-				from = /^\.{1,2}(?:$|\/)/u.test(to) ? args[1] || page : '',
-				abs = posix.join(from, to);
-			return abs === '.' || /^\.\.(?:$|\/)/u.test(abs)
-				? '<strong class="error">'
-				+ 'Error: Invalid depth in path (tried to access a node above the root node).'
-				+ '</strong>'
-				: abs.replace(/\/$/u, '');
-		}
 		case 'titleparts': {
 			const title = makeTitle(arg0, config, 0, true);
 			if (!title) {
@@ -756,5 +744,3 @@ export const expandMagicWord = (
 			throw new RangeError(`Unsupported magic word: ${name}`);
 	}
 };
-
-parsers['expandMagicWord'] = __filename;

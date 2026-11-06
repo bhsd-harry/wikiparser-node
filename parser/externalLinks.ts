@@ -5,12 +5,6 @@ import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析外部链接
  * @param wikitext
@@ -49,5 +43,3 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		return `\0${length}w\x7F`;
 	});
 };
-
-parsers['parseExternalLinks'] = __filename;

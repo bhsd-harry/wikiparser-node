@@ -86,7 +86,7 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 /* c8 ignore start */
 /** @implements */
 export const error: log = (msg, ...args) => {
-	console.error(util.styleText('red', msg), ...args);
+	console.error(msg, ...args);
 };
 /* c8 ignore stop */
 

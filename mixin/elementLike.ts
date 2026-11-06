@@ -3,8 +3,6 @@ import type {AstElement} from '../lib/element';
 import type {
 	AstNodes,
 	Token,
-	HtmlToken,
-	ExtToken,
 } from '../internal';
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
@@ -13,13 +11,6 @@ import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 import {mixin} from '../util/debug';
 
 /* NOT FOR BROWSER ONLY END */
-
-/* NOT FOR BROWSER */
-
-import {mixins} from '../util/constants';
-import type {ClassList} from '../lib/classList';
-
-/* NOT FOR BROWSER END */
 
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly parentNode: Token | undefined;
@@ -36,12 +27,6 @@ export interface ElementLike {
 
 	/** all child elements / 全部非文本子节点 */
 	readonly children: Token[];
-
-	/** first child element / 首位非文本子节点 */
-	readonly firstElementChild: Token | undefined;
-
-	/** last child element / 末位非文本子节点 */
-	readonly lastElementChild: Token | undefined;
 
 	/** number of child elements / 非文本子节点总数 */
 	readonly childElementCount: number;
@@ -77,186 +62,94 @@ export interface ElementLike {
 	 */
 	querySelectorAll<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K][];
 	querySelectorAll<T = Token>(selector: string): T[];
-
-	/**
-	 * Escape `=` and `|`
-	 *
-	 * 转义 `=` 和 `|`
-	 * @since v1.18.3
-	 */
-	escape(): void;
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Get the first descendant of the types
-	 *
-	 * 类型选择器
-	 * @param types token types / 节点类型
-	 */
-	getElementByTypes<K extends SelectedTokenTypes>(types: K): TokenTypeMap[K] | undefined;
-	getElementByTypes<T = Token>(types: string): T | undefined;
-
-	/**
-	 * Get the first descendant with the id
-	 *
-	 * id选择器
-	 * @param id id名
-	 */
-	getElementById<T = Token>(id: string): T | undefined;
-
-	/**
-	 * Get all descendants with the class
-	 *
-	 * 类选择器
-	 * @param className class name / 类名之一
-	 */
-	getElementsByClassName<T = Token>(className: string): T[];
-
-	/**
-	 * Get all descendants with the tag name
-	 *
-	 * 标签名选择器
-	 * @param tag tag name / 标签名
-	 */
-	getElementsByTagName<T extends HtmlToken | ExtToken = HtmlToken | ExtToken>(tag: string): T[];
 }
 
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
-	LINT: {
-		abstract class ElementLike extends constructor implements ElementLike {
-			/* NOT FOR BROWSER */
+	abstract class ElementLike extends constructor implements ElementLike {
+		/* NOT FOR BROWSER */
 
-			get children(): Token[] {
-				return this.childNodes.filter((child): child is Token => child.type !== 'text');
-			}
-
-			get firstElementChild(): Token | undefined {
-				return this.childNodes.find((child): child is Token => child.type !== 'text');
-			}
-
-			get lastElementChild(): Token | undefined {
-				return this.childNodes.findLast((child): child is Token => child.type !== 'text');
-			}
-
-			get childElementCount(): number {
-				return this.children.length;
-			}
-
-			/* NOT FOR BROWSER END */
-
-			#getCondition<T>(selector: string): TokenPredicate<T> {
-				return getCondition<T>(
-					selector,
-					// eslint-disable-next-line unicorn/no-negated-condition
-					!('type' in this) ?
-						undefined :
-						this as unknown as AstElement,
-				);
-			}
-
-			closest(selector: string): Token | undefined {
-				const condition = this.#getCondition(selector);
-				let {parentNode} = this;
-				while (parentNode) {
-					if (condition(parentNode)) {
-						return parentNode;
-					}
-					({parentNode} = parentNode);
-				}
-				return undefined;
-			}
-
-			getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
-				const stack = [...this.childNodes].reverse();
-				while (stack.length > 0) {
-					const child = stack.pop()!,
-						{type, childNodes} = child;
-					if (type === 'text') {
-						continue;
-					} else if (condition(child)) {
-						return child;
-					}
-					for (let i = childNodes.length - 1; i >= 0; i--) {
-						stack.push(childNodes[i]!);
-					}
-				}
-				return undefined;
-			}
-
-			querySelector(selector: string): Token | undefined {
-				return this.getElementBy(this.#getCondition(selector));
-			}
-
-			getElementsBy<T>(condition: TokenPredicate<T>): T[] {
-				const stack = [...this.childNodes].reverse(),
-					descendants: T[] = [];
-				while (stack.length > 0) {
-					const child = stack.pop()!,
-						{type, childNodes} = child;
-					if (type === 'text') {
-						continue;
-					} else if (condition(child)) {
-						descendants.push(child);
-					}
-					for (let i = childNodes.length - 1; i >= 0; i--) {
-						stack.push(childNodes[i]!);
-					}
-				}
-				return descendants;
-			}
-
-			querySelectorAll(selector: string): Token[] {
-				return this.getElementsBy(this.#getCondition(selector));
-			}
-
-			escape(): void {
-				LSP: {
-					for (const child of this.childNodes) {
-						child.escape();
-					}
-
-					/* NOT FOR BROWSER */
-
-					this.detach?.();
-				}
-			}
-
-			/* NOT FOR BROWSER */
-
-			getElementByTypes(types: string): Token | undefined {
-				const typeSet = new Set(types.split(',').map(str => str.trim()));
-				return this.getElementBy((({type}) => typeSet.has(type)) as TokenPredicate);
-			}
-
-			getElementById<T = Token>(id: string): T | undefined {
-				return this.getElementBy((token => 'id' in token && token.id === id) as TokenPredicate<T>);
-			}
-
-			getElementsByClassName<T = Token>(className: string): T[] {
-				return this.getElementsBy(
-					(
-						token => 'classList' in token && (token.classList as ClassList).has(className)
-					) as TokenPredicate<T>,
-				);
-			}
-
-			getElementsByTagName<T extends HtmlToken | ExtToken = HtmlToken | ExtToken>(tag: string): T[] {
-				return this.getElementsBy<T>(
-					(({type, name}) => name === tag && (type === 'html' || type === 'ext')) as TokenPredicate<T>,
-				);
-			}
+		get children(): Token[] {
+			return this.childNodes.filter((child): child is Token => child.type !== 'text');
 		}
 
-		/* NOT FOR BROWSER ONLY */
+		get childElementCount(): number {
+			return this.children.length;
+		}
 
-		mixin(ElementLike, constructor);
+		/* NOT FOR BROWSER END */
 
-		/* NOT FOR BROWSER ONLY END */
+		#getCondition<T>(selector: string): TokenPredicate<T> {
+			return getCondition<T>(
+				selector,
+				// eslint-disable-next-line unicorn/no-negated-condition
+				!('type' in this) ?
+					undefined :
+					this as unknown as AstElement,
+			);
+		}
 
-		return ElementLike;
+		closest(selector: string): Token | undefined {
+			const condition = this.#getCondition(selector);
+			let {parentNode} = this;
+			while (parentNode) {
+				if (condition(parentNode)) {
+					return parentNode;
+				}
+				({parentNode} = parentNode);
+			}
+			return undefined;
+		}
+
+		getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
+			const stack = [...this.childNodes].reverse();
+			while (stack.length > 0) {
+				const child = stack.pop()!,
+					{type, childNodes} = child;
+				if (type === 'text') {
+					continue;
+				} else if (condition(child)) {
+					return child;
+				}
+				for (let i = childNodes.length - 1; i >= 0; i--) {
+					stack.push(childNodes[i]!);
+				}
+			}
+			return undefined;
+		}
+
+		querySelector(selector: string): Token | undefined {
+			return this.getElementBy(this.#getCondition(selector));
+		}
+
+		getElementsBy<T>(condition: TokenPredicate<T>): T[] {
+			const stack = [...this.childNodes].reverse(),
+				descendants: T[] = [];
+			while (stack.length > 0) {
+				const child = stack.pop()!,
+					{type, childNodes} = child;
+				if (type === 'text') {
+					continue;
+				} else if (condition(child)) {
+					descendants.push(child);
+				}
+				for (let i = childNodes.length - 1; i >= 0; i--) {
+					stack.push(childNodes[i]!);
+				}
+			}
+			return descendants;
+		}
+
+		querySelectorAll(selector: string): Token[] {
+			return this.getElementsBy(this.#getCondition(selector));
+		}
 	}
-};
 
-mixins['elementLike'] = __filename;
+	/* NOT FOR BROWSER ONLY */
+
+	mixin(ElementLike, constructor);
+
+	/* NOT FOR BROWSER ONLY END */
+
+	return ElementLike;
+};

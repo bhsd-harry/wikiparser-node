@@ -7,7 +7,6 @@ import type {Config} from '../../base';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import {trimLc} from '../../util/string';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
@@ -19,7 +18,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
  */
 export abstract class TranslateToken extends TagPairToken implements Omit<
 	AttributesParentBase,
-	'attributes' | 'className' | 'classList' | 'id' | 'getAttrNames' | 'getAttrs' | 'css'
+	'attributes' | 'className' | 'classList' | 'id' | 'getAttrNames' | 'getAttrs' | 'css' | 'setAttr' | 'hasAttr'
 > {
 	declare name: 'translate';
 	declare closed: true;
@@ -32,8 +31,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken, Token];
-	abstract override get firstElementChild(): SyntaxToken;
-	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
 
@@ -135,62 +132,13 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		PRINT: return this.firstChild.toString() === ' nowrap';
 	}
 
-	/** @private */
-	override print(): string {
-		PRINT: return `<span class="wpb-ext">&lt;translate${
-			this.#isNowrap()
-				? '<span class="wpb-ext-attrs"> <span class="wpb-ext-attr">'
-				+ '<span class="wpb-attr-key">nowrap</span>'
-				+ '</span></span>'
-				: ''
-		}&gt;${this.lastChild.print({class: 'ext-inner'})}&lt;/translate&gt;</span>`;
-	}
-
 	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 
-	/**
-	 * 设置nowrap属性
-	 * @param nowrap 是否nowrap
-	 */
-	#setNowrap(nowrap: unknown): void {
-		this.firstChild.replaceChildren(nowrap ? ' nowrap' : '');
-	}
-
 	/** @implements */
 	getAttr(key: string): '' | undefined {
 		return trimLc(key) === 'nowrap' && this.#isNowrap() ? '' : undefined;
-	}
-
-	/** @implements */
-	hasAttr(key: string): boolean {
-		return trimLc(key) === 'nowrap' && this.#isNowrap();
-	}
-
-	/** @implements */
-	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
-		if (typeof keyOrProp === 'object') {
-			for (const key in keyOrProp) {
-				this.setAttr(key, keyOrProp[key]);
-			}
-		} else if (trimLc(keyOrProp) === 'nowrap') {
-			this.#setNowrap(value);
-		}
-	}
-
-	/** @implements */
-	removeAttr(key: string): void {
-		if (trimLc(key) === 'nowrap') {
-			this.firstChild.replaceChildren();
-		}
-	}
-
-	/** @implements */
-	toggleAttr(key: string, force?: boolean): void {
-		if (trimLc(key) === 'nowrap') {
-			this.#setNowrap(force ?? !this.#isNowrap());
-		}
 	}
 
 	override cloneNode(): this {
@@ -227,5 +175,3 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		return inner[method](opt);
 	}
 }
-
-classes['TranslateToken'] = __filename;

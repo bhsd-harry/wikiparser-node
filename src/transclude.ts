@@ -1,29 +1,19 @@
 import {
 	removeComment,
-	decodeHtml,
-	print,
-	escape,
 
 	/* NOT FOR BROWSER */
 
 	noWrap,
 	sanitizeId,
 } from '../util/string';
-import {generateForChild, generateForSelf, fixByRemove} from '../util/lint';
 import {
 	getMagicWordInfo,
 	Shadow,
 } from '../util/debug';
 import {
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../util/constants';
-import {BoundingRect} from '../lib/rect';
 import {gapped} from '../mixin/gapped';
-import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -31,20 +21,12 @@ import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {
 	Config,
-	LintError,
 } from '../base';
 import type {Title} from '../lib/title';
-import type {AstText} from '../internal';
 
 /* NOT FOR BROWSER */
 
 import {cached} from '../mixin/cached';
-
-declare interface Frame {
-	args: Record<string, string>;
-	parent?: this | undefined;
-	title: string;
-}
 
 /* NOT FOR BROWSER END */
 
@@ -59,7 +41,7 @@ const sortArgs = /** @ignore */ ({childNodes}: TranscludeToken, args: Set<Parame
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...ParameterToken[]]}`
  */
-@noEscape @gapped()
+@gapped()
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	readonly #type: 'template' | 'magic-word' = 'template';
@@ -94,62 +76,12 @@ export abstract class TranscludeToken extends Token {
 
 	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstElementChild(): AtomToken | SyntaxToken;
-	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/* NOT FOR BROWSER END */
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
 	}
-
-	/**
-	 * module name
-	 *
-	 * 模块名
-	 * @since v1.21.0
-	 */
-	get module(): string | undefined {
-		LSP: return this.type === 'magic-word' && this.name === 'invoke' ? this.#getTitle().title : undefined;
-	}
-
-	/**
-	 * function name
-	 *
-	 * 函数名
-	 * @since v1.21.2
-	 */
-	get function(): string | undefined {
-		LSP: return this.type === 'magic-word' && this.name === 'invoke'
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			? this.childNodes[2]?.text().trim()
-			: undefined;
-	}
-
-	/* NOT FOR BROWSER */
-
-	/** whether to contain duplicated parameters / 是否存在重复参数 */
-	get duplication(): boolean {
-		return (this.isTemplate() || this.name === 'tag') && Boolean(this.hasDuplicatedArgs());
-	}
-
-	set duplication(duplication) {
-		if (!duplication && this.duplication) {
-			this.fixDuplication();
-		}
-	}
-
-	/**
-	 * number of anonymous parameters
-	 *
-	 * 匿名参数的个数
-	 * @since v1.36.0
-	 */
-	get anonCount(): number {
-		return this.#anonCount;
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param title 模板标题或魔术字
@@ -220,7 +152,6 @@ export abstract class TranscludeToken extends Token {
 					/* NOT FOR BROWSER */
 
 					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
-					this.protectChildren('1:3');
 
 					/* NOT FOR BROWSER END */
 
@@ -286,12 +217,6 @@ export abstract class TranscludeToken extends Token {
 		/* PRINT ONLY */
 
 		this.seal('modifier');
-
-		/* PRINT ONLY END */
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren(0);
 	}
 
 	/**
@@ -369,34 +294,6 @@ export abstract class TranscludeToken extends Token {
 				this.#title = this.#getTitle();
 				this.setAttribute('name', this.#title.title);
 			}
-
-			/* NOT FOR BROWSER */
-
-			/**
-			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
-			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-			 * @implements
-			 */
-			const transcludeListener: AstListener = ({prevTarget}, data) => {
-				const {oldKey, newKey} = data;
-				if (typeof oldKey === 'string') {
-					delete data.oldKey;
-					delete data.newKey;
-				}
-				if (isTemplate && prevTarget === this.firstChild) {
-					this.#title = this.#getTitle();
-					this.setAttribute('name', this.#title.title);
-				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
-					const oldArgs = this.getArgs(oldKey!, false, false);
-					oldArgs.delete(prevTarget);
-					this.getArgs(newKey!, false, false).add(prevTarget);
-					this.#keys.add(newKey!);
-					if (oldArgs.size === 0) {
-						this.#keys.delete(oldKey!);
-					}
-				}
-			};
-			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
 		}
 	}
 
@@ -444,16 +341,6 @@ export abstract class TranscludeToken extends Token {
 			case 'colon':
 				return this.#colon as TokenAttribute<T>;
 
-				/* PRINT ONLY */
-
-			case 'invalid':
-				PRINT: return (
-					this.type === 'magic-word' && this.name === 'invoke'
-					&& (this.length === 2 || !this.#getTitle().valid)
-				) as TokenAttribute<T>;
-
-				/* PRINT ONLY END */
-
 				/* NOT FOR BROWSER */
 
 			case 'keys':
@@ -463,76 +350,6 @@ export abstract class TranscludeToken extends Token {
 
 			default:
 				return super.getAttribute(key);
-		}
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{type, childNodes, length: l, name} = this,
-				rect = new BoundingRect(this, start),
-				{lintConfig} = Parser,
-				{computeEditInfo} = lintConfig,
-				isTemplate = this.isTemplate();
-			let rule: LintError.Rule,
-				s: LintError.Severity | false;
-			if (isTemplate) {
-				const invoke = type === 'magic-word';
-				if (invoke && !this.#getTitle().valid) {
-					rule = 'invalid-invoke';
-					s = lintConfig.getSeverity(rule, 'name');
-					if (s) {
-						errors.push(generateForChild(childNodes[1], rect, rule, 'illegal-module', s));
-					}
-				} else {
-					rule = 'no-ignored';
-					s = lintConfig.getSeverity(rule, 'fragment');
-					if (s) {
-						const child = childNodes[invoke ? 1 : 0] as AtomToken,
-							i = child.childNodes
-								.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
-							textNode = child.childNodes[i] as AstText | undefined;
-						if (textNode) {
-							const e = generateForChild(child, rect, rule, 'useless-fragment', s);
-							if (computeEditInfo) {
-								e.suggestions = [
-									fixByRemove(
-										e,
-										child.getRelativeIndex(i) + textNode.data.indexOf('#'),
-									),
-								];
-							}
-							errors.push(e);
-						}
-					}
-				}
-				rule = 'invalid-invoke';
-				s = lintConfig.getSeverity(rule, 'function');
-				if (s && invoke && l === 2) {
-					errors.push(generateForSelf(this, rect, rule, 'missing-function', s));
-				}
-			}
-			rule = 'no-duplicate';
-			s = lintConfig.getSeverity(rule, 'parameter');
-			if (s && (isTemplate || name === 'tag')) {
-				const duplicatedArgs = this.getDuplicatedArgs()
-					.filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
-				for (const [, args] of duplicatedArgs) {
-					const {length} = args,
-						duplication = Array.from<LintError>({length});
-					for (let i = length - 1; i >= 0; i--) {
-						const arg = args[i]!,
-							e = generateForChild(arg, rect, rule, 'duplicate-parameter', s);
-						if (computeEditInfo) {
-							e.suggestions = [fixByRemove(e, -1)];
-						}
-						duplication[i] = e;
-					}
-					Array.prototype.push.apply(errors, duplication);
-				}
-			}
-			return errors;
 		}
 	}
 
@@ -660,41 +477,13 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
-	 * Get duplicated parameters
-	 *
-	 * 获取重名参数
-	 * @throws `Error` if not a template or module invocation
-	 */
-	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		LINT: {
-			const isTemplate = this.isTemplate();
-			if (isTemplate || this.name === 'tag') {
-				const duplicatedArgs = [...this.#args].filter(([, {size}]) => size > 1)
-					.map(([key, args]): [string, ParameterToken[]] => [key, sortArgs(this, args)]);
-				return isTemplate
-					? duplicatedArgs
-					: duplicatedArgs
-						.map(([key, args]): [string, ParameterToken[]] => [key, args.filter(({anon}) => !anon)])
-						.filter(([, args]) => args.length > 1);
-			}
-
-			/* NOT FOR BROWSER */
-
-			throw new Error('TranscludeToken.getDuplicatedArgs method is only for template!');
-		}
-	}
-
-	/**
 	 * Get possible values of some magic words
 	 *
 	 * 对特定魔术字获取可能的取值
 	 * @throws `Error` if not a supported magic word
 	 */
 	getPossibleValues(): Token[] {
-		const {type, name, childNodes, length: l} = this;
-		if (type === 'template') {
-			throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
-		}
+		const {name, childNodes, length: l} = this;
 		let start: number | undefined,
 			queue: Token[] | undefined;
 		switch (name) {
@@ -741,24 +530,6 @@ export abstract class TranscludeToken extends Token {
 		return queue;
 	}
 
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const {childNodes, length, firstChild, modifier, type} = this;
-			return `<span class="wpb-${type}${
-				this.getAttribute('invalid') ? ' wpb-invalid' : ''
-			}">{{${
-				type === 'magic-word'
-					? escape(modifier)
-					+ firstChild.print()
-					+ (length === 1 ? '' : this.#colon)
-					+ print(childNodes.slice(1), {sep: '|'})
-					: (modifier ? `<span class="wpb-magic-word">${escape(modifier)}</span>` : '')
-						+ print(childNodes, {sep: '|'})
-			}}}</span>`;
-		}
-	}
-
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -782,24 +553,6 @@ export abstract class TranscludeToken extends Token {
 			token.safeAppend(cloned);
 			return token;
 		});
-	}
-
-	/**
-	 * Convert to substitution
-	 *
-	 * 替换引用
-	 */
-	subst(): void {
-		this.setModifier('subst:');
-	}
-
-	/**
-	 * Convert to safe substitution
-	 *
-	 * 安全的替换引用
-	 */
-	safesubst(): void {
-		this.setModifier('safesubst:');
 	}
 
 	/**
@@ -856,62 +609,16 @@ export abstract class TranscludeToken extends Token {
 	 *
 	 * 获取生效的指定参数
 	 * @param key parameter name / 参数名
-	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
 	getArg(
 		key: string | number,
-		exact?: boolean,
 	): ParameterToken | undefined {
 		const args = [
 			...this.getArgs(
 				key,
-				exact,
 			),
 		];
 		return args[args.length - 1];
-	}
-
-	/**
-	 * Remove parameters with the specified name
-	 *
-	 * 移除指定参数
-	 * @param key parameter name / 参数名
-	 * @param exact whether to match anonymosity / 是否匹配匿名性
-	 */
-	removeArg(key: string | number, exact?: boolean): void {
-		Shadow.run(() => {
-			for (const token of this.getArgs(key, exact, false)) {
-				if (token.anon) {
-					this.anonToNamed();
-				}
-				this.removeChild(token);
-			}
-		});
-	}
-
-	/**
-	 * Get all parameter names
-	 *
-	 * 获取所有参数名
-	 */
-	getKeys(): string[] {
-		const args = this.getAllArgs();
-		if (this.#keys.size === 0 && args.length > 0) {
-			for (const {name} of args) {
-				this.#keys.add(name);
-			}
-		}
-		return [...this.#keys];
-	}
-
-	/**
-	 * Get parameter values
-	 *
-	 * 获取参数值
-	 * @param key parameter name / 参数名
-	 */
-	getValues(key: string | number): string[] {
-		return [...this.getArgs(key)].map(token => token.getValue());
 	}
 
 	/**
@@ -920,177 +627,8 @@ export abstract class TranscludeToken extends Token {
 	 * 获取生效的参数值
 	 * @param key parameter name / 参数名
 	 */
-	getValue(): Record<string, string>;
-	getValue(key: string | number): string | undefined;
-	getValue(
-		key?: string
-			| number,
-	): string
-		| Record<string, string>
-		| undefined {
-		if (key === undefined) { // eslint-disable-line unicorn/prefer-ternary
-			return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)!]));
-		}
+	getValue(key: string): string | undefined {
 		return this.getArg(key)?.getValue();
-	}
-
-	/**
-	 * Insert an anonymous parameter
-	 *
-	 * 插入匿名参数
-	 * @param val parameter value / 参数值
-	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
-	 */
-	newAnonArg(val: string, newline?: boolean): ParameterToken {
-		require('../addon/transclude');
-		return this.newAnonArg(val, newline);
-	}
-
-	/**
-	 * Set the parameter value
-	 *
-	 * 设置参数值
-	 * @param key parameter name / 参数名
-	 * @param value parameter value / 参数值
-	 * @param newline whether to append the new parameter on a new line / 是否在添加参数时另起一行
-	 * @throws `Error` if not a template or module invocation
-	 */
-	setValue(
-		key:
-		string,
-		value: string,
-		newline?: boolean,
-	): void {
-		require('../addon/transclude');
-		this.setValue(key, value, newline);
-	}
-
-	/**
-	 * Convert all anonymous parameters to named ones
-	 *
-	 * 将匿名参数改写为命名参数
-	 * @throws `Error` if not a template or module invocation
-	 */
-	anonToNamed(): void {
-		if (!this.isTemplate()) {
-			throw new Error('TranscludeToken.anonToNamed method is only for template!');
-		}
-		for (const token of this.getAnonArgs()) {
-			token.firstChild.replaceChildren(token.name);
-		}
-	}
-
-	/**
-	 * Replace the template name
-	 *
-	 * 替换模板名
-	 * @param title template name / 模板名
-	 * @throws `Error` if not a template
-	 */
-	replaceTemplate(title: string): void {
-		require('../addon/transclude');
-		this.replaceTemplate(title);
-	}
-
-	/**
-	 * Replace the module name
-	 *
-	 * 替换模块名
-	 * @param title module name / 模块名
-	 * @throws `Error` if not a module invocation
-	 */
-	replaceModule(title: string): void {
-		require('../addon/transclude');
-		this.replaceModule(title);
-	}
-
-	/**
-	 * Replace the module function
-	 *
-	 * 替换模块函数
-	 * @param func module function name / 模块函数名
-	 * @throws `Error` if not a module invocation
-	 */
-	replaceFunction(func: string): void {
-		require('../addon/transclude');
-		this.replaceFunction(func);
-	}
-
-	/**
-	 * Count duplicated parameters
-	 *
-	 * 重复参数计数
-	 * @throws `Error` if not a template or module invocation
-	 */
-	hasDuplicatedArgs(): number {
-		if (this.isTemplate() || this.name === 'tag') {
-			return this.getAllArgs().length - this.getKeys().length;
-		}
-		throw new Error('TranscludeToken.hasDuplicatedArgs method is only for template!');
-	}
-
-	/**
-	 * Fix duplicated parameters
-	 * @description
-	 * - Only empty parameters and identical parameters are removed with `aggressive = false`.
-	 * Anonymous parameters have a higher precedence, otherwise all anonymous parameters are converted to named ones.
-	 * - Additionally, consecutive numbered parameters are treated with `aggressive = true`.
-	 *
-	 * 修复重名参数
-	 * @description
-	 * - `aggressive = false`时只移除空参数和全同参数，优先保留匿名参数，否则将所有匿名参数更改为命名。
-	 * - `aggressive = true`时还会尝试处理连续的以数字编号的参数。
-	 * @param aggressive whether to use a more risky approach / 是否使用有更大风险的修复手段
-	 */
-	fixDuplication(aggressive?: boolean): string[] {
-		require('../addon/transclude');
-		return this.fixDuplication(aggressive);
-	}
-
-	/**
-	 * Escape tables inside the template
-	 *
-	 * 转义模板内的表格
-	 * @throws `Error` if failed
-	 */
-	escapeTables(): this {
-		require('../addon/transclude');
-		return this.escapeTables();
-	}
-
-	/**
-	 * Get the module name and module function name
-	 *
-	 * 获取模块名和模块函数名
-	 * @since v1.16.4
-	 * @throws `Error` if not a module invocation
-	 */
-	getModule(): [string, string | undefined] {
-		/* c8 ignore next 3 */
-		if (this.type !== 'magic-word' || this.name !== 'invoke') {
-			throw new Error('TranscludeToken.getModule method is only for modules!');
-		}
-		return [this.module!, this.function];
-	}
-
-	/**
-	 * Get the [frame object](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object)
-	 *
-	 * 获取 [frame 对象](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#frame-object)
-	 * @param context template calling this module / 调用该模块的模板
-	 * @since v1.22.0
-	 * @throws `Error` if not a module invocation
-	 */
-	getFrame(context?: this): Frame {
-		/* c8 ignore next 3 */
-		if (this.type === 'template' ? context : this.name !== 'invoke') {
-			throw new Error('TranscludeToken.getFrame method is only for modules!');
-		}
-		return {
-			args: this.getValue(),
-			parent: context?.getFrame(),
-			title: this.#getTitle().toString(true),
-		};
 	}
 
 	/** @ignore */
@@ -1116,12 +654,4 @@ export abstract class TranscludeToken extends Token {
 			} (page does not exist)">${title}</a>`
 			: title;
 	}
-
-	/** @private */
-	@cached()
-	override plainTextInternal(opt?: PlainOpt): string {
-		return this.#toHtmlOrPlain(opt)[0];
-	}
 }
-
-classes['TranscludeToken'] = __filename;

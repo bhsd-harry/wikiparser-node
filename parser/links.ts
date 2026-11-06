@@ -8,12 +8,6 @@ import {CategoryToken} from '../src/link/category';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su;
 
 /**
@@ -136,5 +130,3 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], pag
 	}
 	return s;
 };
-
-parsers['parseLinks'] = __filename;

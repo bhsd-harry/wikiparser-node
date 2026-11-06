@@ -1,26 +1,12 @@
-import {generateForSelf, generateForChild, fixBy, fixByRemove} from '../../util/lint';
-import {isToken} from '../../util/debug';
-import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {MultiLineToken} from './index';
 import {CommentLineToken} from '../nowiki/commentLine';
 import {GalleryImageToken} from '../link/galleryImage';
 import {ImagemapLinkToken} from '../singleLine/imagemapLink';
-import type {LintError} from '../../base';
 import type {
 	AstText,
 	Token,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
 } from '../../internal';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
 
 declare type Child = GalleryImageToken | CommentLineToken | ImagemapLinkToken;
 
@@ -38,15 +24,8 @@ export abstract class ImagemapToken extends MultiLineToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get firstElementChild(): GalleryImageToken | CommentLineToken | undefined;
-	abstract override get lastElementChild(): Child | undefined;
 
 	/* NOT FOR BROWSER END */
-
-	/** 图片 */
-	get image(): GalleryImageToken | undefined {
-		return this.childNodes.find(isToken('imagemap-image'));
-	}
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
@@ -137,77 +116,4 @@ export abstract class ImagemapToken extends MultiLineToken {
 			super.insertAt(new CommentLineToken(line, config, accum) as CommentLineToken);
 		}
 	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rect = new BoundingRect(this, start),
-				{childNodes, image} = this,
-				rule = 'invalid-imagemap',
-				{lintConfig} = Parser,
-				{computeEditInfo} = lintConfig,
-				s = lintConfig.getSeverity(rule, image ? 'link' : 'image');
-			if (s) {
-				if (image) {
-					const comments = childNodes.filter(child => {
-						const str = child.toString().trim();
-						return child.is<CommentLineToken>('noinclude')
-							&& str && !str.startsWith('#');
-					});
-					for (let i = comments.length - 1; i >= 0; i--) {
-						const e = generateForChild(comments[i]!, rect, rule, 'invalid-imagemap-link', s);
-						if (computeEditInfo) {
-							e.suggestions = [
-								fixByRemove(e, -1),
-								fixBy(e, 'comment', '# '),
-							];
-						}
-						errors.push(e);
-					}
-				} else {
-					errors.push(generateForSelf(this, rect, rule, 'imagemap-without-image', s));
-				}
-			}
-			return errors;
-		}
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		PRINT: if (key === 'invalid') {
-			return !this.image as TokenAttribute<T>;
-		}
-		return super.getAttribute(key);
-	}
-
-	/* PRINT ONLY END */
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override insertAt(token: string, i?: number): AstText;
-	/** @private */
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-		const {image} = this;
-		if (!image && (typeof token === 'string' || token.is('imagemap-link') || token.type === 'text')) {
-			throw new Error('Missing a valid image!');
-		} else if (image && typeof token !== 'string' && token.is('imagemap-image')) {
-			throw new RangeError('Already have a valid image!');
-		}
-		return super.insertAt(token as T, i);
-	}
-
-	/** @private */
-	override removeAt(i: number): AstNodes {
-		if (!this.parentNode?.selfClosing && this.childNodes[i]?.is('imagemap-image')) {
-			throw new Error('Do not remove the image in <imagemap>!');
-		}
-		return super.removeAt(i);
-	}
 }
-
-classes['ImagemapToken'] = __filename;

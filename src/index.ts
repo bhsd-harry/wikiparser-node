@@ -1,28 +1,12 @@
 import {
 	text,
-
-	/* NOT FOR BROWSER */
-
-	isInterwiki,
-	decodeHtml,
 } from '../util/string';
 import {
 	MAX_STAGE,
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	aliases,
-	classes,
 } from '../util/constants';
 import {
-	generateForSelf,
 	cache,
-	fixByRemove,
-
-	/* PRINT ONLY */
-
-	isFostered,
 } from '../util/lint';
 import {
 	setChildNodes,
@@ -37,7 +21,6 @@ import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {
 	TokenTypes,
-	LintError,
 
 	/* NOT FOR BROWSER */
 
@@ -58,65 +41,17 @@ import type * as ListParser from '../parser/list';
 import type * as ConverterParser from '../parser/converter';
 import type {
 	AstNodes,
-	AttributeToken,
 	ExtToken,
-
-	/* NOT FOR BROWSER */
-
-	IncludeToken,
-	HtmlToken,
-	CommentToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
 
-import assert from 'assert/strict';
-import {html, plainText} from '../util/html';
-import {Ranges} from '../lib/ranges';
+import {html} from '../util/html';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
-import type {Range} from '../lib/ranges';
 import type * as LibRange from '../lib/range';
 import type * as Expand from '../render/expand';
 import type * as RenderHtml from '../render/html';
-
-/* NOT FOR BROWSER END */
-
-declare interface LintIgnore {
-	line: number | undefined;
-	from: number | undefined;
-	to: number | undefined;
-	rules: Set<string> | undefined;
-}
-declare type ExtendedLintError = LintError[] & {
-	output?: string;
-};
-
-const lintSelectors = ['category', 'html-attr#id,ext-attr#id,table-attr#id', 'ext#indicator'];
-
-/* NOT FOR BROWSER */
-
-/**
- * 可接受的Token类型
- * @param value 可接受的Token类型
- */
-const getAcceptable = (value: WikiParserAcceptable): Record<string, Ranges> => {
-	const acceptable: Record<string, Ranges> = {};
-	for (const k in value) {
-		if (k.startsWith('Stage-')) {
-			for (let i = 0; i <= Number(k.slice(6)); i++) {
-				for (const type of aliases[i]!) {
-					acceptable[type] = new Ranges(value[k] as string | number);
-				}
-			}
-		} else if (k.startsWith('!')) { // `!`项必须放在最后
-			delete acceptable[k.slice(1)];
-		} else {
-			acceptable[k] = new Ranges(value[k] as string | number);
-		}
-	}
-	return acceptable;
-};
 
 /* NOT FOR BROWSER END */
 
@@ -142,8 +77,7 @@ export class Token extends AstElement {
 
 	/* NOT FOR BROWSER */
 
-	#acceptable?: Record<string, Ranges> | (() => Record<string, Ranges>);
-	readonly #protectedChildren = new Ranges();
+	#acceptable?: Record<string, number | string | (number | string)[]>;
 
 	/* NOT FOR BROWSER END */
 
@@ -152,33 +86,6 @@ export class Token extends AstElement {
 	}
 
 	override set type(value) {
-		/* NOT FOR BROWSER */
-
-		const plainTypes: TokenTypes[] = [
-			'root',
-			'plain',
-			'translate-inner',
-			'attr-value',
-			'ext-inner',
-			'arg-default',
-			'parameter-key',
-			'parameter-value',
-			'heading-title',
-			'table-inter',
-			'td-inner',
-			'link-text',
-			'ext-link-text',
-			'list-range',
-			'converter-rule-to',
-			'converter-rule-from',
-		];
-		/* c8 ignore next 3 */
-		if (!plainTypes.includes(value)) {
-			throw new RangeError(`${JSON.stringify(value)} is not a valid type for ${this.constructor.name}!`);
-		}
-
-		/* NOT FOR BROWSER END */
-
 		this.#type = value;
 	}
 
@@ -227,15 +134,8 @@ export class Token extends AstElement {
 			return this;
 		}
 		/* c8 ignore start */
+		// eslint-disable-next-line unicorn/prefer-combined-guards
 		if (this.#stage >= MAX_STAGE) {
-			/* NOt FOR BROWSER */
-
-			if (this.type === 'root') {
-				Parser.error('Fully parsed!');
-			}
-
-			/* NOT FOR BROWSER END */
-
 			return this;
 		}
 		/* c8 ignore stop */
@@ -488,21 +388,6 @@ export class Token extends AstElement {
 			/* c8 ignore next 2 */
 			case 'stage':
 				return this.#stage as TokenAttribute<T>;
-
-				/* PRINT ONLY */
-
-			case 'invalid':
-				PRINT: return (this.type === 'table-inter' && isFostered(this) === 2) as TokenAttribute<T>;
-
-				/* PRINT ONLY END */
-
-				/* NOT FOR BROWSER */
-
-			case 'protectedChildren':
-				return this.#protectedChildren as TokenAttribute<T>;
-
-				/* NOT FOR BROWSER END */
-
 			default:
 				return super.getAttribute(key);
 		}
@@ -521,8 +406,7 @@ export class Token extends AstElement {
 				/* NOT FOR BROWSER */
 
 			case 'acceptable':
-				this.#acceptable = value
-					&& ((): Record<string, Ranges> => getAcceptable(value as WikiParserAcceptable));
+				this.#acceptable = value as WikiParserAcceptable;
 				break;
 			case 'include':
 				this.#include = value as TokenAttribute<'include'>;
@@ -546,46 +430,10 @@ export class Token extends AstElement {
 		const token = typeof child === 'string' ? new AstText(child) : child,
 			{length} = this;
 		i += i < 0 ? length : 0;
-
-		/* NOT FOR BROWSER */
-
-		const acceptable = this.getAcceptable();
-		if (acceptable && !Shadow.running) {
-			const nodesAfter = this.childNodes.slice(i),
-				insertedName = token.constructor.name;
-			if (!acceptable[insertedName]?.has(i, length + 1)) {
-				this.constructorError(`cannot insert a ${insertedName} at position ${i}`);
-			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptable[name]?.has(i + j + 1, length + 1))) {
-				this.constructorError(
-					`violates the order of acceptable nodes by inserting a child node at position ${i}`,
-				);
-			}
-		}
-
-		/* NOT FOR BROWSER END */
-
 		super.insertAt(token, i);
 		const {
 			type,
-
-			/* NOT FOR BROWSER */
-
-			constructor,
 		} = token;
-
-		/* NOT FOR BROWSER */
-
-		const e = new Event('insert', {bubbles: true});
-		this.dispatchEvent(e, {type: 'insert', position: i});
-		if (type !== 'list-range' && constructor === Token && this.isPlain()) {
-			Parser.warn(
-				'You are inserting a plain token as a child of another plain token. '
-				+ 'Consider calling Token.flatten method afterwards.',
-			);
-		}
-
-		/* NOT FOR BROWSER END */
-
 		if (type === 'root') {
 			token.type = 'plain';
 		}
@@ -608,141 +456,6 @@ export class Token extends AstElement {
 			this.#config,
 			{page: this.pageName, ...opt},
 		);
-	}
-
-	/** @private */
-	inTableAttrs(): 1 | 2 | false {
-		LINT: return this.isInside('table-attrs')
-		&& (this.closest('table-attrs,arg,parameter')?.is('table-attrs') ? 2 : 1);
-	}
-
-	/** @private */
-	inHtmlAttrs(): 1 | 2 | false {
-		LINT: return this.isInside('html-attrs') ? 2 : this.inTableAttrs();
-	}
-
-	/** @private */
-	@readOnly(true)
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): ExtendedLintError {
-		LINT: {
-			const {lintConfig} = Parser,
-				{computeEditInfo, fix: needFix, ignoreDisables, configurationComment} = lintConfig;
-			let errors = super.lint(start, re);
-			if (this.type === 'root') {
-				const r = 'no-duplicate',
-					s = ['category', 'id', 'indicator'].map(key => lintConfig.getSeverity(r, key)),
-					msgs = ['category', 'id', 'name'],
-					wikitext = this.toString();
-				for (let i = 0; i < s.length; i++) {
-					const severity = s[i]!;
-					if (!severity) {
-						continue;
-					}
-					const record = new Map<string, Set<Token>>(),
-						selector = lintSelectors[i]!;
-					for (const cat of this.querySelectorAll(selector)) {
-						let key: string | undefined;
-						if (i === 0) { // category
-							key = cat.name;
-						} else if (i === 1) { // id
-							key = (cat as AttributeToken).getValue().replace(/\s+/gu, '_');
-						} else { // indicator
-							key = (cat as ExtToken).getAttr('name')
-								?.replace(/\s+/gu, '_');
-						}
-						if (key) {
-							const thisCat = record.get(key);
-							if (thisCat) {
-								thisCat.add(cat);
-							} else {
-								record.set(key, new Set([cat]));
-							}
-						}
-					}
-					for (const [key, value] of record) {
-						if (value.size > 1 && (i !== 1 || !key.startsWith('mw-customcollapsible-'))) {
-							errors.push(...[...value].map(cat => {
-								const e = generateForSelf(
-									cat,
-									{start: cat.getAbsoluteIndex()},
-									r,
-									`duplicate-${msgs[i]}`,
-									severity,
-								);
-								if (computeEditInfo && i === 0) {
-									e.suggestions = [fixByRemove(e)];
-								}
-								return e;
-							}));
-						}
-					}
-				}
-				if (!ignoreDisables) {
-					const regex = new RegExp(
-							String.raw`<!--\s*${
-								configurationComment
-							}-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->`,
-							'gu',
-						),
-						ignores: LintIgnore[] = [];
-					for (let mt = regex.exec(wikitext); mt; mt = regex.exec(wikitext)) {
-						const {1: type, index} = mt,
-							detail = mt[2]?.trim();
-						let line: number | undefined;
-						if (type === 'disable-line' || type === 'disable-next-line') {
-							line = this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1);
-						}
-						ignores.push({
-							line,
-							from: type === 'disable' ? regex.lastIndex : undefined,
-							to: type === 'enable' ? regex.lastIndex : undefined,
-							rules: detail ? new Set(detail.split(',').map(rule => rule.trim())) : undefined,
-						});
-					}
-					errors = errors.filter(({rule, startLine, startIndex}) => {
-						const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
-						for (const {line, from, to, rules} of ignores) {
-							if (line && line > startLine + 1) {
-								break;
-							} else if (rules && !rules.has(rule)) {
-								//
-							} else if (line === startLine) {
-								return false;
-							} else if (from! <= startIndex && from! > nearest.pos) {
-								nearest.pos = from!;
-								nearest.type = 'from';
-							} else if (to! <= startIndex && to! > nearest.pos) {
-								nearest.pos = to!;
-								nearest.type = 'to';
-							}
-						}
-						return nearest.type !== 'from';
-					});
-				}
-				if (needFix && errors.some(({fix}) => fix)) {
-					// 倒序修复，跳过嵌套的修复
-					const fixable = errors.map(({fix}) => fix).filter(fix => fix !== undefined).sort(
-						({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo,
-					);
-					let i = Infinity,
-						output = wikitext;
-					for (const {range: [from, to], text: t} of fixable) {
-						if (to <= i) {
-							output = output.slice(0, from) + t + output.slice(to);
-							i = from;
-						}
-					}
-					Object.assign(errors, {output});
-				}
-				if (!computeEditInfo) {
-					for (const e of errors) {
-						delete e.fix;
-						delete e.suggestions;
-					}
-				}
-			}
-			return errors;
-		}
 	}
 
 	/** @private */
@@ -803,46 +516,15 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	getAcceptable(): Record<string, Ranges> | undefined {
-		if (typeof this.#acceptable === 'function') {
-			this.#acceptable = this.#acceptable();
-		}
+	getAcceptable(): Record<string, number | string | (number | string)[]> | undefined {
 		return this.#acceptable;
 	}
 
 	/** @private */
-	override dispatchEvent(e: Event, data: unknown): void {
-		if (this.#built) {
-			super.dispatchEvent(e, data);
-		}
-	}
-
-	/** @private */
-	protectChildren(args: string | number | Range | (string | number | Range)[]): void {
-		this.#protectedChildren.push(...new Ranges(args));
-	}
-
-	/** @private */
 	override removeAt(i: number): AstNodes {
-		const {length, childNodes} = this;
+		const {length} = this;
 		i += i < 0 ? length : 0;
-		if (!Shadow.running) {
-			if (this.#protectedChildren.has(i, length)) {
-				this.constructorError(`cannot remove the child node at position ${i}`);
-			}
-			const acceptable = this.getAcceptable();
-			if (acceptable) {
-				const nodesAfter = childNodes.slice(i + 1);
-				if (nodesAfter.some(({constructor: {name}}, j) => !acceptable[name]?.has(i + j, length - 1))) {
-					this.constructorError(
-						`violates the order of acceptable nodes by removing the child node at position ${i}`,
-					);
-				}
-			}
-		}
 		const node = super.removeAt(i);
-		const e = new Event('remove', {bubbles: true});
-		this.dispatchEvent(e, {type: 'remove', position: i, removed: node});
 		return node;
 	}
 
@@ -856,43 +538,13 @@ export class Token extends AstElement {
 	@readOnly()
 	safeReplaceWith(token: this): void {
 		const {parentNode} = this;
-		/* c8 ignore start */
-		if (!parentNode) {
-			throw new Error('The node does not have a parent node!');
-		} else if (token.constructor !== this.constructor) {
-			this.typeError('safeReplaceWith', this.constructor.name);
-		}
-		try {
-			assert.deepEqual(token.getAcceptable(), this.getAcceptable());
-		} catch (e) {
-			if (e instanceof assert.AssertionError) {
-				this.constructorError('has a different #acceptable property');
-			}
-			throw e;
-		}
-		/* c8 ignore stop */
-		const i = parentNode.childNodes.indexOf(this);
+		const i = parentNode!.childNodes.indexOf(this);
 		super.removeAt.call(parentNode, i);
 		super.insertAt.call(parentNode, token, i);
 		if (token.type === 'root') {
 			token.type = 'plain';
 		}
-		const e = new Event('replace', {bubbles: true});
-		token.dispatchEvent(e, {type: 'replace', position: i, oldToken: this});
 	}
-
-	/* c8 ignore start */
-	/**
-	 * Create an HTML comment
-	 *
-	 * 创建HTML注释
-	 * @param data comment content / 注释内容
-	 */
-	createComment(data?: string): CommentToken {
-		require('../addon/token');
-		return this.createComment(data);
-	}
-	/* c8 ignore stop */
 
 	/**
 	 * Create a tag
@@ -901,25 +553,14 @@ export class Token extends AstElement {
 	 * @param tagName tag name / 标签名
 	 * @param options options / 选项
 	 * @param options.selfClosing whether to be a self-closing tag / 是否自封闭
-	 * @param options.closing whether to be a closing tag / 是否是闭合标签
 	 * @throws `RangeError` if the tag name is invalid
 	 */
 	createElement(
 		tagName: string,
-		options?: {selfClosing?: boolean, closing?: boolean},
-	): IncludeToken | ExtToken | HtmlToken {
+		options?: {selfClosing?: boolean},
+	): ExtToken {
 		require('../addon/token');
 		return this.createElement(tagName, options);
-	}
-
-	/**
-	 * Create a text node
-	 *
-	 * 创建纯文本节点
-	 * @param data text content / 文本内容
-	 */
-	createTextNode(data = ''): AstText {
-		return new AstText(data);
 	}
 
 	/**
@@ -930,16 +571,6 @@ export class Token extends AstElement {
 	createRange(): LibRange.AstRange {
 		const {AstRange}: typeof LibRange = require('../lib/range');
 		return new AstRange();
-	}
-
-	/**
-	 * Check if a title is an interwiki link
-	 *
-	 * 判断标题是否是跨维基链接
-	 * @param title title / 标题
-	 */
-	isInterwiki(title: string): RegExpExecArray | null {
-		return isInterwiki(title, this.#config);
 	}
 
 	/** @private */
@@ -953,10 +584,6 @@ export class Token extends AstElement {
 	 * 深拷贝节点
 	 */
 	cloneNode(): this {
-		/* c8 ignore next 3 */
-		if (this.constructor !== Token) {
-			this.constructorError('does not specify a cloneNode method');
-		}
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
 			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
@@ -966,109 +593,24 @@ export class Token extends AstElement {
 			token.setAttribute('include', Boolean(this.#include));
 			token.setAttribute('name', this.name!);
 			token.safeAppend(cloned);
-			token.protectChildren(this.#protectedChildren);
 			return token;
 		});
 	}
 
-	/* c8 ignore start */
-	/**
-	 * Get all sections
-	 *
-	 * 获取全部章节
-	 */
-	sections(): LibRange.AstRange[] | undefined {
-		require('../addon/token');
-		return this.sections();
-	}
-	/* c8 ignore stop */
-
-	/**
-	 * Get a section
-	 *
-	 * 获取指定章节
-	 * @param n rank of the section / 章节序号
-	 */
-	section(n: number): LibRange.AstRange | undefined {
-		return this.sections()?.[n];
-	}
-
-	/* c8 ignore start */
-	/**
-	 * Get the enclosing HTML tags
-	 *
-	 * 获取指定的外层HTML标签
-	 * @param tag HTML tag name / HTML标签名
-	 * @throws `RangeError` if the tag name is invalid or is a void tag
-	 */
-	findEnclosingHtml(tag?: string): LibRange.AstRange | undefined {
-		require('../addon/token');
-		return this.findEnclosingHtml(tag);
-	}
-	/* c8 ignore stop */
-
-	/**
-	 * Get all categories
-	 *
-	 * 获取全部分类
-	 */
-	getCategories(): [string, string | undefined][] {
-		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
-	}
-
-	/**
-	 * Expand templates
-	 *
-	 * 展开模板
-	 * @since v1.10.0
-	 */
-	expand(): Token {
-		const {expandToken}: typeof Expand = require('../render/expand');
-		return Shadow.run(() => expandToken(this).parse());
-	}
-
-	/**
-	 * Parse some magic words
-	 *
-	 * 解析部分魔术字
-	 */
-	solveConst(): Token {
-		const {expandToken}: typeof Expand = require('../render/expand');
-		return Shadow.run(() => expandToken(this, false).parse());
-	}
-
-	/**
-	 * Merge plain child tokens of a plain token
-	 *
-	 * 合并普通节点的普通子节点
-	 */
-	flatten(): void {
-		if (this.isPlain()) {
-			for (const child of this.childNodes) {
-				if (child.type !== 'text' && child.isPlain()) {
-					child.insertAdjacent([...child.childNodes], 1);
-					child.removeInternal();
-				}
-			}
-		}
-	}
-
 	/** @ignore */
-	#toHtmlOrPlain(func: (expanded: Token, opt?: RenderOpt) => string, method: Method, render?: RenderOpt): string {
+	#toHtmlOrPlain(func: (expanded: Token, opt?: RenderOpt) => string, render?: RenderOpt): string {
 		const {viewOnly} = Parser;
 		return Shadow.internal(() => {
 			let output: string;
 			if (this.type === 'root') {
 				const {expandToken}: typeof Expand = require('../render/expand');
 				Parser.viewOnly = true;
-				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
-					e = new Event('expand');
-				this.dispatchEvent(e, {type: 'expand', token: expanded});
+				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
 				Parser.viewOnly = false;
 				output = func(expanded, render);
 			} else {
 				Parser.viewOnly = false;
-				output = this.cloneNode()[method]({render});
+				output = this.cloneNode().toHtmlInternal({render});
 			}
 			Parser.viewOnly = viewOnly;
 			return output;
@@ -1084,19 +626,7 @@ export class Token extends AstElement {
 	 */
 	toHtml(opt?: RenderOpt): string {
 		const {toHtml}: typeof RenderHtml = require('../render/html');
-		return this.#toHtmlOrPlain(toHtml, 'toHtmlInternal', opt);
-	}
-
-	/**
-	 * Extract plain text
-	 *
-	 * 提取纯文本
-	 * @since v2.0.0
-	 */
-	plainText(): string {
-		return decodeHtml(
-			this.#toHtmlOrPlain(expanded => expanded.plainTextInternal(), 'plainTextInternal'),
-		);
+		return this.#toHtmlOrPlain(toHtml, opt);
 	}
 
 	/** @private */
@@ -1116,12 +646,4 @@ export class Token extends AstElement {
 	toHtmlInternal(opt?: HtmlOpt): string {
 		return this.toHtmlOrPlain(html, 'toHtmlInternal', opt);
 	}
-
-	/** @private */
-	@cached()
-	plainTextInternal(opt?: PlainOpt): string {
-		return this.toHtmlOrPlain(plainText, 'plainTextInternal', opt);
-	}
 }
-
-classes['Token'] = __filename;

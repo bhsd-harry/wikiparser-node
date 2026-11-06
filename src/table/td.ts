@@ -1,12 +1,6 @@
-import {generateForChild, fixBy, fixByPipe} from '../../util/lint';
 import {
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../../util/constants';
-import {BoundingRect} from '../../lib/rect';
 import {cached} from '../../mixin/cached';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -19,8 +13,6 @@ import {
 } from './base';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../../base';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
@@ -28,7 +20,6 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 
 import {Shadow} from '../../util/debug';
 import {trimLc, newline} from '../../util/string';
-import {fixedToken} from '../../mixin/fixed';
 
 /* NOT FOR BROWSER END */
 
@@ -60,7 +51,6 @@ export type TdAttrs = Record<string, string> & TdSpanAttrs;
  * `<td>`、`<th>`或`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-@fixedToken
 export abstract class TdToken extends TableBaseToken {
 	#innerSyntax = '';
 
@@ -72,8 +62,6 @@ export abstract class TdToken extends TableBaseToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
-	abstract override get parentElement(): TrToken | TableToken | undefined;
-	abstract override get nextElementSibling(): TrToken | SyntaxToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -81,47 +69,10 @@ export abstract class TdToken extends TableBaseToken {
 		return 'td';
 	}
 
-	/** rowspan */
-	get rowspan(): number {
-		LINT: return this.getAttr('rowspan');
-	}
-
-	/** colspan */
-	get colspan(): number {
-		LINT: return this.getAttr('colspan');
-	}
-
 	/** cell type / 单元格类型 */
 	get subtype(): TdSubtypes {
 		return this.#getSyntax().subtype;
 	}
-
-	/* NOT FOR BROWSER */
-
-	set subtype(subtype) {
-		this.setSyntax(subtype);
-	}
-
-	set rowspan(rowspan) {
-		this.setAttr('rowspan', rowspan);
-	}
-
-	set colspan(colspan) {
-		this.setAttr('colspan', colspan);
-	}
-
-	/** inner wikitext / 内部wikitext */
-	get innerText(): string {
-		return this.lastChild.text().trim();
-	}
-
-	set innerText(text) {
-		this.lastChild.safeReplaceChildren(
-			Parser.parseWithRef(text, this, undefined, true).childNodes,
-		);
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param syntax 单元格语法
@@ -226,81 +177,23 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		/* NOT FOR BROWSER */
-
-		this.#correct();
-
-		/* NOT FOR BROWSER END */
-
 		const [syntax, attr, inner] = this.childNodes;
 		return syntax.toString(skip) + attr.toString(skip) + this.#innerSyntax + inner.toString(skip);
 	}
 
 	/** @private */
 	override text(): string {
-		/* NOT FOR BROWSER */
-
-		this.#correct();
-
-		/* NOT FOR BROWSER END */
-
 		const [syntax, attr, inner] = this.childNodes;
 		return syntax.text() + attr.text() + this.#innerSyntax + inner.text();
 	}
 
 	/** @private */
 	override getGaps(i: number): number {
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (i === 1) {
-			/* NOT FOR BROWSER */
-
-			this.#correct();
-
-			/* NOT FOR BROWSER END */
-
 			return this.#innerSyntax.length;
 		}
 		return 0;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1)),
-				rule = 'pipe-like',
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				severities = ['td', 'double'].map(key => lintConfig.getSeverity(rule, key)),
-				{childNodes, length} = this.lastChild,
-				pipes: LintError[] = [];
-			for (let i = length - 1; i >= 0; i--) {
-				const child = childNodes[i]!;
-				if (child.type === 'text') {
-					const {data} = child;
-					if (data.includes('|')) {
-						const double = data.includes('||'),
-							s = severities[double ? 1 : 0];
-						if (s) {
-							const e = generateForChild(child, rect, rule, 'pipe-in-table', s);
-							if (computeEditInfo || fix) {
-								if (double) {
-									const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
-									e.fix = fixBy(
-										e,
-										'newline',
-										data.replace(/\|\|/gu, () => `\n${syntax}`),
-									);
-								} else if (computeEditInfo) {
-									e.suggestions = [fixByPipe(e.startIndex, data)];
-								}
-							}
-							pipes.push(e);
-						}
-					}
-				}
-			}
-			return [...errors, ...pipes.reverse()];
-		}
 	}
 
 	/**
@@ -313,49 +206,16 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		LINT: {
-			/* NOT FOR BROWSER */
+		/* NOT FOR BROWSER */
 
-			key = trimLc(key) as T;
+		key = trimLc(key) as T;
 
-			/* NOT FOR BROWSER END */
+		/* NOT FOR BROWSER END */
 
-			const value = super.getAttr(key);
-			return (
-				key === 'rowspan' || key === 'colspan' ? parseInt(value || '') || 1 : value
-			) as TdAttrGetter<T>;
-		}
-	}
-
-	/** @private */
-	override escape(): void {
-		LSP: {
-			super.escape();
-			if (this.childNodes[1].toString()) {
-				this.#innerSyntax ||= '{{!}}';
-			}
-			if (this.#innerSyntax === '|') {
-				this.#innerSyntax = '{{!}}';
-			}
-		}
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const [syntax, attr, inner] = this.childNodes;
-			return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
-		}
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start),
-				{rowspan, colspan} = this;
-			Object.assign(json, {subtype: this.subtype}, rowspan !== 1 && {rowspan}, colspan !== 1 && {colspan});
-			return json;
-		}
+		const value = super.getAttr(key);
+		return (
+			key === 'rowspan' || key === 'colspan' ? parseInt(value || '') || 1 : value
+		) as TdAttrGetter<T>;
 	}
 
 	/* NOT FOR BROWSER */
@@ -385,17 +245,6 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/** 修复\<td\>语法 */
-	#correct(): void {
-		if (this.childNodes[1].toString()) {
-			this.#innerSyntax ||= '|';
-		}
-		const {subtype, escape, correction} = this.#getSyntax();
-		if (correction) {
-			this.setSyntax(subtype, escape);
-		}
-	}
-
 	/**
 	 * Move to a new line
 	 *
@@ -408,36 +257,13 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	override getAttrs(): TdAttrs {
-		const attr: TdAttrs = super.getAttrs();
-		if ('rowspan' in attr) {
-			attr.rowspan = parseInt(attr.rowspan as unknown as string);
-		}
-		if ('colspan' in attr) {
-			attr.colspan = parseInt(attr.colspan as unknown as string);
-		}
-		return attr;
-	}
-
 	/**
 	 * @override
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
-	 * @param prop attribute object / 属性对象
 	 */
-	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void;
-	override setAttr(prop: Record<string, string | number | boolean>): void;
-	override setAttr<T extends string>(
-		keyOrProp: T | Record<string, string | number | boolean>,
-		value?: TdAttrSetter<T>,
-	): void {
-		if (typeof keyOrProp !== 'string') {
-			for (const key in keyOrProp) {
-				this.setAttr(key, keyOrProp[key] as string | boolean);
-			}
-			return;
-		}
-		const key = trimLc(keyOrProp) as T;
+	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void {
+		key = trimLc(key) as T;
 		super.setAttr(key, (value !== 1 || key !== 'rowspan' && key !== 'colspan') && String(value));
 		if (!this.childNodes[1].toString()) {
 			this.#innerSyntax = '';
@@ -445,11 +271,11 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @ignore */
-	#toHtmlOrPlain(method: Method, opt?: Omit<HtmlOpt, 'nocc'>): [string, string, string] {
+	#toHtmlOrPlain(opt?: Omit<HtmlOpt, 'nocc'>): [string, string, string] {
 		const {lastChild, nextSibling} = this,
 			notEOL = nextSibling?.toString().startsWith('\n') === false,
 			lf = opt?.nowrap ? ' ' : '\n';
-		let html = lastChild[method](opt).replace(/^[^\S\n]*/u, '');
+		let html = lastChild.toHtmlInternal(opt).replace(/^[^\S\n]*/u, '');
 		if (notEOL) {
 			html = html.replace(/(?<=[\S\n])[^\S\n]*$/u, '');
 		}
@@ -460,43 +286,9 @@ export abstract class TdToken extends TableBaseToken {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {subtype, childNodes: [, attr]} = this,
-			[lf, html, lfAfter] = this.#toHtmlOrPlain('toHtmlInternal', opt);
+			[lf, html, lfAfter] = this.#toHtmlOrPlain(opt);
 		return `${lf}<${subtype}${attr.toHtmlInternal({render: opt?.render})}>${
 			subtype === 'caption' ? newline(html) : html
 		}${lfAfter}</${subtype}>`;
 	}
-
-	/** @private */
-	@cached()
-	override plainTextInternal(opt?: PlainOpt): string {
-		const [lf, html, lfAfter] = this.#toHtmlOrPlain('plainTextInternal', opt);
-		return lf
-			+ (this.subtype === 'caption' ? html.replaceAll('\n', ' ') : html)
-			+ lfAfter;
-	}
 }
-
-/* NOT FOR BROWSER */
-
-/**
- * 创建新的单元格
- * @param inner 内部wikitext
- * @param ref 参考节点
- * @param subtype 单元格类型
- * @param attr 单元格属性
- */
-export const createTd = (
-	inner: string | Token,
-	ref: Token,
-	subtype: TdSubtypes = 'td',
-	attr: TdAttrs = {},
-): TdToken => {
-	// @ts-expect-error abstract class
-	const token = Shadow.run((): TdToken => new TdToken('\n|', undefined, ref.getAttribute('config')));
-	token.setSyntax(subtype);
-	token.lastChild.safeReplaceWith(typeof inner === 'string' ? Parser.parseWithRef(inner, ref) : inner);
-	token.setAttr(attr);
-	return token;
-};
-
-classes['TdToken'] = __filename;

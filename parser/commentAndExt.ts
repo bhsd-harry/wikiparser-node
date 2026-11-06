@@ -14,12 +14,6 @@ import type {Config} from '../base';
 import type * as Translate from '../src/tagPair/translate';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const onlyincludeLeft = '<onlyinclude>',
 	onlyincludeRight = '</onlyinclude>',
 	getExtRegex = [false, true].map(includeOnly => {
@@ -198,5 +192,3 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	}
 	return text + wikitext.slice(lastIndex);
 };
-
-parsers['parseCommentAndExt'] = __filename;

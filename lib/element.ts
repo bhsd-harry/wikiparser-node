@@ -1,49 +1,24 @@
 import {
 	text,
-	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
 import {elementLike} from '../mixin/elementLike';
 import type {
 	TokenTypes,
-	LintError,
-	AST,
 } from '../base';
 import type {ElementLike} from '../mixin/elementLike';
 import type {
 	AstNodes,
 	AstText,
 	Token,
-
-	/* NOT FOR BROWSER */
-
-	FileToken,
-	LinkToken,
-	RedirectTargetToken,
-	ExtLinkToken,
-	MagicLinkToken,
-	ImageParameterToken,
-	TranscludeToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
 
-import fs from 'fs';
-import path from 'path';
-import {classes} from '../util/constants';
-import {getCondition} from '../util/selector';
 import {readOnly} from '../mixin/readOnly';
-import type {TokenTypeMap, SelectedTokenTypes} from '../map';
-
-declare type LinkTokens = LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken;
 
 /* NOT FOR BROWSER END */
-
-export interface CaretPosition {
-	readonly offsetNode: AstNodes;
-	readonly offset: number;
-}
 
 export interface AstElement extends AstNode, ElementLike {}
 
@@ -63,56 +38,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/* NOT FOR BROWSER */
-
-	set length(n) {
-		if (n >= 0 && n < this.length) {
-			for (let i = this.length - 1; i >= n; i--) {
-				this.removeAt(i);
-			}
-		}
-	}
-
-	/** parent node / 父节点 */
-	get parentElement(): Token | undefined {
-		return this.parentNode;
-	}
-
-	/** visible text / 可见部分 */
-	get outerText(): string {
-		return this.text();
-	}
-
-	/** invisible / 不可见 */
-	get hidden(): boolean {
-		return !this.text();
-	}
-
-	/** height of the inner / 内部高度 */
-	get clientHeight(): number | undefined {
-		return (this as {innerText?: string}).innerText?.split('\n').length;
-	}
-
-	/** width of the inner / 内部宽度 */
-	get clientWidth(): number | undefined {
-		return (this as {innerText?: string}).innerText?.split('\n').pop()!.length;
-	}
-
-	/** all images, including gallery images / 所有图片，包括图库 */
-	get images(): FileToken[] {
-		return this.querySelectorAll('file,gallery-image,imagemap-image');
-	}
-
-	/** all internal, external and free external links / 所有内链、外链和自由外链 */
-	get links(): LinkTokens[] {
-		return this.querySelectorAll<LinkTokens>(
-			'link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link',
-		).filter(({parentNode}) => !parentNode?.is('image-parameter') || parentNode.name !== 'link');
-	}
-
-	/** all templates and modules / 所有模板和模块 */
-	get embeds(): TranscludeToken[] {
-		return this.querySelectorAll('template,magic-word#invoke');
-	}
 
 	constructor() {
 		super();
@@ -135,12 +60,6 @@ export abstract class AstElement extends AstNode {
 	 */
 	@readOnly()
 	removeAt(i: number): AstNodes {
-		/* NOT FOR BROWSER */
-
-		this.verifyChild(i);
-
-		/* NOT FOR BROWSER END */
-
 		LSP: return setChildNodes(this as AstElement as Token, i, 1)[0]!;
 	}
 
@@ -156,14 +75,6 @@ export abstract class AstElement extends AstNode {
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		/* NOT FOR BROWSER */
 
-		/* c8 ignore next 6 */
-		if (node.contains(this)) {
-			throw new RangeError('Cannot insert an ancestor node!');
-		}
-		if (node.parentNode as this | undefined === this) {
-			throw new RangeError('Cannot insert its own child node!');
-		}
-		this.verifyChild(i, 1);
 		node.parentNode?.removeChild(node);
 
 		/* NOT FOR BROWSER END */
@@ -174,7 +85,7 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	isInside(type: TokenTypes): boolean {
-		LINT: return this.closest(`${type},ext`)?.type === type;
+		return this.closest(`${type},ext`)?.type === type;
 	}
 
 	/**
@@ -214,196 +125,15 @@ export abstract class AstElement extends AstNode {
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;
-
-		/* NOT FOR BROWSER */
-
-		this.verifyChild(i);
-
-		/* NOT FOR BROWSER END */
-
 		const oldText = this.childNodes[i] as AstText;
-		if (oldText.type as unknown === 'text') {
-			const {data} = oldText;
-			oldText.replaceData(str);
-			return data;
-		}
-
-		/* NOT FOR BROWSER */
-
-		/* c8 ignore next */
-		throw new RangeError(`The child node at position ${i} is ${oldText.constructor.name}!`);
+		const {data} = oldText;
+		oldText.replaceData(str);
+		return data;
 	}
 
 	/** @private */
 	override toString(skip?: boolean, separator = ''): string {
 		return this.childNodes.map(child => child.toString(skip)).join(separator);
-	}
-
-	/**
-	 * Get the caret position from the character index
-	 *
-	 * 找到给定位置
-	 * @param index character index / 位置
-	 */
-	caretPositionFromIndex(index?: number): CaretPosition | undefined {
-		LSP: {
-			if (index === undefined) {
-				return undefined;
-			}
-			const {length} = this.toString();
-			if (Math.abs(index) > length) {
-				return undefined;
-			}
-			index += index < 0 ? length : 0;
-			let self: AstNode = this,
-				acc = 0,
-				start = 0;
-			while (self.type !== 'text') {
-				const {childNodes} = self;
-				acc += self.getAttribute('padding');
-				for (let i = 0; acc <= index && i < childNodes.length; i++) {
-					const cur: AstNodes = childNodes[i]!,
-						{nextSibling} = cur,
-						str = cur.toString(),
-						l = str.length;
-					cur.setAttribute('aIndex', acc);
-					acc += l;
-					// 优先选择靠前的非文本兄弟节点，但永不进入假节点
-					if (
-						acc > index
-						|| acc === index && l > 0 && (
-							!nextSibling
-							|| nextSibling.type === 'text'
-							|| cur.type !== 'text' && (str.trim() || !nextSibling.toString().trim())
-						)
-					) {
-						self = cur;
-						acc -= l;
-						start = acc;
-						break;
-					}
-					acc += self.getGaps(i);
-				}
-				if (self.childNodes === childNodes) {
-					return {offsetNode: self as Token, offset: index - start};
-				}
-			}
-			return {offsetNode: self as AstText, offset: index - start};
-		}
-	}
-
-	/**
-	 * Get the closest ancestor element from the character index
-	 *
-	 * 找到给定位置所在的最内层非文本节点
-	 * @param index character index / 位置
-	 */
-	elementFromIndex(index?: number): Token | undefined {
-		LSP: {
-			const node = this.caretPositionFromIndex(index)?.offsetNode;
-			return node?.type === 'text' ? node.parentNode : node;
-		}
-	}
-
-	/**
-	 * Get the closest ancestor element from the position
-	 *
-	 * 找到给定位置所在的最内层非文本节点
-	 * @param x column number / 列数
-	 * @param y line number / 行数
-	 */
-	elementFromPoint(x: number, y: number): Token | undefined {
-		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
-	}
-
-	/** @private */
-	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
-		LINT: {
-			const errors: LintError[] = [],
-				{length, childNodes} = this;
-			for (let i = 0, cur = start + this.getAttribute('padding'); i < length; i++) {
-				const child = childNodes[i]!;
-				child.setAttribute('aIndex', cur);
-				const childErrors = child.lint(cur, re);
-				if (childErrors.length > 0) {
-					Array.prototype.push.apply(errors, childErrors);
-				}
-				cur += child.toString().length + this.getGaps(i);
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
-	print(opt: PrintOpt = {}): string {
-		PRINT: {
-			const cl = opt.class;
-			return this.toString()
-				? (
-					cl === ''
-						? ''
-						: `<span class="wpb-${cl ?? this.type}${
-							this.getAttribute('invalid') ? ' wpb-invalid' : ''
-						}">`
-				)
-				+ print(this.childNodes, opt)
-				+ (cl === '' ? '' : '</span>')
-				: '';
-		}
-	}
-
-	/**
-	 * Save in JSON format
-	 *
-	 * 保存为JSON
-	 * @param file file name / 文件名
-	 * @param depth depth of the node / 节点深度
-	 * @param start
-	 */
-	json(file?: string, depth = Infinity, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const {type, length: l, childNodes} = this,
-				json = {
-					...this, // eslint-disable-line @typescript-eslint/no-misused-spread
-					type,
-					range: [start, start + this.toString().length],
-					childNodes: [],
-				} as unknown as AST;
-			if (depth >= 1) {
-				for (let i = 0, cur = start + this.getAttribute('padding'); i < l; i++) {
-					const child = childNodes[i]!,
-						{length} = child.toString();
-					child.setAttribute('aIndex', cur);
-					json.childNodes!.push(
-						child.type === 'text'
-							? {data: child.data, range: [cur, cur + length]} as unknown as AST
-							: child.json(undefined, depth - 1, cur),
-					);
-					cur += length + this.getGaps(i);
-				}
-			}
-
-			/* NOT FOR BROWSER */
-
-			/* c8 ignore start */
-			if (typeof file === 'string') {
-				fs.writeFileSync(
-					path.join(
-						__dirname,
-						'..',
-						'..',
-						'printed',
-						file + (file.endsWith('.json') ? '' : '.json'),
-					),
-					JSON.stringify(json, null, 2),
-				);
-			}
-			/* c8 ignore stop */
-
-			/* NOT FOR BROWSER END */
-
-			return json;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -444,19 +174,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Check if the current element matches the selector
-	 *
-	 * 检查是否符合选择器
-	 * @param selector selector / 选择器
-	 * @throws `SyntaxError` if the selector is invalid
-	 */
-	matches<K extends SelectedTokenTypes>(selector: K): this is TokenTypeMap[K];
-	matches<T extends Token>(selector: string): this is T;
-	matches(selector: string): this is Token {
-		return getCondition(selector, this)(this);
-	}
-
-	/**
 	 * Insert a batch of child nodes at the start
 	 *
 	 * 在开头批量插入子节点
@@ -475,10 +192,6 @@ export abstract class AstElement extends AstNode {
 	 */
 	#getChildIndex(node: AstNodes): number {
 		const i = this.childNodes.indexOf(node);
-		/* c8 ignore next 3 */
-		if (i === -1) {
-			throw new RangeError('Not a child node!');
-		}
 		return i;
 	}
 
@@ -502,55 +215,4 @@ export abstract class AstElement extends AstNode {
 	replaceChildren(...elements: (AstNodes | string)[]): void {
 		this.safeReplaceChildren(elements);
 	}
-
-	/**
-	 * Insert a child node before the reference node
-	 *
-	 * 在指定位置前插入子节点
-	 * @param child node to be inserted / 插入节点
-	 * @param reference reference child node / 指定位置处的子节点
-	 * @throws `RangeError` if the specified reference node is not a child node
-	 */
-	insertBefore(child: string, reference?: AstNodes): AstText;
-	insertBefore<T extends AstNodes>(child: T, reference?: AstNodes): T;
-	insertBefore<T extends AstNodes>(child: T | string, reference?: AstNodes): T | AstText {
-		return reference === undefined
-			? this.insertAt(child as T)
-			: this.insertAt(child as T, this.#getChildIndex(reference));
-	}
-
-	/**
-	 * Get the caret position from the point
-	 *
-	 * 找到给定位置
-	 * @param x column number / 列数
-	 * @param y line number / 行数
-	 */
-	caretPositionFromPoint(x: number, y: number): CaretPosition | undefined {
-		return this.caretPositionFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
-	 * Get all ancestor elements from the character index
-	 *
-	 * 找到给定位置所在的所有节点
-	 * @param index character index / 位置
-	 */
-	elementsFromIndex(index?: number): Token[] {
-		const offsetNode = this.elementFromIndex(index);
-		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
-	}
-
-	/**
-	 * Get all ancestor elements from the position
-	 *
-	 * 找到给定位置所在的所有节点
-	 * @param x column number / 列数
-	 * @param y line number / 行数
-	 */
-	elementsFromPoint(x: number, y: number): Token[] {
-		return this.elementsFromIndex(this.indexFromPos(y, x));
-	}
 }
-
-classes['AstElement'] = __filename;

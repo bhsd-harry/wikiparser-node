@@ -1,12 +1,7 @@
-import {generateForSelf, fixByRemove, fixByClose, fixByOpen} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {attributesParent} from '../../mixin/attributesParent';
-import Parser from '../../index';
 import {TagToken} from './index';
 import type {
 	Config,
-	LintError,
-	AST,
 } from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 import type {Token, AttributesToken} from '../../internal';
@@ -14,44 +9,12 @@ import type {Token, AttributesToken} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import {getId, html, getTocData} from '../../util/html';
 import {cached} from '../../mixin/cached';
-import type {AstRange} from '../../lib/range';
 
 /* NOT FOR BROWSER END */
 
 export interface HtmlToken extends AttributesParentBase {}
-
-const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
-	formattingTags = new Set([
-		'b',
-		'big',
-		'center',
-		'cite',
-		'code',
-		'del',
-		'dfn',
-		'em',
-		'font',
-		'i',
-		'ins',
-		'kbd',
-		'mark',
-		'pre',
-		'q',
-		's',
-		'samp',
-		'small',
-		'strike',
-		'strong',
-		'sub',
-		'sup',
-		'tt',
-		'u',
-		'var',
-	]),
-	obsoleteTags = new Set(['strike', 'big', 'center', 'font', 'tt']);
 
 /**
  * HTML tag
@@ -73,8 +36,6 @@ export abstract class HtmlToken extends TagToken {
 	/** @private */
 	declare tocData?: string;
 	abstract override get children(): [AttributesToken];
-	abstract override get firstElementChild(): AttributesToken;
-	abstract override get lastElementChild(): AttributesToken;
 
 	/* NOT FOR BROWSER END */
 
@@ -89,38 +50,9 @@ export abstract class HtmlToken extends TagToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @throws `Error` if this is a closing tag or an invalid self-closing tag */
-	set selfClosing(value) {
-		if (!value) {
-			this.#selfClosing = false;
-			return;
-		} else if (this.closing) {
-			throw new Error('This is a closing tag!');
-		}
-		const [tags] = this.getAttribute('config').html;
-		if (tags.includes(this.name)) {
-			throw new Error(`<${this.name}> tag cannot be self-closing!`);
-		}
-		this.#selfClosing = true;
-	}
-
 	/** @private */
 	override get closing(): boolean {
 		return super.closing;
-	}
-
-	/** @private */
-	override set closing(value) {
-		if (value) {
-			if (this.#selfClosing) {
-				throw new Error('This is a self-closing tag!');
-			}
-			const [,, tags] = this.getAttribute('config').html;
-			if (tags.includes(this.name)) {
-				throw new Error('This is a void tag!');
-			}
-		}
-		super.closing = value;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -160,151 +92,6 @@ export abstract class HtmlToken extends TagToken {
 		return `<${closing && !slash ? '/' : ''}${name}${closing ? '' : super.text()}${slash}>`;
 	}
 
-	/** 是否是无效自封闭标签 */
-	#lint(): false | 0 | 1 | 2 {
-		const {name, closing, selfClosing} = this,
-			[, flexibleTags, voidTags] = this.getAttribute('config').html,
-			isVoid = voidTags.includes(name),
-			isFlexible = flexibleTags.includes(name),
-			isNormal = !isVoid && !isFlexible;
-		if (!(closing && (selfClosing || isVoid) || selfClosing && isNormal)) {
-			return false;
-		} else if (isVoid) {
-			return 2;
-		}
-		return isFlexible ? 1 : 0;
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{name, parentNode, closing} = this,
-				rect = new BoundingRect(this, start),
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				severity = this.inTableAttrs();
-			let rule: LintError.Rule = 'h1',
-				s = lintConfig.getSeverity(rule, 'html');
-			if (s && name === 'h1' && !closing) {
-				const e = generateForSelf(this, rect, rule, '<h1>', s);
-				if (computeEditInfo) {
-					e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
-				}
-				errors.push(e);
-			}
-			rule = 'parsing-order';
-			s = severity && lintConfig.getSeverity(rule, severity === 2 ? 'html' : 'templateInTable');
-			if (s) {
-				const e = generateForSelf(this, rect, rule, 'html-in-table', s);
-				if (computeEditInfo && severity === 2) {
-					e.suggestions = [fixByRemove(e)];
-				}
-				errors.push(e);
-			}
-			rule = 'obsolete-tag';
-			s = lintConfig.getSeverity(rule, name);
-			if (s && obsoleteTags.has(name)) {
-				errors.push(generateForSelf(this, rect, rule, 'obsolete-tag', s));
-			}
-			rule = 'bold-header';
-			s = lintConfig.getSeverity(rule, name);
-			if (s && (name === 'b' || name === 'strong') && this.isInside('heading-title')) {
-				const e = generateForSelf(this, rect, rule, 'bold-in-header', s);
-				if (computeEditInfo) {
-					e.suggestions = [fixByRemove(e)];
-				}
-				errors.push(e);
-			}
-			const tagType = this.#lint();
-			rule = 'unmatched-tag';
-			if (tagType !== false) {
-				s = lintConfig.getSeverity(rule, closing ? 'both' : 'selfClosing');
-				if (s) {
-					const e = generateForSelf(
-						this,
-						rect,
-						rule,
-						closing ? 'closing-and-self-closing' : 'invalid-self-closing',
-						s,
-					);
-					if (computeEditInfo || fix) {
-						const open = fixByOpen(start),
-							noSelfClosing: LintError.Fix = {
-								desc: Parser.msg('no-self-closing'),
-								range: [e.endIndex - 2, e.endIndex - 1],
-								text: '',
-							};
-						if (tagType === 1) {
-							if (computeEditInfo) {
-								e.suggestions = [open, noSelfClosing];
-							}
-						} else if (closing) {
-							e.fix = tagType === 2 ? open : noSelfClosing;
-						} else if (computeEditInfo) {
-							e.suggestions = [
-								noSelfClosing,
-								fixByClose(e.endIndex, `></${name}>`, -2),
-							];
-						}
-					}
-					errors.push(e);
-				}
-			} else if (!this.findMatchingTag()) {
-				const error = generateForSelf(this, rect, rule, closing ? 'unmatched-closing' : 'unclosed-tag'),
-					ancestor = this.closest('magic-word');
-				if (ancestor && magicWords.has(ancestor.name)) {
-					s = lintConfig.getSeverity(rule, 'conditional');
-				} else if (closing) {
-					s = lintConfig.getSeverity(rule, 'closing');
-					error.suggestions = [fixByRemove(error)];
-				} else {
-					s = lintConfig.getSeverity(rule, 'opening');
-					const childNodes = parentNode?.childNodes;
-					if (formattingTags.has(name)) {
-						if (
-							childNodes?.slice(0, childNodes.indexOf(this)).some(
-								tag => tag.is('html') && tag.name === name && !tag.findMatchingTag(),
-							)
-						) {
-							error.suggestions = [fixByClose(start + 1, '/')];
-						}
-						if (this.isInside('heading-title')) {
-							error.rule = 'format-leakage';
-							s = lintConfig.getSeverity('format-leakage', name);
-						}
-					}
-				}
-				if (s) {
-					error.severity = s;
-					errors.push(error);
-				}
-			}
-			return errors;
-		}
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		PRINT: if (key === 'invalid') {
-			return (this.#lint() !== false) as TokenAttribute<T>;
-		}
-		return super.getAttribute(key);
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			json['selfClosing'] = this.#selfClosing;
-			return json;
-		}
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -317,53 +104,6 @@ export abstract class HtmlToken extends TagToken {
 			this.#selfClosing,
 			this.getAttribute('config'),
 		));
-	}
-
-	/**
-	 * Change the tag name
-	 *
-	 * 更换标签名
-	 * @param tag tag name / 标签名
-	 * @throws `RangeError` if the tag name is invalid
-	 */
-	replaceTag(tag: string): void {
-		const name = tag.toLowerCase();
-		if (!this.getAttribute('config').html.some(tags => tags.includes(name))) {
-			throw new RangeError(`Invalid HTML tag: ${tag}`);
-		}
-		this.setAttribute('name', name);
-		this.tag = tag;
-	}
-
-	/**
-	 * Fix the invalid self-closing tag
-	 *
-	 * 修复无效自封闭标签
-	 * @throws `Error` if the invalid self-closing tag cannot be fixed
-	 */
-	fix(): void {
-		const [normalTags] = this.getAttribute('config').html,
-			{parentNode, name: tagName, firstChild, selfClosing} = this;
-		if (!parentNode || !selfClosing || !normalTags.includes(tagName)) {
-			return;
-		} else if (firstChild.text().trim()) {
-			this.#selfClosing = false;
-			this.after(Parser.parseWithRef(`</${this.name}>`, this, 3, false).firstChild!);
-			return;
-		}
-		const {childNodes} = parentNode,
-			i = childNodes.indexOf(this),
-			prevSiblings = childNodes.slice(0, i)
-				.filter((child): child is this => child.is('html') && child.name === tagName),
-			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
-		if (imbalance < 0) {
-			this.#selfClosing = false;
-			this.closing = true;
-		} else {
-			throw new Error(
-				`Cannot fix invalid self-closing tag: The previous ${imbalance} closing tag(s) are unmatched`,
-			);
-		}
 	}
 
 	/** @private */
@@ -405,18 +145,4 @@ export abstract class HtmlToken extends TagToken {
 			selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
 		}`;
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
-
-	/** @private */
-	override getRange(): AstRange | undefined {
-		const {selfClosing, name} = this,
-			[, selfClosingTags, voidTags] = this.getAttribute('config').html;
-		return voidTags.includes(name) || selfClosing && selfClosingTags.includes(name) ? undefined : super.getRange();
-	}
 }
-
-classes['HtmlToken'] = __filename;

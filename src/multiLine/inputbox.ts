@@ -4,12 +4,6 @@ import {ParamTagToken} from './paramTag';
 import type {Config} from '../../base';
 import type {Token} from '../../internal';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /** `<inputbox>` */
 export abstract class InputboxToken extends ParamTagToken {
 	declare readonly name: 'inputbox';
@@ -33,5 +27,3 @@ export abstract class InputboxToken extends ParamTagToken {
 		});
 	}
 }
-
-classes['InputboxToken'] = __filename;

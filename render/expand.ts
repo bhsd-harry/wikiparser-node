@@ -1,9 +1,5 @@
-import fs from 'fs';
-import path from 'path';
-import {parsers, functionHooks} from '../util/constants';
-import {Shadow} from '../util/debug';
-import {removeComment, removeCommentLine, tidy} from '../util/string';
-import {parseRedirect} from '../parser/redirect';
+import {functionHooks} from '../util/constants';
+import {removeComment, removeCommentLine} from '../util/string';
 import {expandMagicWord} from './magicWords';
 import Parser from '../index';
 import {Token} from '../src/index';
@@ -18,7 +14,6 @@ import type {
 	TranslateToken,
 	NoincludeToken,
 	TvarToken,
-	RedirectToken,
 } from '../internal';
 
 const solvedMagicWords = new Set([
@@ -42,38 +37,13 @@ const implicitNewLine = (str: string, prev: string): string =>
  * @param title 模板名
  * @param config
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loadTemplate = (title: string, config: Config): string | false => {
+	// eslint-disable-next-line unicorn/prefer-ternary
 	if (Parser.templates.has(title)) {
 		return title;
-	} else if (Parser.templateDir === undefined) {
-		return false;
-	} else if (!path.isAbsolute(Parser.templateDir)) {
-		Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 	}
-	const file = fs.readdirSync(Parser.templateDir, {withFileTypes: true, recursive: true})
-		.filter(dirent => dirent.isFile())
-		.find(({name, parentPath}) => {
-			const t = path.relative(
-				Parser.templateDir!,
-				path.join(parentPath, name.replace(/\.(?:wiki|txt)$/iu, '')),
-			).replaceAll('꞉', ':');
-			try {
-				return decodeURIComponent(t) === title;
-			} catch {
-				return t === title;
-			}
-		});
-	if (!file) {
-		return false;
-	}
-	const content = tidy(fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')),
-		accum: Token[] = [],
-		parsed = Shadow.run(() => parseRedirect(content, config, accum));
-	if (parsed) {
-		return loadTemplate((accum[0] as RedirectToken).lastChild.getTitle().title, config);
-	}
-	Parser.templates.set(title, content);
-	return title;
+	return false;
 };
 
 /**
@@ -269,5 +239,3 @@ export const expandToken = (token: Token, context?: false): Token => {
 		context,
 	);
 };
-
-parsers['expandToken'] = __filename;

@@ -35,13 +35,9 @@ const config = extend(
 	...node,
 	{
 		ignores: [
-			'.cache/',
-			'.nyc_output/',
 			'coverage/',
 			'bundle/',
-			'errors/',
-			'printed/',
-			'test/math/*.json',
+			'wiki/',
 		],
 	},
 	{
@@ -194,8 +190,6 @@ const config = extend(
 	{
 		files: [
 			'mixin/*.ts',
-			'test/hooks.ts',
-			'lib/attributes.ts',
 		],
 		rules: {
 			'jsdoc/require-jsdoc': 0,
@@ -223,14 +217,6 @@ const config = extend(
 		rules: {
 			'n/no-missing-require': 0,
 			'@typescript-eslint/strict-void-return': 0,
-		},
-	},
-	{
-		files: [
-			'test/math/*.json',
-		],
-		rules: {
-			'no-irregular-whitespace': 0,
 		},
 	},
 );

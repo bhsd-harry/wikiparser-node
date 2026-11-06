@@ -1,9 +1,7 @@
 import type {
-	LintError,
 
 	/* NOT FOR BROWSER */
 
-	Config,
 	RenderOpt,
 } from '../base';
 import type {
@@ -14,15 +12,9 @@ import type {
 	Token,
 } from '../internal';
 
-/* NOT FOR BROWSER */
-
-import type {Ranges} from '../lib/ranges';
-
-/* NOT FOR BROWSER END */
-
 declare global {
 	type WikiParserAcceptable =
-		Record<string, number | string | Ranges | (number | string)[]>;
+		Record<string, number | string | (number | string)[]>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly name?: string | undefined;
@@ -31,9 +23,6 @@ declare global {
 		getAttribute<T extends string>(key: T): TokenAttribute<T>;
 		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
-		lint(start?: number): LintError[];
-		getAbsoluteIndex(): number;
-		print(opt?: PrintOpt): string;
 
 		/* NOT FOR BROWSER */
 
@@ -41,32 +30,14 @@ declare global {
 		afterBuild(): void;
 		insertAt(token: unknown, i?: number): unknown;
 		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
-		addEventListener(events: string | string[], listener: (...args: any[]) => void): void;
-		dispatchEvent(e: Event, data: unknown): void;
 		safeReplaceChildren(elements: readonly (AstNodes | string)[]): void;
-		constructorError(msg: string): never;
 		seal(key: string, permanent?: boolean): void;
 		toHtmlInternal(opt?: HtmlOpt): string;
-		plainTextInternal(opt?: PlainOpt): string;
 	};
 
 	type Cached<T> = [number, T];
 
-	interface PrintOpt {
-		readonly pre?: string;
-		readonly post?: string;
-		readonly sep?: string;
-		readonly class?: string;
-	}
-
 	/* NOT FOR BROWSER */
-
-	interface ParsingError {
-		readonly stage?: number;
-		readonly include?: boolean;
-		readonly config?: Config;
-		readonly page?: string;
-	}
 
 	interface RefState {
 		name?: string;
@@ -91,7 +62,7 @@ declare global {
 
 	type PlainOpt = Pick<HtmlOpt, 'nowrap'>;
 
-	type Method = 'toHtmlInternal' | 'plainTextInternal';
+	type Method = 'toHtmlInternal';
 
 	type HtmlOrPlainFunc = (childNodes: readonly AstNodes[], separator: string, opt?: HtmlOpt) => string;
 }

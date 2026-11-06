@@ -4,23 +4,15 @@ import {
 	extUrlCharFirst,
 	removeComment,
 	text,
-	print,
 } from '../util/string';
-import {generateForSelf, fixByRemove, fixByDecode, fixBySpace} from '../util/lint';
 import {
 	MAX_STAGE,
 	galleryParams,
-	extensions,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../util/constants';
 import {Shadow} from '../util/debug';
-import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError, Config, TokenTypes} from '../base';
+import type {Config, TokenTypes} from '../base';
 import type {Title} from '../lib/title';
 import type {
 	AtomToken,
@@ -28,7 +20,6 @@ import type {
 
 	/* NOT FOR BROWSER */
 
-	AstNodes,
 	AstText,
 } from '../internal';
 
@@ -132,7 +123,6 @@ function validate(
  *
  * 图片参数
  */
-@noEscape
 export abstract class ImageParameterToken extends Token {
 	declare readonly name: string;
 	readonly #syntax: string = '';
@@ -149,8 +139,6 @@ export abstract class ImageParameterToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	abstract override get parentElement(): FileToken | undefined;
-	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
@@ -166,58 +154,35 @@ export abstract class ImageParameterToken extends Token {
 	 * @since v1.29.0
 	 */
 	get thumb(): Title | undefined {
-		LINT: return this.name === 'manualthumb'
+		return this.name === 'manualthumb'
 			? this.normalizeTitle(`File:${super.text().trim()}`, 6, {page: ''})
 			: undefined;
 	}
 
 	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
-		LINT: {
-			const {name, parentNode, childNodes} = this;
-			if (name !== 'link') {
-				return undefined;
-			}
-			const value = text(
-				childNodes.flatMap(child => child.is('link') ? child.lastChild.childNodes : child)
-					.filter(({type}) => type !== 'html'),
-			).trim();
-			return Shadow.run((): string | Title | undefined => {
-				const config = this.getAttribute('config'),
-					accum: Token[] = [],
-					token = new Token(value, config, accum);
-				token.parseOnce(0, this.getAttribute('include')).parseOnce();
-				if (/^\0\d+m\x7F/u.test(token.firstChild!.toString())) {
-					return value;
-				}
-				const link = validate('link', value, config, parentNode?.type, undefined, accum);
-				return typeof link === 'boolean' ? undefined : link;
-			}, Parser);
+		const {name, parentNode, childNodes} = this;
+		if (name !== 'link') {
+			return undefined;
 		}
+		const value = text(
+			childNodes.flatMap(child => child.is('link') ? child.lastChild.childNodes : child)
+				.filter(({type}) => type !== 'html'),
+		).trim();
+		return Shadow.run((): string | Title | undefined => {
+			const config = this.getAttribute('config'),
+				accum: Token[] = [],
+				token = new Token(value, config, accum);
+			token.parseOnce(0, this.getAttribute('include')).parseOnce();
+			if (/^\0\d+m\x7F/u.test(token.firstChild!.toString())) {
+				return value;
+			}
+			const link = validate('link', value, config, parentNode?.type, undefined, accum);
+			return typeof link === 'boolean' ? undefined : link;
+		}, Parser);
 	}
 
 	/* NOT FOR BROWSER */
-
-	set link(value: string) {
-		if (this.name === 'link') {
-			this.setValue(value);
-		}
-	}
-
-	set thumb(value: string) {
-		if (this.name === 'manualthumb') {
-			this.setValue(value);
-		}
-	}
-
-	/** parameter value / 参数值 */
-	get value(): string | true {
-		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
-	}
 
 	/** iamge size / 图片大小 */
 	get size(): {width: string, height: string} | undefined {
@@ -244,35 +209,6 @@ export abstract class ImageParameterToken extends Token {
 			}, Parser);
 		}
 		return undefined;
-	}
-
-	set size(size) {
-		if (this.name === 'width') {
-			this.setValue(size && size.width + (size.height && 'x') + size.height);
-		}
-	}
-
-	/** image width / 图片宽度 */
-	get width(): string | undefined {
-		return this.size?.width;
-	}
-
-	set width(width) {
-		if (this.name === 'width') {
-			const {height} = this;
-			this.setValue((width || '') + (height! && 'x') + height!);
-		}
-	}
-
-	/** image height / 图片高度 */
-	get height(): string | undefined {
-		return this.size?.height;
-	}
-
-	set height(height) {
-		if (this.name === 'width') {
-			this.setValue(this.width! + (height ? `x${height}` : ''));
-		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -376,111 +312,14 @@ export abstract class ImageParameterToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* PRINT ONLY */
-
-		PRINT: if (key === 'invalid') {
-			return (this.name === 'invalid') as TokenAttribute<T>;
-		}
-
-		/** PRINT ONLY END */
-
 		return key === 'padding'
 			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
 			: super.getAttribute(key);
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				{lintConfig} = Parser,
-				{computeEditInfo, fix} = lintConfig,
-				{link, name} = this,
-				value = name === 'width' && this.getValue() as string | false;
-			if (name === 'invalid' || value && value.endsWith('px')) {
-				const rule = 'invalid-gallery',
-					s = lintConfig.getSeverity(rule, 'parameter');
-				if (s) {
-					const e = generateForSelf(this, {start}, rule, 'invalid-image-parameter', s);
-					if (computeEditInfo || fix) {
-						e.fix = value ? fixByRemove(e, 0, value) : fixByRemove(e, -1);
-					}
-					errors.push(e);
-				}
-			} else if (name === 'link') {
-				if (link === undefined) {
-					const rule = 'invalid-gallery',
-						s = lintConfig.getSeverity(rule, 'link');
-					if (s) {
-						const e = generateForSelf(this, {start}, rule, 'invalid-gallery-link', s);
-						if (computeEditInfo) {
-							const rawLink = super.toString(),
-								index = rawLink.indexOf('|'),
-								before = rawLink.slice(0, index).trim();
-							if (
-								index !== -1
-								&& !/[<{]/u.test(before)
-								&& typeof validate(
-									'link',
-									before,
-									this.getAttribute('config'),
-									this.parentNode?.type,
-								) === 'string'
-							) {
-								e.suggestions = [fixBySpace(start + this.getRelativeIndex(0) + index)];
-							}
-						}
-						errors.push(e);
-					}
-				} else if (typeof link === 'string') {
-					const rule = 'invalid-url',
-						s = lintConfig.getSeverity(rule);
-					if (s && !this.querySelector('magic-word')) {
-						try {
-							getUrl(link);
-						} catch {
-							errors.push(generateForSelf(this, {start}, rule, 'invalid-url', s));
-						}
-					}
-				} else if (link.encoded) {
-					const rule = 'url-encoding',
-						s = lintConfig.getSeverity(rule, 'file');
-					if (s) {
-						const e = generateForSelf(this, {start}, rule, 'unnecessary-encoding', s);
-						if (computeEditInfo || fix) {
-							e.fix = fixByDecode(e, this);
-						}
-						errors.push(e);
-					}
-				}
-			} else if (name === 'manualthumb') {
-				const rule = 'invalid-gallery',
-					s = lintConfig.getSeverity(rule, 'thumb');
-				if (s && !this.querySelector('arg,magic-word,template')) {
-					const {
-						valid,
-						ns,
-						extension,
-
-						/* NOT FOR BROWSER */
-
-						interwiki,
-					} = this.thumb!;
-					if (
-						!valid || ns !== 6 || !extensions.has(extension!)
-						|| interwiki // eslint-disable-line unicorn/prefer-simple-condition-first
-					) {
-						errors.push(generateForSelf(this, {start}, rule, 'invalid-thumb', s));
-					}
-				}
-			}
-			return errors;
-		}
-	}
-
 	/** 是否是不可变参数 */
 	#isVoid(): '' | boolean {
-		LINT: return this.#syntax && !this.#syntax.includes('$1');
+		return this.#syntax && !this.#syntax.includes('$1');
 	}
 
 	/**
@@ -489,31 +328,15 @@ export abstract class ImageParameterToken extends Token {
 	 * 获取参数值
 	 */
 	getValue(): string | true {
-		LINT: {
-			const {name, childNodes} = this;
-			if (name === 'link') {
-				return text(childNodes.map(
-					child => child.is('ext') && child.name === 'nowiki' ? child.innerText ?? '' : child,
-				)).trim();
-			} else if (name === 'invalid') {
-				return '';
-			}
-			return name === 'caption' ? super.text() : this.#isVoid() || super.text().trim();
+		const {name, childNodes} = this;
+		if (name === 'link') {
+			return text(childNodes.map(
+				child => child.is('ext') && child.name === 'nowiki' ? child.innerText ?? '' : child,
+			)).trim();
+		} else if (name === 'invalid') {
+			return '';
 		}
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: {
-			return this.#syntax
-				? `<span class="wpb-image-parameter${this.name === 'invalid' ? ' wpb-invalid' : ''}">${
-					this.#syntax.replace(
-						'$1',
-						() => `<span class="wpb-image-caption">${print(this.childNodes)}</span>`,
-					)
-				}</span>`
-				: super.print({class: 'image-caption'});
-		}
+		return name === 'caption' ? super.text() : this.#isVoid() || super.text().trim();
 	}
 
 	/* NOT FOR BROWSER */
@@ -533,17 +356,6 @@ export abstract class ImageParameterToken extends Token {
 		});
 	}
 
-	/** @private */
-	override insertAt(token: string, i?: number): AstText;
-	/** @private */
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-		if (!Shadow.running && this.#isVoid()) {
-			throw new Error(`Image parameter ${this.name} does not accept custom input!`);
-		}
-		return super.insertAt(token as T, i);
-	}
-
 	/**
 	 * Set the parameter value
 	 *
@@ -551,20 +363,8 @@ export abstract class ImageParameterToken extends Token {
 	 * @param value parameter value / 参数值
 	 * @throws `Error` if the parameter is invalid
 	 */
-	setValue(value: string | boolean = false): void {
-		const {name} = this;
-		if (value === false) {
-			this.removeInternal();
-			return;
-		} else if (name === 'invalid') {
-			throw new Error('Invalid image parameter!');
-		}
-		const type = this.#isVoid() ? 'Boolean' : 'String';
-		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof
-			this.typeError('setValue', type);
-		} else if (value !== true) {
-			this.safeReplaceChildren(Parser.parseWithRef(value, this, name === 'caption' ? MAX_STAGE : 5).childNodes);
-		}
+	setValue(value: string): void {
+		this.safeReplaceChildren(Parser.parseWithRef(value, this, 5).childNodes);
 	}
 
 	/**
@@ -582,5 +382,3 @@ export abstract class ImageParameterToken extends Token {
 		return typeof link === 'string' ? getUrl(link) : link.getUrl(articlePath);
 	}
 }
-
-classes['ImageParameterToken'] = __filename;

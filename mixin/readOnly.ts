@@ -1,5 +1,4 @@
 import {Shadow} from '../util/debug';
-import {mixins} from '../util/constants';
 import Parser from '../index';
 
 /**
@@ -19,5 +18,3 @@ export const readOnly = (readonly = false) =>
 		}
 		return result;
 	};
-
-mixins['readOnly'] = __filename;

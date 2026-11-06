@@ -16,7 +16,6 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import type * as MagicWords from '../render/magicWords';
 
 /* NOT FOR BROWSER END */
@@ -118,19 +117,8 @@ export class Title {
 
 	/* NOT FOR BROWSER */
 
-	set extension(extension) {
-		extension ??= '';
-		const {main} = this,
-			i = main.lastIndexOf('.');
-		this.main = (i === -1 ? main : main.slice(0, i)) + (extension && '.') + extension;
-	}
-
 	/** @throws `RangeError` if the namespace is not defined */
 	set ns(ns) {
-		/* c8 ignore next 3 */
-		if (!Object.hasOwn(this.#namespaces, ns)) {
-			throw new RangeError('Undefined namespace!');
-		}
 		this.#ns = ns;
 	}
 
@@ -385,18 +373,6 @@ export class Title {
 		}
 	}
 
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Check if the title is a redirect
-	 *
-	 * 检测是否是重定向
-	 * @since v1.39.1
-	 */
-	isRedirect(): boolean {
-		return this.getRedirection()[0];
-	}
-
 	/**
 	 * Get the URL of the file
 	 *
@@ -408,19 +384,10 @@ export class Title {
 	 * @throws `Error` if the title is not a file
 	 */
 	getFileUrl(width?: number | false, height?: number | false): string {
-		/* c8 ignore start */
-		if (
-			typeof width === 'number' && (width <= 0 || !Number.isSafeInteger(width))
-			|| typeof height === 'number' && (height <= 0 || !Number.isSafeInteger(height))
-		) {
-			throw new RangeError('Width and height must be positive integers or omitted!');
-		}
-		/* c8 ignore stop */
 		const {main, valid, ns, interwiki} = this;
 		if (!valid || ns !== 6 || interwiki) {
 			throw new Error('Title.getFileUrl method is only for files!');
-		}
-		if (height) {
+		} else if (height) {
 			width ||= 1e4;
 		}
 		const {expandMagicWord}: typeof MagicWords = require('../render/magicWords');
@@ -523,5 +490,3 @@ export class Title {
 			.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
 	}
 }
-
-classes['Title'] = __filename;

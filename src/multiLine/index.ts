@@ -6,7 +6,6 @@ import type {AttributesToken, ExtToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../../util/constants';
 import {clone} from '../../mixin/clone';
 
 /* NOT FOR BROWSER END */
@@ -26,9 +25,7 @@ export abstract class MultiLineToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -61,11 +58,6 @@ export abstract class MultiLineToken extends Token {
 		return super.text('\n').replace(/\n\s*\n/gu, '\n');
 	}
 
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({sep: '\n'});
-	}
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -74,5 +66,3 @@ export abstract class MultiLineToken extends Token {
 		return new C(undefined, this.getAttribute('config'));
 	}
 }
-
-classes['MultiLineToken'] = __filename;

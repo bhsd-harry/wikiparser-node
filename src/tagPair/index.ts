@@ -1,28 +1,16 @@
 import {gapped} from '../../mixin/gapped';
-import {noEscape} from '../../mixin/noEscape';
 import {Token} from '../index';
 import type {
 	Config,
-	AST,
 } from '../../base';
 import type {AstNodes} from '../../internal';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-import {undo} from '../../util/debug';
-import {fixedToken} from '../../mixin/fixed';
-import Parser from '../../index';
-
-/* NOT FOR BROWSER END */
 
 /**
  * Paired tags
  *
  * 成对标签
  */
-@fixedToken
-@gapped() @noEscape
+@gapped()
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
 	readonly #tags: [string, string];
@@ -45,22 +33,6 @@ export abstract class TagPairToken extends Token {
 	get selfClosing(): boolean {
 		return this.#selfClosing;
 	}
-
-	/* NOT FOR BROWSER */
-
-	set selfClosing(value) {
-		this.#selfClosing = Boolean(value);
-		if (value) {
-			const {lastChild} = this;
-			if (lastChild.type === 'text') {
-				lastChild.replaceData('');
-			} else {
-				lastChild.replaceChildren();
-			}
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param name 标签名
@@ -91,27 +63,8 @@ export abstract class TagPairToken extends Token {
 		const {
 				firstChild,
 				lastChild,
-
-				/* NOT FOR BROWSER */
-
-				nextSibling,
-				name,
-				closed,
-				type,
 			} = this,
 			[opening, closing] = this.#tags;
-
-		/* NOT FOR BROWSER */
-
-		/* c8 ignore start */
-		if (!closed && nextSibling && type === 'include') {
-			Parser.error(`Auto-closing <${name}>`, lastChild);
-			this.closed = true;
-		}
-		/* c8 ignore stop */
-
-		/* NOT FOR BROWSER END */
-
 		return `<${opening}${firstChild.toString(skip)}${
 			this.#selfClosing ? '/>' : `>${lastChild.toString(skip)}${this.closed ? `</${closing}>` : ''}`
 		}`;
@@ -129,43 +82,4 @@ export abstract class TagPairToken extends Token {
 
 		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
 	}
-
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const [opening, closing] = this.#tags;
-			return super.print(
-				this.#selfClosing
-					? {pre: `&lt;${opening}`, post: '/&gt;'}
-					: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''},
-			);
-		}
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start);
-			json['selfClosing'] = this.#selfClosing;
-			return json;
-		}
-	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override afterBuild(): void {
-		super.afterBuild();
-		const /** @implements */ tagPairListener: AstListener = (e, data) => {
-			/* c8 ignore start */
-			if (this.#selfClosing && e.prevTarget === this.lastChild && this.lastChild.toString()) {
-				undo(e, data);
-				throw new Error('A self-closing tag does not have inner content.');
-			}
-			/* c8 ignore stop */
-		};
-		this.addEventListener(['insert', 'replace', 'text'], tagPairListener);
-	}
 }
-
-classes['TagPairToken'] = __filename;

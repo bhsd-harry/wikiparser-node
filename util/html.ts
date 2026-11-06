@@ -176,23 +176,6 @@ export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: Htm
 };
 
 /**
- * convert to plain text
- * @param childNodes a Token's contents
- * @param separator delimiter between nodes
- * @param opt options
- */
-export const plainText: HtmlOrPlainFunc = (childNodes, separator, opt?: PlainOpt): string => {
-	const results: string[] = [];
-	for (const child of childNodes) { // eslint-disable-line unicorn/prefer-array-from-map
-		results.push(
-			child.plainTextInternal(opt)
-			+ (child.is('list-range') && child.nextSibling?.is('dd') ? '\n' : ''),
-		);
-	}
-	return results.join(separator);
-};
-
-/**
  * get the id of a section heading
  * @param tokens inner tokens of a section heading
  */

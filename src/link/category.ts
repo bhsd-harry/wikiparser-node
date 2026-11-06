@@ -2,16 +2,9 @@ import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
-/* PRINT ONLY */
-
-import {decodeHtml} from '../../util/string';
-import type {AST} from '../../base';
-
-/* PRINT ONLY END */
-
 /* NOT FOR BROWSER */
 
-import {classes, states} from '../../util/constants';
+import {states} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -29,7 +22,6 @@ export abstract class CategoryToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
-	abstract override set link(link: string);
 
 	/* NOT FOR BROWSER END */
 
@@ -37,23 +29,7 @@ export abstract class CategoryToken extends LinkBaseToken {
 		return 'category';
 	}
 
-	/* PRINT ONLY */
-
-	/** sort key / 分类排序关键字 */
-	get sortkey(): string | undefined {
-		LSP: {
-			const [, child] = this.childNodes;
-			return child && decodeHtml(child.text());
-		}
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
-
-	set sortkey(text) {
-		this.setSortkey(text);
-	}
 
 	/**
 	 * link text
@@ -63,32 +39,6 @@ export abstract class CategoryToken extends LinkBaseToken {
 	 */
 	get innerText(): string {
 		return this.link.main;
-	}
-
-	/* NOT FOR BROWSER END */
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start),
-				{sortkey} = this;
-			if (sortkey) {
-				json['sortkey'] = sortkey;
-			}
-			return json;
-		}
-	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Set the sort key
-	 *
-	 * 设置排序关键字
-	 * @param text sort key / 排序关键字
-	 */
-	setSortkey(text?: string): void {
-		this.setLinkText(text);
 	}
 
 	/** @private */
@@ -101,5 +51,3 @@ export abstract class CategoryToken extends LinkBaseToken {
 		return '';
 	}
 }
-
-classes['CategoryToken'] = __filename;

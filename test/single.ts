@@ -3,7 +3,6 @@ import {
 	diff,
 } from '../util/diff';
 import type {SimplePage} from '@bhsd/test-util';
-import type {LintError} from '../base';
 
 /* NOT FOR BROWSER ONLY */
 
@@ -18,14 +17,6 @@ Parser.internal = true;
 
 /* NOT FOR BROWSER END */
 
-/* PRINT ONLY */
-
-const entities = {lt: '<', gt: '>', amp: '&'};
-
-/* PRINT ONLY END */
-
-const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
-
 /**
  * 测试单个页面
  * @param page 页面
@@ -39,9 +30,7 @@ export default async (
 	{pageid, title, ns, content}: SimplePage,
 	method?: string,
 ): Promise<
-	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	void
-		| LintError[]
 > => {
 	content = content.replaceAll(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
@@ -72,31 +61,6 @@ export default async (
 
 	/* NOT FOR BROWSER ONLY END */
 
-	/* PRINT ONLY */
-
-	if (!method || method === 'print') {
-		console.time(`print: ${title}`);
-		const printed =
-			token.print();
-		console.timeEnd(`print: ${title}`);
-		const restored = printed.replaceAll(
-			/<[^<]+?>|&([lg]t|amp);/gu,
-			(_, s?: keyof typeof entities) => s ? entities[s] : '',
-		);
-		if (restored !== content) {
-			error('高亮过程中不可逆地修改了原始文本！');
-			return diff(content, restored, pageid);
-		}
-	}
-
-	if (!method || method === 'json') {
-		console.time(`json: ${title}`);
-		token.json();
-		console.timeEnd(`json: ${title}`);
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
 
 	if (!method || method === 'html') {
@@ -112,13 +76,5 @@ export default async (
 
 	/* NOT FOR BROWSER END */
 
-	if (!method || method === 'lint') {
-		console.time(`lint: ${title}`);
-		const errors =
-			token.lint()
-				.filter(({rule}) => !ignored.has(rule));
-		console.timeEnd(`lint: ${title}`);
-		return errors;
-	}
 	return undefined;
 };

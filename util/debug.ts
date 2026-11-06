@@ -85,19 +85,6 @@ export function isToken(type: TokenTypes) {
 export const isIsolated = (name?: string): boolean => name === 'poem' || name === 'indicator';
 
 /**
- * 是否是行尾
- * @param token 节点
- * @param token.type 节点类型
- */
-export const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 'table-syntax';
-
-/**
- * 是否为普通内链
- * @param type 节点类型
- */
-export const isLink = (type: TokenTypes): boolean => type === 'redirect-target' || type === 'link';
-
-/**
  * 更新chldNodes
  * @param parent 父节点
  * @param position 子节点位置
@@ -162,14 +149,6 @@ export const getMagicWordInfo = (
 	];
 };
 
-/**
- * 生成一个指定长度的空数组
- * @param length 数组长度
- * @param callback 回调函数
- */
-export const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =>
-	Array.from({length}, (_, i) => callback(i));
-
 /* NOT FOR BROWSER ONLY */
 
 /**
@@ -179,45 +158,4 @@ export const emptyArray = <T>(length: number, callback: (i: number) => T): T[] =
  */
 export const mixin = (target: Function, source: Function): void => {
 	Object.defineProperty(target, 'name', {value: source.name});
-};
-
-/* NOT FOR BROWSER ONLY END */
-
-/* NOT FOR BROWSER */
-
-/**
- * 撤销最近一次Mutation
- * @param e 事件
- * @param data 事件数据
- * @throws `RangeError` 无法撤销的事件类型
- */
-export const undo: AstListener = (e, data): void => {
-	const {target, type} = e;
-	switch (data.type) {
-		case 'remove':
-			setChildNodes(target as Token, data.position, 0, [data.removed]);
-			break;
-		case 'insert':
-			setChildNodes(target as Token, data.position, 1);
-			break;
-		case 'replace':
-			setChildNodes(target.parentNode!, data.position, 1, [data.oldToken]);
-			break;
-		case 'text':
-			target.setAttribute('data', data.oldText);
-			break;
-		/* c8 ignore next 2 */
-		default:
-			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
-	}
-};
-
-/**
- * 获取魔术字的规范名称
- * @param name 魔术字
- * @param parserFunction 解析设置中的parserFunction属性
- */
-export const getCanonicalName = (name: string, parserFunction: Config['parserFunction']): [string, string | false] => {
-	const [lcName,, canonicalName] = getMagicWordInfo(name, parserFunction);
-	return [canonicalName || lcName, canonicalName];
 };

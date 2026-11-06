@@ -1,10 +1,8 @@
 import {
 	text,
 	removeComment,
-	print,
 } from '../util/string';
 import {padded} from '../mixin/padded';
-import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
@@ -13,7 +11,6 @@ import type {Config} from '../base';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
@@ -23,7 +20,7 @@ import {classes} from '../util/constants';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]]}`
  */
-@noEscape @padded('-{')
+@padded('-{')
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
@@ -32,32 +29,12 @@ export abstract class ConverterToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
-	abstract override get firstElementChild(): ConverterFlagsToken;
-	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/* NOT FOR BROWSER END */
 
 	override get type(): 'converter' {
 		return 'converter';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** whether to prevent language conversion / 是否不转换 */
-	get noConvert(): boolean {
-		return this.hasFlag('R') || this.length === 2 && this.lastChild.length === 1;
-	}
-
-	/** all language conversion flags / 所有转换类型标记 */
-	get flags(): Set<string> {
-		return this.firstChild.flags;
-	}
-
-	set flags(value) {
-		this.firstChild.flags = value;
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param flags 转换类型标记
@@ -84,10 +61,6 @@ export abstract class ConverterToken extends Token {
 					.map((rule): ConverterRuleToken => new ConverterRuleToken(rule, true, config, accum)),
 			]);
 		}
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren(0);
 	}
 
 	/** @private */
@@ -107,16 +80,6 @@ export abstract class ConverterToken extends Token {
 	/** @private */
 	override getGaps(i: number): number {
 		return i || this.firstChild.length > 0 ? 1 : 0;
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: {
-			const [flags, ...rules] = this.childNodes;
-			return `<span class="wpb-converter">-{${flags.print()}${
-				flags.length > 0 ? '|' : ''
-			}${print(rules, {sep: ';'})}}-</span>`;
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -148,30 +111,12 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/**
-	 * Get all language conversion flags
-	 *
-	 * 获取所有转换类型标记
-	 */
-	getAllFlags(): Set<string> {
-		return this.firstChild.getAllFlags();
-	}
-
-	/**
 	 * Get effective language conversion flags
 	 *
 	 * 获取有效的转换类型标记
 	 */
 	getEffectiveFlags(): Set<string> {
 		return this.firstChild.getEffectiveFlags();
-	}
-
-	/**
-	 * Get unknown language conversion flags
-	 *
-	 * 获取未知的转换类型标记
-	 */
-	getUnknownFlags(): Set<string> {
-		return this.firstChild.getUnknownFlags();
 	}
 
 	/**
@@ -192,46 +137,4 @@ export abstract class ConverterToken extends Token {
 	hasFlag(flag: string): boolean {
 		return this.firstChild.hasFlag(flag);
 	}
-
-	/**
-	 * Check if an effective language conversion flag is present
-	 *
-	 * 是否具有某有效的转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	hasEffectiveFlag(flag: string): boolean {
-		return this.firstChild.hasEffectiveFlag(flag);
-	}
-
-	/**
-	 * Remove a language conversion flag
-	 *
-	 * 移除某转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	removeFlag(flag: string): void {
-		this.firstChild.removeFlag(flag);
-	}
-
-	/**
-	 * Set a language conversion flag
-	 *
-	 * 设置转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	setFlag(flag: string): void {
-		this.firstChild.setFlag(flag);
-	}
-
-	/**
-	 * Toggle a language conversion flag
-	 *
-	 * 开关转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	toggleFlag(flag: string): void {
-		this.firstChild.toggleFlag(flag);
-	}
 }
-
-classes['ConverterToken'] = __filename;

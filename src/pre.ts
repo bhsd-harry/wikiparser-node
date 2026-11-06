@@ -1,14 +1,10 @@
 import {
 	MAX_STAGE,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../util/constants';
 import {safeStringReplace} from '../util/replace';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {Config, LintError} from '../base';
+import type {Config} from '../base';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -36,11 +32,7 @@ export abstract class PreToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
 	abstract override get previousElementSibling(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -74,11 +66,6 @@ export abstract class PreToken extends Token {
 		return true;
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		LINT: return super.lint(start, /<\s*\/\s*(pre)\b/giu);
-	}
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -87,5 +74,3 @@ export abstract class PreToken extends Token {
 		return new PreToken(undefined, this.getAttribute('config'));
 	}
 }
-
-classes['PreToken'] = __filename;

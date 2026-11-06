@@ -2,12 +2,6 @@ import {QuoteToken} from '../src/nowiki/quote';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析单引号
  * @param wikitext
@@ -121,5 +115,3 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 
 	return arr.join('');
 };
-
-parsers['parseQuotes'] = __filename;

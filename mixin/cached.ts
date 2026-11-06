@@ -1,12 +1,6 @@
 import {cache} from '../util/lint';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {mixins} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 缓存计算结果
  * @param force 是否强制缓存
@@ -26,5 +20,3 @@ export const cached = (force = true) =>
 			);
 		};
 	};
-
-mixins['cached'] = __filename;

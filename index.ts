@@ -1,41 +1,21 @@
 /* eslint n/exports-style: 0 */
 import {getBCP47Variants} from '@bhsd/cm-util';
-import {rules, stages} from './base';
 import {
 	Shadow,
-
-	/* NOT FOR BROWSER */
-
-	getCanonicalName,
 } from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
 	enMsg,
-
-	/* NOT FOR BROWSER */
-
-	classes,
-	functionHooks,
-	tagHooks,
 } from './util/constants';
 import {
 	tidy,
-
-	/* NOT FOR BROWSER */
-
-	isInterwiki,
 } from './util/string';
-import {LintConfiguration} from './lib/lintConfig';
 import type {
-	MaxStage,
 	Config,
 	ConfigData,
-	LintError,
-	LintConfig,
 	TokenTypes,
 	Parser as ParserBase,
-	AST,
 
 	/* NOT FOR BROWSER */
 
@@ -43,33 +23,20 @@ import type {
 } from './base';
 import type * as LibTitle from './lib/title';
 import type {TitleOptions, Title} from './lib/title';
-import type * as LSP from './lib/lsp';
-import type {LanguageService, QuickFixData} from './lib/lsp';
 import type * as Src from './src/index';
 import type {
 	Token,
-
-	/* NOT FOR BROWSER */
-
-	FunctionHook,
-	TagHook,
 } from './internal';
 
 /* NOT FOR BROWSER ONLY */
 
-import fs from 'fs';
-import path from 'path';
-import {wmf} from '@bhsd/common';
 import {
 	error,
 
 	/* NOT FOR BROWSER */
 
-	cmd,
-	info,
 	diff,
 } from './util/diff';
-import type * as Bin from './bin/config';
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -77,16 +44,11 @@ import type * as Bin from './bin/config';
 
 import {yellow, blue} from '@bhsd/nodejs';
 import {RedirectMap} from './lib/redirectMap';
-import type * as MagicWords from './render/magicWords';
 
 /* NOT FOR BROWSER END */
 
 declare interface Parser extends ParserBase {
 	default: this;
-	/** @since v1.5.1 */
-	readonly rules: readonly LintError.Rule[];
-	/** @private */
-	lintConfig: LintConfiguration;
 
 	/* NOT FOR BROWSER */
 
@@ -111,12 +73,6 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER END */
 
-	/* NOT FOR BROWSER ONLY */
-
-	configPaths: string[];
-
-	/* NOT FOR BROWSER ONLY END */
-
 	/** @private */
 	msg(msg: string, arg?: string): string;
 
@@ -139,57 +95,11 @@ declare interface Parser extends ParserBase {
 		accum?: Token[], // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
-
-	/**
-	 * Create a language server
-	 *
-	 * 创建语言服务
-	 * @param uri document URI / 文档标识
-	 * @since v1.16.1
-	 */
-	createLanguageService(uri?: object): LanguageService;
-
-	/**
-	 * print in HTML
-	 *
-	 * 以HTML格式打印
-	 * @param include whether to be transcluded / 是否嵌入
-	 * @param page page name / 页面名称
-	 * @since v1.32.0
-	 */
-	print(wikitext: string, include?: boolean, config?: Config, page?: string): string;
-	print(wikitext: string, page: string, include?: boolean, config?: Config): string;
-
-	/* NOT FOR BROWSER ONLY */
-
-	/**
-	 * get the name of a WMF site from a URL
-	 *
-	 * 获取一个WMF网站的名称
-	 * @param url script path
-	 * @throws `RangeError` if the URL is not a recognizable WMF site
-	 * @since v1.22.0
-	 */
-	getWMFSite(url: string): [string, string];
-
-	/**
-	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
-	 *
-	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
-	 * @param site site nickname / 网站别名
-	 * @param url script path / 脚本路径
-	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
-	 * @throws `RangeError` if Extension:CodeMirror is not installed
-	 * @since v1.18.4
-	 */
-	fetchConfig(site: string, url: string, user?: string): Promise<Config>;
-
-	/* NOT FOR BROWSER ONLY END */
 
 	/* NOT FOR BROWSER */
 
@@ -205,98 +115,13 @@ declare interface Parser extends ParserBase {
 	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string, opt?: RenderOpt): string;
 	toHtml(wikitext: string, page: string, include?: boolean, config?: Config, opt?: RenderOpt): string;
 
-	/**
-	 * Define how to expand a parser function
-	 *
-	 * 定义如何展开一个解析器函数
-	 * @param name parser function name / 解析器函数名
-	 * @param hook handler function / 处理函数
-	 * @since v1.22.0
-	 */
-	setFunctionHook(name: string, hook: FunctionHook): void;
-
-	/**
-	 * Define how to convert an extension tag to HTML
-	 *
-	 * 定义如何将一个扩展标签转换为HTML
-	 * @param name tag name / 标签名
-	 * @param hook handler function / 处理函数
-	 * @since v1.22.0
-	 */
-	setHook(name: string, hook: TagHook): void;
-
-	/**
-	 * Call a parser function
-	 *
-	 * 调用一个解析器函数
-	 * @param name parser function name / 解析器函数名
-	 * @param args arguments / 参数
-	 * @throws `RangeError` if failed to resolve the parser function
-	 * @since v1.31.0
-	 */
-	callParserFunction(name: string, ...args: string[]): string;
-	callParserFunction(name: string, args: string[] | Record<string, string>): string;
-
 	/** @private */
 	warn: log;
 	/** @private */
 	debug: log;
 	/** @private */
 	error: log;
-	/** @private */
-	info: log;
-
-	/** @private */
-	log(f: Function): void;
-
-	/** @private */
-	require(file: string): unknown;
-
-	/** @private */
-	clearCache(): Promise<void>;
-
-	/**
-	 * Check if the title is an interwiki link
-	 *
-	 * 是否是跨维基链接
-	 * @param title title / 链接标题
-	 */
-	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
-
-	/** @private */
-	reparse(date?: string): void;
 }
-
-/* NOT FOR BROWSER ONLY */
-
-const re = new RegExp(String.raw`^https?://([^./]+)\.(${wmf})\.org`, 'iu');
-
-/**
- * require一个JSON文件
- * @param file 文件名
- * @throws `RangeError` 仅支持JSON文件
- */
-const jsonRequire = (file: string): unknown => {
-	const fullPath = require.resolve(file);
-	if (fullPath.endsWith('.json')) {
-		return require(fullPath);
-	}
-	/* c8 ignore next */
-	throw new RangeError('Only JSON files are supported!');
-};
-
-/**
- * 从根路径require
- * @param file 文件名
- * @param dir 子路径
- */
-const rootRequire = (file: string, dir: string): unknown => jsonRequire(
-	path.isAbsolute(file)
-		? /* c8 ignore next */ file
-		: path.join('..', file.includes('/') ? '' : dir, file),
-);
-
-/* NOT FOR BROWSER ONLY END */
 
 let viewOnly =
 	false;
@@ -308,11 +133,6 @@ let redirectMap = new RedirectMap(),
 	now: Date | undefined;
 
 /* NOT FOR BROWSER END */
-
-let lintConfig = (() => {
-		LINT: return new LintConfiguration();
-	})(),
-	i18n: Record<string, string> | undefined;
 
 /**
  * 判断参数顺序
@@ -330,41 +150,11 @@ const getParams = (
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config:
-		'default',
-
-	/** @implements */
-	get rules() {
-		LINT: return rules;
-	},
+		require('../config/default'), // eslint-disable-line n/no-missing-require
 
 	/** @implements */
 	get i18n() {
-		LINT: return {...enMsg, ...i18n};
-	},
-
-	set i18n(
-		data: Record<string, string>
-			| string
-			| undefined,
-	) {
-		/* NOT FOR BROWSER ONLY */
-
-		if (typeof data === 'string') {
-			i18n = rootRequire(data, 'i18n') as Record<string, string>;
-		} else {
-			/* NOT FOR BROWSER ONLY END */
-
-			LINT: i18n = data;
-		}
-	},
-
-	/** @implements */
-	get lintConfig(): LintConfiguration {
-		LINT: return lintConfig;
-	},
-
-	set lintConfig(config: LintConfig) {
-		LINT: lintConfig = new LintConfiguration(config);
+		return enMsg;
 	},
 
 	/** @implements */
@@ -408,12 +198,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* NOT FOR BROWSER END */
 
-	/* NOT FOR BROWSER ONLY */
-
-	configPaths: [],
-
-	/* NOT FOR BROWSER ONLY END */
-
 	/* PRINT ONLY */
 
 	internal: false,
@@ -422,34 +206,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	getConfig(config?: ConfigData) {
-		/* NOT FOR BROWSER ONLY */
-
-		if (!config && typeof this.config === 'string') {
-			if (!path.isAbsolute(this.config)) {
-				for (const p of this.configPaths) {
-					try {
-						this.config = jsonRequire(path.resolve(process.cwd(), p, this.config as string)) as ConfigData;
-						break;
-					} catch {}
-				}
-			}
-			if (typeof this.config === 'string') {
-				this.config = rootRequire(this.config, 'config') as ConfigData;
-			}
-			/* c8 ignore next 3 */
-			if (!('functionHook' in this.config)) {
-				error(
-					`The schema (${
-						path.join(__dirname, '..', 'config', '.schema.json')
-					}) of parser configuration is updated.`,
-				);
-			}
-			return this.getConfig();
-		}
-
-		/* NOT FOR BROWSER ONLY END */
-
-		const parserConfig = config ?? this.config as ConfigData;
+		const parserConfig = config ?? this.config;
 		const {
 			doubleUnderscore,
 			ext,
@@ -492,8 +249,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		LINT: return msg
-		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', () => this.msg(arg));
+		return msg
+			&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', () => this.msg(arg));
 	},
 
 	/** @implements */
@@ -551,82 +308,42 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	parse(wikitext, includeOrPage, maxStageOrInclude, configOrStage, pageOrConfig) {
 		wikitext = tidy(wikitext);
 		let include: boolean,
-			maxStage: MaxStage | undefined,
+			maxStage: number | undefined,
 			config: Config | undefined,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
-			maxStage = configOrStage as MaxStage | undefined;
+			maxStage = configOrStage as number | undefined;
 			config = pageOrConfig as Config | undefined;
 			page = includeOrPage;
 		} else {
 			include = Boolean(includeOrPage);
-			maxStage = maxStageOrInclude as MaxStage | undefined;
+			maxStage = maxStageOrInclude as number | undefined;
 			config = configOrStage as Config | undefined;
 			page = pageOrConfig as string | undefined;
 		}
 		maxStage ??= MAX_STAGE + 1;
 		config ??= this.getConfig();
-		LSP: if (typeof maxStage !== 'number') {
-			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
-			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE + 1));
-		}
 		const {Token}: typeof Src = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';
 			token.pageName = page;
-			try {
-				token.parse(maxStage, include);
-				PRINT: if (maxStage > MAX_STAGE) {
-					token.buildLists();
-				}
-				return token;
-
-				/* NOT FOR BROWSER ONLY */
-			} catch (e) /* c8 ignore start */ {
-				if (e instanceof Error) {
-					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
-						stage = token.getAttribute('stage'),
-						isMax = stage === MAX_STAGE;
-					for (const k in config) {
-						if (k.startsWith('regex') || config[k as keyof Config] instanceof Set) {
-							delete config[k as keyof Config];
-						}
-					}
-					fs.writeFileSync(file, isMax ? wikitext : token.toString());
-					fs.writeFileSync(`${file}.err`, e.stack!);
-					fs.writeFileSync(
-						`${file}.json`,
-						JSON.stringify({
-							stage: isMax ? maxStage : stage,
-							include,
-							config,
-							page,
-						}, null, '\t'),
-					);
-				}
-				throw e;
+			token.parse(maxStage, include);
+			PRINT: if (maxStage > MAX_STAGE) {
+				token.buildLists();
 			}
-			/* c8 ignore stop */
-
-			/* NOT FOR BROWSER ONLY END */
+			return token;
 		});
 
 		/* NOT FOR BROWSER */
 
 		/* c8 ignore start */
 		if (this.debugging) {
+			/* eslint-disable prefer-const */
 			let restored = root.toString(),
 				proc = 'parsing';
-			if (restored === wikitext) {
-				const entities = {lt: '<', gt: '>', amp: '&'};
-				restored = root.print().replace(
-					/<[^<]+?>|&([lg]t|amp);/gu,
-					(_, s?: keyof typeof entities) => s ? entities[s] : '',
-				);
-				proc = 'printing';
-			}
+			/* eslint-enable prefer-const */
 			if (restored !== wikitext) {
 				const {length} = promises,
 					cur = promises[length - 1];
@@ -649,57 +366,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		return this.parse(wikitext, include, maxStage, ref.getAttribute('config'), ref.pageName);
 	},
 
-	/** @implements */
-	createLanguageService(uri = {}) {
-		LSP: {
-			const {LanguageService, tasks}: typeof LSP = require('./lib/lsp');
-			this.viewOnly = true;
-			return tasks.get(uri) ?? new LanguageService(uri);
-		}
-	},
-
-	/** @implements */
-	lint(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
-		LINT: {
-			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-			return Shadow.internal(() => this.parse(wikitext, include, MAX_STAGE, config, page).lint(), this);
-		}
-	},
-
-	/** @implements */
-	print(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
-		PRINT: {
-			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-			return Shadow.internal(
-				() => this.parse(wikitext, include, undefined, config, page).print(),
-				this,
-			);
-		}
-	},
-
-	/* NOT FOR BROWSER ONLY */
-
-	/** @implements */
-	getWMFSite(url) {
-		const mt = re.exec(url);
-		/* c8 ignore next 3 */
-		if (!mt) {
-			throw new RangeError('Not a recognizable WMF site!');
-		}
-		const type = mt[2]!.toLowerCase();
-		return [mt[1]!.toLowerCase() + (type === 'wikipedia' ? 'wiki' : type), mt[0]];
-	},
-
-	/* c8 ignore start */
-	/** @implements */
-	async fetchConfig(site, url, user) {
-		const {default: fetchConfig}: typeof Bin = require('./bin/config');
-		return this.getConfig(await fetchConfig(site, url, user, false, true));
-	},
-	/* c8 ignore stop */
-
-	/* NOT FOR BROWSER ONLY END */
-
 	/* NOT FOR BROWSER */
 
 	/** @implements */
@@ -709,69 +375,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			() => this.parse(wikitext, include, undefined, config, page).toHtml(opt),
 			this,
 		);
-	},
-
-	/** @implements */
-	setFunctionHook(name, hook) {
-		functionHooks.set(getCanonicalName(name, this.getConfig().parserFunction)[0], hook);
-	},
-
-	/** @implements */
-	setHook(name, hook) {
-		tagHooks.set(name.toLowerCase(), hook);
-	},
-
-	/** @implements */
-	callParserFunction(name: string, arg?: string | string[] | Record<string, string>, ...args: string[]): string {
-		if (typeof arg === 'string') {
-			args.unshift(arg);
-		} else if (Array.isArray(arg)) {
-			args = arg;
-		} else if (arg) {
-			args.length = 0;
-			for (let i = 1; Object.hasOwn(arg, i); i++) {
-				args.push(arg[i]!);
-				delete arg[i];
-			}
-			for (const key in arg) {
-				args.push(`${key}=${arg[key]}`);
-			}
-		}
-		const {parserFunction} = this.getConfig(),
-			[lcName, canonicalName] = getCanonicalName(name, parserFunction),
-			custom = functionHooks.has(lcName);
-		let result: string | false;
-		if (custom) {
-			if (!canonicalName) {
-				const [insensitive, sensitive] = parserFunction,
-					entry = Object.entries(sensitive).find(([, v]) => v === lcName)
-						|| Object.entries(insensitive).find(([, v]) => v === lcName);
-				/* c8 ignore next 3 */
-				if (!entry) {
-					throw new RangeError(`Unable to resolve parser function: ${name}`);
-				}
-				[name] = entry;
-			}
-			const {firstChild, length} = Shadow.internal(
-				() => this.parse(
-					`{{${name}:${args.join('|')}}}`,
-					false,
-					2,
-				),
-				this,
-			);
-			result = length === 1 && firstChild!.is('magic-word') && functionHooks.get(lcName)!(firstChild);
-		} else {
-			const {expandMagicWord}: typeof MagicWords = require('./render/magicWords');
-			result = expandMagicWord(lcName, args);
-		}
-		/* c8 ignore next 3 */
-		if (result === false) {
-			throw new RangeError(
-				`Unable to resolve ${custom ? 'custom' : 'built-in'} parser function: ${name}`,
-			);
-		}
-		return result;
 	},
 
 	/** @implements */
@@ -791,108 +394,21 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* c8 ignore stop */
 	},
 	error,
-	info,
-
-	/* c8 ignore start */
-	/** @implements */
-	log(f) {
-		if (typeof f === 'function') {
-			console.log(String(f));
-		}
-	},
-	/* c8 ignore stop */
-
-	/** @implements */
-	require(name: string): unknown {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		return Object.hasOwn(classes, name) ? require(classes[name]!)[name] : require(path.join(__dirname, name));
-	},
-
-	/* c8 ignore start */
-	/** @implements */
-	async clearCache(): Promise<void> {
-		await cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']);
-		const entries = Object.entries(classes);
-		for (const [, filePath] of entries) {
-			try {
-				delete require.cache[require.resolve(filePath)];
-			} catch {}
-		}
-		for (const [name, filePath] of entries) {
-			if (Object.hasOwn(globalThis, name)) {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				Object.assign(globalThis, {[name]: require(filePath)[name]});
-			}
-		}
-		this.info('已重新加载Parser');
-	},
-	/* c8 ignore stop */
-
-	/** @implements */
-	isInterwiki(title, config = Parser.getConfig()) {
-		return isInterwiki(title, config);
-	},
-
-	/* c8 ignore start */
-	/** @implements */
-	reparse(date = '') {
-		const dir = path.join(__dirname, '..', 'errors'),
-			main = fs.readdirSync(dir).find(name => name.startsWith(date) && name.endsWith('Z'));
-		if (!main) {
-			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
-		}
-		const {Token}: typeof Src = require('./src/index');
-		const file = path.join(dir, main),
-			wikitext = fs.readFileSync(file, 'utf8'),
-			{stage = MAX_STAGE, include, config, page}: ParsingError = (() => {
-				try {
-					return require(`${file}.json`);
-				} catch {
-					return {};
-				}
-			})();
-		Shadow.run(() => {
-			const halfParsed = stage < MAX_STAGE,
-				token = new Token(halfParsed ? wikitext : tidy(wikitext), config);
-			token.type = 'root';
-			token.pageName = page;
-			if (halfParsed) {
-				token.setAttribute('stage', stage);
-				token.parseOnce(stage, include);
-			} else {
-				token.parse(undefined, include);
-				if (stage > MAX_STAGE) {
-					token.buildLists();
-				}
-			}
-			fs.unlinkSync(file);
-			fs.rmSync(`${file}.err`, {force: true});
-			fs.rmSync(`${file}.json`, {force: true});
-		}, this);
-	},
-	/* c8 ignore stop */
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
-		'lintConfig',
+		'getConfig',
 		'normalizeTitle',
 		'parse',
-		'createLanguageService',
-
-		/* NOT FOR BROWSER ONLY */
-
-		'fetchConfig',
-
-		/* NOT FOR BROWSER ONLY END */
 
 		/* NOT FOR BROWSER */
 
 		'warning',
 		'debugging',
-		'isInterwiki',
+		'toHtml',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
@@ -906,16 +422,7 @@ export = Parser;
 export type {
 	Config,
 	ConfigData,
-	LintConfig,
-	LintError,
 	TokenTypes,
-	LanguageService,
-	QuickFixData,
 	Title,
-	AST,
 };
 export type * from './internal';
-
-/* NOT FOR BROWSER */
-
-export type {AstRange} from './lib/range';

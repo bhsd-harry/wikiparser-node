@@ -4,18 +4,6 @@ import {Token} from '../index';
 import {NowikiBaseToken} from './base';
 import type {DdToken, ListToken, AstNodes} from '../../internal';
 
-/* PRINT ONLY */
-
-import type {AST} from '../../base';
-
-/* PRINT ONLY END */
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 export interface ListRangeToken extends Token {
 	readonly type: 'list-range';
 	readonly previousSibling: ListToken | DdToken;
@@ -24,7 +12,6 @@ export interface ListRangeToken extends Token {
 	/* NOT FOR BROWSER */
 
 	readonly previousElementSibling: ListToken | DdToken;
-	readonly nextElementSibling: DdToken | undefined;
 }
 
 /** `;:*#` */
@@ -46,33 +33,6 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 		PRINT: return this.innerText.split(':').length - 1;
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** @throws `Error` if the token contains non-`:` characters */
-	set indent(indent) {
-		if (/[^:\s]/u.test(this.innerText)) {
-			throw new Error('The token is not <dd>!');
-		}
-		this.setText(':'.repeat(indent));
-	}
-
-	/** whether to contain `:` / 是否包含`:` */
-	get dd(): boolean {
-		return this.innerText.includes(':');
-	}
-
-	/** whether to contain `*` / 是否包含`*` */
-	get ul(): boolean {
-		return this.innerText.includes('*');
-	}
-
-	/** whether to contain `#` / 是否包含`#` */
-	get ol(): boolean {
-		return this.innerText.includes('#');
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * Get the range of the list
 	 *
@@ -82,9 +42,6 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	getRange(): ListRangeToken {
 		PRINT: {
 			const {parentNode} = this;
-			if (!parentNode) {
-				throw new Error('There is no parent node!');
-			}
 			let {nextSibling} = this;
 			if (nextSibling?.is('list-range')) {
 				return nextSibling;
@@ -110,7 +67,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 				end: number,
 				contents: AstNodes[];
 			if (nextSibling && nextSibling.type !== 'text') {
-				const {childNodes} = parentNode;
+				const {childNodes} = parentNode!;
 				start = childNodes.indexOf(this) + 1;
 				end = childNodes.indexOf(nextSibling);
 				contents = childNodes.slice(start, end);
@@ -125,13 +82,13 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 						this.setText(this.innerText + token.innerText);
 						token.removeInternal();
 					}
-					if (parentNode.is('list-range')) {
+					if (parentNode!.is('list-range')) {
 						parentNode.previousSibling.setText(parentNode.previousSibling.innerText + this.innerText);
 						this.removeInternal();
 						return parentNode;
 					}
 				}
-				const {childNodes} = parentNode;
+				const {childNodes} = parentNode!;
 				start = childNodes.indexOf(this) + 1;
 				if (nextSibling) {
 					const {data} = nextSibling,
@@ -157,20 +114,8 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 				return t;
 			});
 			token.concat(contents); // eslint-disable-line unicorn/no-unused-builtin-method-return
-			setChildNodes(parentNode, start, end - start, [token]);
+			setChildNodes(parentNode!, start, end - start, [token]);
 			return token as ListRangeToken;
-		}
-	}
-
-	/** @private */
-	override json(_?: string, depth?: number, start = this.getAbsoluteIndex()): AST {
-		LSP: {
-			const json = super.json(undefined, depth, start),
-				{indent} = this;
-			if (indent) {
-				json['indent'] = indent;
-			}
-			return json;
 		}
 	}
 
@@ -180,11 +125,4 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	override toHtmlInternal(): string {
 		return '';
 	}
-
-	/** @private */
-	override plainTextInternal(): string {
-		return '';
-	}
 }
-
-classes['ListBaseToken'] = __filename;

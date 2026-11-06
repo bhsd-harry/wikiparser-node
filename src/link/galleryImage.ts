@@ -1,20 +1,16 @@
-import {generateForSelf, fixByInsert} from '../../util/lint';
 import {
 	MAX_STAGE,
 
 	/* NOT FOR BROWSER */
 
-	classes,
 	galleryParams,
 } from '../../util/constants';
 import {padded} from '../../mixin/padded';
-import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
 import type {
 	Config,
-	LintError,
 } from '../../base';
 
 /* NOT FOR BROWSER */
@@ -47,13 +43,6 @@ export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	override get link(): string | Title {
 		return this.type === 'imagemap-image' ? '' : super.link;
-	}
-
-	/** @private */
-	override set link(value: string) {
-		if (this.type !== 'imagemap-image') {
-			super.link = value;
-		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -93,43 +82,6 @@ export abstract class GalleryImageToken extends FileToken {
 		);
 	}
 
-	/** 判定无效的图片 */
-	#lint(): boolean {
-		const title = this.getAttribute('title');
-		return title.ns !== 6
-			|| Boolean(title.interwiki);
-	}
-
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rule = 'invalid-gallery',
-				{lintConfig} = Parser,
-				s = lintConfig.getSeverity(rule, 'image');
-			if (s && this.#lint()) {
-				const e = generateForSelf(this, {start}, rule, 'invalid-gallery', s);
-				if (lintConfig.computeEditInfo) {
-					e.suggestions = [fixByInsert(start, 'prefix', 'File:')];
-				}
-				errors.push(e);
-			}
-			return errors;
-		}
-	}
-
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		PRINT: if (key === 'invalid') {
-			return this.#lint() as TokenAttribute<T>;
-		}
-		return super.getAttribute(key);
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
 
 	/**
@@ -160,5 +112,3 @@ export abstract class GalleryImageToken extends FileToken {
 		});
 	}
 }
-
-classes['GalleryImageToken'] = __filename;

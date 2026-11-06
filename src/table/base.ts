@@ -7,12 +7,6 @@ import {AttributesToken} from '../attributes';
 import type {Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 declare type TableTypes = 'table' | 'tr' | 'td';
 
 export interface TableBaseToken extends AttributesParentBase {}
@@ -49,8 +43,6 @@ export abstract class TableBaseToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
-	abstract override get firstElementChild(): SyntaxToken;
-	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
 
@@ -82,21 +74,6 @@ export abstract class TableBaseToken extends Token {
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,
 		);
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren([0, 1]);
-	}
-
-	/** @private */
-	override escape(): void {
-		LSP: for (const child of this.childNodes) {
-			if (child instanceof SyntaxToken) {
-				escapeTable(child);
-			} else {
-				child.escape();
-			}
-		}
 	}
 
 	/* NOT FOR BROWSER */
@@ -117,5 +94,3 @@ export abstract class TableBaseToken extends Token {
 		});
 	}
 }
-
-classes['TableBaseToken'] = __filename;

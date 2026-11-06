@@ -1,47 +1,9 @@
-import {parsers} from '../util/constants';
-import {basic, getCondition} from '../util/selector';
-import {Ranges} from '../lib/ranges';
-import {Title} from '../lib/title';
-import {Attributes} from '../lib/attributes';
+import {basic} from '../util/selector';
 import type {AstElement} from '../lib/element';
 import type {AttributesParentBase} from '../mixin/attributesParent';
-import type {Token, AstNodes} from '../internal';
+import type {Token} from '../internal';
 
-const simplePseudos = new Set([
-		'root',
-		'first-child',
-		'first-of-type',
-		'last-child',
-		'last-of-type',
-		'only-child',
-		'only-of-type',
-		'empty',
-		'parent',
-		'header',
-		'hidden',
-		'visible',
-		'only-whitespace',
-		'any-link',
-		'local-link',
-		'invalid',
-		'valid',
-		'required',
-		'optional',
-		'scope',
-	]),
-	complexPseudos = new Set([
-		'is',
-		'not',
-		'nth-child',
-		'nth-of-type',
-		'nth-last-child',
-		'nth-last-of-type',
-		'contains',
-		'has',
-		'lang',
-		'regex',
-	]),
-	specialChars: [string, string][] = [
+const specialChars: [string, string][] = [
 		['[', '&lbrack;'],
 		[']', '&rbrack;'],
 		['(', '&lpar;'],
@@ -54,10 +16,8 @@ const simplePseudos = new Set([
 	],
 	regularRegex = /[[(,>+~]|\s+/u,
 	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
-	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u,
 	grouping = new Set([',', '>', '+', '~']),
-	combinator = new Set(['>', '+', '~', '']),
-	primitives = new Set(['string', 'number', 'boolean', 'undefined']);
+	combinator = new Set(['>', '+', '~', '']);
 
 /**
  * optionally convert to lower cases
@@ -65,27 +25,6 @@ const simplePseudos = new Set([
  * @param i 是否对大小写不敏感
  */
 const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
-
-/**
- * 检查某个下标是否符合表达式
- * @param str 表达式
- * @param i 待检查的下标
- */
-const nth = (str: string, i: number): boolean => new Ranges(str).has(i, i + 1);
-
-/**
- * 是否受保护。保护条件来自Token，这里仅提前用于:required和:optional伪选择器。
- * @param token 节点
- */
-const isProtected = (token: Token): boolean | undefined => {
-	const {parentNode} = token;
-	if (!parentNode) {
-		return undefined;
-	}
-	const {childNodes, fixed} = parentNode;
-	return fixed
-		|| parentNode.getAttribute('protectedChildren').has(childNodes.indexOf(token), childNodes.length);
-};
 
 /**
  * 获取属性
@@ -114,11 +53,11 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
 const matches = (
 	token: Token & Partial<AttributesParentBase>,
 	step: SelectorArray,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	scope?: AstElement,
 	has?: Token,
 ): boolean => {
-	const {parentNode, type, name, childNodes} = token,
-		attributes = new Attributes(token);
+	const {type, name} = token;
 	return step.every(selector => {
 		if (typeof selector === 'string') {
 			switch (selector) { // 情形1：简单伪选择器、type和name
@@ -126,60 +65,13 @@ const matches = (
 					return token === has;
 				case '*':
 					return true;
-				case ':root':
-					return !parentNode;
-				case ':first-child':
-					return attributes.index === 1;
-				case ':first-of-type':
-					return attributes.indexOfType === 1;
-				case ':last-child':
-					return attributes.lastIndex === 1;
-				case ':last-of-type':
-					return attributes.lastIndexOfType === 1;
-				case ':only-child':
-					return attributes.siblingsCount === 1;
-				case ':only-of-type':
-					return attributes.siblingsCountOfType === 1;
-				case ':empty':
-					return !childNodes.some(({type: t, data}) => t !== 'text' || data);
-				case ':parent':
-					return childNodes.some(({type: t, data}) => t !== 'text' || data);
-				case ':header':
-					return type === 'heading';
-				case ':hidden':
-					return !token.text();
-				case ':visible':
-					return Boolean(token.text());
-				case ':only-whitespace':
-					return !token.text().trim();
-				case ':any-link':
-					return ['link', 'redirect-target', 'free-ext-link', 'magic-link', 'ext-link'].includes(type)
-						|| (type === 'file' || type === 'gallery-image') && attributes.link;
-				case ':local-link':
-					return ['link', 'file', 'gallery-image'].includes(type)
-						&& attributes.link instanceof Title
-						&& !attributes.link.title;
-				case ':invalid':
-					return attributes.invalid;
-				case ':valid':
-					return !attributes.invalid;
-				case ':required':
-					return isProtected(token) === true;
-				case ':optional':
-					return isProtected(token) === false;
-				case ':scope':
-					/* c8 ignore next 3 */
-					if (!scope) {
-						throw new SyntaxError('The :scope pseudo-selector must be used with an element node.');
-					}
-					return token === scope;
 				default:
 					return basic(selector)(type, name);
 			}
-		} else if (selector.length === 4) { // 情形2：属性选择器
+		} else { // 情形2：属性选择器
 			const [key, equal, val = '', i] = selector;
 			if (!(key in token || typeof token.hasAttr === 'function' && token.hasAttr(key))) {
-				return equal === '!=';
+				return false;
 			}
 			const thisVal = getAttr(token, key);
 			if (!equal) {
@@ -192,90 +84,8 @@ const matches = (
 					&& Iterator.from(thisVals as Iterable<unknown>)
 						.some(w => typeof w === 'string' && toCase(w, i) === v);
 			}
-			/* c8 ignore next 3 */
-			if (!(primitives.has(typeof thisVal) || thisVal instanceof Title)) {
-				throw new RangeError(`The complex attribute ${key} cannot be used in a selector!`);
-			}
 			const stringVal = toCase(String(thisVal), i);
-			switch (equal) {
-				case '|=':
-					return stringVal === v || stringVal.startsWith(`${v}-`);
-				case '^=':
-					return stringVal.startsWith(v);
-				case '$=':
-					return stringVal.endsWith(v);
-				case '*=':
-					return stringVal.includes(v);
-				case '!=':
-					return stringVal !== v;
-				default: // `=`
-					return stringVal === v;
-			}
-		}
-		const [s, pseudo] = selector; // 情形3：复杂伪选择器
-		switch (pseudo) {
-			case 'is':
-				return getCondition(s, scope)(token);
-			case 'not':
-				return !getCondition(s, scope)(token);
-			case 'nth-child':
-				return nth(s, attributes.index);
-			case 'nth-of-type':
-				return nth(s, attributes.indexOfType);
-			case 'nth-last-child':
-				return nth(s, attributes.lastIndex);
-			case 'nth-last-of-type':
-				return nth(s, attributes.lastIndexOfType);
-			case 'contains':
-				return token.text().includes(s);
-			case 'has': {
-				/* c8 ignore next 3 */
-				if (has) {
-					throw new SyntaxError('The :has() pseudo-selector cannot be nested.');
-				}
-				const condition: (child: Token) => boolean = getCondition(s, scope, token),
-
-					/**
-					 * 递归查找元素
-					 * @param child 子节点
-					 */
-					hasElement = (child: AstNodes): boolean =>
-						child.type !== 'text' && (condition(child) || child.childNodes.some(hasElement));
-				return [
-					token.childNodes,
-					/(?:^|,)\s*[+~]/u.test(s) && attributes.siblings?.slice(attributes.siblings.indexOf(token)),
-				].some(arr => arr && arr.some(hasElement));
-			}
-			case 'lang': {
-				/^zh(?:-|$)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-				const regex = new RegExp(`^${s}(?:-|$)`, 'iu');
-				let node: Token & Partial<AttributesParentBase> | undefined = token;
-				for (; node; node = node.parentNode) {
-					const lang = node.attributes?.['lang'];
-					if (lang !== undefined) {
-						return regex.test(lang);
-					}
-				}
-				return false;
-			}
-			case 'regex': {
-				const mt = /^([^,]+),\s*\/(.+)\/([a-z]*)$/u.exec(s) as [string, string, string, string] | null;
-				/* c8 ignore next 3 */
-				if (!mt) {
-					throw new SyntaxError(
-						`Wrong usage of the regex pseudo-selector. Use ":regex('attr, /re/i')" format.`,
-					);
-				}
-				try {
-					return new RegExp(mt[2], mt[3]).test(String(getAttr(token, mt[1].trim())));
-				} catch /* c8 ignore start */ {
-					throw new SyntaxError(`Invalid regular expression: /${mt[2]}/${mt[3]}`);
-				}
-				/* c8 ignore stop */
-			}
-			/* c8 ignore next 2 */
-			default:
-				throw new SyntaxError(`Undefined pseudo-selector: ${pseudo}`);
+			return stringVal === v;
 		}
 	});
 };
@@ -369,36 +179,17 @@ export const checkToken = (
 		for (let i = 0; i < pieces.length; i++) {
 			const piece = pieces[i]!;
 			if (!/^[:#]/u.test(piece)) {
-				/* c8 ignore next 3 */
-				if (step.length > 0) {
-					throw new SyntaxError(`Invalid selector!\n${selector}\nType selectors must come first.`);
-				}
 				step.push(piece);
 			} else if (piece.startsWith(':')) {
-				if (simplePseudos.has(piece.slice(1))) {
-					step.push(piece);
-				} else if (pieces[i - 1]?.startsWith('#')) {
+				// eslint-disable-next-line unicorn/no-lonely-if
+				if (pieces[i - 1]?.startsWith('#')) {
 					pieces[i - 1] += piece;
 					pieces.splice(i, 1);
 					i--;
-				} else {
-					/* c8 ignore next 2 */
-					throw new SyntaxError(`Undefined pseudo selector!\n${desanitize(piece)}`);
 				}
 			}
 		}
 		step.push(...pieces.filter(piece => piece.startsWith('#')).map(desanitize));
-	};
-
-	/**
-	 * 检查是否需要通用选择器
-	 * @throws `SyntaxError` 非法的选择器
-	 */
-	const needUniversal = (): void => {
-		/* c8 ignore next 3 */
-		if (step.length === 0 && (!has || condition.length > 1)) {
-			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
-		}
 	};
 	for (let mt = regex.exec(sanitized); mt; mt = regex.exec(sanitized)) {
 		let {0: syntax, index} = mt;
@@ -409,7 +200,6 @@ export const checkToken = (
 		}
 		if (syntax === ',') { // 情形1：并列
 			pushSimple(index);
-			needUniversal();
 			condition = [[]];
 			[step] = condition;
 			stack.push(condition);
@@ -421,7 +211,6 @@ export const checkToken = (
 			} else {
 				pushSimple(index);
 			}
-			needUniversal();
 			step.relation = syntax;
 			step = [];
 			condition.push(step);
@@ -433,15 +222,6 @@ export const checkToken = (
 			step.push(mt.slice(1) as [string, string | undefined, string | undefined, string | undefined]);
 			regex = regularRegex;
 		} else if (syntax === '(') { // 情形5：伪选择器开启
-			const i = sanitized.lastIndexOf(':', index),
-				pseudo = sanitized.slice(i + 1, index);
-			/* c8 ignore next 3 */
-			if (i === -1 || !complexPseudos.has(pseudo)) {
-				throw new SyntaxError(`Undefined pseudo selector!\n${desanitize(sanitized)}`);
-			}
-			pushSimple(i);
-			step.push(pseudo); // 临时存放复杂伪选择器
-			regex = functionRegex;
 		} else { // 情形6：伪选择器闭合
 			mt.push(step.pop() as string);
 			mt[1] &&= deQuote(mt[1]);
@@ -453,15 +233,6 @@ export const checkToken = (
 			sanitized = sanitized.trim();
 		}
 	}
-	if (regex === regularRegex) {
-		pushSimple();
-		needUniversal();
-		return stack.some(copy => matchesArray(token, copy, scope, has));
-	}
-	/* c8 ignore next */
-	throw new SyntaxError(
-		`Unclosed '${regex === attributeRegex ? '[' : '('}' in the selector!\n${desanitize(sanitized)}`,
-	);
+	pushSimple();
+	return stack.some(copy => matchesArray(token, copy, scope, has));
 };
-
-parsers['checkToken'] = __filename;

@@ -1,12 +1,9 @@
 import {padded} from '../mixin/padded';
-import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 
 /* NOT FOR BROWSER */
 
-import {classes} from '../util/constants';
 import {clone} from '../mixin/clone';
-import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 
@@ -16,29 +13,11 @@ import Parser from '../index';
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
-@noEscape @padded('<onlyinclude>')
+@padded('<onlyinclude>')
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** inner wikitext / 内部wikitext */
-	get innerText(): string {
-		return this.text();
-	}
-
-	/** @throws `RangeError` if the text contains `</onlyinclude>` */
-	set innerText(text) {
-		/* c8 ignore next 3 */
-		if (text.includes('</onlyinclude>')) {
-			throw new RangeError('"</onlyinclude>" is not allowed in the text!');
-		}
-		this.safeReplaceChildren(Parser.parseWithRef(text, this, undefined, true).childNodes);
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/** @private */
 	override toString(skip?: boolean): string {
@@ -50,14 +29,6 @@ export class OnlyincludeToken extends Token {
 		return true;
 	}
 
-	/** @private */
-	override print(): string {
-		PRINT: return super.print({
-			pre: '<span class="wpb-ext">&lt;onlyinclude&gt;</span>',
-			post: '<span class="wpb-ext">&lt;/onlyinclude&gt;</span>',
-		});
-	}
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -65,5 +36,3 @@ export class OnlyincludeToken extends Token {
 		return new OnlyincludeToken(undefined, this.getAttribute('config')) as this;
 	}
 }
-
-classes['OnlyincludeToken'] = __filename;

@@ -4,12 +4,7 @@ import type {SimplePage} from '@bhsd/test-util';
 
 /* NOT FOR BROWSER ONLY */
 
-import {registerHooks} from 'module';
 import {profile} from '@bhsd/nodejs';
-import lsp from './lsp';
-import {resolve} from './hooks';
-
-registerHooks({resolve});
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -29,9 +24,6 @@ const content = readFileSync('test/page.wiki', 'utf8'),
 					method !== 'lsp'
 				) {
 					await single(page, method);
-				}
-				if (!method || method === 'lsp') {
-					await lsp(page);
 				}
 				console.log();
 			}

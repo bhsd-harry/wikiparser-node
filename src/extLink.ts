@@ -1,16 +1,10 @@
 import {
 	MAX_STAGE,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../util/constants';
-import {generateForSelf} from '../util/lint';
 import {padded} from '../mixin/padded';
-import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
-import type {Config, LintError} from '../base';
+import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
@@ -37,8 +31,6 @@ export abstract class ExtLinkToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
-	abstract override get firstElementChild(): MagicLinkToken;
-	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
 
@@ -55,28 +47,6 @@ export abstract class ExtLinkToken extends Token {
 			: `[${
 				this.getRootNode().querySelectorAll<this>('ext-link[childElementCount=1]').indexOf(this) + 1
 			}]`;
-	}
-
-	set innerText(text) {
-		this.setLinkText(text);
-	}
-
-	/** URL protocol / 协议 */
-	get protocol(): string | undefined {
-		return this.firstChild.protocol;
-	}
-
-	set protocol(value: string) {
-		this.firstChild.protocol = value;
-	}
-
-	/** link / 链接 */
-	get link(): string {
-		return this.firstChild.link;
-	}
-
-	set link(url) {
-		this.firstChild.link = url;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -104,10 +74,6 @@ export abstract class ExtLinkToken extends Token {
 			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);
 		}
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren(0);
 	}
 
 	/** @private */
@@ -148,26 +114,6 @@ export abstract class ExtLinkToken extends Token {
 		return this.#space.length;
 	}
 
-	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		LINT: {
-			const errors = super.lint(start, re),
-				rule = 'var-anchor',
-				s = Parser.lintConfig.getSeverity(rule, 'extLink');
-			if (s && this.length === 1 && this.isInside('heading-title')) {
-				errors.push(generateForSelf(this, {start}, rule, 'variable-anchor', s));
-			}
-			return errors;
-		}
-	}
-
-	/** @private */
-	override print(): string {
-		PRINT: return super.print(
-			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
-		);
-	}
-
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -197,27 +143,6 @@ export abstract class ExtLinkToken extends Token {
 		) {
 			this.#space = ' ';
 		}
-	}
-
-	/**
-	 * Set the text of the link
-	 *
-	 * 设置链接显示文字
-	 * @param str text of the link / 链接显示文字
-	 */
-	setLinkText(str: string): void {
-		const {length, lastChild} = this,
-			root = Parser.parseWithRef(str, this, 7);
-		if (length === 1) {
-			root.type = 'ext-link-text';
-			root.setAttribute('acceptable', {
-				'Stage-7': ':', ConverterToken: ':',
-			});
-			this.insertAt(root);
-		} else {
-			lastChild.safeReplaceChildren(root.childNodes);
-		}
-		this.#space ||= ' ';
 	}
 
 	/** @private */
@@ -258,16 +183,4 @@ export abstract class ExtLinkToken extends Token {
 	getUrl(): URL {
 		return this.firstChild.getUrl() as URL;
 	}
-
-	/**
-	 * Set the target of the link
-	 *
-	 * 设置外链目标
-	 * @param url URL containing the protocol / 含协议的网址
-	 */
-	setTarget(url: string): void {
-		this.firstChild.setTarget(url);
-	}
 }
-
-classes['ExtLinkToken'] = __filename;
