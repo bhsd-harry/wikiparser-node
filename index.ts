@@ -877,10 +877,18 @@ const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
+		'getConfig',
+		'lint',
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
+
+		/* PRINT ONLY */
+
+		'print',
+
+		/* PRINT ONLY END */
 
 		/* NOT FOR BROWSER ONLY */
 
@@ -893,6 +901,10 @@ const def: PropertyDescriptorMap = {
 		'warning',
 		'debugging',
 		'isInterwiki',
+		'callParserFunction',
+		'toHtml',
+		'setFunctionHook',
+		'setHook',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
