@@ -419,8 +419,7 @@ export class Title {
 		const {main, valid, ns, interwiki} = this;
 		if (!valid || ns !== 6 || interwiki) {
 			throw new Error('Title.getFileUrl method is only for files!');
-		}
-		if (height) {
+		} else if (height) {
 			width ||= 1e4;
 		}
 		const {expandMagicWord}: typeof MagicWords = require('../render/magicWords');

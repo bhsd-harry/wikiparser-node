@@ -206,6 +206,17 @@ declare interface Parser extends ParserBase {
 	toHtml(wikitext: string, page: string, include?: boolean, config?: Config, opt?: RenderOpt): string;
 
 	/**
+	 * Extract plain text
+	 *
+	 * 提取纯文本
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @param page page name / 页面名称
+	 * @since v2.2.0
+	 */
+	plainText(wikitext: string, include?: boolean, config?: Config, page?: string): string;
+	plainText(wikitext: string, page: string, include?: boolean, config?: Config): string;
+
+	/**
 	 * Define how to expand a parser function
 	 *
 	 * 定义如何展开一个解析器函数
@@ -712,6 +723,15 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
+	plainText(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
+		return Shadow.internal(
+			() => this.parse(wikitext, include, undefined, config, page).plainText(),
+			this,
+		);
+	},
+
+	/** @implements */
 	setFunctionHook(name, hook) {
 		functionHooks.set(getCanonicalName(name, this.getConfig().parserFunction)[0], hook);
 	},
@@ -903,6 +923,7 @@ const def: PropertyDescriptorMap = {
 		'isInterwiki',
 		'callParserFunction',
 		'toHtml',
+		'plainText',
 		'setFunctionHook',
 		'setHook',
 	]);

@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
-## v2.1.1
+## v2.2.0
 
 *2026-11-07*
+
+**Added**
+
+- New method [`Parser.plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#plaintext)
 
 **Fixed**
 
