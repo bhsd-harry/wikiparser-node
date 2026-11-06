@@ -445,6 +445,8 @@ const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
+		'getConfig',
+		'lint',
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
