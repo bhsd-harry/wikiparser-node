@@ -17144,7 +17144,7 @@
 		"desc": "Mixed Lists: Test 4",
 		"wikitext": "*;d1 :d2\n*;d3 :d4",
 		"html": "<ul><li><dl><dt>d1</dt>\n<dd>d2</dd>\n<dt>d3</dt>\n<dd>d4</dd></dl></li></ul>",
-		"render": "<ul><li><dl><dt>d1</dt>\n<dd>d2</dd></dl></li>\n<li><dl><dt>d3</dt>\n<dd>d4</dd></dl></li></ul>",
+		"render": "<ul><li><dl><dt>d1</dt>\n<dd>d2</dd>\n<dt>d3</dt>\n<dd>d4</dd></dl></li></ul>",
 		"plain": "d1 \nd2\nd3 \nd4",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-list-range\"><span class=\"wpb-list\">;</span><span class=\"wpb-list-range\">d1 </span><span class=\"wpb-dd\">:</span><span class=\"wpb-list-range\">d2</span></span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-list-range\"><span class=\"wpb-list\">;</span><span class=\"wpb-list-range\">d3 </span><span class=\"wpb-dd\">:</span><span class=\"wpb-list-range\">d4</span></span></span>"
@@ -17216,7 +17216,7 @@
 		"desc": "Mixed Lists: Test 13",
 		"wikitext": "*#*#;*;;foo : bar\n*#*#;boo : baz",
 		"html": "<ul><li><ol><li><ul><li><ol><li><dl><dt>foo</dt>\n<dd><ul><li><dl><dt><dl><dt>bar</dt></dl></dt></dl></li></ul></dd></dl></li></ol></li></ul>\n<dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul>",
-		"render": "<ul><li><ol><li><ul><li><ol><li><dl><dt><ul><li><dl><dt><dl><dt>foo</dt>\n<dd>bar</dd></dl></dt></dl></li></ul></dt></dl></li>\n<li><dl><dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul></li></ol></li></ul>",
+		"render": "<ul><li><ol><li><ul><li><ol><li><dl><dt><ul><li><dl><dt><dl><dt>foo</dt>\n<dd>bar</dd></dl></dt></dl></li></ul></dt>\n<dt>boo</dt>\n<dd>baz</dd></dl></li></ol></li></ul></li></ol></li></ul>",
 		"plain": "foo \n bar\nboo \n baz",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*#*#;*;</span><span class=\"wpb-list-range\"><span class=\"wpb-list\">;</span><span class=\"wpb-list-range\">foo </span><span class=\"wpb-dd\">:</span><span class=\"wpb-list-range\"> bar</span></span>\n<span class=\"wpb-list\">*#*#</span><span class=\"wpb-list-range\"><span class=\"wpb-list\">;</span><span class=\"wpb-list-range\">boo </span><span class=\"wpb-dd\">:</span><span class=\"wpb-list-range\"> baz</span></span></span>"
