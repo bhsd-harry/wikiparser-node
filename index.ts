@@ -474,10 +474,18 @@ const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
+		'getConfig',
+		'lint',
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
+
+		/* PRINT ONLY */
+
+		'print',
+
+		/* PRINT ONLY END */
 
 		/* NOT FOR BROWSER ONLY */
 
