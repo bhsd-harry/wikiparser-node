@@ -101,7 +101,7 @@
 		"@bhsd/common": "^4.1.0",
 		"@bhsd/stylelint-util": "^2.0.0",
 		"culori": "^4.0.2",
-		"entities": "^8.1.0",
+		"entities": "^9.0.0",
 		"vscode-languageserver-types": "^3.18.5"
 	},
 	"devDependencies": {
