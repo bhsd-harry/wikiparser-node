@@ -52,8 +52,6 @@ for (const file of fs.readdirSync('test/templates', {withFileTypes: true, recurs
 
 /* PRINT ONLY */
 
-Parser.internal = true;
-
 /**
  * HTML字符串分行
  * @param str HTML字符串

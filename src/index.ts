@@ -551,16 +551,13 @@ export class Token extends AstElement {
 	 *
 	 * 创建标签
 	 * @param tagName tag name / 标签名
-	 * @param options options / 选项
-	 * @param options.selfClosing whether to be a self-closing tag / 是否自封闭
 	 * @throws `RangeError` if the tag name is invalid
 	 */
 	createElement(
-		tagName: string,
-		options?: {selfClosing?: boolean},
+		tagName: 'references',
 	): ExtToken {
 		require('../addon/token');
-		return this.createElement(tagName, options);
+		return this.createElement(tagName);
 	}
 
 	/**
@@ -600,17 +597,15 @@ export class Token extends AstElement {
 	/** @ignore */
 	#toHtmlOrPlain(func: (expanded: Token, opt?: RenderOpt) => string, render?: RenderOpt): string {
 		const {viewOnly} = Parser;
-		return Shadow.internal(() => {
-			let output: string;
-			const {expandToken}: typeof Expand = require('../render/expand');
-			Parser.viewOnly = true;
-			const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
-			Parser.viewOnly = false;
-			// eslint-disable-next-line prefer-const
-			output = func(expanded, render);
-			Parser.viewOnly = viewOnly;
-			return output;
-		}, Parser);
+		let output: string;
+		const {expandToken}: typeof Expand = require('../render/expand');
+		Parser.viewOnly = true;
+		const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
+		Parser.viewOnly = false;
+		// eslint-disable-next-line prefer-const
+		output = func(expanded, render);
+		Parser.viewOnly = viewOnly;
+		return output;
 	}
 
 	/**

@@ -21,12 +21,6 @@ export abstract class MultiLineToken extends Token {
 	abstract override get previousSibling(): AttributesToken | undefined;
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get previousElementSibling(): AttributesToken | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
 	}

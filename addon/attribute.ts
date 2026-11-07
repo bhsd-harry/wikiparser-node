@@ -1,7 +1,6 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import {Shadow} from '../util/debug';
-import {trimLc} from '../util/string';
 import Parser from '../index';
 import {AttributeToken, stages} from '../src/attribute';
 import {AttributesToken, toAttributeType} from '../src/attributes';
@@ -9,13 +8,6 @@ import {AttributesToken, toAttributeType} from '../src/attributes';
 AttributeToken.prototype.setValue =
 	/** @implements */
 	function(value): void {
-		if (value === false) {
-			this.removeInternal();
-			return;
-		} else if (value === true) {
-			this.setAttribute('equal', '');
-			return;
-		}
 		const {type, lastChild} = this;
 		lastChild.safeReplaceChildren(Parser.parseWithRef(value, lastChild, stages[type] + 1).childNodes);
 		this.setAttribute('equal', this.isInside('parameter') ? '{{=}}' : '=');
@@ -30,14 +22,11 @@ AttributeToken.prototype.setValue =
 
 AttributesToken.prototype.setAttr =
 	/** @implements */
-	function(key: string, value: string | boolean): void {
-		const {type, name} = this;
-		key = trimLc(key);
-		const attr = this.getAttrToken(key);
+	function(key, value): void {
+		const {type, name} = this,
+			attr = this.getAttrToken(key);
 		if (attr) {
 			attr.setValue(value);
-			return;
-		} else if (value === false) {
 			return;
 		}
 		// @ts-expect-error abstract class
@@ -47,8 +36,8 @@ AttributesToken.prototype.setAttr =
 			key,
 			['"', '"'],
 			this.getAttribute('config'),
-			value === true ? '' : '=',
-			value === true ? '' : value,
+			'=',
+			value,
 		));
 		this.insertAt(token);
 	};

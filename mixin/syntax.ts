@@ -1,6 +1,4 @@
-import {Shadow, mixin} from '../util/debug';
-import {text} from '../util/string';
-import type {AstNodes} from '../internal';
+import {mixin} from '../util/debug';
 
 export interface SyntaxBase {
 	/** @private */
@@ -19,15 +17,6 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			super(...args); // eslint-disable-line @typescript-eslint/no-unsafe-argument
 			if (pattern) {
 				this.pattern = pattern;
-			}
-			this.seal('pattern', true);
-		}
-
-		override safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
-			if (Shadow.running || this.pattern.test(text(elements))) {
-				Shadow.run(() => {
-					super.safeReplaceChildren(elements);
-				});
 			}
 		}
 	}

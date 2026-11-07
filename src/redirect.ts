@@ -35,7 +35,6 @@ export abstract class RedirectToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken, RedirectTargetToken];
-	abstract override get previousElementSibling(): undefined;
 
 	/* NOT FOR BROWSER END */
 

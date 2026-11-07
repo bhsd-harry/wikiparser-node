@@ -31,7 +31,6 @@ declare global {
 		insertAt(token: unknown, i?: number): unknown;
 		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
 		safeReplaceChildren(elements: readonly (AstNodes | string)[]): void;
-		seal(key: string, permanent?: boolean): void;
 		toHtmlInternal(opt?: HtmlOpt): string;
 	};
 

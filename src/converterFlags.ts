@@ -33,7 +33,6 @@ export abstract class ConverterFlagsToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): AtomToken[];
-	abstract override get previousElementSibling(): undefined;
 
 	/* NOT FOR BROWSER END */
 

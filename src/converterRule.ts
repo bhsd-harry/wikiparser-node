@@ -46,7 +46,6 @@ export abstract class ConverterRuleToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [Token] | [AtomToken, Token] | [Token, AtomToken, Token];
-	abstract override get previousElementSibling(): ConverterFlagsToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 

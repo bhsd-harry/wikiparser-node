@@ -139,10 +139,6 @@ export abstract class ExtToken extends TagPairToken {
 			innerToken.type = 'ext-inner';
 		}
 		super(name, attrToken, innerToken, closed, config, accum);
-
-		/* PRINT ONLY */
-
-		this.seal('closed', true);
 	}
 
 	/** @private */

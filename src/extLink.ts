@@ -133,7 +133,7 @@ export abstract class ExtLinkToken extends Token {
 			);
 		if (i !== -1) {
 			const after = childNodes.slice(i);
-			this.insertAdjacent(after, 1);
+			this.insertAdjacent(after);
 		}
 		return lastChild[method](opt);
 	}

@@ -35,7 +35,7 @@ export const getCondition = <T>(selector: string, scope?: AstElement, has?: Toke
 
 	/* NOT FOR BROWSER */
 
-	if (/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector)) {
+	if (selector === 'ext-link[childElementCount=1]') {
 		const {checkToken}: typeof Selector = require('../parser/selector');
 		return checkToken(selector, scope, has) as TokenPredicate<T>;
 	}

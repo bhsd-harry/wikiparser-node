@@ -99,7 +99,6 @@ export abstract class AttributesToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get previousElementSibling(): SyntaxToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -115,7 +114,7 @@ export abstract class AttributesToken extends Token {
 	}
 
 	set className(className) {
-		this.setAttr('class', className || false);
+		this.setAttr('class', className);
 	}
 
 	/** class attribute in Set / 以Set表示的class属性 */
@@ -309,7 +308,7 @@ export abstract class AttributesToken extends Token {
 	 * @param value attribute value / 属性值
 	 * @throws `RangeError` if the attribute of an extension tag contains `>`
 	 */
-	setAttr(key: string, value: string | boolean): void {
+	setAttr(key: string, value: string): void {
 		require('../addon/attribute');
 		this.setAttr(key, value);
 	}

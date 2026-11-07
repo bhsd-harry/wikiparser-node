@@ -37,7 +37,6 @@ export abstract class NestedToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): Child[];
-	abstract override get previousElementSibling(): AttributesToken | undefined;
 
 	/* NOT FOR BROWSER END */
 

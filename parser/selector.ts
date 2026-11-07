@@ -3,9 +3,8 @@ import type {AstElement} from '../lib/element';
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {Token} from '../internal';
 
-const regularRegex = /[[,]|\s+/u,
-	attributeRegex = /^(\w+)(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?)?\]/u,
-	grouping = new Set([',']);
+const regularRegex = /\[/u,
+	attributeRegex = /^(\w+)(=)([^\s[\]]+)\]/u;
 
 /**
  * optionally convert to lower cases
@@ -48,11 +47,8 @@ const matches = (
 					return basic(selector)(type, name);
 			}
 		} else { // 情形2：属性选择器
-			const [key, equal, val = '', i] = selector;
+			const [key,, val = '', i] = selector;
 			const thisVal = getAttr(token, key);
-			if (!equal) {
-				return thisVal !== undefined && thisVal !== false;
-			}
 			const v = toCase(val, i);
 			const stringVal = toCase(String(thisVal), i);
 			return stringVal === v;
@@ -77,15 +73,6 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstE
 };
 
 /**
- * 还原转义符号
- * @param selector
- */
-// eslint-disable-next-line arrow-body-style
-const desanitize = (selector: string): string => {
-	return selector.trim();
-};
-
-/**
  * 检查节点是否符合选择器
  * @param selector
  * @param scope 作用对象
@@ -97,11 +84,13 @@ export const checkToken = (
 	scope?: AstElement,
 	has?: Token,
 ) => <T extends Token>(token: Token): token is T => {
-	let sanitized = selector.trim();
+	let sanitized = selector;
 	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let regex = regularRegex,
+		/* eslint-disable prefer-const */
 		[condition] = stack,
 		[step] = condition;
+		/* eslint-enable prefer-const */
 
 	/**
 	 * 解析简单伪选择器
@@ -109,50 +98,24 @@ export const checkToken = (
 	 * @throws `SyntaxError` 选择器排序不当或非法的选择器
 	 */
 	const pushSimple = (index?: number): void => {
-		const str = sanitized.slice(0, index).trim();
+		const str = sanitized.slice(0, index);
 		if (!str) {
 			return;
 		}
-		const pieces = str.split(/(?=[:#])/u);
-		for (let i = 0; i < pieces.length; i++) {
-			const piece = pieces[i]!;
-			if (!/^[:#]/u.test(piece)) {
-				step.push(piece);
-			} else if (piece.startsWith(':')) {
-				// eslint-disable-next-line unicorn/no-lonely-if
-				if (pieces[i - 1]?.startsWith('#')) {
-					pieces[i - 1] += piece;
-					pieces.splice(i, 1);
-					i--;
-				}
-			}
-		}
-		step.push(...pieces.filter(piece => piece.startsWith('#')).map(desanitize));
+		const piece = str;
+		step.push(piece);
 	};
 	for (let mt = regex.exec(sanitized); mt; mt = regex.exec(sanitized)) {
+		// eslint-disable-next-line prefer-const
 		let {0: syntax, index} = mt;
-		if (!syntax.trim()) {
-			index += syntax.length;
-			const char = sanitized[index]!;
-			syntax = grouping.has(char) ? char : '';
-		}
-		if (syntax === ',') { // 情形1：并列
-			pushSimple(index);
-			condition = [[]];
-			[step] = condition;
-			stack.push(condition);
-		} else if (syntax === '[') { // 情形3：属性开启
+		if (syntax === '[') { // 情形3：属性开启
 			pushSimple(index);
 			regex = attributeRegex;
 		} else if (syntax.endsWith(']')) { // 情形4：属性闭合
-			mt[3] &&= desanitize(mt[3]);
 			step.push(mt.slice(1) as [string, string | undefined, string | undefined, string | undefined]);
 			regex = regularRegex;
 		}
 		sanitized = sanitized.slice(index + syntax.length);
-		if (grouping.has(syntax)) {
-			sanitized = sanitized.trim();
-		}
 	}
 	pushSimple();
 	return stack.some(copy => matchesArray(token, copy, scope, has));

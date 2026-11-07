@@ -57,14 +57,14 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 				.join('');
 		}
 		for (const indicator of indicatorList) {
-			indicator.remove();
+			indicator.removeInternal();
 		}
 	}
 
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
 	if (hasCite) {
-		token.append('\n', token.createElement('references', {selfClosing: true}));
+		token.append('\n', token.createElement('references'));
 	}
 
 	// 处理目录

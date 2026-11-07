@@ -4,7 +4,7 @@ import {Token} from '../index';
 import type {
 	Config,
 } from '../../base';
-import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
+import type {AttributesToken, SyntaxToken} from '../../internal';
 
 /* PRINT ONLY */
 
@@ -82,8 +82,8 @@ export abstract class TagToken extends Token {
 					name,
 					closing,
 				} = this;
-				let {parentNode} = this;
-				const {childNodes} = parentNode!,
+				const {parentNode} = this,
+					{childNodes} = parentNode!,
 					i = childNodes.indexOf(this),
 					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
@@ -91,20 +91,8 @@ export abstract class TagToken extends Token {
 					{rev} = Shadow;
 				let cur = siblings.pop(),
 					until: this | undefined;
-				while (cur || parentNode!.is('list-range') && parentNode.parentNode) {
-					if (!cur) {
-						const parent: Token = parentNode!.parentNode!,
-							ch = parent.childNodes,
-							j = ch.indexOf(parentNode!);
-						Array.prototype.push.apply(
-							siblings,
-							closing ? ch.slice(0, j) : ch.slice(j + 1).reverse(),
-						);
-						parentNode = parent;
-					} else if (cur.is('list-range')) {
-						const ch = cur.childNodes;
-						Array.prototype.push.apply(siblings, closing ? ch as AstNodes[] : [...ch].reverse());
-					} else if (until) {
+				while (cur) {
+					if (until) {
 						if (cur === until) {
 							until = undefined;
 						}

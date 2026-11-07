@@ -13,7 +13,6 @@ import Parser from '../index';
 /* NOT FOR BROWSER */
 
 Parser.viewOnly = true;
-Parser.internal = true;
 
 /* NOT FOR BROWSER END */
 

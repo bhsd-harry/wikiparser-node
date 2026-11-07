@@ -55,10 +55,6 @@ export abstract class GalleryImageToken extends FileToken {
 		super(link, token?.firstChild!.toString(), config, accum, undefined, privateType);
 		this.setAttribute('bracket', false);
 		this.privateType = privateType;
-
-		/* PRINT ONLY */
-
-		this.seal('privateType', true);
 	}
 
 	/** @private */

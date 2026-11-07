@@ -37,15 +37,6 @@ export abstract class AstElement extends AstNode {
 		return this.childNodes.length;
 	}
 
-	/* NOT FOR BROWSER */
-
-	constructor() {
-		super();
-		this.seal('name');
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @private */
 	text(separator?: string): string {
 		return text(this.childNodes, separator);
@@ -125,8 +116,8 @@ export abstract class AstElement extends AstNode {
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;
-		const oldText = this.childNodes[i] as AstText;
-		const {data} = oldText;
+		const oldText = this.childNodes[i] as AstText,
+			{data} = oldText;
 		oldText.replaceData(str);
 		return data;
 	}
@@ -192,15 +183,5 @@ export abstract class AstElement extends AstNode {
 	 */
 	removeChild<T extends AstNodes>(node: T): T {
 		return this.removeAt(this.#getChildIndex(node)) as T;
-	}
-
-	/**
-	 * Replace all child nodes
-	 *
-	 * 批量替换子节点
-	 * @param elements nodes to be inserted / 新的子节点
-	 */
-	replaceChildren(...elements: (AstNodes | string)[]): void {
-		this.safeReplaceChildren(elements);
 	}
 }

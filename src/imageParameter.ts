@@ -137,12 +137,6 @@ export abstract class ImageParameterToken extends Token {
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get previousElementSibling(): AtomToken | this | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'image-parameter' {
 		return 'image-parameter';
 	}
@@ -191,21 +185,19 @@ export abstract class ImageParameterToken extends Token {
 			const [width, height = ''] = size.split('x') as [string, string?];
 			return {width, height};
 		}
-		return Shadow.internal(() => {
-			const token = Parser.parseWithRef(size, this, 2, false),
-				i = token.childNodes.findIndex(
-					({type, data}) => type === 'text' && data.includes('x'),
-				);
-			if (i === -1) {
-				return {width: size, height: ''};
-			}
-			const str = token.childNodes[i] as AstText;
-			str.splitText(str.data.indexOf('x')).splitText(1);
-			return {
-				width: text(token.childNodes.slice(0, i + 1)),
-				height: text(token.childNodes.slice(i + 2)),
-			};
-		}, Parser);
+		const token = Parser.parseWithRef(size, this, 2, false),
+			i = token.childNodes.findIndex(
+				({type, data}) => type === 'text' && data.includes('x'),
+			);
+		if (i === -1) {
+			return {width: size, height: ''};
+		}
+		const str = token.childNodes[i] as AstText;
+		str.splitText(str.data.indexOf('x')).splitText(1);
+		return {
+			width: text(token.childNodes.slice(0, i + 1)),
+			height: text(token.childNodes.slice(i + 2)),
+		};
 	}
 
 	/* NOT FOR BROWSER END */

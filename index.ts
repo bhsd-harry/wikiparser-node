@@ -169,12 +169,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* NOT FOR BROWSER END */
 
-	/* PRINT ONLY */
-
-	internal: false,
-
-	/* PRINT ONLY END */
-
 	/** @implements */
 	getConfig(config?: ConfigData) {
 		const parserConfig = config ?? this.config;
@@ -320,10 +314,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-		return Shadow.internal(
-			() => this.parse(wikitext, include, undefined, config, page).toHtml(opt),
-			this,
-		);
+		return this.parse(wikitext, include, undefined, config, page).toHtml(opt);
 	},
 } as Omit<Parser, 'default'> as Parser;
 

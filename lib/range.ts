@@ -52,8 +52,8 @@ export class AstRange {
 
 	/** closest common ancestor / 最近的公共祖先 */
 	get commonAncestorContainer(): AstNodes {
-		const {startContainer, endContainer} = this;
-		return startContainer.contains(endContainer) ? startContainer : startContainer.parentNode!;
+		const {startContainer} = this;
+		return startContainer;
 	}
 
 	/**
@@ -142,31 +142,6 @@ export class AstRange {
 	}
 
 	/**
-	 * 断开范围两端的文本节点
-	 * @param end 是否在终点断开文本节点
-	 */
-	#splitText(end?: boolean): void {
-		if (end) {
-			const {endContainer, endOffset} = this;
-			if (endContainer.type === 'text' && endOffset < endContainer.length) {
-				endContainer.splitText(endOffset);
-			}
-		} else {
-			const {startContainer, startOffset} = this;
-			if (startOffset && startContainer.type === 'text') {
-				this.#startContainer = startContainer.splitText(startOffset);
-				this.#startOffset = 0;
-				if (this.#endContainer === startContainer) {
-					this.#endContainer = this.#startContainer;
-					this.#endOffset! -= startOffset;
-				} else if (this.#endContainer && this.#endContainer.type !== 'text') {
-					this.#endOffset!++;
-				}
-			}
-		}
-	}
-
-	/**
 	 * Get the contents of the Range
 	 *
 	 * 获取范围内的全部节点
@@ -175,13 +150,8 @@ export class AstRange {
 		if (this.startContainer === this.endContainer && this.#startOffset === this.#endOffset) {
 			return [];
 		}
-		this.#splitText();
-		this.#splitText(true);
 		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
-			{type, childNodes} = commonAncestorContainer;
-		if (type === 'text') {
-			return [commonAncestorContainer];
-		}
+			{childNodes} = commonAncestorContainer;
 		const from = startContainer.type === 'text' ? childNodes.indexOf(startContainer) : startOffset,
 			to = endContainer.type === 'text' ? childNodes.indexOf(endContainer) + 1 : endOffset;
 		return childNodes.slice(from, to);

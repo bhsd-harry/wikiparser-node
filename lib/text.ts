@@ -6,7 +6,6 @@ import {
 	sanitize,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
-import Parser from '../index';
 import {AstNode} from './node';
 
 /* NOT FOR BROWSER */
@@ -29,28 +28,10 @@ export class AstText extends AstNode {
 		return 'text';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** text length / 文本长度 */
-	get length(): number {
-		return this.data.length;
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
-		if (Parser.viewOnly || Parser.internal) {
-			this.data = text;
-
-			/* NOT FOR BROWSER */
-		} else {
-			Object.defineProperties(this, {
-				data: {value: text, writable: false},
-				childNodes: {enumerable: false, configurable: false},
-			});
-		}
+		this.data = text;
 	}
 
 	/** @private */

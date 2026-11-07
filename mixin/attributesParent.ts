@@ -49,7 +49,7 @@ export interface AttributesParentBase {
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
 	 */
-	setAttr(key: string, value: string | boolean): void;
+	setAttr(key: string, value: string): void;
 }
 
 /**
@@ -85,7 +85,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 
 		/* NOT FOR BROWSER */
 
-		setAttr(key: string, value: string | boolean): void {
+		setAttr(key: string, value: string): void {
 			this.#getAttributesChild().setAttr(key, value);
 		}
 	}

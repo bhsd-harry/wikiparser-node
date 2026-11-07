@@ -143,7 +143,7 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	set className(className) {
-		this.setValue('class', className || false);
+		this.setValue('class', className);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -306,18 +306,6 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/**
-	 * Remove the specified image parameter
-	 *
-	 * 移除指定图片参数
-	 * @param key parameter name / 参数名
-	 */
-	removeArg(key: string): void {
-		for (const token of this.getArgs(key)) {
-			this.removeChild(token);
-		}
-	}
-
-	/**
 	 * Set the image parameter
 	 *
 	 * 设置图片参数
@@ -325,11 +313,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param value parameter value / 参数值
 	 * @throws `RangeError` if the parameter name is unknown
 	 */
-	setValue(key: 'class', value: string | false = false): void {
-		if (value === false) {
-			this.removeArg(key);
-			return;
-		}
+	setValue(key: 'class', value: string): void {
 		const token = this.getArg(key);
 		if (token) {
 			token.setValue(value);

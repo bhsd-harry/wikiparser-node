@@ -80,7 +80,6 @@ export abstract class AttributeToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken, Token];
-	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -338,7 +337,7 @@ export abstract class AttributeToken extends Token {
 	 * @param value attribute value / 属性值
 	 * @throws `RangeError` if the attribute of an extension tag contains `>` or the value contains both `"` and `'`
 	 */
-	setValue(value: string | boolean): void {
+	setValue(value: string): void {
 		require('../addon/attribute');
 		this.setValue(value);
 	}

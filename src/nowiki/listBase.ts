@@ -8,10 +8,6 @@ export interface ListRangeToken extends Token {
 	readonly type: 'list-range';
 	readonly previousSibling: ListToken | DdToken;
 	readonly nextSibling: DdToken | AstText | undefined;
-
-	/* NOT FOR BROWSER */
-
-	readonly previousElementSibling: ListToken | DdToken;
 }
 
 /** `;:*#` */

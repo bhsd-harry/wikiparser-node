@@ -39,7 +39,6 @@ export abstract class ParameterToken extends Token {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [Token, Token];
-	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this | undefined;
 
 	/* NOT FOR BROWSER END */
 
@@ -171,9 +170,5 @@ export abstract class ParameterToken extends Token {
 			}
 			return token;
 		});
-	}
-
-	override safeReplaceWith(token: this): void {
-		this.replaceWith(token);
 	}
 }

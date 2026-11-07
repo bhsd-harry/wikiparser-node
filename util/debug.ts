@@ -11,24 +11,9 @@ export const Shadow = {
 		const {running} = this;
 		this.running = true;
 
-		/* PRINT ONLY */
-
-		const internal = Parser?.internal;
-		if (Parser) {
-			Parser.internal = true;
-		}
-
-		/* PRINT ONLY END */
-
 		/** restore state before exit */
 		const finish = (): void => {
 			this.running = running;
-
-			/* PRINT ONLY */
-
-			if (Parser) {
-				Parser.internal = internal!;
-			}
 		};
 		try {
 			const {Token}: typeof Src = require('../src/index');
@@ -43,26 +28,6 @@ export const Shadow = {
 			throw e;
 		}
 		/* c8 ignore stop */
-	},
-
-	/** @private */
-	internal<T>(callback: () => T, Parser: ParserBase): T {
-		/* PRINT ONLY */
-
-		const {internal} = Parser;
-		Parser.internal = true;
-
-		/* PRINT ONLY END */
-
-		const result = callback();
-
-		/* PRINT ONLY */
-
-		Parser.internal = internal;
-
-		/* PRINT ONLY END */
-
-		return result;
 	},
 
 	rev: 0,

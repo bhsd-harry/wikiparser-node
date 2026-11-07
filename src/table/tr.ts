@@ -18,7 +18,6 @@ export abstract class TrToken extends TrBaseToken {
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken, AttributesToken, ...TdToken[]];
-	abstract override get previousElementSibling(): Token | undefined;
 
 	/* NOT FOR BROWSER END */
 

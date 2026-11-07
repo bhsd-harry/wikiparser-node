@@ -4,9 +4,7 @@ import {ExtToken} from '../src/tagPair/ext';
 
 Token.prototype.createElement = /** @implements */ function(
 	tagName,
-	{selfClosing} = {},
 ): ExtToken {
-	tagName = tagName.toLowerCase();
 	const config = this.getAttribute('config'),
 		include = this.getAttribute('include');
 	return Shadow.run(
@@ -15,7 +13,7 @@ Token.prototype.createElement = /** @implements */ function(
 			tagName,
 			undefined,
 			undefined,
-			selfClosing ? undefined : tagName,
+			undefined,
 			config,
 			include,
 		),

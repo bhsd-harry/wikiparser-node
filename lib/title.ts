@@ -122,17 +122,7 @@ export class Title {
 	}
 
 	set fragment(fragment) {
-		if (fragment === undefined) {
-			this.#fragment = undefined;
-		} else {
-			if (fragment.includes('%')) {
-				try {
-					fragment = rawurldecode(fragment);
-				} catch /* c8 ignore next */ {}
-			}
-			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd()
-				.replaceAll(' ', '_');
-		}
+		this.#fragment = undefined;
 	}
 
 	/**
@@ -232,20 +222,6 @@ export class Title {
 		this.#path = config.articlePath || '/wiki/$1';
 		if (!this.#path.includes('$1')) {
 			this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
-		}
-
-		/* PRINT ONLY */
-
-		LSP: if (!temporary) {
-			Object.defineProperties(this, {
-				encoded: {enumerable: false, writable: false},
-
-				/* NOT FOR BROWSER */
-
-				valid: {writable: false},
-				conversionTable: {enumerable: false},
-				redirects: {enumerable: false},
-			});
 		}
 	}
 
