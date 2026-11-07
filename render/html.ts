@@ -57,7 +57,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 				.join('');
 		}
 		for (const indicator of indicatorList) {
-			indicator.remove();
+			indicator.removeInternal();
 		}
 	}
 
