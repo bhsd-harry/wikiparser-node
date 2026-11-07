@@ -120,8 +120,8 @@ export abstract class FileToken extends LinkBaseToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const errors = super.lint(start, re),
-				args = filterArgs(this.getAllArgs(), argTypes),
+			let errors = super.lint(start, re);
+			const args = filterArgs(this.getAllArgs(), argTypes),
 				keys = [...new Set(args.map(({name}) => name))],
 				frameKeys = keys.filter(key => frame.has(key)),
 				horizAlignKeys = keys.filter(key => horizAlign.has(key)),
@@ -253,33 +253,33 @@ export abstract class FileToken extends LinkBaseToken {
 					const plainArgs = filterArgs(relevantArgs, transclusion);
 					severity = plainArgs.length > 1 && ((arg): boolean => plainArgs.includes(arg));
 				}
-				Array.prototype.push.apply(errors, generate(relevantArgs, 'duplicate', key, severity));
+				errors = [...errors, ...generate(relevantArgs, 'duplicate', key, severity)];
 			}
 			if (frameKeys.length > 1) {
-				Array.prototype.push.apply(
-					errors,
-					generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'),
-				);
+				errors = [
+					...errors,
+					...generate(args.filter(({name}) => frame.has(name)), 'conflicting', 'frame'),
+				];
 			}
 			if (horizAlignKeys.length > 1) {
-				Array.prototype.push.apply(
-					errors,
-					generate(
+				errors = [
+					...errors,
+					...generate(
 						args.filter(({name}) => horizAlign.has(name)),
 						'conflicting',
 						'horizontal-alignment',
 					),
-				);
+				];
 			}
 			if (vertAlignKeys.length > 1) {
-				Array.prototype.push.apply(
-					errors,
-					generate(
+				errors = [
+					...errors,
+					...generate(
 						args.filter(({name}) => vertAlign.has(name)),
 						'conflicting',
 						'vertical-alignment',
 					),
-				);
+				];
 			}
 			return errors;
 		}

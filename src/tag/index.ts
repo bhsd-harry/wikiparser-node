@@ -93,25 +93,22 @@ export abstract class TagToken extends Token {
 				}
 				const {childNodes} = parentNode,
 					i = childNodes.indexOf(this),
-					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
 					{viewOnly} = Parser,
 					{rev} = Shadow;
-				let cur = siblings.pop(),
+				let siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
+					cur = siblings.pop(),
 					until: this | undefined;
 				while (cur || parentNode.is('list-range') && parentNode.parentNode) {
 					if (!cur) {
 						const parent: Token = parentNode.parentNode!,
 							ch = parent.childNodes,
 							j = ch.indexOf(parentNode);
-						Array.prototype.push.apply(
-							siblings,
-							closing ? ch.slice(0, j) : ch.slice(j + 1).reverse(),
-						);
+						siblings = [...siblings, ...closing ? ch.slice(0, j) : ch.slice(j + 1).reverse()];
 						parentNode = parent;
 					} else if (cur.is('list-range')) {
 						const ch = cur.childNodes;
-						Array.prototype.push.apply(siblings, closing ? ch as AstNodes[] : [...ch].reverse());
+						siblings = [...siblings, ...closing ? ch as AstNodes[] : [...ch].reverse()];
 					} else if (until) {
 						if (cur === until) {
 							until = undefined;

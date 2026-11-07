@@ -1401,9 +1401,9 @@ export class LanguageService implements LanguageServiceBase {
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		const root = await this.#queue(text),
 			{length} = root.getLines(),
-			ranges: FoldingRange[] = [],
 			levels = Array.from<number | undefined>({length: 6}),
 			tokens = root.querySelectorAll('heading-title,table,template,magic-word');
+		let ranges: FoldingRange[] = [];
 		for (let i = tokens.length - 1; i >= 0; i--) { // 提高 getBoundingClientRect 的性能
 			tokens[i]!.getRelativeIndex();
 		}
@@ -1452,7 +1452,7 @@ export class LanguageService implements LanguageServiceBase {
 				if (!selfClosing) {
 					const foldingRanges = jsonLSP.getFoldingRanges(new EmbeddedJSONDocument(root, lastChild));
 					if (foldingRanges.length > 0) {
-						Array.prototype.push.apply(ranges, foldingRanges);
+						ranges = [...ranges, ...foldingRanges];
 					}
 				}
 			}
