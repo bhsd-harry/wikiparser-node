@@ -1,6 +1,3 @@
-import type {AstElement} from '../lib/element';
-import type {Token} from '../internal';
-
 declare type BasicCondition = (type: string, name?: string) => boolean;
 
 /**
@@ -20,10 +17,10 @@ export const basic = (selector: string): BasicCondition => {
 /**
  * 将选择器转化为类型谓词
  * @param selector 选择器
- * @param scope 作用对象
- * @param has `:has()`伪选择器
  */
-export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
+export const getCondition = <T>(
+	selector: string,
+): TokenPredicate<T> => {
 	selector = selector.trim();
 	/* c8 ignore next 3 */
 	if (!selector) {

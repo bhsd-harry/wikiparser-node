@@ -94,9 +94,9 @@ let viewOnly =
 	true;
 
 let lintConfig = (() => {
-		LINT: return new LintConfiguration();
-	})(),
-	i18n: Record<string, string> | undefined;
+	LINT: return new LintConfiguration();
+})();
+let i18n: Record<string, string> | undefined;
 
 /**
  * 判断参数顺序

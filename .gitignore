@@ -13,6 +13,5 @@
 /test/*.wiki
 /test/prof*.json
 /build
-!README
 /config/github.json
 /diff.html
