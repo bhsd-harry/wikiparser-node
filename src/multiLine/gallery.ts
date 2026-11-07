@@ -83,7 +83,12 @@ export abstract class GalleryToken extends MultiLineToken {
 					continue;
 				}
 				const [, file, alt] = matches;
-				if (this.#checkFile(file, true)) { // eslint-disable-line unicorn/prefer-ternary
+				if ( // eslint-disable-line unicorn/prefer-ternary
+					this.#checkFile(
+						file,
+						true,
+					)
+				) {
 					// @ts-expect-error abstract class
 					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 				} else {
@@ -105,9 +110,14 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * @param file 文件名
 	 * @param parsing 是否在解析过程中
 	 */
-	#checkFile(file: string, parsing?: boolean): boolean {
+	#checkFile(
+		file: string,
+		parsing?: boolean,
+	): boolean {
 		return this.normalizeTitle(
-			parsing ? removeComment(file) : file,
+			!parsing // eslint-disable-line unicorn/no-negated-condition
+				? file :
+				removeComment(file),
 			6,
 			{halfParsed: true, temporary: true, decode: true, page: ''},
 		).valid;

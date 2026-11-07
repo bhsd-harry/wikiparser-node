@@ -16,7 +16,6 @@ options.require = {
 	MethodDefinition: false,
 };
 node.at(-1).settings.n.allowModules = [
-	'chalk',
 	'monaco-editor',
 ];
 

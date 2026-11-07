@@ -4,7 +4,10 @@ import {
 	escape,
 } from '../util/string';
 import {getEndPos, fixByUpper, fixBySpace, fixByEscape, fixByInsert} from '../util/lint';
-import {setChildNodes, Shadow} from '../util/debug';
+import {
+	setChildNodes,
+	Shadow,
+} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes, FullLintConfigValue} from '../base';
@@ -367,8 +370,9 @@ export class AstText extends AstNode {
 			if (!parentNode) {
 				throw new Error('The text node to be split has no parent node!');
 			}
-			const newText = new AstText(data.slice(offset));
-			setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
+			const newText = new AstText(data.slice(offset)),
+				target = parentNode;
+			setChildNodes(target, target.childNodes.indexOf(this) + 1, 0, [newText]);
 			this.setAttribute('data', data.slice(0, offset));
 			return newText;
 		}
