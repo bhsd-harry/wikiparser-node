@@ -50,6 +50,9 @@ declare interface Parser extends ParserBase {
 	/** @private */
 	lintConfig: LintConfiguration;
 
+	/** @private */
+	viewOnly: boolean;
+
 	/* NOT FOR BROWSER ONLY */
 
 	configPaths: string[];
@@ -67,19 +70,19 @@ declare interface Parser extends ParserBase {
 	 * @param defaultNs default namespace number / 命名空间
 	 * @param include whether to be transcluded / 是否嵌入
 	 */
-	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: Config): Title;
+	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: ConfigData): Title;
 	/** @private */
 	normalizeTitle(
 		title: string,
 		defaultNs?: number,
 		include?: boolean,
-		config?: Config,
+		config?: ConfigData,
 		opt?: TitleOptions,
 		accum?: Token[], // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
@@ -165,11 +168,15 @@ let lintConfig = (() => {
  */
 const getParams = (
 	includeOrPage?: boolean | string,
-	configOrInclude?: Config | boolean,
-	pageOrConfig?: string | Config,
-): [boolean, Config | undefined, string | undefined] => typeof includeOrPage === 'string'
-	? [Boolean(configOrInclude), pageOrConfig as Config | undefined, includeOrPage]
-	: [Boolean(includeOrPage), configOrInclude as Config | undefined, pageOrConfig as string | undefined];
+	configOrInclude?: ConfigData | boolean,
+	pageOrConfig?: string | ConfigData,
+): [boolean, Config, string | undefined] => typeof includeOrPage === 'string'
+	? [Boolean(configOrInclude), Parser.getConfig(pageOrConfig as ConfigData | undefined), includeOrPage]
+	: [
+		Boolean(includeOrPage),
+		Parser.getConfig(configOrInclude as ConfigData | undefined),
+		pageOrConfig as string | undefined,
+	];
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config:
@@ -258,6 +265,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* NOT FOR BROWSER ONLY END */
 
 		const parserConfig = config ?? this.config as ConfigData;
+		if ('excludes' in parserConfig) {
+			return {...parserConfig, excludes: []};
+		}
 		const {
 			doubleUnderscore,
 			ext,
@@ -292,11 +302,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		title,
 		defaultNs = 0,
 		include?: boolean,
-		config = Parser.getConfig(),
+		configData?: ConfigData,
 		opt?: TitleOptions,
 		accum: Token[] = [],
 	) {
 		const {Title: TitleObj}: typeof LibTitle = require('./lib/title');
+		const config = this.getConfig(configData);
 		let titleObj: Title;
 		if (opt?.halfParsed) {
 			titleObj = new TitleObj(title, defaultNs, config, opt, accum);
@@ -335,21 +346,20 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		wikitext = tidy(wikitext);
 		let include: boolean,
 			maxStage: MaxStage | undefined,
-			config: Config | undefined,
+			config: Config,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
 			maxStage = configOrStage as MaxStage | undefined;
-			config = pageOrConfig as Config | undefined;
+			config = this.getConfig(pageOrConfig as ConfigData | undefined);
 			page = includeOrPage;
 		} else {
 			include = Boolean(includeOrPage);
 			maxStage = maxStageOrInclude as MaxStage | undefined;
-			config = configOrStage as Config | undefined;
+			config = this.getConfig(configOrStage as ConfigData | undefined);
 			page = pageOrConfig as string | undefined;
 		}
 		maxStage ??= MAX_STAGE + 1;
-		config ??= this.getConfig();
 		LSP: if (typeof maxStage !== 'number') {
 			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE + 1));
