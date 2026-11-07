@@ -280,8 +280,8 @@ export abstract class AttributeToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const errors = super.lint(start, re),
-				{balanced, firstChild, lastChild, name, tag} = this,
+			let errors = super.lint(start, re);
+			const {balanced, firstChild, lastChild, name, tag} = this,
 				rect = new BoundingRect(this, start),
 				rules = ['unclosed-quote', 'obsolete-attr'] as const,
 				{lintConfig} = Parser,
@@ -317,9 +317,9 @@ export abstract class AttributeToken extends Token {
 				if (cssLSP) {
 					const root = this.getRootNode(),
 						textDoc = new EmbeddedCSSDocument(root, lastChild);
-					Array.prototype.push.apply(
-						errors,
-						cssLSP.doValidation(textDoc, textDoc.styleSheet)
+					errors = [
+						...errors,
+						...cssLSP.doValidation(textDoc, textDoc.styleSheet)
 							.filter(
 								({code, severity}) => code !== 'css-ruleorselectorexpected' && code !== 'emptyRules'
 									&& (severity === 1 ? sError : sWarn),
@@ -336,7 +336,7 @@ export abstract class AttributeToken extends Token {
 								endCol: end.character,
 								endIndex: root.indexFromPos(end.line, end.character)!,
 							})),
-					);
+					];
 				}
 			}
 

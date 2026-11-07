@@ -87,7 +87,22 @@ export const setChildNodes = (
 		removed = nodes;
 		nodes = inserted;
 	} else {
-		removed = Array.prototype.splice.apply(nodes, [position, deleteCount, ...inserted]);
+		removed = nodes.slice(position, position + deleteCount);
+		const delta = inserted.length - deleteCount,
+			{length} = nodes;
+		if (delta > 0) {
+			for (let i = length - 1; i >= position + deleteCount; i--) {
+				nodes[i + delta] = nodes[i]!;
+			}
+		} else if (delta < 0) {
+			for (let i = position + deleteCount; i < length; i++) {
+				nodes[i + delta] = nodes[i]!;
+			}
+			nodes.length += delta;
+		}
+		for (let i = 0; i < inserted.length; i++) {
+			nodes[position + i] = inserted[i]!;
+		}
 	}
 	for (let i = 0; i < inserted.length; i++) {
 		const node = inserted[i]!;

@@ -476,19 +476,22 @@ export class Token extends AstElement {
 					}
 					for (const [key, value] of record) {
 						if (value.size > 1 && (i !== 1 || !key.startsWith('mw-customcollapsible-'))) {
-							errors.push(...[...value].map(cat => {
-								const e = generateForSelf(
-									cat,
-									{start: cat.getAbsoluteIndex()},
-									r,
-									`duplicate-${msgs[i]}`,
-									severity,
-								);
-								if (computeEditInfo && i === 0) {
-									e.suggestions = [fixByRemove(e)];
-								}
-								return e;
-							}));
+							errors = [
+								...errors,
+								...[...value].map(cat => {
+									const e = generateForSelf(
+										cat,
+										{start: cat.getAbsoluteIndex()},
+										r,
+										`duplicate-${msgs[i]}`,
+										severity,
+									);
+									if (computeEditInfo && i === 0) {
+										e.suggestions = [fixByRemove(e)];
+									}
+									return e;
+								}),
+							];
 						}
 					}
 				}
