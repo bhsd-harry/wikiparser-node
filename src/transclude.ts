@@ -25,7 +25,7 @@ import type {
 	LintError,
 } from '../base';
 import type {Title} from '../lib/title';
-import type {AstText} from '../internal';
+import type {AstText, AstNodes} from '../internal';
 
 export const invalidTemplateMsg = 'Invalid template name';
 
@@ -341,8 +341,8 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const errors = super.lint(start, re),
-				{type, childNodes, length: l, name} = this,
+			let errors = super.lint(start, re);
+			const {type, childNodes, length: l, name} = this,
 				rect = new BoundingRect(this, start),
 				{lintConfig} = Parser,
 				{computeEditInfo} = lintConfig,
@@ -401,7 +401,7 @@ export abstract class TranscludeToken extends Token {
 						}
 						duplication[i] = e;
 					}
-					Array.prototype.push.apply(errors, duplication);
+					errors = [...errors, ...duplication];
 				}
 			}
 			return errors;
@@ -526,7 +526,8 @@ export abstract class TranscludeToken extends Token {
 		}
 		queue ??= (childNodes.slice(start, start! + 2) as ParameterToken[]).map(({lastChild}) => lastChild);
 		for (let i = 0; i < queue.length;) {
-			const {length, 0: first} = queue[i]!.childNodes.filter(child => child.text().trim());
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+			const {length, 0: first} = queue[i]!.childNodes.filter(child => child.text().trim()) as AstNodes[];
 			if (length === 0) {
 				queue.splice(i, 1);
 			} else if (length > 1 || !first!.is('magic-word')) {
@@ -534,7 +535,7 @@ export abstract class TranscludeToken extends Token {
 			} else {
 				try {
 					const possibleValues = first.getPossibleValues();
-					Array.prototype.splice.apply(queue, [i, 1, ...possibleValues]);
+					queue = [...queue.slice(0, i), ...possibleValues, ...queue.slice(i + 1)];
 					i += possibleValues.length;
 				} catch {
 					i++;

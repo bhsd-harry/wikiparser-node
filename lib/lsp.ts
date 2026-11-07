@@ -984,9 +984,10 @@ export class LanguageService implements LanguageServiceBase {
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		const root = await this.#queue(text),
 			{length} = root.getLines(),
-			ranges: FoldingRange[] = [],
 			levels = Array.from<number | undefined>({length: 6}),
 			tokens = root.querySelectorAll('heading-title,table,template,magic-word');
+		// eslint-disable-next-line prefer-const
+		let ranges: FoldingRange[] = [];
 		for (let i = tokens.length - 1; i >= 0; i--) { // 提高 getBoundingClientRect 的性能
 			tokens[i]!.getRelativeIndex();
 		}

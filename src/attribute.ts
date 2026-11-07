@@ -312,8 +312,9 @@ export abstract class AttributeToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const errors = super.lint(start, re),
-				{balanced, firstChild, lastChild, name, tag} = this,
+			// eslint-disable-next-line prefer-const
+			let errors = super.lint(start, re);
+			const {balanced, firstChild, lastChild, name, tag} = this,
 				rect = new BoundingRect(this, start),
 				rules = ['unclosed-quote', 'obsolete-attr'] as const,
 				{lintConfig} = Parser,

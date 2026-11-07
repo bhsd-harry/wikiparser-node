@@ -57,8 +57,8 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 			}
 
 			override lint(start = this.getAbsoluteIndex()): LintError[] {
-				const errors = super.lint(start),
-					{name, firstChild} = this,
+				let errors = super.lint(start);
+				const {name, firstChild} = this,
 					rule = 'no-duplicate',
 					{lintConfig} = Parser,
 					s = lintConfig.getSeverity(rule, name);
@@ -77,7 +77,7 @@ export const paramLineParent = <T extends AstConstructor>(constructor: T): T => 
 							}
 							duplication[i] = e;
 						}
-						Array.prototype.push.apply(errors, duplication);
+						errors = [...errors, ...duplication];
 					}
 				}
 				return errors;
