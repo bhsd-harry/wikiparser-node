@@ -5,7 +5,6 @@ import {
 
 	/* NOT FOR BROWSER */
 
-	normalizeSpace,
 	text,
 } from '../util/string';
 import {BoundingRect} from '../lib/rect';
@@ -319,8 +318,8 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		LINT: {
-			const errors = super.lint(start, re),
-				{parentNode, childNodes, length: l, type, name: tag} = this,
+			let errors = super.lint(start, re);
+			const {parentNode, childNodes, length: l, type, name: tag} = this,
 				attrs = new Map<string, AttributeToken[]>(),
 				duplicated = new Set<string>(),
 				rect = new BoundingRect(this, start),
@@ -417,7 +416,7 @@ export abstract class AttributesToken extends Token {
 						}
 						duplication[length - i - 1] = e;
 					}
-					Array.prototype.push.apply(errors, duplication);
+					errors = [...errors, ...duplication];
 				}
 			}
 			return errors;
@@ -599,19 +598,12 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		if (this.type === 'table-attrs') {
-			/** @todo performance bottleneck */
-			normalizeSpace(this);
-		}
 		const str = super.toString(skip);
 		return this.#leadingSpace(str) + str;
 	}
 
 	/** @private */
 	override text(): string {
-		if (this.type === 'table-attrs') {
-			normalizeSpace(this);
-		}
 		const str = text(this.childNodes.filter(child => child instanceof AttributeToken), ' ');
 		return this.#leadingSpace(str) + str;
 	}

@@ -121,7 +121,7 @@ export const html = (childNodes: Iterable<AstNodes>, separator: string, opt: Htm
 						ch.firstChild.insertData(0, prefix);
 					}
 				}
-				child.after(...chs);
+				child.insertAdjacent([...chs], 1);
 				continue;
 			} else if (
 				(child.length > 0 || /\s$/u.test(innerText))

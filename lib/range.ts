@@ -508,6 +508,16 @@ export class AstRange {
 	}
 
 	/**
+	 * 在范围前插入节点
+	 * @param nodes 插入节点
+	 */
+	#before(nodes: (AstNodes | string)[]): void {
+		for (const node of nodes) {
+			this.insertNode(node);
+		}
+	}
+
+	/**
 	 * Insert nodes before the Range
 	 *
 	 * 在范围前插入节点
@@ -515,9 +525,7 @@ export class AstRange {
 	 * @since v1.23.0
 	 */
 	before(...nodes: (AstNodes | string)[]): void {
-		for (const node of nodes) {
-			this.insertNode(node);
-		}
+		this.#before(nodes);
 	}
 
 	/**
@@ -636,7 +644,7 @@ export class AstRange {
 	 * @param elements nodes to be inserted / 插入节点
 	 */
 	prepend(...elements: (AstNodes | string)[]): void {
-		AstRange.prototype.before.apply(this, elements);
+		this.#before(elements);
 		const {startContainer} = this;
 		if (startContainer.type === 'text') {
 			this.#startContainer = startContainer.parentNode!;

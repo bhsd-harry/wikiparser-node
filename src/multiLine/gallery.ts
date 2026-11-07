@@ -143,11 +143,11 @@ export abstract class GalleryToken extends MultiLineToken {
 		LINT: {
 			const {length: l, childNodes, name} = this,
 				{top, left} = this.getRootNode().posFromIndex(start)!,
-				errors: LintError[] = [],
 				message = Parser.msg('invalid-content', name),
 				rule = 'no-ignored',
 				{lintConfig} = Parser,
 				s = ['Image', 'NoImage', 'Comment'].map(k => lintConfig.getSeverity(rule, `gallery${k}`));
+			let errors: LintError[] = [];
 			for (let i = 0; i < l; i++) {
 				const child = childNodes[i]!,
 					str = child.toString(),
@@ -188,7 +188,7 @@ export abstract class GalleryToken extends MultiLineToken {
 				} else if (type !== 'noinclude' && type !== 'text') {
 					const childErrors = child.lint(start, re);
 					if (childErrors.length > 0) {
-						Array.prototype.push.apply(errors, childErrors);
+						errors = [...errors, ...childErrors];
 					}
 				}
 				start += length + 1;
