@@ -587,9 +587,6 @@ export interface Parser {
 	/** @since v1.22.0 */
 	lintConfig: LintConfig;
 
-	/** @private */
-	viewOnly: boolean;
-
 	/* PRINT ONLY */
 
 	/** @private */
@@ -614,8 +611,8 @@ export interface Parser {
 	 * @param maxStage max stage for parsing / 最大解析层级
 	 * @param page page name / 页面名称
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 
 	/**
 	 * Create a language server
@@ -632,6 +629,6 @@ export interface Parser {
 	 * @param page page name / 页面名称
 	 * @since v1.32.0
 	 */
-	lint(wikitext: string, include?: boolean, config?: Config, page?: string): LintError[];
-	lint(wikitext: string, page: string, include?: boolean, config?: Config): LintError[];
+	lint(wikitext: string, include?: boolean, config?: ConfigData, page?: string): LintError[];
+	lint(wikitext: string, page: string, include?: boolean, config?: ConfigData): LintError[];
 }
