@@ -291,15 +291,6 @@ export interface AstNode {
  * 所有节点的基类
  */
 interface Token extends AstNode {
-	readonly name?: string;
-
-	/**
-	 * Get all descendants that match the selector
-	 *
-	 * 符合选择器的所有后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelectorAll<T = Token>(selector: string): T[];
 }
 
 interface SignatureParameter {

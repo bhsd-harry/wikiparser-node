@@ -50,7 +50,7 @@
 		"lint:md": "myMarkdownlint",
 		"lint": "npm run lint:ts && npm run lint:md",
 		"prof": "node dist/test/prof.js",
-		"coverage": "tsc -d false -t es2024 && npm run build:define && c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
+		"coverage": "c8 npm run test:ci && node dist/script/coverage.js && open coverage/index.html",
 		"test:unit": "testUtil dist/test/test.js",
 		"test:json": "testUtil dist/test/json.js",
 		"test:parser": "LC_ALL=en.UTF-8 testUtil dist/test/parserTests.js",

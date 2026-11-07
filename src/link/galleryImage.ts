@@ -12,7 +12,8 @@ import type {
 	LintError,
 } from '../../base';
 
-declare type GalleryTypes = 'gallery' | 'imagemap';
+declare type GalleryTypes = 'gallery'
+	| 'imagemap';
 
 /**
  * gallery image
@@ -54,8 +55,15 @@ export abstract class GalleryImageToken extends FileToken {
 		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(
 			this.firstChild[imagemap ? 'toString' : 'text'](),
-			imagemap ? 0 : 6,
-			{halfParsed: true, temporary, decode: !imagemap, page: ''},
+			imagemap
+				? 0 :
+				6,
+			{
+				halfParsed: true,
+				temporary,
+				decode: !imagemap,
+				page: '',
+			},
 		);
 	}
 
