@@ -37,7 +37,6 @@ export abstract class TrToken extends TrBaseToken {
 			attr,
 			config,
 			accum,
-			{Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:'},
 		);
 	}
 

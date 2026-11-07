@@ -1,5 +1,4 @@
 dist/
-!/dist/extensions/*.d.ts
 /bundle/bundle-es*.min.js
 /bundle/*.map
 /coverage/*
@@ -14,6 +13,5 @@ dist/
 /test/*.wiki
 /test/prof*.json
 /build
-!README
 /config/github.json
 /diff.html

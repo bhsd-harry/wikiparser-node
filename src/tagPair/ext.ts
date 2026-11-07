@@ -15,7 +15,6 @@ import type * as Pre from '../pre';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {tagHooks} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 import type * as Extension from '../../render/extension';
 
@@ -189,8 +188,7 @@ export abstract class ExtToken extends TagPairToken {
 
 	/** @ignore */
 	#toHtmlOrPlain(render: typeof Extension.renderExt, opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		const {name} = this;
-		return tagHooks.has(name) ? tagHooks.get(name)!(this) : render(this, opt);
+		return render(this, opt);
 	}
 
 	/** @private */

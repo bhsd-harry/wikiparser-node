@@ -1,24 +1,13 @@
 import {getCondition} from '../util/selector';
-import type {AstElement} from '../lib/element';
 import type {
 	AstNodes,
 	Token,
 } from '../internal';
 import type {TokenTypeMap, SelectedTokenTypes} from '../map';
 
-/* NOT FOR BROWSER ONLY */
-
-import {mixin} from '../util/debug';
-
-/* NOT FOR BROWSER ONLY END */
-
 declare type ElementConstructor = abstract new (...args: any[]) => {
 	readonly parentNode: Token | undefined;
 	readonly childNodes: readonly AstNodes[];
-
-	/* NOT FOR BROWSER */
-
-	detach?: () => void; // eslint-disable-line @typescript-eslint/method-signature-style
 };
 
 export interface ElementLike {
@@ -79,13 +68,10 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 
 		/* NOT FOR BROWSER END */
 
+		// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 		#getCondition<T>(selector: string): TokenPredicate<T> {
 			return getCondition<T>(
 				selector,
-				// eslint-disable-next-line unicorn/no-negated-condition
-				!('type' in this) ?
-					undefined :
-					this as unknown as AstElement,
 			);
 		}
 
@@ -144,12 +130,5 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			return this.getElementsBy(this.#getCondition(selector));
 		}
 	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	mixin(ElementLike, constructor);
-
-	/* NOT FOR BROWSER ONLY END */
-
 	return ElementLike;
 };

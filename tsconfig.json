@@ -2,7 +2,6 @@
 	"include": [
 		"addon/**/*",
 		"render/**/*",
-		"bin/**/*",
 		"script/**/*",
 		"lib/**/*",
 		"mixin/**/*",
@@ -19,6 +18,7 @@
 			"node"
 		],
 		"lib": [
+			"DOM",
 			"es2025"
 		],
 		"target": "es2024",

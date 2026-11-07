@@ -1,9 +1,3 @@
-/* NOT FOR BROWSER ONLY */
-
-import {mixin} from '../util/debug';
-
-/* NOT FOR BROWSER ONLY END */
-
 /* NOT FOR BROWSER */
 
 import {cached} from './cached';
@@ -28,12 +22,5 @@ export const hiddenToken = (linter = true, html = true) => <T extends AstConstru
 			return html ? '' : super.toHtmlInternal(opt);
 		}
 	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	mixin(AnyHiddenToken, constructor);
-
-	/* NOT FOR BROWSER ONLY END */
-
 	return AnyHiddenToken;
 };

@@ -158,22 +158,14 @@ export abstract class AstNode implements AstNodeBase {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	insertAdjacent(nodes: readonly (AstNodes | string)[]): void {
+	insertAdjacent(nodes: readonly (AstNodes | string)[], offset: 0 | 1): void {
 		const {parentNode} = this;
-		const i = parentNode!.childNodes.indexOf(this as AstNode as AstNodes) + 1;
-		for (let j = 0; j < nodes.length; j++) {
-			parentNode!.insertAt(nodes[j] as string, i + j);
+		if (!parentNode) {
+			return;
 		}
-	}
-
-	/**
-	 * Insert a batch of sibling nodes after the current node
-	 *
-	 * 在后方批量插入兄弟节点
-	 * @param nodes nodes to be inserted / 插入节点
-	 * @throws `Error` if the current node has no parent node
-	 */
-	after(...nodes: (AstNodes | string)[]): void {
-		this.insertAdjacent(nodes);
+		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
+		for (let j = 0; j < nodes.length; j++) {
+			parentNode.insertAt(nodes[j] as string, i + j);
+		}
 	}
 }

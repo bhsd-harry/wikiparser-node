@@ -1,0 +1,8 @@
+{
+	"int-name": "name不能是单纯整数",
+	"no-empty-in-references": "<references>内定义的<ref>标签没有内容",
+	"no-named-in-references": "<references>内定义的<ref>标签没有设置name属性",
+	"ref-details": "带有详细信息的<ref>标签必须包含内容或通过名称指向父级参考",
+	"ref-follow": "作为前一个标签的延续的<ref follow>标签不能被单独命名或包含详细信息",
+	"ref-no-name": "没有name的<ref>必须有内容"
+}

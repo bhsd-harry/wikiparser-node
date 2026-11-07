@@ -25,17 +25,10 @@ import type {
 
 export type GalleryImageTypes = 'gallery-image';
 
-/^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 const getUrlLikeRegex = getRegex(protocol => new RegExp(String.raw`^(?:${protocol}|//|\0\d+m\x7F)`, 'iu'));
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
 const getUrlRegex = getRegex(
 	protocol => new RegExp(String.raw`^(?:(?:${protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`, 'iu'),
 );
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/^(\s*)link=(.*)(?=$|\n)(\s*)$/u;
-/^(\s*(?!\s))(.*)px(\s*)$/u;
-/* eslint-enable @typescript-eslint/no-unused-expressions */
 const getSyntaxRegex = getRegex(syntax => new RegExp(
 	String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
 		syntax.endsWith('$1') ? '(?=$|\n)' : ''
@@ -239,7 +232,6 @@ export abstract class ImageParameterToken extends Token {
 				this.#syntax = str;
 			} else {
 				super(mt[2], config, accum, {
-					'Stage-2': ':', '!HeadingToken': '',
 				});
 				this.#syntax = mt[1] + param[0] + mt[3]!;
 			}

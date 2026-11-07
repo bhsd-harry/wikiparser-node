@@ -6,12 +6,13 @@ import {tidy} from '../util/string';
 import {Shadow} from '../util/debug';
 import {parseRedirect} from '../parser/redirect';
 import type {Test as TestBase} from '@bhsd/test-util/parser';
-import type {Token} from '../internal';
 
 export interface Test extends TestBase {
 	title?: string | undefined;
 	render?: string;
 	plain?: string;
+	print?: string;
+	lint?: unknown[];
 }
 
 /* NOT FOR BROWSER ONLY */
@@ -32,11 +33,10 @@ for (const file of fs.readdirSync('test/templates', {withFileTypes: true, recurs
 	}
 	const {parentPath, name} = file,
 		content = tidy(fs.readFileSync(path.join(parentPath, name), 'utf8')),
-		accum: Token[] = [],
-		parsed = Shadow.run(() => parseRedirect(content, Parser.getConfig(), accum));
+		parsed = Shadow.run(() => parseRedirect(content, Parser.getConfig(), []));
 	let title = path.relative(
 		'./test/templates',
-		path.join(parentPath, name.replace(/\.(?:wiki|txt)$/iu, '')),
+		path.join(parentPath, name.slice(0, -5)),
 	).replaceAll('꞉', ':');
 	try {
 		title = decodeURIComponent(title);
@@ -64,15 +64,8 @@ const split = (str: string): string[] => str
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
-	for (const {desc, title = 'Parser test', wikitext, render} of tests) {
-		if (
-			wikitext && render
-			&& !wikitext.includes('#rel2abs:')
-			&& !wikitext.includes('</charinsert>')
-			&& !render.includes('</math>')
-			&& !render.includes('mw-highlight mw-highlight-lang-')
-			&& !render.includes('<section class="mw-templatedata-doc-wrap">')
-		) {
+	for (const {desc, title = 'Parser test', wikitext, print, render, plain, lint} of tests) {
+		if (wikitext && (print || render || plain)) {
 			it(desc, () => {
 				/* NOT FOR BROWSER */
 
@@ -97,7 +90,12 @@ describe('Parser tests', () => {
 
 					/* NOT FOR BROWSER */
 
-					if (render) {
+					if (
+						render
+						&& !/#rel2abs:|<\/charinsert>/u.test(wikitext)
+						&& !/<\/math>|mw-highlight mw-highlight-lang-|<section class="mw-templatedata-doc-wrap">/u
+							.test(render || '')
+					) {
 						assert.deepStrictEqual(
 							split(
 								root.toHtml().replace(

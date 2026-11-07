@@ -17,8 +17,6 @@ import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 
 import {html} from '../../util/html';
 
-const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
-
 /* NOT FOR BROWSER END */
 
 export type TableTokens = TableToken | TrToken | TdToken;
@@ -51,7 +49,6 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	constructor(syntax?: string, attr?: string, config?: Config, accum?: Token[]) {
 		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
-			Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:',
 		});
 	}
 
@@ -66,11 +63,9 @@ export abstract class TableToken extends TrBaseToken {
 			Shadow.run(() => {
 				const token = new SyntaxToken(
 					syntax,
-					closingPattern,
 					'table-syntax',
 					this.getAttribute('config'),
 					this.getAttribute('accum'),
-					{'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':'},
 				);
 				super.insertAt(token);
 			});

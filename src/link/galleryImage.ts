@@ -15,22 +15,21 @@ import type {
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {singleLine} from '../../mixin/singleLine';
 import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
-declare type GalleryTypes = 'gallery';
+declare type GalleryTypes = 'gallery'
+;
 
 /**
  * gallery image
  *
  * 图库图片
  */
-@singleLine
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
-	private readonly privateType: `${GalleryTypes}-image` = 'gallery-image';
+	private readonly privateType: `${GalleryTypes}-image`;
 
 	override get type(): `${GalleryTypes}-image` {
 		return this.privateType;
@@ -62,7 +61,12 @@ export abstract class GalleryImageToken extends FileToken {
 		return this.normalizeTitle(
 			this.firstChild.text(),
 			6,
-			{halfParsed: true, temporary, decode: true, page: ''},
+			{
+				halfParsed: true,
+				temporary,
+				decode: true,
+				page: '',
+			},
 		);
 	}
 
@@ -74,7 +78,10 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (child.is('image-parameter') && !galleryParams.has(child.name)) {
+		if (
+			child.is('image-parameter')
+			&& !galleryParams.has(child.name)
+		) {
 			child.setAttribute('name', 'invalid');
 		}
 		return super.insertAt(child, i);

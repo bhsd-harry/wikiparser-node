@@ -6,12 +6,6 @@ import type {
 } from '../../base';
 import type {AttributesToken, SyntaxToken} from '../../internal';
 
-/* PRINT ONLY */
-
-import Parser from '../../index';
-
-/* PRINT ONLY END */
-
 declare type Child = AttributesToken | SyntaxToken;
 
 /**
@@ -85,51 +79,24 @@ export abstract class TagToken extends Token {
 				const {parentNode} = this,
 					{childNodes} = parentNode!,
 					i = childNodes.indexOf(this),
-					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
-					{viewOnly} = Parser,
-					{rev} = Shadow;
-				let cur = siblings.pop(),
-					until: this | undefined;
+					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse();
+				let cur = siblings.pop();
 				while (cur) {
-					if (until) {
-						if (cur === until) {
-							until = undefined;
-						}
-					} else if (
+					if (
 						!cur.is<this>(type)
 						|| cur.name !== name
 					) {
 						//
 					} else if (cur.#closing === closing) {
-						/* c8 ignore next 3 */
-						if (
-							cur.#match?.[0] === rev
-							&& viewOnly // eslint-disable-line unicorn/prefer-simple-condition-first
-						) {
-							const [, matched] = cur.#match;
-							if (!matched) {
-								return undefined;
-							}
-							until = matched;
-						}
 						stack.push(cur);
 					} else {
 						const top = stack.pop()!;
 						if (top === this) {
 							return cur;
 						}
-						if (viewOnly) {
-							top.#match = [rev, cur];
-							cur.#match = [rev, top];
-						}
 					}
 					cur = siblings.pop();
-				}
-				if (viewOnly) {
-					for (const token of stack) {
-						token.#match = [rev, undefined];
-					}
 				}
 				return undefined;
 			},

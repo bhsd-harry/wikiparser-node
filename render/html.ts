@@ -1,4 +1,6 @@
-import {states} from '../util/constants';
+import {
+	states,
+} from '../util/constants';
 import {sanitizeAttr} from '../util/string';
 import type {RenderOpt} from '../base';
 import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken, ExtToken} from '../internal';
@@ -12,14 +14,10 @@ const tocContainer = '<div id="toc" class="toc" role="navigation" aria-labelledb
 	+ '<h2 id="mw-toc-heading">Contents</h2>'
 	+ '<span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span>'
 	+ '</div>';
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<(?:table|\/t[dh]|\/?(?:tr|caption|d[td]|li))\b/iu;
 const openRegex = new RegExp(
 	String.raw`<(?:${blockElems}|/${antiBlockElems}|/?(?:tr|caption|d[td]|li))\b`,
 	'iu',
 );
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<(?:\/(?:pre|p)|t[dh]|\/?(?:center|blockquote|div|hr|figure))\b/iu;
 const closeRegex = new RegExp(
 	String.raw`<(?:/(?:${blockElems})|${antiBlockElems}|/?(?:center|blockquote|div|hr|figure))\b`,
 	'iu',
@@ -64,7 +62,12 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
 	if (hasCite) {
-		token.append('\n', token.createElement('references'));
+		token.append(
+			'\n',
+			token.createElement(
+				'references',
+			),
+		);
 	}
 
 	// 处理目录

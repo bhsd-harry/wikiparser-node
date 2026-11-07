@@ -8,11 +8,7 @@ import type {Token} from '../../internal';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {syntax} from '../../mixin/syntax';
 import {cached} from '../../mixin/cached';
-import type {SyntaxBase} from '../../mixin/syntax';
-
-export interface QuoteToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 
@@ -21,7 +17,6 @@ export interface QuoteToken extends SyntaxBase {}
  *
  * `''`和`'''`
  */
-@syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
 	#closing: Font;
 

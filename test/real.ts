@@ -38,9 +38,10 @@ const [,, site = ''] = process.argv,
 				},
 			);
 			for (const page of pages) {
-				const {title} = page;
+				const {pageid, title, content} = page;
 				try {
-					await single(page);
+					// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+					const errors = await single(page);
 				} catch (e) {
 					error(`解析 ${title} 页面时出错！`);
 					console.error(e);

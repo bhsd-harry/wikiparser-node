@@ -4,7 +4,6 @@ import {
 
 	/* NOT FOR BROWSER */
 
-	normalizeSpace,
 	text,
 } from '../util/string';
 import {Token} from './index';
@@ -32,8 +31,6 @@ import {Shadow} from '../util/debug';
 import {ClassList} from '../lib/classList';
 import {clone} from '../mixin/clone';
 import {cached} from '../mixin/cached';
-
-const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /* NOT FOR BROWSER END */
 
@@ -137,7 +134,6 @@ export abstract class AttributesToken extends Token {
 	 */
 	constructor(attr: string | undefined, type: AttributesTypes, name: string, config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AtomToken: ':', AttributeToken: ':',
 		});
 		this.#type = type;
 		this.setAttribute('name', name);
@@ -153,7 +149,6 @@ export abstract class AttributesToken extends Token {
 							toDirty(type),
 							config,
 							accum,
-							{[`Stage-${stages[type]}`]: ':'},
 						),
 					);
 					out = '';
@@ -290,7 +285,8 @@ export abstract class AttributesToken extends Token {
 		const {previousVisibleSibling, nextVisibleSibling} = token,
 			dirtyType = toDirty(type),
 			config = this.getAttribute('config'),
-			acceptable = {[`Stage-${stages[type]}`]: ':'};
+			acceptable = {
+			};
 		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling.toString())) {
 			super.insertAt(Shadow.run(() => new AtomToken(' ', dirtyType, config, [], acceptable)), i + 1);
 		}
@@ -325,19 +321,12 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
-		if (this.type === 'table-attrs') {
-			/** @todo performance bottleneck */
-			normalizeSpace(this);
-		}
 		const str = super.toString(skip);
 		return this.#leadingSpace(str) + str;
 	}
 
 	/** @private */
 	override text(): string {
-		if (this.type === 'table-attrs') {
-			normalizeSpace(this);
-		}
 		const str = text(this.childNodes.filter(child => child instanceof AttributeToken), ' ');
 		return this.#leadingSpace(str) + str;
 	}

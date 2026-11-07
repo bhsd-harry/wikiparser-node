@@ -1,5 +1,7 @@
-import {functionHooks} from '../util/constants';
-import {removeComment, removeCommentLine} from '../util/string';
+import {
+	removeComment,
+	removeCommentLine,
+} from '../util/string';
 import {expandMagicWord} from './magicWords';
 import Parser from '../index';
 import {Token} from '../src/index';
@@ -35,9 +37,10 @@ const implicitNewLine = (str: string, prev: string): string =>
 /**
  * 加载模板
  * @param title 模板名
- * @param config
  */
-const loadTemplate = (title: string, config: Config): string | false => {
+const loadTemplate = (
+	title: string,
+): string | false => {
 	// eslint-disable-next-line unicorn/prefer-ternary
 	if (Parser.templates.has(title)) {
 		return title;
@@ -167,7 +170,9 @@ const expand = (
 						}
 						return fallback;
 					}
-					const dest = loadTemplate(title, config);
+					const dest = loadTemplate(
+						title,
+					);
 					if (dest === false) {
 						if (!isTemplate) {
 							clean(accum, nameToken);
@@ -192,9 +197,6 @@ const expand = (
 					);
 				} else if (context === false && !solvedMagicWords.has(name)) {
 					return m;
-				} else if (functionHooks.has(name)) {
-					clean(accum, args);
-					return implicitNewLine(functionHooks.get(name)!(target, context || undefined), prev);
 				}
 				try {
 					const result = expandMagicWord(
@@ -225,9 +227,10 @@ const expand = (
 /**
  * 展开指定节点的模板
  * @param token 目标节点
- * @param context 模板调用环境
  */
-export const expandToken = (token: Token, context?: false): Token => {
+export const expandToken = (
+	token: Token,
+): Token => {
 	const {pageName} = token;
 	return expand(
 		token.toString(),
@@ -235,6 +238,5 @@ export const expandToken = (token: Token, context?: false): Token => {
 		pageName,
 		token.getAttribute('config'),
 		token.getAttribute('include'),
-		context,
 	);
 };

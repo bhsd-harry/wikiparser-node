@@ -22,11 +22,13 @@ AttributeToken.prototype.setValue =
 
 AttributesToken.prototype.setAttr =
 	/** @implements */
-	function(key, value): void {
-		const {type, name} = this,
+	function(keyOrProp, value): void {
+		const {type, name} = this;
+		const key = keyOrProp,
 			attr = this.getAttrToken(key);
 		if (attr) {
-			attr.setValue(value);
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+			attr.setValue(value!);
 			return;
 		}
 		// @ts-expect-error abstract class

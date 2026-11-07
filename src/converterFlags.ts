@@ -43,7 +43,6 @@ export abstract class ConverterFlagsToken extends Token {
 	/** @param flags 转换类型标记 */
 	constructor(flags: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AtomToken: ':',
 		});
 		this.safeAppend(flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}

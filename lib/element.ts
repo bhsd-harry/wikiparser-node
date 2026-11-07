@@ -76,7 +76,7 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	isInside(type: TokenTypes): boolean {
-		return this.closest(`${type},ext`)?.type === type;
+		LINT: return this.closest(`${type},ext`)?.type === type;
 	}
 
 	/**
@@ -116,8 +116,8 @@ export abstract class AstElement extends AstNode {
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;
-		const oldText = this.childNodes[i] as AstText,
-			{data} = oldText;
+		const oldText = this.childNodes[i] as AstText;
+		const {data} = oldText;
 		oldText.replaceData(str);
 		return data;
 	}

@@ -177,10 +177,8 @@ export const escape = /* #__PURE__ */ replaceEntities(/[&<>]/gu);
 /* NOT FOR BROWSER */
 
 /** escape special chars for RegExp constructor */
-export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
-
-/** escape newlines */
-export const noWrap = factory(/\n/gu, String.raw`\n`);
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+export const escapeRegExp = RegExp.escape || factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 
 /**
  * convert newline in text nodes to single whitespace

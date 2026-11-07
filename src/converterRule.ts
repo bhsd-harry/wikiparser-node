@@ -68,7 +68,6 @@ export abstract class ConverterRuleToken extends Token {
 	 */
 	constructor(rule: string, hasColon = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			Token: '0:3', AtomToken: '0:2',
 		});
 		const i = rule.indexOf(':'),
 			j = rule.slice(0, i).indexOf('=>'),

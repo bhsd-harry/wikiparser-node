@@ -56,7 +56,6 @@ export abstract class ExtLinkToken extends Token {
 	 */
 	constructor(url?: string, space = '', text = '', config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			MagicLinkToken: 0, Token: 1,
 		});
 		const link: MagicLinkToken = url && /^\0\d+f\x7F$/u.test(url)
 			? accum[Number(url.slice(1, -2))]
@@ -133,7 +132,7 @@ export abstract class ExtLinkToken extends Token {
 			);
 		if (i !== -1) {
 			const after = childNodes.slice(i);
-			this.insertAdjacent(after);
+			this.insertAdjacent(after, 1);
 		}
 		return lastChild[method](opt);
 	}

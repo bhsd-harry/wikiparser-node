@@ -2,7 +2,9 @@ export {default as enMsg} from '../i18n/en.json';
 
 /* NOT FOR BROWSER */
 
-import type {Token, FunctionHook, TagHook} from '../internal';
+import type {
+	Token,
+} from '../internal';
 
 /* NOT FOR BROWSER END */
 
@@ -21,7 +23,3 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption', 
 /* NOT FOR BROWSER */
 
 export const states = new WeakMap<Token, State>();
-
-export const functionHooks = new Map<string, FunctionHook>();
-
-export const tagHooks = new Map<string, TagHook>();

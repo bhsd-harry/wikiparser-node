@@ -14,7 +14,9 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {isToken} from '../../util/debug';
+import {
+	isToken,
+} from '../../util/debug';
 
 /* NOT FOR BROWSER END */
 
@@ -66,7 +68,6 @@ export abstract class GalleryToken extends MultiLineToken {
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', GalleryImageToken: ':', CommentLineToken: ':',
 		});
 		if (inner) {
 			for (let line of inner.split('\n')) {
@@ -92,7 +93,11 @@ export abstract class GalleryToken extends MultiLineToken {
 					continue;
 				}
 				const [, file, alt] = matches;
-				if (this.#checkFile(file)) { // eslint-disable-line unicorn/prefer-ternary
+				if ( // eslint-disable-line unicorn/prefer-ternary
+					this.#checkFile(
+						file,
+					)
+				) {
 					// @ts-expect-error abstract class
 					super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 				} else {
@@ -113,7 +118,9 @@ export abstract class GalleryToken extends MultiLineToken {
 	 * 检查文件名是否有效
 	 * @param file 文件名
 	 */
-	#checkFile(file: string): boolean {
+	#checkFile(
+		file: string,
+	): boolean {
 		return this.normalizeTitle(
 			removeComment(file),
 			6,

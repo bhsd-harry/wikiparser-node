@@ -19,7 +19,6 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su;
  * @param tidy 是否整理链接
  */
 export const parseLinks = (wikitext: string, config: Config, accum: Token[], page?: string, tidy?: boolean): string => {
-	/^\s*(?:ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = config.inExt
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
@@ -61,10 +60,6 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], pag
 		const {
 			ns,
 			valid,
-
-			/* NOT FOR BROWSER */
-
-			interwiki,
 		} = Parser.normalizeTitle(
 			trimmed,
 			0,
@@ -78,7 +73,6 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], pag
 		} else if (mightBeImg) {
 			if (
 				ns !== 6
-				|| interwiki
 			) {
 				s += `[[${x}`;
 				continue;
@@ -110,13 +104,11 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], pag
 		if (!force) {
 			if (
 				ns === 6
-				&& !interwiki
 			) {
 				text &&= parseExternalLinks(text, config, accum, true);
 				SomeLinkToken = FileToken;
 			} else if (
 				ns === 14
-				&& !interwiki
 			) {
 				SomeLinkToken = CategoryToken;
 			}

@@ -7,10 +7,6 @@ import type {Token} from '../../internal';
 
 import {Shadow} from '../../util/debug';
 import {getTocData} from '../../util/html';
-import {syntax} from '../../mixin/syntax';
-import type {SyntaxBase} from '../../mixin/syntax';
-
-export interface DoubleUnderscoreToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 
@@ -19,7 +15,6 @@ export interface DoubleUnderscoreToken extends SyntaxBase {}
  *
  * 状态开关
  */
-@syntax()
 @hiddenToken(true, false)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
@@ -52,7 +47,6 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 		/* NOT FOR BROWSER */
 
 		this.#sensitive = sensitive;
-		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));
 	}
 
 	/** @private */

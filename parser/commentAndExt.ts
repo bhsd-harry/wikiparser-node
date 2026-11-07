@@ -19,8 +19,6 @@ const onlyincludeLeft = '<onlyinclude>',
 	getExtRegex = [false, true].map(includeOnly => {
 		const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 			includeRegex = includeOnly ? 'noinclude' : 'includeonly';
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/<!--.*?(?:-->|$)|<foo(?=\s|\/?>)|<\/foo\s*>|<(bar)(?=\s|\/?>)|<(baz)(?=\s|\/?>)/gisu;
 		return getRegex(exts => new RegExp(
 			String.raw`<!--.*?(?:-->|$)|<${noincludeRegex}(?=\s|/?>)|</${noincludeRegex}\s*>|<(${exts})(?=\s|/?>)|<(${
 				includeRegex

@@ -4,10 +4,6 @@ import type {Config} from '../base';
 /* NOT FOR BROWSER */
 
 import {clone} from '../mixin/clone';
-import {syntax} from '../mixin/syntax';
-import type {SyntaxBase} from '../mixin/syntax';
-
-export interface SyntaxToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 
@@ -23,7 +19,6 @@ declare type SyntaxTypes = 'heading-trail'
  *
  * 满足特定语法格式的plain Token
  */
-@syntax()
 export class SyntaxToken extends Token {
 	readonly #type;
 
@@ -33,11 +28,9 @@ export class SyntaxToken extends Token {
 
 	/**
 	 * @class
-	 * @param pattern 语法正则
 	 */
 	constructor(
 		wikitext: string | undefined,
-		pattern: RegExp,
 		type: SyntaxTypes,
 		config?: Config,
 		accum?: Token[],
@@ -45,10 +38,6 @@ export class SyntaxToken extends Token {
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.#type = type;
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('pattern', pattern);
 	}
 
 	/* NOT FOR BROWSER */
@@ -57,11 +46,8 @@ export class SyntaxToken extends Token {
 	override cloneNode(): this {
 		return new SyntaxToken(
 			undefined,
-			this.pattern,
 			this.type,
 			this.getAttribute('config'),
-			[],
-			this.getAcceptable(),
 		) as this;
 	}
 }

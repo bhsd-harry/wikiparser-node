@@ -77,8 +77,9 @@ export class AstText extends AstNode {
 	splitText(offset: number): AstText {
 		LSP: {
 			const {parentNode, data} = this;
-			const newText = new AstText(data.slice(offset));
-			setChildNodes(parentNode!, parentNode!.childNodes.indexOf(this) + 1, 0, [newText]);
+			const newText = new AstText(data.slice(offset)),
+				target = parentNode!;
+			setChildNodes(target, target.childNodes.indexOf(this) + 1, 0, [newText]);
 			this.setAttribute('data', data.slice(0, offset));
 			return newText;
 		}

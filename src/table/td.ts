@@ -69,7 +69,6 @@ export abstract class TdToken extends TableBaseToken {
 			attr,
 			config,
 			accum,
-			{SyntaxToken: 0, AttributesToken: 1, Token: 2},
 		);
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;

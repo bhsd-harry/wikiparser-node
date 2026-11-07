@@ -75,12 +75,6 @@ export class Token extends AstElement {
 	#string: Cached<string> | undefined;
 	#pageName: string | undefined;
 
-	/* NOT FOR BROWSER */
-
-	#acceptable?: Record<string, number | string | (number | string)[]>;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): TokenTypes {
 		return this.#type;
 	}
@@ -122,10 +116,6 @@ export class Token extends AstElement {
 		this.#config = config;
 		this.#accum = accum;
 		accum.push(this);
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('acceptable', acceptable);
 	}
 
 	/** @private */
@@ -405,9 +395,6 @@ export class Token extends AstElement {
 
 				/* NOT FOR BROWSER */
 
-			case 'acceptable':
-				this.#acceptable = value as WikiParserAcceptable;
-				break;
 			case 'include':
 				this.#include = value as TokenAttribute<'include'>;
 				break;
@@ -516,11 +503,6 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	getAcceptable(): Record<string, number | string | (number | string)[]> | undefined {
-		return this.#acceptable;
-	}
-
-	/** @private */
 	override removeAt(i: number): AstNodes {
 		const {length} = this;
 		i += i < 0 ? length : 0;
@@ -583,7 +565,10 @@ export class Token extends AstElement {
 	cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
-			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
+			const token = new Token(
+				undefined,
+				this.#config,
+			) as this;
 			token.type = this.type;
 			token.pageName = this.pageName;
 			token.setAttribute('stage', this.#stage);

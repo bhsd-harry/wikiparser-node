@@ -45,11 +45,3 @@ export type {CommentLineToken} from './src/nowiki/commentLine';
 export type {TranslateToken} from './src/tagPair/translate';
 export type {TvarToken} from './src/tag/tvar';
 export type {ListRangeToken} from './src/nowiki/listBase';
-
-/* NOT FOR BROWSER */
-
-import type {TranscludeToken} from './src/transclude';
-import type {ExtToken} from './src/tagPair/ext';
-
-export type FunctionHook = (token: TranscludeToken, context?: TranscludeToken) => string;
-export type TagHook = (token: ExtToken) => string;

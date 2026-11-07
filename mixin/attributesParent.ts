@@ -1,11 +1,5 @@
 import type {AttributesToken} from '../internal';
 
-/* NOT FOR BROWSER ONLY */
-
-import {mixin} from '../util/debug';
-
-/* NOT FOR BROWSER ONLY END */
-
 /* NOT FOR BROWSER */
 
 import type {ClassList} from '../lib/classList';
@@ -49,7 +43,10 @@ export interface AttributesParentBase {
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
 	 */
-	setAttr(key: string, value: string): void;
+	setAttr(
+		key: string,
+		value: string,
+	): void;
 }
 
 /**
@@ -85,16 +82,13 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 
 		/* NOT FOR BROWSER */
 
-		setAttr(key: string, value: string): void {
-			this.#getAttributesChild().setAttr(key, value);
+		setAttr(
+			key: string,
+			value: string,
+		): void {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+			this.#getAttributesChild().setAttr(key, value!);
 		}
 	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	mixin(AttributesParent, constructor);
-
-	/* NOT FOR BROWSER ONLY END */
-
 	return AttributesParent;
 };

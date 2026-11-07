@@ -13,6 +13,7 @@ import {
 } from './util/string';
 import defaultConfig from './config/default.json';
 import type {
+	MaxStage,
 	Config,
 	ConfigData,
 	TokenTypes,
@@ -80,8 +81,8 @@ declare interface Parser extends ParserBase {
 		accum?: Token[], // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: ConfigData, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: ConfigData): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
@@ -99,6 +100,17 @@ declare interface Parser extends ParserBase {
 	 */
 	toHtml(wikitext: string, include?: boolean, config?: ConfigData, page?: string, opt?: RenderOpt): string;
 	toHtml(wikitext: string, page: string, include?: boolean, config?: ConfigData, opt?: RenderOpt): string;
+
+	/**
+	 * Extract plain text
+	 *
+	 * 提取纯文本
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @param page page name / 页面名称
+	 * @since v2.2.0
+	 */
+	plainText(wikitext: string, include?: boolean, config?: ConfigData, page?: string): string;
+	plainText(wikitext: string, page: string, include?: boolean, config?: ConfigData): string;
 }
 
 let viewOnly =
@@ -110,6 +122,8 @@ let redirectMap = new RedirectMap(),
 	now: Date | undefined;
 
 /* NOT FOR BROWSER END */
+
+let i18n: Record<string, string> | undefined;
 
 /**
  * 判断参数顺序
@@ -135,7 +149,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	get i18n() {
-		return enMsg;
+		LINT: return {...enMsg, ...i18n};
+	},
+
+	set i18n(
+		data: Record<string, string>
+			| undefined,
+	) {
+		LINT: i18n = data;
 	},
 
 	/** @implements */
@@ -178,7 +199,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	getConfig(config?: ConfigData) {
-		const parserConfig = config ?? this.config;
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		const parserConfig = config ?? this.config as ConfigData;
 		if ('excludes' in parserConfig) {
 			return {...parserConfig, excludes: []};
 		}
@@ -224,8 +246,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		return msg
-			&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', () => this.msg(arg));
+		LINT: return msg
+		&& ((this.i18n as Record<string, string>)[msg] ?? msg).replace('$1', () => this.msg(arg));
 	},
 
 	/** @implements */
@@ -284,17 +306,17 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	parse(wikitext, includeOrPage, maxStageOrInclude, configOrStage, pageOrConfig) {
 		wikitext = tidy(wikitext);
 		let include: boolean,
-			maxStage: number | undefined,
+			maxStage: MaxStage | undefined,
 			config: Config,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
-			maxStage = configOrStage as number | undefined;
+			maxStage = configOrStage as MaxStage | undefined;
 			config = this.getConfig(pageOrConfig as ConfigData | undefined);
 			page = includeOrPage;
 		} else {
 			include = Boolean(includeOrPage);
-			maxStage = maxStageOrInclude as number | undefined;
+			maxStage = maxStageOrInclude as MaxStage | undefined;
 			config = this.getConfig(configOrStage as ConfigData | undefined);
 			page = pageOrConfig as string | undefined;
 		}
@@ -324,12 +346,34 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-		return this.parse(wikitext, include, undefined, config, page).toHtml(opt);
+		return this.parse(
+			wikitext,
+			include,
+			undefined,
+			config,
+			page,
+		).toHtml(opt)
+		;
+	},
+
+	/** @implements */
+	plainText(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
+		const html = this.toHtml(
+			wikitext,
+			includeOrPage as boolean | undefined,
+			configOrInclude as ConfigData | undefined,
+			pageOrConfig as string | undefined,
+			{
+				toc: false,
+				cats: false,
+				redirect: false,
+			},
+		);
+		return new DOMParser().parseFromString(html, 'text/html').body.textContent;
 	},
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
-		//
 	},
 	enumerable = new Set([
 		'getConfig',

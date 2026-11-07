@@ -54,11 +54,9 @@ export abstract class TvarToken extends TagToken {
 
 		const attrToken = new SyntaxToken(
 			attr,
-			pattern,
 			'tvar-name',
 			config,
 			accum,
-			{AstText: ':'},
 		);
 		super(tag, attrToken, closing, config, accum);
 

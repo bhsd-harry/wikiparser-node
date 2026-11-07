@@ -33,14 +33,6 @@ export abstract class IncludeToken extends TagPairToken {
 		return 'include';
 	}
 
-	/* NOT FOR BROWSER */
-
-	override get innerText(): string | undefined {
-		return super.innerText;
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @param name 标签名
 	 * @param attr 标签属性

@@ -1,11 +1,12 @@
-import type * as ParserBase from '../index';
+import type ParserBase from '../index';
 
 /**
  * 快速规范化页面标题
  * @param title 标题
  */
 const normalizeTitle = (title: string): string => {
-	const {default: Parser}: typeof ParserBase = require('../index');
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	const Parser: typeof ParserBase = require('../index').default;
 	return String(Parser.normalizeTitle(
 		title,
 		0,
@@ -20,11 +21,17 @@ export class RedirectMap extends Map<string, string> {
 	#redirect;
 
 	/** @ignore */
-	constructor(entries?: Iterable<[string, string]> | Record<string, string>, redirect = true) {
+	constructor(
+		entries?: Iterable<[string, string]>
+		,
+		redirect = true,
+	) {
 		super();
 		this.#redirect = redirect;
 		if (entries) {
-			for (const [k, v] of Symbol.iterator in entries ? entries : Object.entries(entries)) {
+			const iterable =
+				entries;
+			for (const [k, v] of iterable) {
 				this.set(k, v);
 			}
 		}

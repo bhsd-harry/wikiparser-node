@@ -122,8 +122,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	wikitext = replaced;
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let moreBraces = lastBraces + wikitext.length !== -1;
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^((?:\0\d+[cno]\x7F)*)={1,6}|\[\[|-\{(?!\{)|\{{2,}|\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)|[|=]|\}{2,}|\}-|\]\]/gmu;
 	let regex = getExecRegex(source + (moreBraces ? openBraces : '')),
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		lastIndex: number | undefined;
@@ -232,7 +230,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 				curTop = stack[stack.length - 1];
 			}
 		}
-		/\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		regex = getExecRegex(
 			source
 			+ (moreBraces ? openBraces : '')

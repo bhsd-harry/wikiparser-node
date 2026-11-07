@@ -1,6 +1,8 @@
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
-import type {Config} from '../../base';
+import type {
+	Config,
+} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
@@ -49,12 +51,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			// @ts-expect-error abstract class
 			this.insertAt(new NoincludeToken(linkText, config, accum));
 		}
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('acceptable', {AtomToken: 0, NoincludeToken: 1});
-		// @ts-expect-error abstract getter
-		this.firstChild.setAttribute('acceptable', {AstText: ':'});
 	}
 
 	/** @private */

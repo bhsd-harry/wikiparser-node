@@ -21,8 +21,6 @@ export const parseHrAndDoubleUnderscore = (
 		all = [...insensitive, ...sensitive];
 	config.insensitiveDoubleUnderscore ??= new Set(insensitive.filter(isUnderscore));
 	config.sensitiveDoubleUnderscore ??= new Set(sensitive.filter(isUnderscore));
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^((?:\0\d+[cno]\x7F)*)(-{4,})|__(toc|notoc)__|＿{2}(目次)＿{2}/gimu;
 	config.regexHrAndDoubleUnderscore ??= new RegExp(
 		String.raw`^((?:\0\d+[cno]\x7F)*)(-{4,})|__(${
 			all.filter(isUnderscore).join('|')

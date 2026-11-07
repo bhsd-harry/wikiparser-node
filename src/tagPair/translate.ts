@@ -7,7 +7,6 @@ import type {Config} from '../../base';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER END */
 
@@ -15,11 +14,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
  * `<translate>`
  * @classdesc `{childNodes: [SyntaxToken, Token]}`
  */
-export abstract class TranslateToken extends TagPairToken implements Omit<
-	AttributesParentBase,
-	'attributes' | 'className' | 'classList' | 'id' | 'getAttrNames' | 'getAttrs' | 'css'
-	| 'setAttr' | 'hasAttr' | 'getAttr'
-> {
+export abstract class TranslateToken extends TagPairToken {
 	declare name: 'translate';
 	declare closed: true;
 
@@ -45,11 +40,9 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 	constructor(attr?: string, inner?: string, config?: Config, accum: Token[] = []) {
 		const attrToken = new SyntaxToken(
 			attr,
-			/^(?: nowrap)?$/u,
 			'translate-attr',
 			config,
 			accum,
-			{AstText: ':'},
 		);
 		if (inner) {
 			let result = '',

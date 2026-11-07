@@ -24,15 +24,6 @@ export abstract class CommentToken extends NowikiBaseToken {
 		return 'comment';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** comment content / 内部文本 */
-	override get innerText(): string {
-		return super.innerText;
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param closed 是否闭合 */
 	constructor(wikitext: string, closed: boolean, config?: Config, accum?: Token[]) {
 		super(wikitext, config, accum);

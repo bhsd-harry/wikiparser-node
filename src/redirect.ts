@@ -6,13 +6,7 @@ import type {Config} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {getRegex} from '@bhsd/common';
 import {Shadow} from '../util/debug';
-
-/^(?:#redirect|#重定向)\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const getPattern = getRegex<string[]>(
-	redirection => new RegExp(String.raw`^(?:${redirection.join('|')})\s*(?::\s*)?$`, 'iu'),
-);
 
 /* NOT FOR BROWSER END */
 
@@ -64,11 +58,9 @@ export abstract class RedirectToken extends Token {
 		this.append(
 			new SyntaxToken(
 				syntax,
-				getPattern(config.redirection),
 				'redirect-syntax',
 				config,
 				accum,
-				{AstText: ':'},
 			),
 			// @ts-expect-error abstract class
 			new RedirectTargetToken(link, text?.slice(1), config, accum) as RedirectTargetToken,

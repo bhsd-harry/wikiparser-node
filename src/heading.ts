@@ -18,7 +18,6 @@ import type {
 import {states} from '../util/constants';
 import {sanitizeId} from '../util/string';
 import {getId, getTocData} from '../util/html';
-import {sol} from '../mixin/sol';
 import {cached} from '../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -29,7 +28,6 @@ import {cached} from '../mixin/cached';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-@sol()
 export abstract class HeadingToken extends Token {
 	#level;
 
@@ -67,11 +65,9 @@ export abstract class HeadingToken extends Token {
 		token.setAttribute('stage', 2);
 		const trail = new SyntaxToken(
 			input[1],
-			/^\s*$/u,
 			'heading-trail',
 			config,
 			accum,
-			{'Stage-1': ':', '!ExtToken': ''},
 		);
 		this.append(token, trail);
 	}

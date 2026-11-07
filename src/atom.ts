@@ -63,8 +63,6 @@ export class AtomToken extends Token {
 			undefined,
 			this.type,
 			this.getAttribute('config'),
-			[],
-			this.getAcceptable(),
 		) as this;
 	}
 }

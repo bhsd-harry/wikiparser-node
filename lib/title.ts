@@ -61,7 +61,6 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#redirectFragment: string | undefined;
-	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -210,7 +209,6 @@ export class Title {
 		const [level, sub] = subpage ? resolve(title) : [0, title];
 		this.valid = Boolean(
 			title
-			|| this.interwiki
 			|| selfLink && this.ns === 0 && this.#fragment !== undefined,
 		)
 		&& decodeHtml(title) === title
@@ -275,10 +273,8 @@ export class Title {
 				/* NOT FOR BROWSER */
 
 				main,
-				interwiki,
 			} = this,
 			pre =
-				interwiki + (interwiki && ':') +
 				prefix,
 			result = this.#getTitle(pre);
 
@@ -348,8 +344,15 @@ export class Title {
 	 * @throws `Error` if the title is not a file
 	 */
 	getFileUrl(width?: number | false, height?: number | false): string {
-		const {main, valid, ns, interwiki} = this;
-		if (!valid || ns !== 6 || interwiki) {
+		const {
+			main,
+			valid,
+			ns,
+		} = this;
+		if (
+			!valid
+			|| ns !== 6
+		) {
 			throw new Error('Title.getFileUrl method is only for files!');
 		} else if (height) {
 			width ||= 1e4;
@@ -367,8 +370,13 @@ export class Title {
 					: `#${this.#fragment ?? this.#redirectFragment}`
 			);
 		}
-		const {prefix, interwiki} = this,
-			[, result] = this.#getTitle(interwiki + (interwiki && ':') + prefix, false);
+		const {
+				prefix,
+			} = this,
+			[, result] = this.#getTitle(
+				prefix,
+				false,
+			);
 		return (display ? result.replaceAll('_', ' ') : result)
 			+ (this.#fragment === undefined ? '' : `#${this.#fragment}`);
 	}

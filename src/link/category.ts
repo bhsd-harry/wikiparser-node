@@ -4,7 +4,9 @@ import type {Token, AtomToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {states} from '../../util/constants';
+import {
+	states,
+} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */

@@ -48,11 +48,9 @@ export abstract class TableBaseToken extends Token {
 		this.append(
 			new SyntaxToken(
 				syntax,
-				pattern,
 				'table-syntax',
 				config,
 				accum,
-				{'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':'},
 			),
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,

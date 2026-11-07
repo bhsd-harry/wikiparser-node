@@ -1,8 +1,14 @@
-import {states} from '../util/constants';
+import {
+	states,
+} from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr, sanitize} from '../util/string';
 import {extAttrs} from '../util/sharable';
 import Parser from '../index';
-import type {ExtToken, GalleryToken, Token} from '../internal';
+import type {
+	ExtToken,
+	GalleryToken,
+	Token,
+} from '../internal';
 
 export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
 const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']);

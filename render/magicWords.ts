@@ -562,7 +562,9 @@ export const expandMagicWord = (
 			if (!accum) {
 				return tag;
 			}
-			const token = new Token(tag, config, accum).parseOnce(0);
+			const token =
+				new Token(tag, config, accum).parseOnce(0)
+				;
 			// @ts-expect-error sparse array
 			accum[accum.indexOf(token)] = undefined;
 			return token.firstChild!.toString();
@@ -642,14 +644,20 @@ export const expandMagicWord = (
 			} else if (!isKnown(arg0)) {
 				return false;
 			}
-			const {valid, interwiki} = Parser.normalizeTitle(
+			const {
+				valid,
+			} = Parser.normalizeTitle(
 				decodeHtml(arg0),
 				0,
 				false,
 				config,
 				{halfParsed: true, temporary: true, page: ''},
 			);
-			return args[valid && !interwiki ? 1 : 2] ?? '';
+			return args[
+				valid
+					? 1
+					: 2
+			] ?? '';
 		}
 		case 'switch': {
 			const {length} = args;

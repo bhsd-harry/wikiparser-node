@@ -1,43 +1,30 @@
 {
-	"name": "wikiparser-node",
+	"name": "wikiparser-html",
 	"version": "2.1.0",
-	"description": "A Node.js parser for MediaWiki markup with AST",
+	"description": "A browser parser that renders MediaWiki markup to HTML",
 	"keywords": [
 		"mediawiki",
 		"wikitext",
 		"parser",
+		"html",
 		"browser"
 	],
-	"homepage": "https://github.com/bhsd-harry/wikiparser-node#readme",
+	"homepage": "https://github.com/bhsd-harry/wikiparser-node/tree/html#readme",
 	"bugs": {
 		"url": "https://github.com/bhsd-harry/wikiparser-node/issues"
 	},
 	"license": "GPL-3.0-or-later",
 	"author": "Bhsd",
 	"files": [
-		"/bundle/bundle*.js",
-		"/extensions/dist/*.js",
-		"/extensions/*.css",
-		"!/extensions/dist/*-page*.js",
-		"!/extensions/*-page.css",
-		"/printed/README",
-		"/errors/README",
+		"/bundle/bundle-html.min.js",
 		"/config/",
 		"!/config/mediawikiwiki.json",
 		"!/config/github.json",
-		"/data/",
 		"/i18n/",
 		"/coverage/badge.svg",
-		"/bin/*.js",
-		"/dist/",
-		"!/dist/script/",
-		"!/dist/test/"
+		"/dist/**/*.d.ts"
 	],
-	"bin": {
-		"getParserConfig": "bin/config.js"
-	},
-	"browser": "/bundle/bundle-lsp.min.js",
-	"main": "./dist/index.js",
+	"main": "./bundle/bundle-html.min.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,
 	"repository": {
@@ -45,7 +32,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"ls": "npm i --package-lock-only && npm ls --package-lock-only -a --omit=dev",
 		"prepublishOnly": "npm run build:core",
 		"bundle": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --external:entities --outfile=build/bundle-html.js",
 		"build:core": "npm run bundle && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=esm --drop-labels=NPM --sourcemap --outfile=bundle/bundle-html.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-html.min.js",
@@ -53,11 +39,10 @@
 		"build": "npm run build:core && npm run build:test",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
-		"lint:ts": "[ ! -f dist/bin/config.js ] && npm run build:core; tsc --noEmit && eslint --cache .",
-		"lint:bundle": "eslint --no-config-lookup --no-inline-config --parser=@typescript-eslint/parser --rule 'no-unused-vars: [2, {args: none}]' build/*.js",
+		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint": "npm run lint:ts",
 		"prof": "node dist/test/prof.js",
-		"coverage": "tsc -d false -t es2024 && c8 npm test && node dist/script/coverage.js && open coverage/index.html",
+		"coverage": "c8 npm test && node dist/script/coverage.js && open coverage/index.html",
 		"test:parser": "LC_ALL=en.UTF-8 testUtil dist/test/parserTests.js",
 		"test:perf": "testUtil --test-reporter=spec dist/test/perf.js",
 		"test": "npm run test:parser",
@@ -75,23 +60,17 @@
 			"json-summary"
 		]
 	},
-	"dependencies": {
+	"devDependencies": {
 		"@bhsd/cm-util": "^2.4.2",
+		"@bhsd/code-standard": "^5.1.0",
 		"@bhsd/common": "^4.1.0",
 		"@bhsd/nodejs": "^1.2.1",
-		"entities": "^9.0.0"
-	},
-	"devDependencies": {
-		"@bhsd/code-standard": "^5.1.0",
 		"@bhsd/test-util": "^3.3.0",
-		"@eslint/markdown": "^8.0.3",
-		"@types/jsdom": "^30.0.0",
 		"c8": "^12.0.0",
 		"diff2html-cli": "^5.2.15",
-		"dompurify": "^3.4.17",
+		"entities": "^9.0.0",
 		"esbuild": "^0.28.2",
 		"eslint": "^10.14.0",
-		"jsdom": "^30.1.3",
 		"typescript": "^6.0.3"
 	},
 	"engines": {

@@ -2,10 +2,6 @@ import {NowikiBaseToken} from './base';
 import type {
 	AttributesToken,
 	ExtToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
 } from '../../internal';
 
 /**
@@ -22,16 +18,5 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
-	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override safeReplaceChildren(elements: readonly (AstNodes | string)[]): void {
-		if (elements.length === 0) {
-			this.setText('');
-		} else {
-			super.safeReplaceChildren(elements);
-		}
 	}
 }

@@ -102,7 +102,6 @@ export abstract class TranscludeToken extends Token {
 			);
 		}
 		super(undefined, config, accum, {
-			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
 		const {parserFunction, variable, functionHook} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
@@ -124,6 +123,7 @@ export abstract class TranscludeToken extends Token {
 				arg = isFunction && title.slice(colon + 1),
 				cleaned = removeComment(magicWord),
 				name = isFunction ? cleaned.trimStart() + (fullWidth ? '：' : '') : cleaned.trim(),
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				[, isSensitive, canonicalName] = getMagicWordInfo(name, parserFunction),
 				isFunc = !('functionHook' in config) || functionHook.includes(canonicalName as string),
 				isVar = variable.includes(canonicalName as string);
@@ -133,26 +133,17 @@ export abstract class TranscludeToken extends Token {
 				if (fullWidth) {
 					this.#colon = '：';
 				}
-				/^\s*uc\s*$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 				const token = new SyntaxToken(
 					magicWord,
-					new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					'magic-word-name',
 					config,
 					accum,
-					{'Stage-1': ':', '!ExtToken': ''},
 				);
 				super.insertAt(token);
 				if (arg !== false) {
 					parts.unshift([arg]);
 				}
 				if (this.name === 'invoke') {
-					/* NOT FOR BROWSER */
-
-					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
-
-					/* NOT FOR BROWSER END */
-
 					for (let i = 0; i < 2; i++) {
 						const part = parts.shift();
 						if (!part) {

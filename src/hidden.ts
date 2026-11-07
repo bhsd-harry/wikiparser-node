@@ -1,11 +1,5 @@
 import {hiddenToken} from '../mixin/hidden';
 import {Token} from './index';
-import type {
-
-	/* NOT FOR BROWSER */
-
-	Config,
-} from '../base';
 
 /* NOT FOR BROWSER */
 
@@ -25,13 +19,6 @@ export class HiddenToken extends Token {
 	}
 
 	/* NOT FOR BROWSER */
-
-	/** @class */
-	constructor(wikitext?: string, config?: Config, accum?: Token[]) {
-		super(wikitext, config, accum, {
-			'Stage-2': ':', '!HeadingToken': '',
-		});
-	}
 
 	@clone
 	override cloneNode(): this {

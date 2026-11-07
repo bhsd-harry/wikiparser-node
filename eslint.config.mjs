@@ -25,10 +25,6 @@ options.contexts = [
 	+ ')',
 ];
 options.checkSetters = false;
-node.at(-1).settings.n.allowModules = [
-	'chalk',
-	'monaco-editor',
-];
 
 const config = extend(
 	jsDoc,
@@ -89,6 +85,7 @@ const config = extend(
 			'@stylistic/operator-linebreak': 0,
 			'@stylistic/semi-style': 0,
 			'n/no-unpublished-bin': 0,
+			'unicorn/empty-brace-spaces': 0,
 			'unicorn/no-this-assignment': 0,
 			'unicorn/no-top-level-side-effects': 0,
 			'unicorn/no-unnecessary-parameters': 0,
@@ -218,6 +215,7 @@ const config = extend(
 					version: '^26.0.0',
 				},
 			],
+			'@typescript-eslint/no-unused-vars': 0,
 		},
 	},
 	{

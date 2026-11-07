@@ -1,9 +1,3 @@
-/* NOT FOR BROWSER ONLY */
-
-import {mixin} from '../util/debug';
-
-/* NOT FOR BROWSER ONLY END */
-
 /**
  * 给定 gap 的类
  * @param gap
@@ -14,12 +8,5 @@ export const gapped = (gap = 1) => <S extends AstConstructor>(constructor: S): S
 			return gap;
 		}
 	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	mixin(GappedToken, constructor);
-
-	/* NOT FOR BROWSER ONLY END */
-
 	return GappedToken;
 };

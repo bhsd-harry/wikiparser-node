@@ -52,7 +52,9 @@ export class AstRange {
 
 	/** closest common ancestor / 最近的公共祖先 */
 	get commonAncestorContainer(): AstNodes {
-		const {startContainer} = this;
+		const {
+			startContainer,
+		} = this;
 		return startContainer;
 	}
 
@@ -150,10 +152,18 @@ export class AstRange {
 		if (this.startContainer === this.endContainer && this.#startOffset === this.#endOffset) {
 			return [];
 		}
-		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
-			{childNodes} = commonAncestorContainer;
-		const from = startContainer.type === 'text' ? childNodes.indexOf(startContainer) : startOffset,
-			to = endContainer.type === 'text' ? childNodes.indexOf(endContainer) + 1 : endOffset;
+		const {
+				startOffset,
+				endOffset,
+				commonAncestorContainer,
+			} = this,
+			{
+				childNodes,
+			} = commonAncestorContainer;
+		const from =
+				startOffset,
+			to =
+				endOffset;
 		return childNodes.slice(from, to);
 	}
 

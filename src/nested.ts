@@ -74,7 +74,6 @@ export abstract class NestedToken extends Token {
 			wikitext,
 			config,
 			accum,
-			typeof regex === 'boolean' ? {'Stage-2': ':', '!HeadingToken': ''} : {NoincludeToken: ':', ExtToken: ':'},
 		);
 		this.#tags = [...tags];
 		this.#regex = regex;

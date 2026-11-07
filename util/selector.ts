@@ -1,11 +1,4 @@
 import type {AstElement} from '../lib/element';
-import type {Token} from '../internal';
-
-/* NOT FOR BROWSER */
-
-import type * as Selector from '../parser/selector';
-
-/* NOT FOR BROWSER END */
 
 declare type BasicCondition = (type: string, name?: string) => boolean;
 
@@ -26,18 +19,19 @@ export const basic = (selector: string): BasicCondition => {
 /**
  * 将选择器转化为类型谓词
  * @param selector 选择器
- * @param scope 作用对象
- * @param has `:has()`伪选择器
  * @throws `SyntaxError` 非法的选择器
  */
-export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
+export const getCondition = <T>(
+	selector: string,
+): TokenPredicate<T> => {
 	selector = selector.trim();
 
 	/* NOT FOR BROWSER */
 
 	if (selector === 'ext-link[childElementCount=1]') {
-		const {checkToken}: typeof Selector = require('../parser/selector');
-		return checkToken(selector, scope, has) as TokenPredicate<T>;
+		return (
+			({type, childElementCount}: AstElement) => type === 'ext-link' && childElementCount === 1
+		) as unknown as TokenPredicate<T>;
 	}
 
 	/* NOT FOR BROWSER END */

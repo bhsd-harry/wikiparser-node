@@ -14,23 +14,19 @@ import type {
 
 declare global {
 	type WikiParserAcceptable =
-		Record<string, number | string | (number | string)[]>;
+		Record<
+			string,
+			number
+			| string
+			| (number | string)[]
+		>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
-		readonly name?: string | undefined;
 		readonly childNodes: readonly AstNodes[];
-		readonly firstChild: AstNodes | undefined;
-		getAttribute<T extends string>(key: T): TokenAttribute<T>;
-		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
 
 		/* NOT FOR BROWSER */
 
-		readonly parentNode: Token | undefined;
-		afterBuild(): void;
-		insertAt(token: unknown, i?: number): unknown;
-		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
-		safeReplaceChildren(elements: readonly (AstNodes | string)[]): void;
 		toHtmlInternal(opt?: HtmlOpt): string;
 	};
 
@@ -61,7 +57,8 @@ declare global {
 
 	type PlainOpt = Pick<HtmlOpt, 'nowrap'>;
 
-	type Method = 'toHtmlInternal';
+	type Method = 'toHtmlInternal'
+	;
 
 	type HtmlOrPlainFunc = (childNodes: readonly AstNodes[], separator: string, opt?: HtmlOpt) => string;
 }

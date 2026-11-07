@@ -44,7 +44,8 @@ export abstract class LinkBaseToken extends Token {
 		| 'category'
 		| 'file'
 		| 'redirect-target'
-		| 'ext-inner';
+		| 'ext-inner'
+	;
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -67,7 +68,6 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
-			AtomToken: 0, Token: 1,
 		});
 		this.insertAt(
 			new AtomToken(
@@ -75,7 +75,6 @@ export abstract class LinkBaseToken extends Token {
 				'link-target',
 				config,
 				accum,
-				{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 			),
 		);
 		if (linkText !== undefined) {
@@ -83,7 +82,6 @@ export abstract class LinkBaseToken extends Token {
 				linkText,
 				{...config, excludes: [...config.excludes, 'list']},
 				accum,
-				{'Stage-5': ':', QuoteToken: ':', ConverterToken: ':'},
 			);
 			inner.type = 'link-text';
 			inner.setAttribute('stage', MAX_STAGE - 1);
@@ -165,7 +163,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return 1;
+		return i === 0 ? this.#delimiter.length : 1;
 	}
 
 	/** @private */
@@ -200,9 +198,10 @@ export abstract class LinkBaseToken extends Token {
 				attr = 'class="mw-selflink"';
 			} else {
 				const title = link.getTitleAttr();
-				attr = `${link.interwiki && 'class="extiw" '}href="${link.getUrl()}"${
-					link.ns === -2 ? ' class="internal"' : ''
-				}${title && ` title="${title}"`}`;
+				attr =
+					`href="${link.getUrl()}"${
+						link.ns === -2 ? ' class="internal"' : ''
+					}${title && ` title="${title}"`}`;
 			}
 			return `<a ${attr}>${
 				type === 'link' && length > 1

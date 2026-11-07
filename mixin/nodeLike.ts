@@ -1,11 +1,5 @@
 import type {AstNodes} from '../internal';
 
-/* NOT FOR BROWSER ONLY */
-
-import {mixin} from '../util/debug';
-
-/* NOT FOR BROWSER ONLY END */
-
 declare type NodeConstructor = abstract new (...args: any[]) => {
 	readonly childNodes: readonly AstNodes[];
 };
@@ -30,12 +24,5 @@ export const nodeLike = <S extends NodeConstructor>(constructor: S): S => {
 			return this.childNodes[this.childNodes.length - 1];
 		}
 	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	mixin(NodeLike, constructor);
-
-	/* NOT FOR BROWSER ONLY END */
-
 	return NodeLike;
 };

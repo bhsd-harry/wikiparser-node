@@ -41,7 +41,6 @@ export interface Config {
 
 	readonly conversionTable?: [string, string][];
 	readonly redirects?: [string, string][];
-	readonly interwiki: string[];
 	server?: string;
 }
 export type ConfigData = Omit<Config, 'excludes'>;
@@ -152,26 +151,10 @@ export interface AstNode {
  * 所有节点的基类
  */
 interface Token extends AstNode {
-	readonly name?: string;
-
-	/**
-	 * Get all descendants that match the selector
-	 *
-	 * 符合选择器的所有后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelectorAll<T = Token>(selector: string): T[];
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Generate HTML
-	 *
-	 * 生成HTML
-	 * @since v1.10.0
-	 */
-	toHtml(opt?: RenderOpt): string;
 }
+
+export type MaxStage = number
+;
 
 export interface Parser {
 	config:
@@ -197,8 +180,8 @@ export interface Parser {
 	 * @param maxStage max stage for parsing / 最大解析层级
 	 * @param page page name / 页面名称
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: ConfigData, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: ConfigData): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 }
 
 /* NOT FOR BROWSER */

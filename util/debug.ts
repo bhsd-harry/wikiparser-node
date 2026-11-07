@@ -68,7 +68,22 @@ export const setChildNodes = (
 		removed = nodes;
 		nodes = inserted;
 	} else {
-		removed = Array.prototype.splice.apply(nodes, [position, deleteCount, ...inserted]);
+		removed = nodes.slice(position, position + deleteCount);
+		const delta = inserted.length - deleteCount,
+			{length} = nodes;
+		if (delta > 0) {
+			for (let i = length - 1; i >= position + deleteCount; i--) {
+				nodes[i + delta] = nodes[i]!;
+			}
+		} else if (delta < 0) {
+			for (let i = position + deleteCount; i < length; i++) {
+				nodes[i + delta] = nodes[i]!;
+			}
+			nodes.length += delta;
+		}
+		for (let i = 0; i < inserted.length; i++) {
+			nodes[position + i] = inserted[i]!;
+		}
 	}
 	for (let i = 0; i < inserted.length; i++) {
 		const node = inserted[i]!;
@@ -79,17 +94,6 @@ export const setChildNodes = (
 	nodes[position - 1]?.setAttribute('nextSibling', nodes[position]);
 	nodes[position + inserted.length]?.setAttribute('previousSibling', nodes[position + inserted.length - 1]);
 	parent.setAttribute('childNodes', nodes);
-
-	/* NOT FOR BROWSER */
-
-	for (const node of removed) {
-		if (node.parentNode === parent) {
-			node.setAttribute('parentNode', undefined);
-		}
-	}
-
-	/* NOT FOR BROWSER END */
-
 	return removed;
 };
 
@@ -112,15 +116,4 @@ export const getMagicWordInfo = (
 			? sensitive[name]!
 			: Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]!,
 	];
-};
-
-/* NOT FOR BROWSER ONLY */
-
-/**
- * 同步混入的类名
- * @param target 混入的目标
- * @param source 混入的源
- */
-export const mixin = (target: Function, source: Function): void => {
-	Object.defineProperty(target, 'name', {value: source.name});
 };

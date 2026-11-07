@@ -143,7 +143,11 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	set className(className) {
-		this.setValue('class', className);
+		this.setValue(
+			'class',
+			className
+			,
+		);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -163,15 +167,7 @@ export abstract class FileToken extends LinkBaseToken {
 		type?: GalleryImageTypes,
 	) {
 		super(link, undefined, config, accum, delimiter);
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
-
-		/* NOT FOR BROWSER END */
-
 		const {extension} = this.getTitle(true, true);
-		/-\{|\}-|\|/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		this.safeAppend(explode(text).map(
 			(part): ImageParameterToken =>
 				// @ts-expect-error abstract class
@@ -191,7 +187,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取所有图片参数节点
 	 */
 	getAllArgs(): ImageParameterToken[] {
-		return this.childNodes.slice(1) as ImageParameterToken[];
+		LINT: return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**
@@ -201,7 +197,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
-		return this.getAllArgs().filter(({name}) => key === name);
+		LINT: return this.getAllArgs().filter(({name}) => key === name);
 	}
 
 	/**
@@ -222,7 +218,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key parameter name / 参数名
 	 */
 	getValue(key: string): string | true | undefined {
-		return this.getArg(key)?.getValue();
+		LINT: return this.getArg(key)?.getValue();
 	}
 
 	/* NOT FOR BROWSER */
@@ -230,8 +226,9 @@ export abstract class FileToken extends LinkBaseToken {
 	/**
 	 * 获取特定类型的图片属性参数节点
 	 * @param keys 接受的参数名
+	 * @param type 类型名
 	 */
-	#getTypedArgs(keys: Set<string> | Map<string, string>): ImageParameterToken[] {
+	#getTypedArgs(keys: Set<string> | Map<string, string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 		return args;
 	}
@@ -242,7 +239,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取图片框架属性参数节点
 	 */
 	getFrameArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(frame);
+		return this.#getTypedArgs(frame, 'frame');
 	}
 
 	/**
@@ -251,7 +248,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取图片水平对齐参数节点
 	 */
 	getHorizAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(horizAlign);
+		return this.#getTypedArgs(horizAlign, 'horizontal-align');
 	}
 
 	/**
@@ -260,7 +257,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取图片垂直对齐参数节点
 	 */
 	getVertAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(vertAlign);
+		return this.#getTypedArgs(vertAlign, 'vertical-align');
 	}
 
 	/**
@@ -313,27 +310,37 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param value parameter value / 参数值
 	 * @throws `RangeError` if the parameter name is unknown
 	 */
-	setValue(key: 'class', value: string): void {
+	setValue(
+		key: string,
+		value: string,
+	): void {
 		const token = this.getArg(key);
 		if (token) {
 			token.setValue(value);
 			return;
 		}
 		const config = this.getAttribute('config'),
-			syntax = Object.entries(config.img).find(([, name]) => name === key)?.[0];
-		const free = syntax!.includes('$1');
+			syntax =
+				// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+				Object.entries(config.img).find(([, name]) => name === key)
+					?.[0]!;
+		const free = syntax.includes('$1');
 		const parameter = Shadow.run(
 			(): ImageParameterToken =>
 				// @ts-expect-error abstract class
 				new ImageParameterToken(
-					syntax!.replace('$1', ''),
+					syntax.replace(
+						'$1',
+						'',
+					),
 					this.extension,
 					this.type,
 					config,
 				),
 		);
 		if (free) {
-			parameter.safeReplaceChildren(Parser.parseWithRef(value, this, MAX_STAGE).childNodes);
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+			parameter.safeReplaceChildren(Parser.parseWithRef(value as string, this, MAX_STAGE).childNodes);
 		}
 		this.insertAt(parameter);
 	}
