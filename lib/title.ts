@@ -6,7 +6,6 @@ import {
 	/* NOT FOR BROWSER */
 
 	escapeRegExp,
-	isInterwiki,
 } from '../util/string';
 import type {Config} from '../base';
 import type {
@@ -196,17 +195,6 @@ export class Title {
 				ns = 0;
 				title = title.slice(1).trim();
 			}
-
-			/* NOT FOR BROWSER */
-
-			const iw = defaultNs ? null : isInterwiki(title, config);
-			if (iw) {
-				this.interwiki = iw[1]!.toLowerCase();
-				title = title.slice(iw.indices![0]![1]);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			const m = title.split(':');
 			if (m.length > 1) {
 				const k = trimLc(m[0]!),
@@ -418,7 +406,7 @@ export class Title {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp(
-				[...conversionTable.keys()].toSorted((a, b) => b.localeCompare(a)).map(escapeRegExp)
+				[...conversionTable.keys()].sort((a, b) => b.localeCompare(a)).map(escapeRegExp)
 					.join('|'),
 				'gu',
 			);

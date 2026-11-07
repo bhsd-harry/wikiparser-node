@@ -103,7 +103,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return i === 0 && this.length === 3 ? 2 : 1;
+		return 1;
 	}
 
 	/* NOT FOR BROWSER */

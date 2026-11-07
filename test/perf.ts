@@ -241,34 +241,4 @@ void describe('Performance test', () => {
 		const content = `<references>${'<ref/>'.repeat(N)}</references>`;
 		complex(content, 'ext', 'ext', undefined, N, 'lastChild');
 	});
-	it('extension parameter line', () => {
-		const content = `<inputbox>${'\ntype = create'.repeat(N)}</inputbox>`;
-		complex(content, 'ext', 'param-line', undefined, N + 1, 'lastChild');
-	});
-	it('imagemap internal link', () => {
-		const content = `<imagemap>File:a${'\n1 [[a]]'.repeat(N)}</imagemap>`;
-		complex(
-			content,
-			'ext',
-			'imagemap-image',
-			'imagemap-link',
-			N + 1,
-			'lastChild',
-		);
-	});
-	it('imagemap external link', () => {
-		const content = `<imagemap>File:a${'\n1 [http://a]'.repeat(N)}</imagemap>`;
-		complex(
-			content,
-			'ext',
-			'imagemap-image',
-			'imagemap-link',
-			N + 1,
-			'lastChild',
-		);
-	});
-	it('charinsert line', () => {
-		const content = `<charinsert>${'a\n'.repeat(N)}</charinsert>`;
-		complex(content, 'ext', 'charinsert-line', undefined, N + 1, 'lastChild');
-	});
 });

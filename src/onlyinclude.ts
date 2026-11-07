@@ -1,4 +1,3 @@
-import {padded} from '../mixin/padded';
 import {Token} from './index';
 
 /* NOT FOR BROWSER */
@@ -13,7 +12,6 @@ import {clone} from '../mixin/clone';
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: (AstText|Token)[]}`
  */
-@padded('<onlyinclude>')
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
 		return 'onlyinclude';

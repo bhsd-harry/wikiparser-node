@@ -15,7 +15,6 @@ import {cached} from './cached';
  * @param linter 是否覆写 lint 方法
  * @param html 是否覆写 toHtml 方法
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const hiddenToken = (linter = true, html = true) => <T extends AstConstructor>(constructor: T): T => {
 	abstract class AnyHiddenToken extends constructor {
 		override text(): string {

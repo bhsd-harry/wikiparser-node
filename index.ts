@@ -11,6 +11,7 @@ import {
 import {
 	tidy,
 } from './util/string';
+import defaultConfig from './config/default.json';
 import type {
 	Config,
 	ConfigData,
@@ -28,27 +29,13 @@ import type {
 	Token,
 } from './internal';
 
-/* NOT FOR BROWSER ONLY */
-
-import {
-	error,
-
-	/* NOT FOR BROWSER */
-
-	diff,
-} from './util/diff';
-
-/* NOT FOR BROWSER ONLY END */
-
 /* NOT FOR BROWSER */
 
-import {yellow, blue} from '@bhsd/nodejs';
 import {RedirectMap} from './lib/redirectMap';
 
 /* NOT FOR BROWSER END */
 
 declare interface Parser extends ParserBase {
-	default: this;
 
 	/* NOT FOR BROWSER */
 
@@ -56,12 +43,7 @@ declare interface Parser extends ParserBase {
 	redirects: Map<string, string>;
 
 	/** @since v1.10.0 */
-	templateDir?: string;
-	/** @since v1.10.0 */
 	templates: Map<string, string>;
-
-	warning: boolean;
-	debugging: boolean;
 
 	/**
 	 * Specify the current time of the parser
@@ -114,13 +96,6 @@ declare interface Parser extends ParserBase {
 	 */
 	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string, opt?: RenderOpt): string;
 	toHtml(wikitext: string, page: string, include?: boolean, config?: Config, opt?: RenderOpt): string;
-
-	/** @private */
-	warn: log;
-	/** @private */
-	debug: log;
-	/** @private */
-	error: log;
 }
 
 let viewOnly =
@@ -128,7 +103,6 @@ let viewOnly =
 
 /* NOT FOR BROWSER */
 
-const promises = [Promise.resolve()];
 let redirectMap = new RedirectMap(),
 	now: Date | undefined;
 
@@ -150,7 +124,7 @@ const getParams = (
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config:
-		require('../config/default'), // eslint-disable-line n/no-missing-require
+		defaultConfig as unknown as ConfigData,
 
 	/** @implements */
 	get i18n() {
@@ -174,9 +148,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	conversionTable: new Map(),
 
 	templates: new RedirectMap(undefined, false),
-
-	warning: true,
-	debugging: false,
 
 	/** @implements */
 	get now() {
@@ -336,28 +307,6 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			return token;
 		});
 
-		/* NOT FOR BROWSER */
-
-		/* c8 ignore start */
-		if (this.debugging) {
-			/* eslint-disable prefer-const */
-			let restored = root.toString(),
-				proc = 'parsing';
-			/* eslint-enable prefer-const */
-			if (restored !== wikitext) {
-				const {length} = promises,
-					cur = promises[length - 1];
-				promises.push((async (): Promise<void> => {
-					await cur;
-					this.error(`Original wikitext is altered when ${proc}!`);
-					return diff(wikitext, restored, length);
-				})());
-			}
-		}
-		/* c8 ignore stop */
-
-		/* NOT FOR BROWSER END */
-
 		return root;
 	},
 
@@ -376,28 +325,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			this,
 		);
 	},
-
-	/** @implements */
-	warn(msg, ...args) {
-		/* c8 ignore start */
-		if (this.warning) {
-			console.warn(yellow(msg), ...args);
-		}
-		/* c8 ignore stop */
-	},
-	/** @implements */
-	debug(msg, ...args) {
-		/* c8 ignore start */
-		if (this.debugging) {
-			console.debug(blue(msg), ...args);
-		}
-		/* c8 ignore stop */
-	},
-	error,
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
-		default: {value: Parser},
+		//
 	},
 	enumerable = new Set([
 		'getConfig',
@@ -406,8 +337,6 @@ const def: PropertyDescriptorMap = {
 
 		/* NOT FOR BROWSER */
 
-		'warning',
-		'debugging',
 		'toHtml',
 	]);
 for (const key in Parser) {
@@ -417,8 +346,7 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-// @ts-expect-error mixed export styles
-export = Parser;
+export default Parser;
 export type {
 	Config,
 	ConfigData,

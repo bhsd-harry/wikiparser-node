@@ -1,5 +1,3 @@
-import {padded} from '../mixin/padded';
-import {gapped} from '../mixin/gapped';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
@@ -19,7 +17,6 @@ import {Shadow} from '../util/debug';
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]]}`
  */
-@padded('{{{') @gapped()
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];

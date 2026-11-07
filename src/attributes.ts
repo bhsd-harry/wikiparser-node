@@ -260,24 +260,6 @@ export abstract class AttributesToken extends Token {
 		return '';
 	}
 
-	/* PRINT ONLY */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* NOT FOR BROWSER */
-
-		// eslint-disable-next-line unicorn/prefer-ternary
-		if (key === 'padding') {
-			return this.#leadingSpace(super.toString()).length as TokenAttribute<T>;
-		}
-
-		/* NOT FOR BROWSER END */
-
-		return super.getAttribute(key);
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
 
 	@clone
@@ -330,15 +312,6 @@ export abstract class AttributesToken extends Token {
 	setAttr(key: string, value: string | boolean): void {
 		require('../addon/attribute');
 		this.setAttr(key, value);
-	}
-
-	/**
-	 * Get all attributes
-	 *
-	 * 获取全部属性
-	 */
-	getAttrs(): Record<string, string> {
-		return Object.fromEntries(this.getAttrTokens().map(({name, value}) => [name, value]));
 	}
 
 	/**

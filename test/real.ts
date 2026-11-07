@@ -12,12 +12,6 @@ import Parser from '../index';
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-Parser.warning = false;
-
-/* NOT FOR BROWSER END */
-
 const [,, site = ''] = process.argv,
 	apis = ([
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],

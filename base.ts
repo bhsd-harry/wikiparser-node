@@ -104,7 +104,6 @@ export type TokenTypes = 'root'
 	| 'category'
 	| 'file'
 	| 'gallery-image'
-	| 'imagemap-image'
 	| 'image-parameter'
 	| 'quote'
 	| 'ext-link'
@@ -124,8 +123,6 @@ export type TokenTypes = 'root'
 	| 'param-line'
 	| 'param-line-key'
 	| 'param-line-value'
-	| 'imagemap-link'
-	| 'charinsert-line'
 	| 'list-range';
 
 /**

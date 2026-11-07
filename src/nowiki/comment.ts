@@ -1,5 +1,4 @@
 import {hiddenToken} from '../../mixin/hidden';
-import {padded} from '../../mixin/padded';
 import {NowikiBaseToken} from './base';
 import type {
 	Config,
@@ -17,7 +16,7 @@ import {Shadow} from '../../util/debug';
  *
  * HTML注释，不可见
  */
-@hiddenToken(false) @padded('<!--')
+@hiddenToken(false)
 export abstract class CommentToken extends NowikiBaseToken {
 	closed;
 

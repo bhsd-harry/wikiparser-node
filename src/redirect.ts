@@ -77,11 +77,6 @@ export abstract class RedirectToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? this.#pre.length as TokenAttribute<T> : super.getAttribute(key);
-	}
-
-	/** @private */
 	override toString(skip?: boolean): string {
 		return this.#pre + super.toString(skip) + this.#post;
 	}

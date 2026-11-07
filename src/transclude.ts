@@ -3,7 +3,6 @@ import {
 
 	/* NOT FOR BROWSER */
 
-	noWrap,
 	sanitizeId,
 } from '../util/string';
 import {
@@ -14,7 +13,6 @@ import {
 	BuildMethod,
 } from '../util/constants';
 import {gapped} from '../mixin/gapped';
-import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
@@ -176,13 +174,6 @@ export abstract class TranscludeToken extends Token {
 			const name = removeComment(title).trim();
 			if (!this.normalizeTitle(name, 10, {halfParsed: true, temporary: true}).valid) {
 				accum.pop();
-
-				/* NOT FOR BROWSER */
-
-				Parser.debug(`${invalidTemplateMsg}: ${noWrap(name)}`);
-
-				/* NOT FOR BROWSER END */
-
 				throw new SyntaxError(invalidTemplateMsg);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
@@ -334,8 +325,6 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
-			case 'padding':
-				return this.modifier.length + 2 as TokenAttribute<T>;
 			case 'title':
 				return this.#title as TokenAttribute<T>;
 			case 'colon':
@@ -474,60 +463,6 @@ export abstract class TranscludeToken extends Token {
 			args = new Set(sortArgs(this, args));
 		}
 		return args;
-	}
-
-	/**
-	 * Get possible values of some magic words
-	 *
-	 * 对特定魔术字获取可能的取值
-	 * @throws `Error` if not a supported magic word
-	 */
-	getPossibleValues(): Token[] {
-		const {name, childNodes, length: l} = this;
-		let start: number | undefined,
-			queue: Token[] | undefined;
-		switch (name) {
-			case 'if':
-			case 'ifexist':
-			case 'ifexpr':
-				start = 2;
-				break;
-			case 'ifeq':
-				start = 3;
-				break;
-			case 'iferror':
-				start = l > 3 ? 2 : 1;
-				break;
-			case 'switch': {
-				const parameters = childNodes.slice(2) as ParameterToken[],
-					last = parameters[parameters.length - 1];
-				queue = [
-					...parameters.filter(({anon}) => !anon),
-					...last?.anon ? [last] : [],
-				].map(({lastChild}) => lastChild);
-				break;
-			}
-			default:
-				throw new Error('TranscludeToken.getPossibleValues method is only for specific magic words!');
-		}
-		queue ??= (childNodes.slice(start, start! + 2) as ParameterToken[]).map(({lastChild}) => lastChild);
-		for (let i = 0; i < queue.length;) {
-			const {length, 0: first} = queue[i]!.childNodes.filter(child => child.text().trim());
-			if (length === 0) {
-				queue.splice(i, 1);
-			} else if (length > 1 || !first!.is('magic-word')) {
-				i++;
-			} else {
-				try {
-					const possibleValues = first.getPossibleValues();
-					Array.prototype.splice.apply(queue, [i, 1, ...possibleValues]);
-					i += possibleValues.length;
-				} catch {
-					i++;
-				}
-			}
-		}
-		return queue;
 	}
 
 	/* NOT FOR BROWSER */

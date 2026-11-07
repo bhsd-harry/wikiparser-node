@@ -94,13 +94,8 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? this.level as TokenAttribute<T> : super.getAttribute(key);
-	}
-
-	/** @private */
 	override getGaps(): number {
-		return this.level;
+		return 1;
 	}
 
 	/* NOT FOR BROWSER */

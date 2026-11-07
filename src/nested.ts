@@ -1,7 +1,7 @@
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
 import {Token} from './index';
-import {ExtToken} from './tagPair/ext';
+import type {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {
 	Config,
@@ -52,67 +52,17 @@ export abstract class NestedToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		regex:
-			RegExp |
-			boolean,
+		boolean,
 		tags: readonly string[],
 		config: Config,
 		accum: Token[] = [],
 	) {
-		if (typeof regex === 'boolean') {
-			const placeholder = Symbol('NestedToken'),
-				{length} = accum;
-			accum.push(placeholder as unknown as Token);
-			wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);
-			wikitext &&= parseBraces(wikitext, config, accum);
-			accum.splice(length, 1);
-		} else if (wikitext) {
-			const noMoreTags = new Set<string>();
-			regex.lastIndex = 0;
-			let lastIndex = 0,
-				text = '';
-			for (let mt = regex.exec(wikitext); mt; mt = regex.exec(wikitext)) {
-				const i = wikitext.indexOf('>', regex.lastIndex);
-				if (i === -1) {
-					break;
-				}
-				const [substr, name] = mt,
-					{index} = mt;
-				text += wikitext.slice(lastIndex, index);
-				({lastIndex} = regex);
-				let matched = true,
-					attr: string | undefined,
-					inner: string | undefined,
-					closing: string | undefined;
-				if (wikitext[i - 1] === '/') {
-					attr = wikitext.slice(lastIndex, i - 1);
-					lastIndex = i + 1;
-					regex.lastIndex = lastIndex;
-				} else if (noMoreTags.has(name!.toLowerCase())) {
-					matched = false;
-				} else {
-					const after = wikitext.slice(i + 1),
-						m = new RegExp(String.raw`</(${name}\s*)>`, 'iu').exec(after);
-					if (m) {
-						inner = after.slice(0, m.index);
-						[, closing] = m;
-						lastIndex = i + 1 + m.index + m[0].length;
-						regex.lastIndex = lastIndex;
-					} else {
-						matched = false;
-						noMoreTags.add(name!.toLowerCase());
-					}
-				}
-				if (matched) {
-					const str = `\0${accum.length + 1}e\x7F`;
-					// @ts-expect-error abstract class
-					new ExtToken(name, attr, inner, closing, config, false, accum);
-					text += str;
-				} else {
-					text += substr;
-				}
-			}
-			wikitext = text + wikitext.slice(lastIndex);
-		}
+		const placeholder = Symbol('NestedToken'),
+			{length} = accum;
+		accum.push(placeholder as unknown as Token);
+		wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);
+		wikitext &&= parseBraces(wikitext, config, accum);
+		accum.splice(length, 1);
 		wikitext &&= wikitext.replace(
 			/(^|\0\d+.\x7F)([^\0]+)(?=$|\0\d+.\x7F)/gu,
 			(_, lead: string, substr: string) => {

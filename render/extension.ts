@@ -45,8 +45,6 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		}
 		case 'langconvert':
 			return lastChild.toHtmlInternal({...opt, nowrap: true});
-		case 'charinsert':
-			return lastChild.toHtmlInternal();
 		case 'indicator': {
 			const nameAttr = firstChild.getAttr('name');
 			if (nameAttr) {

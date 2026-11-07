@@ -6,7 +6,6 @@ import {
 	isToken,
 } from '../../util/debug';
 import {cached} from '../../mixin/cached';
-import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {
@@ -89,17 +88,11 @@ export abstract class TableToken extends TrBaseToken {
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
 		const previous = this.childNodes[i - 1];
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (typeof token !== 'string' && token.is('td') && previous?.is('tr')) {
-			Parser.warn('The table cell is inserted into the current row instead.');
 			return previous.insertAt(token);
 		}
 		return super.insertAt(token, i);
-	}
-
-	/** @private */
-	override getRowCount(): number {
-		return super.getRowCount()
-			+ this.childNodes.filter(child => child.is('tr') && child.getRowCount()).length;
 	}
 
 	/** @ignore */

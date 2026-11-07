@@ -5,7 +5,7 @@ import type * as ParserBase from '../index';
  * @param title 标题
  */
 const normalizeTitle = (title: string): string => {
-	const Parser: typeof ParserBase = require('../index');
+	const {default: Parser}: typeof ParserBase = require('../index');
 	return String(Parser.normalizeTitle(
 		title,
 		0,

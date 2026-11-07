@@ -7,7 +7,6 @@ import type {Config} from '../../base';
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {trimLc} from '../../util/string';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER END */
@@ -18,7 +17,8 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
  */
 export abstract class TranslateToken extends TagPairToken implements Omit<
 	AttributesParentBase,
-	'attributes' | 'className' | 'classList' | 'id' | 'getAttrNames' | 'getAttrs' | 'css' | 'setAttr' | 'hasAttr'
+	'attributes' | 'className' | 'classList' | 'id' | 'getAttrNames' | 'getAttrs' | 'css'
+	| 'setAttr' | 'hasAttr' | 'getAttr'
 > {
 	declare name: 'translate';
 	declare closed: true;
@@ -36,10 +36,6 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 
 	override get type(): 'translate' {
 		return 'translate';
-	}
-
-	override get selfClosing(): false {
-		return false;
 	}
 
 	/**
@@ -125,21 +121,7 @@ export abstract class TranslateToken extends TagPairToken implements Omit<
 		return this.lastChild.text();
 	}
 
-	/* PRINT ONLY */
-
-	/** 是否有nowrap属性 */
-	#isNowrap(): boolean {
-		PRINT: return this.firstChild.toString() === ' nowrap';
-	}
-
-	/* PRINT ONLY END */
-
 	/* NOT FOR BROWSER */
-
-	/** @implements */
-	getAttr(key: string): '' | undefined {
-		return trimLc(key) === 'nowrap' && this.#isNowrap() ? '' : undefined;
-	}
 
 	override cloneNode(): this {
 		const inner = this.lastChild.cloneNode();

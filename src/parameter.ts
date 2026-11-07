@@ -1,7 +1,6 @@
 import {
 	removeCommentLine,
 } from '../util/string';
-import Parser from '../index';
 import {Token} from './index';
 import type {
 	Config,
@@ -175,7 +174,6 @@ export abstract class ParameterToken extends Token {
 	}
 
 	override safeReplaceWith(token: this): void {
-		Parser.warn(`${this.constructor.name}.safeReplaceWith regress to AstNode.replaceWith.`);
 		this.replaceWith(token);
 	}
 }

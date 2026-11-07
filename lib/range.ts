@@ -104,7 +104,6 @@ export class AstRange {
 	 * @param method 方法名
 	 * @param referenceNode 节点
 	 */
-	// eslint-disable-next-line unicorn/no-unnecessary-parameters
 	#setAfter(method: 'setStart' | 'setEnd', referenceNode: AstNodes): void {
 		const parentNode = getParent(referenceNode);
 		this[method](parentNode, parentNode.childNodes.indexOf(referenceNode) + 1);
@@ -126,7 +125,6 @@ export class AstRange {
 	 * @param method 方法名
 	 * @param referenceNode 节点
 	 */
-	// eslint-disable-next-line unicorn/no-unnecessary-parameters
 	#setBefore(method: 'setStart' | 'setEnd', referenceNode: AstNodes): void {
 		const parentNode = getParent(referenceNode);
 		this[method](parentNode, parentNode.childNodes.indexOf(referenceNode));

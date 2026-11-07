@@ -8,9 +8,7 @@ import type * as Entities from 'entities';
 
 /* NOT FOR BROWSER */
 
-import {getRegex} from '@bhsd/common';
 import {safePatternReplace} from './replace';
-import type {Config} from '../base';
 
 /* NOT FOR BROWSER END */
 
@@ -179,8 +177,7 @@ export const escape = /* #__PURE__ */ replaceEntities(/[&<>]/gu);
 /* NOT FOR BROWSER */
 
 /** escape special chars for RegExp constructor */
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-export const escapeRegExp = RegExp.escape || factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
+export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 
 /** escape newlines */
 export const noWrap = factory(/\n/gu, String.raw`\n`);
@@ -226,21 +223,3 @@ export const sanitizeAlt = (str: string | undefined): string | undefined =>
 
 /** escape newline */
 export const newline = factory(/\n/gu, '&#10;');
-
-/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-const getInterwikiRegex = getRegex<string[]>(
-	interwiki => new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu'),
-);
-
-/**
- * 是否是跨维基链接
- * @param title 链接标题
- * @param config
- * @param config.interwiki 跨维基前缀列表
- */
-export const isInterwiki = (title: string, {interwiki}: Config): RegExpExecArray | null =>
-	interwiki.length > 0
-		? getInterwikiRegex(interwiki).exec(
-			title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
-		)
-		: null;

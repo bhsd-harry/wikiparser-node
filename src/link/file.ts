@@ -230,17 +230,9 @@ export abstract class FileToken extends LinkBaseToken {
 	/**
 	 * 获取特定类型的图片属性参数节点
 	 * @param keys 接受的参数名
-	 * @param type 类型名
 	 */
-	#getTypedArgs(keys: Set<string> | Map<string, string>, type: string): ImageParameterToken[] {
+	#getTypedArgs(keys: Set<string> | Map<string, string>): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
-		if (args.length > 1) {
-			Parser.warn(
-				`The image ${JSON.stringify(this.name)} has ${args.length} ${type} parameters. Only the last ${
-					args[0]!.name
-				} will take effect!`,
-			);
-		}
 		return args;
 	}
 
@@ -250,7 +242,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取图片框架属性参数节点
 	 */
 	getFrameArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(frame, 'frame');
+		return this.#getTypedArgs(frame);
 	}
 
 	/**
@@ -259,7 +251,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取图片水平对齐参数节点
 	 */
 	getHorizAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(horizAlign, 'horizontal-align');
+		return this.#getTypedArgs(horizAlign);
 	}
 
 	/**
@@ -268,7 +260,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * 获取图片垂直对齐参数节点
 	 */
 	getVertAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(vertAlign, 'vertical-align');
+		return this.#getTypedArgs(vertAlign);
 	}
 
 	/**

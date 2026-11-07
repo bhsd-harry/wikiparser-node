@@ -15,7 +15,6 @@ import {
 
 	sanitize,
 } from '../../util/string';
-import {padded} from '../../mixin/padded';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -33,7 +32,6 @@ import {cached} from '../../mixin/cached';
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
-@padded('[[')
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
 	#bracket = true;
@@ -46,8 +44,7 @@ export abstract class LinkBaseToken extends Token {
 		| 'category'
 		| 'file'
 		| 'redirect-target'
-		| 'ext-inner'
-		| 'imagemap-image';
+		| 'ext-inner';
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -62,15 +59,6 @@ export abstract class LinkBaseToken extends Token {
 	get link(): string | Title {
 		return this.#title;
 	}
-
-	/* PRINT ONLY */
-
-	/** 片段标识符 */
-	get fragment(): string | undefined {
-		LSP: return this.#title.fragment;
-	}
-
-	/* PRINT ONLY END */
 
 	/**
 	 * @param link 链接标题
@@ -177,7 +165,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return i === 0 ? this.#delimiter.length : 1;
+		return 1;
 	}
 
 	/** @private */

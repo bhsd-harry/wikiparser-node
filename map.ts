@@ -36,9 +36,6 @@ import type {
 	TvarToken,
 	HiddenToken,
 	GalleryImageToken,
-	ParamLineToken,
-	ImagemapLinkToken,
-	CharinsertLineToken,
 	ListRangeToken,
 } from './internal';
 
@@ -88,7 +85,6 @@ export interface TokenTypeMap {
 	category: CategoryToken;
 	file: FileToken;
 	'gallery-image': GalleryImageToken;
-	'imagemap-image': GalleryImageToken;
 	'image-parameter': ImageParameterToken;
 	quote: QuoteToken;
 	'ext-link': ExtLinkToken;
@@ -102,11 +98,8 @@ export interface TokenTypeMap {
 	'converter-flag': AtomToken;
 	'converter-rule': ConverterRuleToken;
 	'converter-rule-variant': AtomToken;
-	'param-line': ParamLineToken;
 	'param-line-key': AtomToken;
 	'param-line-value': AtomToken;
-	'imagemap-link': ImagemapLinkToken;
-	'charinsert-line': CharinsertLineToken;
 	'list-range': ListRangeToken;
 }
 export type SelectedTokenTypes = keyof TokenTypeMap;

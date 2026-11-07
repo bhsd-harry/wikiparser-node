@@ -35,7 +35,7 @@ for (const file of fs.readdirSync('test/templates', {withFileTypes: true, recurs
 		accum: Token[] = [],
 		parsed = Shadow.run(() => parseRedirect(content, Parser.getConfig(), accum));
 	let title = path.relative(
-		Parser.templateDir!,
+		'./test/templates',
 		path.join(parentPath, name.replace(/\.(?:wiki|txt)$/iu, '')),
 	).replaceAll('꞉', ':');
 	try {
@@ -70,6 +70,7 @@ describe('Parser tests', () => {
 		if (
 			wikitext && render
 			&& !wikitext.includes('#rel2abs:')
+			&& !wikitext.includes('</charinsert>')
 			&& !render.includes('</math>')
 			&& !render.includes('mw-highlight mw-highlight-lang-')
 			&& !render.includes('<section class="mw-templatedata-doc-wrap">')

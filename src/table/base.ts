@@ -1,6 +1,5 @@
 import {Shadow} from '../../util/debug';
 import {attributesParent} from '../../mixin/attributesParent';
-import Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
@@ -10,22 +9,6 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 declare type TableTypes = 'table' | 'tr' | 'td';
 
 export interface TableBaseToken extends AttributesParentBase {}
-
-/**
- * 转义表格语法
- * @param syntax 表格语法节点
- */
-export const escapeTable = (syntax: SyntaxToken): void => {
-	const wikitext = syntax.childNodes.map(
-			child => child.type === 'text'
-				? child.data.replace(/\|{1,2}/gu, ({length}) => `{{${'!'.repeat(length)}}}`)
-				: child.toString(),
-		).join(''),
-		{childNodes} = Parser.parseWithRef(wikitext, syntax, 2);
-	Shadow.run(() => {
-		syntax.safeReplaceChildren(childNodes);
-	});
-};
 
 /**
  * table row that contains the newline at the beginning but not at the end

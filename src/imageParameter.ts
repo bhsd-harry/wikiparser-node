@@ -23,7 +23,7 @@ import type {
 	AstText,
 } from '../internal';
 
-export type GalleryImageTypes = 'gallery-image' | 'imagemap-image';
+export type GalleryImageTypes = 'gallery-image';
 
 /^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 const getUrlLikeRegex = getRegex(protocol => new RegExp(String.raw`^(?:${protocol}|//|\0\d+m\x7F)`, 'iu'));
@@ -186,29 +186,26 @@ export abstract class ImageParameterToken extends Token {
 
 	/** iamge size / 图片大小 */
 	get size(): {width: string, height: string} | undefined {
-		if (this.name === 'width') {
-			const size = (this.getValue() as string).replace(/px$/u, '').trim();
-			if (!size.includes('{{')) {
-				const [width, height = ''] = size.split('x') as [string, string?];
-				return {width, height};
-			}
-			return Shadow.internal(() => {
-				const token = Parser.parseWithRef(size, this, 2, false),
-					i = token.childNodes.findIndex(
-						({type, data}) => type === 'text' && data.includes('x'),
-					);
-				if (i === -1) {
-					return {width: size, height: ''};
-				}
-				const str = token.childNodes[i] as AstText;
-				str.splitText(str.data.indexOf('x')).splitText(1);
-				return {
-					width: text(token.childNodes.slice(0, i + 1)),
-					height: text(token.childNodes.slice(i + 2)),
-				};
-			}, Parser);
+		const size = (this.getValue() as string).replace(/px$/u, '').trim();
+		if (!size.includes('{{')) {
+			const [width, height = ''] = size.split('x') as [string, string?];
+			return {width, height};
 		}
-		return undefined;
+		return Shadow.internal(() => {
+			const token = Parser.parseWithRef(size, this, 2, false),
+				i = token.childNodes.findIndex(
+					({type, data}) => type === 'text' && data.includes('x'),
+				);
+			if (i === -1) {
+				return {width: size, height: ''};
+			}
+			const str = token.childNodes[i] as AstText;
+			str.splitText(str.data.indexOf('x')).splitText(1);
+			return {
+				width: text(token.childNodes.slice(0, i + 1)),
+				height: text(token.childNodes.slice(i + 2)),
+			};
+		}, Parser);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -308,13 +305,6 @@ export abstract class ImageParameterToken extends Token {
 	/** @private */
 	override isPlain(): boolean {
 		return this.name === 'caption' || this.name === 'alt';
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding'
-			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
-			: super.getAttribute(key);
 	}
 
 	/** 是否是不可变参数 */

@@ -37,7 +37,6 @@ const implicitNewLine = (str: string, prev: string): string =>
  * @param title 模板名
  * @param config
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loadTemplate = (title: string, config: Config): string | false => {
 	// eslint-disable-next-line unicorn/prefer-ternary
 	if (Parser.templates.has(title)) {

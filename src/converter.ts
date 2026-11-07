@@ -2,7 +2,6 @@ import {
 	text,
 	removeComment,
 } from '../util/string';
-import {padded} from '../mixin/padded';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
@@ -20,7 +19,6 @@ import {Shadow} from '../util/debug';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]]}`
  */
-@padded('-{')
 export abstract class ConverterToken extends Token {
 	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
@@ -99,7 +97,7 @@ export abstract class ConverterToken extends Token {
 	/** @private */
 	override toHtmlOrPlain(func: HtmlOrPlainFunc, method: Method, opt?: HtmlOpt): string {
 		const flags = this.getEffectiveFlags(),
-			nocc = method === 'toHtmlInternal' && opt?.nocc,
+			nocc = opt?.nocc,
 			[, ...rules] = this.childNodes;
 		if (nocc || flags.has('R') || this.getVariantFlags().size > 0) {
 			return (nocc ? '-{' : '') + func(rules, ';', opt) + (nocc ? '}-' : '');
@@ -126,15 +124,5 @@ export abstract class ConverterToken extends Token {
 	 */
 	getVariantFlags(): Set<string> {
 		return this.firstChild.getVariantFlags();
-	}
-
-	/**
-	 * Check if a language conversion flag is present
-	 *
-	 * 是否具有某转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	hasFlag(flag: string): boolean {
-		return this.firstChild.hasFlag(flag);
 	}
 }

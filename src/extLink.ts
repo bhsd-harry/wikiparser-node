@@ -1,7 +1,6 @@
 import {
 	MAX_STAGE,
 } from '../util/constants';
-import {padded} from '../mixin/padded';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {Config} from '../base';
@@ -20,7 +19,6 @@ import {cached} from '../mixin/cached';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, Token?]}`
  */
-@padded('[')
 export abstract class ExtLinkToken extends Token {
 	#space;
 
@@ -84,7 +82,6 @@ export abstract class ExtLinkToken extends Token {
 
 		/* NOT FOR BROWSER */
 
-		this.#correct();
 		normalizeSpace(this.lastChild);
 
 		/* NOT FOR BROWSER END */
@@ -105,12 +102,6 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override getGaps(): number {
-		/* NOT FOR BROWSER */
-
-		this.#correct();
-
-		/* NOT FOR BROWSER END */
-
 		return this.#space.length;
 	}
 
@@ -127,22 +118,6 @@ export abstract class ExtLinkToken extends Token {
 			}
 			return token;
 		});
-	}
-
-	/** 修正空白字符 */
-	#correct(): void {
-		const {lastChild, length} = this,
-			{firstChild} = lastChild;
-		if (
-			!this.#space
-			&& length > 1
-			&& (firstChild?.type === 'text' || firstChild?.is('converter'))
-			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u
-				.test(lastChild.text().replace(/&[lg]t;/u, '<'))
-		) {
-			this.#space = ' ';
-		}
 	}
 
 	/** @private */

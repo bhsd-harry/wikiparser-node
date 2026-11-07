@@ -3,28 +3,16 @@ import type {AstElement} from '../lib/element';
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {Token} from '../internal';
 
-const specialChars: [string, string][] = [
-		['[', '&lbrack;'],
-		[']', '&rbrack;'],
-		['(', '&lpar;'],
-		[')', '&rpar;'],
-		['"', '&quot;'],
-		[`'`, '&apos;'],
-		[':', '&colon;'],
-		['\\', '&bsol;'],
-		['&', '&amp;'],
-	],
-	regularRegex = /[[(,>+~]|\s+/u,
-	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
-	grouping = new Set([',', '>', '+', '~']),
-	combinator = new Set(['>', '+', '~', '']);
+const regularRegex = /[[,]|\s+/u,
+	attributeRegex = /^(\w+)(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?)?\]/u,
+	grouping = new Set([',']);
 
 /**
  * optionally convert to lower cases
  * @param val 属性值
  * @param i 是否对大小写不敏感
  */
-const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
+const toCase = (val: string, i: unknown): string => val;
 
 /**
  * 获取属性
@@ -32,14 +20,8 @@ const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
  * @param key 属性键
  */
 const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unknown => {
-	if (typeof token.getAttr === 'function') {
-		const attr = token.getAttr(key);
-		if (attr !== undefined) {
-			return attr;
-		}
-	}
 	const val = token[key as keyof Token]; // eslint-disable-line @typescript-eslint/unbound-method
-	return val instanceof RegExp ? val.source : val;
+	return val;
 };
 
 /**
@@ -53,7 +35,6 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
 const matches = (
 	token: Token & Partial<AttributesParentBase>,
 	step: SelectorArray,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	scope?: AstElement,
 	has?: Token,
 ): boolean => {
@@ -63,27 +44,16 @@ const matches = (
 			switch (selector) { // 情形1：简单伪选择器、type和name
 				case '':
 					return token === has;
-				case '*':
-					return true;
 				default:
 					return basic(selector)(type, name);
 			}
 		} else { // 情形2：属性选择器
 			const [key, equal, val = '', i] = selector;
-			if (!(key in token || typeof token.hasAttr === 'function' && token.hasAttr(key))) {
-				return false;
-			}
 			const thisVal = getAttr(token, key);
 			if (!equal) {
 				return thisVal !== undefined && thisVal !== false;
 			}
 			const v = toCase(val, i);
-			if (equal === '~=') {
-				const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
-				return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
-					&& Iterator.from(thisVals as Iterable<unknown>)
-						.some(w => typeof w === 'string' && toCase(w, i) === v);
-			}
 			const stringVal = toCase(String(thisVal), i);
 			return stringVal === v;
 		}
@@ -99,26 +69,9 @@ const matches = (
  */
 const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstElement, has?: Token): boolean => {
 	const condition = [...copy];
+	// eslint-disable-next-line unicorn/prefer-boolean-return
 	if (matches(token, condition.pop()!, scope, has)) {
-		const {parentNode, previousElementSibling} = token;
-		switch (condition.at(-1)?.relation) {
-			case undefined:
-				return true;
-			case '>':
-				return Boolean(parentNode && matchesArray(parentNode, condition, scope, has));
-			case '+':
-				return Boolean(previousElementSibling && matchesArray(previousElementSibling, condition, scope, has));
-			case '~': {
-				if (!parentNode) {
-					return false;
-				}
-				const {children} = parentNode;
-				return children.slice(0, children.indexOf(token))
-					.some(child => matchesArray(child, condition, scope, has));
-			}
-			default: // ' '
-				return token.getAncestors().some(ancestor => matchesArray(ancestor, condition, scope, has));
-		}
+		return true;
 	}
 	return false;
 };
@@ -127,20 +80,10 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[], scope?: AstE
  * 还原转义符号
  * @param selector
  */
+// eslint-disable-next-line arrow-body-style
 const desanitize = (selector: string): string => {
-	if (selector.includes('&') && selector.includes(';')) {
-		for (const [c, entity] of specialChars) {
-			selector = selector.replaceAll(entity, () => c);
-		}
-	}
 	return selector.trim();
 };
-
-/**
- * 去除首尾的引号
- * @param val 属性值或伪选择器函数的参数
- */
-const deQuote = (val: string): string => /^(["']).*\1$/u.test(val) ? val.slice(1, -1) : val.trim();
 
 /**
  * 检查节点是否符合选择器
@@ -155,11 +98,6 @@ export const checkToken = (
 	has?: Token,
 ) => <T extends Token>(token: Token): token is T => {
 	let sanitized = selector.trim();
-	if (sanitized.includes('\\')) {
-		for (const [c, entity] of specialChars) {
-			sanitized = sanitized.replaceAll(`\\${c}`, () => entity);
-		}
-	}
 	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let regex = regularRegex,
 		[condition] = stack,
@@ -203,29 +141,12 @@ export const checkToken = (
 			condition = [[]];
 			[step] = condition;
 			stack.push(condition);
-		} else if (combinator.has(syntax)) { // 情形2：关系
-			if (
-				has && syntax && condition.length === 1 && step.length === 0 && !sanitized.slice(0, index).trim()
-			) {
-				step.push('');
-			} else {
-				pushSimple(index);
-			}
-			step.relation = syntax;
-			step = [];
-			condition.push(step);
 		} else if (syntax === '[') { // 情形3：属性开启
 			pushSimple(index);
 			regex = attributeRegex;
 		} else if (syntax.endsWith(']')) { // 情形4：属性闭合
-			mt[3] &&= desanitize(deQuote(mt[3]));
+			mt[3] &&= desanitize(mt[3]);
 			step.push(mt.slice(1) as [string, string | undefined, string | undefined, string | undefined]);
-			regex = regularRegex;
-		} else if (syntax === '(') { // 情形5：伪选择器开启
-		} else { // 情形6：伪选择器闭合
-			mt.push(step.pop() as string);
-			mt[1] &&= deQuote(mt[1]);
-			step.push(mt.slice(1) as [string, string]);
 			regex = regularRegex;
 		}
 		sanitized = sanitized.slice(index + syntax.length);

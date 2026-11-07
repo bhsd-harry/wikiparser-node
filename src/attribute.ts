@@ -93,15 +93,6 @@ export abstract class AttributeToken extends Token {
 		return this.#tag;
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** attribute value / 属性值 */
-	get value(): string {
-		return this.getValue();
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @param type 标签类型
 	 * @param tag 标签名
@@ -139,8 +130,6 @@ export abstract class AttributeToken extends Token {
 		} else if (
 			tag === 'gallery' && key === 'caption'
 			|| tag === 'ref' && key === 'details'
-			|| key === 'text' && (tag === 'mapframe' || tag === 'maplink')
-			|| tag === 'choose' && (key === 'before' || key === 'after')
 		) {
 			const newConfig: Config = {
 				...config,
@@ -210,7 +199,7 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getGaps(): number {
-		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
+		return this.#equal ? 1 : 0;
 	}
 
 	/**

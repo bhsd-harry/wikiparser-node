@@ -91,12 +91,14 @@ const config = extend(
 			'n/no-unpublished-bin': 0,
 			'unicorn/no-this-assignment': 0,
 			'unicorn/no-top-level-side-effects': 0,
+			'unicorn/no-unnecessary-parameters': 0,
 			'unicorn/prefer-minimal-ternary': [
 				2,
 				{
 					checkVaryingBase: true,
 				},
 			],
+			'unicorn/prefer-set-methods': 0,
 			'jsdoc/require-param-description': 0,
 			'jsdoc/require-param': [
 				1,
@@ -160,6 +162,14 @@ const config = extend(
 						'magicLinkParent',
 						'sol',
 					],
+				},
+			],
+			'@typescript-eslint/no-unused-vars': [
+				2,
+				{
+					args: 'none',
+					caughtErrors: 'all',
+					ignoreRestSiblings: true,
 				},
 			],
 			'@typescript-eslint/no-namespace': 0,

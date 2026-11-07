@@ -33,7 +33,6 @@ export abstract class TagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	abstract get legacy(): boolean | undefined;
 	abstract override get children(): [Child];
 
 	/* NOT FOR BROWSER END */
@@ -69,13 +68,6 @@ export abstract class TagToken extends Token {
 		return `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(skip)}${this.selfClosing ? '/' : ''}>`;
 	}
 
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding'
-			? this.#tag.length + (this.#closing ? 2 : 1) as TokenAttribute<T>
-			: super.getAttribute(key);
-	}
-
 	/**
 	 * Find the matching tag
 	 *
@@ -89,28 +81,9 @@ export abstract class TagToken extends Token {
 					type,
 					name,
 					closing,
-					selfClosing,
-
-					/* NOT FOR BROWSER */
-
-					legacy,
 				} = this;
-				let {parentNode} = this,
-					isVoid = false,
-					isFlexible = false;
-				if (type === 'html') {
-					const [, flexibleTags, voidTags] = this.getAttribute('config').html;
-					isVoid = voidTags.includes(name!);
-					isFlexible = flexibleTags.includes(name!);
-				}
-				if (isVoid || isFlexible && selfClosing) { // 自封闭标签
-					return this;
-				}
-				/* c8 ignore next 3 */
-				if (!parentNode) {
-					return undefined;
-				}
-				const {childNodes} = parentNode,
+				let {parentNode} = this;
+				const {childNodes} = parentNode!,
 					i = childNodes.indexOf(this),
 					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
 					stack = [this],
@@ -118,11 +91,11 @@ export abstract class TagToken extends Token {
 					{rev} = Shadow;
 				let cur = siblings.pop(),
 					until: this | undefined;
-				while (cur || parentNode.is('list-range') && parentNode.parentNode) {
+				while (cur || parentNode!.is('list-range') && parentNode.parentNode) {
 					if (!cur) {
-						const parent: Token = parentNode.parentNode!,
+						const parent: Token = parentNode!.parentNode!,
 							ch = parent.childNodes,
-							j = ch.indexOf(parentNode);
+							j = ch.indexOf(parentNode!);
 						Array.prototype.push.apply(
 							siblings,
 							closing ? ch.slice(0, j) : ch.slice(j + 1).reverse(),
@@ -137,15 +110,12 @@ export abstract class TagToken extends Token {
 						}
 					} else if (
 						!cur.is<this>(type)
-						|| type === 'html' && (cur.name !== name || isFlexible && cur.selfClosing)
-						|| type === 'tvar' && cur.legacy !== legacy
+						|| cur.name !== name
 					) {
 						//
 					} else if (cur.#closing === closing) {
 						/* c8 ignore next 3 */
-						if (type === 'tvar') {
-							return undefined;
-						} else if (
+						if (
 							cur.#match?.[0] === rev
 							&& viewOnly // eslint-disable-line unicorn/prefer-simple-condition-first
 						) {

@@ -602,16 +602,12 @@ export class Token extends AstElement {
 		const {viewOnly} = Parser;
 		return Shadow.internal(() => {
 			let output: string;
-			if (this.type === 'root') {
-				const {expandToken}: typeof Expand = require('../render/expand');
-				Parser.viewOnly = true;
-				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
-				Parser.viewOnly = false;
-				output = func(expanded, render);
-			} else {
-				Parser.viewOnly = false;
-				output = this.cloneNode().toHtmlInternal({render});
-			}
+			const {expandToken}: typeof Expand = require('../render/expand');
+			Parser.viewOnly = true;
+			const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
+			Parser.viewOnly = false;
+			// eslint-disable-next-line prefer-const
+			output = func(expanded, render);
 			Parser.viewOnly = viewOnly;
 			return output;
 		}, Parser);

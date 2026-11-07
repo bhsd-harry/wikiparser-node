@@ -174,18 +174,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Insert a batch of child nodes at the start
-	 *
-	 * 在开头批量插入子节点
-	 * @param elements nodes to be inserted / 插入节点
-	 */
-	prepend(...elements: (AstNodes | string)[]): void {
-		for (let i = 0; i < elements.length; i++) {
-			this.insertAt(elements[i] as AstNodes, i);
-		}
-	}
-
-	/**
 	 * 获取子节点的位置
 	 * @param node 子节点
 	 * @throws `RangeError` 找不到子节点

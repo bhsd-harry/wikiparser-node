@@ -26,12 +26,6 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 			return this.#prependNewLine() + super.toString(skip);
 		}
 
-		override getAttribute<S extends string>(key: S): TokenAttribute<S> {
-			return key === 'padding'
-				? this.#prependNewLine().length + super.getAttribute('padding') as TokenAttribute<S>
-				: super.getAttribute(key);
-		}
-
 		override text(): string {
 			return this.#prependNewLine() + super.text();
 		}

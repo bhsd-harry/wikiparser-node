@@ -1,7 +1,5 @@
 import {gapped} from '../../mixin/gapped';
-import Parser from '../../index';
 import {Token} from '../index';
-import {SingleLineToken} from '../singleLine/index';
 import type {AttributesToken, ExtToken} from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -31,21 +29,6 @@ export abstract class MultiLineToken extends Token {
 
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
-	}
-
-	/** @class */
-	constructor(
-		wikitext?: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-		acceptable?: WikiParserAcceptable,
-	) {
-		super(undefined, config, accum, acceptable);
-		if (wikitext) {
-			const newConfig = {...config, excludes: [...config.excludes, 'list']};
-			// @ts-expect-error abstract class
-			this.safeAppend(wikitext.split('\n').map(line => new SingleLineToken(line, newConfig, accum)));
-		}
 	}
 
 	/** @private */

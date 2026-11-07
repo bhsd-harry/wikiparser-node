@@ -2,14 +2,9 @@ import {
 	BuildMethod,
 } from '../../util/constants';
 import {cached} from '../../mixin/cached';
-import Parser from '../../index';
 import {Token} from '../index';
 import {
 	TableBaseToken,
-
-	/* NOT FOR BROWSER */
-
-	escapeTable,
 } from './base';
 import type {
 	Config,
@@ -18,32 +13,14 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../../util/debug';
-import {trimLc, newline} from '../../util/string';
+import {newline} from '../../util/string';
 
 /* NOT FOR BROWSER END */
 
 export type TdSubtypes = 'td' | 'th' | 'caption';
 declare interface TdSyntax {
 	subtype: TdSubtypes;
-
-	/* NOT FOR BROWSER */
-
-	escape: boolean;
-	correction: boolean;
 }
-export interface TdSpanAttrs {
-	rowspan?: number;
-	colspan?: number;
-}
-declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | undefined;
-
-/* NOT FOR BROWSER */
-
-declare type TdAttrSetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | boolean;
-export type TdAttrs = Record<string, string> & TdSpanAttrs;
-
-/* NOT FOR BROWSER END */
 
 /**
  * `<td>`, `<th>` or `<caption>`
@@ -111,13 +88,6 @@ export abstract class TdToken extends TableBaseToken {
 	@cached(false)
 	#getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
-
-			/* NOT FOR BROWSER */
-
-			esc = syntax.includes('{{'),
-
-			/* NOT FOR BROWSER END */
-
 			char = syntax.slice(-1);
 		let subtype: TdSubtypes = 'td';
 		if (char === '!') {
@@ -128,11 +98,6 @@ export abstract class TdToken extends TableBaseToken {
 		if (this.isIndependent()) {
 			return {
 				subtype,
-
-				/* NOT FOR BROWSER */
-
-				escape: esc,
-				correction: false,
 			};
 		}
 		const {previousSibling} = this;
@@ -140,7 +105,7 @@ export abstract class TdToken extends TableBaseToken {
 		/* NOT FOR BROWSER */
 
 		if (!(previousSibling instanceof TdToken)) {
-			return {subtype, escape: esc, correction: true};
+			return {subtype};
 		}
 
 		/* NOT FOR BROWSER END */
@@ -150,16 +115,8 @@ export abstract class TdToken extends TableBaseToken {
 
 		/* NOT FOR BROWSER */
 
-		const str = previousSibling.lastChild.toString();
-		result.escape ||= esc;
-		result.correction = str.includes('\n') && Shadow.run(() => {
-			const token = new Token(str, this.getAttribute('config'))
-				.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce();
-			return token.firstChild!.toString().includes('\n');
-		}, Parser);
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
-			result.correction = true;
 		}
 
 		/* NOT FOR BROWSER END */
@@ -205,19 +162,6 @@ export abstract class TdToken extends TableBaseToken {
 		return this.firstChild.text().startsWith('\n');
 	}
 
-	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		/* NOT FOR BROWSER */
-
-		key = trimLc(key) as T;
-
-		/* NOT FOR BROWSER END */
-
-		const value = super.getAttr(key);
-		return (
-			key === 'rowspan' || key === 'colspan' ? parseInt(value || '') || 1 : value
-		) as TdAttrGetter<T>;
-	}
-
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -232,41 +176,6 @@ export abstract class TdToken extends TableBaseToken {
 			this.#innerSyntax = (value ?? '') as string;
 		} else {
 			super.setAttribute(key, value);
-		}
-	}
-
-	/** @private */
-	setSyntax(subtype: TdSubtypes, esc?: boolean): void {
-		const aliases: Record<TdSubtypes, string> = {td: '\n|', th: '\n!', caption: '\n|+'},
-			{firstChild} = this;
-		firstChild.replaceChildren(aliases[subtype]);
-		if (esc) {
-			escapeTable(firstChild);
-		}
-	}
-
-	/**
-	 * Move to a new line
-	 *
-	 * 改为独占一行
-	 */
-	independence(): void {
-		if (!this.isIndependent()) {
-			const {subtype, escape} = this.#getSyntax();
-			this.setSyntax(subtype, escape);
-		}
-	}
-
-	/**
-	 * @override
-	 * @param key attribute name / 属性键
-	 * @param value attribute value / 属性值
-	 */
-	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void {
-		key = trimLc(key) as T;
-		super.setAttr(key, (value !== 1 || key !== 'rowspan' && key !== 'colspan') && String(value));
-		if (!this.childNodes[1].toString()) {
-			this.#innerSyntax = '';
 		}
 	}
 

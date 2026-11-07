@@ -12,7 +12,7 @@ import type {
 
 declare global {
 	type TokenAttribute<T extends string> =
-		T extends 'stage' | 'padding' ? number :
+		T extends 'stage' ? number :
 		T extends 'config' ? Config :
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :

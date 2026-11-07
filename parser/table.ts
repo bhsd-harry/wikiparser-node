@@ -56,7 +56,7 @@ export const parseTable = (
 			const token = new Token(str, config, accum);
 			token.type = 'table-inter';
 			token.setAttribute('stage', 3);
-			topToken.insertAt(token);
+			(topToken as TrToken).insertAt(token);
 		} else {
 			lastChild.setText(lastChild.toString() + str);
 		}
@@ -122,7 +122,7 @@ export const parseTable = (
 			const newTd = (tr: TrToken | TableToken): TdToken => {
 				// @ts-expect-error abstract class
 				const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex, mt?.index), config, accum);
-				tr.insertAt(td);
+				(tr as TrToken).insertAt(td);
 				return td;
 			};
 			for (mt = regex.exec(attr); mt; mt = regex.exec(attr)) {

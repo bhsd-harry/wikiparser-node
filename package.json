@@ -47,8 +47,10 @@
 	"scripts": {
 		"ls": "npm i --package-lock-only && npm ls --package-lock-only -a --omit=dev",
 		"prepublishOnly": "npm run build:core",
-		"build:core": "bash build.sh",
-		"build": "npm run build:core",
+		"bundle": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --external:entities --outfile=build/bundle-html.js",
+		"build:core": "npm run bundle && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=esm --drop-labels=NPM --sourcemap --outfile=bundle/bundle-html.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-html.min.js",
+		"build:test": "bash build.sh",
+		"build": "npm run build:core && npm run build:test",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat -w --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "[ ! -f dist/bin/config.js ] && npm run build:core; tsc --noEmit && eslint --cache .",

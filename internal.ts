@@ -39,22 +39,11 @@ export type {ConverterToken} from './src/converter';
 export type {NowikiToken} from './src/nowiki/index';
 export type {PreToken} from './src/pre';
 export type {MultiLineToken} from './src/multiLine/index';
-export type {ParamTagToken} from './src/multiLine/paramTag';
-export type {InputboxToken} from './src/multiLine/inputbox';
 export type {NestedToken} from './src/nested';
 export type {GalleryToken} from './src/multiLine/gallery';
-export type {SingleLineToken} from './src/singleLine/index';
-export type {ImagemapLinkToken} from './src/singleLine/imagemapLink';
-export type {ImagemapToken} from './src/multiLine/imagemap';
-export type {CommentedToken} from './src/commented';
-export type {CategorytreeToken} from './src/link/categorytree';
-export type {ParamLineToken} from './src/paramLine';
-export type {CharinsertLineToken} from './src/singleLine/charinsertLine';
-export type {CharinsertToken} from './src/multiLine/charinsert';
 export type {CommentLineToken} from './src/nowiki/commentLine';
 export type {TranslateToken} from './src/tagPair/translate';
 export type {TvarToken} from './src/tag/tvar';
-export type {FuncTagToken} from './src/funcTag';
 export type {ListRangeToken} from './src/nowiki/listBase';
 
 /* NOT FOR BROWSER */

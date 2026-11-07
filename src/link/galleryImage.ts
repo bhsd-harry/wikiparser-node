@@ -5,7 +5,6 @@ import {
 
 	galleryParams,
 } from '../../util/constants';
-import {padded} from '../../mixin/padded';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
@@ -21,7 +20,7 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
-declare type GalleryTypes = 'gallery' | 'imagemap';
+declare type GalleryTypes = 'gallery';
 
 /**
  * gallery image
@@ -29,23 +28,13 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
  * 图库图片
  */
 @singleLine
-@padded('')
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
-	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';
+	private readonly privateType: `${GalleryTypes}-image` = 'gallery-image';
 
 	override get type(): `${GalleryTypes}-image` {
 		return this.privateType;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override get link(): string | Title {
-		return this.type === 'imagemap-image' ? '' : super.link;
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param type 图片类型
@@ -74,11 +63,10 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/** @private */
 	override getTitle(temporary?: boolean): Title {
-		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(
-			this.firstChild[imagemap ? 'toString' : 'text'](),
-			imagemap ? 0 : 6,
-			{halfParsed: true, temporary, decode: !imagemap, page: ''},
+			this.firstChild.text(),
+			6,
+			{halfParsed: true, temporary, decode: true, page: ''},
 		);
 	}
 
@@ -90,7 +78,7 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (this.type === 'gallery-image' && child.is('image-parameter') && !galleryParams.has(child.name)) {
+		if (child.is('image-parameter') && !galleryParams.has(child.name)) {
 			child.setAttribute('name', 'invalid');
 		}
 		return super.insertAt(child, i);

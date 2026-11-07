@@ -1,5 +1,4 @@
 import {hiddenToken} from '../../mixin/hidden';
-import {padded} from '../../mixin/padded';
 import {NowikiBaseToken} from './base';
 import type {Config} from '../../base';
 import type {Token} from '../../internal';
@@ -21,7 +20,7 @@ export interface DoubleUnderscoreToken extends SyntaxBase {}
  * 状态开关
  */
 @syntax()
-@hiddenToken(true, false) @padded('__')
+@hiddenToken(true, false)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	declare readonly name: string;
 	readonly #fullWidth;

@@ -135,7 +135,7 @@ export abstract class ConverterFlagsToken extends Token {
 	getEffectiveFlags(): Set<string> {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags();
-		const flags = this.getAllFlags().intersection(definedFlags).union(unknownFlags);
+		const flags = new Set([...[...this.getAllFlags()].filter(flag => definedFlags.has(flag)), ...unknownFlags]);
 		if (flags.size === 0 && variantFlags.size === 0) {
 			return new Set('S');
 		} else if (flags.has('R')) {
@@ -155,7 +155,7 @@ export abstract class ConverterFlagsToken extends Token {
 				...hasT && hasD ? [] : unknownFlags,
 			]);
 		} else if (variantFlags.size > 0) {
-			return variantFlags.union(unknownFlags);
+			return new Set([...variantFlags, ...unknownFlags]);
 		}
 		if (flags.size === 1 && flags.has('T')) {
 			flags.add('H');
@@ -168,15 +168,5 @@ export abstract class ConverterFlagsToken extends Token {
 			flags.delete('S');
 		}
 		return flags;
-	}
-
-	/**
-	 * Check if a language conversion flag is present
-	 *
-	 * 是否具有某转换类型标记
-	 * @param flag language conversion flag / 转换类型标记
-	 */
-	hasFlag(flag: string): boolean {
-		return this.#flags!.includes(flag);
 	}
 }

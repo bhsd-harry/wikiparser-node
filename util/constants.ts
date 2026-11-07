@@ -1,3 +1,5 @@
+export {default as enMsg} from '../i18n/en.json';
+
 /* NOT FOR BROWSER */
 
 import type {Token, FunctionHook, TagHook} from '../internal';
@@ -11,13 +13,6 @@ export const enum BuildMethod {
 	String,
 	Text,
 }
-
-export const enMsg = /* #__PURE__ */ (() => {
-	LSP: return require(
-		// eslint-disable-next-line n/no-missing-require
-		'../../i18n/en.json',
-	);
-})();
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption', 'class']);
 

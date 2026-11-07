@@ -35,21 +35,6 @@ export abstract class TvarToken extends TagToken {
 		return 'tvar';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override get closing(): boolean {
-		return super.closing;
-	}
-
-	/** whether to use the legacy syntax / 是否使用旧语法 */
-	get legacy(): boolean {
-		const {pattern} = this.firstChild;
-		return pattern === legacyPattern || pattern === legacyClosingPattern;
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @param tag 标签名
 	 * @param attr 标签属性
