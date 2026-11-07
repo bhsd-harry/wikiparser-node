@@ -26,7 +26,6 @@ options.contexts = [
 ];
 options.checkSetters = false;
 node.at(-1).settings.n.allowModules = [
-	'chalk',
 	'monaco-editor',
 ];
 

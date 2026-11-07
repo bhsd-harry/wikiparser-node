@@ -193,7 +193,9 @@ describe('Parser tests', () => {
 
 					/* NOT FOR BROWSER */
 
-					if (render) {
+					if (
+						render
+					) {
 						assert.deepStrictEqual(
 							split(
 								root.toHtml().replace(

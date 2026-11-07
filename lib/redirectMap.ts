@@ -1,5 +1,5 @@
 import {classes} from '../util/constants';
-import type * as ParserBase from '../index';
+import type ParserBase from '../index';
 
 /**
  * 快速规范化页面标题
@@ -21,11 +21,20 @@ export class RedirectMap extends Map<string, string> {
 	#redirect;
 
 	/** @ignore */
-	constructor(entries?: Iterable<[string, string]> | Record<string, string>, redirect = true) {
+	constructor(
+		entries?: Iterable<[string, string]>
+			| Record<string, string>
+		,
+		redirect = true,
+	) {
 		super();
 		this.#redirect = redirect;
 		if (entries) {
-			for (const [k, v] of Symbol.iterator in entries ? entries : Object.entries(entries)) {
+			const iterable =
+				!(Symbol.iterator in entries) // eslint-disable-line unicorn/no-negated-condition
+					? Object.entries(entries) :
+					entries;
+			for (const [k, v] of iterable) {
 				this.set(k, v);
 			}
 		}

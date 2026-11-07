@@ -22,7 +22,13 @@ import type {Ranges} from '../lib/ranges';
 
 declare global {
 	type WikiParserAcceptable =
-		Record<string, number | string | Ranges | (number | string)[]>;
+		Record<
+			string,
+			number
+			| string
+			| Ranges
+			| (number | string)[]
+		>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly name?: string | undefined;
@@ -33,14 +39,12 @@ declare global {
 		text(separator?: string): string;
 		lint(start?: number): LintError[];
 		getAbsoluteIndex(): number;
-		print(opt?: PrintOpt): string;
 
 		/* NOT FOR BROWSER */
 
 		readonly parentNode: Token | undefined;
 		afterBuild(): void;
 		insertAt(token: unknown, i?: number): unknown;
-		setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void;
 		addEventListener(events: string | string[], listener: (...args: any[]) => void): void;
 		dispatchEvent(e: Event, data: unknown): void;
 		safeReplaceChildren(elements: readonly (AstNodes | string)[]): void;
@@ -91,7 +95,8 @@ declare global {
 
 	type PlainOpt = Pick<HtmlOpt, 'nowrap'>;
 
-	type Method = 'toHtmlInternal' | 'plainTextInternal';
+	type Method = 'toHtmlInternal'
+		| 'plainTextInternal';
 
 	type HtmlOrPlainFunc = (childNodes: readonly AstNodes[], separator: string, opt?: HtmlOpt) => string;
 }

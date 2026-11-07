@@ -416,8 +416,17 @@ export class Title {
 			throw new RangeError('Width and height must be positive integers or omitted!');
 		}
 		/* c8 ignore stop */
-		const {main, valid, ns, interwiki} = this;
-		if (!valid || ns !== 6 || interwiki) {
+		const {
+			main,
+			valid,
+			ns,
+			interwiki,
+		} = this;
+		if (
+			!valid
+			|| ns !== 6
+			|| interwiki
+		) {
 			throw new Error('Title.getFileUrl method is only for files!');
 		} else if (height) {
 			width ||= 1e4;
@@ -435,8 +444,15 @@ export class Title {
 					: `#${this.#fragment ?? this.#redirectFragment}`
 			);
 		}
-		const {prefix, interwiki} = this,
-			[, result] = this.#getTitle(interwiki + (interwiki && ':') + prefix, false);
+		const {
+				prefix,
+				interwiki,
+			} = this,
+			[, result] = this.#getTitle(
+				interwiki + (interwiki && ':') +
+				prefix,
+				false,
+			);
 		return (display ? result.replaceAll('_', ' ') : result)
 			+ (this.#fragment === undefined ? '' : `#${this.#fragment}`);
 	}
@@ -450,7 +466,7 @@ export class Title {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp(
-				[...conversionTable.keys()].toSorted((a, b) => b.localeCompare(a)).map(escapeRegExp)
+				[...conversionTable.keys()].sort((a, b) => b.localeCompare(a)).map(escapeRegExp)
 					.join('|'),
 				'gu',
 			);

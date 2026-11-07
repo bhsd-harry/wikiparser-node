@@ -71,7 +71,10 @@ export interface AttributesParentBase {
 	 * @param key attribute name / 属性键
 	 * @param value attribute value / 属性值
 	 */
-	setAttr(key: string, value: string | boolean): void;
+	setAttr(
+		key: string,
+		value: string | boolean,
+	): void;
 	setAttr(prop: Record<string, string | boolean>): void;
 
 	/**
@@ -163,10 +166,17 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 				return this.#getAttributesChild().getAttrs();
 			}
 
-			setAttr(key: string, value: string | boolean): void;
+			setAttr(
+				key: string,
+				value: string | boolean,
+			): void;
 			setAttr(prop: Record<string, string | boolean>): void;
-			setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
-				this.#getAttributesChild().setAttr(keyOrProp as string, value!);
+			setAttr(
+				keyOrProp: string | Record<string, string | boolean>,
+				value?: string | boolean,
+			): void {
+				const key = keyOrProp as string;
+				this.#getAttributesChild().setAttr(key, value!);
 			}
 
 			removeAttr(key: string): void {

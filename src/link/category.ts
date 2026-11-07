@@ -11,7 +11,10 @@ import type {AST} from '../../base';
 
 /* NOT FOR BROWSER */
 
-import {classes, states} from '../../util/constants';
+import {
+	states,
+	classes,
+} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */

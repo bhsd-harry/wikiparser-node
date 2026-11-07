@@ -1,15 +1,23 @@
-import {parsers, states} from '../util/constants';
+import {
+	states,
+	parsers,
+} from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr, sanitize} from '../util/string';
 import {extAttrs} from '../util/sharable';
 import Parser from '../index';
 import type * as SyntaxHighlight from './syntaxhighlight';
 import type * as Math from './math';
 import type * as TemplateData from './templatedata';
-import type {ExtToken, GalleryToken, Token, NowikiToken} from '../internal';
+import type {
+	ExtToken,
+	GalleryToken,
+	Token,
+	NowikiToken,
+} from '../internal';
 
 export const packedModes = new Set<string | undefined>(['packed', 'packed-hover', 'packed-overlay']);
-const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']),
-	templateDataSortValues = {deprecated: -1, suggested: 1, required: 2, optional: 0};
+const galleryModes = new Set([...packedModes, 'nolines', 'slideshow']);
+const templateDataSortValues = {deprecated: -1, suggested: 1, required: 2, optional: 0};
 
 /** @ignore */
 const getCiteNoteId = (i: number, refName?: string): string =>

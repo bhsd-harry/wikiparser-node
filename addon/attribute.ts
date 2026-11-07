@@ -181,8 +181,12 @@ AttributesToken.prototype.setAttr =
 			key,
 			['"', '"'],
 			this.getAttribute('config'),
-			value === true ? '' : '=',
-			value === true ? '' : value,
+			value === true
+				? '' : // eslint-disable-line @stylistic/operator-linebreak
+				'=',
+			value === true
+				? '' : // eslint-disable-line @stylistic/operator-linebreak
+				value,
 		));
 		this.insertAt(token);
 	};

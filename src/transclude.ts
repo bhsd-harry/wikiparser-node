@@ -580,11 +580,9 @@ export abstract class TranscludeToken extends Token {
 			/* NOT FOR BROWSER END */
 
 			const token =
-					/* eslint-disable unicorn/no-negated-condition */
-					!append ?
+					!append ? // eslint-disable-line unicorn/no-negated-condition
 						args![i]! :
 						addedToken as ParameterToken,
-				/* eslint-enable unicorn/no-negated-condition */
 				{name} = token,
 				newName = String(i + 1);
 			if (name === newName && token !== addedToken) {

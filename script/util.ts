@@ -1,4 +1,4 @@
-import type * as ParserBase from '../index';
+import type ParserBase from '../index';
 
 const redirects: Record<string, string> = {
 	'File:Redirect_to_foobar.jpg': 'File:Foobar.jpg',

@@ -61,12 +61,14 @@ export class AstRange {
 
 	/** start container / 起点容器 */
 	get startContainer(): AstNodes {
-		return this.#startContainer ?? /* c8 ignore next */ notInit(true);
+		return this.#startContainer
+			?? /* c8 ignore next */ notInit(true);
 	}
 
 	/** start offset / 起点位置 */
 	get startOffset(): number {
-		return this.#startOffset ?? /* c8 ignore next */ notInit(true);
+		return this.#startOffset
+			?? /* c8 ignore next */ notInit(true);
 	}
 
 	/** start character index / 起点绝对位置 */
@@ -81,12 +83,14 @@ export class AstRange {
 
 	/** end container / 终点容器 */
 	get endContainer(): AstNodes {
-		return this.#endContainer ?? /* c8 ignore next */ notInit(false);
+		return this.#endContainer
+			?? /* c8 ignore next */ notInit(false);
 	}
 
 	/** end offset / 终点位置 */
 	get endOffset(): number {
-		return this.#endOffset ?? /* c8 ignore next */ notInit(false);
+		return this.#endOffset
+			?? /* c8 ignore next */ notInit(false);
 	}
 
 	/** end character index / 终点绝对位置 */
@@ -107,7 +111,10 @@ export class AstRange {
 
 	/** closest common ancestor / 最近的公共祖先 */
 	get commonAncestorContainer(): AstNodes {
-		const {startContainer, endContainer} = this;
+		const {
+			startContainer,
+			endContainer,
+		} = this;
 		return startContainer.contains(endContainer) ? startContainer : startContainer.parentNode!;
 	}
 
@@ -586,13 +593,28 @@ export class AstRange {
 		}
 		this.#splitText();
 		this.#splitText(true);
-		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
-			{type, childNodes} = commonAncestorContainer;
+		const {
+				startOffset,
+				endOffset,
+				commonAncestorContainer,
+				startContainer,
+				endContainer,
+			} = this,
+			{
+				childNodes,
+				type,
+			} = commonAncestorContainer;
 		if (type === 'text') {
 			return [commonAncestorContainer];
 		}
-		const from = startContainer.type === 'text' ? childNodes.indexOf(startContainer) : startOffset,
-			to = endContainer.type === 'text' ? childNodes.indexOf(endContainer) + 1 : endOffset;
+		const from =
+				startContainer.type === 'text'
+					? childNodes.indexOf(startContainer) :
+					startOffset,
+			to =
+				endContainer.type === 'text'
+					? childNodes.indexOf(endContainer) + 1 :
+					endOffset;
 		return childNodes.slice(from, to);
 	}
 

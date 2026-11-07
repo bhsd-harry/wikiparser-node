@@ -196,7 +196,11 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	set className(className) {
-		this.setValue('class', className || false);
+		this.setValue(
+			'class',
+			className
+			|| false,
+		);
 	}
 
 	/**
@@ -603,7 +607,10 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param value parameter value / 参数值
 	 * @throws `RangeError` if the parameter name is unknown
 	 */
-	setValue(key: string, value: string | boolean = false): void {
+	setValue(
+		key: string,
+		value: string | boolean = false,
+	): void {
 		if (value === false) {
 			this.removeArg(key);
 			return;
@@ -614,7 +621,11 @@ export abstract class FileToken extends LinkBaseToken {
 			return;
 		}
 		const config = this.getAttribute('config'),
-			syntax = key === 'caption' ? '$1' : Object.entries(config.img).find(([, name]) => name === key)?.[0];
+			syntax =
+				key === 'caption'
+					? '$1' :
+					Object.entries(config.img).find(([, name]) => name === key)
+						?.[0];
 		/* c8 ignore next 3 */
 		if (syntax === undefined) {
 			throw new RangeError(`Unknown image parameter: ${key}`);
@@ -628,8 +639,13 @@ export abstract class FileToken extends LinkBaseToken {
 			(): ImageParameterToken =>
 				// @ts-expect-error abstract class
 				new ImageParameterToken(
-					// eslint-disable-next-line unicorn/no-unsafe-string-replacement
-					syntax.replace('$1', key === 'width' ? '1' : ''),
+					syntax.replace(
+						'$1',
+						// eslint-disable-next-line unicorn/no-unsafe-string-replacement
+						key === 'width'
+							? '1' :
+							'',
+					),
 					this.extension,
 					this.type,
 					config,

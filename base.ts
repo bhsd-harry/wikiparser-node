@@ -317,15 +317,6 @@ export interface AstNode {
  * 所有节点的基类
  */
 interface Token extends AstNode {
-	readonly name?: string;
-
-	/**
-	 * Get all descendants that match the selector
-	 *
-	 * 符合选择器的所有后代节点
-	 * @param selector selector / 选择器
-	 */
-	querySelectorAll<T = Token>(selector: string): T[];
 
 	/**
 	 * Save in JSON format
@@ -335,16 +326,6 @@ interface Token extends AstNode {
 	 * @param depth depth of the node / 节点深度
 	 */
 	json(file?: string, depth?: number): AST;
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Generate HTML
-	 *
-	 * 生成HTML
-	 * @since v1.10.0
-	 */
-	toHtml(opt?: RenderOpt): string;
 }
 
 interface SignatureParameter {

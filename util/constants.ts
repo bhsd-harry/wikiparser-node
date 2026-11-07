@@ -1,6 +1,10 @@
 /* NOT FOR BROWSER */
 
-import type {Token, FunctionHook, TagHook} from '../internal';
+import type {
+	Token,
+	FunctionHook,
+	TagHook,
+} from '../internal';
 
 /* NOT FOR BROWSER END */
 

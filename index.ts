@@ -324,9 +324,9 @@ let redirectMap = new RedirectMap(),
 /* NOT FOR BROWSER END */
 
 let lintConfig = (() => {
-		LINT: return new LintConfiguration();
-	})(),
-	i18n: Record<string, string> | undefined;
+	LINT: return new LintConfiguration();
+})();
+let i18n: Record<string, string> | undefined;
 
 /**
  * 判断参数顺序
@@ -727,7 +727,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
 		return Shadow.internal(
-			() => this.parse(wikitext, include, undefined, config, page).toHtml(opt),
+			() => this.parse(
+				wikitext,
+				include,
+				undefined,
+				config,
+				page,
+			).toHtml(opt)
+			,
 			this,
 		);
 	},

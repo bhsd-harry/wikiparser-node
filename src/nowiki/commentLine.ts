@@ -1,5 +1,8 @@
 import {NoincludeToken} from './noinclude';
-import type {GalleryToken, ImagemapToken} from '../../internal';
+import type {
+	GalleryToken,
+	ImagemapToken,
+} from '../../internal';
 
 /* NOT FOR BROWSER */
 
@@ -15,7 +18,9 @@ import {singleLine} from '../../mixin/singleLine';
  */
 @singleLine
 export abstract class CommentLineToken extends NoincludeToken {
-	abstract override get parentNode(): GalleryToken | ImagemapToken | undefined;
+	abstract override get parentNode(): GalleryToken
+		| ImagemapToken
+		| undefined;
 
 	/* NOT FOR BROWSER */
 

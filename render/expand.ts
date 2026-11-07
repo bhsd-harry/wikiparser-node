@@ -2,7 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import {parsers, functionHooks} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {removeComment, removeCommentLine, tidy} from '../util/string';
+import {
+	removeComment,
+	removeCommentLine,
+	tidy,
+} from '../util/string';
 import {parseRedirect} from '../parser/redirect';
 import {expandMagicWord} from './magicWords';
 import Parser from '../index';
@@ -42,7 +46,10 @@ const implicitNewLine = (str: string, prev: string): string =>
  * @param title 模板名
  * @param config
  */
-const loadTemplate = (title: string, config: Config): string | false => {
+const loadTemplate = (
+	title: string,
+	config: Config,
+): string | false => {
 	if (Parser.templates.has(title)) {
 		return title;
 	} else if (Parser.templateDir === undefined) {
@@ -198,7 +205,10 @@ const expand = (
 						}
 						return fallback;
 					}
-					const dest = loadTemplate(title, config);
+					const dest = loadTemplate(
+						title,
+						config,
+					);
 					if (dest === false) {
 						if (!isTemplate) {
 							clean(accum, nameToken);
@@ -258,7 +268,10 @@ const expand = (
  * @param token 目标节点
  * @param context 模板调用环境
  */
-export const expandToken = (token: Token, context?: false): Token => {
+export const expandToken = (
+	token: Token,
+	context?: false,
+): Token => {
 	const {pageName} = token;
 	return expand(
 		token.toString(),

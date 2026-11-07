@@ -426,9 +426,12 @@ export abstract class LinkBaseToken extends Token {
 				attr = 'class="mw-selflink"';
 			} else {
 				const title = link.getTitleAttr();
-				attr = `${link.interwiki && 'class="extiw" '}href="${link.getUrl()}"${
-					link.ns === -2 ? ' class="internal"' : ''
-				}${title && ` title="${title}"`}`;
+				attr =
+					// eslint-disable-next-line prefer-template
+					(link.interwiki && 'class="extiw" ') +
+					`href="${link.getUrl()}"${
+						link.ns === -2 ? ' class="internal"' : ''
+					}${title && ` title="${title}"`}`;
 			}
 			return `<a ${attr}>${
 				type === 'link' && length > 1

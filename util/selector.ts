@@ -30,7 +30,11 @@ export const basic = (selector: string): BasicCondition => {
  * @param has `:has()`伪选择器
  * @throws `SyntaxError` 非法的选择器
  */
-export const getCondition = <T>(selector: string, scope?: AstElement, has?: Token): TokenPredicate<T> => {
+export const getCondition = <T>(
+	selector: string,
+	scope?: AstElement,
+	has?: Token,
+): TokenPredicate<T> => {
 	selector = selector.trim();
 
 	/* NOT FOR BROWSER */

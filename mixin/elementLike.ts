@@ -1,5 +1,4 @@
 import {getCondition} from '../util/selector';
-import type {AstElement} from '../lib/element';
 import type {
 	AstNodes,
 	Token,
@@ -18,6 +17,7 @@ import {mixin} from '../util/debug';
 
 import {mixins} from '../util/constants';
 import type {ClassList} from '../lib/classList';
+import type {AstElement} from '../lib/element';
 
 /* NOT FOR BROWSER END */
 
@@ -149,10 +149,7 @@ export const elementLike = <S extends ElementConstructor>(constructor: S): S => 
 			#getCondition<T>(selector: string): TokenPredicate<T> {
 				return getCondition<T>(
 					selector,
-					// eslint-disable-next-line unicorn/no-negated-condition
-					!('type' in this) ?
-						undefined :
-						this as unknown as AstElement,
+					'type' in this ? this as unknown as AstElement : undefined,
 				);
 			}
 

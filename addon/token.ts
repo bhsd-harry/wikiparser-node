@@ -37,7 +37,9 @@ Token.prototype.createElement = /** @implements */ function(
 				tagName,
 				undefined,
 				undefined,
-				selfClosing ? undefined : tagName,
+				!selfClosing // eslint-disable-line unicorn/no-negated-condition
+					? tagName :
+					undefined,
 				config,
 				include,
 			),

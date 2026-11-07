@@ -25,7 +25,8 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /* NOT FOR BROWSER END */
 
-declare type GalleryTypes = 'gallery' | 'imagemap';
+declare type GalleryTypes = 'gallery'
+	| 'imagemap';
 
 /**
  * gallery image
@@ -88,8 +89,15 @@ export abstract class GalleryImageToken extends FileToken {
 		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(
 			this.firstChild[imagemap ? 'toString' : 'text'](),
-			imagemap ? 0 : 6,
-			{halfParsed: true, temporary, decode: !imagemap, page: ''},
+			imagemap
+				? 0 :
+				6,
+			{
+				halfParsed: true,
+				temporary,
+				decode: !imagemap,
+				page: '',
+			},
 		);
 	}
 
@@ -138,7 +146,11 @@ export abstract class GalleryImageToken extends FileToken {
 	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (this.type === 'gallery-image' && child.is('image-parameter') && !galleryParams.has(child.name)) {
+		if (
+			child.is('image-parameter')
+			&& this.type === 'gallery-image'
+			&& !galleryParams.has(child.name)
+		) {
 			child.setAttribute('name', 'invalid');
 		}
 		return super.insertAt(child, i);

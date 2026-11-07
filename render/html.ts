@@ -1,4 +1,7 @@
-import {states, parsers} from '../util/constants';
+import {
+	states,
+	parsers,
+} from '../util/constants';
 import {sanitizeAttr} from '../util/string';
 import type {RenderOpt} from '../base';
 import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken, ExtToken} from '../internal';
@@ -64,7 +67,13 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
 	if (hasCite) {
-		token.append('\n', token.createElement('references', {selfClosing: true}));
+		token.append(
+			'\n',
+			token.createElement(
+				'references',
+				{selfClosing: true},
+			),
+		);
 	}
 
 	// 处理目录

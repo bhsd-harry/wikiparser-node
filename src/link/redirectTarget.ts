@@ -2,7 +2,10 @@ import {generateForChild, fixByRemove} from '../../util/lint';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
-import type {LintError, Config} from '../../base';
+import type {
+	Config,
+	LintError,
+} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
