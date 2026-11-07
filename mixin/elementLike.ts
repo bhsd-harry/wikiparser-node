@@ -1,5 +1,4 @@
 import {getCondition} from '../util/selector';
-import type {AstElement} from '../lib/element';
 import type {
 	AstNodes,
 	Token,
@@ -35,10 +34,10 @@ export interface ElementLike {
 /** @ignore */
 export const elementLike = <S extends ElementConstructor>(constructor: S): S => {
 	abstract class ElementLike extends constructor implements ElementLike {
+		// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 		#getCondition<T>(selector: string): TokenPredicate<T> {
 			return getCondition<T>(
 				selector,
-				this as unknown as AstElement,
 			);
 		}
 

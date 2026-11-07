@@ -16,10 +16,6 @@ options.require = {
 	FunctionExpression: true,
 	MethodDefinition: false,
 };
-node.at(-1).settings.n.allowModules = [
-	'chalk',
-	'monaco-editor',
-];
 
 const config = extend(
 	jsDoc,

@@ -1,9 +1,13 @@
 declare global {
 	type WikiParserAcceptable =
-		unknown;
+		Record<
+			string,
+			number
+			| string
+			| (number | string)[]
+		>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
-		toString(skip?: boolean, separator?: string): string;
 		text(separator?: string): string;
 	};
 }

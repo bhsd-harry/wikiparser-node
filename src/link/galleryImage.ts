@@ -7,7 +7,8 @@ import type {
 	Config,
 } from '../../base';
 
-declare type GalleryTypes = 'gallery' | 'imagemap';
+declare type GalleryTypes = 'gallery'
+	| 'imagemap';
 
 /**
  * gallery image
