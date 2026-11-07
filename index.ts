@@ -37,6 +37,9 @@ import {RedirectMap} from './lib/redirectMap';
 
 declare interface Parser extends ParserBase {
 
+	/** @since v1.9.0 */
+	viewOnly: boolean;
+
 	/* NOT FOR BROWSER */
 
 	conversionTable: Map<string, string>;
@@ -66,19 +69,19 @@ declare interface Parser extends ParserBase {
 	 * @param defaultNs default namespace number / 命名空间
 	 * @param include whether to be transcluded / 是否嵌入
 	 */
-	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: Config): Title;
+	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: ConfigData): Title;
 	/** @private */
 	normalizeTitle(
 		title: string,
 		defaultNs?: number,
 		include?: boolean,
-		config?: Config,
+		config?: ConfigData,
 		opt?: TitleOptions,
 		accum?: Token[], // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: ConfigData): Token;
 
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
@@ -94,8 +97,8 @@ declare interface Parser extends ParserBase {
 	 * @param opt options / 设置
 	 * @since v1.32.0
 	 */
-	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string, opt?: RenderOpt): string;
-	toHtml(wikitext: string, page: string, include?: boolean, config?: Config, opt?: RenderOpt): string;
+	toHtml(wikitext: string, include?: boolean, config?: ConfigData, page?: string, opt?: RenderOpt): string;
+	toHtml(wikitext: string, page: string, include?: boolean, config?: ConfigData, opt?: RenderOpt): string;
 }
 
 let viewOnly =
@@ -116,11 +119,15 @@ let redirectMap = new RedirectMap(),
  */
 const getParams = (
 	includeOrPage?: boolean | string,
-	configOrInclude?: Config | boolean,
-	pageOrConfig?: string | Config,
-): [boolean, Config | undefined, string | undefined] => typeof includeOrPage === 'string'
-	? [Boolean(configOrInclude), pageOrConfig as Config | undefined, includeOrPage]
-	: [Boolean(includeOrPage), configOrInclude as Config | undefined, pageOrConfig as string | undefined];
+	configOrInclude?: ConfigData | boolean,
+	pageOrConfig?: string | ConfigData,
+): [boolean, Config, string | undefined] => typeof includeOrPage === 'string'
+	? [Boolean(configOrInclude), Parser.getConfig(pageOrConfig as ConfigData | undefined), includeOrPage]
+	: [
+		Boolean(includeOrPage),
+		Parser.getConfig(configOrInclude as ConfigData | undefined),
+		pageOrConfig as string | undefined,
+	];
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config:
@@ -172,6 +179,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getConfig(config?: ConfigData) {
 		const parserConfig = config ?? this.config;
+		if ('excludes' in parserConfig) {
+			return {...parserConfig, excludes: []};
+		}
 		const {
 			doubleUnderscore,
 			ext,
@@ -223,11 +233,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		title,
 		defaultNs = 0,
 		include?: boolean,
-		config = Parser.getConfig(),
+		configData?: ConfigData,
 		opt?: TitleOptions,
 		accum: Token[] = [],
 	) {
 		const {Title: TitleObj}: typeof LibTitle = require('./lib/title');
+		const config = this.getConfig(configData);
 		let titleObj: Title;
 		if (opt?.halfParsed) {
 			titleObj = new TitleObj(title, defaultNs, config, opt, accum);
@@ -274,21 +285,20 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		wikitext = tidy(wikitext);
 		let include: boolean,
 			maxStage: number | undefined,
-			config: Config | undefined,
+			config: Config,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
 			maxStage = configOrStage as number | undefined;
-			config = pageOrConfig as Config | undefined;
+			config = this.getConfig(pageOrConfig as ConfigData | undefined);
 			page = includeOrPage;
 		} else {
 			include = Boolean(includeOrPage);
 			maxStage = maxStageOrInclude as number | undefined;
-			config = configOrStage as Config | undefined;
+			config = this.getConfig(configOrStage as ConfigData | undefined);
 			page = pageOrConfig as string | undefined;
 		}
 		maxStage ??= MAX_STAGE + 1;
-		config ??= this.getConfig();
 		const {Token}: typeof Src = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);

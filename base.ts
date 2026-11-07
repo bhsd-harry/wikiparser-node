@@ -180,9 +180,6 @@ export interface Parser {
 		| string
 		| undefined;
 
-	/** @since v1.9.0 */
-	viewOnly: boolean;
-
 	/**
 	 * Get the current parser configuration
 	 *
@@ -200,8 +197,8 @@ export interface Parser {
 	 * @param maxStage max stage for parsing / 最大解析层级
 	 * @param page page name / 页面名称
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: number, config?: ConfigData): Token;
 }
 
 /* NOT FOR BROWSER */
