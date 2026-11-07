@@ -88,6 +88,9 @@ declare interface Parser extends ParserBase {
 	/** @private */
 	lintConfig: LintConfiguration;
 
+	/** @since v1.9.0 */
+	viewOnly: boolean;
+
 	/* NOT FOR BROWSER */
 
 	conversionTable: Map<string, string>;
@@ -128,19 +131,19 @@ declare interface Parser extends ParserBase {
 	 * @param defaultNs default namespace number / 命名空间
 	 * @param include whether to be transcluded / 是否嵌入
 	 */
-	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: Config): Title;
+	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: ConfigData): Title;
 	/** @private */
 	normalizeTitle(
 		title: string,
 		defaultNs?: number,
 		include?: boolean,
-		config?: Config,
+		config?: ConfigData,
 		opt?: TitleOptions,
 		accum?: Token[], // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: Config, page?: string): Token;
-	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
+	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 
 	/** @private */
 	parseWithRef(wikitext: string, ref: Token, maxStage?: number, include?: boolean): Token;
@@ -162,8 +165,8 @@ declare interface Parser extends ParserBase {
 	 * @param page page name / 页面名称
 	 * @since v1.32.0
 	 */
-	print(wikitext: string, include?: boolean, config?: Config, page?: string): string;
-	print(wikitext: string, page: string, include?: boolean, config?: Config): string;
+	print(wikitext: string, include?: boolean, config?: ConfigData, page?: string): string;
+	print(wikitext: string, page: string, include?: boolean, config?: ConfigData): string;
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -202,8 +205,8 @@ declare interface Parser extends ParserBase {
 	 * @param opt options / 设置
 	 * @since v1.32.0
 	 */
-	toHtml(wikitext: string, include?: boolean, config?: Config, page?: string, opt?: RenderOpt): string;
-	toHtml(wikitext: string, page: string, include?: boolean, config?: Config, opt?: RenderOpt): string;
+	toHtml(wikitext: string, include?: boolean, config?: ConfigData, page?: string, opt?: RenderOpt): string;
+	toHtml(wikitext: string, page: string, include?: boolean, config?: ConfigData, opt?: RenderOpt): string;
 
 	/**
 	 * Extract plain text
@@ -213,8 +216,8 @@ declare interface Parser extends ParserBase {
 	 * @param page page name / 页面名称
 	 * @since v2.2.0
 	 */
-	plainText(wikitext: string, include?: boolean, config?: Config, page?: string): string;
-	plainText(wikitext: string, page: string, include?: boolean, config?: Config): string;
+	plainText(wikitext: string, include?: boolean, config?: ConfigData, page?: string): string;
+	plainText(wikitext: string, page: string, include?: boolean, config?: ConfigData): string;
 
 	/**
 	 * Define how to expand a parser function
@@ -272,7 +275,7 @@ declare interface Parser extends ParserBase {
 	 * 是否是跨维基链接
 	 * @param title title / 链接标题
 	 */
-	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
+	isInterwiki(title: string, config?: ConfigData): RegExpExecArray | null;
 
 	/** @private */
 	reparse(date?: string): void;
@@ -333,11 +336,15 @@ let lintConfig = (() => {
  */
 const getParams = (
 	includeOrPage?: boolean | string,
-	configOrInclude?: Config | boolean,
-	pageOrConfig?: string | Config,
-): [boolean, Config | undefined, string | undefined] => typeof includeOrPage === 'string'
-	? [Boolean(configOrInclude), pageOrConfig as Config | undefined, includeOrPage]
-	: [Boolean(includeOrPage), configOrInclude as Config | undefined, pageOrConfig as string | undefined];
+	configOrInclude?: ConfigData | boolean,
+	pageOrConfig?: string | ConfigData,
+): [boolean, Config, string | undefined] => typeof includeOrPage === 'string'
+	? [Boolean(configOrInclude), Parser.getConfig(pageOrConfig as ConfigData | undefined), includeOrPage]
+	: [
+		Boolean(includeOrPage),
+		Parser.getConfig(configOrInclude as ConfigData | undefined),
+		pageOrConfig as string | undefined,
+	];
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config:
@@ -461,6 +468,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* NOT FOR BROWSER ONLY END */
 
 		const parserConfig = config ?? this.config as ConfigData;
+		if ('excludes' in parserConfig) {
+			return {...parserConfig, excludes: []};
+		}
 		const {
 			doubleUnderscore,
 			ext,
@@ -512,11 +522,12 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		title,
 		defaultNs = 0,
 		include?: boolean,
-		config = Parser.getConfig(),
+		configData?: ConfigData,
 		opt?: TitleOptions,
 		accum: Token[] = [],
 	) {
 		const {Title: TitleObj}: typeof LibTitle = require('./lib/title');
+		const config = this.getConfig(configData);
 		let titleObj: Title;
 		if (opt?.halfParsed) {
 			titleObj = new TitleObj(title, defaultNs, config, opt, accum);
@@ -563,21 +574,20 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		wikitext = tidy(wikitext);
 		let include: boolean,
 			maxStage: MaxStage | undefined,
-			config: Config | undefined,
+			config: Config,
 			page: string | undefined;
 		if (typeof includeOrPage === 'string') {
 			include = Boolean(maxStageOrInclude);
 			maxStage = configOrStage as MaxStage | undefined;
-			config = pageOrConfig as Config | undefined;
+			config = this.getConfig(pageOrConfig as ConfigData | undefined);
 			page = includeOrPage;
 		} else {
 			include = Boolean(includeOrPage);
 			maxStage = maxStageOrInclude as MaxStage | undefined;
-			config = configOrStage as Config | undefined;
+			config = this.getConfig(configOrStage as ConfigData | undefined);
 			page = pageOrConfig as string | undefined;
 		}
 		maxStage ??= MAX_STAGE + 1;
-		config ??= this.getConfig();
 		LSP: if (typeof maxStage !== 'number') {
 			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
 			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE + 1));
@@ -849,8 +859,8 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/* c8 ignore stop */
 
 	/** @implements */
-	isInterwiki(title, config = Parser.getConfig()) {
-		return isInterwiki(title, config);
+	isInterwiki(title, config) {
+		return isInterwiki(title, Parser.getConfig(config));
 	},
 
 	/* c8 ignore start */
