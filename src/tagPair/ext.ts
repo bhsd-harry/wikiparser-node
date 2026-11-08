@@ -230,7 +230,10 @@ export abstract class ExtToken extends TagPairToken {
 	/** @private */
 	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
 	/** @private */
-	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
+	lintRef(
+		rect?: BoundingRect,
+		severity?: LintError.Severity,
+	): string | LintError {
 		LINT: {
 			const refName = this.getAttr('name'),
 				text = this.innerText?.trim();
@@ -244,7 +247,8 @@ export abstract class ExtToken extends TagPairToken {
 			} else if (!refName && !text) {
 				msg = this.hasAttr('details') ? 'ref-details' : 'ref-no-name';
 			}
-			return msg && (rect ? generateForSelf(this, rect, 'invalid-ref', msg, severity) : msg);
+			return msg
+				&& (rect ? generateForSelf(this, rect, 'invalid-ref', msg, severity) : msg);
 		}
 	}
 

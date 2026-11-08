@@ -5,7 +5,11 @@ import type {
 	Config,
 	AST,
 } from '../../base';
-import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
+import type {
+	AttributesToken,
+	SyntaxToken,
+	AstNodes,
+} from '../../internal';
 
 /* PRINT ONLY */
 
@@ -93,13 +97,16 @@ export abstract class TagToken extends Token {
 				}
 				const {childNodes} = parentNode,
 					i = childNodes.indexOf(this),
-					stack = [this],
-					{viewOnly} = Parser,
-					{rev} = Shadow;
+					stack = [this];
+				const {viewOnly} = Parser;
+				const {rev} = Shadow;
 				let siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
-					cur = siblings.pop(),
-					until: this | undefined;
-				while (cur || parentNode.is('list-range') && parentNode.parentNode) {
+					cur = siblings.pop();
+				let until: this | undefined;
+				while (
+					cur
+					|| parentNode.is('list-range') && parentNode.parentNode
+				) {
 					if (!cur) {
 						const parent: Token = parentNode.parentNode!,
 							ch = parent.childNodes,

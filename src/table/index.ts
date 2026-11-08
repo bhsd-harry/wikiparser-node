@@ -49,8 +49,14 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax?: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
-		});
+		super(
+			/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u,
+			syntax,
+			'table',
+			attr,
+			config,
+			accum,
+		);
 	}
 
 	/** @private */
@@ -106,10 +112,12 @@ export abstract class TableToken extends TrBaseToken {
 	 * 闭合表格语法
 	 * @param syntax syntax of the table end / 表格结尾语法
 	 */
-	close(syntax = '\n|}', halfParsed?: boolean): void {
+	close(
+		syntax = '\n|}',
+	): void {
 		Shadow.run(() => {
 			const token = new SyntaxToken(
-				halfParsed ? syntax : undefined,
+				syntax,
 				'table-syntax',
 				this.getAttribute('config'),
 				this.getAttribute('accum'),
