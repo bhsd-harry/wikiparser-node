@@ -33,7 +33,7 @@
 	},
 	"scripts": {
 		"prepublishOnly": "npm run build:core",
-		"bundle": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --external:entities --outfile=build/bundle-html.js",
+		"bundle": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --external:entities --external:parse5 --outfile=build/bundle-html.js",
 		"build:core": "npm run bundle && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=esm --drop-labels=NPM --sourcemap --outfile=bundle/bundle-html.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-html.min.js",
 		"build:test": "bash build.sh",
 		"build": "npm run build:core && npm run build:test",
@@ -71,6 +71,7 @@
 		"entities": "^9.0.0",
 		"esbuild": "^0.28.2",
 		"eslint": "^10.14.0",
+		"parse5": "^8.0.1",
 		"typescript": "^6.0.3"
 	},
 	"engines": {

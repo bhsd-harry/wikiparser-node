@@ -1,6 +1,7 @@
 /* NOT FOR BROWSER */
 
 import {decodeHtml, sanitizeAlt} from './string';
+import type * as parse5 from 'parse5';
 import type {RenderOpt} from '../base';
 import type {AstNodes, ListRangeToken, Token} from '../internal';
 
@@ -194,3 +195,17 @@ export const getId = (tokens: Token | string): string => {
  */
 export const getTocData = (token: Token & {tocData?: string}, {toc = true}: RenderOpt = {}): string =>
 	toc ? token.tocData ?? '' : '';
+
+/** 修正HTML字符串，确保其符合HTML规范 */
+export const formalize = (() => {
+	try {
+		const {parseFragment, serialize}: typeof parse5 = require('parse5');
+		return (str: string): string => serialize(parseFragment(str));
+	} catch {
+		const ele = document.createElement('template');
+		return (str: string): string => {
+			ele.innerHTML = str;
+			return ele.innerHTML;
+		};
+	}
+})();

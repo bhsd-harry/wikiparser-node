@@ -1,6 +1,7 @@
 import {
 	states,
 } from '../util/constants';
+import {formalize} from '../util/html';
 import type {RenderOpt} from '../base';
 import type {
 	Token,
@@ -105,7 +106,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 					tocStr += `${prefix}\n<li class="toclevel-${j + 1} tocsection-${++i}"><a href="#${
 						id
 					}"><span class="tocnumber">${tocNumbers.join('.')}</span> <span class="toctext">${
-						text.replaceAll(
+						formalize(text).replaceAll(
 							/<(\/?)([a-z]\w*)\b.*?>/gu,
 							(_, slash: string, tag: string) => allowed.has(tag) ? `<${slash}${tag}>` : '',
 						).trim()
@@ -189,7 +190,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	}
 	output += closeParagraph();
 	// eslint-disable-next-line prefer-const
-	let html = output.trimEnd();
+	let html = formalize(output.trimEnd());
 
 	states.delete(token);
 	return prelim + html;
