@@ -198,14 +198,17 @@ export const getTocData = (token: Token & {tocData?: string}, {toc = true}: Rend
 
 /** 修正HTML字符串，确保其符合HTML规范 */
 export const formalize = (() => {
-	try {
-		const {parseFragment, serialize}: typeof parse5 = require('parse5');
-		return (str: string): string => serialize(parseFragment(str));
-	} catch {
-		const ele = document.createElement('template');
-		return (str: string): string => {
-			ele.innerHTML = str;
-			return ele.innerHTML;
+	NPM: try {
+		const {parseFragment, serialize, html: {NS}}: typeof parse5 = require('parse5');
+		const body: parse5.DefaultTreeAdapterTypes.Element = {
+			nodeName: 'body',
+			tagName: 'body',
+			attrs: [],
+			namespaceURI: NS.HTML,
+			parentNode: null,
+			childNodes: [],
 		};
-	}
+		return (str: string): string => serialize(parseFragment(body, str, {}));
+	} catch {}
+	return (str: string): string => new DOMParser().parseFromString(str, 'text/html').body.innerHTML;
 })();

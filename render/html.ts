@@ -190,7 +190,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	}
 	output += closeParagraph();
 	// eslint-disable-next-line prefer-const
-	let html = formalize(output.trimEnd());
+	let html = formalize(output.trim());
 
 	states.delete(token);
 	return prelim + html;
