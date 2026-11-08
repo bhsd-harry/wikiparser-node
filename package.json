@@ -32,7 +32,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build:core",
+		"prepublishOnly": "npm run build:core && gsed -i '/\\/\\/# sourceMappingURL=/d' bundle/bundle-html.min.js",
 		"bundle": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --external:entities --external:parse5 --outfile=build/bundle-html.js",
 		"build:core": "npm run bundle && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=esm --drop-labels=NPM --sourcemap --outfile=bundle/bundle-html.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-html.min.js",
 		"build:test": "bash build.sh",
