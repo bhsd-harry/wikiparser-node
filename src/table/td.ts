@@ -27,7 +27,10 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 /* NOT FOR BROWSER */
 
 import {Shadow} from '../../util/debug';
-import {trimLc, newline} from '../../util/string';
+import {
+	newline,
+	trimLc,
+} from '../../util/string';
 import {fixedToken} from '../../mixin/fixed';
 
 /* NOT FOR BROWSER END */

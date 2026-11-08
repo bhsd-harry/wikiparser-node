@@ -12,7 +12,10 @@ import type {LintError} from '../../base';
 
 /* NOT FOR BROWSER */
 
-import {Shadow, isToken} from '../../util/debug';
+import {
+	isToken,
+	Shadow,
+} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 import {Token} from '../index';

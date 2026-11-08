@@ -23,7 +23,10 @@ import type {TableCoords} from './trBase';
 
 /* NOT FOR BROWSER */
 
-import {html, plainText} from '../../util/html';
+import {
+	html,
+	plainText,
+} from '../../util/html';
 import {classes} from '../../util/constants';
 import {noWrap} from '../../util/string';
 import type {TdAttrs, TdSubtypes} from './td';
@@ -101,9 +104,15 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax?: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
-			Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:',
-		});
+		super(
+			/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u,
+			syntax,
+			'table',
+			attr,
+			config,
+			accum,
+			{Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:'},
+		);
 	}
 
 	/** @private */
@@ -159,11 +168,16 @@ export abstract class TableToken extends TrBaseToken {
 	 * 闭合表格语法
 	 * @param syntax syntax of the table end / 表格结尾语法
 	 */
-	close(syntax = '\n|}', halfParsed?: boolean): void {
+	close(
+		syntax = '\n|}',
+		halfParsed?: boolean,
+	): void {
 		if (!this.lastChild.is('table-syntax')) {
 			Shadow.run(() => {
 				const token = new SyntaxToken(
-					halfParsed ? syntax : undefined,
+					!halfParsed // eslint-disable-line unicorn/no-negated-condition
+						? undefined :
+						syntax,
 					closingPattern,
 					'table-syntax',
 					this.getAttribute('config'),

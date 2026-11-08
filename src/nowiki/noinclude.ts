@@ -83,7 +83,12 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 	override cloneNode(): this {
 		return Shadow.run(() => {
 			const C = this.constructor as new (...args: any[]) => this;
-			return new C(this.innerText, this.getAttribute('config'), [], this.#fixed);
+			return new C(
+				this.innerText,
+				this.getAttribute('config'),
+				[],
+				this.#fixed,
+			);
 		});
 	}
 

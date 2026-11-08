@@ -31,7 +31,7 @@ TranscludeToken.prototype.newAnonArg =
 			// @ts-expect-error abstract class
 			(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
 		);
-		token.lastChild.concat(Parser.parseWithRef(val, this).childNodes);
+		token.lastChild.concatenate(Parser.parseWithRef(val, this).childNodes);
 		if (newline) {
 			format(this);
 		}
@@ -55,7 +55,7 @@ TranscludeToken.prototype.setValue =
 			(): ParameterToken => new ParameterToken(undefined, undefined, this.getAttribute('config')),
 		);
 		token.firstChild.safeAppend(Parser.parseWithRef(key, this).childNodes);
-		token.lastChild.concat(Parser.parseWithRef(value, this).childNodes);
+		token.lastChild.concatenate(Parser.parseWithRef(value, this).childNodes);
 		if (newline) {
 			format(this);
 		}

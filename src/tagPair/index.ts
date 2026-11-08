@@ -127,7 +127,10 @@ export abstract class TagPairToken extends Token {
 
 		/* NOT FOR BROWSER END */
 
-		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
+		if (key === 'padding') {
+			return this.#tags[0].length + 1 as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 
 	/** @private */
