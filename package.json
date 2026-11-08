@@ -46,7 +46,7 @@
 	},
 	"scripts": {
 		"ls": "npm i --package-lock-only && npm ls --package-lock-only -a --omit=dev",
-		"prepublishOnly": "npm run build:core",
+		"prepublishOnly": "npm run build:core && gsed -i '/\\/\\/# sourceMappingURL=/d' bundle/*.min.js",
 		"build:core": "bash build.sh",
 		"build:define": "bash sed.sh -i \"s/pkg = \\$PKG/pkg = '$(npm pkg get name)'/; s/version = \\$VERSION/version = '$(npm pkg get version)'/\" dist/bin/config.js",
 		"build": "npm run build:core && LC_ALL=en.UTF-8 node dist/script/parserTests.js",
