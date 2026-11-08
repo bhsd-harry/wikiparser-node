@@ -195,18 +195,29 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
 	/** @private */
-	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
+	lintRef(
+		rect?: BoundingRect,
+		severity?: LintError.Severity,
+	): string | LintError {
 		LINT: {
 			const followAttr = this.getAttrToken('follow'),
+				rule = 'invalid-ref',
 				follow = followAttr?.getValue(),
-				name = this.getAttr('name'),
-				rule = 'invalid-ref';
+				name = this.getAttr('name');
 			if (follow && !/\D/u.test(follow)) {
-				const msg = 'int-name';
-				return rect ? generateForChild(followAttr!, rect, rule, msg, severity) : msg;
+				const msg = 'int-name',
+					ret =
+						rect
+							? generateForChild(followAttr!, rect, rule, msg, severity) :
+							msg;
+				return ret;
 			} else if (follow && (this.hasAttr('details') || name && /\D/u.test(name))) {
-				const msg = 'ref-follow';
-				return rect ? generateForSelf(this, rect, rule, msg, severity) : msg;
+				const msg = 'ref-follow',
+					ret =
+						rect
+							? generateForSelf(this, rect, rule, msg, severity) :
+							msg;
+				return ret;
 			}
 			return '';
 		}

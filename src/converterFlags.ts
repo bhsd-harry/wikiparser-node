@@ -6,7 +6,10 @@ import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
@@ -36,7 +39,9 @@ export abstract class ConverterFlagsToken extends Token {
 	constructor(flags: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		this.safeAppend(flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
+		for (const flag of flags) {
+			super.insertAt(new AtomToken(flag, 'converter-flag', config, accum));
+		}
 	}
 
 	/** 获取全部转换类型标记 */

@@ -6,7 +6,10 @@ import {padded} from '../mixin/padded';
 import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 
 /**
  * external link

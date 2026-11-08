@@ -16,8 +16,7 @@ import type {
 } from '../../internal';
 
 declare type Child = GalleryImageToken
-	| CommentLineToken
-	;
+	| CommentLineToken;
 
 /**
  * `<gallery>`
