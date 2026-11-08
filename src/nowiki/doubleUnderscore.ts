@@ -22,6 +22,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	// @ts-expect-error unused private property
 	readonly #sensitive;
 	/** @private */
 	declare tocData?: string;
@@ -43,10 +44,6 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 			[,, iAlias, sAlias] = config.doubleUnderscore;
 		this.setAttribute('name', (sensitive ? sAlias[word]?.toLowerCase() : iAlias[lc]) ?? lc);
 		this.#fullWidth = fullWidth;
-
-		/* NOT FOR BROWSER */
-
-		this.#sensitive = sensitive;
 	}
 
 	/** @private */

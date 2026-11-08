@@ -15,7 +15,9 @@ import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {html} from '../../util/html';
+import {
+	html,
+} from '../../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -48,8 +50,13 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax?: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
-		});
+		super(
+			syntax,
+			'table',
+			attr,
+			config,
+			accum,
+		);
 	}
 
 	/**
@@ -58,40 +65,24 @@ export abstract class TableToken extends TrBaseToken {
 	 * 闭合表格语法
 	 * @param syntax syntax of the table end / 表格结尾语法
 	 */
-	close(syntax = '\n|}'): void {
-		if (!this.lastChild.is('table-syntax')) {
-			Shadow.run(() => {
-				const token = new SyntaxToken(
-					syntax,
-					'table-syntax',
-					this.getAttribute('config'),
-					this.getAttribute('accum'),
-				);
-				super.insertAt(token);
-			});
-		}
+	close(
+		syntax = '\n|}',
+	): void {
+		Shadow.run(() => {
+			const token = new SyntaxToken(
+				syntax,
+				'table-syntax',
+				this.getAttribute('config'),
+				this.getAttribute('accum'),
+			);
+			super.insertAt(token);
+		});
 	}
 
 	/* NOT FOR BROWSER */
 
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `SyntaxError` if the closing syntax of the table is invalid
-	 */
-	override insertAt<T extends Token>(token: T, i = this.length): T {
-		i += i < 0 ? this.length : 0;
-		const previous = this.childNodes[i - 1];
-		// eslint-disable-next-line unicorn/prefer-ternary
-		if (typeof token !== 'string' && token.is('td') && previous?.is('tr')) {
-			return previous.insertAt(token);
-		}
-		return super.insertAt(token, i);
-	}
-
 	/** @ignore */
-	#toHtmlOrPlain(func: HtmlOrPlainFunc, opt?: HtmlOpt): [[string, string, string, string], boolean] {
+	#toHtmlOrPlain(func: HtmlOrPlainFunc, method: Method, opt?: HtmlOpt): [[string, string, string, string], boolean] {
 		/**
 		 * 过滤需要移出表格的节点
 		 * @param token 表格或表格行
@@ -107,9 +98,9 @@ export abstract class TableToken extends TrBaseToken {
 			newline = opt?.nowrap ? ' ' : '\n';
 		return [
 			[
-				[this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(newOpt).trim()).join(' '),
+				[this, ...tr].flatMap(filter).map(token => token[method](newOpt).trim()).join(' '),
 				newline,
-				super.toHtmlInternal(opt),
+				super[method](opt),
 				(hasTr && childNodes.some(node => node.is('td') && node.subtype !== 'caption') ? newline : '')
 				+ func(tr, newline, opt),
 			],
@@ -121,7 +112,7 @@ export abstract class TableToken extends TrBaseToken {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {childNodes} = this,
-			[[inter, newline, firstRow, rows], hasTr] = this.#toHtmlOrPlain(html, opt);
+			[[inter, newline, firstRow, rows], hasTr] = this.#toHtmlOrPlain(html, 'toHtmlInternal', opt);
 		return `${inter}<table${
 			childNodes[1].toHtmlInternal({render: opt?.render})
 		}>${newline}<tbody>${firstRow}${rows}${hasTr || firstRow ? '' : '<tr><td></td></tr>'}</tbody></table>`;

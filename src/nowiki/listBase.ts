@@ -38,6 +38,9 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	getRange(): ListRangeToken {
 		PRINT: {
 			const {parentNode} = this;
+			if (!parentNode) {
+				throw new Error('There is no parent node!');
+			}
 			let {nextSibling} = this;
 			if (nextSibling?.is('list-range')) {
 				return nextSibling;
@@ -63,7 +66,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 				end: number,
 				contents: AstNodes[];
 			if (nextSibling && nextSibling.type !== 'text') {
-				const {childNodes} = parentNode!;
+				const {childNodes} = parentNode;
 				start = childNodes.indexOf(this) + 1;
 				end = childNodes.indexOf(nextSibling);
 				contents = childNodes.slice(start, end);
@@ -78,13 +81,13 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 						this.setText(this.innerText + token.innerText);
 						token.removeInternal();
 					}
-					if (parentNode!.is('list-range')) {
+					if (parentNode.is('list-range')) {
 						parentNode.previousSibling.setText(parentNode.previousSibling.innerText + this.innerText);
 						this.removeInternal();
 						return parentNode;
 					}
 				}
-				const {childNodes} = parentNode!;
+				const {childNodes} = parentNode;
 				start = childNodes.indexOf(this) + 1;
 				if (nextSibling) {
 					const {data} = nextSibling,
@@ -109,8 +112,8 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 				t.type = 'list-range';
 				return t;
 			});
-			token.concat(contents); // eslint-disable-line unicorn/no-unused-builtin-method-return
-			setChildNodes(parentNode!, start, end - start, [token]);
+			token.concatenate(contents);
+			setChildNodes(parentNode, start, end - start, [token]);
 			return token as ListRangeToken;
 		}
 	}

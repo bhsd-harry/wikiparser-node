@@ -30,13 +30,11 @@ export abstract class TableBaseToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/**
-	 * @param pattern 表格语法正则
 	 * @param syntax 表格语法
 	 * @param type 节点类型
 	 * @param attr 表格属性
 	 */
 	constructor(
-		pattern: RegExp,
 		syntax: string | undefined,
 		type: TableTypes,
 		attr?: string,

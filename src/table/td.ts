@@ -13,7 +13,9 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 
 /* NOT FOR BROWSER */
 
-import {newline} from '../../util/string';
+import {
+	newline,
+} from '../../util/string';
 
 /* NOT FOR BROWSER END */
 
@@ -63,7 +65,6 @@ export abstract class TdToken extends TableBaseToken {
 			attr = '';
 		}
 		super(
-			/^(?:\n[^\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u,
 			syntax,
 			'td',
 			attr,
@@ -100,26 +101,7 @@ export abstract class TdToken extends TableBaseToken {
 			};
 		}
 		const {previousSibling} = this;
-
-		/* NOT FOR BROWSER */
-
-		if (!(previousSibling instanceof TdToken)) {
-			return {subtype};
-		}
-
-		/* NOT FOR BROWSER END */
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 		const result = {...(previousSibling as TdToken).#getSyntax()};
-
-		/* NOT FOR BROWSER */
-
-		if (subtype === 'th' && result.subtype !== 'th') {
-			result.subtype = 'th';
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return result;
 	}
 
@@ -179,11 +161,11 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @ignore */
-	#toHtmlOrPlain(opt?: Omit<HtmlOpt, 'nocc'>): [string, string, string] {
+	#toHtmlOrPlain(method: Method, opt?: Omit<HtmlOpt, 'nocc'>): [string, string, string] {
 		const {lastChild, nextSibling} = this,
 			notEOL = nextSibling?.toString().startsWith('\n') === false,
 			lf = opt?.nowrap ? ' ' : '\n';
-		let html = lastChild.toHtmlInternal(opt).replace(/^[^\S\n]*/u, '');
+		let html = lastChild[method](opt).replace(/^[^\S\n]*/u, '');
 		if (notEOL) {
 			html = html.replace(/(?<=[\S\n])[^\S\n]*$/u, '');
 		}
@@ -194,7 +176,7 @@ export abstract class TdToken extends TableBaseToken {
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {subtype, childNodes: [, attr]} = this,
-			[lf, html, lfAfter] = this.#toHtmlOrPlain(opt);
+			[lf, html, lfAfter] = this.#toHtmlOrPlain('toHtmlInternal', opt);
 		return `${lf}<${subtype}${attr.toHtmlInternal({render: opt?.render})}>${
 			subtype === 'caption' ? newline(html) : html
 		}${lfAfter}</${subtype}>`;

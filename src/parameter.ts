@@ -67,7 +67,6 @@ export abstract class ParameterToken extends Token {
 	constructor(key?: string | number, value?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum);
 		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, accum, {
-				'Stage-11': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, accum);
 		keyToken.type = 'parameter-key';

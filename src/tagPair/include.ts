@@ -62,12 +62,4 @@ export abstract class IncludeToken extends TagPairToken {
 			this.getAttribute('config'),
 		));
 	}
-
-	/**
-	 * @override
-	 * @param str new text / 新文本
-	 */
-	override setText(str: string): string {
-		return super.setText(str, 1);
-	}
 }

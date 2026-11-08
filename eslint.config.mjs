@@ -73,6 +73,7 @@ const config = extend(
 					lookbehind: false,
 				},
 			],
+			'@stylistic/function-paren-newline': 0,
 			'@stylistic/max-len': [
 				2,
 				{

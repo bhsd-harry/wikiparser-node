@@ -142,7 +142,8 @@ export abstract class ExtToken extends TagPairToken {
 
 	/** @private */
 	/** @private */
-	lintRef(): string {
+	lintRef(
+	): string {
 		const refName = this.getAttr('name'),
 			text = this.innerText?.trim();
 		let msg = '';
@@ -155,7 +156,8 @@ export abstract class ExtToken extends TagPairToken {
 		} else if (!refName && !text) {
 			msg = this.hasAttr('details') ? 'ref-details' : 'ref-no-name';
 		}
-		return msg;
+		return msg
+		;
 	}
 
 	/** @private */
@@ -188,7 +190,9 @@ export abstract class ExtToken extends TagPairToken {
 
 	/** @ignore */
 	#toHtmlOrPlain(render: typeof Extension.renderExt, opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		return render(this, opt);
+		const result =
+			render(this, opt);
+		return result;
 	}
 
 	/** @private */

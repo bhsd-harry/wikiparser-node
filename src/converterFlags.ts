@@ -97,16 +97,6 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/**
 	 * @override
-	 * @param i position of the child node / 移除位置
-	 */
-	override removeAt(i: number): AtomToken {
-		const token = super.removeAt(i) as AtomToken;
-		this.#flags?.splice(i, 1);
-		return token;
-	}
-
-	/**
-	 * @override
 	 * @param token node to be inserted / 待插入的子节点
 	 * @param i position to be inserted at / 插入位置
 	 */

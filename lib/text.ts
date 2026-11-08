@@ -5,7 +5,9 @@ import {
 
 	sanitize,
 } from '../util/string';
-import {setChildNodes} from '../util/debug';
+import {
+	setChildNodes,
+} from '../util/debug';
 import {AstNode} from './node';
 
 /* NOT FOR BROWSER */

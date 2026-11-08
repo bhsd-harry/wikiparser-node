@@ -31,7 +31,6 @@ export abstract class TrToken extends TrBaseToken {
 	 */
 	constructor(syntax?: string, attr?: string, config?: Config, accum?: Token[]) {
 		super(
-			/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u,
 			syntax,
 			'tr',
 			attr,

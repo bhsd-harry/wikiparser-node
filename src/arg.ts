@@ -95,20 +95,6 @@ export abstract class ArgToken extends Token {
 		});
 	}
 
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 */
-	override insertAt<T extends Token>(token: T, i = this.length): T {
-		i += i < 0 ? this.length : 0;
-		super.insertAt(token, i);
-		if (i === 1) {
-			token.type = 'arg-default';
-		}
-		return token;
-	}
-
 	/** @private */
 	override toHtmlOrPlain(_: unknown, method: Method, opt?: HtmlOpt): string {
 		if (this.length === 1) {

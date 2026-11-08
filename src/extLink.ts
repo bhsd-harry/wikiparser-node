@@ -65,7 +65,6 @@ export abstract class ExtLinkToken extends Token {
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, accum, {
-				'Stage-7': ':', ConverterToken: ':',
 			});
 			inner.type = 'ext-link-text';
 			inner.setAttribute('stage', MAX_STAGE - 1);

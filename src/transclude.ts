@@ -154,7 +154,6 @@ export abstract class TranscludeToken extends Token {
 							`invoke-${i ? 'function' : 'module'}`,
 							config,
 							accum,
-							{'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 						);
 						super.insertAt(invoke);
 					}
@@ -168,7 +167,6 @@ export abstract class TranscludeToken extends Token {
 				throw new SyntaxError(invalidTemplateMsg);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
-				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			});
 			super.insertAt(token);
 		}

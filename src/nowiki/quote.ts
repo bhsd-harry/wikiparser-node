@@ -20,23 +20,19 @@ import {cached} from '../../mixin/cached';
 export abstract class QuoteToken extends NowikiBaseToken {
 	#closing: Font;
 
-	/* NOT FOR BROWSER */
-
-	#match: {bold?: QuoteToken, italic?: QuoteToken} = {};
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'quote' {
 		return 'quote';
 	}
 
 	/** @private */
-	get bold(): boolean {
+	// @ts-expect-error fake override
+	override get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
 	/** @private */
-	get italic(): boolean {
+	// @ts-expect-error fake override
+	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
 
@@ -47,7 +43,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 * @since v1.16.5
 	 */
 	get closing(): Partial<Font> {
-		return {
+		LINT: return {
 			...this.bold && {bold: this.#closing.bold},
 			...this.italic && {italic: this.#closing.italic},
 		};
@@ -78,17 +74,6 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			// @ts-expect-error abstract class
 			(): this => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')),
 		);
-	}
-
-	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
-		if (key === 'bold') {
-			this.#match.bold = value as QuoteToken;
-		} else if (key === 'italic') {
-			this.#match.italic = value as QuoteToken;
-		} else {
-			super.setAttribute(key, value);
-		}
 	}
 
 	/** @private */

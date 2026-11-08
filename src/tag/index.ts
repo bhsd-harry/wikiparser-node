@@ -4,7 +4,10 @@ import {Token} from '../index';
 import type {
 	Config,
 } from '../../base';
-import type {AttributesToken, SyntaxToken} from '../../internal';
+import type {
+	AttributesToken,
+	SyntaxToken,
+} from '../../internal';
 
 declare type Child = AttributesToken | SyntaxToken;
 
@@ -68,7 +71,7 @@ export abstract class TagToken extends Token {
 	 * 搜索匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		return cache<this | undefined>(
+		LINT: return cache<this | undefined>(
 			this.#match,
 			() => {
 				const {
@@ -76,13 +79,16 @@ export abstract class TagToken extends Token {
 					name,
 					closing,
 				} = this;
-				const {parentNode} = this,
-					{childNodes} = parentNode!,
+				const parentNode = this.parentNode!;
+				const {childNodes} = parentNode,
 					i = childNodes.indexOf(this),
-					stack = [this],
-					siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse();
-				let cur = siblings.pop();
-				while (cur) {
+					stack = [this];
+				// eslint-disable-next-line prefer-const
+				let siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
+					cur = siblings.pop();
+				while (
+					cur
+				) {
 					if (
 						!cur.is<this>(type)
 						|| cur.name !== name

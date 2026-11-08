@@ -2,7 +2,9 @@ import {TableBaseToken} from './base';
 
 /* NOT FOR BROWSER */
 
-import {isToken} from '../../util/debug';
+import {
+	isToken,
+} from '../../util/debug';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */

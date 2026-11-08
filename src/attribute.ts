@@ -116,13 +116,11 @@ export abstract class AttributeToken extends Token {
 				'attr-key',
 				config,
 				accum,
-				type === 'ext-attr' ? {AstText: ':'} : {'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 			);
 		let valueToken: Token
 		;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, accum, {
-				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', MAX_STAGE - 1);
@@ -135,21 +133,12 @@ export abstract class AttributeToken extends Token {
 				excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
-				'Stage-2': ':',
-				'!HeadingToken': '',
-				LinkToken: ':',
-				FileToken: ':',
-				CategoryToken: ':',
-				QuoteToken: ':',
-				MagicLinkToken: ':',
-				ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
 			valueToken =
 				new AtomToken(value, 'attr-value', config, accum, {
-					[`Stage-${stages[type]}`]: ':',
 				});
 		}
 		super(undefined, config, accum);

@@ -72,27 +72,9 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 				accum,
 			);
 		if (isBold) {
-			/* NOT FOR BROWSER */
-
-			if (!tidy && bold) {
-				bold.setAttribute('bold', token);
-				token.setAttribute('bold', bold);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			bold = !bold && token;
 		}
 		if (isItalic) {
-			/* NOT FOR BROWSER */
-
-			if (!tidy && italic) {
-				italic.setAttribute('italic', token);
-				token.setAttribute('italic', italic);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			italic = !italic && token;
 		}
 		arr[i] = `\0${accum.length - 1}q\x7F`;
