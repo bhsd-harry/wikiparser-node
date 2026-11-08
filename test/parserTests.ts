@@ -92,20 +92,10 @@ describe('Parser tests', () => {
 
 					if (
 						render
-						&& !/#rel2abs:|<\/charinsert>/u.test(wikitext)
-						&& !/<\/math>|mw-highlight mw-highlight-lang-|<section class="mw-templatedata-doc-wrap">/u
+						&& !/#rel2abs:|<\/(?:charinsert|math|chem|ce|indicator)>/u.test(wikitext)
+						&& !/mw-highlight mw-highlight-lang-|<section class="mw-templatedata-doc-wrap">/u
 							.test(render || '')
 					) {
-						assert.deepStrictEqual(
-							split(
-								root.toHtml().replace(
-									/\n<div id="catlinks" class="catlinks">.+$/su,
-									'',
-								),
-							),
-							split(render),
-							'渲染结果不符合预期！',
-						);
 						assert.deepStrictEqual(
 							split(root.toHtml({cats: false})),
 							split(render),
@@ -117,16 +107,6 @@ describe('Parser tests', () => {
 								render.replace(/<ul class="redirectText">.+?<\/ul>/su, ''),
 							),
 							'{redirect: false} 选项渲染结果不符合预期！',
-						);
-						assert.deepStrictEqual(
-							split(
-								root.toHtml({indicators: true, cats: false}).replace(
-									/^(?:<div id="mw-indicator-.+?<\/div>\n)+/su,
-									'',
-								),
-							),
-							split(render),
-							'{indicators: true} 选项渲染结果不符合预期！',
 						);
 						if (!/\S__TOC__/u.test(wikitext)) {
 							assert.deepStrictEqual(

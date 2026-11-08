@@ -88,7 +88,6 @@ export abstract class ExtToken extends TagPairToken {
 				}
 				newConfig.excludes.push('list');
 				// fall through
-			case 'indicator':
 			case 'poem':
 			case 'ref':
 			case 'langconvert':

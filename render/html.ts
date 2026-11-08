@@ -1,9 +1,13 @@
 import {
 	states,
 } from '../util/constants';
-import {sanitizeAttr} from '../util/string';
 import type {RenderOpt} from '../base';
-import type {Token, DoubleUnderscoreToken, HeadingToken, HtmlToken, ExtToken} from '../internal';
+import type {
+	Token,
+	DoubleUnderscoreToken,
+	HeadingToken,
+	HtmlToken,
+} from '../internal';
 
 const blockElems = 'table|h[1-6]|pre|p|[uod]l',
 	antiBlockElems = 't[dh]',
@@ -31,33 +35,14 @@ const closeRegex = new RegExp(
 export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 	states.set(token, {
 		headings: new Set(),
-		categories: new Set(),
 		refs: Object.assign(new Map(), {id: 0}),
 	});
 	const opt: HtmlOpt = {render},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		{toc = true, cats = true, indicators} = render;
 
-	// 处理指示器
+	// eslint-disable-next-line prefer-const
 	let prelim = '';
-	if (indicators) {
-		const indicatorMap = new Map<string, ExtToken>(),
-			indicatorList: ExtToken[] = [];
-		for (const indicator of token.querySelectorAll<ExtToken>('ext#indicator')) {
-			const nameAttr = indicator.getAttr('name'),
-				name = nameAttr && sanitizeAttr(nameAttr, true);
-			if (name) {
-				indicatorMap.set(name, indicator);
-				indicatorList.push(indicator);
-			}
-		}
-		if (indicatorMap.size > 0) {
-			prelim = [...indicatorMap.values()].map(indicator => `${indicator.toHtmlInternal(opt)}\n`)
-				.join('');
-		}
-		for (const indicator of indicatorList) {
-			indicator.removeInternal();
-		}
-	}
 
 	// 前处理引用
 	const hasCite = token.getAttribute('config').ext.includes('references');
@@ -203,20 +188,8 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 		}
 	}
 	output += closeParagraph();
+	// eslint-disable-next-line prefer-const
 	let html = output.trimEnd();
-
-	// 处理分类
-	if (cats) {
-		const {categories} = states.get(token)!;
-		if (categories.size > 0) {
-			html += `
-<div id="catlinks" class="catlinks"><div><a href="${
-	token.normalizeTitle('Special:Categories', -1, {temporary: true}).getUrl()
-}" title="Special:Categories">Categories</a>: <ul>${
-	[...categories].map(catlink => `<li>${catlink}</li>`).join('')
-}</ul></div></div>`;
-		}
-	}
 
 	states.delete(token);
 	return prelim + html;

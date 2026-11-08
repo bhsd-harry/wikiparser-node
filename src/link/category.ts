@@ -4,9 +4,6 @@ import type {Token, AtomToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-import {
-	states,
-} from '../../util/constants';
 import {cached} from '../../mixin/cached';
 
 /* NOT FOR BROWSER END */
@@ -46,10 +43,6 @@ export abstract class CategoryToken extends LinkBaseToken {
 	/** @private */
 	@cached()
 	override toHtmlInternal({render = {}}: HtmlOpt = {}): string {
-		const {cats = true} = render;
-		if (cats) {
-			states.get(this.getRootNode())?.categories.add(super.toHtmlInternal());
-		}
 		return '';
 	}
 }

@@ -92,7 +92,6 @@ export const extAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 	gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails']),
 	poem: new Set(['compact']),
 	nowiki: empty,
-	indicator: new Set(['name']),
 	langconvert: new Set(['from', 'to']),
 	ref: new Set(['group', 'name', 'follow', 'dir', 'details']),
 	references: new Set(['group', 'responsive']),

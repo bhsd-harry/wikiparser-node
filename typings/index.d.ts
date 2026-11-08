@@ -43,7 +43,6 @@ declare global {
 	}
 	interface State {
 		headings: Set<string>;
-		categories: Set<string>;
 		refs: Map<string, {referencesGroup: RefState[], follows: {content: Token}[]}> & {id: number};
 	}
 

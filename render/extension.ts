@@ -51,19 +51,6 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		}
 		case 'langconvert':
 			return lastChild.toHtmlInternal({...opt, nowrap: true});
-		case 'indicator': {
-			const nameAttr = firstChild.getAttr('name');
-			if (nameAttr) {
-				return render?.indicators
-					? `<div id="mw-indicator-${sanitizeAttr(nameAttr, true)}" class="mw-indicator">${
-						lastChild.toHtmlInternal(renderOpt)
-					}</div>`
-					: '';
-			}
-			return '<span class="error">'
-				+ "<strong>Error:</strong> Page status indicators' <code>name</code> attribute must not be empty."
-				+ '</span>';
-		}
 		case 'poem': {
 			const padding = firstChild.hasAttr('compact') ? '' : '\n';
 			firstChild.classList.add('poem');
