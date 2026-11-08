@@ -216,7 +216,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 		}
 	}
 	output += closeParagraph();
-	let html = formalize(output.trimEnd());
+	let html = formalize(output.trim());
 
 	// 处理分类
 	if (cats) {
