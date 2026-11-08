@@ -1,5 +1,6 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/demo.min.js';
 import {CodeJar} from '/codejar-async/dist/codejar.js';
+import Renderer from '/wikiparser-node/bundle/bundle-html.min.js';
 import type {MwConfig} from '@bhsd/cm-util';
 import type {ConfigData, AST} from './typings';
 
@@ -19,7 +20,8 @@ declare global {
 const transform = (type?: string): string | undefined =>
 	type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
 
-const keys = new Set(['type', 'childNodes', 'range']);
+const keys = new Set(['type', 'childNodes', 'range']),
+	noInput = new Set(['highlighter', 'renderer']);
 
 (async () => {
 	Object.assign(globalThis, {CodeJar});
@@ -39,13 +41,23 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		astContainer = document.getElementById('ast')!,
 		highlighters = document.getElementById('highlighter')!.children as HTMLCollectionOf<HTMLDivElement>,
-		pres = [...document.getElementsByClassName('highlight')] as [HTMLPreElement, HTMLPreElement];
+		pres = [...document.getElementsByClassName('highlight')] as [HTMLPreElement, HTMLPreElement],
+		frame = document.querySelector<HTMLDivElement>('.frame')!;
+
+	/**
+	 * 同步解析设置
+	 * @param config 解析设置
+	 */
+	const syncConfig = (config: ConfigData): void => {
+		Parser.config = config;
+		Renderer.config = config;
+		wikiparse.setConfig(config);
+	};
 
 	// Parser初始化
 	const config: ConfigData = await (await fetch('./config/default.json')).json();
 	Parser.internal = true;
-	Parser.config = config;
-	wikiparse.setConfig(config);
+	syncConfig(config);
 
 	/**
 	 * 不通过worker立即执行print方法
@@ -86,6 +98,16 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	textbox2.addEventListener('input', () => {
 		model.setValue(textbox2.value);
 	});
+
+	// Renderer初始化
+	frame.addEventListener('click', e => {
+		e.preventDefault();
+		const target = e.target as HTMLElement;
+		if (target.matches('label[for=toctogglecheckbox]')) {
+			const checkbox = target.closest('#toc')!.querySelector('input')!;
+			checkbox.checked = !checkbox.checked;
+		}
+	}, {capture: true});
 
 	// 切换是否嵌入
 	input.addEventListener('change', () => {
@@ -138,7 +160,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			api.focus();
 			return;
 		} else if (configMap.has(url)) {
-			wikiparse.setConfig(configMap.get(url)!);
+			syncConfig(configMap.get(url)!);
 			return;
 		}
 		fetchBtn.disabled = true;
@@ -155,7 +177,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 				CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig!),
 			));
 			configMap.set(url, configData);
-			wikiparse.setConfig(configData);
+			syncConfig(configData);
 			fetchBtn.disabled = false;
 		});
 		document.head.append(script);
@@ -293,6 +315,40 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	});
 
 	/**
+	 * 更新CodeJar的内容
+	 * @param oldText 旧内容
+	 * @param newText 新内容
+	 */
+	const updateJar = (oldText: string, newText: string): void => {
+		if (oldText !== newText) {
+			jar.updateCode(newText);
+		}
+	};
+
+	/**
+	 * 更新CodeMirror的内容
+	 * @param oldText 旧内容
+	 * @param newText 新内容
+	 */
+	const updateCodeMirror = (oldText: string, newText: string): void => {
+		if (oldText !== newText) {
+			cm.view!.dispatch({changes: {from: 0, to: oldText.length, insert: newText}});
+			cm.update();
+		}
+	};
+
+	/**
+	 * 更新Monaco的内容
+	 * @param oldText 旧内容
+	 * @param newText 新内容
+	 */
+	const updateMonaco = (oldText: string, newText: string): void => {
+		if (oldText !== newText) {
+			model.setValue(newText);
+		}
+	};
+
+	/**
 	 * 切换tab
 	 * @param e 事件
 	 */
@@ -306,7 +362,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		active.classList.remove('active');
 		this.classList.add('active');
 		h2.textContent = `Please input wikitext into the text box ${
-			value === 'highlighter' ? 'under the first tab' : 'below'
+			noInput.has(value) ? 'under the first tab' : 'below'
 		}.`;
 		for (const tabcontent of tabcontents) {
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
@@ -316,31 +372,19 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			text3 = model.getValue();
 		switch (active.value) {
 			case 'editor':
-				if (text2 !== text1) {
-					cm.view!.dispatch({changes: {from: 0, to: text2.length, insert: text1}});
-					cm.update();
-				}
-				if (text3 !== text1) {
-					model.setValue(text1);
-				}
+				updateCodeMirror(text2, text1);
+				updateMonaco(text3, text1);
 				break;
 			case 'linter':
-				if (text1 !== text2) {
-					jar.updateCode(text2);
-				}
-				if (text3 !== text2) {
-					model.setValue(text2);
-				}
+				updateJar(text1, text2);
+				updateMonaco(text3, text2);
 				break;
 			case 'lsp':
+				updateJar(text1, text3);
+				updateCodeMirror(text2, text3);
+				// fall through
+			case 'renderer':
 				field.style.display = '';
-				if (text1 !== text3) {
-					jar.updateCode(text3);
-				}
-				if (text2 !== text3) {
-					cm.view!.dispatch({changes: {from: 0, to: text2.length, insert: text3}});
-					cm.update();
-				}
 				break;
 			case 'highlighter':
 				// 离开highlighter时，还原`wikiparser.print()`方法
@@ -348,6 +392,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			// no default
 		}
 		switch (value) {
+			case 'renderer':
+				frame.innerHTML = Renderer.toHtml(jar.toString());
+				// fall through
 			case 'lsp':
 				field.style.display = 'none';
 				break;

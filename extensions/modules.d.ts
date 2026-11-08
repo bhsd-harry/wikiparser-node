@@ -6,3 +6,11 @@ declare module '/wikiparser-node/extensions/*' {
 	export const hashChangeHandler: HashChangeHandler;
 	export const inputHandler: InputHandler;
 }
+
+declare module '/wikiparser-node/bundle/*' {
+	const Parser: {
+		config?: import('./typings').ConfigData;
+		toHtml(wikitext: string): string;
+	};
+	export default Parser;
+}

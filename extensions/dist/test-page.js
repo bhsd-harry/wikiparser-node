@@ -1,4 +1,5 @@
 import { prepareDoneBtn, hideOptGroup, addOption, changeHandler, hashChangeHandler, inputHandler, } from './test-page-common.js';
+import Parser from '/wikiparser-node/bundle/bundle-html.min.js';
 const isIframe = self !== top;
 const removeClass = (ele, ...cls) => {
     ele.classList.remove(...cls);
@@ -39,6 +40,31 @@ const addImgLoadHandler = (img) => {
         img.classList.remove('mw-broken-media');
     });
 };
+const modify = (container, container1, container2, isGH) => {
+    if (!isGH) {
+        for (const ele of container2.querySelectorAll('img')) {
+            let loading = false;
+            try {
+                const src = new URL(ele.src);
+                if (src.origin === location.origin) {
+                    addImgLoadHandler(ele);
+                    src.protocol = 'https:';
+                    src.host = 'commons.wikimedia.org';
+                    src.port = '';
+                    ele.src = src.href;
+                    loading = true;
+                }
+            }
+            catch { }
+            if (!loading) {
+                ele.classList.add('mw-broken-media');
+            }
+        }
+        if (container1.innerHTML === container2.innerHTML) {
+            dblClickHandler(container, container1, container2);
+        }
+    }
+};
 const repaint = (container, container1, container2, html, render, isGH) => {
     container.removeAttribute('data-source');
     if (html === undefined) {
@@ -48,7 +74,8 @@ const repaint = (container, container1, container2, html, render, isGH) => {
         container.style.display = '';
         container1.innerHTML = html;
         container2.innerHTML = render !== null && render !== void 0 ? render : '';
-        const classes = ['mw-html-heading'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), imgs2 = container2.querySelectorAll('img'), toRemove = [
+        container2.classList.remove('browser');
+        const classes = ['mw-html-heading'], withClasses = container1.querySelectorAll(classes.map(c => `.${c}`).join()), empty = container1.querySelectorAll('.mw-empty-elt'), typeofs = container1.querySelectorAll('span[typeof]'), imgs = container1.querySelectorAll('img'), toRemove = [
             ...container1.querySelectorAll('.mw-editsection'),
             ...container1.getElementsByTagName('mw:edittemplatedata'),
         ], tocTitles = container1.querySelectorAll('.toctitle'), anchors = container1.querySelectorAll('a[href]');
@@ -91,24 +118,6 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                     ele.setAttribute('resource', ele.getAttribute('resource').replaceAll(':', '%3A'));
                 }
             }
-            for (const ele of imgs2) {
-                let loading = false;
-                try {
-                    const src = new URL(ele.src);
-                    if (src.origin === location.origin) {
-                        addImgLoadHandler(ele);
-                        src.protocol = 'https:';
-                        src.host = 'commons.wikimedia.org';
-                        src.port = '';
-                        ele.src = src.href;
-                        loading = true;
-                    }
-                }
-                catch { }
-                if (!loading) {
-                    ele.classList.add('mw-broken-media');
-                }
-            }
             for (const ele of tocTitles) {
                 ele.removeAttribute('lang');
                 ele.removeAttribute('dir');
@@ -144,9 +153,7 @@ const repaint = (container, container1, container2, html, render, isGH) => {
                 ele.removeAttribute('href');
             }
         }
-        if (!isGH && container1.innerHTML === container2.innerHTML) {
-            dblClickHandler(container, container1, container2);
-        }
+        modify(container, container1, container2, isGH);
     }
 };
 (async () => {
@@ -186,6 +193,16 @@ const repaint = (container, container1, container2, html, render, isGH) => {
     container.addEventListener('dblclick', e => {
         if (!e.target.matches(toctoggle)) {
             dblClickHandler(container, container1, container2, btnDiff, e);
+        }
+    });
+    container2.addEventListener('contextmenu', e => {
+        if (e.target === container2
+            && !container.dataset['source']
+            && !container2.classList.contains('browser')) {
+            e.preventDefault();
+            container2.innerHTML = Parser.toHtml(pre.firstChild.textContent);
+            container2.classList.add('browser');
+            modify(container, container1, container2, isGH);
         }
     });
     prepareDoneBtn(btnDone, select, tests, dones, key);

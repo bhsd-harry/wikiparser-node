@@ -105,7 +105,6 @@ export abstract class TableToken extends TrBaseToken {
 		}
 	}
 
-	// eslint-disable-next-line jsdoc/require-param
 	/**
 	 * Close the table syntax
 	 *

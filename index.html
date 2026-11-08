@@ -3,9 +3,11 @@
 	<head>
 		<title>Demo: WikiParser-Node</title>
 		<meta charset="utf-8">
+		<meta http-equiv="Content-Security-Policy" content="img-src 'self';">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0, width=device-width">
 		<link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">
 		<link rel="stylesheet" href="extensions/gh-page.css">
+		<link rel="stylesheet" href="extensions/frame.css">
 		<link rel="stylesheet" href="extensions/ui.css">
 		<script src="extensions/dist/env.js"></script>
 		<script src="extensions/dist/base.js"></script>
@@ -24,6 +26,7 @@
 					<button value="linter" class="active">As Linter</button>
 					<button value="lsp">As LSP</button>
 					<button value="highlighter">As Highlighter</button>
+					<button value="renderer">As Renderer</button>
 					<button>
 						<a href="https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-(EN)" target="_blank">
 							Documentation
@@ -84,6 +87,9 @@
 						<h3>Transcluded</h3>
 						<pre class="highlight"></pre>
 					</div>
+				</div>
+				<div class="tabcontent" id="renderer">
+					<div class="frame"></div>
 				</div>
 			</article>
 		</main>

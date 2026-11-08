@@ -1,15 +1,20 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/demo.min.js';
 import { CodeJar } from '/codejar-async/dist/codejar.js';
+import Renderer from '/wikiparser-node/bundle/bundle-html.min.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
-const keys = new Set(['type', 'childNodes', 'range']);
+const keys = new Set(['type', 'childNodes', 'range']), noInput = new Set(['highlighter', 'renderer']);
 (async () => {
     Object.assign(globalThis, { CodeJar });
     await import('/wikiparser-node/extensions/dist/codejar.js');
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), field = input.closest('.fieldLayout'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), field = input.closest('.fieldLayout'), input2 = document.querySelector('#wpHighlight'), api = document.querySelector('#wpAPI'), fetchBtn = document.querySelector('#wpFetch'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')], frame = document.querySelector('.frame');
+    const syncConfig = (config) => {
+        Parser.config = config;
+        Renderer.config = config;
+        wikiparse.setConfig(config);
+    };
     const config = await (await fetch('./config/default.json')).json();
     Parser.internal = true;
-    Parser.config = config;
-    wikiparse.setConfig(config);
+    syncConfig(config);
     const immediatePrint = (wikitext, include, stage) => Promise.resolve(Parser.parse(wikitext, include, stage).childNodes
         .map(child => [stage !== null && stage !== void 0 ? stage : Infinity, String(child), child.print()]));
     const jar = (await wikiparse.codejar)(textbox, input.checked, true), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
@@ -32,6 +37,14 @@ const keys = new Set(['type', 'childNodes', 'range']);
     textbox2.addEventListener('input', () => {
         model.setValue(textbox2.value);
     });
+    frame.addEventListener('click', e => {
+        e.preventDefault();
+        const target = e.target;
+        if (target.matches('label[for=toctogglecheckbox]')) {
+            const checkbox = target.closest('#toc').querySelector('input');
+            checkbox.checked = !checkbox.checked;
+        }
+    }, { capture: true });
     input.addEventListener('change', () => {
         const { checked } = input;
         jar.include = checked;
@@ -73,7 +86,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
             return;
         }
         else if (configMap.has(url)) {
-            wikiparse.setConfig(configMap.get(url));
+            syncConfig(configMap.get(url));
             return;
         }
         fetchBtn.disabled = true;
@@ -87,7 +100,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
         script.addEventListener('load', () => {
             const configData = JSON.parse(JSON.stringify(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig)));
             configMap.set(url, configData);
-            wikiparse.setConfig(configData);
+            syncConfig(configData);
             fetchBtn.disabled = false;
         });
         document.head.append(script);
@@ -195,6 +208,22 @@ const keys = new Set(['type', 'childNodes', 'range']);
         nodeMap.set(dl, nextNode);
         updateHover(nextNode);
     });
+    const updateJar = (oldText, newText) => {
+        if (oldText !== newText) {
+            jar.updateCode(newText);
+        }
+    };
+    const updateCodeMirror = (oldText, newText) => {
+        if (oldText !== newText) {
+            cm.view.dispatch({ changes: { from: 0, to: oldText.length, insert: newText } });
+            cm.update();
+        }
+    };
+    const updateMonaco = (oldText, newText) => {
+        if (oldText !== newText) {
+            model.setValue(newText);
+        }
+    };
     const switchTab = function (e) {
         e.preventDefault();
         const active = document.querySelector('.active'), { value } = this;
@@ -203,43 +232,32 @@ const keys = new Set(['type', 'childNodes', 'range']);
         }
         active.classList.remove('active');
         this.classList.add('active');
-        h2.textContent = `Please input wikitext into the text box ${value === 'highlighter' ? 'under the first tab' : 'below'}.`;
+        h2.textContent = `Please input wikitext into the text box ${noInput.has(value) ? 'under the first tab' : 'below'}.`;
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
         const text1 = jar.toString(), text2 = cm.view.state.doc.toString(), text3 = model.getValue();
         switch (active.value) {
             case 'editor':
-                if (text2 !== text1) {
-                    cm.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
-                    cm.update();
-                }
-                if (text3 !== text1) {
-                    model.setValue(text1);
-                }
+                updateCodeMirror(text2, text1);
+                updateMonaco(text3, text1);
                 break;
             case 'linter':
-                if (text1 !== text2) {
-                    jar.updateCode(text2);
-                }
-                if (text3 !== text2) {
-                    model.setValue(text2);
-                }
+                updateJar(text1, text2);
+                updateMonaco(text3, text2);
                 break;
             case 'lsp':
+                updateJar(text1, text3);
+                updateCodeMirror(text2, text3);
+            case 'renderer':
                 field.style.display = '';
-                if (text1 !== text3) {
-                    jar.updateCode(text3);
-                }
-                if (text2 !== text3) {
-                    cm.view.dispatch({ changes: { from: 0, to: text2.length, insert: text3 } });
-                    cm.update();
-                }
                 break;
             case 'highlighter':
                 wikiparse.print = print;
         }
         switch (value) {
+            case 'renderer':
+                frame.innerHTML = Renderer.toHtml(jar.toString());
             case 'lsp':
                 field.style.display = 'none';
                 break;

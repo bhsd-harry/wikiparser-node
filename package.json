@@ -41,6 +41,7 @@
 		"lint:bundle": "eslint --no-config-lookup --no-inline-config --parser=@typescript-eslint/parser --rule 'no-unused-vars: [2, {args: none}]' build/*.js",
 		"lint": "npm run lint:ts && npm run lint:css",
 		"prof": "node dist/test/prof.js",
+		"checkout": "git checkout html bundle/bundle-html.min.js",
 		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
 		"test:unit": "testUtil --test-timeout=5000 --require=./bundle/bundle-lsp.min.js --enable-source-maps dist/test/test.js",
 		"test:json": "testUtil dist/test/json.js",
