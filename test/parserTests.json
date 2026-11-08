@@ -3679,7 +3679,7 @@
 		"desc": "Drop stripped tag markers, unless they have encapsulation info",
 		"wikitext": "{{1x|<tr></tr>}}",
 		"html": "",
-		"render": "<tr></tr>",
+		"render": "",
 		"plain": "",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span></span>"
@@ -8798,7 +8798,7 @@
 		"desc": "Indented block & table",
 		"wikitext": " <div>foo</div>\n {|\n |foo\n |}",
 		"html": "<div>foo</div>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"render": " <div>foo</div>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
+		"render": "<div>foo</div>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
 		"plain": " foo\n\n\nfoo\n",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"> <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
@@ -8816,7 +8816,7 @@
 		"desc": "Empty TR followed by a template-generated TR",
 		"wikitext": "{|\n|-\n{{1x|<tr><td>foo</td></tr>}}\n|}",
 		"html": "<table>\n\n<tbody><tr><td>foo</td></tr>\n</tbody></table>",
-		"render": "<tr><td>foo</td></tr>\n",
+		"render": "foo<table>\n<tbody></tbody></table>",
 		"plain": "foo\n",
 		"lint": [
 			{
@@ -22106,7 +22106,7 @@
 		"desc": "2g. Indented table markup mixed with indented pre content (proposed in T8200)",
 		"wikitext": " <table>\n <tr>\n <td>\n Text that should be rendered preformatted\n </td>\n </tr>\n </table>",
 		"html": "<table>\n <tbody><tr>\n <td>\n<pre>Text that should be rendered preformatted\n</pre>\n </td>\n </tr>\n </tbody></table>",
-		"render": " <table>\n <tbody><tr>\n <td>\n<pre>Text that should be rendered preformatted\n</pre>\n </td>\n </tr>\n </tbody></table>",
+		"render": "<table>\n <tbody><tr>\n <td>\n<pre>Text that should be rendered preformatted\n</pre>\n </td>\n </tr>\n </tbody></table>",
 		"plain": " \n \n \n Text that should be rendered preformatted\n \n \n ",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"> <span class=\"wpb-html\">&lt;table&gt;</span>\n <span class=\"wpb-html\">&lt;tr&gt;</span>\n <span class=\"wpb-html\">&lt;td&gt;</span>\n Text that should be rendered preformatted\n <span class=\"wpb-html\">&lt;/td&gt;</span>\n <span class=\"wpb-html\">&lt;/tr&gt;</span>\n <span class=\"wpb-html\">&lt;/table&gt;</span></span>"
@@ -22124,7 +22124,7 @@
 		"desc": "3a. Indent-Pre and block tags (single-line html)",
 		"wikitext": " a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n <span> foo </span>",
 		"html": "<p> a </p><p> foo </p><p>\n b </p><div> foo </div><p>\n c </p><blockquote><p> foo </p></blockquote>\n<pre><span> foo </span>\n</pre>",
-		"render": " a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n<pre><span> foo </span>\n</pre>",
+		"render": "a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n<pre><span> foo </span>\n</pre>",
 		"plain": " a  foo \n b  foo \n c  foo \n  foo ",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"> a <span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span>\n c <span class=\"wpb-html\">&lt;blockquote&gt;</span> foo <span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n <span class=\"wpb-html\">&lt;span&gt;</span> foo <span class=\"wpb-html\">&lt;/span&gt;</span></span>"
@@ -22174,7 +22174,7 @@
 		"desc": "5. Indent-Pre and html pre",
 		"wikitext": " <pre class=\"123\">hi</pre>",
 		"html": "<pre class=\"123\">hi</pre>",
-		"render": " <pre class=\"123\">hi</pre>",
+		"render": "<pre class=\"123\">hi</pre>",
 		"plain": " hi",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"> <span class=\"wpb-ext\">&lt;pre<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">123</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">hi</span>&lt;/pre&gt;</span></span>"
@@ -22201,7 +22201,7 @@
 		"desc": "4. Multiple spaces at start-of-line",
 		"wikitext": "    <p> foo </p>\n    foo\n\t{|\n|foo\n|}",
 		"html": "<p> foo </p>\n<pre>   foo\n</pre>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"render": "    <p> foo </p>\n<pre>   foo\n</pre>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
+		"render": "<p> foo </p>\n<pre>   foo\n</pre>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
 		"plain": "     foo \n    foo\n\n\nfoo\n",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">    <span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n    foo\n\t<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
@@ -38207,7 +38207,7 @@
 		"desc": "Parsoid: Don't paragraph-wrap fosterable content even if table syntax is unbalanced",
 		"wikitext": "{|\n<td>\n<td>\n</td>\n\n\n\n|}",
 		"html": "<table>\n<tbody><tr><td>\n</td><td>\n</td>\n\n\n\n</tr><tr><td></td></tr></tbody></table>",
-		"render": "<td> </td><td> </td>\n<td></td>",
+		"render": "  <table>\n<tbody><tr><td></td></tr></tbody></table>",
 		"plain": "\n",
 		"lint": [
 			{
