@@ -4,7 +4,11 @@ import {Token} from '../index';
 import type {
 	Config,
 } from '../../base';
-import type {AttributesToken, SyntaxToken, AstNodes} from '../../internal';
+import type {
+	AttributesToken,
+	SyntaxToken,
+	AstNodes,
+} from '../../internal';
 
 declare type Child = AttributesToken | SyntaxToken;
 
@@ -86,12 +90,15 @@ export abstract class TagToken extends Token {
 				}
 				const {childNodes} = parentNode,
 					i = childNodes.indexOf(this),
-					stack = [this],
-					{rev} = Shadow;
+					stack = [this];
+				const {rev} = Shadow;
 				let siblings = closing ? childNodes.slice(0, i) : childNodes.slice(i + 1).reverse(),
-					cur = siblings.pop(),
-					until: this | undefined;
-				while (cur || parentNode.is('list-range') && parentNode.parentNode) {
+					cur = siblings.pop();
+				let until: this | undefined;
+				while (
+					cur
+					|| parentNode.is('list-range') && parentNode.parentNode
+				) {
 					if (!cur) {
 						const parent: Token = parentNode.parentNode!,
 							ch = parent.childNodes,

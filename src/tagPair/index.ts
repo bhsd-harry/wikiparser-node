@@ -73,6 +73,10 @@ export abstract class TagPairToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
+		// eslint-disable-next-line unicorn/prefer-ternary
+		if (key === 'padding') {
+			return this.#tags[0].length + 1 as TokenAttribute<T>;
+		}
+		return super.getAttribute(key);
 	}
 }
