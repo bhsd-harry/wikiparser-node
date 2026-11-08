@@ -2,7 +2,9 @@ import {toLowerCase} from '../util/string';
 import {gapped} from '../mixin/gapped';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {Config} from '../base';
+import type {
+	Config,
+} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -44,7 +46,9 @@ export abstract class ConverterFlagsToken extends Token {
 	constructor(flags: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		this.safeAppend(flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
+		for (const flag of flags) {
+			super.insertAt(new AtomToken(flag, 'converter-flag', config, accum));
+		}
 	}
 
 	/** 获取全部转换类型标记 */
@@ -74,7 +78,7 @@ export abstract class ConverterFlagsToken extends Token {
 	 * 获取未知的转换类型标记
 	 */
 	getUnknownFlags(): Set<string> {
-		return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
+		LINT: return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
 	/**
@@ -93,17 +97,6 @@ export abstract class ConverterFlagsToken extends Token {
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
 		return new ConverterFlagsToken([], this.getAttribute('config'));
-	}
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 */
-	override insertAt<T extends AtomToken>(token: T, i = this.length): T {
-		super.insertAt(token, i);
-		this.#flags?.splice(i, 0, token.text().trim());
-		return token;
 	}
 
 	/**

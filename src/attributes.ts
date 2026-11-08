@@ -111,7 +111,11 @@ export abstract class AttributesToken extends Token {
 	}
 
 	set className(className) {
-		this.setAttr('class', className);
+		this.setAttr(
+			'class',
+			className
+			,
+		);
 	}
 
 	/** class attribute in Set / 以Set表示的class属性 */
@@ -240,16 +244,21 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @private */
-	lintRef(): string {
+	lintRef(
+	): string {
 		const followAttr = this.getAttrToken('follow'),
 			follow = followAttr?.getValue(),
 			name = this.getAttr('name');
 		if (follow && !/\D/u.test(follow)) {
-			const msg = 'int-name';
-			return msg;
+			const msg = 'int-name',
+				ret =
+					msg;
+			return ret;
 		} else if (follow && (this.hasAttr('details') || name && /\D/u.test(name))) {
-			const msg = 'ref-follow';
-			return msg;
+			const msg = 'ref-follow',
+				ret =
+					msg;
+			return ret;
 		}
 		return '';
 	}
@@ -272,7 +281,10 @@ export abstract class AttributesToken extends Token {
 		if (!(token instanceof AttributeToken)) {
 			return super.insertAt(token, i);
 		}
-		const {type, length} = this;
+		const {
+			type,
+			length,
+		} = this;
 		if (i === length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
@@ -304,9 +316,14 @@ export abstract class AttributesToken extends Token {
 	 * @param value attribute value / 属性值
 	 * @throws `RangeError` if the attribute of an extension tag contains `>`
 	 */
-	setAttr(key: string, value: string): void {
+	setAttr(
+		key: string,
+		value: string
+		,
+	): void {
 		require('../addon/attribute');
-		this.setAttr(key, value);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		this.setAttr(key as string, value!);
 	}
 
 	/**

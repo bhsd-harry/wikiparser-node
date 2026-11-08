@@ -21,8 +21,7 @@ import {
 /* NOT FOR BROWSER END */
 
 declare type Child = GalleryImageToken
-	| CommentLineToken
-	;
+	| CommentLineToken;
 
 /**
  * `<gallery>`

@@ -3,11 +3,12 @@ import {
 } from '../util/constants';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
-import type {Config} from '../base';
+import type {
+	Config,
+} from '../base';
 
 /* NOT FOR BROWSER */
 
-import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
 import {cached} from '../mixin/cached';
 
@@ -74,27 +75,15 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override toString(skip?: boolean): string {
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (this.length === 1) {
 			return `[${super.toString(skip)}${this.#space}]`;
 		}
-
-		/* NOT FOR BROWSER */
-
-		normalizeSpace(this.lastChild);
-
-		/* NOT FOR BROWSER END */
-
 		return `[${super.toString(skip, this.#space)}]`;
 	}
 
 	/** @private */
 	override text(): string {
-		/* NOT FOR BROWSER */
-
-		normalizeSpace(this.childNodes[1]);
-
-		/* NOT FOR BROWSER END */
-
 		return `[${super.text(' ')}]`;
 	}
 

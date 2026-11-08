@@ -180,20 +180,6 @@ export const escape = /* #__PURE__ */ replaceEntities(/[&<>]/gu);
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 export const escapeRegExp = RegExp.escape || factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 
-/**
- * convert newline in text nodes to single whitespace
- * @param token 父节点
- */
-export const normalizeSpace = (token: AstNodes | undefined): void => {
-	if (token) {
-		for (const child of token.childNodes) {
-			if (child.type === 'text' && child.data.includes('\n')) {
-				child.replaceData(child.data.replace(/\n+/gu, ' '));
-			}
-		}
-	}
-};
-
 /** escape HTML entities */
 export const sanitize = replaceEntities(/[<>]|&(?=amp(?!;))/giu);
 

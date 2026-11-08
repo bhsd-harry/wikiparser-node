@@ -1,4 +1,6 @@
-import {provideValues} from '../util/lint';
+import {
+	provideValues,
+} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
@@ -11,7 +13,11 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
-import {commonHtmlAttrs, extAttrs, htmlAttrs} from '../util/sharable';
+import {
+	commonHtmlAttrs,
+	extAttrs,
+	htmlAttrs,
+} from '../util/sharable';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {
@@ -119,7 +125,9 @@ export abstract class AttributeToken extends Token {
 			);
 		let valueToken: Token
 		;
-		if (key === 'title' || tag === 'img' && key === 'alt') {
+		if (
+			key === 'title'
+		) {
 			valueToken = new Token(value, config, accum, {
 			});
 			valueToken.type = 'attr-value';
@@ -187,14 +195,22 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getGaps(): number {
-		return this.#equal ? 1 : 0;
+		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
 	/**
 	 * 判定无效的属性名或值
 	 */
-	#lint(): false | 1 | 2 {
-		const {lastChild, type, name, tag, parentNode} = this,
+	#lint(): false
+		| 1
+		| 2 {
+		const {
+				lastChild,
+				type,
+				name,
+				tag,
+				parentNode,
+			} = this,
 			// eslint-disable-next-line unicorn/no-declarations-before-early-exit
 			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),
@@ -228,7 +244,10 @@ export abstract class AttributeToken extends Token {
 		}
 		let valueIssue = (/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
 			|| simple
-			&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
+			// eslint-disable-next-line @stylistic/no-extra-parens
+			&& (
+				name === 'href'
+			)
 			&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
 				.test(value);
 		if (simple && !valueIssue && type !== 'ext-attr') {
@@ -326,7 +345,10 @@ export abstract class AttributeToken extends Token {
 	 * @param value attribute value / 属性值
 	 * @throws `RangeError` if the attribute of an extension tag contains `>` or the value contains both `"` and `'`
 	 */
-	setValue(value: string): void {
+	setValue(
+		value: string
+		,
+	): void {
 		require('../addon/attribute');
 		this.setValue(value);
 	}

@@ -8,7 +8,7 @@ import {clone} from '../mixin/clone';
 /* NOT FOR BROWSER END */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-declare const atomTypes: [
+const atomTypes = [
 	'arg-name',
 	'attr-key',
 	'attr-value',
@@ -23,7 +23,7 @@ declare const atomTypes: [
 	'link-target',
 	'param-line-key',
 	'param-line-value',
-];
+] as const;
 
 declare type AtomTypes = typeof atomTypes[number];
 
@@ -37,10 +37,6 @@ export class AtomToken extends Token {
 
 	override get type(): AtomTypes {
 		return this.#type;
-	}
-
-	override set type(value) {
-		this.#type = value;
 	}
 
 	/** @class */

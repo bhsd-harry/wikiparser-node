@@ -15,7 +15,9 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {states} from '../util/constants';
+import {
+	states,
+} from '../util/constants';
 import {sanitizeId} from '../util/string';
 import {getId, getTocData} from '../util/html';
 import {cached} from '../mixin/cached';
@@ -91,7 +93,7 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override getGaps(): number {
-		return 1;
+		return this.level;
 	}
 
 	/* NOT FOR BROWSER */
@@ -110,8 +112,12 @@ export abstract class HeadingToken extends Token {
 	/**
 	 * id属性
 	 */
-	#getId(): string {
-		return getId(this.firstChild.cloneNode());
+	#getId(
+	): string {
+		return getId(this.firstChild[
+			// eslint-disable-next-line @typescript-eslint/dot-notation
+			'cloneNode'
+		]());
 	}
 
 	/** @private */

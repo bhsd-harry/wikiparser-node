@@ -11,7 +11,9 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../util/debug';
+import {
+	Shadow,
+} from '../util/debug';
 
 /* NOT FOR BROWSER END */
 
@@ -101,7 +103,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return 1;
+		return i === 0 && this.length === 3 ? 2 : 1;
 	}
 
 	/* NOT FOR BROWSER */

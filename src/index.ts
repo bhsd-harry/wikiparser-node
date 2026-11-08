@@ -502,14 +502,6 @@ export class Token extends AstElement {
 
 	/* NOT FOR BROWSER */
 
-	/** @private */
-	override removeAt(i: number): AstNodes {
-		const {length} = this;
-		i += i < 0 ? length : 0;
-		const node = super.removeAt(i);
-		return node;
-	}
-
 	/**
 	 * Replace with a token of the same type
 	 *

@@ -13,7 +13,7 @@ declare interface State {
 }
 declare type Element = parse5.DefaultTreeAdapterTypes.Element;
 declare type TextNode = parse5.DefaultTreeAdapterTypes.TextNode;
-declare type DocumentFragment = parse5.DefaultTreeAdapterTypes.DocumentFragment;
+declare type Fragment = parse5.DefaultTreeAdapterTypes.DocumentFragment;
 declare type ChildNode = Element | TextNode;
 
 /* NOT FOR BROWSER END */
@@ -257,22 +257,17 @@ export const formalize = (() => {
 		 * 将当前收集的内联元素使用`<p>`标签包裹，并添加到子节点列表中
 		 * @param cur 当前收集的内联元素
 		 * @param childNodes 子节点列表
-		 * @param parentNode 父节点
 		 */
-		const wrap = (cur: ChildNode[], childNodes: ChildNode[], parentNode: Element | DocumentFragment): void => {
+		const wrap = (cur: ChildNode[], childNodes: ChildNode[]): void => {
 				if (cur.length > 0) {
-					const p: Element = {
+					childNodes.push({
 						nodeName: 'p',
 						tagName: 'p',
 						attrs: [],
 						namespaceURI: NS.HTML,
-						parentNode,
+						parentNode: null,
 						childNodes: cur,
-					};
-					for (const c of cur) {
-						c.parentNode = p;
-					}
-					childNodes.push(p);
+					});
 				}
 			},
 
@@ -283,25 +278,33 @@ export const formalize = (() => {
 			isText = (node: ChildNode): node is TextNode => node.nodeName === '#text',
 
 			/**
-			 * 判断标签内是否只有空白文本
-			 * @param node 标签
-			 */
-			isEmptyTag = (node: Element): boolean => (node.childNodes as ChildNode[])
-				.every(child => isText(child) ? !child.value.trim() : isEmptyTag(child)),
-
-			/**
 			 * 判断标签是否为内联标签
 			 * @param node 标签
 			 */
-			isInlineTag = (node: Element): boolean => inlineTags.has(node.tagName)
-				&& !isEmptyTag(node)
-				&& (node.childNodes as ChildNode[]).every(child => isText(child) || isInlineTag(child)),
+			isInlineTag = (node: Element): boolean => {
+				let stack: ChildNode[] = [],
+					isEmpty = true,
+					child: ChildNode | undefined = node;
+				while (child) {
+					if (isText(child)) {
+						if (child.value.trim()) {
+							isEmpty = false;
+						}
+					} else if (inlineTags.has(child.tagName)) {
+						stack = [...stack, ...child.childNodes as ChildNode[]];
+					} else {
+						return false;
+					}
+					child = stack.pop();
+				}
+				return !isEmpty;
+			},
 
 			/**
 			 * 处理节点，将连续的内联元素包裹在`<p>`标签中
 			 * @param parentNode 父节点
 			 */
-			process = (parentNode: Element | DocumentFragment): void => {
+			process = (parentNode: Element | Fragment): void => {
 				const childNodes: ChildNode[] = [];
 				let cur: ChildNode[] = [];
 				for (const child of parentNode.childNodes as ChildNode[]) {
@@ -313,12 +316,12 @@ export const formalize = (() => {
 						if (child.tagName === 'blockquote') {
 							process(child);
 						}
-						wrap(cur, childNodes, parentNode);
+						wrap(cur, childNodes);
 						cur = [];
 						childNodes.push(child);
 					}
 				}
-				wrap(cur, childNodes, parentNode);
+				wrap(cur, childNodes);
 				parentNode.childNodes = childNodes;
 			};
 		return (str: string, pWrap = true): string => {
@@ -335,13 +338,11 @@ export const formalize = (() => {
 	 * @param cur 当前收集的内联元素
 	 * @param childNodes 子节点列表
 	 */
-	const wrap = (cur: HTMLChildNode[], childNodes: HTMLChildNode[]): void => {
-			if (cur.length > 0) {
+	const wrap = (cur: DocumentFragment, childNodes: DocumentFragment): void => {
+			if (cur.hasChildNodes()) {
 				const p = document.createElement('p');
-				for (const c of cur) {
-					p.append(c.cloneNode(true));
-				}
-				childNodes.push(p);
+				p.replaceChildren(cur);
+				childNodes.append(p);
 			}
 		},
 
@@ -352,45 +353,51 @@ export const formalize = (() => {
 		isText = (node: HTMLChildNode): node is Text => node.nodeName === '#text',
 
 		/**
-		 * 判断标签内是否只有空白文本
-		 * @param node 标签
-		 */
-		isEmptyTag = (node: HTMLElement): boolean => !node.textContent.trim(),
-
-		/**
 		 * 判断标签是否为内联标签
 		 * @param node 标签
 		 */
-		isInlineTag = (node: HTMLElement): boolean => inlineTags.has(node.tagName.toLowerCase())
-			&& !isEmptyTag(node)
-			&& [...node.childNodes as Iterable<HTMLChildNode>].every(child => isText(child) || isInlineTag(child)),
+		isInlineTag = (node: HTMLElement): boolean => {
+			let stack: HTMLChildNode[] = [],
+				isEmpty = true,
+				child: HTMLChildNode | undefined = node;
+			while (child) {
+				if (isText(child)) {
+					if (child.data.trim()) {
+						isEmpty = false;
+					}
+				} else if (inlineTags.has(child.tagName.toLowerCase())) {
+					stack = [...stack, ...child.childNodes as Iterable<HTMLChildNode>];
+				} else {
+					return false;
+				}
+				child = stack.pop();
+			}
+			return !isEmpty;
+		},
 
 		/**
 		 * 处理节点，将连续的内联元素包裹在`<p>`标签中
 		 * @param parentNode 父节点
 		 */
 		process = (parentNode: HTMLElement): void => {
-			const childNodes: HTMLChildNode[] = [];
-			let cur: HTMLChildNode[] = [];
-			for (const child of parentNode.childNodes as Iterable<HTMLChildNode>) {
+			const childNodes = document.createDocumentFragment();
+			let cur = document.createDocumentFragment();
+			for (const child of [...parentNode.childNodes] as HTMLChildNode[]) {
 				if (isText(child)) {
-					(cur.length > 0 || child.data.trim() ? cur : childNodes).push(child);
+					(cur.hasChildNodes() || child.data.trim() ? cur : childNodes).append(child.cloneNode());
 				} else if (isInlineTag(child)) {
-					cur.push(child);
+					cur.append(child);
 				} else {
 					if (child.tagName === 'BLOCKQUOTE') {
 						process(child);
 					}
 					wrap(cur, childNodes);
-					cur = [];
-					childNodes.push(child);
+					cur = document.createDocumentFragment();
+					childNodes.append(child);
 				}
 			}
 			wrap(cur, childNodes);
-			parentNode.innerHTML = '';
-			for (const child of childNodes) {
-				parentNode.append(child);
-			}
+			parentNode.replaceChildren(childNodes);
 		};
 	return (str: string, pWrap = true): string => {
 		const {body} = new DOMParser().parseFromString(str, 'text/html');

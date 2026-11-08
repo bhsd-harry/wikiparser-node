@@ -39,8 +39,9 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 		refs: Object.assign(new Map(), {id: 0}),
 	});
 	const opt: HtmlOpt = {render},
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		{toc = true, cats = true, indicators} = render;
+		{
+			toc = true,
+		} = render;
 
 	// eslint-disable-next-line prefer-const
 	let prelim = '';
