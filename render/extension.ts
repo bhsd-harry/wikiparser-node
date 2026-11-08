@@ -4,6 +4,7 @@ import {
 } from '../util/constants';
 import {newline, sanitizeId, sanitizeAttr, sanitize} from '../util/string';
 import {extAttrs} from '../util/sharable';
+import {formalize} from '../util/html';
 import Parser from '../index';
 import type * as SyntaxHighlight from './syntaxhighlight';
 import type * as Math from './math';
@@ -64,7 +65,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			if (nameAttr) {
 				return render?.indicators
 					? `<div id="mw-indicator-${sanitizeAttr(nameAttr, true)}" class="mw-indicator">${
-						lastChild.toHtmlInternal(renderOpt)
+						formalize(lastChild.toHtmlInternal(renderOpt))
 					}</div>`
 					: '';
 			}

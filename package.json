@@ -132,6 +132,7 @@
 		"@bhsd/stylelint-util": "^2.0.0",
 		"culori": "^4.0.2",
 		"entities": "^9.0.0",
+		"parse5": "^8.0.1",
 		"vscode-languageserver-types": "^3.18.5"
 	},
 	"devDependencies": {
@@ -153,7 +154,7 @@
 		"katex": "^0.19.1",
 		"mathoid-texvcjs": "^0.6.0",
 		"monaco-editor": "^0.57.0",
-		"prism-wiki": "^2.5.0",
+		"prism-wiki": "^2.5.1",
 		"prismjs": "^1.30.0",
 		"stylelint": "^17.16.0",
 		"stylelint-config-recommended": "^18.0.0",

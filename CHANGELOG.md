@@ -6,10 +6,14 @@
 **Added**
 
 - New method [`Parser.plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#plaintext)
+- [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) now serializes the HTML output with [parse5](https://www.npmjs.com/package/parse5) to ensure valid HTML output
 
 **Fixed**
 
 - [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) is improved for simple mixed lists
+- HTML conversion of `<indicator>` extension tags containing unclosed tags
+- HTML conversion of category links with preceding unclosed tags
+- HTML conversion of section headings containing unclosed tags
 
 ## v2.1.0
 
