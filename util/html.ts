@@ -18,6 +18,8 @@ declare type ChildNode = Element | TextNode;
 
 /* NOT FOR BROWSER END */
 
+declare type HTMLChildNode = HTMLElement | Text;
+
 /**
  * get common prefix length
  * @param prefix
@@ -255,16 +257,16 @@ export const formalize = (() => {
 		 * 将当前收集的内联元素使用`<p>`标签包裹，并添加到子节点列表中
 		 * @param cur 当前收集的内联元素
 		 * @param childNodes 子节点列表
-		 * @param doc 父节点
+		 * @param parentNode 父节点
 		 */
-		const wrap = (cur: ChildNode[], childNodes: ChildNode[], doc: Element | DocumentFragment): void => {
+		const wrap = (cur: ChildNode[], childNodes: ChildNode[], parentNode: Element | DocumentFragment): void => {
 				if (cur.length > 0) {
 					const p: Element = {
 						nodeName: 'p',
 						tagName: 'p',
 						attrs: [],
 						namespaceURI: NS.HTML,
-						parentNode: doc,
+						parentNode,
 						childNodes: cur,
 					};
 					for (const c of cur) {
@@ -327,5 +329,74 @@ export const formalize = (() => {
 			return serialize(doc);
 		};
 	} catch {}
-	return (str: string): string => new DOMParser().parseFromString(str, 'text/html').body.innerHTML;
+
+	/**
+	 * 将当前收集的内联元素使用`<p>`标签包裹，并添加到子节点列表中
+	 * @param cur 当前收集的内联元素
+	 * @param childNodes 子节点列表
+	 */
+	const wrap = (cur: HTMLChildNode[], childNodes: HTMLChildNode[]): void => {
+			if (cur.length > 0) {
+				const p = document.createElement('p');
+				for (const c of cur) {
+					p.append(c.cloneNode(true));
+				}
+				childNodes.push(p);
+			}
+		},
+
+		/**
+		 * 判断节点是否为文本节点
+		 * @param node 节点
+		 */
+		isText = (node: HTMLChildNode): node is Text => node.nodeName === '#text',
+
+		/**
+		 * 判断标签内是否只有空白文本
+		 * @param node 标签
+		 */
+		isEmptyTag = (node: HTMLElement): boolean => !node.textContent.trim(),
+
+		/**
+		 * 判断标签是否为内联标签
+		 * @param node 标签
+		 */
+		isInlineTag = (node: HTMLElement): boolean => inlineTags.has(node.tagName.toLowerCase())
+			&& !isEmptyTag(node)
+			&& [...node.childNodes as Iterable<HTMLChildNode>].every(child => isText(child) || isInlineTag(child)),
+
+		/**
+		 * 处理节点，将连续的内联元素包裹在`<p>`标签中
+		 * @param parentNode 父节点
+		 */
+		process = (parentNode: HTMLElement): void => {
+			const childNodes: HTMLChildNode[] = [];
+			let cur: HTMLChildNode[] = [];
+			for (const child of parentNode.childNodes as Iterable<HTMLChildNode>) {
+				if (isText(child)) {
+					(cur.length > 0 || child.data.trim() ? cur : childNodes).push(child);
+				} else if (isInlineTag(child)) {
+					cur.push(child);
+				} else {
+					if (child.tagName === 'BLOCKQUOTE') {
+						process(child);
+					}
+					wrap(cur, childNodes);
+					cur = [];
+					childNodes.push(child);
+				}
+			}
+			wrap(cur, childNodes);
+			parentNode.innerHTML = '';
+			for (const child of childNodes) {
+				parentNode.append(child);
+			}
+		};
+	return (str: string, pWrap = true): string => {
+		const {body} = new DOMParser().parseFromString(str, 'text/html');
+		if (pWrap) {
+			process(body);
+		}
+		return body.innerHTML;
+	};
 })();
