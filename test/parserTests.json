@@ -980,7 +980,7 @@
 		"desc": "Break on | in element attribute in template",
 		"wikitext": "{{1x|1=<div class=\"hi|ho\">ha</div>}}",
 		"html": "<p>ho\"&gt;ha</p>",
-		"render": "ho\"&gt;ha",
+		"render": "<p>ho\"&gt;ha</p>",
 		"plain": "ho\">ha",
 		"lint": [
 			{
@@ -1559,7 +1559,7 @@
 		"desc": "Horizontal ruler (should it add that extra space?)",
 		"wikitext": "<hr>\n<hr >\nfoo <hr\n> bar",
 		"html": "<hr />\n<hr /><p>\nfoo </p><hr /><p> bar</p>",
-		"render": "<hr>\n<hr>\nfoo <hr> bar",
+		"render": "<hr>\n<hr><p>\nfoo </p><hr><p> bar</p>",
 		"plain": "\n\nfoo  bar",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;hr&gt;</span>\n<span class=\"wpb-html\">&lt;hr<span class=\"wpb-html-attrs\"> </span>&gt;</span>\nfoo <span class=\"wpb-html\">&lt;hr<span class=\"wpb-html-attrs\">\n</span>&gt;</span> bar</span>"
@@ -1604,7 +1604,7 @@
 		"desc": "Horizontal ruler -- Supports content following dashes on same line",
 		"wikitext": "---- Foo",
 		"html": "<hr /><p> Foo</p>",
-		"render": "<hr> Foo",
+		"render": "<hr><p> Foo</p>",
 		"plain": " Foo",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-hr\">----</span> Foo</span>"
@@ -1742,7 +1742,7 @@
 		"desc": "1. Lists and block-element interaction",
 		"wikitext": "*<div>a\n*b\n</div>ಕ",
 		"html": "<ul><li><div>a</div></li>\n<li>b</li></ul>\n<p>ಕ</p>",
-		"render": "<ul><li><div>a</div></li>\n<li>b</li></ul>\nಕ",
+		"render": "<ul><li><div>a</div></li>\n<li>b</li></ul><p>\nಕ</p>",
 		"plain": "a\nb\nಕ",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-list-range\"><span class=\"wpb-html\">&lt;div&gt;</span>a</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-list-range\">b</span>\n<span class=\"wpb-html\">&lt;/div&gt;</span>ಕ</span>"
@@ -1751,7 +1751,7 @@
 		"desc": "2. Lists and block-element interaction",
 		"wikitext": "*{{1x|<div>a\n*b\n}}</div>ಕ",
 		"html": "<ul><li><div>a</div></li>\n<li>b</li></ul>\n<p>ಕ</p>",
-		"render": "<ul><li><div>a</div></li>\n<li>b</li></ul>\nಕ",
+		"render": "<ul><li><div>a</div></li>\n<li>b</li></ul><p>\nಕ</p>",
 		"plain": "a\nb\nಕ",
 		"lint": [
 			{
@@ -3445,7 +3445,7 @@
 		"desc": "Parsoid: DOM fragment reuse",
 		"wikitext": "a{{1x|b<table></table>c}}d\n\na{{1x|b\n<table></table>\nc}}d\n\n{{1x|a\n\n<table></table>\n\nb}}",
 		"html": "<p>ab</p><table></table><p>cd\n</p><p>ab\n</p>\n<table></table>\n<p>cd\n</p><p>a\n</p>\n<table></table>\n<p>b\n</p>",
-		"render": "ab<table></table>cd\n<p>ab\n</p>\n<table></table>\n<p>cd\n</p><p>a\n</p>\n<table></table>\n<p>b\n</p>",
+		"render": "<p>ab</p><table></table><p>cd\n</p><p>ab\n</p>\n<table></table>\n<p>cd\n</p><p>a\n</p>\n<table></table>\n<p>b\n</p>",
 		"plain": "abcd\n\nab\n\ncd\n\na\n\n\n\nb",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">a<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>c</span></span>}}</span>d\n\na<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\nc</span></span>}}</span>d\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\n\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\n\nb</span></span>}}</span></span>"
@@ -3558,7 +3558,7 @@
 		"desc": "Templates: 2. Inside a block tag",
 		"wikitext": "<div>{{1x|Foo}}</div>\n<blockquote>{{1x|Foo}}</blockquote>",
 		"html": "<div>Foo</div>\n<blockquote><p>Foo</p></blockquote>",
-		"render": "<div>Foo</div>\n<blockquote>Foo</blockquote>",
+		"render": "<div>Foo</div>\n<blockquote><p>Foo</p></blockquote>",
 		"plain": "Foo\nFoo",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span><span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-html\">&lt;blockquote&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span><span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
@@ -3585,7 +3585,7 @@
 		"desc": "Templates: P-wrapping: 1c. Templates on consecutive lines",
 		"wikitext": "{{1x|Foo}}\n{{1x|bar}} <div>baz</div>",
 		"html": "<p>Foo\n</p><p>\nbar </p><div>baz</div>",
-		"render": "<p>Foo\n</p>\nbar <div>baz</div>",
+		"render": "<p>Foo\n</p><p>\nbar </p><div>baz</div>",
 		"plain": "Foo\nbar baz",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span> <span class=\"wpb-html\">&lt;div&gt;</span>baz<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
@@ -3603,7 +3603,7 @@
 		"desc": "Templates: Scopes should not be expanded unnecessarily",
 		"wikitext": "{{1x|<div>a</div>}}b{{1x|\n<div>c</div>}}",
 		"html": "<div>a</div><p>b\n</p><div>c</div>",
-		"render": "<div>a</div>b\n<div>c</div>",
+		"render": "<div>a</div><p>b\n</p><div>c</div>",
 		"plain": "ab\nc",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span>a<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span>b<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n<span class=\"wpb-html\">&lt;div&gt;</span>c<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
@@ -3648,7 +3648,7 @@
 		"desc": "Templates: Correctly encapsulate templates producing </p> tag without a corresponding <p> tag",
 		"wikitext": "{{1x|a\nb</p>}}",
 		"html": "<p>a\n</p><p>\nb</p><p class=\"mw-empty-elt\"></p>",
-		"render": "<p>a\n</p>\nb<p></p>",
+		"render": "<p>a\n</p><p>\nb</p><p></p>",
 		"plain": "a\nb",
 		"lint": [
 			{
@@ -4317,7 +4317,7 @@
 		"desc": "Templates: Wiki Tables: 1a. Fostering of entire template content",
 		"wikitext": "{|\n{{1x|a}}\n|}",
 		"html": "a\n<table><tbody><tr><td></td></tr></tbody></table>",
-		"render": "a<table>\n<tbody><tr><td></td></tr></tbody></table>",
+		"render": "<p>a</p><table>\n<tbody><tr><td></td></tr></tbody></table>",
 		"plain": "a\n",
 		"lint": [
 			{
@@ -4391,7 +4391,7 @@
 		"desc": "Templates: Wiki Tables: 2. Fostering of partial template content",
 		"wikitext": "{|\n{{1x|a\n<div>b</div>}}\n|}",
 		"html": "a\n<div>b</div><table>\n<tbody><tr><td></td></tr></tbody></table>",
-		"render": "a <div>b</div><table>\n<tbody><tr><td></td></tr></tbody></table>",
+		"render": "<p>a </p><div>b</div><table>\n<tbody><tr><td></td></tr></tbody></table>",
 		"plain": "a b\n",
 		"lint": [
 			{
@@ -4522,7 +4522,7 @@
 		"desc": "Templates: Ugly nesting: 4. Divs opened/closed across templates",
 		"wikitext": "a<div>b{{1x|c</div>d}}e",
 		"html": "<p>a</p><div>bc</div><p>de</p>",
-		"render": "a<div>bc</div>de",
+		"render": "<p>a</p><div>bc</div><p>de</p>",
 		"plain": "abcde",
 		"lint": [
 			{
@@ -8816,7 +8816,7 @@
 		"desc": "Empty TR followed by a template-generated TR",
 		"wikitext": "{|\n|-\n{{1x|<tr><td>foo</td></tr>}}\n|}",
 		"html": "<table>\n\n<tbody><tr><td>foo</td></tr>\n</tbody></table>",
-		"render": "foo<table>\n<tbody></tbody></table>",
+		"render": "<p>foo</p><table>\n<tbody></tbody></table>",
 		"plain": "foo\n",
 		"lint": [
 			{
@@ -9027,7 +9027,7 @@
 		"desc": "1. Ensure fostered text content is wrapped in element nodes",
 		"wikitext": "<table>hi</table><table>ho</table>",
 		"html": "hi<table></table>ho<table></table>",
-		"render": "hi<table></table>ho<table></table>",
+		"render": "<p>hi</p><table></table><p>ho</p><table></table>",
 		"plain": "hiho",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span>hi<span class=\"wpb-html\">&lt;/table&gt;</span><span class=\"wpb-html\">&lt;table&gt;</span>ho<span class=\"wpb-html\">&lt;/table&gt;</span></span>"
@@ -9036,7 +9036,7 @@
 		"desc": "2. Ensure fostered text content is wrapped in element nodes (traps regressions around fostered marker on the element getting lost)",
 		"wikitext": "<table>\n<tr> || ||\n<td> a\n</table>",
 		"html": "|| ||\n<table>\n<tbody><tr><td> a\n</td></tr></tbody></table>",
-		"render": " || ||\n<table>\n<tbody><tr><td> a\n</td></tr></tbody></table>",
+		"render": "<p> || ||\n</p><table>\n<tbody><tr><td> a\n</td></tr></tbody></table>",
 		"plain": "\n || ||\n a\n",
 		"lint": [
 			{
@@ -9074,7 +9074,7 @@
 		"desc": "1. Encapsulate foster-parented transclusion content",
 		"wikitext": "<table>{{1x|foo<tr><td>bar</td></tr>}}</table>",
 		"html": "foo<table><tbody><tr><td>bar</td></tr></tbody></table>",
-		"render": "foo<table><tbody><tr><td>bar</td></tr></tbody></table>",
+		"render": "<p>foo</p><table><tbody><tr><td>bar</td></tr></tbody></table>",
 		"plain": "foobar",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo<span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>bar<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
@@ -9359,7 +9359,7 @@
 		"desc": "5. Encapsulate foster-parented transclusion content",
 		"wikitext": "<table><tr><td><div><p>{{1x|foo</p></div></td>foo}}</tr></table>",
 		"html": "foo<table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table>",
-		"render": "foo<table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table>",
+		"render": "<p>foo</p><table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table>",
 		"plain": "foofoo",
 		"lint": [
 			{
@@ -9465,7 +9465,7 @@
 		"desc": "6. Encapsulate foster-parented transclusion content",
 		"wikitext": "<table><tr><td><div><p>{{1x|foo</p></div></td>foo</tr></table>}}<p>ok</p>",
 		"html": "foo<table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table><p>ok</p>",
-		"render": "foo<table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table><p>ok</p>",
+		"render": "<p>foo</p><table><tbody><tr><td><div><p>foo</p></div></td></tr></tbody></table><p>ok</p>",
 		"plain": "foofoook",
 		"lint": [
 			{
@@ -9650,7 +9650,7 @@
 		"desc": "9. Encapsulate foster-parented transclusion content",
 		"wikitext": "<table>{{1x|hi</table>hello}}",
 		"html": "hi<table></table><p>hello</p>",
-		"render": "hi<table></table>hello",
+		"render": "<p>hi</p><table></table><p>hello</p>",
 		"plain": "hihello",
 		"lint": [
 			{
@@ -15699,7 +15699,7 @@
 		"desc": "Reference list-defined nested <ref>s (T349981)",
 		"wikitext": "<ref name=\"foo\" group=\"1\" />{{#tag:references|{{#tag:ref|foo<ref>bar</ref>|name=foo|group=1}}|group=1}}\n<references />",
 		"html": "<p><sup id=\"cite&#95;ref-foo&#95;1-0\" class=\"reference\"><a href=\"#cite_note-foo-1\"><span class=\"cite-bracket\">&#91;</span>1 1<span class=\"cite-bracket\">&#93;</span></a></sup></p><div class=\"mw-references-wrap\"><ol class=\"references\" data-mw-group=\"1\">\n<li id=\"cite&#95;note-foo-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-foo_1-0\">↑</a></span> <span class=\"reference-text\">foo<sup id=\"cite&#95;ref-2\" class=\"reference\"><a href=\"#cite_note-2\"><span class=\"cite-bracket\">&#91;</span>1<span class=\"cite-bracket\">&#93;</span></a></sup></span>\n</li>\n</ol></div>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite&#95;note-2\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-2\">↑</a></span> <span class=\"reference-text\">bar</span>\n</li>\n</ol></div>",
-		"render": "<sup id=\"cite_ref-foo_1-0\" class=\"reference\"><a href=\"#cite_note-foo-1\"><span class=\"cite-bracket\">[</span>1 1<span class=\"cite-bracket\">]</span></a></sup><div class=\"mw-references-wrap\"><ol class=\"references\" data-mw-group=\"1\">\n<li id=\"cite_note-foo-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-foo_1-0\">↑</a></span> <span class=\"reference-text\">foo<span class=\"error mw-ext-cite-error\">Cite error: &lt;ref&gt; tag defined in &lt;references&gt; has no name attribute</span></span>\n</li>\n</ol></div>",
+		"render": "<p><sup id=\"cite_ref-foo_1-0\" class=\"reference\"><a href=\"#cite_note-foo-1\"><span class=\"cite-bracket\">[</span>1 1<span class=\"cite-bracket\">]</span></a></sup></p><div class=\"mw-references-wrap\"><ol class=\"references\" data-mw-group=\"1\">\n<li id=\"cite_note-foo-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-foo_1-0\">↑</a></span> <span class=\"reference-text\">foo<span class=\"error mw-ext-cite-error\">Cite error: &lt;ref&gt; tag defined in &lt;references&gt; has no name attribute</span></span>\n</li>\n</ol></div>",
 		"plain": "\n",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">group</span>=\"<span class=\"wpb-attr-value\">1</span>\"</span> </span>/&gt;</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">references</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ref</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo<span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">bar</span>&lt;/ref&gt;</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">name</span>=<span class=\"wpb-parameter-value\">foo</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">group</span>=<span class=\"wpb-parameter-value\">1</span></span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">group</span>=<span class=\"wpb-parameter-value\">1</span></span>}}</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
@@ -19147,7 +19147,7 @@
 		"desc": "Fuzz testing: Parser24",
 		"wikitext": "{|\n{{{|\n<u CLASS=\n| {{{{SSSll!!!!!!!VVVV)]]][[Special:*xxxxxxx--><noinclude>}}}} >\n<br style=\"onmouseover='alert(document.cookie);' \" />\n\nMOVE YOUR MOUSE CURSOR OVER THIS TEXT\n|",
 		"html": "{{{|\n<u class=\"&#124;\">}}}} &gt;\n<br style=\"onmouseover=&#39;alert(document.cookie);&#39;\" />\n\nMOVE YOUR MOUSE CURSOR OVER THIS TEXT\n</u><table><tbody><tr>\n<td>\n</td>\n</tr>\n</tbody></table>",
-		"render": "{{{| <u class=\"|\">}}}} &gt; <br style=\"onmouseover='alert(document.cookie);'\">  MOVE YOUR MOUSE CURSOR OVER THIS TEXT<table>\n<tbody><tr>\n<td>\n</td></tr></tbody></table></u>",
+		"render": "<p>{{{| </p><u class=\"|\">}}}} &gt; <br style=\"onmouseover='alert(document.cookie);'\">  MOVE YOUR MOUSE CURSOR OVER THIS TEXT<table>\n<tbody><tr>\n<td>\n</td></tr></tbody></table></u>",
 		"plain": "{{{| }}}} >   MOVE YOUR MOUSE CURSOR OVER THIS TEXT\n\n\n",
 		"lint": [
 			{
@@ -19383,7 +19383,7 @@
 		"desc": "Fuzz testing: URL adjacent extension (no space, dirty; pre)",
 		"wikitext": "http://example.com<pre>junk</pre>",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a></p><pre>junk</pre>",
-		"render": "<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a><pre>junk</pre>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a></p><pre>junk</pre>",
 		"plain": "http://example.comjunk",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">junk</span>&lt;/pre&gt;</span></span>"
@@ -21125,7 +21125,7 @@
 		"desc": "Fuzz testing: Parser14",
 		"wikitext": "==onmouseover===\nhttp://__TOC__",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"onmouseover.3D\">onmouseover=</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: onmouseover=\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div><p>\nhttp://</p><div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#onmouseover.3D\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">onmouseover=</span></a></li>\n</ul>\n</div>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"onmouseover=\">onmouseover=</h2></div>\nhttp://<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\"><div class=\"toctitle\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#onmouseover=\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">onmouseover=</span></a></li>\n</ul>\n</div>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"onmouseover=\">onmouseover=</h2></div><p>\nhttp://</p><div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\"><div class=\"toctitle\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#onmouseover=\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">onmouseover=</span></a></li>\n</ul>\n</div>",
 		"plain": "onmouseover=\nhttp://",
 		"lint": [
 			{
@@ -22124,7 +22124,7 @@
 		"desc": "3a. Indent-Pre and block tags (single-line html)",
 		"wikitext": " a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n <span> foo </span>",
 		"html": "<p> a </p><p> foo </p><p>\n b </p><div> foo </div><p>\n c </p><blockquote><p> foo </p></blockquote>\n<pre><span> foo </span>\n</pre>",
-		"render": "a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n<pre><span> foo </span>\n</pre>",
+		"render": "<p>a </p><p> foo </p><p>\n b </p><div> foo </div><p>\n c </p><blockquote><p> foo </p></blockquote>\n<pre><span> foo </span>\n</pre>",
 		"plain": " a  foo \n b  foo \n c  foo \n  foo ",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"> a <span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span>\n c <span class=\"wpb-html\">&lt;blockquote&gt;</span> foo <span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n <span class=\"wpb-html\">&lt;span&gt;</span> foo <span class=\"wpb-html\">&lt;/span&gt;</span></span>"
@@ -22133,7 +22133,7 @@
 		"desc": "3b. Indent-Pre and block tags (multi-line html)",
 		"wikitext": " a <span>foo</span>\n<!-- comment --> b <div> foo </div>",
 		"html": "<pre>a <span>foo</span>\n</pre><p>\n b </p><div> foo </div>",
-		"render": "<pre>a <span>foo</span>\n</pre>\n b <div> foo </div>",
+		"render": "<pre>a <span>foo</span>\n</pre><p>\n b </p><div> foo </div>",
 		"plain": " a foo\n b  foo ",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"> a <span class=\"wpb-html\">&lt;span&gt;</span>foo<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-comment\">&lt;!-- comment --&gt;</span> b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span></span>"
@@ -26817,7 +26817,7 @@
 		"desc": "Image with link tails",
 		"wikitext": "123[[File:Foobar.jpg]]456\n123[[File:Foobar.jpg|right]]456\n123[[File:Foobar.jpg|thumb]]456",
 		"html": "<p>123<span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>456\n</p><p>\n123</p><figure class=\"mw-default-size mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a><figcaption></figcaption></figure><p>456\n123</p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/220px-Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"220\" height=\"25\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/440px-Foobar.jpg 2x\" /></a><figcaption></figcaption></figure><p>456</p>",
-		"render": "<p>123<span class=\"mw-default-size\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a></span>456\n</p>\n123<figure class=\"mw-default-size mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption></figcaption></figure>456\n123<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption></figcaption></figure>456",
+		"render": "<p>123<span class=\"mw-default-size\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a></span>456\n</p><p>\n123</p><figure class=\"mw-default-size mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption></figcaption></figure><p>456\n123</p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption></figcaption></figure><p>456</p>",
 		"plain": "123456\n123456\n123456",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">123<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>]]</span>456\n123<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">right</span>]]</span>456\n123<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>]]</span>456</span>"
@@ -29391,7 +29391,7 @@
 		"desc": "Template with thumb image (with link in description)",
 		"wikitext": "{{paramtest|param=[[Image:noimage.png|thumb|[[no link|link]] [[no link|caption]]]]}}",
 		"html": "<p>This is a test template with parameter </p><figure class=\"mw-default-size\" typeof=\"mw:Error mw:File/Thumb\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=Noimage.png\" class=\"new\" title=\"File:Noimage.png\"><span class=\"mw-file-element mw-broken-media\" data-width=\"180\">File:Noimage.png</span></a><figcaption><a href=\"/wiki/No_link\" title=\"No link\">link</a> <a href=\"/wiki/No_link\" title=\"No link\">caption</a></figcaption></figure>",
-		"render": "This is a test template with parameter <figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3ANoimage.png\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FNoimage.png\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/No_link\" title=\"No link\">link</a> <a href=\"/wiki/No_link\" title=\"No link\">caption</a></figcaption></figure>",
+		"render": "<p>This is a test template with parameter </p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3ANoimage.png\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FNoimage.png\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/No_link\" title=\"No link\">link</a> <a href=\"/wiki/No_link\" title=\"No link\">caption</a></figcaption></figure>",
 		"plain": "This is a test template with parameter link caption",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">paramtest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">param</span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">Image:noimage.png</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">no link</span>|<span class=\"wpb-link-text\">link</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">no link</span>|<span class=\"wpb-link-text\">caption</span>]]</span></span>]]</span></span></span>}}</span></span>"
@@ -30729,7 +30729,7 @@
 		"desc": "File in formatting element violating content model, figcaption content",
 		"wikitext": "<p>''test [[File:Foobar.jpg|thumb|123]] 456''</p>",
 		"html": "<p><i>test </i></p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><i>123</i></figcaption></figure><p><i> 456</i></p><p class=\"mw-empty-elt\"></p>",
-		"render": "<p><i>test </i></p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><i><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption>123</figcaption></i></figure><i> 456</i><p></p>",
+		"render": "<p><i>test </i></p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><i><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption>123</figcaption></i></figure><p><i> 456</i></p><p></p>",
 		"plain": "test 123 456",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span><span class=\"wpb-quote\">''</span>test <span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">123</span>]]</span> 456<span class=\"wpb-quote\">''</span><span class=\"wpb-html\">&lt;/p&gt;</span></span>"
@@ -31116,7 +31116,7 @@
 		"desc": "T374445: Non extlink in media caption",
 		"wikitext": "[[File:Foobar.jpg|thumb|[<nowiki/>[[Link1]]<nowiki>]</nowiki>]]\n[[File:Foobar.jpg|thumb|[[Link1|[<nowiki/>Link1<nowiki>]</nowiki>]]]]\n[[File:Foobar.jpg|thumb|[[Link1|[meh]]]]]",
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>[<a href=\"/wiki/Link1\" title=\"Link1\">Link1</a>]</figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a href=\"/wiki/Link1\" title=\"Link1\">[Link1]</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" loading=\"lazy\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a href=\"/wiki/Link1\" title=\"Link1\">[meh</a></figcaption></figure><p>]</p>",
-		"render": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption>[<a href=\"/wiki/Link1\" title=\"Link1\">Link1</a>]</figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Link1\" title=\"Link1\">[Link1]</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Link1\" title=\"Link1\">[meh</a></figcaption></figure>]",
+		"render": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption>[<a href=\"/wiki/Link1\" title=\"Link1\">Link1</a>]</figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Link1\" title=\"Link1\">[Link1]</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/Special%3ARedirect%2Ffile%2FFoobar.jpg\" decoding=\"async\" loading=\"lazy\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Link1\" title=\"Link1\">[meh</a></figcaption></figure><p>]</p>",
 		"plain": "[Link1]\n[Link1]\n[meh]",
 		"lint": [
 			{
@@ -31430,7 +31430,7 @@
 		"desc": "Block tag on one line (<div>)",
 		"wikitext": "a <div>foo</div>\n\nb",
 		"html": "<p>a </p><div>foo</div>\n<p>b\n</p>",
-		"render": "a <div>foo</div>\n<p>b\n</p>",
+		"render": "<p>a </p><div>foo</div>\n<p>b\n</p>",
 		"plain": "a foo\n\nb",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n\nb</span>"
@@ -31454,7 +31454,7 @@
 		"desc": "Block tag on one line (<blockquote>)",
 		"wikitext": "a <blockquote>foo</blockquote>\n\nb",
 		"html": "<p>a </p><blockquote><p>foo</p></blockquote>\n<p>b\n</p>",
-		"render": "a <blockquote>foo</blockquote>\n<p>b\n</p>",
+		"render": "<p>a </p><blockquote><p>foo</p></blockquote>\n<p>b\n</p>",
 		"plain": "a foo\n\nb",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;blockquote&gt;</span>foo<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\nb</span>"
@@ -31463,7 +31463,7 @@
 		"desc": "Block tag on both lines (<div>)",
 		"wikitext": "a <div>foo</div>\n\nb <div>foo</div>",
 		"html": "<p>a </p><div>foo</div><p>\nb </p><div>foo</div>",
-		"render": "a <div>foo</div>\nb <div>foo</div>",
+		"render": "<p>a </p><div>foo</div><p>\nb </p><div>foo</div>",
 		"plain": "a foo\n\nb foo",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n\nb <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
@@ -31472,7 +31472,7 @@
 		"desc": "Block tag on both lines (<blockquote>)",
 		"wikitext": "a <blockquote>foo</blockquote>\n\nb <blockquote>foo</blockquote>",
 		"html": "<p>a </p><blockquote><p>foo</p></blockquote><p>\nb </p><blockquote><p>foo</p></blockquote>",
-		"render": "a <blockquote>foo</blockquote>\nb <blockquote>foo</blockquote>",
+		"render": "<p>a </p><blockquote><p>foo</p></blockquote><p>\nb </p><blockquote><p>foo</p></blockquote>",
 		"plain": "a foo\n\nb foo",
 		"lint": [],
 		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;blockquote&gt;</span>foo<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\nb <span class=\"wpb-html\">&lt;blockquote&gt;</span>foo<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
@@ -31481,7 +31481,7 @@
 		"desc": "Multiple lines without block tags",
 		"wikitext": "<div>foo</div> a\nb\nc\nd<!--foo--> e\nx <div>foo</div> z",
 		"html": "<div>foo</div><p> a\n</p><p>b\nc\nd e\n</p><p>\nx </p><div>foo</div><p> z</p>",
-		"render": "<div>foo</div> a\n<p>b\nc\nd e\n</p>\nx <div>foo</div> z",
+		"render": "<div>foo</div><p> a\n</p><p>b\nc\nd e\n</p><p>\nx </p><div>foo</div><p> z</p>",
 		"plain": "foo a\nb\nc\nd e\nx foo z",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span> a\nb\nc\nd<span class=\"wpb-comment\">&lt;!--foo--&gt;</span> e\nx <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span> z</span>"
@@ -31490,7 +31490,7 @@
 		"desc": "Empty lines between lines with block tags",
 		"wikitext": "<div></div>\n\n\n<div></div>a\n\nb\n<div>a</div>b\n\n<div>b</div>d\n\n\n<div>e</div>",
 		"html": "<div></div>\n<p><br />\n</p>\n<div></div><p>a\n</p><p>b\n</p>\n<div>a</div><p>b\n</p><div>b</div><p>d\n</p><p><br />\n</p>\n<div>e</div>",
-		"render": "<div></div>\n<p><br>\n</p>\n<div></div>a\n<p>b\n</p>\n<div>a</div>b\n<div>b</div>d\n<p><br>\n</p>\n<div>e</div>",
+		"render": "<div></div>\n<p><br>\n</p>\n<div></div><p>a\n</p><p>b\n</p>\n<div>a</div><p>b\n</p><div>b</div><p>d\n</p><p><br>\n</p>\n<div>e</div>",
 		"plain": "\n\n\na\n\nb\nab\n\nbd\n\n\ne",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span>\n\n\n<span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span>a\n\nb\n<span class=\"wpb-html\">&lt;div&gt;</span>a<span class=\"wpb-html\">&lt;/div&gt;</span>b\n\n<span class=\"wpb-html\">&lt;div&gt;</span>b<span class=\"wpb-html\">&lt;/div&gt;</span>d\n\n\n<span class=\"wpb-html\">&lt;div&gt;</span>e<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
@@ -31638,7 +31638,7 @@
 		"desc": "Extlink on a line with a block gets wrapped",
 		"wikitext": "[https://google.com {{1x|foo}}] bar <div>foo</div>",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"https://google.com\">foo</a> bar </p><div>foo</div>",
-		"render": "<a rel=\"nofollow\" class=\"external text\" href=\"https://google.com/\">foo</a> bar <div>foo</div>",
+		"render": "<p><a rel=\"nofollow\" class=\"external text\" href=\"https://google.com/\">foo</a> bar </p><div>foo</div>",
 		"plain": "foo bar foo",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://google.com</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>]</span> bar <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
@@ -31692,7 +31692,7 @@
 		"desc": "T17491: <ins>/<del> in blockquote (2)",
 		"wikitext": "<blockquote>Foo <del>bar</del> <ins>baz</ins> quux\n</blockquote>",
 		"html": "<blockquote><p>Foo <del>bar</del> <ins>baz</ins> quux\n</p></blockquote>",
-		"render": "<blockquote>Foo <del>bar</del> <ins>baz</ins> quux\n</blockquote>",
+		"render": "<blockquote><p>Foo <del>bar</del> <ins>baz</ins> quux\n</p></blockquote>",
 		"plain": "Foo bar baz quux\n",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;blockquote&gt;</span>Foo <span class=\"wpb-html\">&lt;del&gt;</span>bar<span class=\"wpb-html\">&lt;/del&gt;</span> <span class=\"wpb-html\">&lt;ins&gt;</span>baz<span class=\"wpb-html\">&lt;/ins&gt;</span> quux\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
@@ -31769,7 +31769,7 @@
 		"desc": "Nesting tags, paragraphs on lines which begin with <div>",
 		"wikitext": "<div></div><strong>A\nB</strong>",
 		"html": "<div></div><p><strong>A\n</strong></p><strong></strong><p><strong>B</strong>\n</p>",
-		"render": "<div></div><strong>A\n</strong><p><strong>B</strong>\n</p>",
+		"render": "<div></div><p><strong>A\n</strong></p><p><strong>B</strong>\n</p>",
 		"plain": "A\nB",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;strong&gt;</span>A\nB<span class=\"wpb-html\">&lt;/strong&gt;</span></span>"
@@ -31778,7 +31778,7 @@
 		"desc": "T8200: paragraphs inside blockquotes (no extra line breaks)",
 		"wikitext": "<blockquote>Line one\n\nLine two</blockquote>",
 		"html": "<blockquote><p>Line one\nLine two</p></blockquote>",
-		"render": "<blockquote>Line one\nLine two</blockquote>",
+		"render": "<blockquote><p>Line one\nLine two</p></blockquote>",
 		"plain": "Line one\n\nLine two",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;blockquote&gt;</span>Line one\n\nLine two<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
@@ -31787,7 +31787,7 @@
 		"desc": "T8200: paragraphs inside blockquotes (extra line break on open)",
 		"wikitext": "<blockquote>\nLine one\n\nLine two</blockquote>",
 		"html": "<blockquote>\n<p>Line one\n</p><p>\nLine two</p></blockquote>",
-		"render": "<blockquote>\n<p>Line one\n</p>\nLine two</blockquote>",
+		"render": "<blockquote>\n<p>Line one\n</p><p>\nLine two</p></blockquote>",
 		"plain": "\nLine one\n\nLine two",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;blockquote&gt;</span>\nLine one\n\nLine two<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
@@ -31796,7 +31796,7 @@
 		"desc": "T8200: paragraphs inside blockquotes (extra line break on close)",
 		"wikitext": "<blockquote>Line one\n\nLine two\n</blockquote>",
 		"html": "<blockquote><p>Line one\n</p><p>Line two\n</p>\n</blockquote>",
-		"render": "<blockquote>Line one\n<p>Line two\n</p>\n</blockquote>",
+		"render": "<blockquote><p>Line one\n</p><p>Line two\n</p>\n</blockquote>",
 		"plain": "Line one\n\nLine two\n",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;blockquote&gt;</span>Line one\n\nLine two\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
@@ -32919,7 +32919,7 @@
 		"desc": "Handle broken pre-like tags (T66025)",
 		"wikitext": "{{1x|<pre <pre>x</pre>}}\n\n<table><pre </table>",
 		"html": "<pre>x</pre>\n&lt;pre <table></table>",
-		"render": "<pre>x</pre>\n&lt;pre <table></table>",
+		"render": "<pre>x</pre><p>\n&lt;pre </p><table></table>",
 		"plain": "x\n\n<pre ",
 		"lint": [
 			{
@@ -32992,7 +32992,7 @@
 		"desc": "Less than in attribute position",
 		"wikitext": "<pre <pre>123</pre>\n\n<div <div>123</div>",
 		"html": "<pre>123</pre><p>\n&lt;div </p><div>123</div>",
-		"render": "<pre>123</pre>\n&lt;div <div>123</div>",
+		"render": "<pre>123</pre><p>\n&lt;div </p><div>123</div>",
 		"plain": "123\n\n<div 123",
 		"lint": [
 			{
@@ -36296,7 +36296,7 @@
 		"desc": "Sanitizer: Closing of closed but not open table tags",
 		"wikitext": "Table not started</td></tr></table>",
 		"html": "<p>Table not started</p>",
-		"render": "Table not started",
+		"render": "<p>Table not started</p>",
 		"plain": "Table not started",
 		"lint": [
 			{
@@ -37080,7 +37080,7 @@
 		"desc": "Non-word characters don't terminate tag names (T19663, T42670, T54022)",
 		"wikitext": "<blockquote|>a</blockquote>\n\n<b→> doesn't terminate </b→>\n\n<bä> doesn't terminate </bä>\n\n<boo> doesn't terminate </boo>\n\n<s.foo> doesn't terminate </s.foo>\n\n<sub-ID#1>",
 		"html": "<p>&lt;blockquote|&gt;a\n</p><p>&lt;b→&gt; doesn't terminate &lt;/b→&gt;\n</p><p>&lt;bä&gt; doesn't terminate &lt;/bä&gt;\n</p><p>&lt;boo&gt; doesn't terminate &lt;/boo&gt;\n</p><p>&lt;s.foo&gt; doesn't terminate &lt;/s.foo&gt;\n</p><p>&lt;sub-ID#1&gt;\n</p>",
-		"render": "&lt;blockquote|&gt;a\n<p>&lt;b→&gt; doesn't terminate &lt;/b→&gt;\n</p><p>&lt;bä&gt; doesn't terminate &lt;/bä&gt;\n</p><p>&lt;boo&gt; doesn't terminate &lt;/boo&gt;\n</p><p>&lt;s.foo&gt; doesn't terminate &lt;/s.foo&gt;\n</p><p>&lt;sub-ID#1&gt;\n</p>",
+		"render": "<p>&lt;blockquote|&gt;a\n</p><p>&lt;b→&gt; doesn't terminate &lt;/b→&gt;\n</p><p>&lt;bä&gt; doesn't terminate &lt;/bä&gt;\n</p><p>&lt;boo&gt; doesn't terminate &lt;/boo&gt;\n</p><p>&lt;s.foo&gt; doesn't terminate &lt;/s.foo&gt;\n</p><p>&lt;sub-ID#1&gt;\n</p>",
 		"plain": "<blockquote|>a\n\n<b→> doesn't terminate </b→>\n\n<bä> doesn't terminate </bä>\n\n<boo> doesn't terminate </boo>\n\n<s.foo> doesn't terminate </s.foo>\n\n<sub-ID#1>",
 		"lint": [
 			{
@@ -39668,7 +39668,7 @@
 		"desc": "Fostered content in tables: Plain text",
 		"wikitext": "{|\n|-\na\n|}",
 		"html": "a\n<table></table>",
-		"render": "a<table>\n<tbody></tbody></table>",
+		"render": "<p>a</p><table>\n<tbody></tbody></table>",
 		"plain": "a\n",
 		"lint": [
 			{
@@ -39776,7 +39776,7 @@
 		"desc": "Parsoid: Round-trip tables directly followed by content (T53219)",
 		"wikitext": "{|\n|foo\n|} bar\n\n{|\n|baz\n|}<b>quux</b>",
 		"html": "<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table><p> bar\n</p><table>\n<tbody><tr>\n<td>baz\n</td></tr></tbody></table><p><b>quux</b></p>",
-		"render": "<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table> bar\n<table>\n<tbody><tr>\n<td>baz\n</td></tr></tbody></table><b>quux</b>",
+		"render": "<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table><p> bar\n</p><table>\n<tbody><tr>\n<td>baz\n</td></tr></tbody></table><p><b>quux</b></p>",
 		"plain": "\n\nfoo\n bar\n\n\n\nbaz\nquux",
 		"lint": [],
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span> bar\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">baz</span></span><span class=\"wpb-table-syntax\">\n|}</span></span><span class=\"wpb-html\">&lt;b&gt;</span>quux<span class=\"wpb-html\">&lt;/b&gt;</span></span>"
@@ -42059,7 +42059,7 @@
 		"desc": "<pre> inside a link",
 		"wikitext": "[[Main<pre> Page</pre>]] [[Main Page|the main page <pre>[it's not very good]</pre>]]",
 		"html": "<p>[[Main</p><pre> Page</pre><p>]] <a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page </a></p><a href=\"/wiki/Main_Page\" title=\"Main Page\"><pre>[it's not very good]</pre></a>",
-		"render": "[[Main<pre> Page</pre>]] <a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page <pre>[it's not very good]</pre></a>",
+		"render": "<p>[[Main</p><pre> Page</pre><p>]] </p><a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page <pre>[it's not very good]</pre></a>",
 		"plain": "[[Main Page]] the main page [it's not very good]",
 		"lint": [
 			{
