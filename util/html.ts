@@ -11,6 +11,10 @@ declare interface State {
 	/** whether a `<dt>` tag is open */
 	dt: boolean[];
 }
+declare type Element = parse5.DefaultTreeAdapterTypes.Element;
+declare type TextNode = parse5.DefaultTreeAdapterTypes.TextNode;
+declare type DocumentFragment = parse5.DefaultTreeAdapterTypes.DocumentFragment;
+declare type ChildNode = Element | TextNode;
 
 /* NOT FOR BROWSER END */
 
@@ -196,11 +200,49 @@ export const getId = (tokens: Token | string): string => {
 export const getTocData = (token: Token & {tocData?: string}, {toc = true}: RenderOpt = {}): string =>
 	toc ? token.tocData ?? '' : '';
 
+const inlineTags = new Set([
+	'a',
+	'b',
+	'bdi',
+	'del',
+	'i',
+	'ins',
+	'u',
+	'font',
+	'big',
+	'small',
+	'sub',
+	'sup',
+	'cite',
+	'code',
+	'em',
+	's',
+	'strike',
+	'strong',
+	'tt',
+	'var',
+	'ruby',
+	'rb',
+	'rp',
+	'rt',
+	'rtc',
+	'span',
+	'abbr',
+	'dfn',
+	'kbd',
+	'samp',
+	'data',
+	'time',
+	'mark',
+	'q',
+	'bdo',
+]);
+
 /** 修正HTML字符串，确保其符合HTML规范 */
 export const formalize = (() => {
 	NPM: try {
 		const {parseFragment, serialize, html: {NS}}: typeof parse5 = require('parse5');
-		const body: parse5.DefaultTreeAdapterTypes.Element = {
+		const body: Element = {
 			nodeName: 'body',
 			tagName: 'body',
 			attrs: [],
@@ -208,7 +250,82 @@ export const formalize = (() => {
 			parentNode: null,
 			childNodes: [],
 		};
-		return (str: string): string => serialize(parseFragment(body, str, {}));
+
+		/**
+		 * 将当前收集的内联元素使用`<p>`标签包裹，并添加到子节点列表中
+		 * @param cur 当前收集的内联元素
+		 * @param childNodes 子节点列表
+		 * @param doc 父节点
+		 */
+		const wrap = (cur: ChildNode[], childNodes: ChildNode[], doc: Element | DocumentFragment): void => {
+				if (cur.length > 0) {
+					const p: Element = {
+						nodeName: 'p',
+						tagName: 'p',
+						attrs: [],
+						namespaceURI: NS.HTML,
+						parentNode: doc,
+						childNodes: cur,
+					};
+					for (const c of cur) {
+						c.parentNode = p;
+					}
+					childNodes.push(p);
+				}
+			},
+
+			/**
+			 * 判断节点是否为文本节点
+			 * @param node 节点
+			 */
+			isText = (node: ChildNode): node is TextNode => node.nodeName === '#text',
+
+			/**
+			 * 判断标签内是否只有空白文本
+			 * @param node 标签
+			 */
+			isEmptyTag = (node: Element): boolean => (node.childNodes as ChildNode[])
+				.every(child => isText(child) ? !child.value.trim() : isEmptyTag(child)),
+
+			/**
+			 * 判断标签是否为内联标签
+			 * @param node 标签
+			 */
+			isInlineTag = (node: Element): boolean => inlineTags.has(node.tagName)
+				&& !isEmptyTag(node)
+				&& (node.childNodes as ChildNode[]).every(child => isText(child) || isInlineTag(child)),
+
+			/**
+			 * 处理节点，将连续的内联元素包裹在`<p>`标签中
+			 * @param parentNode 父节点
+			 */
+			process = (parentNode: Element | DocumentFragment): void => {
+				const childNodes: ChildNode[] = [];
+				let cur: ChildNode[] = [];
+				for (const child of parentNode.childNodes as ChildNode[]) {
+					if (isText(child)) {
+						(cur.length > 0 || child.value.trim() ? cur : childNodes).push(child);
+					} else if (isInlineTag(child)) {
+						cur.push(child);
+					} else {
+						if (child.tagName === 'blockquote') {
+							process(child);
+						}
+						wrap(cur, childNodes, parentNode);
+						cur = [];
+						childNodes.push(child);
+					}
+				}
+				wrap(cur, childNodes, parentNode);
+				parentNode.childNodes = childNodes;
+			};
+		return (str: string, pWrap = true): string => {
+			const doc = parseFragment(body, str, {});
+			if (pWrap) {
+				process(doc);
+			}
+			return serialize(doc);
+		};
 	} catch {}
 	return (str: string): string => new DOMParser().parseFromString(str, 'text/html').body.innerHTML;
 })();

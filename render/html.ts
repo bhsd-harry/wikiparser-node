@@ -106,7 +106,7 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 					tocStr += `${prefix}\n<li class="toclevel-${j + 1} tocsection-${++i}"><a href="#${
 						id
 					}"><span class="tocnumber">${tocNumbers.join('.')}</span> <span class="toctext">${
-						formalize(text).replaceAll(
+						formalize(text, false).replaceAll(
 							/<(\/?)([a-z]\w*)\b.*?>/gu,
 							(_, slash: string, tag: string) => allowed.has(tag) ? `<${slash}${tag}>` : '',
 						).trim()
