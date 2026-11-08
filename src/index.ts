@@ -612,7 +612,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	concat(elements: readonly AstNodes[]): void {
+	concatenate(elements: readonly AstNodes[]): void {
 		PRINT: {
 			if (elements.length === 0) {
 				return;
