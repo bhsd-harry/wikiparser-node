@@ -1,4 +1,10 @@
-import {generateForChild, provideValues, fixBy, fixByClose, fixByRemove} from '../util/lint';
+import {
+	provideValues,
+	generateForChild,
+	fixBy,
+	fixByClose,
+	fixByRemove,
+} from '../util/lint';
 import {
 	removeComment,
 	trimLc,
@@ -16,7 +22,12 @@ import {
 
 	classes,
 } from '../util/constants';
-import {commonHtmlAttrs, extAttrs, htmlAttrs, obsoleteAttrs} from '../util/sharable';
+import {
+	commonHtmlAttrs,
+	extAttrs,
+	htmlAttrs,
+	obsoleteAttrs,
+} from '../util/sharable';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
@@ -167,7 +178,10 @@ export abstract class AttributeToken extends Token {
 			);
 		let valueToken: Token
 		;
-		if (key === 'title' || tag === 'img' && key === 'alt') {
+		if (
+			key === 'title'
+			|| tag === 'img' && key === 'alt'
+		) {
 			valueToken = new Token(value, config, accum, {
 				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
@@ -264,7 +278,9 @@ export abstract class AttributeToken extends Token {
 	 * @param start 起始位置
 	 * @param rect 位置
 	 */
-	#lint(): false | 1 | 2;
+	#lint(): false
+		| 1
+		| 2;
 	#lint(start: number, rect: BoundingRect): LintError | false;
 	#lint(
 		start?: number,
@@ -273,12 +289,19 @@ export abstract class AttributeToken extends Token {
 		| 2
 		| 1
 		| false {
-		const {firstChild, lastChild, type, name, tag, parentNode} = this,
+		const {
+				lastChild,
+				type,
+				name,
+				tag,
+				parentNode,
+				firstChild,
+			} = this,
 			simple = !lastChild.childNodes.some(({type: t}) => complexTypes.has(t)),
 			value = this.getValue(),
+			{length} = this.toString(),
 			attrs = extAttrs[tag],
-			attrs2 = htmlAttrs[tag],
-			{length} = this.toString();
+			attrs2 = htmlAttrs[tag];
 		let rule: LintError.Rule = 'illegal-attr',
 			lintConfig: LintConfiguration,
 			computeEditInfo: boolean | undefined;
@@ -357,7 +380,10 @@ export abstract class AttributeToken extends Token {
 		} else {
 			let valueIssue = (/^xmlns:[\w:.-]+$/u.test(name) || urlAttrs.has(name)) && evil.test(value)
 				|| simple
-				&& (name === 'href' || type === 'ext-attr' && tag === 'img' && name === 'src')
+				&& (
+					name === 'href'
+					|| type === 'ext-attr' && tag === 'img' && name === 'src'
+				)
 				&& !new RegExp(String.raw`^(?:${this.getAttribute('config').protocol}|//)\S+$`, 'iu')
 					.test(value);
 			if (simple && !valueIssue && type !== 'ext-attr') {
@@ -560,7 +586,10 @@ export abstract class AttributeToken extends Token {
 	 * @param value attribute value / 属性值
 	 * @throws `RangeError` if the attribute of an extension tag contains `>` or the value contains both `"` and `'`
 	 */
-	setValue(value: string | boolean): void {
+	setValue(
+		value: string
+			| boolean,
+	): void {
 		require('../addon/attribute');
 		this.setValue(value);
 	}

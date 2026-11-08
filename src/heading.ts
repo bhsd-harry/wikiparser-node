@@ -23,7 +23,11 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {classes, states, MAX_STAGE} from '../util/constants';
+import {
+	states,
+	classes,
+	MAX_STAGE,
+} from '../util/constants';
 import {sanitizeId} from '../util/string';
 import {getId, getTocData} from '../util/html';
 import {fixedToken} from '../mixin/fixed';
@@ -330,8 +334,14 @@ export abstract class HeadingToken extends Token {
 	 * id属性
 	 * @param expand 是否展开模板
 	 */
-	#getId(expand?: boolean): string {
-		return getId(this.firstChild[expand ? 'expand' : 'cloneNode']());
+	#getId(
+		expand?: boolean,
+	): string {
+		return getId(this.firstChild[
+			expand
+				? 'expand' :
+				'cloneNode'
+		]());
 	}
 
 	/** @private */

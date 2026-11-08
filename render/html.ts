@@ -47,7 +47,11 @@ export const toHtml = (token: Token, render: RenderOpt = {}): string => {
 		refs: Object.assign(new Map(), {id: 0}),
 	});
 	const opt: HtmlOpt = {render},
-		{toc = true, cats = true, indicators} = render;
+		{
+			toc = true,
+			cats = true,
+			indicators,
+		} = render;
 
 	// 处理指示器
 	let prelim = '';

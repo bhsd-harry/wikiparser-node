@@ -23,8 +23,7 @@ export class RedirectMap extends Map<string, string> {
 	/** @ignore */
 	constructor(
 		entries?: Iterable<[string, string]>
-			| Record<string, string>
-		,
+			| Record<string, string>,
 		redirect = true,
 	) {
 		super();

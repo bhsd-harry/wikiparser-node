@@ -17,7 +17,10 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
-import {undo, Shadow} from '../util/debug';
+import {
+	Shadow,
+	undo,
+} from '../util/debug';
 
 /* NOT FOR BROWSER END */
 

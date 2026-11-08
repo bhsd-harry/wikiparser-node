@@ -6,7 +6,10 @@ import {noEscape} from '../mixin/noEscape';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -72,7 +75,9 @@ export abstract class ConverterFlagsToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: ':',
 		});
-		this.safeAppend(flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
+		for (const flag of flags) {
+			super.insertAt(new AtomToken(flag, 'converter-flag', config, accum));
+		}
 	}
 
 	/** 获取全部转换类型标记 */

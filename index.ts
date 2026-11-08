@@ -569,7 +569,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		return titleObj;
 	},
 
-	/** @implements */
+	/**
+	 * @implements
+	 * @todo Use an object parameter instead of multiple parameters
+	 */
 	parse(wikitext, includeOrPage, maxStageOrInclude, configOrStage, pageOrConfig) {
 		wikitext = tidy(wikitext);
 		let include: boolean,
@@ -679,7 +682,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 	},
 
-	/** @implements */
+	/**
+	 * @implements
+	 * @todo Use an object parameter instead of multiple parameters
+	 */
 	lint(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
 		LINT: {
 			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
@@ -687,7 +693,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 	},
 
-	/** @implements */
+	/**
+	 * @implements
+	 * @todo Use an object parameter instead of multiple parameters
+	 */
 	print(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
 		PRINT: {
 			const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
@@ -723,7 +732,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* NOT FOR BROWSER */
 
-	/** @implements */
+	/**
+	 * @implements
+	 * @todo Use an object parameter instead of multiple parameters
+	 */
 	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
 		return Shadow.internal(
@@ -739,7 +751,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		);
 	},
 
-	/** @implements */
+	/**
+	 * @implements
+	 * @todo Use an object parameter instead of multiple parameters
+	 */
 	plainText(wikitext, includeOrPage, configOrInclude, pageOrConfig) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
 		return Shadow.internal(

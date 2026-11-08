@@ -14,6 +14,7 @@
 - HTML conversion of `<indicator>` extension tags containing unclosed tags
 - HTML conversion of category links with preceding unclosed tags
 - HTML conversion of section headings containing unclosed tags
+- Improved `<p>` wrapping for HTML conversion
 
 ## v2.1.0
 

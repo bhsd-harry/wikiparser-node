@@ -136,7 +136,9 @@ export abstract class ConverterToken extends Token {
 	/** @private */
 	override toHtmlOrPlain(func: HtmlOrPlainFunc, method: Method, opt?: HtmlOpt): string {
 		const flags = this.getEffectiveFlags(),
-			nocc = method === 'toHtmlInternal' && opt?.nocc,
+			nocc =
+				method === 'toHtmlInternal' &&
+				opt?.nocc,
 			[, ...rules] = this.childNodes;
 		if (nocc || flags.has('R') || this.getVariantFlags().size > 0) {
 			return (nocc ? '-{' : '') + func(rules, ';', opt) + (nocc ? '}-' : '');

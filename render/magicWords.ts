@@ -571,8 +571,7 @@ export const expandMagicWord = (
 						new Token(tag, config, accum).parseOnce(0)
 					,
 					Parser,
-				)
-				;
+				);
 			// @ts-expect-error sparse array
 			accum[accum.indexOf(token)] = undefined;
 			return token.firstChild!.toString();

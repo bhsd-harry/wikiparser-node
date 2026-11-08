@@ -142,7 +142,11 @@ export abstract class AttributesToken extends Token {
 	}
 
 	set className(className) {
-		this.setAttr('class', className || false);
+		this.setAttr(
+			'class',
+			className
+			|| false,
+		);
 	}
 
 	/** class attribute in Set / 以Set表示的class属性 */
@@ -298,18 +302,29 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	lintRef(rect: BoundingRect, severity: LintError.Severity): LintError | '';
 	/** @private */
-	lintRef(rect?: BoundingRect, severity?: LintError.Severity): string | LintError {
+	lintRef(
+		rect?: BoundingRect,
+		severity?: LintError.Severity,
+	): string | LintError {
 		LINT: {
 			const followAttr = this.getAttrToken('follow'),
+				rule = 'invalid-ref',
 				follow = followAttr?.getValue(),
-				name = this.getAttr('name'),
-				rule = 'invalid-ref';
+				name = this.getAttr('name');
 			if (follow && !/\D/u.test(follow)) {
-				const msg = 'int-name';
-				return rect ? generateForChild(followAttr!, rect, rule, msg, severity) : msg;
+				const msg = 'int-name',
+					ret =
+						rect
+							? generateForChild(followAttr!, rect, rule, msg, severity) :
+							msg;
+				return ret;
 			} else if (follow && (this.hasAttr('details') || name && /\D/u.test(name))) {
-				const msg = 'ref-follow';
-				return rect ? generateForSelf(this, rect, rule, msg, severity) : msg;
+				const msg = 'ref-follow',
+					ret =
+						rect
+							? generateForSelf(this, rect, rule, msg, severity) :
+							msg;
+				return ret;
 			}
 			return '';
 		}
@@ -495,7 +510,11 @@ export abstract class AttributesToken extends Token {
 			}
 			return super.insertAt(token, i);
 		}
-		const {type, name, length} = this;
+		const {
+			type,
+			name,
+			length,
+		} = this;
 		/* c8 ignore next 3 */
 		if (token.type !== type.slice(0, -1) || token.tag !== name) {
 			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
@@ -515,7 +534,9 @@ export abstract class AttributesToken extends Token {
 		const {previousVisibleSibling, nextVisibleSibling} = token,
 			dirtyType = toDirty(type),
 			config = this.getAttribute('config'),
-			acceptable = {[`Stage-${stages[type]}`]: ':'};
+			acceptable = {
+				[`Stage-${stages[type]}`]: ':',
+			};
 		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling.toString())) {
 			super.insertAt(Shadow.run(() => new AtomToken(' ', dirtyType, config, [], acceptable)), i + 1);
 		}
@@ -534,11 +555,15 @@ export abstract class AttributesToken extends Token {
 	 * @param prop attribute object / 属性对象
 	 * @throws `RangeError` if the attribute of an extension tag contains `>`
 	 */
-	setAttr(key: string, value: string | boolean): void;
+	setAttr(
+		key: string,
+		value: string
+			| boolean,
+	): void;
 	setAttr(prop: Record<string, string | boolean>): void;
-	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
+	setAttr(key: string | Record<string, string | boolean>, value?: string | boolean): void {
 		require('../addon/attribute');
-		this.setAttr(keyOrProp as string, value!);
+		this.setAttr(key as string, value!);
 	}
 
 	/**
