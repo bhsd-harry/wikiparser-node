@@ -92,7 +92,11 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return i === 0 && this.length === 3 ? 2 : 1;
+		const gap =
+			i === 0 && this.length === 3
+				? 2 :
+				1;
+		return gap;
 	}
 
 	/** @private */
