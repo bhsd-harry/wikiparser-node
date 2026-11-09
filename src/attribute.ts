@@ -195,7 +195,9 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override getGaps(): number {
-		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
+		return this.#equal
+			? this.#equal.length
+			: 0;
 	}
 
 	/**

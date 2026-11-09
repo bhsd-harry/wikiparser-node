@@ -5,9 +5,6 @@ import {
 
 	sanitize,
 } from '../util/string';
-import {
-	setChildNodes,
-} from '../util/debug';
 import {AstNode} from './node';
 
 /* NOT FOR BROWSER */
@@ -66,25 +63,6 @@ export class AstText extends AstNode {
 	 */
 	replaceData(text: string): void {
 		this.#setData(text);
-	}
-
-	/**
-	 * Split the text node into two parts
-	 *
-	 * 将文本子节点分裂为两部分
-	 * @param offset position to be splitted at / 分裂位置
-	 * @throws `RangeError` if the offset is out of range
-	 * @throws `Error` if the text node has no parent node
-	 */
-	splitText(offset: number): AstText {
-		LSP: {
-			const {parentNode, data} = this;
-			const newText = new AstText(data.slice(offset)),
-				target = parentNode!;
-			setChildNodes(target, target.childNodes.indexOf(this) + 1, 0, [newText]);
-			this.setAttribute('data', data.slice(0, offset));
-			return newText;
-		}
 	}
 
 	/* NOT FOR BROWSER */

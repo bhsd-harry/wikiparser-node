@@ -1,10 +1,3 @@
-import {
-
-	/* NOT FOR BROWSER */
-
-	MAX_STAGE,
-} from '../../util/constants';
-import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {
@@ -24,7 +17,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {sanitizeAlt, sanitizeId} from '../../util/string';
-import {Shadow} from '../../util/debug';
 import {Title} from '../../lib/title';
 import {cached} from '../../mixin/cached';
 import {packedModes} from '../../render/extension';
@@ -95,16 +87,6 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
-	/**
-	 * file extension
-	 *
-	 * 扩展名
-	 * @since v1.5.3
-	 */
-	get extension(): string | undefined {
-		LSP: return this.getAttribute('title').extension;
-	}
-
 	/* NOT FOR BROWSER */
 
 	/** image link / 图片链接 */
@@ -140,14 +122,6 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	get className(): string {
 		return this.getValue('class') as string | undefined ?? '';
-	}
-
-	set className(className) {
-		this.setValue(
-			'class',
-			className
-			,
-		);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -300,49 +274,6 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	hasArg(key: string): boolean {
 		return this.getArgs(key).length > 0;
-	}
-
-	/**
-	 * Set the image parameter
-	 *
-	 * 设置图片参数
-	 * @param key parameter name / 参数名
-	 * @param value parameter value / 参数值
-	 * @throws `RangeError` if the parameter name is unknown
-	 */
-	setValue(
-		key: string,
-		value: string,
-	): void {
-		const token = this.getArg(key);
-		if (token) {
-			token.setValue(value);
-			return;
-		}
-		const config = this.getAttribute('config'),
-			syntax =
-				// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-				Object.entries(config.img).find(([, name]) => name === key)
-					?.[0]!;
-		const free = syntax.includes('$1');
-		const parameter = Shadow.run(
-			(): ImageParameterToken =>
-				// @ts-expect-error abstract class
-				new ImageParameterToken(
-					syntax.replace(
-						'$1',
-						'',
-					),
-					this.extension,
-					this.type,
-					config,
-				),
-		);
-		if (free) {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-			parameter.safeReplaceChildren(Parser.parseWithRef(value as string, this, MAX_STAGE).childNodes);
-		}
-		this.insertAt(parameter);
 	}
 
 	/** @private */

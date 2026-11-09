@@ -46,7 +46,9 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {html} from '../util/html';
+import {
+	html,
+} from '../util/html';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
 import type * as LibRange from '../lib/range';
@@ -375,9 +377,6 @@ export class Token extends AstElement {
 				return this.#accum as TokenAttribute<T>;
 			case 'built':
 				return this.#built as TokenAttribute<T>;
-			/* c8 ignore next 2 */
-			case 'stage':
-				return this.#stage as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}
@@ -528,10 +527,12 @@ export class Token extends AstElement {
 	 * @throws `RangeError` if the tag name is invalid
 	 */
 	createElement(
-		tagName: 'references',
+		tagName: string,
 	): ExtToken {
 		require('../addon/token');
-		return this.createElement(tagName);
+		return this.createElement(
+			tagName,
+		);
 	}
 
 	/**
@@ -572,7 +573,7 @@ export class Token extends AstElement {
 	}
 
 	/** @ignore */
-	#toHtmlOrPlain(func: (expanded: Token, opt?: RenderOpt) => string, render?: RenderOpt): string {
+	#toHtmlOrPlain(func: (expanded: Token, opt?: RenderOpt) => string, method: Method, render?: RenderOpt): string {
 		const {viewOnly} = Parser;
 		let output: string;
 		const {expandToken}: typeof Expand = require('../render/expand');
@@ -594,7 +595,7 @@ export class Token extends AstElement {
 	 */
 	toHtml(opt?: RenderOpt): string {
 		const {toHtml}: typeof RenderHtml = require('../render/html');
-		return this.#toHtmlOrPlain(toHtml, opt);
+		return this.#toHtmlOrPlain(toHtml, 'toHtmlInternal', opt);
 	}
 
 	/** @private */

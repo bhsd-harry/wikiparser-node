@@ -17,10 +17,6 @@ import type {Title} from '../lib/title';
 import type {
 	AtomToken,
 	FileToken,
-
-	/* NOT FOR BROWSER */
-
-	AstText,
 } from '../internal';
 
 export type GalleryImageTypes = 'gallery-image';
@@ -174,23 +170,8 @@ export abstract class ImageParameterToken extends Token {
 	/** iamge size / 图片大小 */
 	get size(): {width: string, height: string} | undefined {
 		const size = (this.getValue() as string).replace(/px$/u, '').trim();
-		if (!size.includes('{{')) {
-			const [width, height = ''] = size.split('x') as [string, string?];
-			return {width, height};
-		}
-		const token = Parser.parseWithRef(size, this, 2, false),
-			i = token.childNodes.findIndex(
-				({type, data}) => type === 'text' && data.includes('x'),
-			);
-		if (i === -1) {
-			return {width: size, height: ''};
-		}
-		const str = token.childNodes[i] as AstText;
-		str.splitText(str.data.indexOf('x')).splitText(1);
-		return {
-			width: text(token.childNodes.slice(0, i + 1)),
-			height: text(token.childNodes.slice(i + 2)),
-		};
+		const [width, height = ''] = size.split('x') as [string, string?];
+		return {width, height};
 	}
 
 	/* NOT FOR BROWSER END */
@@ -328,17 +309,6 @@ export abstract class ImageParameterToken extends Token {
 			token.safeReplaceChildren(cloned);
 			return token;
 		});
-	}
-
-	/**
-	 * Set the parameter value
-	 *
-	 * 设置参数值
-	 * @param value parameter value / 参数值
-	 * @throws `Error` if the parameter is invalid
-	 */
-	setValue(value: string): void {
-		this.safeReplaceChildren(Parser.parseWithRef(value, this, 5).childNodes);
 	}
 
 	/**

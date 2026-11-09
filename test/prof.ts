@@ -8,6 +8,9 @@ import {profile} from '@bhsd/nodejs';
 
 /* NOT FOR BROWSER ONLY END */
 
+import Parser from '../index';
+Parser.config = require('../../config/default');
+
 const content = readFileSync('test/page.wiki', 'utf8'),
 	[,, count, method = ''] = process.argv;
 

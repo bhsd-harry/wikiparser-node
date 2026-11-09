@@ -30,6 +30,12 @@ export const Shadow = {
 		/* c8 ignore stop */
 	},
 
+	/** @private */
+	internal<T>(callback: () => T, Parser: ParserBase): T {
+		const result = callback();
+		return result;
+	},
+
 	rev: 0,
 };
 

@@ -111,9 +111,6 @@ export abstract class LinkBaseToken extends Token {
 	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = value as TokenAttribute<'bracket'>;
-		} else if (key === 'title') {
-			/* c8 ignore next */
-			this.#title = value as TokenAttribute<'title'>;
 		} else {
 			super.setAttribute(key, value);
 		}
@@ -163,7 +160,9 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return i === 0 ? this.#delimiter.length : 1;
+		const gap =
+			1;
+		return gap;
 	}
 
 	/** @private */
@@ -191,7 +190,10 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		if (this.is('link') || this.is('redirect-target') || this.is('category')) {
+		if (
+			this.is('link')
+			|| this.is('redirect-target')
+		) {
 			const {link, length, lastChild, type, pageName} = this;
 			let attr;
 			if (type === 'link' && link.title === pageName && !link.fragment) {

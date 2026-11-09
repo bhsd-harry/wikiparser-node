@@ -3,6 +3,8 @@ import {describe, test} from 'node:test';
 import Parser from '../index';
 import type {Token, TableToken} from '../internal';
 
+Parser.config = require('../../config/default');
+
 const N = 1e4;
 
 /** @ignore */

@@ -1,3 +1,5 @@
+import defaultConfig from '../config/default.json';
+import type {ConfigData} from '../base';
 import type ParserBase from '../index';
 
 const redirects: Record<string, string> = {
@@ -12,6 +14,7 @@ const redirects: Record<string, string> = {
  */
 export const prepare = (Parser: ParserBase): void => {
 	process.env['TZ'] = 'UTC';
+	Parser.config = defaultConfig as unknown as ConfigData;
 	Parser.viewOnly = true;
 	Parser.now = new Date(Date.UTC(1970, 0, 1, 0, 2, 3));
 	Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;

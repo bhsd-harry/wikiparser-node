@@ -11,7 +11,7 @@ import {
 import {
 	tidy,
 } from './util/string';
-import defaultConfig from './config/default.json';
+import defaultConfig from './config/minimum.json';
 import type {
 	MaxStage,
 	Config,
@@ -346,14 +346,10 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
-		return this.parse(
-			wikitext,
-			include,
-			undefined,
-			config,
-			page,
-		).toHtml(opt)
-		;
+		return Shadow.internal(
+			() => this.parse(wikitext, include, undefined, config, page).toHtml(opt),
+			this,
+		);
 	},
 
 	/** @implements */

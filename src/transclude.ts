@@ -304,58 +304,22 @@ export abstract class TranscludeToken extends Token {
 	/**
 	 * 处理匿名参数更改
 	 * @param addedToken 新增的参数
-	 * @param append 是否在末尾新增参数
 	 */
-	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
-	#handleAnonArgChange(addedToken: number): void;
-	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
-		/* NOT FOR BROWSER */
-
-		const removing = typeof addedToken === 'number';
-
-		/* NOT FOR BROWSER END */
-
+	#handleAnonArgChange(
+		addedToken: ParameterToken
+		,
+	): void {
 		this.#anonCount +=
-			removing ?
-				-1 :
-				1;
-
-		/* NOT FOR BROWSER */
-
-		let args: ParameterToken[];
-
-		/* NOT FOR BROWSER END */
-
+			1;
 		let i: number;
-		if (append) {
-			i = this.#anonCount - 1;
-
-			/* NOT FOR BROWSER */
-		} else {
-			args = this.getAnonArgs();
-			i = removing ? addedToken - 1 : args.indexOf(addedToken);
-		}
-		for (; i < this.#anonCount; i++) {
-			/* NOT FOR BROWSER END */
-
-			const token =
-					!append ? // eslint-disable-line unicorn/no-negated-condition
-						args![i]! :
-						addedToken as ParameterToken,
-				{name} = token,
-				newName = String(i + 1);
-			if (name === newName && token !== addedToken) {
-				continue;
-			}
-			token.setAttribute('name', newName);
-			this.getArgs(newName, false, false).add(token);
-
-			/* NOT FOR BROWSER */
-
-			if (name && token !== addedToken) {
-				this.getArgs(name, false, false).delete(token);
-			}
-		}
+		// eslint-disable-next-line prefer-const, unicorn/no-immediate-mutation
+		i = this.#anonCount - 1;
+		const token =
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+				addedToken as ParameterToken,
+			newName = String(i + 1);
+		token.setAttribute('name', newName);
+		this.getArgs(newName, false, false).add(token);
 	}
 
 	/**
@@ -368,7 +332,6 @@ export abstract class TranscludeToken extends Token {
 		if (token.anon) {
 			this.#handleAnonArgChange(
 				token,
-				i === this.length - 1,
 			);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
@@ -437,15 +400,6 @@ export abstract class TranscludeToken extends Token {
 		const {childNodes} = this,
 			i = childNodes.findIndex(({type}) => type === 'parameter');
 		return i === -1 ? [] : childNodes.slice(i) as ParameterToken[];
-	}
-
-	/**
-	 * Get all anonymous parameters
-	 *
-	 * 获取所有匿名参数
-	 */
-	getAnonArgs(): ParameterToken[] {
-		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
 	/**

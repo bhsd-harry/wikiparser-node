@@ -384,7 +384,7 @@ export const formalize = (() => {
 			let cur = document.createDocumentFragment();
 			for (const child of [...parentNode.childNodes] as HTMLChildNode[]) {
 				if (isText(child)) {
-					(cur.hasChildNodes() || child.data.trim() ? cur : childNodes).append(child.cloneNode());
+					(cur.hasChildNodes() || child.data.trim() ? cur : childNodes).append(child);
 				} else if (isInlineTag(child)) {
 					cur.append(child);
 				} else {

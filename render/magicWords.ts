@@ -2,6 +2,7 @@
 import {expr} from '../vendor/expr';
 import {escape, replaceEntities, sanitizeId, decodeHtml} from '../util/string';
 import {getId} from '../util/html';
+import {Shadow} from '../util/debug';
 import Parser from '../index';
 import {Token} from '../src/index';
 import type {Config} from '../base';
@@ -562,9 +563,7 @@ export const expandMagicWord = (
 			if (!accum) {
 				return tag;
 			}
-			const token =
-				new Token(tag, config, accum).parseOnce(0)
-				;
+			const token = Shadow.internal(() => new Token(tag, config, accum).parseOnce(0), Parser);
 			// @ts-expect-error sparse array
 			accum[accum.indexOf(token)] = undefined;
 			return token.firstChild!.toString();
