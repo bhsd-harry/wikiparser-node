@@ -394,17 +394,18 @@ export abstract class TranscludeToken extends Token {
 	/**
 	 * 处理匿名参数更改
 	 * @param addedToken 新增的参数
-	 * @param append 是否在末尾新增参数
 	 */
-	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
-	#handleAnonArgChange(addedToken: number): void;
-	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
+	#handleAnonArgChange(
+		addedToken: ParameterToken
+		,
+	): void {
 		this.#anonCount +=
 			1;
 		let i: number;
 		// eslint-disable-next-line prefer-const, unicorn/no-immediate-mutation
 		i = this.#anonCount - 1;
 		const token =
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				addedToken as ParameterToken,
 			newName = String(i + 1);
 		token.setAttribute('name', newName);
