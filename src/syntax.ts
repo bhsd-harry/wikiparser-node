@@ -1,5 +1,8 @@
 import {Token} from './index';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 
 /* NOT FOR BROWSER */
 

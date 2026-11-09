@@ -70,7 +70,7 @@ export abstract class TableBaseToken extends Token {
 		acceptable?: WikiParserAcceptable,
 	) {
 		super(undefined, config, accum, acceptable);
-		this.append(
+		super.insertAt(
 			new SyntaxToken(
 				syntax,
 				pattern,
@@ -79,6 +79,8 @@ export abstract class TableBaseToken extends Token {
 				accum,
 				{'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':'},
 			),
+		);
+		super.insertAt(
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,
 		);

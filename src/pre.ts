@@ -8,7 +8,10 @@ import {
 import {safeStringReplace} from '../util/replace';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
 /* NOT FOR BROWSER */
