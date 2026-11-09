@@ -279,7 +279,11 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override getGaps(i: number): number {
-		return i === 0 ? this.#delimiter.length : 1;
+		const gap =
+			i === 0
+				? this.#delimiter.length :
+				1;
+		return gap;
 	}
 
 	/** @private */
@@ -419,7 +423,11 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	@cached()
 	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		if (this.is('link') || this.is('redirect-target') || this.is('category')) {
+		if (
+			this.is('link')
+			|| this.is('redirect-target')
+			|| this.is('category')
+		) {
 			const {link, length, lastChild, type, pageName} = this;
 			let attr;
 			if (type === 'link' && link.title === pageName && !link.fragment) {

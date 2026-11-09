@@ -565,13 +565,7 @@ export const expandMagicWord = (
 			if (!accum) {
 				return tag;
 			}
-			const token =
-				Shadow.internal(
-					() =>
-						new Token(tag, config, accum).parseOnce(0)
-					,
-					Parser,
-				);
+			const token = Shadow.internal(() => new Token(tag, config, accum).parseOnce(0), Parser);
 			// @ts-expect-error sparse array
 			accum[accum.indexOf(token)] = undefined;
 			return token.firstChild!.toString();

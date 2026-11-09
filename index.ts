@@ -739,14 +739,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	toHtml(wikitext, includeOrPage, configOrInclude, pageOrConfig, opt) {
 		const [include, config, page] = getParams(includeOrPage, configOrInclude, pageOrConfig);
 		return Shadow.internal(
-			() => this.parse(
-				wikitext,
-				include,
-				undefined,
-				config,
-				page,
-			).toHtml(opt)
-			,
+			() => this.parse(wikitext, include, undefined, config, page).toHtml(opt),
 			this,
 		);
 	},

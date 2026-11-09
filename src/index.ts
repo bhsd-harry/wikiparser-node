@@ -71,7 +71,10 @@ import type {
 /* NOT FOR BROWSER */
 
 import assert from 'assert/strict';
-import {html, plainText} from '../util/html';
+import {
+	html,
+	plainText,
+} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {readOnly} from '../mixin/readOnly';
 import {cached} from '../mixin/cached';
@@ -874,7 +877,8 @@ export class Token extends AstElement {
 			throw e;
 		}
 		/* c8 ignore stop */
-		const i = parentNode.childNodes.indexOf(this);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		const i = parentNode!.childNodes.indexOf(this);
 		super.removeAt.call(parentNode, i);
 		super.insertAt.call(parentNode, token, i);
 		if (token.type === 'root') {
@@ -912,7 +916,10 @@ export class Token extends AstElement {
 		options?: {selfClosing?: boolean, closing?: boolean},
 	): IncludeToken | ExtToken | HtmlToken {
 		require('../addon/token');
-		return this.createElement(tagName, options);
+		return this.createElement(
+			tagName,
+			options,
+		);
 	}
 
 	/**
@@ -962,7 +969,12 @@ export class Token extends AstElement {
 		}
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
-			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
+			const token = new Token(
+				undefined,
+				this.#config,
+				[],
+				this.getAcceptable(),
+			) as this;
 			token.type = this.type;
 			token.pageName = this.pageName;
 			token.setAttribute('stage', this.#stage);
@@ -1064,8 +1076,8 @@ export class Token extends AstElement {
 			if (this.type === 'root') {
 				const {expandToken}: typeof Expand = require('../render/expand');
 				Parser.viewOnly = true;
-				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true)),
-					e = new Event('expand');
+				const expanded = Shadow.run(() => expandToken(this).parse(undefined, false, true));
+				const e = new Event('expand');
 				this.dispatchEvent(e, {type: 'expand', token: expanded});
 				Parser.viewOnly = false;
 				output = func(expanded, render);

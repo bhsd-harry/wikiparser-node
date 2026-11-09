@@ -1,5 +1,8 @@
 import {classes} from '../util/constants';
-import type {AttributesToken, FileToken} from '../internal';
+import type {
+	AttributesToken,
+	FileToken,
+} from '../internal';
 
 /**
  * Class attribute in Set
@@ -20,7 +23,10 @@ export class ClassList extends Set<string> {
 	}
 
 	/** @param token 属性或图片节点 */
-	constructor(token: AttributesToken | FileToken) {
+	constructor(
+		token: AttributesToken
+			| FileToken,
+	) {
 		super();
 		for (const name of token.className.split(/\s+/u)) {
 			if (name) {

@@ -543,7 +543,11 @@ export abstract class TranscludeToken extends Token {
 	 */
 	#handleAnonArgChange(addedToken: ParameterToken, append?: boolean): void;
 	#handleAnonArgChange(addedToken: number): void;
-	#handleAnonArgChange(addedToken: number | ParameterToken, append?: boolean): void {
+	#handleAnonArgChange(
+		addedToken: ParameterToken
+			| number,
+		append?: boolean,
+	): void {
 		/* NOT FOR BROWSER */
 
 		const removing = typeof addedToken === 'number';
