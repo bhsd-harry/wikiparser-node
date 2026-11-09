@@ -3,7 +3,10 @@ import {noEscape} from '../mixin/noEscape';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import {RedirectTargetToken} from './link/redirectTarget';
-import type {Config, LintError} from '../base';
+import type {
+	Config,
+	LintError,
+} from '../base';
 
 /**
  * redirect
