@@ -318,7 +318,6 @@ export abstract class AttributeToken extends Token {
 				this.#quotes,
 				this.getAttribute('config'),
 				this.#equal,
-				undefined,
 			);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);

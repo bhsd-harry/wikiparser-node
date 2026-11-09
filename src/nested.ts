@@ -1,7 +1,8 @@
 import {parseCommentAndExt} from '../parser/commentAndExt';
 import {parseBraces} from '../parser/braces';
 import {Token} from './index';
-import type {ExtToken} from './tagPair/ext';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {
 	Config,

@@ -50,12 +50,6 @@ export abstract class TranscludeToken extends Token {
 	// @ts-expect-error lazy initialization
 	#title: Title;
 
-	/* NOT FOR BROWSER */
-
-	readonly #keys = new Set<string>();
-
-	/* NOT FOR BROWSER END */
-
 	declare readonly name: string;
 	declare readonly childNodes: readonly [
 		SyntaxToken,
@@ -307,26 +301,6 @@ export abstract class TranscludeToken extends Token {
 		}}}`;
 	}
 
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		switch (key) {
-			case 'title':
-				return this.#title as TokenAttribute<T>;
-			case 'colon':
-				return this.#colon as TokenAttribute<T>;
-
-				/* NOT FOR BROWSER */
-
-			case 'keys':
-				return this.#keys as TokenAttribute<T>;
-
-				/* NOT FOR BROWSER END */
-
-			default:
-				return super.getAttribute(key);
-		}
-	}
-
 	/**
 	 * 处理匿名参数更改
 	 * @param addedToken 新增的参数
@@ -348,12 +322,6 @@ export abstract class TranscludeToken extends Token {
 
 		/* NOT FOR BROWSER */
 
-		const maxAnon = String(this.#anonCount + (removing ? 1 : 0));
-		if (!removing) {
-			this.#keys.add(maxAnon);
-		} else if (!this.hasArg(maxAnon, true)) {
-			this.#keys.delete(maxAnon);
-		}
 		let args: ParameterToken[];
 
 		/* NOT FOR BROWSER END */
@@ -371,11 +339,9 @@ export abstract class TranscludeToken extends Token {
 			/* NOT FOR BROWSER END */
 
 			const token =
-					/* eslint-disable unicorn/no-negated-condition */
-					!append ?
+					!append ? // eslint-disable-line unicorn/no-negated-condition
 						args![i]! :
 						addedToken as ParameterToken,
-				/* eslint-enable unicorn/no-negated-condition */
 				{name} = token,
 				newName = String(i + 1);
 			if (name === newName && token !== addedToken) {
@@ -406,10 +372,6 @@ export abstract class TranscludeToken extends Token {
 			);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
-
-			/* NOT FOR BROWSER */
-
-			this.#keys.add(token.name);
 		}
 		return token;
 	}
@@ -435,15 +397,6 @@ export abstract class TranscludeToken extends Token {
 			);
 			this.#args.set(keyStr, args);
 		}
-
-		/* NOT FOR BROWSER */
-
-		if (exact && keyStr.trim() && Number.isSafeInteger(Number(keyStr))) {
-			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
-		}
-
-		/* NOT FOR BROWSER END */
-
 		if (copy) {
 			args = new Set(sortArgs(this, args));
 		}
@@ -473,24 +426,6 @@ export abstract class TranscludeToken extends Token {
 			token.safeAppend(cloned);
 			return token;
 		});
-	}
-
-	/**
-	 * @override
-	 * @param i position of the child node / 移除位置
-	 */
-	override removeAt(i: number): ParameterToken {
-		const token = super.removeAt(i) as ParameterToken;
-		if (token.anon) {
-			this.#handleAnonArgChange(Number(token.name));
-		} else {
-			const args = this.getArgs(token.name, false, false);
-			args.delete(token);
-			if (args.size === 0) {
-				this.#keys.delete(token.name);
-			}
-		}
-		return token;
 	}
 
 	/**
@@ -547,7 +482,10 @@ export abstract class TranscludeToken extends Token {
 	 * 获取生效的参数值
 	 * @param key parameter name / 参数名
 	 */
-	getValue(key: string): string | undefined {
+	getValue(
+		key: string,
+	): string
+		| undefined {
 		return this.getArg(key)?.getValue();
 	}
 

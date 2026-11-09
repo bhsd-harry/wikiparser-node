@@ -2,7 +2,9 @@ import {hiddenToken} from '../mixin/hidden';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import {RedirectTargetToken} from './link/redirectTarget';
-import type {Config} from '../base';
+import type {
+	Config,
+} from '../base';
 
 /* NOT FOR BROWSER */
 

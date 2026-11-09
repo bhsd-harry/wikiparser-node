@@ -25,7 +25,6 @@ declare global {
 
 		T extends 'pattern' ? RegExp :
 		T extends 'tags' | 'quotes' ? [string, string] :
-		T extends 'keys' ? Set<string> :
 		T extends 'bold' | 'italic' ? QuoteToken :
 
 		/* NOT FOR BROWSER END */

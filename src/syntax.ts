@@ -1,5 +1,7 @@
 import {Token} from './index';
-import type {Config} from '../base';
+import type {
+	Config,
+} from '../base';
 
 /* NOT FOR BROWSER */
 
