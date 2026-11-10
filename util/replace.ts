@@ -15,7 +15,7 @@ export const safeStringReplace = (
 	matched: (inner: string, open: string, close: string) => string,
 	unmatched = (str: string): string => str,
 ): string => {
-	const text = insensitive ? wikitext.toLowerCase() : wikitext,
+	const text = insensitive ? wikitext.replace(/[A-Z]/gu, ch => ch.toLowerCase()) : wikitext,
 		lStart = start.length,
 		lEnd = end.length;
 	let result = '',
