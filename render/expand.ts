@@ -41,8 +41,13 @@ const implicitNewLine = (str: string, prev: string): string =>
 const loadTemplate = (
 	title: string,
 ): string | false => {
-	// eslint-disable-next-line unicorn/prefer-ternary
-	if (Parser.templates.has(title)) {
+	if (
+		Parser.redirects.has(title)
+	) { // 未循环的重定向拥有最高优先级
+		return loadTemplate(
+			Parser.redirects.get(title)!,
+		);
+	} else if (Parser.templates.has(title)) { // 可能是循环的重定向
 		return title;
 	}
 	return false;

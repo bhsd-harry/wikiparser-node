@@ -119,8 +119,6 @@ describe('Parser tests', () => {
 							);
 						}
 					}
-
-					/* NOT FOR BROWSER END */
 				} catch (e) {
 					if (e instanceof assert.AssertionError) {
 						e.cause = {message: `\n${wikitext}`};

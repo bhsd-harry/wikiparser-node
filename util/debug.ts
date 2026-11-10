@@ -11,29 +11,21 @@ export const Shadow = {
 		const {running} = this;
 		this.running = true;
 
-		/** restore state before exit */
-		const finish = (): void => {
-			this.running = running;
-		};
 		try {
 			const {Token}: typeof Src = require('../src/index');
 			const result = callback();
 			if (result instanceof Token && !result.getAttribute('built')) {
 				result.afterBuild();
 			}
-			finish();
 			return result;
-		} catch (e) /* c8 ignore start */ {
-			finish();
-			throw e;
+		} finally {
+			this.running = running;
 		}
-		/* c8 ignore stop */
 	},
 
 	/** @private */
 	internal<T>(callback: () => T, Parser: ParserBase): T {
-		const result = callback();
-		return result;
+		return callback();
 	},
 
 	rev: 0,

@@ -88,7 +88,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			let html = trimNewlines(lastChild.toHtmlInternal(renderOpt)),
 				// eslint-disable-next-line prefer-const
 				lexer = firstChild.getAttr('lang');
-			const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
+			const dir = firstChild.getAttr('dir') === 'rtl' ? 'rtl' : 'ltr',
 				isInline = firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline'),
 				showLines = firstChild.hasAttr('line'),
 				{classList} = firstChild;

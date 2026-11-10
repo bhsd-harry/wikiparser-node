@@ -41,7 +41,7 @@ export const cmd = (command: string, args: readonly string[]): Promise<string | 
 			shell.stdout.on('end', () => {
 				r(buf);
 			});
-			shell.on('exit', () => {
+			shell.on('close', () => {
 				r(shell!.killed ? undefined : '');
 			});
 			shell.on('error', () => {
