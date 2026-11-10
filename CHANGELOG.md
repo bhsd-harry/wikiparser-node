@@ -1,12 +1,13 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
 ## v2.2.0
 
-*2026-11-07*
+*2026-11-11*
 
 **Added**
 
 - New method [`Parser.plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#plaintext)
 - [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) now serializes the HTML output with [parse5](https://www.npmjs.com/package/parse5) to ensure valid HTML output
+- [`Token#expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now respects [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#redirects)
 
 **Fixed**
 
@@ -15,6 +16,16 @@
 - HTML conversion of category links with preceding unclosed tags
 - HTML conversion of section headings containing unclosed tags
 - Improved `<p>` wrapping for HTML conversion
+- Wrong results when evaluating the `#contentmodel` parser function for module documentation pages
+- `TableToken#insertTableCol` when appending a column to the end of a table
+- [`LanguageService#provideRefactoringAction`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService-%28EN%29#providerefactoringaction) when two consecutive lines are selected
+- Severity of the [`tag-like`](https://github.com/bhsd-harry/wikiparser-node/wiki/tag-like) rule for uppercase tags
+- Parsing of external links with `&lt;` or `&gt;` immediately following the URL
+- HTML conversion of `{{#tag:syntaxhighlight}}` when the tag content contains `<nowiki>` extension tags
+- `CategorytreeToken#setTarget`
+- Repeated calls to [`TagToken#findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/TagToken-%28EN%29#findmatchingtag) for nested tags with the same name
+- `TdToken#setAttr` when removing the attribute with `false`
+- [`TableToken#getNextRow`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken-%28EN%29#getnextrow) when there are no more rows
 
 ## v2.1.0
 

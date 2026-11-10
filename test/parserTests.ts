@@ -244,8 +244,6 @@ describe('Parser tests', () => {
 					if (plain) {
 						assert.deepStrictEqual(root.plainText(), plain, '纯文本结果不符合预期！');
 					}
-
-					/* NOT FOR BROWSER END */
 				} catch (e) {
 					if (e instanceof assert.AssertionError) {
 						e.cause = {message: `\n${wikitext}`};

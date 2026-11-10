@@ -322,20 +322,20 @@ export abstract class ImageParameterToken extends Token {
 			if (param[1] === 'alt') {
 				this.setAttribute('stage', MAX_STAGE - 1);
 			}
-			return;
+		} else {
+			super(
+				str,
+				config.excludes.includes('list')
+					? config
+					: {
+						...config,
+						excludes: [...config.excludes, 'list'],
+					},
+				accum,
+			);
+			this.setAttribute('name', 'caption');
+			this.setAttribute('stage', 7);
 		}
-		super(
-			str,
-			config.excludes.includes('list')
-				? config
-				: {
-					...config,
-					excludes: [...config.excludes, 'list'],
-				},
-			accum,
-		);
-		this.setAttribute('name', 'caption');
-		this.setAttribute('stage', 7);
 
 		/* NOT FOR BROWSER */
 
@@ -467,8 +467,8 @@ export abstract class ImageParameterToken extends Token {
 						interwiki,
 					} = this.thumb!;
 					if (
+						interwiki ||
 						!valid || ns !== 6 || !extensions.has(extension!)
-						|| interwiki // eslint-disable-line unicorn/prefer-simple-condition-first
 					) {
 						errors.push(generateForSelf(this, {start}, rule, 'invalid-thumb', s));
 					}

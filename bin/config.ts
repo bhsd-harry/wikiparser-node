@@ -175,7 +175,7 @@ export default async (
 			articlePath: articlepath,
 			server,
 		},
-		{doubleUnderscore, parserFunction, variable} = config;
+		{doubleUnderscore, parserFunction} = config;
 	doubleUnderscore[0] = [];
 	doubleUnderscore[1] = [];
 	Object.assign(parserFunction[0], getConfig(magicwords, ({name}) => name === 'msgnw'));
@@ -195,9 +195,9 @@ export default async (
 	}
 	if ('#choose' in parserFunction[0]) {
 		delete parserFunction[0]['choose'];
-		const i = variable.indexOf('choose');
+		const i = config.variable.indexOf('choose');
 		if (i !== -1) {
-			variable.splice(i, 1);
+			config.variable.splice(i, 1);
 		}
 	}
 

@@ -393,7 +393,8 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取下一行
 	 */
 	getNextRow(): TrToken | undefined {
-		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false) as TrToken | undefined;
+		const n = super.getRowCount();
+		return this.getRowCount() === n ? undefined : this.getNthRow(n, false, false) as TrToken;
 	}
 
 	/**

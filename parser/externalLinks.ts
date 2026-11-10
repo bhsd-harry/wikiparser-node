@@ -35,8 +35,8 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		const {length} = accum,
 			i = url!.search(/&[lg]t;/u);
 		if (i !== -1) {
-			space = '';
 			text = url!.slice(i) + space + text;
+			space = '';
 			url = url!.slice(0, i);
 		}
 		if (inFile) {

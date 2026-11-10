@@ -13,11 +13,13 @@ export const readOnly = (readonly = false) =>
 		if (!Shadow.running) {
 			Parser.viewOnly = readonly;
 		}
-		const result = method.apply(this, args);
-		if (!Shadow.running) {
-			Parser.viewOnly = viewOnly;
+		try {
+			return method.apply(this, args);
+		} finally {
+			if (!Shadow.running) {
+				Parser.viewOnly = viewOnly;
+			}
 		}
-		return result;
 	};
 
 mixins['readOnly'] = __filename;

@@ -533,7 +533,7 @@ export const expandMagicWord = (
 				if (extension === 'json') {
 					return contentmodel(i, 'json');
 				}
-				return main.endsWith('/doc') ? 'wikiext' : contentmodel(i, 'Scribunto');
+				return main.endsWith('/doc') ? 'wikitext' : contentmodel(i, 'Scribunto');
 			}
 			return extension && (n === 8 || n === 2 && isSubpage) && contentmodels.has(extension)
 				? contentmodel(i, extension)

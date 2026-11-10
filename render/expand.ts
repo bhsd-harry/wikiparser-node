@@ -45,12 +45,25 @@ const implicitNewLine = (str: string, prev: string): string =>
  * 加载模板
  * @param title 模板名
  * @param config
+ * @param seen 已检查的模板重定向
  */
 const loadTemplate = (
 	title: string,
 	config: Config,
+	seen = new Set<string>(),
 ): string | false => {
-	if (Parser.templates.has(title)) {
+	const isSeen = seen.has(title);
+	if (
+		!isSeen &&
+		Parser.redirects.has(title)
+	) { // 未循环的重定向拥有最高优先级
+		seen.add(title);
+		return loadTemplate(
+			Parser.redirects.get(title)!,
+			config,
+			seen,
+		);
+	} else if (Parser.templates.has(title)) { // 可能是循环的重定向
 		return title;
 	} else if (Parser.templateDir === undefined) {
 		return false;
@@ -73,13 +86,19 @@ const loadTemplate = (
 	if (!file) {
 		return false;
 	}
-	const content = tidy(fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')),
-		accum: Token[] = [],
+	const content = tidy(fs.readFileSync(path.join(file.parentPath, file.name), 'utf8'));
+	Parser.templates.set(title, content); // 即使是重定向，也记录模板内容
+	if (isSeen) { // 循环的重定向
+		return title;
+	}
+	const accum: Token[] = [],
 		parsed = Shadow.run(() => parseRedirect(content, config, accum));
 	if (parsed) {
-		return loadTemplate((accum[0] as RedirectToken).lastChild.getTitle().title, config);
+		const redirect = (accum[0] as RedirectToken).lastChild.getTitle().title;
+		Parser.redirects.set(title, redirect);
+		seen.add(title);
+		return loadTemplate(redirect, config, seen);
 	}
-	Parser.templates.set(title, content);
 	return title;
 };
 

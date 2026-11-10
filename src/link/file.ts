@@ -303,8 +303,8 @@ export abstract class FileToken extends LinkBaseToken {
 			rule = 'invalid-gallery';
 			s = lintConfig.getSeverity(rule, 'extension');
 			if (
+				!interwiki &&
 				s && ns === 6 && !extension && !firstChild.querySelector('arg,magic-word,template')
-				&& !interwiki // eslint-disable-line unicorn/prefer-simple-condition-first
 			) {
 				errors.push(generateForSelf(this, rect, rule, 'missing-extension', s));
 			}

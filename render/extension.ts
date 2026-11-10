@@ -109,7 +109,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 		case 'source': {
 			let html = trimNewlines(lastChild.toHtmlInternal(renderOpt)),
 				lexer = firstChild.getAttr('lang');
-			const dir = firstChild.getAttr('dir') === 'rtl' ? ' rtl' : 'ltr',
+			const dir = firstChild.getAttr('dir') === 'rtl' ? 'rtl' : 'ltr',
 				isInline = firstChild.getAttr('enclose') === 'none' || firstChild.hasAttr('inline'),
 				showLines = firstChild.hasAttr('line'),
 				{classList} = firstChild;
@@ -125,7 +125,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 								child => child.is('ext') && child.name === 'nowiki'
 									? child.innerText ?? ''
 									: child.toString(),
-							).join()),
+							).join('')),
 							Prism.languages[lexer]!,
 							lexer,
 						);
@@ -385,7 +385,7 @@ export const renderExt = (token: ExtToken, opt?: Omit<HtmlOpt, 'nowrap'>): strin
 			}: typeof TemplateData = require('./templatedata');
 			const data = validateTemplateData(token.innerText ?? '');
 			if (typeof data === 'string') {
-				return '<div class="cdx-message--error cdx-message cdx-message--block>'
+				return '<div class="cdx-message--error cdx-message cdx-message--block">'
 					+ '<span class="cdx-message__icon"></span>'
 					+ `<div class="cdx-message__content"><p>${sanitize(data)}\n</p></div>`
 					+ '</div>';

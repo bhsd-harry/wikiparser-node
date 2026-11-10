@@ -203,7 +203,9 @@ export abstract class LinkBaseToken extends Token {
 				) {
 					undo(e, data);
 					throw new Error(
-						`${type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
+						`${
+							type === 'category' || type === 'ext-inner' ? 'Category' : 'File'
+						} link cannot change namespace: ${name}`,
 					);
 				} else if (
 					type === 'link' && !interwiki && (ns === 6 || ns === 14)

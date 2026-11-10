@@ -114,6 +114,21 @@ export abstract class CategorytreeToken extends LinkBaseToken {
 			super.safeReplaceChildren(elements);
 		}
 	}
+
+	/** @private */
+	override setTarget(link: string): void {
+		this.firstChild.setText(link);
+	}
+
+	/* c8 ignore start */
+	/**
+	 * @override
+	 * @throws `Error` if called, since `setLinkText` is not applicable to categorytree
+	 */
+	override setLinkText(): never {
+		throw new Error('LinkBaseToken.setLinkText method is not applicable to categorytree!');
+	}
+	/* c8 ignore stop */
 }
 
 classes['CategorytreeToken'] = __filename;

@@ -441,7 +441,12 @@ export abstract class TdToken extends TableBaseToken {
 			return;
 		}
 		const key = trimLc(keyOrProp) as T;
-		super.setAttr(key, (value !== 1 || key !== 'rowspan' && key !== 'colspan') && String(value));
+		super.setAttr(
+			key,
+			typeof value === 'number'
+				? (value !== 1 || key !== 'rowspan' && key !== 'colspan') && String(value)
+				: value!,
+		);
 		if (!this.childNodes[1].toString()) {
 			this.#innerSyntax = '';
 		}

@@ -215,13 +215,14 @@ export class AstText extends AstNode {
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 				let {index, 0: error} = mt;
 				const [, tag, prefix] = mt,
+					lcTag = tag?.toLowerCase(),
 					lbrackInExtLinkText = error === '[' && type === 'ext-link-text';
 				if (prefix && prefix !== ']') {
 					const {length} = prefix;
 					index += length;
 					error = error.slice(length);
 				} else if (
-					error.startsWith('<') && !tags.has(tag!.toLowerCase())
+					error.startsWith('<') && !tags.has(lcTag)
 					|| lbrackInExtLinkText && (
 						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
 						|| nextName === 'nowiki' && nextSibling?.is('ext')
@@ -265,9 +266,9 @@ export class AstText extends AstNode {
 					let key: string | undefined;
 					if (/^<\/?\s/u.test(error) || !/[\s/>]/u.test(nextChar ?? '')) {
 						key = 'invalid';
-					} else if (specified.has(tag)) {
-						key = tag;
-					} else if (disallowedTags.has(tag!) && !ext.includes(tag!)) {
+					} else if (specified.has(lcTag)) {
+						key = lcTag;
+					} else if (disallowedTags.has(lcTag!) && !ext.includes(lcTag!)) {
 						key = 'disallowed';
 					}
 					severity = lintConfig.getSeverity(rule, key);

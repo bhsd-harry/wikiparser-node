@@ -774,12 +774,13 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			args = arg;
 		} else if (arg) {
 			args.length = 0;
-			for (let i = 1; Object.hasOwn(arg, i); i++) {
-				args.push(arg[i]!);
-				delete arg[i];
+			const rest = {...arg};
+			for (let i = 1; Object.hasOwn(rest, i); i++) {
+				args.push(rest[i]!);
+				delete rest[i];
 			}
-			for (const key in arg) {
-				args.push(`${key}=${arg[key]}`);
+			for (const key in rest) {
+				args.push(`${key}=${rest[key]}`);
 			}
 		}
 		const {parserFunction} = this.getConfig(),

@@ -11,7 +11,7 @@ import type {
 	LintConfiguration as LintConfigurationBase,
 } from '../base';
 
-/* NOT FOR BRWOSER */
+/* NOT FOR BROWSER */
 
 import {classes} from '../util/constants';
 

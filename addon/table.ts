@@ -446,7 +446,12 @@ TableToken.prototype.insertTableCol =
 				//
 			} else if (prevCoords !== coords) {
 				const rowToken = this.getNthRow(i);
-				rowToken.insertBefore(token.cloneNode(), rowToken.getNthCol(coords!.column, true));
+				rowToken.insertBefore(
+					token.cloneNode(),
+					coords
+						? rowToken.getNthCol(coords.column, true)
+						: rowToken.childNodes.slice(2).find(isRowEnd),
+				);
 			} else if (coords.row === i) {
 				this.getNthCell(coords)!.colspan++;
 			}

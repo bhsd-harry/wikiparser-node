@@ -20,8 +20,14 @@ export const Shadow = {
 
 		/* PRINT ONLY END */
 
-		/** restore state before exit */
-		const finish = (): void => {
+		try {
+			const {Token}: typeof Src = require('../src/index');
+			const result = callback();
+			if (result instanceof Token && !result.getAttribute('built')) {
+				result.afterBuild();
+			}
+			return result;
+		} finally {
 			this.running = running;
 
 			/* PRINT ONLY */
@@ -29,20 +35,7 @@ export const Shadow = {
 			if (Parser) {
 				Parser.internal = internal!;
 			}
-		};
-		try {
-			const {Token}: typeof Src = require('../src/index');
-			const result = callback();
-			if (result instanceof Token && !result.getAttribute('built')) {
-				result.afterBuild();
-			}
-			finish();
-			return result;
-		} catch (e) /* c8 ignore start */ {
-			finish();
-			throw e;
 		}
-		/* c8 ignore stop */
 	},
 
 	/** @private */
@@ -54,15 +47,13 @@ export const Shadow = {
 
 		/* PRINT ONLY END */
 
-		const result = callback();
+		try {
+			return callback();
+		} finally {
+			/* PRINT ONLY */
 
-		/* PRINT ONLY */
-
-		Parser.internal = internal;
-
-		/* PRINT ONLY END */
-
-		return result;
+			Parser.internal = internal;
+		}
 	},
 
 	rev: 0,
