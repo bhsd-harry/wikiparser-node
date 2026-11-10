@@ -88,7 +88,7 @@ const workerJS = (): void => {
 				postMessage([command, qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([command, qid, parse(wikitext, include, stage).json()]);
+				postMessage([command, qid, parse(wikitext, include, stage).json(), wikitext]);
 				break;
 			case 'lint':
 				postMessage([command, qid, parse(wikitext, include).lint(), wikitext]);
@@ -105,6 +105,7 @@ const workerJS = (): void => {
 								.replaceAll(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
 							: child.print(),
 					]),
+					wikitext,
 				]);
 				break;
 			case 'destroy':
@@ -353,7 +354,7 @@ const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
  * @param stage 解析层级
  */
 const json = (wikitext: string, include?: boolean, qid = -4, stage?: number): Promise<AST> =>
-	getFeedback('json', qid, false, wikitext, include, stage);
+	getFeedback('json', qid, true, wikitext, include, stage);
 
 /**
  * 将解析改为异步执行
@@ -367,7 +368,7 @@ const print = (
 	include?: boolean,
 	stage?: number,
 	qid = -1,
-): Promise<[number, string, string][]> => getFeedback('print', qid, false, wikitext, include, stage);
+): Promise<[number, string, string][]> => getFeedback('print', qid, true, wikitext, include, stage);
 
 /**
  * 将语法分析改为异步执行

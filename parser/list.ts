@@ -113,7 +113,7 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 				return dd(syntax.slice(0, dt), index);
 			}
 			dt -= syntax.length;
-			regex.lastIndex = index + 4 + String(accum.length).length;
+			regex.lastIndex = index + 3 + String(accum.length).length;
 			text = dd(syntax, index);
 		}
 		ex = regex.exec(text);

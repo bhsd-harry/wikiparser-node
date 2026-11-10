@@ -1,5 +1,27 @@
-html, body, main, article, div, select, pre, ol, li, ul, dl, dt, dd,
-p, hr, h1, h2, h3, h4, h5, h6, a, center, img {
+html,
+body,
+main,
+article,
+div,
+select,
+pre,
+ol,
+li,
+ul,
+dl,
+dt,
+dd,
+p,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+center,
+img {
 	margin: 0;
 	padding: 0;
 	border: 0;

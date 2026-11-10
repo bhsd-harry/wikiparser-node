@@ -50,7 +50,7 @@ const workerJS = () => {
                 postMessage([command, qid, Parser.getConfig()]);
                 break;
             case 'json':
-                postMessage([command, qid, parse(wikitext, include, stage).json()]);
+                postMessage([command, qid, parse(wikitext, include, stage).json(), wikitext]);
                 break;
             case 'lint':
                 postMessage([command, qid, parse(wikitext, include).lint(), wikitext]);
@@ -67,6 +67,7 @@ const workerJS = () => {
                                 .replaceAll(/[&<>]/gu, p => `&${entities[p]};`)
                             : child.print(),
                     ]),
+                    wikitext,
                 ]);
                 break;
             case 'destroy':
@@ -251,8 +252,8 @@ const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve 
     worker.postMessage([command, qid, raw, ...args]);
 });
 const getConfig = () => getFeedback('getConfig', -3);
-const json = (wikitext, include, qid = -4, stage) => getFeedback('json', qid, false, wikitext, include, stage);
-const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
+const json = (wikitext, include, qid = -4, stage) => getFeedback('json', qid, true, wikitext, include, stage);
+const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, true, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
 const provide = (command, qid, wikitext, ...args) => getFeedback(command, qid, typeof wikitext === 'string' && command !== 'querySelectorAll', wikitext, ...args);
 const append = (parent, text) => {
