@@ -130,16 +130,17 @@ export abstract class TagToken extends Token {
 						if (type === 'tvar') {
 							return undefined;
 						} else if (
+							viewOnly &&
 							cur.#match?.[0] === rev
-							&& viewOnly // eslint-disable-line unicorn/prefer-simple-condition-first
 						) {
 							const [, matched] = cur.#match;
 							if (!matched) {
 								return undefined;
 							}
 							until = matched;
+						} else {
+							stack.push(cur);
 						}
-						stack.push(cur);
 					} else {
 						const top = stack.pop()!;
 						if (top === this) {
