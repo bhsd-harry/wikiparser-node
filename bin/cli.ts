@@ -5,10 +5,10 @@ import path from 'path';
 import assert from 'assert';
 import util from 'util';
 import Parser from '../index';
-import type {LintError} from '../base';
+import type {LintError, FullLintConfig} from '../base';
 import type {LintConfiguration} from '../lib/lintConfig';
 
-declare type CacheItems = Record<string, [number, string, number, LintError[]]>;
+declare type CacheItems = Record<string, [number, string, number, LintError[], FullLintConfig?]>;
 declare interface Cache {
 	include: CacheItems;
 	noinclude: CacheItems;
@@ -130,7 +130,7 @@ const loadLintConfig = (file: string): LintConfiguration => {
 		lintConfig = lintConfig.default;
 	}
 	if (lintConfig !== undefined && lintConfig !== null && typeof lintConfig !== 'object') {
-		exit(`Not a valid lint config file: ${lintConfigFile}`);
+		exit(`Not a valid lint config file: ${file}`);
 	}
 	return lintConfig as LintConfiguration;
 };
@@ -208,6 +208,14 @@ const styleText = (format: Parameters<typeof util.styleText>[0], text: string): 
  */
 const coloredSeverity = (severity: 'error' | 'warning'): string =>
 	styleText(severity === 'error' ? 'red' : 'yellow', severity.padEnd(7));
+
+/** get the lint config as a plain object */
+const cloneLintConfig = (): FullLintConfig => ({
+	/* eslint-disable @typescript-eslint/no-misused-spread */
+	...Parser.lintConfig,
+	rules: {...Parser.lintConfig.rules},
+	/* eslint-enable @typescript-eslint/no-misused-spread */
+});
 
 for (let i = 2; i < argv.length; i++) {
 	option = argv[i]!;
@@ -386,11 +394,11 @@ const {mtimeMs} = fs.statSync(config),
 	} else {
 		let cur = process.cwd(),
 			last: string | undefined;
-		while (last !== cur) {
+		SEARCH: while (last !== cur) {
 			for (const file of lintConfigDefaults) {
 				try {
 					Parser.lintConfig = loadLintConfig(path.join(cur, file));
-					return;
+					break SEARCH;
 				} catch {}
 			}
 			last = cur;
@@ -402,13 +410,7 @@ const {mtimeMs} = fs.statSync(config),
 	Parser.lintConfig.ignoreDisables = ignoreDisables;
 
 	if (printLintConfig) {
-		console.log(util.inspect(
-			{
-				...Parser.lintConfig, // eslint-disable-line @typescript-eslint/no-misused-spread
-				rules: Parser.lintConfig.rules,
-			},
-			{depth: null, colors},
-		));
+		console.log(util.inspect(cloneLintConfig(), {depth: null, colors}));
 		process.exit(0);
 	}
 
@@ -426,11 +428,19 @@ const {mtimeMs} = fs.statSync(config),
 		}
 		const fileCache = obj?.[file];
 		let wikitext = fs.readFileSync(file, 'utf8'),
-			problems: LintError[] & {output?: string},
-			update = false;
+			problems: LintError[] & {output?: string} | undefined,
+			update = false,
+			lintConfig: FullLintConfig | undefined;
+		if (caching) {
+			lintConfig = cloneLintConfig();
+		}
 		if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
-			[,,, problems] = fileCache;
-		} else {
+			try {
+				assert.deepStrictEqual(fileCache[4], lintConfig);
+				[,,, problems] = fileCache;
+			} catch {}
+		}
+		if (!problems) {
 			problems = Parser.lint(wikitext, include);
 			update = true;
 		}
@@ -441,7 +451,7 @@ const {mtimeMs} = fs.statSync(config),
 			update = true;
 		}
 		if (caching && update) {
-			obj![file] = [stat.mtimeMs, config, mtimeMs, problems];
+			obj![file] = [stat.mtimeMs, config, mtimeMs, problems, lintConfig!];
 		}
 		const errors = problems.filter(({severity}) => severity === 'error'),
 			fixable = problems.filter(({fix}) => fix),

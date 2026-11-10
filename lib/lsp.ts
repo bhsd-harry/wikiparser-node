@@ -384,11 +384,15 @@ const getFixAll = (root: Token, rule?: string): TextEdit[] => {
 			lintConfig.rules[key] = key === rule ? ruleConfig[key]! : 0;
 		}
 	}
-	const {output} = root.lint();
-	lintConfig.fix = fix!;
-	lintConfig.computeEditInfo = computeEditInfo!;
-	if (rule) {
-		lintConfig.rules = ruleConfig;
+	let output: string | undefined;
+	try {
+		({output} = root.lint());
+	} finally {
+		lintConfig.fix = fix!;
+		lintConfig.computeEditInfo = computeEditInfo!;
+		if (rule) {
+			lintConfig.rules = ruleConfig;
+		}
 	}
 	return output === undefined
 		? []
@@ -1163,13 +1167,17 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY END */
 
-		const errors = root.lint();
-		lintConfig.fix = needFix;
+		let errors: LintError[];
+		try {
+			errors = root.lint();
+		} finally {
+			lintConfig.fix = needFix;
 
-		/* NOT FOR BROWSER ONLY */
+			/* NOT FOR BROWSER ONLY */
 
-		NPM: if (jsonLSP) {
-			lintConfig.rules['invalid-json'] = s!;
+			NPM: if (jsonLSP) {
+				lintConfig.rules['invalid-json'] = s!;
+			}
 		}
 
 		/* NOT FOR BROWSER ONLY END */
@@ -1967,7 +1975,7 @@ export class LanguageService implements LanguageServiceBase {
 				? lines[end.line]!.slice(start.character, end.character)
 				: `${lines[start.line]!.slice(start.character)}\n${
 					lines.slice(start.line + 1, end.line).join('\n')
-				}${lines.length === 2 ? '' : '\n'}${lines[end.line]!.slice(0, end.character)}`;
+				}${end.line - start.line === 1 ? '' : '\n'}${lines[end.line]!.slice(0, end.character)}`;
 		} else if (text) {
 			lines = text.split(/\r?\n/u);
 			selected = lines.join('\n');

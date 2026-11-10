@@ -9,6 +9,7 @@ dist/
 /.eslintcache*
 /.stylelintcache*
 /.wikilintcache
+/.coderabbit.yaml
 /wiki/
 /test/*.wiki
 /test/prof*.json

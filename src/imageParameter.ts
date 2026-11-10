@@ -209,20 +209,20 @@ export abstract class ImageParameterToken extends Token {
 			if (param[1] === 'alt') {
 				this.setAttribute('stage', MAX_STAGE - 1);
 			}
-			return;
+		} else {
+			super(
+				str,
+				config.excludes.includes('list')
+					? config
+					: {
+						...config,
+						excludes: [...config.excludes, 'list'],
+					},
+				accum,
+			);
+			this.setAttribute('name', 'caption');
+			this.setAttribute('stage', 7);
 		}
-		super(
-			str,
-			config.excludes.includes('list')
-				? config
-				: {
-					...config,
-					excludes: [...config.excludes, 'list'],
-				},
-			accum,
-		);
-		this.setAttribute('name', 'caption');
-		this.setAttribute('stage', 7);
 	}
 
 	/** @private */

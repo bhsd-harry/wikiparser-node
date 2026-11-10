@@ -129,8 +129,9 @@ export abstract class TagToken extends Token {
 								return undefined;
 							}
 							until = matched;
+						} else {
+							stack.push(cur);
 						}
-						stack.push(cur);
 					} else {
 						const top = stack.pop()!;
 						if (top === this) {
