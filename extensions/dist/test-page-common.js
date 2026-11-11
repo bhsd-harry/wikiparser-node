@@ -15,7 +15,7 @@ export const prepareDoneBtn = (btn, select, tests, dones, key) => {
             while ((_a = select.selectedOptions[0]) === null || _a === void 0 ? void 0 : _a.disabled) {
                 select.selectedIndex++;
             }
-            if (select.selectedIndex === -1) {
+            if (select.selectedOptions.length === 0) {
                 btn.disabled = true;
             }
             else {

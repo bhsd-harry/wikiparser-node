@@ -28,7 +28,7 @@ export const prepareDoneBtn: PrepareDoneBtn = (btn, select, tests, dones, key) =
 			while (select.selectedOptions[0]?.disabled) {
 				select.selectedIndex++;
 			}
-			if (select.selectedIndex === -1) {
+			if (select.selectedOptions.length === 0) {
 				btn.disabled = true;
 			} else {
 				select.dispatchEvent(new Event('change'));

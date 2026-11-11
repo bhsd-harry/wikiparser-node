@@ -29,7 +29,7 @@
 		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
 		"build:core": "npm run bundle:core && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --drop-labels=LSP,LINT --sourcemap --outfile=bundle/bundle.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
 		"build:es10": "npm run bundle:es10 && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --drop-labels=LSP,PRINT --sourcemap --outfile=bundle/bundle-es10.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-es10.min.js",
-		"build:lsp": "npm run bundle:lsp && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-lsp.min.js",
+		"build:lsp": "npm run bundle:lsp && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=iife --sourcemap --outfile=bundle/bundle-lsp.min.js && npm run size && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-lsp.min.js",
 		"build:ext": "npm run clean && bash build-ext.sh",
 		"build:test": "npm run clean && tsc -p tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es10 && npm run build:lsp && npm run build:test && npm run build:css",
@@ -51,7 +51,8 @@
 		"test:parser": "LC_ALL=en.UTF-8 testUtil --require=./bundle/bundle-lsp.min.js --enable-source-maps dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser && npm run test:json && npm run test:es10",
 		"test:end": "pkill -x http-server",
-		"test:real": "node --enable-source-maps dist/test/real.js"
+		"test:real": "node --enable-source-maps dist/test/real.js",
+		"size": "echo \"\n$(( $(gzip -c bundle/bundle-lsp.min.js | wc -c) / 1024 )) kB\""
 	},
 	"c8": {
 		"excludeAfterRemap": true,
@@ -68,15 +69,15 @@
 		]
 	},
 	"dependencies": {
-		"@bhsd/browser": "^2.3.0",
+		"@bhsd/browser": "^2.3.1",
 		"@bhsd/cm-util": "^2.4.2",
-		"@bhsd/common": "^4.1.0",
+		"@bhsd/common": "^4.1.1",
 		"vscode-languageserver-types": "^3.18.5"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^5.1.0",
 		"@bhsd/codemirror-mediawiki": "^4.8.1",
-		"@bhsd/test-util": "^3.3.0",
+		"@bhsd/test-util": "^3.3.1",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
 		"ajv": "^8.20.0",
@@ -84,7 +85,7 @@
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.14.0",
+		"eslint": "^10.15.0",
 		"http-server": "^14.1.1",
 		"monaco-editor": "^0.57.0",
 		"stylelint": "^18.0.0",
