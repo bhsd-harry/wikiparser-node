@@ -1,3 +1,4 @@
+import {execSync} from 'child_process';
 import {getPages, reset} from '@bhsd/test-util';
 import {
 	error,
@@ -15,6 +16,12 @@ const [,, site = ''] = process.argv,
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 (async () => {
+	let email: string;
+	try {
+		email = execSync('git config user.email', {encoding: 'utf8'}).trim();
+	} catch (e) {
+		throw new Error('请先配置git邮箱！', {cause: e});
+	}
 	for (const [name, url, config] of apis) {
 		info(`\n开始检查${name}：\n`);
 		reset();
@@ -24,6 +31,7 @@ const [,, site = ''] = process.argv,
 				{
 					site: name,
 				},
+				email,
 			);
 			for (const page of pages) {
 				// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression

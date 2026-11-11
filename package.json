@@ -28,7 +28,7 @@
 	},
 	"scripts": {
 		"prepublishOnly": "npm run build:core",
-		"build:core": "bash build.sh && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
+		"build:core": "bash build.sh && npm run size && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle.min.js",
 		"build:test": "tsc -p tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:test",
 		"diff": "bash diff.sh",
@@ -39,15 +39,16 @@
 		"test:unit": "testUtil --enable-source-maps dist/test/test.js",
 		"test:parser": "testUtil --enable-source-maps dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
-		"test:real": "node --enable-source-maps dist/test/real.js"
+		"test:real": "node --enable-source-maps dist/test/real.js",
+		"size": "echo \"\n$(( $(gzip -c bundle/bundle.min.js | wc -c) / 1024 )) kB\""
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^5.1.0",
-		"@bhsd/common": "^4.1.0",
-		"@bhsd/test-util": "^3.3.0",
+		"@bhsd/common": "^4.1.1",
+		"@bhsd/test-util": "^3.3.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.14.0",
+		"eslint": "^10.15.0",
 		"typescript": "^6.0.3"
 	}
 }
