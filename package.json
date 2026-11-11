@@ -34,7 +34,7 @@
 	"scripts": {
 		"prepublishOnly": "npm run build:core && gsed -i '/\\/\\/# sourceMappingURL=/d' bundle/bundle-html.min.js",
 		"bundle": "esbuild index.ts --charset=utf8 --bundle --target=es2024 --format=cjs --external:entities --external:parse5 --outfile=build/bundle-html.js",
-		"build:core": "npm run bundle && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=esm --drop-labels=NPM --sourcemap --outfile=bundle/bundle-html.min.js && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-html.min.js",
+		"build:core": "npm run bundle && esbuild index.ts --charset=utf8 --bundle --minify --target=es2019 --format=esm --drop-labels=NPM --sourcemap --outfile=bundle/bundle-html.min.js && npm run size && eslint --no-config-lookup -c eslint.browser.mjs bundle/bundle-html.min.js",
 		"build:test": "bash build.sh",
 		"build": "npm run build:core && npm run build:test",
 		"diff": "bash diff.sh",
@@ -48,7 +48,7 @@
 		"test": "npm run test:parser",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js",
-		"size": "echo $(( $(gzip -c bundle/bundle-html.min.js | wc -c) / 1024 )) kB"
+		"size": "echo \"\n$(( $(gzip -c bundle/bundle-html.min.js | wc -c) / 1024 )) kB\""
 	},
 	"c8": {
 		"exclude": [
@@ -64,14 +64,14 @@
 	"devDependencies": {
 		"@bhsd/cm-util": "^2.4.2",
 		"@bhsd/code-standard": "^5.1.0",
-		"@bhsd/common": "^4.1.0",
-		"@bhsd/nodejs": "^1.2.1",
-		"@bhsd/test-util": "^3.3.0",
+		"@bhsd/common": "^4.1.1",
+		"@bhsd/nodejs": "^1.2.2",
+		"@bhsd/test-util": "^3.3.1",
 		"c8": "^12.0.0",
 		"diff2html-cli": "^5.2.15",
 		"entities": "^9.0.0",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.14.0",
+		"eslint": "^10.15.0",
 		"parse5": "^8.1.0",
 		"typescript": "^6.0.3"
 	},
