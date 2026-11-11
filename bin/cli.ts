@@ -50,15 +50,13 @@ Available options:
 	colorSet = new Set(['red', 'yellow']),
 	{argv} = process,
 	exts: string[] = [],
-	ignorePatterns: string[] = [],
-	jobs: Promise<void>[] = [];
+	ignorePatterns: string[] = [];
 let files: string[] = [],
 	lintConfigFile: string | undefined,
 	cacheFile = '.wikilintcache',
 	cache: Cache | undefined,
 	caching = false,
 	colors = true,
-	exiting = false,
 	fixing = false,
 	include = false,
 	ignoreDisables = false,
@@ -66,10 +64,6 @@ let files: string[] = [],
 	quiet = false,
 	recursive = false,
 	strict = false,
-	nErr = 0,
-	nWarn = 0,
-	nFixableErr = 0,
-	nFixableWarn = 0,
 	option: string;
 
 /**
@@ -384,130 +378,134 @@ config = (
 const {mtimeMs} = fs.statSync(config),
 	obj = cache?.[include ? 'include' : 'noinclude'];
 
-(async () => {
-	if (lintConfigFile) {
-		try {
-			Parser.lintConfig = loadLintConfig(lintConfigFile);
-		} catch {
-			exit(`Cannot load lint config file: ${lintConfigFile}`);
-		}
-	} else {
-		let cur = process.cwd(),
-			last: string | undefined;
-		SEARCH: while (last !== cur) {
-			for (const file of lintConfigDefaults) {
-				try {
-					Parser.lintConfig = loadLintConfig(path.join(cur, file));
-					break SEARCH;
-				} catch {}
-			}
-			last = cur;
-			cur = path.dirname(cur);
-		}
+if (lintConfigFile) {
+	try {
+		Parser.lintConfig = loadLintConfig(lintConfigFile);
+	} catch {
+		exit(`Cannot load lint config file: ${lintConfigFile}`);
 	}
-	Parser.lintConfig.computeEditInfo = true;
-	Parser.lintConfig.fix = fixing;
-	Parser.lintConfig.ignoreDisables = ignoreDisables;
-
-	if (printLintConfig) {
-		console.log(util.inspect(cloneLintConfig(), {depth: null, colors}));
-		process.exit(0);
-	}
-
-	for (const file of new Set(files.map(f => path.resolve(f)))) {
-		if (!fs.existsSync(file)) {
-			continue;
-		}
-		const stat = fs.statSync(file);
-		if (stat.isDirectory()) {
-			console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
-			exiting = true;
-			continue;
-		} else if (ignorePatterns.some(ignore => path.matchesGlob(file, ignore))) {
-			continue;
-		}
-		const fileCache = obj?.[file];
-		let wikitext = fs.readFileSync(file, 'utf8'),
-			problems: LintError[] & {output?: string} | undefined,
-			update = false,
-			lintConfig: FullLintConfig | undefined;
-		if (caching) {
-			lintConfig = cloneLintConfig();
-		}
-		if (caching && fileCache?.[0] === stat.mtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
+} else {
+	let cur = process.cwd(),
+		last: string | undefined;
+	SEARCH: while (last !== cur) {
+		for (const file of lintConfigDefaults) {
 			try {
-				assert.deepStrictEqual(fileCache[4], lintConfig);
-				[,,, problems] = fileCache;
+				Parser.lintConfig = loadLintConfig(path.join(cur, file));
+				break SEARCH;
 			} catch {}
 		}
-		if (!problems) {
-			problems = Parser.lint(wikitext, include);
-			update = true;
-		}
-		if (fixing && problems.output !== undefined) {
-			wikitext = problems.output;
-			jobs.push(fs.promises.writeFile(file, wikitext));
-			problems = Parser.lint(wikitext, include);
-			update = true;
-		}
-		if (caching && update) {
-			obj![file] = [stat.mtimeMs, config, mtimeMs, problems, lintConfig!];
-		}
-		const errors = problems.filter(({severity}) => severity === 'error'),
-			fixable = problems.filter(({fix}) => fix),
-			nLocalErr = errors.length,
-			nLocalWarn = problems.length - nLocalErr,
-			nLocalFixableErr = fixable.filter(({severity}) => severity === 'error').length,
-			nLocalFixableWarn = fixable.length - nLocalFixableErr;
-		if (quiet) {
-			problems = errors;
-		} else {
-			nWarn += nLocalWarn;
-			nFixableWarn += nLocalFixableWarn;
-		}
-		if (problems.length > 0) {
-			console.error('\n%s', styleText('underline', file));
-			const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
-				maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
-				maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
-			for (const {rule, message, severity, startLine, startCol} of problems) {
-				console.error(
-					`  ${styleText('dim', '%s:%s')}  %s  %s  %s`,
-					String(startLine).padStart(maxLineChars),
-					String(startCol).padEnd(maxColChars),
-					coloredSeverity(severity),
-					message.padEnd(maxMessageChars),
-					styleText('dim', rule),
-				);
-			}
-		}
-		nErr += nLocalErr;
-		nFixableErr += nLocalFixableErr;
-		exiting ||= Boolean(nLocalErr || strict && nLocalWarn);
+		last = cur;
+		cur = path.dirname(cur);
 	}
+}
+Parser.lintConfig.computeEditInfo = true;
+Parser.lintConfig.fix = fixing;
+Parser.lintConfig.ignoreDisables = ignoreDisables;
 
-	if (nErr || nWarn) {
-		console.error(
-			styleText(['red', 'bold'], '\n✖ %s (%s, %s)'),
-			plural(nErr + nWarn, 'problem'),
-			plural(nErr, 'error'),
-			plural(nWarn, 'warning'),
-		);
-		if (nFixableErr || nFixableWarn) {
+if (printLintConfig) {
+	console.log(util.inspect(cloneLintConfig(), {depth: null, colors}));
+	process.exit(0);
+}
+
+let exiting = false,
+	nErr = 0,
+	nWarn = 0,
+	nFixableErr = 0,
+	nFixableWarn = 0;
+for (const file of new Set(files.map(f => path.resolve(f)))) {
+	if (!fs.existsSync(file)) {
+		continue;
+	}
+	const stat = fs.statSync(file);
+	if (stat.isDirectory()) {
+		console.error(`"${file}" is a directory. Please use -r or --recursive to lint directories.`);
+		exiting = true;
+		continue;
+	} else if (ignorePatterns.some(ignore => path.matchesGlob(file, ignore))) {
+		continue;
+	}
+	const fileCache = obj?.[file];
+	let wikitext = fs.readFileSync(file, 'utf8'),
+		fileMtimeMs = stat.mtimeMs,
+		problems: LintError[] & {output?: string} | undefined,
+		update = false,
+		lintConfig: FullLintConfig | undefined;
+	if (caching) {
+		lintConfig = cloneLintConfig();
+	}
+	if (caching && fileCache?.[0] === fileMtimeMs && fileCache[1] === config && fileCache[2] === mtimeMs) {
+		try {
+			assert.deepStrictEqual(fileCache[4], lintConfig);
+			[,,, problems] = fileCache;
+		} catch {}
+	}
+	if (!problems) {
+		problems = Parser.lint(wikitext, include);
+		update = true;
+	}
+	if (fixing && problems.output !== undefined) {
+		wikitext = problems.output;
+		fs.writeFileSync(file, wikitext);
+		fileMtimeMs = fs.statSync(file).mtimeMs;
+		problems = Parser.lint(wikitext, include);
+		update = true;
+	}
+	if (caching && update) {
+		obj![file] = [fileMtimeMs, config, mtimeMs, problems, lintConfig!];
+	}
+	const errors = problems.filter(({severity}) => severity === 'error'),
+		fixable = problems.filter(({fix}) => fix),
+		nLocalErr = errors.length,
+		nLocalWarn = problems.length - nLocalErr,
+		nLocalFixableErr = fixable.filter(({severity}) => severity === 'error').length,
+		nLocalFixableWarn = fixable.length - nLocalFixableErr;
+	if (quiet) {
+		problems = errors;
+	} else {
+		nWarn += nLocalWarn;
+		nFixableWarn += nLocalFixableWarn;
+	}
+	if (problems.length > 0) {
+		console.error('\n%s', styleText('underline', file));
+		const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
+			maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
+			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
+		for (const {rule, message, severity, startLine, startCol} of problems) {
 			console.error(
-				styleText(['red', 'bold'], '  %s and %s potentially fixable with the `--fix` option.'),
-				plural(nFixableErr, 'error'),
-				plural(nFixableWarn, 'warning'),
+				`  ${styleText('dim', '%s:%s')}  %s  %s  %s`,
+				String(startLine).padStart(maxLineChars),
+				String(startCol).padEnd(maxColChars),
+				coloredSeverity(severity),
+				message.padEnd(maxMessageChars),
+				styleText('dim', rule),
 			);
 		}
-		console.error();
 	}
+	nErr += nLocalErr;
+	nFixableErr += nLocalFixableErr;
+	exiting ||= Boolean(nLocalErr || strict && nLocalWarn);
+}
 
-	await Promise.all(jobs);
-	if (caching) {
-		fs.writeFileSync(cacheFile, JSON.stringify(cache), 'utf8');
+if (nErr || nWarn) {
+	console.error(
+		styleText(['red', 'bold'], '\n✖ %s (%s, %s)'),
+		plural(nErr + nWarn, 'problem'),
+		plural(nErr, 'error'),
+		plural(nWarn, 'warning'),
+	);
+	if (nFixableErr || nFixableWarn) {
+		console.error(
+			styleText(['red', 'bold'], '  %s and %s potentially fixable with the `--fix` option.'),
+			plural(nFixableErr, 'error'),
+			plural(nFixableWarn, 'warning'),
+		);
 	}
-	if (exiting) {
-		process.exitCode = 1;
-	}
-})();
+	console.error();
+}
+
+if (caching) {
+	fs.writeFileSync(cacheFile, JSON.stringify(cache), 'utf8');
+}
+if (exiting) {
+	process.exitCode = 1;
+}
