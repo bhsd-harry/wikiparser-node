@@ -98,7 +98,7 @@
 	},
 	"dependencies": {
 		"@bhsd/cm-util": "^2.4.2",
-		"@bhsd/common": "^4.1.0",
+		"@bhsd/common": "^4.1.1",
 		"@bhsd/stylelint-util": "^2.0.0",
 		"culori": "^4.0.2",
 		"entities": "^9.0.0",
@@ -106,8 +106,8 @@
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^5.1.0",
-		"@bhsd/nodejs": "^1.2.1",
-		"@bhsd/test-util": "^3.3.0",
+		"@bhsd/nodejs": "^1.2.2",
+		"@bhsd/test-util": "^3.3.1",
 		"@codemirror/lint": "^6.9.7",
 		"@types/prismjs": "^1.26.6",
 		"ajv": "^8.20.0",
@@ -116,7 +116,7 @@
 		"codejar-async": "^4.3.1",
 		"diff2html-cli": "^5.2.15",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.14.0",
+		"eslint": "^10.15.0",
 		"mathoid-texvcjs": "^0.6.0",
 		"monaco-editor": "^0.57.0",
 		"stylelint": "^18.0.0",

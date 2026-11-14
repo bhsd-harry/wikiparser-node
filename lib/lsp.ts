@@ -1318,9 +1318,7 @@ export class LanguageService implements LanguageServiceBase {
 			});
 			if (tokens.length > 0) {
 				const dir = path.join(__dirname, 'lilypond');
-				if (!fs.existsSync(dir)) {
-					fs.mkdirSync(dir);
-				}
+				fs.mkdirSync(dir, {recursive: true});
 				lilypondDiagnostics = await Promise.all(tokens.map(async (token): Promise<DiagnosticBase[]> => {
 					const {innerText} = token,
 						score = `showLastLength = R1${
