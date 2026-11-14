@@ -2,8 +2,9 @@
 
 import path from 'path';
 import fs from 'fs';
-import {execSync, spawnSync} from 'child_process';
+import {spawnSync} from 'child_process';
 import assert from 'assert/strict';
+import {getEmail} from '@bhsd/nodejs';
 import {getParserConfig, getConfig, getVariants, getKeywords} from '@bhsd/cm-util';
 import {error} from '../util/diff';
 import {toLowerCase} from '../util/string';
@@ -103,7 +104,7 @@ export default async (
 		url = url.slice(0, url.lastIndexOf('/'));
 	}
 	if (user === 'git') {
-		user = execSync('git config user.email', {encoding: 'utf8'}).trim();
+		user = getEmail();
 	}
 	const headers = user
 			? {
