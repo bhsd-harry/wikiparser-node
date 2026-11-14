@@ -1,4 +1,4 @@
-import {execSync} from 'child_process';
+import {getEmail} from '@bhsd/nodejs';
 import {getPages, reset} from '@bhsd/test-util';
 import {
 	error,
@@ -23,12 +23,7 @@ const [,, site = ''] = process.argv,
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 (async () => {
-	let email: string;
-	try {
-		email = execSync('git config user.email', {encoding: 'utf8'}).trim();
-	} catch (e) {
-		throw new Error('请先配置git邮箱！', {cause: e});
-	}
+	const email = getEmail();
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`\n开始检查${name}：\n`);
