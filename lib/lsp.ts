@@ -3,6 +3,7 @@ import {
 	numToHex,
 	getRegex,
 	numLeadingSpaces,
+	Destroyed,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -589,10 +590,8 @@ export class LanguageService implements LanguageServiceBase {
 	#text2: string;
 	#running: Promise<Token> | undefined;
 	#running2: Promise<Token> | undefined;
-	// @ts-expect-error lazy initialization
-	#done: Token;
-	// @ts-expect-error lazy initialization
-	#done2: Token;
+	#done: Token | undefined;
+	#done2: Token | undefined;
 	// @ts-expect-error lazy initialization
 	#config: Config | string;
 	// @ts-expect-error lazy initialization
@@ -654,7 +653,12 @@ export class LanguageService implements LanguageServiceBase {
 
 	/** @implements */
 	async destroy(): Promise<void> {
-		Object.setPrototypeOf(this, null);
+		this.#running = undefined;
+		this.#running2 = undefined;
+		this.#done = undefined;
+		this.#done2 = undefined;
+		this.#completionConfig = undefined;
+		Object.setPrototypeOf(this, Destroyed);
 
 		/* NOT FOR BROWSER ONLY */
 
@@ -680,7 +684,7 @@ export class LanguageService implements LanguageServiceBase {
 	async #queue(text: string): Promise<Token> {
 		text = tidy(text);
 		if (!this.#running && this.#checkConfig() && this.#text === text) {
-			return this.#done;
+			return this.#done!;
 		}
 		this.#text = text;
 		this.#running ??= this.#parse(); // 不要提交多个解析任务
@@ -721,7 +725,7 @@ export class LanguageService implements LanguageServiceBase {
 	async #queueSignature(text: string): Promise<Token> {
 		text = tidy(text);
 		if (!this.#running2 && this.#checkConfig() && this.#text2 === text) {
-			return this.#done2;
+			return this.#done2!;
 		}
 		this.#text2 = text;
 		this.#running2 ??= this.#parseSignature(); // 不要提交多个解析任务
@@ -1401,7 +1405,7 @@ export class LanguageService implements LanguageServiceBase {
 			...action,
 			edit: {
 				changes: {
-					'': getFixAll(this.#done, rule),
+					'': getFixAll(this.#done!, rule),
 				},
 			},
 		};
@@ -1964,7 +1968,7 @@ export class LanguageService implements LanguageServiceBase {
 	querySelectorAll<K extends SelectedTokenTypes>(selector: K): TokenTypeMap[K][];
 	querySelectorAll<T = Token>(selector: string): T[];
 	querySelectorAll(selector: string): Token[] {
-		return this.#done.querySelectorAll(selector);
+		return this.#done!.querySelectorAll(selector);
 	}
 
 	/** @private */

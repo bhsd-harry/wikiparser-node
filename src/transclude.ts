@@ -764,6 +764,11 @@ export abstract class TranscludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	override destroy(): void {
+		this.#args.clear();
+		super.destroy();
+	}
+
 	override cloneNode(): this {
 		const [first, ...cloned] = this.cloneChildNodes();
 		return Shadow.run(() => {

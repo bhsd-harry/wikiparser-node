@@ -230,6 +230,11 @@ export abstract class TagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	override destroy(): void {
+		this.#match = undefined;
+		super.destroy();
+	}
+
 	// eslint-disable-next-line jsdoc/require-throws
 	/**
 	 * Get the range of the tag pair

@@ -152,6 +152,11 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	override destroy(): void {
+		this.#match = {};
+		super.destroy();
+	}
+
 	override cloneNode(): this {
 		return Shadow.run(
 			// @ts-expect-error abstract class

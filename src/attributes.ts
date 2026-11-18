@@ -478,6 +478,11 @@ export abstract class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	override destroy(): void {
+		this.#classList = undefined;
+		super.destroy();
+	}
+
 	/* c8 ignore start */
 	/**
 	 * Sanitize invalid attributes

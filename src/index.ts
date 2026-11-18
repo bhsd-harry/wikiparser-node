@@ -137,7 +137,7 @@ export class Token extends AstElement {
 	readonly #config;
 
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
-	readonly #accum;
+	#accum;
 	#include?: boolean;
 	#built = false;
 	#string: Cached<string> | undefined;
@@ -145,7 +145,7 @@ export class Token extends AstElement {
 
 	/* NOT FOR BROWSER */
 
-	#acceptable?: Record<string, Ranges> | (() => Record<string, Ranges>);
+	#acceptable?: Record<string, Ranges> | (() => Record<string, Ranges>) | undefined;
 	readonly #protectedChildren = new Ranges();
 
 	/* NOT FOR BROWSER END */
@@ -807,6 +807,12 @@ export class Token extends AstElement {
 	}
 
 	/* NOT FOR BROWSER */
+
+	override destroy(): void {
+		this.#acceptable = undefined;
+		this.#accum = [];
+		super.destroy();
+	}
 
 	/** @private */
 	getAcceptable(): Record<string, Ranges> | undefined {

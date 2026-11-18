@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import {splitLines} from '@bhsd/common';
+import {
+	splitLines,
+
+	/* NOT FOR BROWSER */
+
+	Destroyed,
+} from '@bhsd/common';
 import findIndex from '../vendor/search';
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
@@ -58,7 +64,7 @@ export abstract class AstNode implements AstNodeBase {
 	#previousSibling: AstNodes | undefined;
 	#root: Cached<Token | this> | undefined;
 	#aIndex: Cached<number> | undefined;
-	#rIndex: Record<number, Cached<number>> = {};
+	readonly #rIndex: Record<number, Cached<number>> = {};
 
 	/* NOT FOR BROWSER */
 
@@ -663,12 +669,14 @@ export abstract class AstNode implements AstNodeBase {
 	 * 移除事件的所有监听
 	 * @param types event type / 事件类型
 	 */
-	removeAllEventListeners(types: string | string[]): void {
+	removeAllEventListeners(types?: string | string[]): void {
 		if (Array.isArray(types)) {
 			for (const type of types) {
 				this.removeAllEventListeners(type);
 			}
-		} else if (typeof types === 'string') {
+		} else if (types === undefined) {
+			this.#events.removeAllListeners();
+		} else {
 			this.#events.removeAllListeners(types);
 		}
 	}
@@ -760,7 +768,10 @@ export abstract class AstNode implements AstNodeBase {
 		for (const child of this.childNodes) {
 			child.setAttribute('parentNode', undefined);
 		}
-		Object.setPrototypeOf(this, null);
+		this.setAttribute('childNodes', []);
+		this.#root = undefined;
+		this.removeAllEventListeners();
+		Object.setPrototypeOf(this, Destroyed);
 	}
 
 	/**

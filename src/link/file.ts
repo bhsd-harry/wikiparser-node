@@ -482,6 +482,11 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	override destroy(): void {
+		this.#classList = undefined;
+		super.destroy();
+	}
+
 	/**
 	 * 获取特定类型的图片属性参数节点
 	 * @param keys 接受的参数名
