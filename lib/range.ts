@@ -1,3 +1,4 @@
+import {Destroyed} from '@bhsd/common';
 import {classes} from '../util/constants';
 import {nodeLike} from '../mixin/nodeLike';
 import {elementLike} from '../mixin/elementLike';
@@ -132,6 +133,20 @@ export class AstRange {
 	get parentNode(): Token | undefined {
 		const {commonAncestorContainer} = this;
 		return commonAncestorContainer.type === 'text' ? commonAncestorContainer.parentNode : commonAncestorContainer;
+	}
+
+	/**
+	 * Destroy the instance
+	 *
+	 * 销毁
+	 * @since v2.2.0
+	 */
+	destroy(): void {
+		this.#startContainer = undefined;
+		this.#startOffset = undefined;
+		this.#endContainer = undefined;
+		this.#endOffset = undefined;
+		Object.setPrototypeOf(this, Destroyed);
 	}
 
 	/**

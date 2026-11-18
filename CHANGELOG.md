@@ -1,11 +1,11 @@
 <!-- markdownlint-disable first-line-h1 line-length -->
 ## v2.2.0
 
-*2026-11-11*
+*2026-11-18*
 
 **Added**
 
-- New method [`Parser.plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#plaintext)
+- New methods [`Parser.plainText`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#plaintext) and [`AstRange#destroy`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange-%28EN%29#destroy)
 - [`Token#toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml) now serializes the HTML output with [parse5](https://www.npmjs.com/package/parse5) to ensure valid HTML output
 - [`Token#expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#expand) now respects [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser-%28EN%29#redirects)
 
