@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import {splitLines} from '@bhsd/common';
+import {
+	splitLines,
+} from '@bhsd/common';
 import findIndex from '../vendor/search';
 import {cache} from '../util/lint';
 import {Shadow} from '../util/debug';
@@ -50,7 +52,7 @@ export abstract class AstNode implements AstNodeBase {
 	#previousSibling: AstNodes | undefined;
 	#root: Cached<Token | this> | undefined;
 	#aIndex: Cached<number> | undefined;
-	#rIndex: Record<number, Cached<number>> = {};
+	readonly #rIndex: Record<number, Cached<number>> = {};
 
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
