@@ -1,0 +1,12 @@
+{
+	"extends": "../tsconfig",
+	"include": [
+		"*.ts"
+	],
+	"compilerOptions": {
+		"lib": [
+			"dom"
+		],
+		"noEmit": true
+	}
+}
