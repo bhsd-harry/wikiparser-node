@@ -102,6 +102,12 @@ To ensure maximum responsiveness within browser environments, the parser is
 optimized for speed and memory usage while AST manipulation and HTML rendering
 are intentionally excluded to prevent main-thread blocking.
 
+### [WikiParser-HTML](https://www.npmjs.com/package/wikiparser-html)
+
+A version that only supports parsing and HTML rendering for the browser
+environment. Some extension tags are not supported compared to the Node.js
+version. You can try it out in the [browser demo](https://bhsd-harry.github.io/wikiparser-node/#renderer).
+
 ## Installation
 
 ### Node.js

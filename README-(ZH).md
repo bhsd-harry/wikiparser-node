@@ -65,6 +65,10 @@ WikiParser-Node 已使用包含约 3,000 个测试用例的官方 [MediaWiki PHP
 
 为了确保在浏览器环境中获得最大的响应速度，解析器经过了速度和内存使用的优化，同时有意排除了语法树修改和 HTML 渲染功能，以防止阻塞主线程。
 
+### [WikiParser-HTML](https://www.npmjs.com/package/wikiparser-html)
+
+一个仅支持浏览器环境下的解析和 HTML 渲染的版本。与 Node.js 版本相比，一些扩展标签不被支持。您可以在这个[演示网页](https://bhsd-harry.github.io/wikiparser-node/#renderer)中试用。
+
 ## 安装方法
 
 ### Node.js
@@ -83,7 +87,7 @@ npm i wikilint
 
 #### 可选依赖
 
-你可以安装以下任意可选库来启用高级功能：
+您可以安装以下任意可选库来启用高级功能：
 
 | 库 | 功能 |
 | :-: | --- |

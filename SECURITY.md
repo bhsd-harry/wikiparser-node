@@ -13,6 +13,7 @@ Only the latest major version of this project currently receives security update
 | wikiparser-node     | 2.x               |
 | wikilint            | 3.x               |
 | wikiparser-template | 2.x               |
+| wikiparser-html     | 2.x               |
 
 ## Reporting a Vulnerability
 
