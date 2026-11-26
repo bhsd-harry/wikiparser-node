@@ -526,7 +526,7 @@ export type MaxStage = number
 
 export interface Parser {
 	config:
-	ConfigData;
+		ConfigData;
 	i18n: Record<string, string>
 		| undefined;
 
