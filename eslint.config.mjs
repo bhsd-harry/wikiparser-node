@@ -113,10 +113,19 @@ const config = extend(
 			'*.mjs',
 		],
 		rules: {
-			'@stylistic/array-bracket-newline': [
+			'@stylistic/list-style': [
 				2,
 				{
-					minItems: 1,
+					multiLine: {
+						minItems: 1,
+					},
+					overrides: {
+						'{}': {
+							singleLine: {
+								spacing: 'never',
+							},
+						},
+					},
 				},
 			],
 		},
