@@ -1,0 +1,9 @@
+{
+	"extends": "@bhsd/code-standard/markdownlint",
+	"no-inline-html": {
+		"allowed_elements": [
+			"div",
+			"img"
+		]
+	}
+}
