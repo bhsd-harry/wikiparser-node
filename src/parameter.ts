@@ -55,7 +55,7 @@ export abstract class ParameterToken extends Token {
 	/** @private */
 	trimName(
 		name:
-		Token,
+			Token,
 		set = true,
 	): string {
 		const trimmed =

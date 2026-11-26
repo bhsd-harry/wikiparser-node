@@ -36,7 +36,7 @@ export abstract class AttributesToken extends Token {
 	abstract override get parentNode(): ExtToken
 		| undefined;
 	abstract override get previousSibling():
-	undefined;
+		undefined;
 
 	override get type(): AttributesTypes {
 		return this.#type;

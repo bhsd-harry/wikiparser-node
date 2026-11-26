@@ -14,7 +14,7 @@ export const trimLc = (s: string): string => s.trim().toLowerCase();
 export function restore(
 	s: string,
 	stack:
-	string[],
+		string[],
 ): string {
 	// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
 	return s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => stack[p1] as string);

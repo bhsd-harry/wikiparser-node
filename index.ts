@@ -85,11 +85,9 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				root.parseOnce(0, include).parseOnce();
 				const t = new TitleObj(root.firstChild!.toString(), defaultNs, config, opt, accum);
 				root.build();
-				/* eslint-disable @stylistic/array-bracket-newline */
 				const keys = [
 					'main',
 				] as const;
-				/* eslint-enable @stylistic/array-bracket-newline */
 				for (const key of keys) {
 					const str = t[key];
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

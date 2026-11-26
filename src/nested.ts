@@ -36,7 +36,7 @@ export abstract class NestedToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		regex:
-		boolean,
+			boolean,
 		tags: readonly string[],
 		config: Config,
 		accum: Token[] = [],

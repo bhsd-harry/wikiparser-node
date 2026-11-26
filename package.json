@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-template",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"description": "A light-weight template parser for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -43,7 +43,7 @@
 		"size": "echo \"\n$(( $(gzip -c bundle/bundle.min.js | wc -c) / 1024 )) kB\""
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^5.1.0",
+		"@bhsd/code-standard": "^5.2.0",
 		"@bhsd/common": "^4.2.0",
 		"@bhsd/nodejs": "^1.3.0",
 		"@bhsd/test-util": "^3.3.1",
