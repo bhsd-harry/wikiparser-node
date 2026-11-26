@@ -139,7 +139,10 @@ export abstract class MagicLinkToken extends Token {
 	 */
 	constructor(url?: string, type: ExtLinkTypes = 'free-ext-link', config = Parser.getConfig(), accum?: Token[]) {
 		super(url, config, accum, {
-			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
+			'Stage-1': '1:',
+			'!ExtToken': '',
+			AstText: ':',
+			TranscludeToken: ':',
 		});
 		this.#type = type;
 

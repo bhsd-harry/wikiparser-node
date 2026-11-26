@@ -43,7 +43,8 @@ export abstract class CommentedToken extends Token {
 	/** @class */
 	constructor(wikitext?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', CommentToken: ':',
+			AstText: ':',
+			CommentToken: ':',
 		});
 		if (wikitext) {
 			safeStringReplace(

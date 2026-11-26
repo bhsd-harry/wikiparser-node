@@ -1146,8 +1146,8 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		this.config ??= Parser.getConfig();
 		const {kind} = item,
-			Constant: (typeof CompletionItemKind)['Constant'] = 21,
-			Function: (typeof CompletionItemKind)['Function'] = 3;
+			Constant: typeof CompletionItemKind['Constant'] = 21,
+			Function: typeof CompletionItemKind['Function'] = 3;
 		let {label} = item,
 			doc: SignatureInfo | undefined;
 		if (kind === 'Constant' || kind === Constant) {

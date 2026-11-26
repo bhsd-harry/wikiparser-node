@@ -183,7 +183,8 @@ export abstract class AttributeToken extends Token {
 			|| tag === 'img' && key === 'alt'
 		) {
 			valueToken = new Token(value, config, accum, {
-				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
+				[`Stage-${stages[type]}`]: ':',
+				ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', MAX_STAGE - 1);

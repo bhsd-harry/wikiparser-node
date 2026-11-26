@@ -68,7 +68,8 @@ export class HiddenToken extends Token {
 	/** @class */
 	constructor(wikitext?: string, config?: Config, accum?: Token[]) {
 		super(wikitext, config, accum, {
-			'Stage-2': ':', '!HeadingToken': '',
+			'Stage-2': ':',
+			'!HeadingToken': '',
 		});
 	}
 

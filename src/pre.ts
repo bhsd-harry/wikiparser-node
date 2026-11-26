@@ -67,7 +67,9 @@ export abstract class PreToken extends Token {
 			},
 		);
 		super(wikitext, config, accum, {
-			AstText: ':', NoincludeToken: ':', ConverterToken: ':',
+			AstText: ':',
+			NoincludeToken: ':',
+			ConverterToken: ':',
 		});
 		this.setAttribute('stage', MAX_STAGE - 1);
 	}

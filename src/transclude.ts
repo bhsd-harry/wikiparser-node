@@ -172,7 +172,9 @@ export abstract class TranscludeToken extends Token {
 			);
 		}
 		super(undefined, config, accum, {
-			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
+			AtomToken: 0,
+			SyntaxToken: 0,
+			ParameterToken: '1:',
 		});
 		const {parserFunction, variable, functionHook} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
@@ -255,7 +257,9 @@ export abstract class TranscludeToken extends Token {
 				throw new SyntaxError(invalidTemplateMsg);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
-				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
+				'Stage-2': ':',
+				'!ExtToken': '',
+				'!HeadingToken': '',
 			});
 			super.insertAt(token);
 		}
@@ -965,7 +969,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	setValue(
 		key:
-		string,
+			string,
 		value: string,
 		newline?: boolean,
 	): void {

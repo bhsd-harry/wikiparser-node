@@ -29,7 +29,9 @@ export abstract class InputboxToken extends ParamTagToken {
 		wikitext &&= parseBraces(wikitext, newConfig, accum);
 		accum.splice(length, 1);
 		super(name, include, wikitext, newConfig, accum, {
-			'Stage-1': ':', ArgToken: ':', TranscludeToken: ':',
+			'Stage-1': ':',
+			ArgToken: ':',
+			TranscludeToken: ':',
 		});
 	}
 }

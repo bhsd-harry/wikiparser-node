@@ -65,14 +65,17 @@ export abstract class ArgToken extends Token {
 	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AtomToken: 0, Token: 1, HiddenToken: '2:',
+			AtomToken: 0,
+			Token: 1,
+			HiddenToken: '2:',
 		});
 		for (let i = 0; i < parts.length; i++) {
 			const part = parts[i]!;
 			let token: Token;
 			if (i === 0) {
 				token = new AtomToken(part, 'arg-name', config, accum, {
-					'Stage-2': ':', '!HeadingToken': '',
+					'Stage-2': ':',
+					'!HeadingToken': '',
 				});
 			} else if (i > 1) {
 				token = new HiddenToken(part, config, accum);

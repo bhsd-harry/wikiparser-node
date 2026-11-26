@@ -184,7 +184,8 @@ export abstract class AttributesToken extends Token {
 	 */
 	constructor(attr: string | undefined, type: AttributesTypes, name: string, config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AtomToken: ':', AttributeToken: ':',
+			AtomToken: ':',
+			AttributeToken: ':',
 		});
 		this.#type = type;
 		this.setAttribute('name', name);

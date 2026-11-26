@@ -84,7 +84,9 @@ export abstract class GalleryToken extends MultiLineToken {
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', GalleryImageToken: ':', CommentLineToken: ':',
+			AstText: ':',
+			GalleryImageToken: ':',
+			CommentLineToken: ':',
 		});
 		if (inner) {
 			for (let line of inner.split('\n')) {

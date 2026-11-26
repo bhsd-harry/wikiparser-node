@@ -91,7 +91,8 @@ export abstract class ExtLinkToken extends Token {
 	 */
 	constructor(url?: string, space = '', text = '', config?: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
-			MagicLinkToken: 0, Token: 1,
+			MagicLinkToken: 0,
+			Token: 1,
 		});
 		const link: MagicLinkToken = url && /^\0\d+f\x7F$/u.test(url)
 			? accum[Number(url.slice(1, -2))]
@@ -101,7 +102,8 @@ export abstract class ExtLinkToken extends Token {
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, accum, {
-				'Stage-7': ':', ConverterToken: ':',
+				'Stage-7': ':',
+				ConverterToken: ':',
 			});
 			inner.type = 'ext-link-text';
 			inner.setAttribute('stage', MAX_STAGE - 1);
@@ -214,7 +216,8 @@ export abstract class ExtLinkToken extends Token {
 		if (length === 1) {
 			root.type = 'ext-link-text';
 			root.setAttribute('acceptable', {
-				'Stage-7': ':', ConverterToken: ':',
+				'Stage-7': ':',
+				ConverterToken: ':',
 			});
 			this.insertAt(root);
 		} else {

@@ -137,7 +137,8 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
-			AtomToken: 0, Token: 1,
+			AtomToken: 0,
+			Token: 1,
 		});
 		this.insertAt(
 			new AtomToken(
