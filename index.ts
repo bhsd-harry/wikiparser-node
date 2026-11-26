@@ -1,5 +1,7 @@
 /* eslint n/exports-style: 0 */
-import {getBCP47Variants} from '@bhsd/cm-util';
+import {
+	getBCP47Variants,
+} from '@bhsd/cm-util';
 import {rules, stages} from './base';
 import {
 	Shadow,
@@ -444,7 +446,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* c8 ignore start */
 	/** @implements */
-	async fetchConfig(site, url, user) {
+	async fetchConfig(
+		site,
+		url,
+		user,
+	) {
 		const {default: fetchConfig}: typeof Bin = require('./bin/config');
 		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},

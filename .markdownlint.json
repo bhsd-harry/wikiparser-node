@@ -3,10 +3,8 @@
 	"no-inline-html": {
 		"allowed_elements": [
 			"br",
-			"details",
 			"div",
-			"img",
-			"summary"
+			"img"
 		]
 	}
 }
