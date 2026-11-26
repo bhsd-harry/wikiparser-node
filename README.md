@@ -22,7 +22,7 @@ npm i wikiparser-template
 ## Usage
 
 ```js
-import Parser from 'wikiparser-template';
+import Parser from "wikiparser-template";
 ```
 
 ## API
@@ -33,15 +33,15 @@ but WikiParser-Template only supports a small [subset](#list-of-supported-proper
 of it. The most commonly used methods are (in TypeScript syntax):
 
 ```ts
-import Parser from 'wikiparser-template';
-import type {Token, TranscludeToken, ParameterToken} from 'wikiparser-template';
+import Parser from "wikiparser-template";
+import type {Token, TranscludeToken, ParameterToken} from "wikiparser-template";
 
 Parser.config = {
 	ext: [ // You need to specify available extension tags
-		'pre',
-		'nowiki',
-		'gallery',
-		'indicator',
+		"pre",
+		"nowiki",
+		"gallery",
+		"indicator",
 	],
 };
 
@@ -49,29 +49,29 @@ Parser.config = {
 const root: Token = Parser.parse(myWikitext);
 
 // Get the first template node
-const template: TranscludeToken | undefined = root.querySelector<TranscludeToken>('template');
+const template: TranscludeToken | undefined = root.querySelector<TranscludeToken>("template");
 
 // Get all template nodes
-const templates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('template');
+const templates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>("template");
 
 // Get the first template node by its name
-const myTemplate: TranscludeToken = root.querySelector<TranscludeToken>('template#Template:My_Template')!;
+const myTemplate: TranscludeToken = root.querySelector<TranscludeToken>("template#Template:My_Template")!;
 
 // Template name
-const templateName = myTemplate.name; // 'Template:My_Template'
+const templateName = myTemplate.name; // "Template:My_Template"
 
 // Get all template nodes by their name
-const myTemplates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>('template#Template:My_Template_1, template#Template:My_Template_2');
+const myTemplates: TranscludeToken[] = root.querySelectorAll<TranscludeToken>("template#Template:My_Template_1, template#Template:My_Template_2");
 
 // Get the parameter `1` of the template
 const param_1: ParameterToken = myTemplate.getArg(1)!;
 
 // Get the parameter `a` of the template
-const param_a: ParameterToken = myTemplate.getArg('a')!;
+const param_a: ParameterToken = myTemplate.getArg("a")!;
 
 // Parameter name
-const name_1 = param_1.name; // '1'
-const name_a = param_a.name; // 'a'
+const name_1 = param_1.name; // "1"
+const name_a = param_a.name; // "a"
 
 // Whether the parameter is anonymous
 const isAnon_1 = param_1.anon; // true
@@ -84,19 +84,19 @@ let value_1: string = param_1.getValue();
 value_1 = myTemplate.getValue(1)!;
 
 // Append new anonymouse parameters to the template
-myTemplate.append('anonymous parameter', 'another anonymous parameter');
+myTemplate.append("anonymous parameter", "another anonymous parameter");
 
 // Set the value of the parameter `1`
-param_1.setValue('new value');
+param_1.setValue("new value");
 
 // Set the value of the parameter `1` from the template node
-myTemplate.setValue(1, 'new value');
+myTemplate.setValue(1, "new value");
 
 // Insert new anonymous parameters after the parameter `1`
-param_1.after('anonymous parameter after 1');
+param_1.after("anonymous parameter after 1");
 
 // Insert new named parameters before the parameter `a`
-param_a.before('another named parameter before a');
+param_a.before("another named parameter before a");
 
 // Remove the parameter `1`
 param_1.remove();
@@ -183,3 +183,8 @@ param_1.remove();
 - [ParameterToken.name](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#name)
 - [ParameterToken#getValue](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#getvalue)
 - [ParameterToken#setValue](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken-%28EN%29#setvalue)
+
+## Compatibility
+
+WikiParser-Template is written in ECMAScript 2019 and is compatible with modern
+browsers. You may need to use a transpiler and/or polyfills for older browsers.
