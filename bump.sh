@@ -11,7 +11,7 @@ else
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$version\"/" package.json
 		gsed -i -E "s/additional_dependencies: \['wikilint@.+'\]/additional_dependencies: \['wikilint@$version'\]/" README.md
 		rm package-lock.json
-		npm i --package-lock-only
+		npm i --package-lock-only --min-release-age=0
 		git add -A
 		git commit -m "chore: bump version to v$1-m"
 		git push
