@@ -44,6 +44,15 @@ const keys = new Set(['type', 'childNodes', 'range']), noInput = new Set(['highl
             const checkbox = target.closest('#toc').querySelector('input');
             checkbox.checked = !checkbox.checked;
         }
+        else {
+            const a = target.closest('a'), href = a === null || a === void 0 ? void 0 : a.getAttribute('href');
+            if ((href === null || href === void 0 ? void 0 : href.startsWith('#')) && frame.contains(a)) {
+                const ele = document.getElementById(href.slice(1));
+                if (frame.contains(ele)) {
+                    ele.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
     }, { capture: true });
     input.addEventListener('change', () => {
         const { checked } = input;

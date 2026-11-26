@@ -106,6 +106,15 @@ const keys = new Set(['type', 'childNodes', 'range']),
 		if (target.matches('label[for=toctogglecheckbox]')) {
 			const checkbox = target.closest('#toc')!.querySelector('input')!;
 			checkbox.checked = !checkbox.checked;
+		} else {
+			const a = target.closest('a'),
+				href = a?.getAttribute('href');
+			if (href?.startsWith('#') && frame.contains(a)) {
+				const ele = document.getElementById(href.slice(1));
+				if (frame.contains(ele)) {
+					ele!.scrollIntoView({behavior: 'smooth'});
+				}
+			}
 		}
 	}, {capture: true});
 
