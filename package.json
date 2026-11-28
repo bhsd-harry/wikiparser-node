@@ -90,6 +90,7 @@
 		"http-server": "^14.1.1",
 		"monaco-editor": "^0.57.0",
 		"stylelint": "^18.1.0",
+		"types-mediawiki-api": "^2.1.0",
 		"typescript": "^6.0.3"
 	},
 	"engines": {

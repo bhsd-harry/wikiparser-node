@@ -4,6 +4,7 @@ import {
 	getVariants,
 } from '@bhsd/cm-util';
 import type {MwConfig, MagicWord} from '@bhsd/cm-util';
+import type {ApiQuerySiteinfoParams} from 'types-mediawiki-api';
 import type {ConfigData} from '../base';
 
 declare interface Response {
@@ -57,18 +58,24 @@ export default async (
 	const params = {
 			action: 'query',
 			meta: 'siteinfo',
-			siprop: `general|magicwords|namespaces|namespacealiases${mwConfig.functionHooks ? '' : '|functionhooks'}`,
+			siprop: [
+				'general',
+				'magicwords',
+				'namespaces',
+				'namespacealiases',
+				...mwConfig.functionHooks ? [] : ['functionhooks'] as const,
+			],
 			format: 'json',
 			formatversion: '2',
-		},
+			origin: '*',
+		} satisfies ApiQuerySiteinfoParams,
+		search = String(new URLSearchParams({...params, siprop: params.siprop.join('|')})),
 		{
 			general: {articlepath, server, variants, langconversion, case: capitalLinks},
 			magicwords,
 			namespaces,
 			namespacealiases,
-		} = (await (
-			await fetch(`${url}/api.php?${String(new URLSearchParams(params))}`, headers)
-		).json() as Response).query,
+		} = (await (await fetch(`${url}/api.php?${search}`, headers)).json() as Response).query,
 		ns = Object.entries(namespaces).filter(([id]) => filterGadget(id))
 			.flatMap(([id, {name, canonical = ''}]): (readonly [string, string])[] => [
 				[id, name],
