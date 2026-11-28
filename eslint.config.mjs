@@ -202,6 +202,7 @@ const config = extend(
 			'unicorn/prefer-at': 0,
 			'unicorn/prefer-string-replace-all': 0,
 			'unicorn/prefer-structured-clone': 0,
+			'unicorn/prefer-uint8array-base64': 0,
 		},
 	},
 	{

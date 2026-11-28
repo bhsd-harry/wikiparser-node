@@ -182,6 +182,16 @@ export interface Parser {
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData, page?: string): Token;
 	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
+
+	/**
+	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
+	 *
+	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
+	 * @param url script path / 脚本路径
+	 */
+	fetchConfig(
+		url: string,
+	): Promise<Config>;
 }
 
 /* NOT FOR BROWSER */

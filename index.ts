@@ -1,6 +1,7 @@
 /* eslint n/exports-style: 0 */
 import {
 	getBCP47Variants,
+	getParserConfig,
 } from '@bhsd/cm-util';
 import {
 	Shadow,
@@ -13,7 +14,8 @@ import {
 import {
 	tidy,
 } from './util/string';
-import defaultConfig from './config/minimum.json';
+import executeCodeMirrorInIframe from './util/iframe';
+import minConfig from './config/minimum.json';
 import type {
 	MaxStage,
 	Config,
@@ -147,7 +149,7 @@ const getParams = (
 
 const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config:
-		defaultConfig as unknown as ConfigData,
+		minConfig as unknown as ConfigData,
 
 	/** @implements */
 	get i18n() {
@@ -369,6 +371,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		);
 		return new DOMParser().parseFromString(html, 'text/html').body.textContent;
 	},
+
+	/** @implements */
+	async fetchConfig(
+		site,
+		url = site,
+	) {
+		PRINT: return this.getConfig(getParserConfig(minConfig, await executeCodeMirrorInIframe(url)) as ConfigData);
+	},
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
@@ -377,6 +387,7 @@ const def: PropertyDescriptorMap = {
 		'getConfig',
 		'normalizeTitle',
 		'parse',
+		'fetchConfig',
 
 		/* NOT FOR BROWSER */
 

@@ -23,7 +23,7 @@ npm i wikiparser-html
 ```
 
 ```js
-import Parser from 'wikiparser-html';
+import Parser from "wikiparser-html";
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ import Parser from 'wikiparser-html';
 You can download the package from CDN as an ES module:
 
 ```js
-import Parser from 'https://cdn.jsdelivr.net/npm/wikiparser-html';
+import Parser from "https://cdn.jsdelivr.net/npm/wikiparser-html";
 ```
 
 ## API
@@ -45,21 +45,20 @@ The following example demonstrates how to use the parser to convert Wikitext to
 HTML with manually registered templates:
 
 ```ts
-import Parser from 'https://cdn.jsdelivr.net/npm/wikiparser-html';
+import Parser from "https://cdn.jsdelivr.net/npm/wikiparser-html";
 
 // You need to supply a full parser configuration
-// A limited number of presets are available in this package
-const configFile = 'https://cdn.jsdelivr.net/npm/wikiparser-html/config/enwiki.json';
-Parser.config = await (await fetch(configFile)).json();
+// You can fetch the configuration from a MediaWiki script path
+Parser.config = await Parser.fetchConfig("https://en.wikipedia.org/w");
 
 // Register templates
 Parser.templates.set(
-	'Template:My_Template',
-	'{{{1}}} {{{a}}}!',
+	"Template:My_Template",
+	"{{{1}}} {{{a}}}!",
 );
 
 // Render the wikitext to HTML
-const htmlString = Parser.toHtml('{{Template:My_Template|Hello|a=World}}');
+const htmlString = Parser.toHtml("{{Template:My_Template|Hello|a=World}}");
 ```
 
 ## Compatibility
