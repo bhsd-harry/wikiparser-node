@@ -374,7 +374,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		site,
 		url = site,
 	) {
-		PRINT: return this.getConfig(await getConfigFromApi(minConfig, await executeCodeMirrorInIframe(url), url));
+		PRINT: return this.getConfig(await getConfigFromApi(
+			minConfig as unknown as ConfigData,
+			await executeCodeMirrorInIframe(url),
+			url,
+		));
 	},
 } as Omit<Parser, 'default'> as Parser;
 
