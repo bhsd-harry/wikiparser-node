@@ -73,11 +73,25 @@ that are supported in the original WikiParser-Node package but not in
 WikiParser-HTML. If you need to parse Wikitext with these extension tags, you
 should use WikiParser-Node in the backend and serve the rendered HTML to the frontend.
 
-| Extension Tag     | WikiParser-Node | WikiParser-HTML |
-|:-:                |:-:              |:-:              |
-| `<ce>`            | ✓               | ✕               |
-| `<charinsert>`    | ✓               | ✕               |
-| `<chem>`          | ✓               | ✕               |
-| `<indicator>`     | ✓               | ✕               |
-| `<math>`          | ✓               | ✕               |
-| `<templatedata>`  | ✓               | ✕               |
+<!-- markdownlint-disable table-column-style -->
+| Extension Tag			| WikiParser-Node	| WikiParser-HTML						|
+|:-:					|:-:				|:-:									|
+| `<ce>`				| ✓					| ✕										|
+| `<charinsert>`		| ✓					| ✕										|
+| `<chem>`				| ✓					| ✕										|
+| `<gallery>`			| ✓					| ✓										|
+| `<indicator>`			| ✓					| ✕										|
+| `<langconvert>`		| ✓					| ✓										|
+| `<math>`				| ✓					| ✕										|
+| `<nowiki>`			| ✓					| ✓										|
+| `<poem>`				| ✓					| ✓										|
+| `<pre>`				| ✓					| ✓										|
+| `<ref>`				| ✓					| ✓										|
+| `<references>`		| ✓					| ✓										|
+| `<source>`			| ✓					| ✓<sup><a href="#ref1">\[1\]</a></sup>	|
+| `<syntaxhighlight>`	| ✓					| ✓<sup><a href="#ref1">\[1\]</a></sup>	|
+| `<templatedata>`		| ✓					| ✕										|
+| `<translate>`			| ✓					| ✕										|
+| `<tvar>`				| ✓					| ✕										|
+
+<sup id="ref1">1</sup> Rendered as plain text without syntax highlighting.

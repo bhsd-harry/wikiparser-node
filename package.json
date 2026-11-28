@@ -71,7 +71,7 @@
 		"diff2html-cli": "^5.2.15",
 		"entities": "^9.0.0",
 		"esbuild": "^0.28.2",
-		"eslint": "^10.15.0",
+		"eslint": "^10.16.0",
 		"parse5": "^8.1.1",
 		"types-mediawiki-api": "^2.1.0",
 		"typescript": "^6.0.3"
