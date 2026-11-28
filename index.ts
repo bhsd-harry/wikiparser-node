@@ -1,8 +1,4 @@
-/* eslint n/exports-style: 0 */
-import {
-	getBCP47Variants,
-	getParserConfig,
-} from '@bhsd/cm-util';
+import {getBCP47Variants} from '@bhsd/cm-util';
 import {
 	Shadow,
 } from './util/debug';
@@ -15,6 +11,7 @@ import {
 	tidy,
 } from './util/string';
 import executeCodeMirrorInIframe from './util/iframe';
+import getConfigFromApi from './util/config';
 import minConfig from './config/minimum.json';
 import type {
 	MaxStage,
@@ -377,7 +374,7 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		site,
 		url = site,
 	) {
-		PRINT: return this.getConfig(getParserConfig(minConfig, await executeCodeMirrorInIframe(url)) as ConfigData);
+		PRINT: return this.getConfig(await getConfigFromApi(minConfig, await executeCodeMirrorInIframe(url), url));
 	},
 } as Omit<Parser, 'default'> as Parser;
 
