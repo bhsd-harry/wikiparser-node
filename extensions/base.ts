@@ -553,4 +553,4 @@ const wikiparse: Wikiparse = {
 	lineNumbers,
 	provide,
 };
-Object.assign(window, {wikiparse});
+Object.assign(globalThis, {wikiparse});

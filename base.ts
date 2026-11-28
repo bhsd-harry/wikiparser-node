@@ -560,6 +560,17 @@ export interface Parser {
 	parse(wikitext: string, page: string, include?: boolean, maxStage?: MaxStage, config?: ConfigData): Token;
 
 	/**
+	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
+	 *
+	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
+	 * @param url script path / 脚本路径
+	 * @since v2.2.0
+	 */
+	fetchConfig(
+		url: string,
+	): Promise<Config>;
+
+	/**
 	 * Create a language server
 	 *
 	 * 创建语言服务

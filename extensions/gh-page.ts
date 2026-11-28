@@ -1,16 +1,10 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/demo.min.js';
 import {CodeJar} from '/codejar-async/dist/codejar.js';
 import Renderer from '/wikiparser-node/bundle/bundle-html.min.js';
-import type {MwConfig} from '@bhsd/cm-util';
 import type {ConfigData, AST} from './typings';
 
 declare global {
 	const monaco: PromiseLike<{editor: MonacoEditor}>;
-	const mw: {
-		config: {
-			values: {extCodeMirrorConfig?: MwConfig};
-		};
-	};
 }
 
 /**
@@ -173,23 +167,21 @@ const keys = new Set(['type', 'childNodes', 'range']),
 			return;
 		}
 		fetchBtn.disabled = true;
-		const script = document.createElement('script');
-		script.src = `${url.slice(0, -8)}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`;
-		script.addEventListener('error', e => {
-			console.error(e);
-			toggleApi(true);
-			api.focus();
-		});
-		script.addEventListener('load', () => {
-			// eslint-disable-next-line unicorn/prefer-structured-clone
-			const configData: ConfigData = JSON.parse(JSON.stringify(
-				CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig!),
-			));
-			configMap.set(url, configData);
-			syncConfig(configData);
-			fetchBtn.disabled = false;
-		});
-		document.head.append(script);
+		(async () => {
+			try {
+				// eslint-disable-next-line unicorn/prefer-structured-clone
+				const configData: ConfigData = JSON.parse(JSON.stringify(
+					await Parser.fetchConfig(url.slice(0, -8)),
+				));
+				configMap.set(url, configData);
+				syncConfig(configData);
+				fetchBtn.disabled = false;
+			} catch (e) {
+				console.error(e);
+				toggleApi(true);
+				api.focus();
+			}
+		})();
 	});
 	api.addEventListener('input', () => {
 		validateApi();
@@ -242,10 +234,10 @@ const keys = new Set(['type', 'childNodes', 'range']),
 		dl.append(dt, ...dds, childNodes, rbrace2);
 		return dl;
 	};
-	let timer: NodeJS.Timeout;
+	let timer: number;
 	jar.onUpdate(code => {
 		clearTimeout(timer);
-		timer = setTimeout((async () => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+		timer = window.setTimeout((async () => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
 			const astDom = createAST(await wikiparse.json(code, jar.include, qid));
 			astDom.children[0]!.classList.remove('inactive');
 			astContainer.replaceChildren(astDom);
@@ -436,5 +428,5 @@ const keys = new Set(['type', 'childNodes', 'range']),
 	hashchange();
 	addEventListener('hashchange', hashchange);
 
-	Object.assign(globalThis, {jar, cm, model});
+	Object.assign(globalThis, {jar, cm, model, Renderer});
 })();

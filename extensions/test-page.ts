@@ -352,4 +352,6 @@ const repaint = (
 			})();
 		});
 	}
+
+	Object.assign(globalThis, {Parser});
 })();

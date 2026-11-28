@@ -1,4 +1,7 @@
-import {getBCP47Variants} from '@bhsd/cm-util';
+import {
+	getBCP47Variants,
+	getParserConfig,
+} from '@bhsd/cm-util';
 import {rules, stages} from './base';
 import {
 	Shadow,
@@ -12,6 +15,7 @@ import {
 import {
 	tidy,
 } from './util/string';
+import executeCodeMirrorInIframe from './util/iframe';
 import {LintConfiguration} from './lib/lintConfig';
 import type {
 	MaxStage,
@@ -314,6 +318,14 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			);
 		}
 	},
+
+	/** @implements */
+	async fetchConfig(
+		site,
+		url = site,
+	) {
+		PRINT: return this.getConfig(getParserConfig(minConfig, await executeCodeMirrorInIframe(url)) as ConfigData);
+	},
 } as Omit<Parser, 'default'> as Parser;
 
 const def: PropertyDescriptorMap = {
@@ -324,6 +336,7 @@ const def: PropertyDescriptorMap = {
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
+		'fetchConfig',
 		'createLanguageService',
 
 		/* PRINT ONLY */
@@ -336,8 +349,7 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-// eslint-disable-next-line no-restricted-globals
-Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
+Object.assign(globalThis, {Parser});
 
 export default Parser;
 export type {

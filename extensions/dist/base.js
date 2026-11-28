@@ -376,5 +376,5 @@ const wikiparse = {
     lineNumbers,
     provide,
 };
-Object.assign(window, { wikiparse });
+Object.assign(globalThis, { wikiparse });
 })();

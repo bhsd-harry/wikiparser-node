@@ -232,4 +232,5 @@ const repaint = (container, container1, container2, html, render, isGH) => {
             })();
         });
     }
+    Object.assign(globalThis, { Parser });
 })();

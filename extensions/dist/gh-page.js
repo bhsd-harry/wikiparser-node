@@ -99,20 +99,19 @@ const keys = new Set(['type', 'childNodes', 'range']), noInput = new Set(['highl
             return;
         }
         fetchBtn.disabled = true;
-        const script = document.createElement('script');
-        script.src = `${url.slice(0, -8)}/load.php?modules=ext.CodeMirror.data|ext.CodeMirror`;
-        script.addEventListener('error', e => {
-            console.error(e);
-            toggleApi(true);
-            api.focus();
-        });
-        script.addEventListener('load', () => {
-            const configData = JSON.parse(JSON.stringify(CodeMirror6.getParserConfig(Parser.config, mw.config.values.extCodeMirrorConfig)));
-            configMap.set(url, configData);
-            syncConfig(configData);
-            fetchBtn.disabled = false;
-        });
-        document.head.append(script);
+        (async () => {
+            try {
+                const configData = JSON.parse(JSON.stringify(await Parser.fetchConfig(url.slice(0, -8))));
+                configMap.set(url, configData);
+                syncConfig(configData);
+                fetchBtn.disabled = false;
+            }
+            catch (e) {
+                console.error(e);
+                toggleApi(true);
+                api.focus();
+            }
+        })();
     });
     api.addEventListener('input', () => {
         validateApi();
@@ -153,7 +152,7 @@ const keys = new Set(['type', 'childNodes', 'range']), noInput = new Set(['highl
     let timer;
     jar.onUpdate(code => {
         clearTimeout(timer);
-        timer = setTimeout((async () => {
+        timer = window.setTimeout((async () => {
             const astDom = createAST(await wikiparse.json(code, jar.include, qid));
             astDom.children[0].classList.remove('inactive');
             astContainer.replaceChildren(astDom);
@@ -292,5 +291,5 @@ const keys = new Set(['type', 'childNodes', 'range']), noInput = new Set(['highl
     };
     hashchange();
     addEventListener('hashchange', hashchange);
-    Object.assign(globalThis, { jar, cm, model });
+    Object.assign(globalThis, { jar, cm, model, Renderer });
 })();
