@@ -1,5 +1,7 @@
 /* eslint n/exports-style: 0 */
-import {getBCP47Variants} from '@bhsd/cm-util';
+import {
+	getBCP47Variants,
+} from '@bhsd/cm-util';
 import {
 	Shadow,
 } from './util/debug';
