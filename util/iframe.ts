@@ -79,19 +79,36 @@ const executeCodeMirrorInIframe = (src: string): Promise<MwConfig> => new Promis
 	iframe.sandbox.add('allow-scripts');
 	iframe.style.display = 'none';
 	document.body.append(iframe);
+	let settled = false;
+
+	const finish = /** @ignore */ (error: Error | undefined, data?: MwConfig): void => {
+		if (settled) {
+			return;
+		}
+		settled = true;
+		clearTimeout(timeout);
+		removeEventListener('message', handler);
+		iframe.remove();
+		if (error) {
+			reject(error);
+		} else {
+			resolve(data!);
+		}
+	};
 
 	const handler = /** @ignore */ ({source, data}: MessageEvent): void => {
 		if (source === iframe.contentWindow) {
-			removeEventListener('message', handler);
-			iframe.remove();
 			if (data && 'error' in data) {
-				reject((data as {error: Error}).error);
+				finish((data as {error: Error}).error);
 			} else {
-				resolve(data as MwConfig);
+				finish(undefined, data as MwConfig);
 			}
 		}
 	};
 	addEventListener('message', handler);
+	const timeout = setTimeout(() => {
+		finish(new Error('Timed out after 5000 ms.'));
+	}, 5e3);
 
 	iframe.srcdoc = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src data: ${
 		new URL(src).origin

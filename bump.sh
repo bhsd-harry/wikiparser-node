@@ -12,6 +12,7 @@ else
 		npm run build:ext
 		if [[ $? -eq 0 ]]
 		then
+			npm run checkout
 			git add -A
 			git commit -m "chore: bump version to v$1-b"
 			git push
