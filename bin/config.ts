@@ -130,7 +130,7 @@ export default async (
 			'--disable-warning=ExperimentalWarning',
 			tempFile,
 		],
-		{cwd: __dirname, encoding: 'utf8'},
+		{cwd: __dirname, encoding: 'utf8', env: {}, timeout: 1e3, killSignal: 'SIGKILL'},
 	);
 	fs.unlinkSync(tempFile);
 	if (stderr) {
