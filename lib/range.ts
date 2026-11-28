@@ -139,7 +139,7 @@ export class AstRange {
 	 * Destroy the instance
 	 *
 	 * 销毁
-	 * @since v2.2.0
+	 * @since v2.2.1
 	 */
 	destroy(): void {
 		this.#startContainer = undefined;

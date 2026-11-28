@@ -202,7 +202,7 @@ declare interface Parser extends ParserBase {
 	 * 提取纯文本
 	 * @param include whether to be transcluded / 是否嵌入
 	 * @param page page name / 页面名称
-	 * @since v2.2.0
+	 * @since v2.2.1
 	 */
 	plainText(wikitext: string, include?: boolean, config?: ConfigData, page?: string): string;
 	plainText(wikitext: string, page: string, include?: boolean, config?: ConfigData): string;
