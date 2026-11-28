@@ -109,18 +109,6 @@ declare interface Parser extends ParserBase {
 	 * @since v1.22.0
 	 */
 	getWMFSite(url: string): [string, string];
-
-	/**
-	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
-	 *
-	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
-	 * @param site site nickname / 网站别名
-	 * @param url script path / 脚本路径
-	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
-	 * @throws `RangeError` if Extension:CodeMirror is not installed
-	 * @since v1.18.4
-	 */
-	fetchConfig(site: string, url: string, user?: string): Promise<Config>;
 }
 
 /* NOT FOR BROWSER ONLY */
@@ -466,11 +454,8 @@ const def: PropertyDescriptorMap = {
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
-		'createLanguageService',
-
-		/* NOT FOR BROWSER ONLY */
-
 		'fetchConfig',
+		'createLanguageService',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
