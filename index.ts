@@ -1,5 +1,7 @@
 /* eslint n/exports-style: 0 */
-import {getBCP47Variants} from '@bhsd/cm-util';
+import {
+	getBCP47Variants,
+} from '@bhsd/cm-util';
 import {rules, stages} from './base';
 import {
 	Shadow,
@@ -179,18 +181,6 @@ declare interface Parser extends ParserBase {
 	 * @since v1.22.0
 	 */
 	getWMFSite(url: string): [string, string];
-
-	/**
-	 * Get the parser configuration for a MediaWiki project with Extension:CodeMirror installed
-	 *
-	 * 获取一个安装了CodeMirror扩展的MediaWiki项目的解析设置
-	 * @param site site nickname / 网站别名
-	 * @param url script path / 脚本路径
-	 * @param user URI for wiki userpage or email address of the user / 维基用户页面地址或用户的电子邮件地址
-	 * @throws `RangeError` if Extension:CodeMirror is not installed
-	 * @since v1.18.4
-	 */
-	fetchConfig(site: string, url: string, user?: string): Promise<Config>;
 
 	/* NOT FOR BROWSER ONLY END */
 
@@ -722,7 +712,11 @@ const Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/* c8 ignore start */
 	/** @implements */
-	async fetchConfig(site, url, user) {
+	async fetchConfig(
+		site,
+		url,
+		user,
+	) {
 		const {default: fetchConfig}: typeof Bin = require('./bin/config');
 		return this.getConfig(await fetchConfig(site, url, user, false, true));
 	},
@@ -928,6 +922,7 @@ const def: PropertyDescriptorMap = {
 		'lintConfig',
 		'normalizeTitle',
 		'parse',
+		'fetchConfig',
 		'createLanguageService',
 
 		/* PRINT ONLY */
@@ -935,12 +930,6 @@ const def: PropertyDescriptorMap = {
 		'print',
 
 		/* PRINT ONLY END */
-
-		/* NOT FOR BROWSER ONLY */
-
-		'fetchConfig',
-
-		/* NOT FOR BROWSER ONLY END */
 
 		/* NOT FOR BROWSER */
 
